@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/background" >
+    android:background="@color/background">
 
     <!--<ProgressBar-->
     <!--android:id="@+id/prgLoading"-->
@@ -17,15 +17,14 @@
     <RelativeLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
+
         <LinearLayout
-            android:visibility="visible"
             android:id="@+id/layout_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/label_header"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:visibility="visible">
 
             <AutoCompleteTextView
                 android:id="@+id/search"
@@ -37,10 +36,10 @@
                 android:layout_weight="0.25"
                 android:background="@drawable/background_search"
                 android:hint="@string/invoice_dgi_search"
-                android:textColorHint="@android:color/darker_gray"
                 android:padding="4dp"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"/>
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="16sp" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -51,34 +50,34 @@
                 android:src="@drawable/ic_search_black_24dp" />
 
         </LinearLayout>
+
         <ListView
             android:id="@+id/listMenu"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:fadeScrollbars="true"
-            android:fastScrollEnabled="true"
+            android:layout_above="@+id/tabel_footer"
+            android:layout_below="@+id/layout_search"
             android:divider="@color/background"
             android:dividerHeight="1dp"
-            android:layout_below="@+id/layout_search"
-            android:layout_above="@+id/tabel_footer"
-            android:visibility="visible"/>
-
+            android:fadeScrollbars="true"
+            android:fastScrollEnabled="true"
+            android:visibility="visible" />
 
 
         <TextView
-            android:textAppearance="?android:textAppearanceLarge"
             android:id="@+id/txtAlert"
-            android:layout_height="80dp"
             android:layout_width="fill_parent"
+            android:layout_height="80dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:orientation="vertical"
             android:layout_marginLeft="15.0dip"
             android:layout_marginTop="12.0dip"
+            android:gravity="center"
+            android:orientation="vertical"
             android:text=""
+            android:textAppearance="?android:textAppearanceLarge"
             android:textColor="@android:color/black"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <TableLayout
             android:id="@+id/tabel_footer"
@@ -197,7 +196,7 @@
                     android:id="@+id/cbo_phone_number"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:popupBackground="@android:color/white"/>
+                    android:popupBackground="@android:color/white" />
             </TableRow>
 
             <View
@@ -218,7 +217,7 @@
                     android:paddingLeft="8.0dip"
                     android:paddingRight="20.0dip"
                     android:text="@string/total_bayar"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black" />
 
                 <View
                     style="@style/VerticalLine"
@@ -289,8 +288,6 @@
 
         </TableLayout>
     </RelativeLayout>
-
-
 
 
 </RelativeLayout>
