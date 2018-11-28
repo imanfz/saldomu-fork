@@ -71,8 +71,8 @@ public class RealmManager {
         file = new File(mContext.getFilesDir(),BuildConfig.REALM_BBS_MEMBER_BANK_NAME);
         copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.bbsmemberbank),file);
 
-        file = new File(mContext.getFilesDir(),BuildConfig.REALM_TAGIH_NAME);
-        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomudevtagih),file);
+//        file = new File(mContext.getFilesDir(),BuildConfig.REALM_TAGIH_NAME);
+//        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomudevtagih),file);
 
         Realm.init(mContext);
         RealmConfiguration config = new RealmConfiguration.Builder()

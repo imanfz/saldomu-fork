@@ -290,8 +290,8 @@ public class BillerInput extends Fragment {
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
         }
         else if(biller_type_code.equals(billerType[18])){
-            buy_type = _buy_type[1];
-            buy_code = BillerActivity.PAYMENT_TYPE;
+            buy_type = _buy_type[0];
+            buy_code = BillerActivity.PURCHASE_TYPE;
             tv_payment_remark.setVisibility(View.GONE);
             et_payment_remark.setVisibility(View.GONE);
         }
