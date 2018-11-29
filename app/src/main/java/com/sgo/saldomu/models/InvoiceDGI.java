@@ -63,6 +63,8 @@ public class InvoiceDGI {
     }
 
     public String getInput_amount() {
+        if (input_amount == null)
+            input_amount = "0";
         return input_amount;
     }
 
@@ -115,8 +117,6 @@ public class InvoiceDGI {
     }
 
     public void setInput_amount(String input_amount) {
-        if (input_amount == null)
-            input_amount = "0";
         this.input_amount = input_amount;
     }
 

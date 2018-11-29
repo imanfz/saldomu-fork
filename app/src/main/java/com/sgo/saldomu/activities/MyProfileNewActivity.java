@@ -272,8 +272,11 @@ public class MyProfileNewActivity extends BaseActivity {
                                 RESULT = MainPage.RESULT_FIRST_TIME;
                                 setResult(MainPage.RESULT_FIRST_TIME);
                                 finish();
-                            }else
-                                finish();
+                            }else{
+                                Intent intent1 = new Intent(MyProfileNewActivity.this, MainPage.class);
+                                startActivity(intent1);
+                            }
+
                         }
                     });
 
