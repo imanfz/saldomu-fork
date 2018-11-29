@@ -276,7 +276,6 @@ public class MyProfileNewActivity extends BaseActivity {
                                 Intent intent1 = new Intent(MyProfileNewActivity.this, MainPage.class);
                                 startActivity(intent1);
                             }
-
                         }
                     });
 
