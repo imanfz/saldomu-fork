@@ -372,7 +372,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                 new ProgressRequestBody.UploadCallbacks() {
                     @Override
                     public void onProgressUpdate(int percentage) {
-
+                        pbSIUP.setProgress(percentage);
                     }
                 });
 //                RequestBody.create(MediaType.parse("image/*"), photoFile);

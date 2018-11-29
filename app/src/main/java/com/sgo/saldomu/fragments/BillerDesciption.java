@@ -55,7 +55,6 @@ import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
-import com.sgo.saldomu.models.retrofit.DescriptionModel;
 import com.sgo.saldomu.models.retrofit.InqBillerModel;
 import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
@@ -476,8 +475,10 @@ public class BillerDesciption extends BaseFragment {
                                 ccy_id = model.getCcy_id();
                                 amount = model.getAmount();
                                 item_name = model.getItem_name();
-                                DescriptionModel descObj = getGson().fromJson(toJson(model.getDescription()), DescriptionModel.class);
-                                description = descObj.getPhoneNumber();
+//                                DescriptionModel descObj = getGson().fromJson(toJson(model.getDescription()), DescriptionModel.class);
+//                                description = descObj.getPhoneNumber();
+//                                description = toJson(model.getDescription()).getAsString();
+description = getGson().toJson(model.getDescription());
 //                            if(isPLN ) {
                                 fee = model.getAdmin_fee();
 //                            }
