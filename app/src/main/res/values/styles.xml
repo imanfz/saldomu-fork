@@ -264,5 +264,8 @@
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/btn_green</item>
     </style>
-
+    <style name="LighterEditText" parent="Widget.AppCompat.EditText">
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlNormal">@color/grey_200</item>
+    </style>
 </resources>
