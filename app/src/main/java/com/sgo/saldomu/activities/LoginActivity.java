@@ -3,6 +3,7 @@ package com.sgo.saldomu.activities;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -69,8 +70,8 @@ public class LoginActivity extends BaseActivity {
                 if (m.getInt(DefineValue.USER_IS_NEW, 0) == 1) {
                     newFrag = new Regist1();
                     newFrag.setArguments(m);
-                } else if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")
-                        && m.getInt(DefineValue.USER_IS_NEW, 0) != 0 ) { //untuk shorcut dari tombol di activity introduction
+//                } else if (BuildConfig.DEBUG == true && BuildConfig.FLAVOR.equalsIgnoreCase( "development") && m.getInt(DefineValue.USER_IS_NEW, 0) != 0 ) { //untuk shorcut dari tombol di activity introduction
+                } else if (m.getInt(DefineValue.USER_IS_NEW, 0) != 0 ){ //untuk shorcut dari tombol di activity introduction
                     if (m.getInt(DefineValue.USER_IS_NEW, 0) == -1) {
                         newFrag = new Regist1();
 

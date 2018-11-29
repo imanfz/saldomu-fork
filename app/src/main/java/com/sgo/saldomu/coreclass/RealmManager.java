@@ -6,6 +6,8 @@ import com.sgo.saldomu.Beans.Account_Collection_Model;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.Denom_Data_Model;
+import com.sgo.saldomu.Beans.TagihCommunityModel;
+import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.Beans.bank_biller_model;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -38,6 +40,8 @@ public class RealmManager {
     public static RealmConfiguration BillerConfiguration;
     public static RealmConfiguration BBSConfiguration;
     public static RealmConfiguration BBSMemberBankConfiguration;
+    public static RealmConfiguration TagihDataConfig;
+
 
     @RealmModule(classes = { Account_Collection_Model.class, bank_biller_model.class,
             Biller_Data_Model.class, Biller_Type_Data_Model.class, Denom_Data_Model.class})
@@ -56,12 +60,19 @@ public class RealmManager {
     private static class BBSMemberBankModule {
     }
 
+    @RealmModule(classes = { TagihModel.class, TagihCommunityModel.class})
+    private static class TagihModule {
+    }
+
     public static void init(Context mContext, int rawBiller){
         File file = new File(mContext.getFilesDir(), BuildConfig.REALM_BILLER_NAME);
         copyBundledRealmFile(mContext.getResources().openRawResource(rawBiller),file);
 
         file = new File(mContext.getFilesDir(),BuildConfig.REALM_BBS_MEMBER_BANK_NAME);
         copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.bbsmemberbank),file);
+
+//        file = new File(mContext.getFilesDir(),BuildConfig.REALM_TAGIH_NAME);
+//        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomudevtagih),file);
 
         Realm.init(mContext);
         RealmConfiguration config = new RealmConfiguration.Builder()
@@ -93,6 +104,13 @@ public class RealmManager {
                 .modules(new BBSMemberBankModule())
                 .migration(new BBSMemberBankMigration())
                 .build();
+
+        TagihDataConfig = new RealmConfiguration.Builder()
+                .name(BuildConfig.REALM_TAGIH_NAME)
+                .schemaVersion(BuildConfig.REALM_SCHEME_TAGIH_VERSION)
+                .modules(new TagihModule())
+                .migration(new TagihDataMigration())
+                .build();
     }
 
     private static DynamicRealm getDynamicRealm(RealmConfiguration realmConfig){
@@ -113,6 +131,10 @@ public class RealmManager {
 
     public static Realm getRealmBiller(){
         return Realm.getInstance(BillerConfiguration);
+    }
+
+    public static Realm getRealmTagih(){
+        return Realm.getInstance(TagihDataConfig);
     }
 
     public static void closeRealm(Realm realm){

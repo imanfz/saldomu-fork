@@ -31,6 +31,9 @@
         android:theme="@style/Theme.MyTheme"
         tools:replace="android:label,allowBackup">
         <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+        <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
@@ -364,6 +367,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.InfoHargaWebActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.TagihActivity"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait" />

@@ -311,6 +311,7 @@ public class DefineValue {
     public static String SHOP_CLOSE     = "C";
 
     public static String CATEGORY_ID    = "category_id";
+    public static String CATEGORY_ID_CTA    = "category_id_cta";
     public static String CATEGORY_NAME  = "category_name";
     public static String CATEGORY_CODE  = "category_code";
 
@@ -542,6 +543,9 @@ public class DefineValue {
     public static String QR_FROM_PAY_FRIENDS = "QR_FROM_PAY_FRIENDS";
     public static String QR_TYPE_FROM_DEFAULT_ACCOUNT = "QR_TYPE_FROM_DEFAULT_ACCOUNT";
     public static String QR_OBJ = "QR_OBJ";
+    public static String DGI = "DGI";
+    public static String MOBILE_PHONE = "mobile_phone";
+    public static String RESPONSE = "mobile_phone";
 
 }
 

@@ -5,35 +5,36 @@
     android:layout_height="match_parent"
     android:background="#80FFFFFF"
     >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorSecondary"
-        android:orientation="horizontal"
-        android:id="@+id/llAgentDetail"
-        android:padding="6dp">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/colorSecondary"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:id="@+id/llAgentDetail"-->
+        <!--android:padding="6dp"-->
+        <!--android:visibility="gone">-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/set_online"
-            android:layout_weight="1"
-            android:textColor="@color/grey_1000w"
-            android:textSize="@dimen/abc_text_size_body_1_material"
-            android:textStyle="bold" />
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/set_online"-->
+            <!--android:layout_weight="1"-->
+            <!--android:textColor="@color/grey_1000w"-->
+            <!--android:textSize="@dimen/abc_text_size_body_1_material"-->
+            <!--android:textStyle="bold" />-->
 
 
 
-        <Switch
-            android:layout_gravity="center_vertical"
-            android:id="@+id/swSettingOnline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textOff="@string/no"
-            android:textOn="@string/yes" />
+        <!--<Switch-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:id="@+id/swSettingOnline"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:textOff="@string/no"-->
+            <!--android:textOn="@string/yes" />-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
     <!-- ListView
         android:id="@android:id/list"

@@ -11,6 +11,7 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,14 +31,18 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.adapter.GridBbsMenu;
 import com.sgo.saldomu.coreclass.BBSDataManager;
+import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.UpdateBBSData;
@@ -48,13 +53,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import in.srain.cube.views.ptr.PtrFrameLayout;
 import timber.log.Timber;
 
-/**
- * Created by thinkpad on 1/25/2017.
- */
-
-public class ListBBS extends Fragment {
+public class FragHomeAgent extends BaseFragmentMainPage {
 
     private View v;
     private boolean isJoin = false;
@@ -68,6 +70,7 @@ public class ListBBS extends Fragment {
     ProgressDialog progdialog2;
     ProgressDialog progDialog;
     private static final int RC_GPS_REQUEST = 1;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,15 +92,15 @@ public class ListBBS extends Fragment {
             else
                 checkAndRunServiceBBS();
         }
-        else
+        else {
             _data = getResources().getStringArray(R.array.list_bbs_member);
-
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        v = inflater.inflate(R.layout.frag_list_bbs, container, false);
+        v = inflater.inflate(R.layout.frag_home_agent, container, false);
         return v;
     }
 
@@ -106,14 +109,6 @@ public class ListBBS extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         EasyAdapter adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _data);
-
-        //ListView listView1 = (ListView) v.findViewById(android.R.id.list);
-        //listView1.setAdapter(adapter);
-
-        llAgentDetail       = (LinearLayout) v.findViewById(R.id.llAgentDetail);
-        swSettingOnline     = (Switch) v.findViewById(R.id.swSettingOnline);
-        llAgentDetail.setVisibility(View.GONE);
-        setAgentDetailToUI();
 
         GridView gvListBbs  = (GridView) v.findViewById(R.id.gvListBbs);
 
@@ -125,7 +120,7 @@ public class ListBBS extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String menuItemName = ((TextView) view.findViewById(R.id.tvMenuName)).getText().toString();
                 String trxType      = "";
-                int posIdx;
+                int posIdx = -1;
                 if(isAgent) {
                     if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
                         posIdx = BBSActivity.LISTACCBBS;
@@ -152,6 +147,8 @@ public class ListBBS extends Fragment {
                     } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent)) ) {
                         posIdx = BBSActivity.BBSONPROGRESSAGENT;
                         trxType = DefineValue.INDEX;
+                    }else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent)) ) {
+                        startActivity(new Intent(getActivity(), TagihActivity.class));
                     }else {
                         posIdx = -1;
                     }
@@ -174,7 +171,7 @@ public class ListBBS extends Fragment {
                     if ( !trxType.equals(""))
                         i.putExtra(DefineValue.TYPE, trxType);
 
-                    switchActivity(i,MainPage.ACTIVITY_RESULT);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
 
             }
@@ -199,51 +196,6 @@ public class ListBBS extends Fragment {
             Timber.d("Run Service update data BBS");
         }
     }
-
-
-    /*@Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-
-        int posIdx;
-        if(isAgent) {
-            if (_data[position].equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
-                posIdx = BBSActivity.LISTACCBBS;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.transaction)))
-                posIdx = BBSActivity.TRANSACTION;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.title_cash_out_member)))
-                posIdx = BBSActivity.CONFIRMCASHOUT;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_kelola)))
-                posIdx = BBSActivity.BBSKELOLA;
-            //else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_list_approval)))
-                //posIdx = BBSActivity.BBSAPPROVALAGENT;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_trx_agent)))
-                posIdx = BBSActivity.BBSTRXAGENT;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_waktu_beroperasi)))
-                posIdx = BBSActivity.BBSWAKTUBEROPERASI;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_tutup_manual)))
-                posIdx = BBSActivity.BBSTUTUPMANUAL;
-            else {
-                posIdx = -1;
-            }
-        } else {
-            if (_data[position].equalsIgnoreCase(getString(R.string.title_cash_out_member)))
-                posIdx = BBSActivity.CONFIRMCASHOUT;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.title_rating_by_member)))
-                posIdx = BBSActivity.BBSRATINGBYMEMBER;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.title_bbs_my_orders)))
-                posIdx = BBSActivity.BBSMYORDERS;
-            else {
-                posIdx = -1;
-            }
-
-        }
-        if(posIdx !=-1){
-            Intent i = new Intent(getActivity(), BBSActivity.class);
-            i.putExtra(DefineValue.INDEX, posIdx);
-            switchActivity(i,MainPage.ACTIVITY_RESULT);
-        }
-    }
-    */
 
     private void switchActivity(Intent mIntent, int j){
         if (getActivity() == null)
@@ -403,7 +355,7 @@ public class ListBBS extends Fragment {
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
 
                                 } else {
-                                    setAgentDetailToUI();
+//                                    setAgentDetailToUI();
                                     Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                                 }
 
@@ -475,10 +427,30 @@ public class ListBBS extends Fragment {
                     switchMenu(NavigationDrawMenu.MHOME);
                 }
             }
-            else if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
-                setAgentDetailToUI();
-            }
+//            else if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
+//                setAgentDetailToUI();
+//            }
         }
     };
 
+
+    @Override
+    protected int getInflateFragmentLayout() {
+        return 0;
+    }
+
+    @Override
+    public boolean checkCanDoRefresh() {
+        return false;
+    }
+
+    @Override
+    public void refresh(PtrFrameLayout frameLayout) {
+
+    }
+
+    @Override
+    public void goToTop() {
+
+    }
 }

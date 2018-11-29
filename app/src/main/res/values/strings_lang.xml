@@ -181,7 +181,7 @@
     <string name="menu_item_title_purchase_pulsa">Pembelian E-Voucher HP</string>
     <string name="menu_item_title_buy">PPOB</string>
     <string name="menu_item_title_beli">Beli</string>
-    <string name="menu_item_title_cash_out">Transfer ke Bank</string>
+    <string name="menu_item_title_cash_out">Transfer ke Bank via Setor Tunai</string>
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
@@ -190,7 +190,7 @@
     <string name="menu_item_title_my_profile">Profil Saya</string>
     <string name="menu_item_title_my_friends">Teman Saya</string>
     <string name="menu_item_title_my_groups">Grup Saya</string>
-    <string name="menu_item_title_bbs">Mobile Teller</string>
+    <string name="menu_item_title_bbs">Agen</string>
     <string name="menu_group_title_logout">Keluar</string>
     <string name="menu_item_title_logout">Keluar</string>
     <string name="menu_item_add_by_contact">Tambah dari kontak</string>
@@ -211,6 +211,7 @@
     <string name="menu_item_title_list_approval">Daftar Persetujuan</string>
     <string name="menu_item_title_trx_agent">Permintaan Transaksi</string>
     <string name="menu_item_title_onprogress_agent">Dalam Proses</string>
+    <string name="menu_item_title_tagih_agent">Tagih.id</string>
     <string name="menu_item_title_map_agent">Peta Agen</string>
     <string name="menu_item_title_map_member">Peta Member</string>
     <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
@@ -453,7 +454,7 @@
     <string name="delete">Hapus</string>
     <string name="friend_profile">Profil Teman</string>
     <string name="socialbanking_id" translatable="false">socialbanking ID : </string>
-    <string name="phone_number">nomor handphone : </string>
+    <string name="phone_number">Nomor Handphone : </string>
     <string name="email" translatable="false">email : </string>
     <string name="submit">Proses</string>
     <string name="request_money">Minta Sekarang</string>
@@ -634,10 +635,11 @@
     <string name="cashout_fee_text">Biaya Admin</string>
     <string name="cashout_total_text">Total Jumlah</string>
     <string name="cashout_validation_otp">Token dibutuhkan!</string>
-    
+
     <string name="limit_dialog_title">Kendala Setor Tunai</string>
     <string name="level_dialog_title">Fitur Belum Tersedia</string>
     <string name="level_dialog_message">Anda belum bisa melakukan Fitur ini. Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran.</string>
+    <string name="level_dialog_message_agent">Anda belum bisa melakukan Fitur ini. Lakukan Pembaharuan keanggotaan menjadi Agen dengan mengisi Formulir Pendaftaran.</string>
     <string name="level_dialog_btn_ok">Isi Form</string>
 
     <string name="level_title">Registrasi Perbaharui Keanggotaan</string>
@@ -747,6 +749,7 @@
     <string name="saving_gallery">Menyimpan di galeri...</string>
     <string name="community">Komunitas</string>
     <string name="member_code">Kode Member</string>
+    <string name="shop_code">Kode Toko</string>
     <string name="foldername_struk">Struk Saldomu</string>
 
     <string name="period_month">period_month</string>
@@ -1249,5 +1252,11 @@
     <string name="lbl_member_lvl_agent">AGENT</string>
 
     <string name="lbl_need_help">Hi Support, i want to ask.</string>
+    <string name="mitra">Mitra</string>
+    <string name="error_input_tagih">Kode Toko dibutuhkan!</string>
+    <string name="invoice_dgi_search">Cari Invoice</string>
+    <string name="payment_type">Tipe Pembayaran</string>
+    <string name="reset">Reset</string>
+    <string name="checkout">Check Out</string>
 
 </resources>
