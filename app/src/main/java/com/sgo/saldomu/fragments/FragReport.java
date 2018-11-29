@@ -451,6 +451,16 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                             emptyLayout.setVisibility(View.GONE);
                                         }
 
+                                        if (report_type == REPORT_FEE){
+                                            SummaryFeeModel = new SummaryReportFeeModel();
+                                            SummaryFeeModel.setTotal_transaction(reportListModel.getReport_data().size());
+                                            for (ReportDataModel model: reportListModel.getReport_data()) {
+                                                getSummaryFee(SummaryFeeModel, model);
+                                            }
+
+                                            setSummarytoView(SummaryFeeModel);
+                                        }
+
                                         int _page = Integer.valueOf(reportListModel.getNext());
                                         if (_page != 0) {
                                             page++;
@@ -525,6 +535,27 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
+    }
+
+    private void getSummaryFee(SummaryReportFeeModel obj, ReportDataModel model) {
+        String a = model.getAmount();
+        if (model.getStatus().equalsIgnoreCase("Released")) {
+            obj.setReleased_trx(obj.getReleased_trx() + 1);
+            obj.setReleased_amount(obj.getReleased_amount() + Integer.valueOf(a));
+        } else if (model.getStatus().equalsIgnoreCase("Unreleased")) {
+            obj.setUnreleased_trx(obj.getUnreleased_trx() + 1);
+            obj.setUnreleased_amount(obj.getUnreleased_amount() + Integer.valueOf(a));
+        }
+    }
+
+    private void setSummarytoView(SummaryReportFeeModel obj) {
+        sumTotalTrx.setText(String.valueOf(obj.getTotal_transaction()));
+        sumUnrelTrx.setText(String.valueOf(obj.getUnreleased_trx()));
+        sumUnrelAmount.setText(CurrencyFormat.format(String.valueOf(obj.getUnreleased_amount())));
+        sumRelTrx.setText(String.valueOf(obj.getReleased_trx()));
+        sumRelAmount.setText(CurrencyFormat.format(String.valueOf(obj.getReleased_amount())));
+
+        layout_summary.setVisibility(View.VISIBLE);
     }
 
     private void NotifyDataChange() {

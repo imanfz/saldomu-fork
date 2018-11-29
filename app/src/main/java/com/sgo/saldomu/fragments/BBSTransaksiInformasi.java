@@ -933,7 +933,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     else
                                         changeToConfirmCashIn(A2CModel);
                                 } else {
-                                    changeToConfirmCashout(model);
+                                    changeToConfirmCashout(model, A2CModel.getTx_product_code());
                                 }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -1150,11 +1150,11 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         editor.apply();
     }
 
-    private void changeToConfirmCashout(BBSTransModel model) {
+    private void changeToConfirmCashout(BBSTransModel model, String productcode) {
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.PRODUCT_H2H, source_product_h2h);
         mArgs.putString(DefineValue.PRODUCT_TYPE, source_product_type);
-        mArgs.putString(DefineValue.PRODUCT_CODE, model.getTx_product_code());
+        mArgs.putString(DefineValue.PRODUCT_CODE, productcode);
         mArgs.putString(DefineValue.BANK_CODE, model.getTx_bank_code());
         mArgs.putString(DefineValue.BANK_NAME, model.getTx_bank_name());
         mArgs.putString(DefineValue.PRODUCT_NAME, model.getTx_product_name());

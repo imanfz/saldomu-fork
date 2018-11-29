@@ -36,6 +36,7 @@ import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
+import com.sgo.saldomu.widgets.BlinkingEffectClass;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
 
 import org.json.JSONArray;
@@ -344,18 +345,22 @@ public class UpgradeAgentActivity extends BaseActivity {
                 case SIUP_TYPE :
                     GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file,cameraSIUP);
                     siup = file;
-                    uploadFileToServer(siup, SIUP_TYPE);
+                    uploadFileToServer(type, siup, SIUP_TYPE);
+                    pbSIUP.setProgress(0);
                     break;
                 case NPWP_TYPE :
                     GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file,cameraNPWP);
                     npwp = file;
-                    uploadFileToServer(npwp, NPWP_TYPE);
+                    uploadFileToServer(type, npwp, NPWP_TYPE);
+                    pbNPWP.setProgress(0);
                     break;
             }
         }
     }
 
-    private void uploadFileToServer(File photoFile, final int flag) {
+    private void uploadFileToServer(int type, File photoFile, final int flag) {
+        int _type = type;
+
         pbSIUP.setVisibility(View.VISIBLE);
         pbNPWP.setVisibility(View.VISIBLE);
         tv_pb_siup.setVisibility(View.VISIBLE);
@@ -372,7 +377,15 @@ public class UpgradeAgentActivity extends BaseActivity {
                 new ProgressRequestBody.UploadCallbacks() {
                     @Override
                     public void onProgressUpdate(int percentage) {
-                        pbSIUP.setProgress(percentage);
+                        switch (_type){
+                            case SIUP_TYPE :
+                                pbSIUP.setProgress(percentage);
+                                break;
+                            case NPWP_TYPE :
+                                pbNPWP.setProgress(percentage);
+                                break;
+                        }
+
                     }
                 });
 //                RequestBody.create(MediaType.parse("image/*"), photoFile);
@@ -404,6 +417,16 @@ public class UpgradeAgentActivity extends BaseActivity {
                         String error_code = model.getError_code();
                         String error_message = model.getError_message();
                         if (error_code.equalsIgnoreCase("0000")) {
+                            switch (_type){
+                                case SIUP_TYPE :
+                                    pbSIUP.setProgress(100);
+                                    BlinkingEffectClass.blink(layout_siup);
+                                    break;
+                                case NPWP_TYPE :
+                                    pbNPWP.setProgress(100);
+                                    BlinkingEffectClass.blink(layout_npwp);
+                                    break;
+                            }
 
                         } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
