@@ -1272,4 +1272,7 @@
     <string name="max_partial">Maks. Partial</string>
     <string name="edithint_otp">Masukan kode token</string>
     <string name="token_code">Kode Token</string>
+    <string name="alert">unable to get content from server</string>
+    <string name="detail">Detail</string>
+    <string name="otp">OTP</string>
 </resources>
