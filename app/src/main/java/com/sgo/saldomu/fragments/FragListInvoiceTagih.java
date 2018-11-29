@@ -45,7 +45,6 @@ import java.util.ArrayList;
 
 public class FragListInvoiceTagih extends BaseFragment {
     View view;
-    public static ArrayList<InvoiceDGI> listInovice = new ArrayList<>();
     SecurePreferences sp;
     String response;
 

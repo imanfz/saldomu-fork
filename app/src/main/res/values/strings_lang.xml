@@ -1255,8 +1255,21 @@
     <string name="mitra">Mitra</string>
     <string name="error_input_tagih">Kode Toko dibutuhkan!</string>
     <string name="invoice_dgi_search">Cari Invoice</string>
+    <string name="invoice_dgi_payment">Bayar Invoice</string>
     <string name="payment_type">Tipe Pembayaran</string>
     <string name="reset">Reset</string>
     <string name="checkout">Check Out</string>
 
+    <string name="preview_bank_name">Nama Bank</string>
+    <string name="preview_bank_product">Produk Bank</string>
+    <string name="preview_amount">Jumlah</string>
+    <string name="preview_admin_fee">Biaya Admin</string>
+    <string name="preview_total_amount">Total Amount</string>
+    <string name="preview_tx_id">ID Transaksi</string>
+    <string name="preview_comm_name">Nama Community</string>
+    <string name="preview_input_amount">Jumlah yang dibayar</string>
+    <string name="preview_input_amount_hint">Masukan jumlah yang dibayar</string>
+    <string name="max_partial">Maks. Partial</string>
+    <string name="edithint_otp">Masukan kode token</string>
+    <string name="token_code">Kode Token</string>
 </resources>

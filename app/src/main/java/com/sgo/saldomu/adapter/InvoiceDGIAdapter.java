@@ -75,7 +75,7 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
             holder.tvInputremainAmount.setVisibility(View.GONE);
         }else {
             holder.tvInputremainAmount.setVisibility(View.VISIBLE);
-            holder.tvInputremainAmount.setText(invoiceDGIModelArrayList.get(position).getInput_amount());
+            holder.tvInputremainAmount.setText("Bayar : " +invoiceDGIModelArrayList.get(position).getInput_amount());
         }
         holder.view.setVisibility(View.VISIBLE);
 
@@ -98,7 +98,6 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
     }
 
     @Override
-    public Filter getFilter() {
-        return null;
+    public Filter getFilter() {return null;
     }
 }
