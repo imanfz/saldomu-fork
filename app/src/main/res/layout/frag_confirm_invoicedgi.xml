@@ -1,0 +1,243 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/background">
+
+    <ListView
+        android:id="@+id/listMenu"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tabel_footer"
+        android:layout_below="@+id/label_header"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@color/background"
+        android:dividerHeight="1dp"
+        android:fadeScrollbars="true"
+        android:fastScrollEnabled="true"
+        android:listSelector="@android:color/transparent"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/prgLoading"
+        style="@android:style/Widget.ProgressBar.Inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tabel_footer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="47dp" />
+
+    <TextView
+        android:id="@+id/txtAlert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/alert"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <TextView
+
+        android:id="@+id/txtAlertttt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/prgLoading"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="Invoice Kosong"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <TextView
+
+        android:id="@+id/label_header"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="15.0dip"
+        android:layout_marginTop="12.0dip"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:text="sfs"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <TableLayout
+        android:id="@+id/tabel_footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:stretchColumns="2">
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent">
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="fill_parent"
+                android:layout_height="1.0dip"
+                android:background="@color/grey_200" />
+
+            <Button
+                android:id="@+id/btn_desc"
+                style="@style/ButtonYellow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:text="@string/detail"
+                android:textSize="14sp" />
+        </TableRow>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1.0dip"
+            android:background="@color/grey_200" />
+
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextOnForm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="1.0dip"
+                android:layout_marginTop="1.0dip"
+                android:paddingRight="20.0dip"
+                android:text="Total" />
+
+            <View
+                style="@style/VerticalLine"
+                android:layout_width="1.0dip"
+                android:layout_height="50.0dip"
+                android:layout_marginBottom="1.0dip"
+                android:layout_marginTop="1.0dip" />
+
+            <TextView
+                android:id="@+id/lbl_total_pay_amount"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center"
+                android:layout_marginBottom="8.0dip"
+                android:layout_marginLeft="8.0dip"
+                android:layout_marginTop="12.0dip"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="14.0sp" />
+        </TableRow>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1.0dip"
+            android:background="@color/grey_200" />
+
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="3.0dip"
+                android:layout_marginBottom="1.0dip"
+                android:layout_marginTop="1.0dip"
+                android:layout_span="1"
+                android:src="@drawable/ic_kata_rahasia" />
+
+            <View
+                android:layout_width="1.0dip"
+                android:layout_height="50.0dip"
+                android:layout_marginBottom="1.0dip"
+                android:layout_marginTop="1.0dip"
+                android:layout_span="1"
+                android:background="@color/grey_200" />
+
+            <EditText
+                android:id="@+id/txtOtp"
+                style="@style/EditTextOnForm"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:hint="@string/otp"
+                android:inputType="textPassword"
+                android:maxLength="12"
+                android:textColor="@color/black" />
+        </TableRow>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1.0dip"
+            android:layout_marginLeft="8.0dip"
+            android:layout_marginRight="8.0dip"
+            android:background="@color/grey_200" />
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="75dp"
+            android:layout_marginTop="20.0dip"
+            android:gravity="bottom|center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@id/btnCancel"
+                style="@style/ButtonYellow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8.0dip"
+                android:layout_marginLeft="16.0dip"
+                android:layout_marginRight="4.0dip"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:text="Batal"
+                android:textColor="#ff333333" />
+
+            <Button
+                android:id="@+id/btnResend"
+                style="@style/ButtonYellow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8.0dip"
+                android:layout_marginLeft="10.0dip"
+                android:layout_marginRight="3.0dip"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:text="Re-send OTP"
+                android:textColor="#ff333333" />
+
+            <Button
+                android:id="@id/btnDone"
+                style="@style/ButtonYellow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8.0dip"
+                android:layout_marginLeft="4.0dip"
+                android:layout_marginRight="16.0dip"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:text="Konfirm OTP"
+                android:textColor="#ff333333" />
+        </LinearLayout>
+
+    </TableLayout>
+
+</RelativeLayout>
