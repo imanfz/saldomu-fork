@@ -163,6 +163,11 @@ public class FragTagihInput extends BaseFragment {
 
             }
         });
+
+        SecurePreferences.Editor mEditor = sp.edit();
+        mEditor.putString(DefineValue.COMM_CODE_DGI, commCodeTagih);
+        mEditor.apply();
+
     }
 
     public Boolean inputValidation() {

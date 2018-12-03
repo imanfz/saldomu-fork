@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:background="@color/background">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/listMenu"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -17,15 +17,6 @@
         android:fastScrollEnabled="true"
         android:listSelector="@android:color/transparent"
         android:visibility="gone" />
-
-    <ProgressBar
-        android:id="@+id/prgLoading"
-        style="@android:style/Widget.ProgressBar.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/tabel_footer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="47dp" />
 
     <TextView
         android:id="@+id/txtAlert"
@@ -174,7 +165,6 @@
 
             <EditText
                 android:id="@+id/txtOtp"
-                style="@style/EditTextOnForm"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:hint="@string/otp"

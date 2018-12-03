@@ -319,6 +319,7 @@
     <string name="biller_empty_data">Data tidak tersedia</string>
 
     <string name="biller_name">Nama</string>
+    <string name="mitra_name">Nama Mitra</string>
     <string name="billerinput_text_month">Bulan</string>
     <string name="billerinput_text_denom" translatable="false">Denom Retail</string>
     <string name="billerinput_text_dest_remark">Keterangan Tujuan</string>
@@ -455,6 +456,7 @@
     <string name="friend_profile">Profil Teman</string>
     <string name="socialbanking_id" translatable="false">socialbanking ID : </string>
     <string name="phone_number">Nomor Handphone : </string>
+    <string name="phone">Nomor Handphone </string>
     <string name="email" translatable="false">email : </string>
     <string name="submit">Proses</string>
     <string name="request_money">Minta Sekarang</string>

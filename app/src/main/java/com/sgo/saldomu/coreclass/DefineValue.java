@@ -546,6 +546,7 @@ public class DefineValue {
     public static String DGI = "DGI";
     public static String MOBILE_PHONE = "mobile_phone";
     public static String RESPONSE = "mobile_phone";
+    public static String COMM_CODE_DGI = "comm_code_dgi";
 
 }
 
