@@ -1,28 +1,20 @@
 package com.sgo.saldomu.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.CurrencyFormat;
-import com.sgo.saldomu.dialogs.InputAmountTagihBillerDialog;
-import com.sgo.saldomu.fragments.FragListInvoiceTagih;
 import com.sgo.saldomu.models.InvoiceDGI;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.ViewHolder> implements Filterable {
     private ArrayList<InvoiceDGI> invoiceDGIModelArrayList;
@@ -67,11 +59,14 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull InvoiceDGIAdapter.ViewHolder holder, final int position) {
+
+        InvoiceDGI obj = invoiceDGIModelArrayList.get(position);
+
         holder.tvinvoiceNo.setText("INVOICE " +invoiceDGIModelArrayList.get(position).getDoc_no());
         holder.tvremainAmount.setText("Sisa : " +invoiceDGIModelArrayList.get(position).getRemain_amount());
         holder.tvdueDate.setText("Due date : " +invoiceDGIModelArrayList.get(position).getDue_date());
 
-        if (invoiceDGIModelArrayList.get(position).getInput_amount().equalsIgnoreCase("0")){
+        if (obj.getInput_amount().equalsIgnoreCase("0") || obj.getInput_amount().equalsIgnoreCase("")){
             holder.tvInputremainAmount.setVisibility(View.GONE);
         }else {
             holder.tvInputremainAmount.setVisibility(View.VISIBLE);

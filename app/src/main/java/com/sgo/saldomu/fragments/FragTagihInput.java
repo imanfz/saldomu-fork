@@ -1,6 +1,5 @@
 package com.sgo.saldomu.fragments;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,28 +19,19 @@ import com.activeandroid.util.Log;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.Beans.TagihCommunityModel;
 import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.JoinCommunitySCADMActivity;
-import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.TagihActivity;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
-import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.models.MobilePhoneModel;
-import com.sgo.saldomu.models.PaymentTypeDGIModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -207,6 +197,8 @@ public class FragTagihInput extends BaseFragment {
                         String responseListInvoice = response.toString();
                         Fragment newFrag = new FragListInvoiceTagih();
                         Bundle bundle = new Bundle();
+                        bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
+                        bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
                         bundle.putString(DefineValue.RESPONSE, responseListInvoice);
                         newFrag.setArguments(bundle);
                         if(getActivity() == null){
