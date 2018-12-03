@@ -523,6 +523,7 @@ public class WebParams {
     public static String MOBILE_PHONE = "mobile_phone";
     public static String PHONE_DATA = "phone_data";
     public static String INVOICE_DATA = "invoice_data";
+    public static String INVOICE = "invoice";
     public static String FEE_DATA = "fee_data";
     public static String PAYMENT_TYPE = "payment_type";
     public static String PAYMENT_CODE = "payment_code";
@@ -537,5 +538,8 @@ public class WebParams {
     public static String DUE_DATE = "due_date";
     public static String CCY = "ccy";
 
+    public static String SALES_ID = "sales_id";
+    public static String SOURCE_ACCT_BANK = "source_acct_bank";
+    public static String PHONE_NO = "phone_no";
 
 }
