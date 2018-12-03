@@ -267,6 +267,7 @@ public class MyApiClient {
     public static String LINK_BBS_MANDIRI_LKD;
     public static String LINK_CANCEL_TRANSACTION_DGI;
     public static String LINK_LIST_INVOICE_DGI;
+    public static String LINK_REQ_TOKEN_INVOICE_DGI;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -434,6 +435,7 @@ public class MyApiClient {
         LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
 
         LINK_LIST_INVOICE_DGI = headaddressfinal +"invoice/Listinv/Retrieve";
+        LINK_REQ_TOKEN_INVOICE_DGI = headaddressfinal +"invoice/ReqToken/Retrieve";
         LINK_CANCEL_TRANSACTION_DGI = headaddressfinal + "invoice/Canceltrx/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
@@ -1630,6 +1632,11 @@ public class MyApiClient {
     public static void inputDataDGI (Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address list invoice DGI: %1$s ",LINK_LIST_INVOICE_DGI);
         post(mContext, LINK_LIST_INVOICE_DGI, params, responseHandler);
+    }
+
+    public static void reqTokenInvDGI (Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address list invoice DGI: %1$s ",LINK_REQ_TOKEN_INVOICE_DGI);
+        post(mContext, LINK_REQ_TOKEN_INVOICE_DGI, params, responseHandler);
     }
 
     public static void getBBSBirthPlace(Context mContext, Boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {

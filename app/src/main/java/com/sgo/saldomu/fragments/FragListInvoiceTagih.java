@@ -10,38 +10,45 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.bank_biller_model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.InvoiceDGIAdapter;
-import com.sgo.saldomu.adapter.ListJoinSCADMAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DividerItemDecoration;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.InputAmountTagihBillerDialog;
+import com.sgo.saldomu.dialogs.PaymentRemarkDialog;
 import com.sgo.saldomu.models.FeeDGIModel;
 import com.sgo.saldomu.models.InvoiceDGI;
 import com.sgo.saldomu.models.MobilePhoneModel;
 import com.sgo.saldomu.models.PaymentTypeDGIModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import timber.log.Timber;
 
 public class FragListInvoiceTagih extends BaseFragment {
     View view;
@@ -65,17 +72,19 @@ public class FragListInvoiceTagih extends BaseFragment {
     String mobile_phone, paymentCode, paymentName, ccy_id, buyer_fee, seller_fee, commission_fee, min_amount, max_amount;
     String callback_url, paymentMethod, buss_scheme_code, doc_no, doc_id, remain_amount, amount, due_date;
     private ArrayList<MobilePhoneModel> mobilePhoneModelArrayList = new ArrayList<>();
-    private ArrayList<bank_biller_model> bankBillerModelArrayList = new ArrayList<bank_biller_model>();
+    private ArrayList<bank_biller_model> bankBillerModelArrayList = new ArrayList<>();
     private ArrayList<PaymentTypeDGIModel> paymentTypeDGIModelArrayList = new ArrayList<>();
     private ArrayList<PaymentTypeDGIModel> paymentMethodDGIModelArrayList = new ArrayList<>();
-    private ArrayList<FeeDGIModel> feeDGIModelArrayList = new ArrayList<FeeDGIModel>();
-    private ArrayList<InvoiceDGI> invoiceDGIModelArrayList = new ArrayList<InvoiceDGI>();
+    private ArrayList<FeeDGIModel> feeDGIModelArrayList = new ArrayList<>();
+    private ArrayList<InvoiceDGI> invoiceDGIModelArrayList = new ArrayList<>();
     private ArrayAdapter<String> mobilePhoneAdapter;
     private ArrayAdapter<String> paymentTypeAdapter;
     private ArrayAdapter<String> paymentMethodAdapter;
     ArrayList<String> mobilePhoneArr = new ArrayList<>();
     ArrayList<String> paymentTypeArr = new ArrayList<>();
     ArrayList<String> paymentMethodArr = new ArrayList<>();
+
+    String partialPayment, memberCode, commCodeTagih, paymentRemark;
 
     InvoiceDGIAdapter invoiceDGIAdapter;
 
@@ -94,6 +103,8 @@ public class FragListInvoiceTagih extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             response = bundle.getString(DefineValue.RESPONSE, "");
+            memberCode = bundle.getString(DefineValue.MEMBER_CODE, "");
+            commCodeTagih = bundle.getString(DefineValue.COMMUNITY_CODE, "");
         }
 
         txtAlert = view.findViewById(R.id.txtAlert);
@@ -143,6 +154,24 @@ public class FragListInvoiceTagih extends BaseFragment {
             }
         });
 
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lbl_total_pay_amount.getText().toString().equalsIgnoreCase("0")){
+                    Toast.makeText(getActivity(), "Tidak ada invoice yang dibayarkan", Toast.LENGTH_SHORT).show();
+                }else {
+                    PaymentRemarkDialog dialog = PaymentRemarkDialog.newDialog(new PaymentRemarkDialog.onTap() {
+                        @Override
+                        public void onOK(String msg) {
+                            paymentRemark = msg;
+                            checkOutPayment(msg);
+                        }
+                    });
+                    dialog.show(getFragmentManager(), "paymentremark dialog");
+                }
+            }
+        });
+
         parseResponse();
     }
 
@@ -160,23 +189,58 @@ public class FragListInvoiceTagih extends BaseFragment {
                 false, false));
     }
 
-    void showInputDialog(int pos){
-        InputAmountTagihBillerDialog dialog = InputAmountTagihBillerDialog.newDialog(pos, invoiceDGIModelArrayList.get(pos),
+    void showInputDialog(int pos) {
+        InputAmountTagihBillerDialog dialog = InputAmountTagihBillerDialog.newDialog(pos, invoiceDGIModelArrayList.get(pos), partialPayment,
                 new InputAmountTagihBillerDialog.OnTap() {
                     @Override
                     public void onTap(int pos, String value) {
                         invoiceDGIModelArrayList.get(pos).setInput_amount(value);
                         invoiceDGIAdapter.notifyItemChanged(pos);
+
+                        countTotalPrice();
                     }
                 });
 
         dialog.show(getFragmentManager(), "input dialog");
     }
 
+    void countTotalPrice() {
+        int total = 0;
+        for (InvoiceDGI obj : invoiceDGIModelArrayList
+                ) {
+            if (Integer.valueOf(obj.getInput_amount()) != 0) {
+                total += Integer.valueOf(obj.getInput_amount());
+            }
+        }
+
+        lbl_total_pay_amount.setText(String.valueOf(total));
+    }
+
+    JSONArray getInv() {
+        JSONArray jsonArray = new JSONArray();
+        try {
+            for (InvoiceDGI obj : invoiceDGIModelArrayList
+                    ) {
+                if (Integer.valueOf(obj.getInput_amount()) != 0) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("doc_id", obj.getDoc_id());
+                    jsonObject.put("amount", obj.getInput_amount());
+                    jsonArray.put(jsonObject);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonArray;
+    }
+
     public void parseResponse() {
 
         try {
             JSONObject obj = new JSONObject(response);
+
+            partialPayment = obj.optString("partial_payment", "");
 
             JSONArray mArrayPaymentMethod = new JSONArray(obj.optString(WebParams.BANK, ""));
 
@@ -226,6 +290,18 @@ public class FragListInvoiceTagih extends BaseFragment {
             paymentTypeAdapter = new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, paymentTypeArr);
             sp_payment_type.setAdapter(paymentTypeAdapter);
 
+            sp_payment_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
             initializePaymentType();
 
             JSONArray mArrayFee = new JSONArray(obj.optString(WebParams.FEE_DATA));
@@ -272,6 +348,7 @@ public class FragListInvoiceTagih extends BaseFragment {
                 invoiceDGI.setDue_date(due_date);
                 invoiceDGI.setCcy(ccy_id);
 
+
                 invoiceDGIModelArrayList.add(invoiceDGI);
             }
             invoiceDGIAdapter.updateData(invoiceDGIModelArrayList);
@@ -317,5 +394,81 @@ public class FragListInvoiceTagih extends BaseFragment {
         }
 
         paymentMethodAdapter.notifyDataSetChanged();
+    }
+
+    void checkOutPayment(String remark) {
+        showProgressDialog();
+
+        String phone_no = mobilePhoneArr.get(sp_phone_number.getSelectedItemPosition());
+
+        String extraSignature = memberCode + commIDLogin + phone_no;
+        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_REQ_TOKEN_INVOICE_DGI,
+                userPhoneID, accessKey, extraSignature);
+
+//        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+        params.put(WebParams.MEMBER_CODE, memberCode);
+        params.put(WebParams.COMM_CODE, commCodeTagih);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.SALES_ID, userPhoneID);
+        params.put(WebParams.CCY_ID, "IDR");
+        params.put(WebParams.BUYER_FEE, feeDGIModelArrayList.get(0).getBuyer_fee());
+        params.put(WebParams.COMMISSION_FEE, feeDGIModelArrayList.get(0).getCommission_fee());
+        params.put(WebParams.PAYMENT_TYPE, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_code());
+        params.put(WebParams.PAYMENT_REMARK, remark);
+        params.put(WebParams.SOURCE_ACCT_BANK, "");
+        params.put(WebParams.PHONE_NO, phone_no);
+        params.put(WebParams.BANK_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getBank_code());
+        params.put(WebParams.PRODUCT_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getProduct_code());
+        params.put(WebParams.INVOICE, getInv());
+
+        Timber.d("params list invoice DGI : " + params.toString());
+
+        MyApiClient.reqTokenInvDGI(getActivity(), params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+
+                    String code = response.getString(WebParams.ERROR_CODE);
+                    String error_message = response.getString(WebParams.ERROR_MESSAGE);
+                    Timber.d("response list invoice DGI : " + response.toString());
+                    if (code.equals(WebParams.SUCCESS_CODE)) {
+
+
+                    } else {
+                        Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG);
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    dismissProgressDialog();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                ifFailure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                ifFailure(throwable);
+            }
+
+            private void ifFailure(Throwable throwable) {
+                if (MyApiClient.PROD_FAILURE_FLAG)
+                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                Timber.w("Error list invoice DGI : " + throwable.toString());
+
+                dismissProgressDialog();
+            }
+
+        });
     }
 }
