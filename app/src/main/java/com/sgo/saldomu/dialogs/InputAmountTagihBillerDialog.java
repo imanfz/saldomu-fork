@@ -110,12 +110,12 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkInput()) {
-                    String input = inpAmount.getText().toString().trim();
+                String input = inpAmount.getText().toString().trim();
 
-                    if (input.equalsIgnoreCase(""))
-                        input = "0";
+                if (input.equalsIgnoreCase(""))
+                    input = "0";
 
+                if (checkInput(input)) {
                     listener.onTap(pos, input);
 
                     dismiss();
@@ -131,8 +131,8 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
         });
     }
 
-    boolean checkInput(){
-        return Integer.valueOf(inpAmount.getText().toString()) <= Integer.valueOf(lbl_remain_amount.getText().toString());
+    boolean checkInput(String input){
+        return Integer.valueOf(input) <= Integer.valueOf(lbl_remain_amount.getText().toString());
     }
 
     void showInvoiceAmount(){
