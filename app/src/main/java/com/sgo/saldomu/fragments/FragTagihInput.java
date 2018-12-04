@@ -24,6 +24,7 @@ import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TagihActivity;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
@@ -66,6 +67,7 @@ public class FragTagihInput extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        sp = CustomSecurePref.getInstance().getSecurePrefsInstance();
         initiatizeView();
 
         InitializeData();
@@ -154,9 +156,7 @@ public class FragTagihInput extends BaseFragment {
             }
         });
 
-        SecurePreferences.Editor mEditor = sp.edit();
-        mEditor.putString(DefineValue.COMM_CODE_DGI, commCodeTagih);
-        mEditor.apply();
+
 
     }
 
@@ -170,10 +170,7 @@ public class FragTagihInput extends BaseFragment {
     }
 
     public void sendDataTagih() {
-        if (progdialog == null)
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-        else
-            progdialog.show();
+        showProgressDialog();
 
         String extraSignature = commCodeTagih + et_memberCode.getText().toString();
         RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_LIST_INVOICE_DGI,
@@ -191,8 +188,7 @@ public class FragTagihInput extends BaseFragment {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                 try {
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
+                    dismissProgressDialog();
 
                     String code = response.getString(WebParams.ERROR_CODE);
                     String error_message = response.getString(WebParams.ERROR_MESSAGE);
@@ -205,6 +201,11 @@ public class FragTagihInput extends BaseFragment {
                         bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
                         bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
                         bundle.putString(DefineValue.RESPONSE, responseListInvoice);
+
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.COMM_CODE_DGI, response.getString(WebParams.COMM_CODE_DGI));
+                        mEditor.apply();
+
                         newFrag.setArguments(bundle);
                         if(getActivity() == null){
                             return;

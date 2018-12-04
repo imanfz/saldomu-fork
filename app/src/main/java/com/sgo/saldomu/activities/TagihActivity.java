@@ -102,6 +102,10 @@ public class TagihActivity extends BaseActivity {
         setActionBarTitle(fragName);
     }
 
+    public void setResultActivity(int result){
+        setResult(MainPage.RESULT_BALANCE);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

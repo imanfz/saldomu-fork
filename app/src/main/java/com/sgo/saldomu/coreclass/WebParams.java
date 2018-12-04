@@ -526,6 +526,7 @@ public class WebParams {
     public static String INVOICE = "invoice";
     public static String FEE_DATA = "fee_data";
     public static String PAYMENT_TYPE = "payment_type";
+    public static String PAYMENT_TYPE_DESC = "payment_type_desc";
     public static String PAYMENT_CODE = "payment_code";
     public static String BUYER_FEE = "buyer_fee";
     public static String SELLER_FEE = "seller_fee";
@@ -541,5 +542,10 @@ public class WebParams {
     public static String SALES_ID = "sales_id";
     public static String SOURCE_ACCT_BANK = "source_acct_bank";
     public static String PHONE_NO = "phone_no";
+    public static String KODE_OTP = "kode_otp";
+    public static String COMM_CODE_DGI = "comm_code_dgi";
+    public static String DGI_MEMBER_NAME= "dgi_member_name";
+    public static String DGI_ANCHOR_NAME= "dgi_anchor_name";
+    public static String DGI_COMM_NAME= "dgi_comm_name";
 
 }

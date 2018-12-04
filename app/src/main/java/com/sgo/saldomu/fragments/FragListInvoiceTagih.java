@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -27,10 +28,12 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.bank_biller_model;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.adapter.InvoiceDGIAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DividerItemDecoration;
+import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.InputAmountTagihBillerDialog;
@@ -47,6 +50,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -65,12 +69,12 @@ public class FragListInvoiceTagih extends BaseFragment {
     TextView lbl_total_pay_amount;
     RelativeLayout contentLayout;
     Button btnDone;
-    Button btnCancel;
+    Button btnReset;
     Button btnBack;
     private AutoCompleteTextView search;
     Spinner sp_payment_type, sp_phone_number, sp_payment_method;
     String mobile_phone, paymentCode, paymentName, ccy_id, buyer_fee, seller_fee, commission_fee, min_amount, max_amount;
-    String callback_url, paymentMethod, buss_scheme_code, doc_no, doc_id, remain_amount, amount, due_date;
+    String callback_url, paymentMethod, buss_scheme_code, doc_no, doc_id, remain_amount, amount, due_date, bank_code;
     private ArrayList<MobilePhoneModel> mobilePhoneModelArrayList = new ArrayList<>();
     private ArrayList<bank_biller_model> bankBillerModelArrayList = new ArrayList<>();
     private ArrayList<PaymentTypeDGIModel> paymentTypeDGIModelArrayList = new ArrayList<>();
@@ -88,6 +92,10 @@ public class FragListInvoiceTagih extends BaseFragment {
 
     InvoiceDGIAdapter invoiceDGIAdapter;
 
+    Bundle bundle1 = new Bundle();
+
+    int total;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,7 +108,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        Bundle bundle = getArguments();
+        final Bundle bundle = getArguments();
         if (bundle != null) {
             response = bundle.getString(DefineValue.RESPONSE, "");
             memberCode = bundle.getString(DefineValue.MEMBER_CODE, "");
@@ -116,7 +124,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         lbl_total_pay_amount = view.findViewById(R.id.lbl_total_pay_amount);
 
         btnDone = view.findViewById(R.id.btn_done);
-        btnCancel = view.findViewById(R.id.btnCancel);
+        btnReset = view.findViewById(R.id.btnReset);
         btnBack = view.findViewById(R.id.btn_back);
         sp_payment_type = view.findViewById(R.id.cbo_payment_type);
         sp_payment_method = view.findViewById(R.id.sp_metode_pembayaran);
@@ -138,7 +146,7 @@ public class FragListInvoiceTagih extends BaseFragment {
                 if (charSequence.equals("")) {
 
                 } else {
-                    invoiceDGIAdapter.getFilter().filter(charSequence);
+//                    invoiceDGIAdapter.getFilter().filter(charSequence);
                 }
             }
 
@@ -154,6 +162,13 @@ public class FragListInvoiceTagih extends BaseFragment {
             }
         });
 
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetData();
+            }
+        });
+
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,6 +180,7 @@ public class FragListInvoiceTagih extends BaseFragment {
                         public void onOK(String msg) {
                             paymentRemark = msg;
                             checkOutPayment(msg);
+                            bundle.putString(DefineValue.REMARK, paymentRemark);
                         }
                     });
                     dialog.show(getFragmentManager(), "paymentremark dialog");
@@ -198,6 +214,9 @@ public class FragListInvoiceTagih extends BaseFragment {
                         invoiceDGIAdapter.notifyItemChanged(pos);
 
                         countTotalPrice();
+
+                        bundle1.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(total));
+
                     }
                 });
 
@@ -205,7 +224,7 @@ public class FragListInvoiceTagih extends BaseFragment {
     }
 
     void countTotalPrice() {
-        int total = 0;
+        total = 0;
         for (InvoiceDGI obj : invoiceDGIModelArrayList
                 ) {
             if (Integer.valueOf(obj.getInput_amount()) != 0) {
@@ -216,7 +235,19 @@ public class FragListInvoiceTagih extends BaseFragment {
         lbl_total_pay_amount.setText(String.valueOf(total));
     }
 
-    JSONArray getInv() {
+    void resetData()
+    {
+        for (InvoiceDGI obj: invoiceDGIModelArrayList
+             ) {
+            obj.setInput_amount("0");
+        }
+
+        invoiceDGIAdapter.notifyDataSetChanged();
+
+        countTotalPrice();
+    }
+
+    JSONArray getInv(List<InvoiceDGI> temp) {
         JSONArray jsonArray = new JSONArray();
         try {
             for (InvoiceDGI obj : invoiceDGIModelArrayList
@@ -226,6 +257,7 @@ public class FragListInvoiceTagih extends BaseFragment {
                     jsonObject.put("doc_id", obj.getDoc_id());
                     jsonObject.put("amount", obj.getInput_amount());
                     jsonArray.put(jsonObject);
+                    temp.add(obj);
                 }
             }
         } catch (JSONException e) {
@@ -246,9 +278,11 @@ public class FragListInvoiceTagih extends BaseFragment {
 
             for (int i = 0; i < mArrayPaymentMethod.length(); i++) {
                 paymentMethod = mArrayPaymentMethod.getJSONObject(i).getString(WebParams.PRODUCT_CODE);
+                bank_code = mArrayPaymentMethod.getJSONObject(i).getString(WebParams.BANK_CODE);
 
                 bank_biller_model bankBillerModel = new bank_biller_model();
                 bankBillerModel.setProduct_code(paymentMethod);
+                bankBillerModel.setBank_code(bank_code);
 
                 bankBillerModelArrayList.add(bankBillerModel);
             }
@@ -397,12 +431,15 @@ public class FragListInvoiceTagih extends BaseFragment {
     }
 
     void checkOutPayment(String remark) {
-        showProgressDialog();
 
         String phone_no = mobilePhoneArr.get(sp_phone_number.getSelectedItemPosition());
 
-        String extraSignature = memberCode + commIDLogin + phone_no;
-        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_REQ_TOKEN_INVOICE_DGI,
+        List<InvoiceDGI> temp = new ArrayList<>();
+
+        JSONArray invoiceList = getInv(temp);
+
+        String extraSignature = memberCode + commCodeTagih + phone_no;
+        final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_REQ_TOKEN_INVOICE_DGI,
                 userPhoneID, accessKey, extraSignature);
 
 //        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
@@ -419,56 +456,24 @@ public class FragListInvoiceTagih extends BaseFragment {
         params.put(WebParams.PHONE_NO, phone_no);
         params.put(WebParams.BANK_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getBank_code());
         params.put(WebParams.PRODUCT_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getProduct_code());
-        params.put(WebParams.INVOICE, getInv());
+        params.put(WebParams.INVOICE, invoiceList);
 
         Timber.d("params list invoice DGI : " + params.toString());
 
-        MyApiClient.reqTokenInvDGI(getActivity(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
+        DataManager.getInstance().setListInvoice(temp);
+        DataManager.getInstance().setInvoiceParam(params);
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                    Timber.d("response list invoice DGI : " + response.toString());
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+        Fragment newFrag = new FragInvoiceDGIConfirm();
+        bundle1.putString(DefineValue.PAYMENT_TYPE, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_code());
+        bundle1.putString(DefineValue.CCY_ID, ccy_id);
+        bundle1.putString(DefineValue.PRODUCT_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getProduct_code());
+        newFrag.setArguments(bundle1);
+        if(getActivity() == null){
+            return;
+        }
+        TagihActivity ftf = (TagihActivity) getActivity();
+        ftf.switchContent(newFrag,"Konfirmasi",true);
 
 
-                    } else {
-                        Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG);
-                    }
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    dismissProgressDialog();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error list invoice DGI : " + throwable.toString());
-
-                dismissProgressDialog();
-            }
-
-        });
     }
 }
