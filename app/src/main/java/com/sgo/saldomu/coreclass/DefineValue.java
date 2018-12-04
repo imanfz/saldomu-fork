@@ -544,8 +544,16 @@ public class DefineValue {
     public static String QR_TYPE_FROM_DEFAULT_ACCOUNT = "QR_TYPE_FROM_DEFAULT_ACCOUNT";
     public static String QR_OBJ = "QR_OBJ";
     public static String DGI = "DGI";
+    public static String DGI_MEMBER_NAME= "dgi_member_name";
+    public static String DGI_ANCHOR_NAME= "dgi_anchor_name";
+    public static String DGI_COMM_NAME= "dgi_comm_name";
     public static String MOBILE_PHONE = "mobile_phone";
     public static String RESPONSE = "mobile_phone";
+    public static String COMM_CODE_DGI = "comm_code_dgi";
+    public static String PARAMS = "params";
+    public static String PAYMENT_TYPE = "payment_type";
+    public static String PAYMENT_TYPE_DESC= "payment_type_desc";
+    public static String INVOICE = "invoice";
 
 }
 

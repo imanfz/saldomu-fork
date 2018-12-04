@@ -24,6 +24,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.interfaces.OnLoadDataListeners;
 import com.sgo.saldomu.services.BalanceService;
 
 import org.apache.http.Header;
@@ -180,6 +181,74 @@ public class UtilsLoader {
                             int failed = response.optInt(WebParams.MAX_FAILED,0);
                             if(attempt != -1)
                                 mListener.onSuccess(failed-attempt);
+                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginMain(getmActivity(), message);
+                        } else {
+                            code = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
+                            Bundle bundle = new Bundle();
+                            bundle.putString(DefineValue.ERROR,code);
+                            bundle.putString(DefineValue.ERROR_CODE,response.getString(WebParams.ERROR_CODE));
+                            mListener.onFail(bundle);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable) {
+                    Timber.w("Error Koneksi get PIN attempt Loader:" + throwable.toString());
+                    mListener.onFailure(throwable.toString());
+                }
+            });
+
+        }catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
+        }
+    }
+
+    public void getFailedPIN_(String user_id , final OnLoadDataListeners mListener){
+        try{
+            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_GET_FAILED_PIN,
+                    user_id, sp.getString(DefineValue.ACCESS_KEY,""));
+            params.put(WebParams.USER_ID, user_id);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+
+            Timber.d("isi params get FailedPin Loader:" + params.toString());
+
+            MyApiClient.sentGetFailedPIN(getmActivity(), params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        Timber.d("Isi response getFailedPin Loader:" + response.toString());
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            int attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
+                            int failed = response.optInt(WebParams.MAX_FAILED,0);
+                            if(attempt != -1)
+                                mListener.onSuccess(attempt, failed);
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();

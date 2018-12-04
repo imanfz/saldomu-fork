@@ -94,6 +94,7 @@ public class MyApiClient {
     public static final String PRIVATE_KEY = "590mobil3";
     public static String COMM_ID;
     public static String COMM_ID_PULSA;
+    public static String COMM_ID_TAGIH;
 
 //    public static final String headaddressDEV = "http://116.90.162.173:18080/akardaya/";
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
@@ -267,6 +268,7 @@ public class MyApiClient {
     public static String LINK_BBS_MANDIRI_LKD;
     public static String LINK_CANCEL_TRANSACTION_DGI;
     public static String LINK_LIST_INVOICE_DGI;
+    public static String LINK_CONFIRM_PAYMENT_DGI;
     public static String LINK_REQ_TOKEN_INVOICE_DGI;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
@@ -437,6 +439,7 @@ public class MyApiClient {
         LINK_LIST_INVOICE_DGI = headaddressfinal +"invoice/Listinv/Retrieve";
         LINK_REQ_TOKEN_INVOICE_DGI = headaddressfinal +"invoice/ReqToken/Retrieve";
         LINK_CANCEL_TRANSACTION_DGI = headaddressfinal + "invoice/Canceltrx/Invoke";
+        LINK_CONFIRM_PAYMENT_DGI = headaddressfinal + "invoice/Payment/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
 //        if(PROD_FLAG_ADDRESS)
@@ -502,8 +505,10 @@ public class MyApiClient {
     public static String FLAG_OTP = "N";
     public static Boolean FLAG_SIG = true;
     public static String COMM_ID_DEV = "EMOSALDOMU1500439694RS6DD"; //dev
+    public static String COMM_ID_TAGIH_DEV = "TAGIHSALDO1540982049APLC2"; //dev tagih
     public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
     public static String COMM_ID_PULSA_PROD = "DAPHAH14992553291VINB"; //prod pulsa agent
+    public static String COMM_ID_TAGIH_PROD = "TAGIHSALDO15435070661GSQN"; //prod pulsa agent
     public static String COMM_ID_PROD = "SALDOMU1503988580RFVBK";  //prod
 
     public static String INCOMINGSMS_INFOBIP = "+6281350058801";
@@ -1634,6 +1639,10 @@ public class MyApiClient {
         post(mContext, LINK_LIST_INVOICE_DGI, params, responseHandler);
     }
 
+    public static void confirmPaymentDGI (Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address confirm payment DGI: %1$s ", LINK_CONFIRM_PAYMENT_DGI);
+        post(mContext, LINK_CONFIRM_PAYMENT_DGI, params, responseHandler);
+    }
     public static void reqTokenInvDGI (Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address list invoice DGI: %1$s ",LINK_REQ_TOKEN_INVOICE_DGI);
         post(mContext, LINK_REQ_TOKEN_INVOICE_DGI, params, responseHandler);

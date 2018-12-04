@@ -4,68 +4,16 @@
     android:layout_height="fill_parent"
     android:background="@color/background">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/listMenu"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/tabel_footer"
-        android:layout_below="@+id/label_header"
-        android:cacheColorHint="@android:color/transparent"
         android:divider="@color/background"
         android:dividerHeight="1dp"
         android:fadeScrollbars="true"
         android:fastScrollEnabled="true"
-        android:listSelector="@android:color/transparent"
-        android:visibility="gone" />
-
-    <ProgressBar
-        android:id="@+id/prgLoading"
-        style="@android:style/Widget.ProgressBar.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/tabel_footer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="47dp" />
-
-    <TextView
-        android:id="@+id/txtAlert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/alert"
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        android:visibility="gone" />
-
-    <TextView
-
-        android:id="@+id/txtAlertttt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/prgLoading"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:includeFontPadding="false"
-        android:text="Invoice Kosong"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:visibility="gone" />
-
-    <TextView
-
-        android:id="@+id/label_header"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="15.0dip"
-        android:layout_marginTop="12.0dip"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:text="sfs"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:visibility="gone" />
+        android:scrollbars="vertical"
+        android:visibility="visible" />
 
     <TableLayout
         android:id="@+id/tabel_footer"
@@ -181,7 +129,6 @@
                 android:maxLength="12"
                 android:textColor="@color/black" />
         </TableRow>
-        <!--style="@style/EditTextOnForm"-->
 
         <View
             android:layout_width="fill_parent"
