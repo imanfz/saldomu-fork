@@ -761,7 +761,9 @@ public class MyApiClient {
         String stringEncode = "s4LD0mu"+":"+"WPtK9YBa?4g,rfvm(^XD/M]{25TJF8";
         byte[] encodeByte = Base64.encodeBase64(stringEncode.getBytes());
         String encode = new String(encodeByte);
+        Timber.d("encode " + encode.replace('+','-').replace('/','_'));
         return encode.replace('+','-').replace('/','_');
+
     }
 
     private static String getBasicAuthForMNotif() {

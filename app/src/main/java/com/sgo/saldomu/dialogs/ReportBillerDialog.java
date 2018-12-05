@@ -36,8 +36,10 @@ import android.widget.Toast;
 import com.sgo.saldomu.BluetoothPrinter.zj.BluetoothService;
 import com.sgo.saldomu.BluetoothPrinter.zj.DevicesList;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JsonSorting;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.ViewToBitmap;
 
 import org.json.JSONArray;
@@ -685,9 +687,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_community_name = inflated.findViewById(R.id.dialog_report_community_name_value);
                 TextView tv_shop_name = inflated.findViewById(R.id.dialog_report_shop_name_value);
                 TextView tv_payment_type = inflated.findViewById(R.id.dialog_report_payment_type_value);
-                TextView tv_amount = inflated.findViewById(R.id.dialog_denom_amount);
-                TextView tv_fee = inflated.findViewById(R.id.dialog_denom_fee_value);
-                TextView tv_total_amount = inflated.findViewById(R.id.dialog_denom_totalamount_value);
+                TextView tv_amount = inflated.findViewById(R.id.dialog_reportbiller_amount_value);
+                TextView tv_fee = inflated.findViewById(R.id.dialog_reportbiller_fee_value);
+                TextView tv_total_amount = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
 
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME,""));
                 tv_agent_name.setText(args.getString(DefineValue.USER_NAME,""));
@@ -702,8 +704,15 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
 
+                createTableDGI(args.getString(DefineValue.INVOICE, ""), mTableLayout);
 
-
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                if (!isSuccess) {
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
             }
         }
 
@@ -1001,6 +1010,56 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 layout_table_row.addView(detail_value);
                 detail_field.setText(tempList.get(i));
                 detail_value.setText(jsonObject.optString(tempList.get(i)));
+                mTableLayout.addView(layout_table_row);
+                mTableLayout.addView(line);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createTableDGI(String jsonData, TableLayout mTableLayout) {
+        try {
+            JSONArray jsonArray = new JSONArray(jsonData);
+            TextView detail_field;
+            TextView detail_value;
+            TableRow layout_table_row;
+
+            TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT);
+            TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT, 8.0f);
+            rowParams.setMargins(6, 6, 6, 6);
+            TableRow.LayoutParams rowParams2 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT);
+            rowParams2.setMargins(6, 6, 6, 6);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                JSONObject model = jsonArray.getJSONObject(i);
+
+                detail_field = new TextView(getActivity());
+                detail_field.setGravity(Gravity.LEFT);
+                detail_field.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                detail_field.setLayoutParams(rowParams2);
+                detail_field.setTextColor(Color.parseColor("#757575"));
+                detail_value = new TextView(getActivity());
+                detail_value.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                detail_value.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                detail_value.setLayoutParams(rowParams);
+                detail_value.setPadding(6, 9, 3, 9);
+                detail_value.setTextColor(Color.parseColor("#757575"));
+                View line = new View(getActivity());
+                line.setLayoutParams(new LinearLayout.LayoutParams((ViewGroup.LayoutParams.MATCH_PARENT), 1));
+                line.setBackgroundColor(Color.parseColor("#e0e0e0"));
+                line.setPadding(8, 3, 3, 3);
+                layout_table_row = new TableRow(getActivity());
+                layout_table_row.setLayoutParams(tableParams);
+                layout_table_row.addView(detail_field);
+                layout_table_row.addView(detail_value);
+                detail_field.setText(model.getString("doc_id"));
+                detail_value.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(model.getString("amount")));
                 mTableLayout.addView(layout_table_row);
                 mTableLayout.addView(line);
             }
