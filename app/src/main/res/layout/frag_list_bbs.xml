@@ -50,7 +50,7 @@
         android:background="@color/colorSecondaryWhiteFixed">
         <GridView
             android:layout_weight="2"
-            android:numColumns="2"
+            android:numColumns="3"
             android:gravity="center"
             android:columnWidth="100dp"
             android:stretchMode="columnWidth"

@@ -58,6 +58,7 @@ public class FragMainPage extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        levelClass = new LevelClass(getActivity(),sp);
         isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
@@ -66,8 +67,9 @@ public class FragMainPage extends Fragment {
         getActivity().invalidateOptionsMenu();
         final List<BaseFragmentMainPage> mList = new ArrayList<>();
 //        mList.add(new Home());
-        mList.add(new FragHomeNew());
+
         mList.add(new FragHomeAgent());
+        mList.add(new FragHomeNew());
         mList.add(new MyHistory());
 //        mList.add(new TimeLine());
 //        mList.add(new Group());
@@ -84,9 +86,9 @@ public class FragMainPage extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                if (pager.getCurrentItem()==1)
+                if (pager.getCurrentItem()==0)
                 {
-                    if (!isAgent && !levelClass.isLevel1QAC())
+                    if (!isAgent)
                         showDialogNotAgent();
                 }
             }
@@ -100,7 +102,7 @@ public class FragMainPage extends Fragment {
         pager.setAdapter(adapternya);
         pager.setPageMargin(pageMargin);
         tabs.setViewPager(pager);
-        pager.setCurrentItem(0);
+        pager.setCurrentItem(1);
         pager.setOffscreenPageLimit(3);
 
         setCurrentAdapternya(adapternya);
@@ -175,7 +177,7 @@ public class FragMainPage extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog_frag.dismiss();
-                pager.setCurrentItem(0);
+                pager.setCurrentItem(1);
             }
         });
 

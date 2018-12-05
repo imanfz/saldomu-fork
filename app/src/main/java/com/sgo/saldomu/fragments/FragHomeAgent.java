@@ -28,6 +28,11 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.MainPage;
+<<<<<<< HEAD
+=======
+import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.TagihActivity;
+>>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.adapter.GridBbsMenu;
 import com.sgo.saldomu.coreclass.BBSDataManager;
@@ -117,7 +122,7 @@ public class FragHomeAgent extends BaseFragmentMainPage {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String menuItemName = ((TextView) view.findViewById(R.id.tvMenuName)).getText().toString();
                 String trxType      = "";
-                int posIdx;
+                int posIdx = -1;
                 if(isAgent) {
                     if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
                         posIdx = BBSActivity.LISTACCBBS;
@@ -144,6 +149,8 @@ public class FragHomeAgent extends BaseFragmentMainPage {
                     } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent)) ) {
                         posIdx = BBSActivity.BBSONPROGRESSAGENT;
                         trxType = DefineValue.INDEX;
+                    }else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent)) ) {
+                        startActivity(new Intent(getActivity(), TagihActivity.class));
                     }else {
                         posIdx = -1;
                     }

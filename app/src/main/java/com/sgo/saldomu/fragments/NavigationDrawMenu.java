@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -40,13 +41,16 @@ import com.sgo.saldomu.Beans.navdrawmainmenuModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.ActivityProfileQr;
+import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
+import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.InfoHargaWebActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -59,13 +63,18 @@ import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+<<<<<<< HEAD
 import com.sgo.saldomu.models.retrofit.UploadPPModel;
+=======
+import com.sgo.saldomu.models.ShopCategory;
+>>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
@@ -156,7 +165,10 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     private final int RESULT_CAMERA = 200;
     final int RC_CAMERA_STORAGE = 14;
     private PickAndCameraUtil pickAndCameraUtil;
+    Boolean isAgent;
     private String isRegisteredLevel; //saat antri untuk diverifikasi
+    String categoryIdcta;
+    ArrayList<ShopCategory> shopCategories = new ArrayList<>();
 
     Boolean isLevel1;
 
@@ -166,7 +178,6 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         filter = new IntentFilter();
         filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         pickAndCameraUtil = new PickAndCameraUtil(getActivity(),this);
 
         gson = new Gson();
@@ -185,7 +196,9 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         levelClass = new LevelClass(getActivity(),sp);
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL,"0");
+        categoryIdcta = sp.getString(DefineValue.CATEGORY_ID_CTA,"");
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
         ListView mListView = v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
@@ -531,10 +544,27 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 if(levelClass.isLevel1QAC()) {
                     levelClass.showDialogLevel();
                 }
-                else {
-                    newFragment = new ListCashOut();
-                    switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
+                else if (!levelClass.isLevel1QAC() && !isAgent)
+                {
+                        Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
+                        i.putExtra(DefineValue.CATEGORY_ID,categoryIdcta);
+                        i.putExtra(DefineValue.CATEGORY_NAME, "Setor Tunai");
+                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                        i.putExtra(DefineValue.AMOUNT, "");
+                        i.putExtra(DefineValue.BBS_SCHEME_CODE, "CTA");
+                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                        break;
+                }else if (isAgent)
+                {
+                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                    i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
                 }
+//                else {
+//                    newFragment = new ListCashOut();
+//                    switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
+//                }
                 break;
             case MSCADM:
                 newFragment = new FragSCADM();
@@ -557,10 +587,15 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 switchFragment(newFragment, getString(R.string.menu_item_title_help1));
                 break;
             case MBBS:
-                newFragment = new ListBBS();
-                if(data != null)
-                    newFragment.setArguments(data);
-                switchFragment(newFragment,getString(R.string.menu_item_title_bbs));
+                if (isAgent)
+                {
+                    newFragment = new ListBBS();
+                    if(data != null)
+                        newFragment.setArguments(data);
+                    switchFragment(newFragment,getString(R.string.menu_item_title_bbs));
+                }
+                else showDialogNotAgent();
+
                 break;
             case MLOGOUT:
                 AlertDialog.Builder alertbox=new AlertDialog.Builder(getActivity());
@@ -623,9 +658,6 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 break;
             case MINFO:
                 startActivity(new Intent(getActivity(), InfoHargaWebActivity.class));
-                break;
-            case MTAGIH:
-                startActivity(new Intent(getActivity(), TagihActivity.class));
                 break;
         }
     }
@@ -895,5 +927,33 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public void showDialogNotAgent()
+    {
+        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_title),
+                getActivity().getString(R.string.level_dialog_message_agent), getActivity().getString(R.string.level_dialog_btn_ok),
+                getActivity().getString(R.string.cancel), false);
+        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent mI = new Intent(getActivity(), MyProfileNewActivity.class);
+                getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
+            }
+        });
+        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog_frag.dismiss();
+            }
+        });
+
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.add(dialog_frag,null);
+        ft.commitAllowingStateLoss();
     }
 }

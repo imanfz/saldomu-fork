@@ -29,9 +29,13 @@ public abstract class BaseFragment extends Fragment {
 
     protected SecurePreferences sp;
     protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
-    protected String extraSignature="";
+    protected String extraSignature = "";
     protected ProgBarDialog loadingDialog;
+<<<<<<< HEAD
     protected ProgressDialog progdialog;
+=======
+    ProgressDialog progressDialog;
+>>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 
     protected View v;
     protected Gson gson;
@@ -43,12 +47,13 @@ public abstract class BaseFragment extends Fragment {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
-        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
-        userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
+        memberIDLogin = sp.getString(DefineValue.MEMBER_ID, "");
+        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID, "");
+        userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
     }
 
+<<<<<<< HEAD
     protected Gson getGson(){
         if (gson == null){
             gson = new Gson();
@@ -68,42 +73,62 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void SwitchFragment(Fragment mFragment, String fragName, Boolean isBackstack){
+=======
+    protected void SwitchFragment(Fragment mFragment, String fragName, Boolean isBackstack) {
+>>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
         ToggleKeyboard.hide_keyboard(getActivity());
         FragmentTransaction fragManager = getActivity().getSupportFragmentManager().beginTransaction();
         fragManager.replace(R.id.denom_scadm_content, mFragment, fragName)
                 .commitAllowingStateLoss();
 
-        if(isBackstack){
+        if (isBackstack) {
             Timber.d("backstack");
             fragManager.addToBackStack(fragName);
-        }
-        else {
+        } else {
             Timber.d("bukan backstack");
 
         }
 
     }
 
-    void buildLoadingDialog(){
+    void buildLoadingDialog() {
         loadingDialog = ProgBarDialog.showLoading();
     }
 
-    protected void showLoading(){
+    ProgressDialog getProgDialog() {
+        if (progressDialog == null)
+            progressDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+        return progressDialog;
+    }
+
+    protected void showProgressDialog() {
+        getProgDialog();
+//        if (!getProgDialog().isShowing())
+//            getProgDialog().show();
+    }
+
+    protected void dismissProgressDialog() {
+        if (getProgDialog().isShowing())
+            getProgDialog().dismiss();
+    }
+
+    protected void showLoading() {
         if (loadingDialog == null) {
             buildLoadingDialog();
         }
         loadingDialog.show(getFragmentManager(), "loading_dialog");
     }
 
-    protected void dismissLoading(){
+    protected void dismissLoading() {
         try {
             loadingDialog.dismiss();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
+<<<<<<< HEAD
     ProgressDialog getProgressDialog(){
         if (progdialog == null)
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -121,6 +146,9 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public FragmentManager getFragManager(){
+=======
+    public FragmentManager getFragManager() {
+>>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
         return getActivity().getSupportFragmentManager();
     }
 }

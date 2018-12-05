@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ok" translatable="false">OK</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="skip">Skip</string>
-    <string name="cancel">Cancel</string>
-    <string name="logout">Logout</string>
-    <string name="load_dialog">Loading…</string>
-    <string name="sending_request_dialog">Sent Request…</string>
-    <string name="logout_toast_message">Logout Success</string>
+    <string name="yes">Ya</string>
+    <string name="no">Tidak</string>
+    <string name="skip">Lewati</string>
+    <string name="cancel">Batal</string>
+    <string name="logout">Keluar</string>
+    <string name="load_dialog">Pemuatan…</string>
+    <string name="sending_request_dialog">Mengirim permintaan…</string>
+    <string name="logout_toast_message">Keluar Berhasil</string>
     <string name="text_strip" translatable="false">-</string>
     <string name="titik_dua" translatable="false">:</string>
     <string name="unknown">Unknown</string>
-    <string name="proses">Process</string>
-    <string name="save">Save</string>
-    <string name="close">Close</string>
+    <string name="proses">Proses</string>
+    <string name="save">Simpan</string>
+    <string name="close">Tutup</string>
     <string name="currency" translatable="false">Rp.</string>
     <string name="text_copyright" translatable="false">Copyright &#169; 2016. All Rights Reserved.</string>
     <string name="text_copyright2" translatable="false">Copyright &#169; 2014 Square Gate One.All Rights Reserved.</string>
@@ -22,30 +22,30 @@
     <string name="down_indicator" translatable="false">{fa-sort-desc}</string>
     <string name="up_indicator" translatable="false">{fa-sort-asc}</string>
     <string name="exempli_gratia" translatable="false">contoh</string>
-    <string name="transaction">Transaction</string>
-    <string name="informasi_pelanggan">Customer Informatio</string>
-    <string name="transaction_success">Transaction Success</string>
-    <string name="transaction_pending">Transaction On Process</string>
-    <string name="transaction_suspect">Transaction Suspect</string>
-    <string name="transaction_failed">Transaction Failed</string>
+    <string name="transaction">Transaksi</string>
+    <string name="informasi_pelanggan">Informasi Pelanggan</string>
+    <string name="transaction_success">Transaksi Berhasil</string>
+    <string name="transaction_pending">Transaksi Sedang di Proses</string>
+    <string name="transaction_suspect">Transaksi Suspect</string>
+    <string name="transaction_failed">Transaksi Gagal</string>
     <string name="internal_error" translatable="false">Internal Error</string>
     <string name="atm" translatable="false">ATM</string>
-    <string name="pending">On Process</string>
-    <string name="paid">Paid</string>
-    <string name="failed">Failed</string>
-    <string name="suspect">Suspect</string>
-    <string name="cancelled">Cancel</string>
+    <string name="pending">Sedang di Proses</string>
+    <string name="paid">Terbayar</string>
+    <string name="failed">Gagal</string>
+    <string name="suspect">Menggantung</string>
+    <string name="cancelled">Batal</string>
     <string name="error" translatable="false">Error</string>
-    <string name="share_options">Sharing Option</string>
-    <string name="from">From</string>
-    <string name="to">To</string>
-    <string name="load_more">Load More</string>
-    <string name="empty">Empty</string>
+    <string name="share_options">Pilihan pembagian</string>
+    <string name="from">Dari</string>
+    <string name="to">Ke</string>
+    <string name="load_more">Memuat Lebih</string>
+    <string name="empty">Kosong</string>
     <string name="scash" translatable="false">S-Cash</string>
     <string name="application_name" translatable="false">PIN</string>
-    <string name="check_status">Check Transaction Status</string>
-    <string name="otp_validation_lenght_1">Minimal length OTP Code</string>
-    <string name="otp_validation_lenght_2">character!</string>
+    <string name="check_status">Cek Status Transaksi</string>
+    <string name="otp_validation_lenght_1">Kode OTP minimal</string>
+    <string name="otp_validation_lenght_2">karakter!</string>
     <string name="dialog_token_message_sms">akan mengirimkan satu SMS berisi kode Token untuk proses
         verifikasi selanjutnya.
     </string>
@@ -181,7 +181,7 @@
     <string name="menu_item_title_purchase_pulsa">Pembelian E-Voucher HP</string>
     <string name="menu_item_title_buy">PPOB</string>
     <string name="menu_item_title_beli">Beli</string>
-    <string name="menu_item_title_cash_out">Transfer ke Bank</string>
+    <string name="menu_item_title_cash_out">Transfer ke Bank via Setor Tunai</string>
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
@@ -190,7 +190,7 @@
     <string name="menu_item_title_my_profile">Profil Saya</string>
     <string name="menu_item_title_my_friends">Teman Saya</string>
     <string name="menu_item_title_my_groups">Grup Saya</string>
-    <string name="menu_item_title_bbs">Mobile Teller</string>
+    <string name="menu_item_title_bbs">Agen</string>
     <string name="menu_group_title_logout">Keluar</string>
     <string name="menu_item_title_logout">Keluar</string>
     <string name="menu_item_add_by_contact">Tambah dari kontak</string>
@@ -319,6 +319,7 @@
     <string name="biller_empty_data">Data tidak tersedia</string>
 
     <string name="biller_name">Nama</string>
+    <string name="mitra_name">Nama Mitra</string>
     <string name="billerinput_text_month">Bulan</string>
     <string name="billerinput_text_denom" translatable="false">Denom Retail</string>
     <string name="billerinput_text_dest_remark">Keterangan Tujuan</string>
@@ -454,7 +455,8 @@
     <string name="delete">Hapus</string>
     <string name="friend_profile">Profil Teman</string>
     <string name="socialbanking_id" translatable="false">socialbanking ID : </string>
-    <string name="phone_number">nomor handphone : </string>
+    <string name="phone_number">Nomor Handphone : </string>
+    <string name="phone">Nomor Handphone </string>
     <string name="email" translatable="false">email : </string>
     <string name="submit">Proses</string>
     <string name="request_money">Minta Sekarang</string>
@@ -635,7 +637,7 @@
     <string name="cashout_fee_text">Biaya Admin</string>
     <string name="cashout_total_text">Total Jumlah</string>
     <string name="cashout_validation_otp">Token dibutuhkan!</string>
-    
+
     <string name="limit_dialog_title">Kendala Setor Tunai</string>
     <string name="level_dialog_title">Fitur Belum Tersedia</string>
     <string name="level_dialog_message">Anda belum bisa melakukan Fitur ini. Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran.</string>
@@ -749,6 +751,7 @@
     <string name="saving_gallery">Menyimpan di galeri...</string>
     <string name="community">Komunitas</string>
     <string name="member_code">Kode Member</string>
+    <string name="shop_code">Kode Toko</string>
     <string name="foldername_struk">Struk Saldomu</string>
 
     <string name="period_month">period_month</string>
@@ -1252,5 +1255,26 @@
 
     <string name="lbl_need_help">Hi Support, i want to ask.</string>
     <string name="mitra">Mitra</string>
+    <string name="error_input_tagih">Kode Toko dibutuhkan!</string>
+    <string name="invoice_dgi_search">Cari Invoice</string>
+    <string name="invoice_dgi_payment">Bayar Invoice</string>
+    <string name="payment_type">Tipe Pembayaran</string>
+    <string name="reset">Reset</string>
+    <string name="checkout">Check Out</string>
 
+    <string name="preview_bank_name">Nama Bank</string>
+    <string name="preview_bank_product">Produk Bank</string>
+    <string name="preview_amount">Jumlah</string>
+    <string name="preview_admin_fee">Biaya Admin</string>
+    <string name="preview_total_amount">Total Amount</string>
+    <string name="preview_tx_id">ID Transaksi</string>
+    <string name="preview_comm_name">Nama Community</string>
+    <string name="preview_input_amount">Jumlah yang dibayar</string>
+    <string name="preview_input_amount_hint">Masukan jumlah yang dibayar</string>
+    <string name="max_partial">Maks. Partial</string>
+    <string name="edithint_otp">Masukan kode token</string>
+    <string name="token_code">Kode Token</string>
+    <string name="alert">unable to get content from server</string>
+    <string name="detail">Detail</string>
+    <string name="otp">OTP</string>
 </resources>

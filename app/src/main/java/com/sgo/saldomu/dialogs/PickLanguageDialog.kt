@@ -58,11 +58,10 @@ class PickLanguageDialog : DialogFragment() {
         recyclerview.adapter = PickLangAdapter(activity, list)
         recyclerview.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        val drawable : Drawable
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            drawable = activity!!.resources.getDrawable(R.drawable.divider, null)
+        val drawable : Drawable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity!!.resources.getDrawable(R.drawable.divider, null)
         }else{
-            drawable = activity!!.resources.getDrawable(R.drawable.divider)
+            activity!!.resources.getDrawable(R.drawable.divider)
         }
         recyclerview.addItemDecoration(DividerItemDecoration(drawable))
 

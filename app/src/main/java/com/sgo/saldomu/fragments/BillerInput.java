@@ -22,11 +22,13 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.Denom_Data_Model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.NoHPFormat;
@@ -65,8 +67,8 @@ public class BillerInput extends Fragment {
                                     "NON",  // PLN Nont-Taglis  14
                                     "SPP",  // SPP   15
                                     "RMH",  //Perumahan  16
-                                    "BPJS"}; //BILLER_TYPE_BPJS 17
-
+                                    "BPJS", //BILLER_TYPE_BPJS 17
+                                    "GAME"}; // Game 18
     private View v;
     private View layout_denom;
     private View layout_month;
@@ -106,6 +108,7 @@ public class BillerInput extends Fragment {
     private ArrayAdapter<String> adapterMonth;
     private String selectedMonth;
     private LinearLayout layout_warn_pln;
+    SecurePreferences sp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -116,6 +119,8 @@ public class BillerInput extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         Bundle args = getArguments();
         biller_type_code = args.getString(DefineValue.BILLER_TYPE,"");
@@ -284,6 +289,12 @@ public class BillerInput extends Fragment {
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
         }
+        else if(biller_type_code.equals(billerType[18])){
+            buy_type = _buy_type[0];
+            buy_code = BillerActivity.PURCHASE_TYPE;
+            tv_payment_remark.setVisibility(View.GONE);
+            et_payment_remark.setVisibility(View.GONE);
+        }
         else {
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
@@ -384,6 +395,10 @@ public class BillerInput extends Fragment {
                 if (inputValidation()) {
                     if (biller_type_code.equals(billerType[0]))
                         final_payment_remark = NoHPFormat.formatTo62(String.valueOf(et_payment_remark.getText()));
+                    else if(biller_type_code.equals(billerType[17]))
+                    {
+                        final_payment_remark = sp.getString(DefineValue.USERID_PHONE, "");
+                    }
                     else
                         final_payment_remark = String.valueOf(et_payment_remark.getText());
                     showDialog(final_payment_remark);
@@ -423,13 +438,17 @@ public class BillerInput extends Fragment {
     }
 
     private boolean inputValidation(){
-        if(et_payment_remark.getText().toString().length() == 0 || et_payment_remark.getText().toString().equals("0") || et_payment_remark.length() == 1){
-            et_payment_remark.requestFocus();
-            if(biller_type_code.equals(billerType[0]))
-                et_payment_remark.setError(this.getString(R.string.regist1_validation_nohp));
-            else
-                et_payment_remark.setError(this.getString(R.string.billerinput_validation_payment_remark));
-            return false;
+
+        if (!biller_type_code.equals(billerType[18]))
+        {
+            if(et_payment_remark.getText().toString().length() == 0 || et_payment_remark.getText().toString().equals("0") || et_payment_remark.length() == 1){
+                et_payment_remark.requestFocus();
+                if(biller_type_code.equals(billerType[0]))
+                    et_payment_remark.setError(this.getString(R.string.regist1_validation_nohp));
+                else
+                    et_payment_remark.setError(this.getString(R.string.billerinput_validation_payment_remark));
+                return false;
+            }
         }
 
         return true;

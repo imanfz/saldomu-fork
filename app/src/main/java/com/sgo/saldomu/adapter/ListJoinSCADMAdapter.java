@@ -30,7 +30,6 @@ public class ListJoinSCADMAdapter extends RecyclerView.Adapter<ListJoinSCADMAdap
     public ListJoinSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext) {
         this.scadmCommunityModelArrayList = scadmCommunityModelArrayList;
         this.mContext = mContext;
-//        this.frameLayout = frameLayout;
     }
 
     @Override

@@ -439,9 +439,23 @@ public class Login extends BaseFragment implements View.OnClickListener {
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true);
                         else
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false);
+<<<<<<< HEAD
                         mEditor.putString(DefineValue.IS_NEW_BULK, commModel.getIsNewBulk());
                         mEditor.putBoolean(DefineValue.IS_AGENT, Integer.valueOf(commModel.getIsAgent())>0);
 
+=======
+                        mEditor.putString(DefineValue.IS_NEW_BULK, arrayJson.getJSONObject(i).getString(WebParams.IS_NEW_BULK));
+                        mEditor.putBoolean(DefineValue.IS_AGENT, arrayJson.getJSONObject(i).optInt(WebParams.IS_AGENT,0)>0);
+                        if (!arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES,"").isEmpty())
+                        {
+                            String array = arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES,"");
+                            JSONArray arrJson = new JSONArray(array);
+                            for (int a=0; a<arrJson.length(); a++)
+                            {
+                                mEditor.putString(DefineValue.SCHEME_CODE, arrJson.toString());
+                            }
+                        }
+>>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
                         Timber.w("isi comm id yg bener:" + commModel.getCommId());
                         break;
@@ -449,6 +463,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 }
             }
 
+<<<<<<< HEAD
             if (!model.getShopIdAgent().equals("")) {
 //                JSONObject shopAgentObject = response.getJSONObject("shop_id_agent");
 //                if (shopAgentObject.length() > 0) {
@@ -457,6 +472,18 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
                 mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
                 mEditor.putString(DefineValue.SHOP_AGENT_DATA, getGson().toJson(model.getShopIdAgent()));
+=======
+
+
+            if ( response.has("shop_id_agent") && !response.getString("shop_id_agent").equals("")) {
+                JSONObject shopAgentObject = response.getJSONObject("shop_id_agent");
+                if (shopAgentObject.length() > 0) {
+                    mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
+                    mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
+                    mEditor.putString(DefineValue.SHOP_AGENT_DATA, shopAgentObject.toString());
+                }
+
+>>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
             }
 
             if(model.getSettings() != null){
