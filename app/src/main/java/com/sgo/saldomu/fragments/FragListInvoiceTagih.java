@@ -467,8 +467,11 @@ public class FragListInvoiceTagih extends BaseFragment {
 
         Fragment newFrag = new FragInvoiceDGIConfirm();
         bundle1.putString(DefineValue.PAYMENT_TYPE, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_code());
+        bundle1.putString(DefineValue.PAYMENT_TYPE_DESC, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_name());
         bundle1.putString(DefineValue.CCY_ID, ccy_id);
         bundle1.putString(DefineValue.PRODUCT_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getProduct_code());
+        bundle1.putString(DefineValue.REMARK, remark);
+        bundle1.putString(DefineValue.MOBILE_PHONE, phone_no);
         newFrag.setArguments(bundle1);
         if(getActivity() == null){
             return;

@@ -547,5 +547,6 @@ public class WebParams {
     public static String DGI_MEMBER_NAME= "dgi_member_name";
     public static String DGI_ANCHOR_NAME= "dgi_anchor_name";
     public static String DGI_COMM_NAME= "dgi_comm_name";
+    public static String AGENT_SCHEME_CODES= "agent_scheme_codes";
 
 }

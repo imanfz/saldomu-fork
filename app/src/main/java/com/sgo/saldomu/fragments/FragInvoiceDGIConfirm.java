@@ -43,6 +43,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.ConfirmDGIDialog;
 import com.sgo.saldomu.dialogs.ConfirmationDialog;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.dialogs.DetailInvoiceTagihDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListeners;
@@ -61,7 +62,7 @@ import java.util.ArrayList;
 
 import timber.log.Timber;
 
-public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
+public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback{
     View view;
     RecyclerView listInvoice;
     Button btn_detail, btn_cancel, btn_resend, btn_confirm;
@@ -71,6 +72,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
     String tx_id, ccy_id;
     ConfirmDGIDialog confirmDGIDialog;
     int attempt = 0, failed = 0;
+    DetailInvoiceTagihDialog detailInvoiceTagihDialog;
 
     TextView tv_total;
 
@@ -94,11 +96,12 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
 
         bundle = getArguments();
         if (bundle != null) {
-            paymentType = bundle.getString(DefineValue.PAYMENT_TYPE, "");
+            paymentType = bundle.getString(DefineValue.PAYMENT_TYPE_DESC, "");
             remark = bundle.getString(DefineValue.REMARK, "");
             total = bundle.getString(DefineValue.TOTAL_AMOUNT, "");
             ccy_id = bundle.getString(DefineValue.CCY_ID, "");
             product_code = bundle.getString(DefineValue.PRODUCT_CODE, "");
+            phone = bundle.getString(DefineValue.MOBILE_PHONE, "");
             attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
         }
 
@@ -170,23 +173,17 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
     private Button.OnClickListener btnDetailListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            confirmDGIDialog = ConfirmDGIDialog.newDialog(
+            detailInvoiceTagihDialog = DetailInvoiceTagihDialog.newDialog(
                     paymentType,
                     remark,
                     phone);
+            detailInvoiceTagihDialog.show(getActivity().getSupportFragmentManager(), "detailInvoiceTagihDialog");
         }
     };
 
     private Button.OnClickListener btnCancelListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            hideKeyboard();
-//            Fragment newFrag = new FragListInvoiceTagih();
-//            if (getActivity() == null) {
-//                return;
-//            }
-//            TagihActivity ftf = (TagihActivity) getActivity();
-//            ftf.switchContent(newFrag, "List Invoice", true);
             getFragmentManager().popBackStack();
         }
     };
@@ -490,8 +487,10 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                                     i.putExtra(DefineValue.ATTEMPT, failed - attempt);
 
                                 startActivityForResult(i, MainPage.REQUEST_FINISH);
-                            } else
+                            } else{
                                 resendToken();
+                                et_otp.setText("");
+                            }
 //                                getFragmentManager().popBackStack();
                         }
 
