@@ -477,7 +477,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                             JSONArray arrJson = new JSONArray(array);
                             for (int a=0; a<arrJson.length(); a++)
                             {
-                                mEditor.putString(DefineValue.SCHEME_CODE, arrJson.getJSONObject(a).getString(WebParams.SCHEME_CODE));
+                                mEditor.putString(DefineValue.SCHEME_CODE, arrJson.toString());
                             }
                         }
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));

@@ -487,8 +487,10 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                                     i.putExtra(DefineValue.ATTEMPT, failed - attempt);
 
                                 startActivityForResult(i, MainPage.REQUEST_FINISH);
-                            } else
+                            } else{
                                 resendToken();
+                                et_otp.setText("");
+                            }
 //                                getFragmentManager().popBackStack();
                         }
 
