@@ -180,6 +180,16 @@
         <!--android:gravity="right"-->
         <!--android:padding="3dip" />-->
         <!--</TableRow>-->
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Invoice "
+                android:textStyle="bold"/>
+
+        </TableRow>
+
 
         <TableLayout
             android:id="@+id/billertoken_layout_table"
@@ -187,7 +197,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="4dp"
             android:stretchColumns="1"
-            android:visibility="gone">
+            android:visibility="visible">
 
 
         </TableLayout>

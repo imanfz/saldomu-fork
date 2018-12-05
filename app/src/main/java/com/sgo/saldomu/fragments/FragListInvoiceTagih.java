@@ -108,6 +108,8 @@ public class FragListInvoiceTagih extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
+        dismissProgressDialog();
+
         final Bundle bundle = getArguments();
         if (bundle != null) {
             response = bundle.getString(DefineValue.RESPONSE, "");
