@@ -453,14 +453,15 @@ public class Login extends BaseFragment implements View.OnClickListener {
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
                         mEditor.putString(DefineValue.IS_NEW_BULK, arrayJson.getJSONObject(i).getString(WebParams.IS_NEW_BULK));
                         mEditor.putBoolean(DefineValue.IS_AGENT, arrayJson.getJSONObject(i).optInt(WebParams.IS_AGENT, 0) > 0);
-                        if (!arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES, "").isEmpty()) {
+//                        if (!arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES, "").isEmpty()) {
 //                            String array = arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES,"");
-                            JSONArray arrJson = arrayJson.getJSONArray(0);
+                                String arrJson = arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES, "");
 //                            for (int a=0; a<arrJson.length(); a++)
 //                            {
-                            mEditor.putString(DefineValue.SCHEME_CODE, arrJson.toString());
+                                mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson
+                                );
 //                            }
-                        }
+//                        }
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
                         Timber.w("isi comm id yg bener:" + arrayJson.getJSONObject(i).getString(WebParams.COMM_ID));
                         break;

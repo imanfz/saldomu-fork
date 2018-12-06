@@ -555,6 +555,7 @@ public class DefineValue {
     public static String PAYMENT_TYPE_DESC= "payment_type_desc";
     public static String INVOICE = "invoice";
     public static String SCHEME_CODE = "scheme_code";
+    public static String AGENT_SCHEME_CODES= "agent_scheme_codes";
 
 }
 
