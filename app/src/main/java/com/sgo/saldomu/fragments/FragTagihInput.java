@@ -16,8 +16,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.activeandroid.util.Log;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.TagihCommunityModel;
 import com.sgo.saldomu.Beans.TagihModel;

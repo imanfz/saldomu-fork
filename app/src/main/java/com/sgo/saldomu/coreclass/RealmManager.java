@@ -44,7 +44,6 @@ public class RealmManager {
     public static RealmConfiguration BBSMemberBankConfiguration;
     public static RealmConfiguration TagihDataConfig;
 
-<<<<<<< HEAD
     private Realm realm;
     private Realm bbsRealm;
 
@@ -74,8 +73,6 @@ public class RealmManager {
     public void setBbsRealm(Realm bbsRealm) {
         this.bbsRealm = bbsRealm;
     }
-=======
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 
     @RealmModule(classes = { Account_Collection_Model.class, bank_biller_model.class,
             Biller_Data_Model.class, Biller_Type_Data_Model.class, Denom_Data_Model.class})
@@ -105,13 +102,8 @@ public class RealmManager {
         file = new File(mContext.getFilesDir(),BuildConfig.REALM_BBS_MEMBER_BANK_NAME);
         copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.bbsmemberbank),file);
 
-<<<<<<< HEAD
         file = new File(mContext.getFilesDir(),BuildConfig.REALM_TAGIH_NAME);
         copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomudevtagih),file);
-=======
-//        file = new File(mContext.getFilesDir(),BuildConfig.REALM_TAGIH_NAME);
-//        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomudevtagih),file);
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 
         Realm.init(mContext);
         RealmConfiguration config = new RealmConfiguration.Builder()
@@ -145,13 +137,8 @@ public class RealmManager {
                 .build();
 
         TagihDataConfig = new RealmConfiguration.Builder()
-<<<<<<< HEAD
-                .name(REALM_TAGIH_NAME)
-                .schemaVersion(REALM_SCHEME_TAGIH_VERSION)
-=======
                 .name(BuildConfig.REALM_TAGIH_NAME)
                 .schemaVersion(BuildConfig.REALM_SCHEME_TAGIH_VERSION)
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
                 .modules(new TagihModule())
                 .migration(new TagihDataMigration())
                 .build();

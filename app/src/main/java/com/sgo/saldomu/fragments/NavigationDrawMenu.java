@@ -51,7 +51,6 @@ import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.InfoHargaWebActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
-import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -70,11 +69,8 @@ import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
-<<<<<<< HEAD
-import com.sgo.saldomu.models.retrofit.UploadPPModel;
-=======
 import com.sgo.saldomu.models.ShopCategory;
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
+import com.sgo.saldomu.models.retrofit.UploadPPModel;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.utils.PickAndCameraUtil;

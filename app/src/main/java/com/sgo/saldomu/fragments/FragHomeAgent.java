@@ -28,11 +28,7 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.MainPage;
-<<<<<<< HEAD
-=======
-import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.TagihActivity;
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.adapter.GridBbsMenu;
 import com.sgo.saldomu.coreclass.BBSDataManager;

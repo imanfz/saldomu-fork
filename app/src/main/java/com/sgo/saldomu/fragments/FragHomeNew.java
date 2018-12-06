@@ -242,9 +242,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                                         CategoriesModel obj = model.getCategories().get(i);
 
-<<<<<<< HEAD
                                         ShopCategory shopCategory = new ShopCategory();
                                         shopCategory.setCategoryId(obj.getCategory_id());
+                                        if (shopCategory.getCategoryId().contains("SETOR"))
+                                        {
+                                            String categoryIDcta = shopCategory.getCategoryId().toString();
+                                            SecurePreferences.Editor mEditor = sp.edit();
+                                            mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
+                                            mEditor.apply();
+                                        }
                                         shopCategory.setSchemeCode(obj.getScheme_code());
                                         String tempCategory = obj.getCategory_name().toLowerCase();
 
@@ -254,33 +260,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                             String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
                                             builder.append(cap + " ");
                                         }
-=======
-                                for (int i = 0; i < categories.length(); i++) {
-                                    JSONObject object = categories.getJSONObject(i);
-                                    ShopCategory shopCategory = new ShopCategory();
-                                    shopCategory.setCategoryId(object.getString("category_id"));
-                                    if (shopCategory.getCategoryId().contains("SETOR"))
-                                    {
-                                        String categoryIDcta = shopCategory.getCategoryId().toString();
-                                        SecurePreferences.Editor mEditor = sp.edit();
-                                        mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
-                                        mEditor.apply();
-                                    }
-                                    shopCategory.setSchemeCode(object.getString("scheme_code"));
-                                    String tempCategory = object.getString("category_name").toLowerCase();
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 
                                         shopCategory.setCategoryName(builder.toString());
                                         shopCategories.add(shopCategory);
                                     }
-
-<<<<<<< HEAD
-=======
-                                    shopCategory.setCategoryName(builder.toString());
-                                    shopCategories.add(shopCategory);
-
-                                }
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 
                                 } else {
                                     Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
@@ -467,12 +450,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         });
 
-<<<<<<< HEAD
         if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
-=======
-
-        if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 
             swSettingOnline.setOnCheckedChangeListener(null);
             if (sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO)) {
@@ -490,15 +468,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
     private ArrayList<String> SetupListMenu() {
         String[] _data;
-<<<<<<< HEAD
-        ArrayList<String> data = new ArrayList<>();
-        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
-        if (isAgent) {
-            _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
-            Collections.addAll(data, _data);
-
-        } else
-=======
         ArrayList<String> data = new ArrayList<>() ;
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
 //        if(isAgent) {
@@ -506,7 +475,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //            Collections.addAll(data,_data);
 //
 //        } else
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
             if (!isAgent){
 
             String[] categories = new String[shopCategories.size()];
@@ -543,16 +511,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         int[] data = new int[totalIdx];
 
-<<<<<<< HEAD
-        if (isAgent) {
-            for (int j = 0; j < taAgent.length(); j++) {
-                data[j] = taAgent.getResourceId(j, -1);
-                overallIdx++;
-            }
-
-
-        } else
-=======
 //        if(isAgent) {
 //            for( int j = 0; j < taAgent.length(); j++) {
 //                data[j] = taAgent.getResourceId(j, -1);
@@ -561,7 +519,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //
 //
 //        } else
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
             if (!isAgent){
             for(int x =0; x < shopCategories.size(); x++ ) {
                 data[x] = R.drawable.ic_location_on_black;

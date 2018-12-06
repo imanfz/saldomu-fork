@@ -150,15 +150,12 @@ public class ListBBS extends Fragment {
                     } else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_out))) {
                         posIdx = BBSActivity.TRANSACTION;
                         trxType = DefineValue.BBS_CASHOUT;
-<<<<<<< HEAD
-=======
                     } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent))) {
                         posIdx = BBSActivity.BBSONPROGRESSAGENT;
                         trxType = DefineValue.INDEX;
                     } else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent))) {
                         posIdx = -1;
                         startActivity(new Intent(getActivity(), TagihActivity.class));
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
                     } else {
                         posIdx = -1;
                     }
@@ -364,16 +361,9 @@ public class ListBBS extends Fragment {
                 }
             }
 
-<<<<<<< HEAD
             String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
                     extraSignature);
-=======
-            String extraSignature = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
-            RequestParams params = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
-                    sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
-
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 
             if (!GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN)) {
                 showAlertEnabledGPS();

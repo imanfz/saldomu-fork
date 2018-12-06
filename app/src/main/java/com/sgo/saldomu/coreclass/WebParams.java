@@ -520,8 +520,7 @@ public class WebParams {
     public static String LKD_PRODUCT_CODE  = "lkd_product_code";
     public static String SOURCE_OF_FUND = "source_of_fund";
     public static String IS_POS = "is_pos";
-<<<<<<< HEAD
-=======
+
     public static String MOBILE_PHONE = "mobile_phone";
     public static String PHONE_DATA = "phone_data";
     public static String INVOICE_DATA = "invoice_data";
@@ -550,6 +549,5 @@ public class WebParams {
     public static String DGI_ANCHOR_NAME= "dgi_anchor_name";
     public static String DGI_COMM_NAME= "dgi_comm_name";
     public static String AGENT_SCHEME_CODES= "agent_scheme_codes";
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 
 }

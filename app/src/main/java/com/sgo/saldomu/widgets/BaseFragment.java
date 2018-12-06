@@ -31,11 +31,8 @@ public abstract class BaseFragment extends Fragment {
     protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
     protected String extraSignature = "";
     protected ProgBarDialog loadingDialog;
-<<<<<<< HEAD
     protected ProgressDialog progdialog;
-=======
     ProgressDialog progressDialog;
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 
     protected View v;
     protected Gson gson;
@@ -53,7 +50,6 @@ public abstract class BaseFragment extends Fragment {
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
     }
 
-<<<<<<< HEAD
     protected Gson getGson(){
         if (gson == null){
             gson = new Gson();
@@ -73,9 +69,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void SwitchFragment(Fragment mFragment, String fragName, Boolean isBackstack){
-=======
-    protected void SwitchFragment(Fragment mFragment, String fragName, Boolean isBackstack) {
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
         ToggleKeyboard.hide_keyboard(getActivity());
         FragmentTransaction fragManager = getActivity().getSupportFragmentManager().beginTransaction();
         fragManager.replace(R.id.denom_scadm_content, mFragment, fragName)
@@ -101,12 +94,6 @@ public abstract class BaseFragment extends Fragment {
         return progressDialog;
     }
 
-    protected void showProgressDialog() {
-        getProgDialog();
-//        if (!getProgDialog().isShowing())
-//            getProgDialog().show();
-    }
-
     protected void dismissProgressDialog() {
         if (getProgDialog().isShowing())
             getProgDialog().dismiss();
@@ -128,7 +115,6 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
-<<<<<<< HEAD
     ProgressDialog getProgressDialog(){
         if (progdialog == null)
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -140,15 +126,7 @@ public abstract class BaseFragment extends Fragment {
             getProgressDialog().show();
     }
 
-    protected void dismissProgressDialog(){
-        if (getProgressDialog().isShowing())
-            getProgressDialog().dismiss();
-    }
-
     public FragmentManager getFragManager(){
-=======
-    public FragmentManager getFragManager() {
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
         return getActivity().getSupportFragmentManager();
     }
 }

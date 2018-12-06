@@ -447,14 +447,10 @@ public class BillerDesciption extends BaseFragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-<<<<<<< HEAD
-            extraSignature = biller_comm_id + item_id + cust_id;
-=======
             if (cust_id.equalsIgnoreCase(""))
                 cust_id = userPhoneID;
 
             extraSignature = biller_comm_id+item_id+cust_id;
->>>>>>> 476900affe9d972c4914c9bac3468360f183c54b
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_BILLER, extraSignature);
             params.put(WebParams.DENOM_ITEM_ID, item_id);
