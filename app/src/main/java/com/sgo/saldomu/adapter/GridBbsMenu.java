@@ -83,7 +83,7 @@ public class GridBbsMenu extends BaseAdapter {
             case "Pengaturan":
                 return R.drawable.ic_belanja;
             case "Dalam Proses":
-                return R.drawable.ic_belanja;
+                return R.drawable.ic_location_on_black;
             default:
                 return R.drawable.ic_tariktunai;
 

@@ -220,7 +220,7 @@ public class FragHomeAgent extends BaseFragmentMainPage {
     }
 
     void checkSchemeCode(ArrayList<String> menuItems){
-        String string = sp.getString(DefineValue.SCHEME_CODE, "");
+        String string = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
         try {
             JSONArray arr = new JSONArray(string);
 
