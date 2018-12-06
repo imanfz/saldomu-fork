@@ -34,7 +34,7 @@ public class DefinedDialog {
             Timber.w("define dialog error:" + e.getMessage());
         }
         dialog.setContentView(R.layout.dialog_progress);
-        TextView text1 = (TextView) dialog.findViewById(R.id.progressText1);
+        TextView text1 = dialog.findViewById(R.id.progressText1);
         text1.setText(message);
         dialog.setIndeterminate(true);
         dialog.setCancelable(false);
@@ -56,8 +56,8 @@ public class DefinedDialog {
         dialog.setCancelable(false);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_error_ok);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog_error);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_error_ok);
+        TextView Message = dialog.findViewById(R.id.message_dialog_error);
         Message.setText(message);
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,9 +80,9 @@ public class DefinedDialog {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(_title);

@@ -18,15 +18,17 @@ import java.util.ArrayList;
 
 public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.ViewHolder> implements Filterable {
     private ArrayList<InvoiceDGI> invoiceDGIModelArrayList;
+    private ArrayList<InvoiceDGI> originalList;
     private final Activity mContext;
     OnTap listener;
 
-    public interface OnTap{
+    public interface OnTap {
         void onTap(int pos);
     }
 
     public InvoiceDGIAdapter(ArrayList<InvoiceDGI> invoiceDGIModelArrayList, Activity mContext, OnTap listener) {
         this.invoiceDGIModelArrayList = invoiceDGIModelArrayList;
+        originalList = invoiceDGIModelArrayList;
         this.mContext = mContext;
         this.listener = listener;
     }
@@ -46,6 +48,7 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
             topLayout = itemView.findViewById(R.id.top_layout);
         }
     }
+
     public void updateData(ArrayList<InvoiceDGI> invoiceDGIModelArrayList) {
         this.invoiceDGIModelArrayList = invoiceDGIModelArrayList;
         notifyDataSetChanged();
@@ -62,15 +65,15 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
 
         InvoiceDGI obj = invoiceDGIModelArrayList.get(position);
 
-        holder.tvinvoiceNo.setText("INVOICE " +invoiceDGIModelArrayList.get(position).getDoc_no());
-        holder.tvremainAmount.setText("Sisa : " +invoiceDGIModelArrayList.get(position).getRemain_amount());
-        holder.tvdueDate.setText("Due date : " +invoiceDGIModelArrayList.get(position).getDue_date());
+        holder.tvinvoiceNo.setText("INVOICE " + invoiceDGIModelArrayList.get(position).getDoc_no());
+        holder.tvremainAmount.setText("Sisa : " + invoiceDGIModelArrayList.get(position).getRemain_amount());
+        holder.tvdueDate.setText("Due date : " + invoiceDGIModelArrayList.get(position).getDue_date());
 
-        if (obj.getInput_amount().equalsIgnoreCase("0") || obj.getInput_amount().equalsIgnoreCase("")){
+        if (obj.getInput_amount().equalsIgnoreCase("0") || obj.getInput_amount().equalsIgnoreCase("")) {
             holder.tvInputremainAmount.setVisibility(View.GONE);
-        }else {
+        } else {
             holder.tvInputremainAmount.setVisibility(View.VISIBLE);
-            holder.tvInputremainAmount.setText("Bayar : " +invoiceDGIModelArrayList.get(position).getInput_amount());
+            holder.tvInputremainAmount.setText("Bayar : " + invoiceDGIModelArrayList.get(position).getInput_amount());
         }
         holder.view.setVisibility(View.VISIBLE);
 
@@ -93,6 +96,30 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
     }
 
     @Override
-    public Filter getFilter() {return null;
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String charString = constraint.toString().toLowerCase();
+                ArrayList<InvoiceDGI> temp = new ArrayList<>();
+                if (charString.isEmpty()) {
+                    temp.addAll(originalList);
+                } else {
+                    for (InvoiceDGI model : originalList){
+                        if (model.getDoc_no().contains(charString))
+                            temp.add(model);
+                    }
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = temp;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                invoiceDGIModelArrayList = new ArrayList<>((ArrayList<InvoiceDGI>)results.values);
+                notifyDataSetChanged();
+            }
+        };
     }
 }

@@ -23,7 +23,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.bank_biller_model;
@@ -44,7 +43,6 @@ import com.sgo.saldomu.models.MobilePhoneModel;
 import com.sgo.saldomu.models.PaymentTypeDGIModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -154,7 +152,7 @@ public class FragListInvoiceTagih extends BaseFragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                invoiceDGIAdapter.getFilter().filter(editable.toString());
             }
         });
 
@@ -205,6 +203,8 @@ public class FragListInvoiceTagih extends BaseFragment {
         listMenu.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listMenu.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.row_divider),
                 false, false));
+
+
     }
 
     void showInputDialog(int pos) {

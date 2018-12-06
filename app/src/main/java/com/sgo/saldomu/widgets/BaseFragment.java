@@ -66,14 +66,13 @@ public abstract class BaseFragment extends Fragment {
 
     ProgressDialog getProgDialog() {
         if (progressDialog == null)
-            progressDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            progressDialog = DefinedDialog.CreateProgressDialog(getActivity());
         return progressDialog;
     }
 
     protected void showProgressDialog() {
-        getProgDialog();
-//        if (!getProgDialog().isShowing())
-//            getProgDialog().show();
+        if (!getProgDialog().isShowing())
+            getProgDialog().show();
     }
 
     protected void dismissProgressDialog() {
