@@ -29,7 +29,6 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -119,8 +118,6 @@ public class FragTagihInput extends BaseFragment {
             }
         });
     }
-
-
     public void initializeCommunity(int pos) {
         Realm _realm = RealmManager.getRealmTagih();
         final ArrayList<TagihCommunityModel> listTagih = new ArrayList<>();

@@ -112,8 +112,9 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
             public void onClick(View v) {
                 String input = inpAmount.getText().toString().trim();
 
-                if (input.equalsIgnoreCase(""))
+                if (input.equalsIgnoreCase("")) {
                     input = "0";
+                }
 
                 if (checkInput(input)) {
                     listener.onTap(pos, input);
@@ -132,7 +133,8 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
     }
 
     boolean checkInput(String input){
-        return Integer.valueOf(input) <= Integer.valueOf(lbl_remain_amount.getText().toString());
+        return Integer.valueOf(input) <= Integer.valueOf(lbl_remain_amount.getText().toString()) ||
+                !input.substring(0, 1).equalsIgnoreCase("0");
     }
 
     void showInvoiceAmount(){

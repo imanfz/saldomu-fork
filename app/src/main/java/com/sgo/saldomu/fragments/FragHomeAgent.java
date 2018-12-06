@@ -10,8 +10,6 @@ import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +29,6 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.adapter.GridBbsMenu;
@@ -42,11 +39,11 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.UpdateBBSData;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -95,6 +92,8 @@ public class FragHomeAgent extends BaseFragmentMainPage {
         else {
             _data = getResources().getStringArray(R.array.list_bbs_member);
         }
+
+//        Log.d("home_agent", "home agent scheme code: \n" + sp.getString(DefineValue.SCHEME_CODE, ""));
     }
 
     @Override
@@ -110,7 +109,7 @@ public class FragHomeAgent extends BaseFragmentMainPage {
 
         EasyAdapter adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _data);
 
-        GridView gvListBbs  = (GridView) v.findViewById(R.id.gvListBbs);
+        GridView gvListBbs  = v.findViewById(R.id.gvListBbs);
 
         GridBbsMenu gridBbsMenuAdapter = new GridBbsMenu(getActivity(), SetupMenuItems(), SetupMenuIcons());
         gvListBbs.setAdapter(gridBbsMenuAdapter);
@@ -214,7 +213,36 @@ public class FragHomeAgent extends BaseFragmentMainPage {
             String[] _data = getResources().getStringArray(R.array.list_bbs_member);
         }
         Collections.addAll(menuItems,_data);
+
+        checkSchemeCode(menuItems);
+
         return menuItems;
+    }
+
+    void checkSchemeCode(ArrayList<String> menuItems){
+        String string = sp.getString(DefineValue.SCHEME_CODE, "");
+        try {
+            JSONArray arr = new JSONArray(string);
+
+            for (int i=0; i<arr.length(); i++){
+                JSONObject obj = arr.getJSONObject(i);
+                String objs = obj.optString(WebParams.SCHEME_CODE, "");
+
+                switch (objs){
+                    case "ATC":
+                        menuItems.add(0, getResources().getString(R.string.cash_in));
+                        break;
+                    case "CTA":
+                        menuItems.add(0, getResources().getString(R.string.cash_out));
+                        break;
+                    case "DGI":
+                        menuItems.add(0, getResources().getString(R.string.menu_item_title_tagih_agent));
+                        break;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private int[] SetupMenuIcons() {
