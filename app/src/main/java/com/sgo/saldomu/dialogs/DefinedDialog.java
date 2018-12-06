@@ -7,11 +7,14 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.LifeCycleHandler;
+
+import timber.log.Timber;
 
 public class DefinedDialog {
 
@@ -25,11 +28,11 @@ public class DefinedDialog {
 
     public static ProgressDialog CreateProgressDialog(Context context, String message) {
         ProgressDialog dialog = new ProgressDialog(context);
-//        try {
-//            dialog.show();
-//        } catch (WindowManager.BadTokenException e) {
-//            Timber.w("define dialog error:" + e.getMessage());
-//        }
+        try {
+            dialog.show();
+        } catch (WindowManager.BadTokenException e) {
+            Timber.w("define dialog error:" + e.getMessage());
+        }
         dialog.setContentView(R.layout.dialog_progress);
         TextView text1 = dialog.findViewById(R.id.progressText1);
         text1.setText(message);
