@@ -187,9 +187,9 @@ public class FragTagihInput extends BaseFragment {
                 try {
                     dismissProgressDialog();
 
+                    Timber.d("response list invoice DGI : " + response.toString());
                     String code = response.getString(WebParams.ERROR_CODE);
                     String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                    Timber.d("response list invoice DGI : " + response.toString());
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
                         String responseListInvoice = response.toString();
@@ -210,7 +210,7 @@ public class FragTagihInput extends BaseFragment {
                         TagihActivity ftf = (TagihActivity) getActivity();
                         ftf.switchContent(newFrag,"List Invoice",true);
                     } else {
-                        Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG);
+                        Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                     }
 
 

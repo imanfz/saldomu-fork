@@ -160,7 +160,8 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
         invoiceDGIAdapter = new InvoiceDGIAdapter(invoiceDGIModelArrayList, getActivity(),
                 new InvoiceDGIAdapter.OnTap() {
                     @Override
-                    public void onTap(int pos) {
+                    public void onTap(InvoiceDGI model) {
+
                     }
                 });
 
@@ -557,7 +558,6 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
                             showReportBillerDialog(response);
-                            getActivity().finish();
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -655,6 +655,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
         args.putString(DefineValue.DGI_COMM_NAME, response.optString(WebParams.DGI_COMM_NAME));
 
         dialog.setArguments(args);
+//        dialog.show(getFragmentManager(), "report biller dialog");
 //        dialog.setTargetFragment(this, 0);
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.add(dialog, ReportBillerDialog.TAG);
@@ -699,6 +700,6 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
 
     @Override
     public void onOkButton() {
-
+        getActivity().finish();
     }
 }

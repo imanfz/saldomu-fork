@@ -195,8 +195,8 @@ public class FragListInvoiceTagih extends BaseFragment {
         invoiceDGIAdapter = new InvoiceDGIAdapter(invoiceDGIModelArrayList, getActivity(),
                 new InvoiceDGIAdapter.OnTap() {
                     @Override
-                    public void onTap(int pos) {
-                        showInputDialog(pos);
+                    public void onTap(InvoiceDGI model) {
+                        showInputDialog(model);
                     }
                 });
         listMenu.setAdapter(invoiceDGIAdapter);
@@ -207,7 +207,8 @@ public class FragListInvoiceTagih extends BaseFragment {
 
     }
 
-    void showInputDialog(int pos) {
+    void showInputDialog(InvoiceDGI model) {
+        int pos = invoiceDGIModelArrayList.indexOf(model);
         InputAmountTagihBillerDialog dialog = InputAmountTagihBillerDialog.newDialog(pos, invoiceDGIModelArrayList.get(pos), partialPayment,
                 new InputAmountTagihBillerDialog.OnTap() {
                     @Override
