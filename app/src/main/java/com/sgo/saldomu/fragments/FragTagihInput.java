@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.activeandroid.util.Log;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.TagihCommunityModel;
 import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -26,11 +25,12 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.models.TagihCommunityModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -117,8 +117,6 @@ public class FragTagihInput extends BaseFragment {
             }
         });
     }
-
-
     public void initializeCommunity(int pos) {
         Realm _realm = RealmManager.getRealmTagih();
         final ArrayList<TagihCommunityModel> listTagih = new ArrayList<>();
@@ -171,8 +169,7 @@ public class FragTagihInput extends BaseFragment {
         showProgressDialog();
 
         String extraSignature = commCodeTagih + et_memberCode.getText().toString();
-        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_LIST_INVOICE_DGI,
-                userPhoneID, accessKey, extraSignature);
+        params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_INVOICE_DGI, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.MEMBER_CODE, et_memberCode.getText().toString());
@@ -180,72 +177,55 @@ public class FragTagihInput extends BaseFragment {
         params.put(WebParams.USER_ID, userPhoneID);
         Timber.d("params list invoice DGI : " + params.toString());
 
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_LIST_INVOICE_DGI, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            dismissProgressDialog();
 
-        MyApiClient.inputDataDGI(getActivity(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            Timber.d("response list invoice DGI : " + response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String error_message = response.getString(WebParams.ERROR_MESSAGE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                try {
-                    dismissProgressDialog();
+                                String responseListInvoice = response.toString();
+                                Fragment newFrag = new FragListInvoiceTagih();
+                                Bundle bundle = new Bundle();
+                                bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
+                                bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+                                bundle.putString(DefineValue.RESPONSE, responseListInvoice);
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                    Timber.d("response list invoice DGI : " + response.toString());
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.COMM_CODE_DGI, response.getString(WebParams.COMM_CODE_DGI));
+                                mEditor.apply();
 
-                        String responseListInvoice = response.toString();
-                        Fragment newFrag = new FragListInvoiceTagih();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
-                        bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
-                        bundle.putString(DefineValue.RESPONSE, responseListInvoice);
+                                newFrag.setArguments(bundle);
+                                if(getActivity() == null){
+                                    return;
+                                }
+                                TagihActivity ftf = (TagihActivity) getActivity();
+                                ftf.switchContent(newFrag,"List Invoice",true);
+                            } else {
+                                Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
+                            }
 
-                        SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.COMM_CODE_DGI, response.getString(WebParams.COMM_CODE_DGI));
-                        mEditor.apply();
 
-                        newFrag.setArguments(bundle);
-                        if(getActivity() == null){
-                            return;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        TagihActivity ftf = (TagihActivity) getActivity();
-                        ftf.switchContent(newFrag,"List Invoice",true);
-                    } else {
-                        Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG);
                     }
 
+                    @Override
+                    public void onError(Throwable throwable) {
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onComplete() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //llHeaderProgress.setVisibility(View.GONE);
-                //pbHeaderProgress.setVisibility(View.GONE);
-
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error list invoice DGI : " + throwable.toString());
-
-            }
-
-        });
+                    }
+                });
     }
 
 

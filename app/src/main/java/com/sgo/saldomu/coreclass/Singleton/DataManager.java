@@ -1,14 +1,13 @@
 package com.sgo.saldomu.coreclass.Singleton;
 
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.BankDataTopUp;
 import com.sgo.saldomu.Beans.DenomListModel;
-import com.sgo.saldomu.Beans.DenomOrderListModel;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.models.InvoiceDGI;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DataManager {
@@ -20,7 +19,7 @@ public class DataManager {
     private ArrayList<listBankModel> bankData;
     private BankDataTopUp temp_other_atm;
     private List<InvoiceDGI> listInvoice;
-    private RequestParams invoiceParam;
+    private HashMap<String, Object> invoiceParam;
 
     public static DataManager getInstance(){
         if (singleton == null){
@@ -69,11 +68,11 @@ public class DataManager {
         this.listInvoice = listInvoice;
     }
 
-    public RequestParams getInvoiceParam() {
+    public HashMap<String, Object> getInvoiceParam() {
         return invoiceParam;
     }
 
-    public void setInvoiceParam(RequestParams invoiceParam) {
+    public void setInvoiceParam(HashMap<String, Object> invoiceParam) {
         this.invoiceParam = invoiceParam;
     }
 }

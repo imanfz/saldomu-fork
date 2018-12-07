@@ -23,8 +23,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.bank_biller_model;
 import com.sgo.saldomu.R;
@@ -35,6 +33,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DividerItemDecoration;
 import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.InputAmountTagihBillerDialog;
 import com.sgo.saldomu.dialogs.PaymentRemarkDialog;
@@ -44,7 +43,6 @@ import com.sgo.saldomu.models.MobilePhoneModel;
 import com.sgo.saldomu.models.PaymentTypeDGIModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -154,7 +152,7 @@ public class FragListInvoiceTagih extends BaseFragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                invoiceDGIAdapter.getFilter().filter(editable.toString());
             }
         });
 
@@ -197,17 +195,20 @@ public class FragListInvoiceTagih extends BaseFragment {
         invoiceDGIAdapter = new InvoiceDGIAdapter(invoiceDGIModelArrayList, getActivity(),
                 new InvoiceDGIAdapter.OnTap() {
                     @Override
-                    public void onTap(int pos) {
-                        showInputDialog(pos);
+                    public void onTap(InvoiceDGI model) {
+                        showInputDialog(model);
                     }
                 });
         listMenu.setAdapter(invoiceDGIAdapter);
         listMenu.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listMenu.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.row_divider),
                 false, false));
+
+
     }
 
-    void showInputDialog(int pos) {
+    void showInputDialog(InvoiceDGI model) {
+        int pos = invoiceDGIModelArrayList.indexOf(model);
         InputAmountTagihBillerDialog dialog = InputAmountTagihBillerDialog.newDialog(pos, invoiceDGIModelArrayList.get(pos), partialPayment,
                 new InputAmountTagihBillerDialog.OnTap() {
                     @Override
@@ -441,8 +442,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         JSONArray invoiceList = getInv(temp);
 
         String extraSignature = memberCode + commCodeTagih + phone_no;
-        final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_REQ_TOKEN_INVOICE_DGI,
-                userPhoneID, accessKey, extraSignature);
+        params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_INVOICE_DGI, extraSignature);
 
 //        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.MEMBER_CODE, memberCode);

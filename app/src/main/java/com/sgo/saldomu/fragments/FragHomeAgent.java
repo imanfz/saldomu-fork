@@ -44,6 +44,7 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.UpdateBBSData;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -93,6 +94,8 @@ public class FragHomeAgent extends BaseFragmentMainPage {
         else {
             _data = getResources().getStringArray(R.array.list_bbs_member);
         }
+
+//        Log.d("home_agent", "home agent scheme code: \n" + sp.getString(DefineValue.SCHEME_CODE, ""));
     }
 
     @Override
@@ -212,7 +215,36 @@ public class FragHomeAgent extends BaseFragmentMainPage {
             String[] _data = getResources().getStringArray(R.array.list_bbs_member);
         }
         Collections.addAll(menuItems,_data);
+
+        checkSchemeCode(menuItems);
+
         return menuItems;
+    }
+
+    void checkSchemeCode(ArrayList<String> menuItems){
+        String string = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
+        try {
+            JSONArray arr = new JSONArray(string);
+
+            for (int i=0; i<arr.length(); i++){
+                JSONObject obj = arr.getJSONObject(i);
+                String objs = obj.optString(WebParams.SCHEME_CODE, "");
+
+                switch (objs){
+                    case "ATC":
+                        menuItems.add(0, getResources().getString(R.string.cash_out));
+                        break;
+                    case "CTA":
+                        menuItems.add(0, getResources().getString(R.string.cash_in));
+                        break;
+                    case "DGI":
+                        menuItems.add(0, getResources().getString(R.string.menu_item_title_tagih_agent));
+                        break;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private int[] SetupMenuIcons() {

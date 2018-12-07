@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +65,7 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
 
         getDialog().setTitle(getString(R.string.invoice_dgi_payment));
         inpAmount             = view.findViewById(R.id.inpAmount);
+//        inpAmount.addTextChangedListener(textWatcher);
         btnDone               = view.findViewById(R.id.btnDone);
         btnCancel             = view.findViewById(R.id.btnCancel);
         inputInvLayout = view.findViewById(R.id.tableInvoiceAmount);
@@ -98,6 +101,31 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
         return view;
     }
 
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            inpAmount.addTextChangedListener(null);
+
+            if (charSequence.toString().substring(0, 1).equalsIgnoreCase("0")) {
+                inpAmount.setText("");
+            }else {
+//                inpAmount.setText(editable);
+            }
+
+            inpAmount.addTextChangedListener(this);
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -112,8 +140,9 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
             public void onClick(View v) {
                 String input = inpAmount.getText().toString().trim();
 
-                if (input.equalsIgnoreCase(""))
+                if (input.equalsIgnoreCase("")) {
                     input = "0";
+            }
 
                 if (checkInput(input)) {
                     listener.onTap(pos, input);
@@ -131,12 +160,19 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
         });
     }
 
+
+
     boolean checkInput(String input){
-        return Integer.valueOf(input) <= Integer.valueOf(lbl_remain_amount.getText().toString());
+        return Integer.valueOf(input) <= Integer.valueOf(lbl_remain_amount.getText().toString()) &&
+                !input.substring(0, 1).equalsIgnoreCase("0");
     }
 
     void showInvoiceAmount(){
         inputInvLayout.setVisibility(View.VISIBLE);
         inpAmount.setText(obj.getInput_amount());
+        if (inpAmount.getText().toString().equalsIgnoreCase("0"))
+        {
+            inpAmount.setText("");
+        }
     }
 }

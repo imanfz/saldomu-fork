@@ -9,9 +9,6 @@
     <include android:id="@+id/main_toolbar"
         layout="@layout/toolbar_main"/>
 
-
-
-
     <LinearLayout
         android:descendantFocusability="beforeDescendants"
         android:background="@color/grey_1000w"

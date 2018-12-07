@@ -19,6 +19,8 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ProgBarDialog;
 
+import java.util.HashMap;
+
 import timber.log.Timber;
 
 /**
@@ -33,6 +35,7 @@ public abstract class BaseFragment extends Fragment {
     protected ProgBarDialog loadingDialog;
     protected ProgressDialog progdialog;
     ProgressDialog progressDialog;
+    protected HashMap<String, Object> params;
 
     protected View v;
     protected Gson gson;
@@ -90,8 +93,13 @@ public abstract class BaseFragment extends Fragment {
 
     ProgressDialog getProgDialog() {
         if (progressDialog == null)
-            progressDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            progressDialog = DefinedDialog.CreateProgressDialog(getActivity());
         return progressDialog;
+    }
+
+    protected void showProgressDialog() {
+        if (!getProgDialog().isShowing())
+            getProgDialog().show();
     }
 
     protected void dismissProgressDialog() {
@@ -113,17 +121,6 @@ public abstract class BaseFragment extends Fragment {
             e.printStackTrace();
         }
 
-    }
-
-    ProgressDialog getProgressDialog(){
-        if (progdialog == null)
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-        return progdialog;
-    }
-
-    protected void showProgressDialog(){
-        if (!getProgressDialog().isShowing())
-            getProgressDialog().show();
     }
 
     public FragmentManager getFragManager(){

@@ -9,7 +9,7 @@ public class TagihModel extends RealmObject {
     private String id;
     private String anchor_name;
     private String anchor_cust;
-    private RealmList<com.sgo.saldomu.Beans.TagihCommunityModel> listCommunity;
+    private RealmList<TagihCommunityModel> listCommunity;
 
     public String getId() {
         return id;
@@ -35,11 +35,11 @@ public class TagihModel extends RealmObject {
         this.anchor_cust = anchor_cust;
     }
 
-    public RealmList<com.sgo.saldomu.Beans.TagihCommunityModel> getListCommunity() {
+    public RealmList<TagihCommunityModel> getListCommunity() {
         return listCommunity;
     }
 
-    public void setListCommunity(RealmList<com.sgo.saldomu.Beans.TagihCommunityModel> listCommunity) {
+    public void setListCommunity(RealmList<TagihCommunityModel> listCommunity) {
         this.listCommunity = listCommunity;
     }
 }

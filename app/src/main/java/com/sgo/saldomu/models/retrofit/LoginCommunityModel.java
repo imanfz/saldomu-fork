@@ -3,6 +3,8 @@ package com.sgo.saldomu.models.retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class LoginCommunityModel {
     @SerializedName("comm_id")
     @Expose
@@ -66,7 +68,7 @@ public class LoginCommunityModel {
     private String isMerchant;
     @SerializedName("is_agent")
     @Expose
-    private String isAgent;
+    private int isAgent;
     @SerializedName("merchant_subcategory")
     @Expose
     private String merchantSubcategory;
@@ -76,6 +78,9 @@ public class LoginCommunityModel {
     @SerializedName("unregister_member")
     @Expose
     private String unregisterMember;
+    @SerializedName("agent_scheme_codes")
+    @Expose
+    private List<SchemeCodeModel> agent_scheme_codes;
 
     public String getCommId() {
         return commId;
@@ -237,36 +242,23 @@ public class LoginCommunityModel {
         this.isMerchant = isMerchant;
     }
 
-    public String getIsAgent() {
+    public int getIsAgent() {
         return isAgent;
-    }
-
-    public void setIsAgent(String isAgent) {
-        this.isAgent = isAgent;
     }
 
     public String getMerchantSubcategory() {
         return merchantSubcategory;
     }
 
-    public void setMerchantSubcategory(String merchantSubcategory) {
-        this.merchantSubcategory = merchantSubcategory;
-    }
-
     public Object getFlowAgentType() {
         return flowAgentType;
-    }
-
-    public void setFlowAgentType(Object flowAgentType) {
-        this.flowAgentType = flowAgentType;
     }
 
     public String getUnregisterMember() {
         return unregisterMember;
     }
 
-    public void setUnregisterMember(String unregisterMember) {
-        this.unregisterMember = unregisterMember;
+    public List<SchemeCodeModel> getAgent_scheme_codes() {
+        return agent_scheme_codes;
     }
-
 }
