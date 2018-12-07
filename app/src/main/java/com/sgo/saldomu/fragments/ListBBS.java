@@ -283,10 +283,10 @@ public class ListBBS extends Fragment {
 
                 switch (objs){
                     case "ATC":
-                        menuItems.add(0, getResources().getString(R.string.cash_in));
+                        menuItems.add(0, getResources().getString(R.string.cash_out));
                         break;
                     case "CTA":
-                        menuItems.add(0, getResources().getString(R.string.cash_out));
+                        menuItems.add(0, getResources().getString(R.string.cash_in));
                         break;
                     case "DGI":
                         menuItems.add(0, getResources().getString(R.string.menu_item_title_tagih_agent));

@@ -249,10 +249,9 @@
 
                 <EditText
                     android:id="@+id/inpAmount"
-                    style="@style/LighterEditText"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:hint="Jumlah"
+                    android:hint="0"
                     android:inputType="number"
                     android:textColor="@android:color/black"
                     android:textColorHint="@color/grey_200" />

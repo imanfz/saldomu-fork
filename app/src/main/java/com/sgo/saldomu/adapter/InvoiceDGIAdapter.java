@@ -23,7 +23,7 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
     OnTap listener;
 
     public interface OnTap {
-        void onTap(int pos);
+        void onTap(InvoiceDGI model);
     }
 
     public InvoiceDGIAdapter(ArrayList<InvoiceDGI> invoiceDGIModelArrayList, Activity mContext, OnTap listener) {
@@ -80,7 +80,7 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
         holder.topLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onTap(position);
+                listener.onTap(invoiceDGIModelArrayList.get(position));
             }
         });
     }
