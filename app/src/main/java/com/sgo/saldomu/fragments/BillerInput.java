@@ -395,7 +395,7 @@ public class BillerInput extends Fragment {
                 if (inputValidation()) {
                     if (biller_type_code.equals(billerType[0]))
                         final_payment_remark = NoHPFormat.formatTo62(String.valueOf(et_payment_remark.getText()));
-                    else if(biller_type_code.equals(billerType[17]))
+                    else if(biller_type_code.equals(billerType[18]))
                     {
                         final_payment_remark = sp.getString(DefineValue.USERID_PHONE, "");
                     }

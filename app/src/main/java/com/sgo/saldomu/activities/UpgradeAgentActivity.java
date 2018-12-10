@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -70,6 +72,7 @@ public class UpgradeAgentActivity extends BaseActivity {
     private String listContactPhone = "";
     private String listAddress = "";
     String reject_siup, reject_npwp, remark_siup, remark_npwp;
+    CheckBox cb_termsncond;
 
     @Override
     protected int getLayoutResource() {
@@ -101,6 +104,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         tv_reject_npwp = v.findViewById(R.id.tv_respon_reject_npwp);
         layout_siup = v.findViewById(R.id.layout_foto_siup);
         layout_npwp = v.findViewById(R.id.layout_npwp);
+        cb_termsncond = v.findViewById(R.id.cb_termnsncond);
         cameraSIUP.setOnClickListener(setImageCameraSIUP);
         cameraNPWP.setOnClickListener(setImageCameraNPWP);
         btn_proses.setOnClickListener(prosesListener);
@@ -123,6 +127,16 @@ public class UpgradeAgentActivity extends BaseActivity {
         }
 
         InitializeToolbar();
+
+        cb_termsncond.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                    btn_proses.setEnabled(true);
+                else
+                    btn_proses.setEnabled(false);
+            }
+        });
 
         if (reject_siup.equalsIgnoreCase("Y") || reject_npwp.equalsIgnoreCase("Y"))
         {

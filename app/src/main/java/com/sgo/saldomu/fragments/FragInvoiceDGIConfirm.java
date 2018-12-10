@@ -230,7 +230,12 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                             Toast.makeText(getActivity(), "Token berhasil dikirim ulang!", Toast.LENGTH_LONG).show();
                         }
                         tx_id = response.getString(WebParams.TX_ID);
-                    } else {
+                    }
+                    else if(code.equals("0057")) {
+                        Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
+                        getFragmentManager().popBackStack();
+                    }
+                    else{
                         Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                     }
 

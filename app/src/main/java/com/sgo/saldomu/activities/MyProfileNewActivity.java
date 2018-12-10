@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -106,6 +108,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private ProgressDialog progdialog;
     private PickAndCameraUtil pickAndCameraUtil;
     private LinearLayout lytVerifiedMember;
+    CheckBox cb_termsncond;
 
     @Override
     protected int getLayoutResource() {
@@ -238,6 +241,7 @@ public class MyProfileNewActivity extends BaseActivity {
         btn1 = v.findViewById(R.id.button1);
         btn2 = v.findViewById(R.id.button2);
         lytVerifiedMember = v.findViewById(R.id.lyt_verifying_member);
+        cb_termsncond = v.findViewById(R.id.cb_termnsncond);
 
         levelClass = new LevelClass(this,sp);
 
@@ -323,6 +327,16 @@ public class MyProfileNewActivity extends BaseActivity {
             startActivity(intent1);
         }
 
+        cb_termsncond.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                    btn2.setEnabled(true);
+                else
+                    btn2.setEnabled(false);
+            }
+        });
+
         dataMemberBasic.setOnClickListener(member_basic_click);
         dataVerifiedMember.setOnClickListener(verified_member_click);
         tv_dob.setOnClickListener(textDOBListener);
@@ -384,6 +398,8 @@ public class MyProfileNewActivity extends BaseActivity {
 //        }
 
     }
+
+
 
 
     private void InitializeToolbar() {

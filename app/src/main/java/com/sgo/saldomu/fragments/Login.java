@@ -395,6 +395,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             mEditor.putString(DefineValue.USER_NAME, response.getString(WebParams.USER_NAME));
             mEditor.putString(DefineValue.CUST_ID, response.getString(WebParams.CUST_ID));
             mEditor.putString(DefineValue.CUST_NAME, response.getString(WebParams.CUST_NAME));
+            mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, response.getString(WebParams.IS_MEMBER_SHOP_DGI));
 
             mEditor.putString(DefineValue.PROFILE_DOB, response.getString(WebParams.DOB));
             mEditor.putString(DefineValue.PROFILE_ADDRESS, response.getString(WebParams.ADDRESS));

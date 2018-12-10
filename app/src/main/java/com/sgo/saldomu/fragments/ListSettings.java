@@ -96,33 +96,11 @@ public class ListSettings extends ListFragment {
                     i = new Intent(getActivity(), MyProfileNewActivity.class);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                     break;
-                case 1:
-                    i = new Intent(getActivity(), ChangePassword.class);
-                    switchActivity(i);
-                    break;
-
-                case 2:
-                    i = new Intent(getActivity(), ChangePIN.class);
-                    switchActivity(i);
-                    break;
-
-                case 3:
-                    i = new Intent(getActivity(), AboutAppsActivity.class);
-                    switchActivity(i);
-                    break;
-            }
-        }
-        else {
-            switch (position) {
-                case 0:
-                    i = new Intent(getActivity(), MyProfileNewActivity.class);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                    break;
 
                 case 1:
-                    i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                    switchActivity(i);
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                     break;
+
                 case 2:
                     i = new Intent(getActivity(), ChangePassword.class);
                     switchActivity(i);
@@ -134,6 +112,35 @@ public class ListSettings extends ListFragment {
                     break;
 
                 case 4:
+                    i = new Intent(getActivity(), AboutAppsActivity.class);
+                    switchActivity(i);
+                    break;
+            }
+        }
+        else {
+            switch (position) {
+                case 0:
+                    i = new Intent(getActivity(), MyProfileNewActivity.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                    break;
+                case 1:
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                    break;
+                case 2:
+                    i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    switchActivity(i);
+                    break;
+                case 3:
+                    i = new Intent(getActivity(), ChangePassword.class);
+                    switchActivity(i);
+                    break;
+
+                case 4:
+                    i = new Intent(getActivity(), ChangePIN.class);
+                    switchActivity(i);
+                    break;
+
+                case 5:
                     i = new Intent(getActivity(), AboutAppsActivity.class);
                     switchActivity(i);
                     break;

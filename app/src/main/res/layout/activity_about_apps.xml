@@ -64,6 +64,13 @@
                           android:textColor="@color/grey_400"
                           android:text="@string/about_apps_ver_detail"/>
 
+                <TextView android:id="@+id/version_detail1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/white"
+                    android:text="@string/about_apps_ver_detail1"/>
+
             </LinearLayout>
 
             </ScrollView>
