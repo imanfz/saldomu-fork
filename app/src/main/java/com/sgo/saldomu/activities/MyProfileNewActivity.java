@@ -247,8 +247,6 @@ public class MyProfileNewActivity extends BaseActivity {
 
 //        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
-        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
-
 
         if (!is_agent && !levelClass.isLevel1QAC() && !isUpgradeAgent)
         {
@@ -326,16 +324,6 @@ public class MyProfileNewActivity extends BaseActivity {
             Intent intent1 = new Intent(MyProfileNewActivity.this, UpgradeAgentActivity.class);
             startActivity(intent1);
         }
-
-        cb_termsncond.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
-                    btn2.setEnabled(true);
-                else
-                    btn2.setEnabled(false);
-            }
-        });
 
         dataMemberBasic.setOnClickListener(member_basic_click);
         dataVerifiedMember.setOnClickListener(verified_member_click);
@@ -1098,7 +1086,7 @@ public class MyProfileNewActivity extends BaseActivity {
         dialognya.setCanceledOnTouchOutside(false);
         dialognya.setCancelable(false);
 
-//        dialognya.show();
+        dialognya.show();
     }
 
     private void DialogWaitingUpgradeAgent()
@@ -1195,8 +1183,8 @@ public class MyProfileNewActivity extends BaseActivity {
 
                             mEdit.apply();
                             DialogSuccessUploadPhoto();
-                            Toast.makeText(MyProfileNewActivity.this,"Selesai daftar",Toast.LENGTH_LONG).show();
-                            finish();
+//                            Toast.makeText(MyProfileNewActivity.this,"Selesai daftar",Toast.LENGTH_LONG).show();
+//                            finish();
 
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:"+response.toString());
