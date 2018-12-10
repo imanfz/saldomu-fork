@@ -92,7 +92,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
     ProgressDialog progdialog2;
-    String shopStatus;
+    String shopStatus, isMemberShopDGI;
 
     private static final int RC_GPS_REQUEST = 1;
 
@@ -152,6 +152,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         levelClass = new LevelClass(getActivity(),sp);
+
+        isMemberShopDGI = sp.getString(DefineValue.IS_MEMBER_SHOP_DGI,"0");
 
         btn_beli = (Button) v.findViewById(R.id.btn_beli);
         input = (EditText) v.findViewById(R.id.input);

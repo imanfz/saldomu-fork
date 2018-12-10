@@ -157,7 +157,7 @@
 
             <LinearLayout
                 android:id="@+id/lyt_verifying_member"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -412,6 +412,14 @@
                             />
 
                     </RelativeLayout>
+
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/terms_condition_upload_ktp"
+                        android:textColor="@color/black"
+                        android:id="@+id/cb_termnsncond"/>
 
                     <Button
                         android:id="@+id/button2"
