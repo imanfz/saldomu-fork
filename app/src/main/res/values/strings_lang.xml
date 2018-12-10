@@ -527,6 +527,10 @@
     <string name="about_apps_desc"><b>Saldomu</b> adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
     <string name="about_apps_ver" translatable="false">Version</string>
     <string name="about_apps_ver_detail" translatable="false">V 1.0 last update (16/04/2015)</string>
+    <string name="about_apps_ver_detail1" translatable="false">PT. MITRA PEMBAYARAN ELEKTRONIK \n
+                Kantor Pusat :\n
+                Ruko Villa Bukit Mas RE No. 7 \n
+                Surabaya - 60225</string>
 
     <string name="version" translatable="false">1.0</string>
     <string name="last_update" translatable="false">16/04/2015 18:00:00</string>
@@ -1270,12 +1274,13 @@
     <string name="preview_tx_id">ID Transaksi</string>
     <string name="preview_comm_name">Nama Community</string>
     <string name="preview_input_amount">Jumlah yang dibayar</string>
-    <string name="preview_input_amount_hint">Masukan jumlah yang dibayar</string>
+    <string name="preview_input_amount_hint">Masukkan jumlah yang dibayar</string>
     <string name="max_partial">Maks. Partial</string>
     <string name="edithint_otp">Masukan kode token</string>
     <string name="token_code">Kode Token</string>
     <string name="alert">unable to get content from server</string>
     <string name="detail">Detail</string>
     <string name="otp">OTP</string>
-    <string name="terms_condition_upload_ktp">ASD</string>
+    <string name="terms_condition_upload_ktp">Bersama ini saya menyatakan bahwa dokumen yang saya unggah diatas adalah benar.
+        Apabila dikemudian hari ditemukan dokumen diatas tidak benar, maka saya siap menerima keputusan sesuai dengan aturan yang berlaku.</string>
 </resources>
