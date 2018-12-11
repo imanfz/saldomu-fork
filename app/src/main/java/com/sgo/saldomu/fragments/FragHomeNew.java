@@ -511,13 +511,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
 //            String[] categories = new String[shopCategories.size()];
             ArrayList<String> categories = new ArrayList<>();
-            for (int x = 0; x < shopCategories.size(); x++) {
-                if (shopCategories.get(x).getSchemeCode().contains("DGI")) {
+            ArrayList<ShopCategory> temp = new ArrayList<>(shopCategories);
+
+            for (int x = 0; x < temp.size(); x++) {
+                if (temp.get(x).getSchemeCode().contains("DGI")) {
                     if (isMemberShopDGI.equalsIgnoreCase("1")) {
-                        categories.add(getString(R.string.menu_item_search_agent_bbs) + " " + shopCategories.get(x).getCategoryName());
+                        categories.add(getString(R.string.menu_item_search_agent_bbs) + " " + temp.get(x).getCategoryName());
                     }else shopCategories.remove(x);
                 } else
-                    categories.add(getString(R.string.menu_item_search_agent_bbs) + " " + shopCategories.get(x).getCategoryName());
+                    categories.add(getString(R.string.menu_item_search_agent_bbs) + " " + temp.get(x).getCategoryName());
             }
 //            Collections.addAll(data, categories);
             data.addAll(categories);

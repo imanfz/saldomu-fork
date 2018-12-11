@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.bank_biller_model;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.adapter.InvoiceDGIAdapter;
@@ -447,6 +448,7 @@ public class FragListInvoiceTagih extends BaseFragment {
 
 //        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.MEMBER_CODE, memberCode);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.COMM_CODE, commCodeTagih);
         params.put(WebParams.USER_ID, userPhoneID);
         params.put(WebParams.SALES_ID, userPhoneID);

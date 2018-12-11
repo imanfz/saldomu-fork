@@ -1646,7 +1646,7 @@ public class MyApiClient {
         post(mContext, LINK_CONFIRM_PAYMENT_DGI, params, responseHandler);
     }
     public static void reqTokenInvDGI (Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address list invoice DGI: %1$s ",LINK_REQ_TOKEN_INVOICE_DGI);
+        Timber.wtf("address req token invoice DGI: %1$s ",LINK_REQ_TOKEN_INVOICE_DGI);
         post(mContext, LINK_REQ_TOKEN_INVOICE_DGI, params, responseHandler);
     }
 

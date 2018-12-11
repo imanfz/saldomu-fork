@@ -181,6 +181,7 @@
                 android:layout_margin="30dp"
                 android:background="@color/colorPrimaryDark"
                 android:text="Proses"
+                android:enabled="false"
                 android:textColor="@color/white" />
         </LinearLayout>
     </ScrollView>

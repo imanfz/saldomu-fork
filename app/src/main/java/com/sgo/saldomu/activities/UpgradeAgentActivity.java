@@ -98,6 +98,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         cameraSIUP = v.findViewById(R.id.camera_siup);
         cameraNPWP = v.findViewById(R.id.camera_npwp);
         btn_proses = v.findViewById(R.id.button_proses);
+        btn_proses.setEnabled(false);
         tv_pb_siup = v.findViewById(R.id.tv_pb1_upgradeAgent);
         tv_pb_npwp = v.findViewById(R.id.tv_pb2_upgradeAgent);
         tv_reject_siup = v.findViewById(R.id.tv_respon_reject_siup);

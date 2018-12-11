@@ -1281,6 +1281,6 @@
     <string name="alert">unable to get content from server</string>
     <string name="detail">Detail</string>
     <string name="otp">OTP</string>
-    <string name="terms_condition_upload_ktp">Bersama ini saya menyatakan bahwa dokumen yang saya unggah diatas adalah benar.
-        Apabila dikemudian hari ditemukan dokumen diatas tidak benar, maka saya siap menerima keputusan sesuai dengan aturan yang berlaku.</string>
+    <string name="terms_condition_upload_ktp">Dengan ini saya menyatakan bahwa dokumen yang saya unggah adalah benar keabsahannya
+        dan saya akan bertanggung jawab serta bersedia di hukum sesuai hukum yang berlaku jika di kemudian hari ditemukan ketidaksesuaian.</string>
 </resources>
