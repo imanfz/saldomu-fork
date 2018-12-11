@@ -224,7 +224,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                     dismissProgressDialog();
                     String code = response.getString(WebParams.ERROR_CODE);
                     String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                    Timber.d("response list invoice DGI : " + response.toString());
+                    Timber.d("response req token invoice DGI : " + response.toString());
                     if (code.equals(WebParams.SUCCESS_CODE)) {
                         if (click) {
                             Toast.makeText(getActivity(), "Token berhasil dikirim ulang!", Toast.LENGTH_LONG).show();
@@ -265,7 +265,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                 else
                     Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                Timber.w("Error list invoice DGI : " + throwable.toString());
+                Timber.w("Error req token DGI : " + throwable.toString());
 
                 dismissProgressDialog();
             }
