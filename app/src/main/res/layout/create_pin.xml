@@ -63,6 +63,13 @@
                         android:layout_height="80dp"
                         android:layout_gravity="center_horizontal"
                         android:src="@drawable/icon_lock"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_horizontal"
+                        android:text="Jaga kerahasiaan PIN anda"
+                        android:textStyle="italic"/>
                     <FrameLayout
 
                         android:id="@+id/root"

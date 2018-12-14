@@ -162,6 +162,16 @@
                     android:progress="1" />
             </RelativeLayout>
 
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/terms_condition_upload_ktp"
+                android:textColor="@color/black"
+                android:id="@+id/cb_termnsncond"
+                android:textStyle="italic"
+                android:textSize="12sp"
+                />
 
             <Button
                 android:id="@+id/button_proses"
@@ -171,6 +181,7 @@
                 android:layout_margin="30dp"
                 android:background="@color/colorPrimaryDark"
                 android:text="Proses"
+                android:enabled="false"
                 android:textColor="@color/white" />
         </LinearLayout>
     </ScrollView>

@@ -18,6 +18,9 @@ public class LoginModel extends jsonModel {
     @SerializedName("cust_name")
     @Expose
     private String custName;
+    @SerializedName("is_member_shop_dgi")
+    @Expose
+    private String is_member_shop_dgi;
     @SerializedName("community")
     @Expose
     private List<LoginCommunityModel> community = null;
@@ -546,5 +549,9 @@ public class LoginModel extends jsonModel {
 
     public void setAccessSecret(String accessSecret) {
         this.accessSecret = accessSecret;
+    }
+
+    public String getIs_member_shop_dgi() {
+        return is_member_shop_dgi;
     }
 }

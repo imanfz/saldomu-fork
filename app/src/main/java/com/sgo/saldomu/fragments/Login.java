@@ -366,6 +366,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             mEditor.putString(DefineValue.USER_NAME, model.getUserName());
             mEditor.putString(DefineValue.CUST_ID, model.getCustId());
             mEditor.putString(DefineValue.CUST_NAME, model.getCustName());
+            mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, model.getIs_member_shop_dgi());
 
             mEditor.putString(DefineValue.PROFILE_DOB, model.getDateOfBirth());
             mEditor.putString(DefineValue.PROFILE_ADDRESS, model.getAddress());

@@ -71,7 +71,7 @@ android {
             buildConfigField "long", "REALM_SCHEME_BBS_VERSION", "1"
             buildConfigField "String", "REALM_BBS_MEMBER_BANK_NAME", "\"bbsmemberbank.realm\""
             buildConfigField "long", "REALM_SCHEME_BBS_MEMBER_BANK_VERSION", "1"
-            buildConfigField "String", "REALM_TAGIH_NAME", "\"saldomudevtagih.realm\""
+            buildConfigField "String", "REALM_TAGIH_NAME", "\"saldomutagih.realm\""
             buildConfigField "long", "REALM_SCHEME_TAGIH_VERSION", "2"
 
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "false"
@@ -105,7 +105,7 @@ android {
             buildConfigField "long", "REALM_SCHEME_BBS_VERSION", "1"
             buildConfigField "String", "REALM_BBS_MEMBER_BANK_NAME", "\"bbsmemberbank.realm\""
             buildConfigField "long", "REALM_SCHEME_BBS_MEMBER_BANK_VERSION", "1"
-            buildConfigField "String", "REALM_TAGIH_NAME", "\"saldomudevtagih.realm\""
+            buildConfigField "String", "REALM_TAGIH_NAME", "\"saldomutagih.realm\""
             buildConfigField "long", "REALM_SCHEME_TAGIH_VERSION", "2"
 
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "true"
@@ -124,8 +124,8 @@ android {
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 26
-            versionName "2.8.1"
+            versionCode = 27
+            versionName "2.9"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
     }

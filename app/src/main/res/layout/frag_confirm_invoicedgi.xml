@@ -29,12 +29,6 @@
             android:layout_width="fill_parent"
             android:layout_height="match_parent">
 
-            <View
-                android:id="@+id/view"
-                android:layout_width="fill_parent"
-                android:layout_height="1.0dip"
-                android:background="@color/grey_200" />
-
             <Button
                 android:id="@+id/btn_desc"
                 style="@style/ButtonYellow"
@@ -70,12 +64,14 @@
                 android:paddingRight="20.0dip"
                 android:text="Total" />
 
+
             <View
-                style="@style/VerticalLine"
                 android:layout_width="1.0dip"
                 android:layout_height="50.0dip"
                 android:layout_marginBottom="1.0dip"
-                android:layout_marginTop="1.0dip" />
+                android:layout_marginTop="1.0dip"
+                android:layout_span="1"
+                android:background="@color/grey_200" />
 
             <TextView
                 android:id="@+id/lbl_total_pay_amount"
@@ -102,15 +98,15 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp">
 
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="3.0dip"
+            <TextView
+                style="@style/TextOnForm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginBottom="1.0dip"
                 android:layout_marginTop="1.0dip"
-                android:layout_span="1"
-                android:src="@drawable/ic_kata_rahasia" />
+                android:paddingRight="20.0dip"
+                android:text="@string/otp" />
 
             <View
                 android:layout_width="1.0dip"
@@ -124,9 +120,10 @@
                 android:id="@+id/txtOtp"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:hint="@string/otp"
+                android:hint="@string/otp_hint"
                 android:inputType="textPassword"
                 android:maxLength="12"
+                android:textSize="14dp"
                 android:textColor="@color/black" />
         </TableRow>
 

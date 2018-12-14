@@ -801,15 +801,5 @@ public class MyApiClient {
         }
     }
 
-//    public static void CancelRequestWS(Context _context,Boolean interruptIfRunning)
-//    {
-//        getClient().cancelRequests(_context, interruptIfRunning);
-//    }
-//
-//    public static void CancelRequestWSByTag(String tag,Boolean interruptIfRunning)
-//    {
-//        getClient().cancelRequestsByTAG(tag, interruptIfRunning);
-//    }
-    //----------------------------------------------------------------------------------------------------
 }
 
