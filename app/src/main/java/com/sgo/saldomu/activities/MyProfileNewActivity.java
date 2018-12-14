@@ -245,9 +245,9 @@ public class MyProfileNewActivity extends BaseActivity {
 
 //        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
-        if (levelClass.isLevel1QAC() && isRegisteredLevel) {
-            DialogSuccessUploadPhoto();
-        }
+//        if (levelClass.isLevel1QAC() && isRegisteredLevel) {
+//            DialogSuccessUploadPhoto();
+//        }
 
 
         if (!is_agent && !levelClass.isLevel1QAC() && !isUpgradeAgent) {
@@ -628,45 +628,46 @@ public class MyProfileNewActivity extends BaseActivity {
                                 setLoginProfile(model);
                                 Toast.makeText(MyProfileNewActivity.this, getString(R.string.myprofile_toast_update_success), Toast.LENGTH_LONG).show();
 //                                    Timber.d("isi response Update Profile:"+ response.toString());
-                                if (levelClass.isLevel1QAC()) {
-                                    android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
-                                    builder1.setTitle(R.string.upgrade_member);
-                                    builder1.setMessage(R.string.message_upgrade_member);
-                                    builder1.setCancelable(true);
-
-                                    builder1.setPositiveButton(
-                                            "Yes",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dataVerifiedMember.setVisibility(View.VISIBLE);
-                                                    et_nama.setEnabled(false);
-                                                    tv_dob.setEnabled(false);
-                                                    btn1.setVisibility(View.GONE);
-                                                    if (is_first_time) {
-                                                        setResult(MainPage.RESULT_FIRST_TIME);
-                                                    }
-                                                }
-                                            });
-
-                                    builder1.setNegativeButton(
-                                            "No",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    tv_dob.setEnabled(false);
-                                                    if (is_first_time) {
-                                                        RESULT = MainPage.RESULT_FIRST_TIME;
-                                                        setResult(MainPage.RESULT_FIRST_TIME);
-                                                        finish();
-                                                    } else
-                                                        finish();
-                                                }
-                                            });
-
-                                    android.support.v7.app.AlertDialog alert11 = builder1.create();
-                                    alert11.show();
-                                } else {
+//                                if (levelClass.isLevel1QAC()) {
+//                                    android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
+//                                    builder1.setTitle(R.string.upgrade_member);
+//                                    builder1.setMessage(R.string.message_upgrade_member);
+//                                    builder1.setCancelable(true);
+//
+//                                    builder1.setPositiveButton(
+//                                            "Yes",
+//                                            new DialogInterface.OnClickListener() {
+//                                                public void onClick(DialogInterface dialog, int id) {
+//                                                    dataVerifiedMember.setVisibility(View.VISIBLE);
+//                                                    et_nama.setEnabled(false);
+//                                                    tv_dob.setEnabled(false);
+//                                                    btn1.setVisibility(View.GONE);
+//                                                    if (is_first_time) {
+//                                                        setResult(MainPage.RESULT_FIRST_TIME);
+//                                                    }
+//                                                }
+//                                            });
+//
+//                                    builder1.setNegativeButton(
+//                                            "No",
+//                                            new DialogInterface.OnClickListener() {
+//                                                public void onClick(DialogInterface dialog, int id) {
+//                                                    tv_dob.setEnabled(false);
+//                                                    if (is_first_time) {
+//                                                        RESULT = MainPage.RESULT_FIRST_TIME;
+//                                                        setResult(MainPage.RESULT_FIRST_TIME);
+//                                                        finish();
+//                                                    } else
+//                                                        finish();
+//                                                }
+//                                            });
+//
+//                                    android.support.v7.app.AlertDialog alert11 = builder1.create();
+//                                    alert11.show();
+//                                }
+//                                else {
                                     finish();
-                                }
+//                                }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -954,7 +955,7 @@ public class MyProfileNewActivity extends BaseActivity {
         dialognya.setCanceledOnTouchOutside(false);
         dialognya.setCancelable(false);
 
-//        dialognya.show();
+        dialognya.show();
     }
 
     private void DialogWaitingUpgradeAgent() {
