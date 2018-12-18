@@ -459,6 +459,7 @@
     <string name="phone">Nomor Handphone </string>
     <string name="email" translatable="false">email : </string>
     <string name="submit">Proses</string>
+    <string name="reg_shop_dgi">Registrasi Toko</string>
     <string name="request_money">Minta Sekarang</string>
 
     <string name="cashout_info" translatable="false">Info</string>
@@ -488,6 +489,7 @@
     <string name="report_dialog_text_adminname">Nama Admin</string>
     <string name="report_dialog_text_status" translatable="false">Status</string>
     <string name="report_dialog_text_reason">Alasan</string>
+    <string name="text_reason">Masukkan Alasan</string>
     <string name="report_dialog_text_remark_destination">ID Tujuan</string>
     <string name="report_filter_button_on">Filter Hidup</string>
     <string name="report_filter_button_off">Filter Mati</string>
@@ -565,7 +567,9 @@
     <string name="rsb_validation_acc_no">Nomor Akun dibutuhkan!</string>
 
     <string name="myprofile_validation_date">Tanggal lahir tidak boleh melebihi tanggal hari ini</string>
+    <string name="validation_date">Tanggal datang kembali tidak boleh kurang tanggal hari ini</string>
     <string name="myprofile_validation_date_empty">Tanggal lahir tidak boleh kosong</string>
+    <string name="validation_date_empty">Tanggal lahir tidak boleh kosong</string>
     <string name="myprofile_dob_warning">*Pastikan bahwa tanggal lahir yang Anda pilih sudah sesuai dengan yang tertera pada KTP.</string>
     <string name="myprofile_email_warning">*Pastikan bahwa alamat Email yang tercantum sudah sesuai dan dalam keadaan aktif, karena seluruh laporan transaksi Saldomu Anda akan dikirimkan ke alamat Email tersebut.</string>
     <string name="cashout_lkd_warning_1">*Pastikan bahwa No. Rekening yang Anda masukkan sudah benar.</string>
@@ -675,7 +679,7 @@
     <string name="refresh">Perbaharui</string>
     <string name="no_transaction">Tidak ada Transaksi</string>
     <string name="no_data">Tidak ada Data</string>
-    <string name="cancel_transaction">Batal Transaksi</string>
+    <string name="cancel_transaction">Pembatalan Transaksi</string>
     <string name="check_transaksi">Cek Transaksi</string>
     <string name="dialog_notinput_cashoutcode">Kode Cashout Belum Di Input</string>
     <string name="cashoutagen_nodata_message">Untuk menggunakan fitur ini silahkan datang ke :</string>
@@ -1281,6 +1285,8 @@
     <string name="alert">unable to get content from server</string>
     <string name="detail">Detail</string>
     <string name="otp">OTP</string>
+    <string name="collector_balance">Saldo Kolektor</string>
+    <string name="cancel_transaction_dgi">Transaksi Sukses Dibatalkan</string>
     <string name="terms_condition_upload_ktp">Dengan ini saya menyatakan bahwa dokumen yang saya unggah adalah benar keabsahannya
         dan saya akan bertanggung jawab serta bersedia di hukum sesuai hukum yang berlaku jika di kemudian hari ditemukan ketidaksesuaian.</string>
 </resources>

@@ -927,6 +927,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                 if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI))
                                 {
                                     Intent intent = new Intent(getApplicationContext(), TagihActivity.class);
+                                    intent.putExtra(DefineValue.IS_SEARCH_DGI, true);
                                     startActivity(intent);
                                     finish();
 

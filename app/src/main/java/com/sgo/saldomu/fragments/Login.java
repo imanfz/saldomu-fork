@@ -447,6 +447,9 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.putString(DefineValue.AUTHENTICATION_TYPE, arrayJson.getJSONObject(i).getString(WebParams.AUTHENTICATION_TYPE));
                         mEditor.putString(DefineValue.LENGTH_AUTH, arrayJson.getJSONObject(i).getString(WebParams.LENGTH_AUTH));
                         mEditor.putString(DefineValue.IS_HAVE_PIN, arrayJson.getJSONObject(i).getString(WebParams.IS_HAVE_PIN));
+                        if (!arrayJson.getJSONObject(i).getString(WebParams.AGENT_TYPE).isEmpty()){
+                            mEditor.putString(DefineValue.AGENT_TYPE, arrayJson.getJSONObject(i).getString(WebParams.AGENT_TYPE));
+                        }
                         mEditor.putInt(DefineValue.LEVEL_VALUE, arrayJson.getJSONObject(i).optInt(WebParams.MEMBER_LEVEL, 0));
                         if (arrayJson.getJSONObject(i).optString(WebParams.ALLOW_MEMBER_LEVEL, DefineValue.STRING_NO).equals(DefineValue.STRING_YES))
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, true);
