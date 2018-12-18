@@ -93,6 +93,7 @@ public class FragTagihInput extends BaseFragment {
 
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);
+        btn_regShop.setOnClickListener(registrationListener);
     }
 
     Button.OnClickListener submitListener = new Button.OnClickListener() {
@@ -100,6 +101,25 @@ public class FragTagihInput extends BaseFragment {
         public void onClick(View view) {
             if (inputValidation()) {
                 sendDataTagih();
+            }
+        }
+    };
+
+    Button.OnClickListener registrationListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (inputValidation()) {
+                Fragment newFrag = new FragShopRegistration();
+                Bundle bundle = new Bundle();
+                bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
+                bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+
+                newFrag.setArguments(bundle);
+                if(getActivity() == null){
+                    return;
+                }
+                TagihActivity ftf = (TagihActivity) getActivity();
+                ftf.switchContent(newFrag,"Registrasi Alamat Toko",true);
             }
         }
     };
