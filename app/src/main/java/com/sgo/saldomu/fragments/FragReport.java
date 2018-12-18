@@ -73,7 +73,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     final static int REPORT_SCASH = 0x0299394;
     final static int REPORT_ESPAY = 0x0299393;
     final static int REPORT_FEE = 0x0299396;
-    final static int REPORT_COL = 0x0299397;
     private final String DATEFROM = "tagFrom";
     private final String DATETO = "tagTo";
     final private String ITEM_DESC_LISTRIK = "Listrik";
@@ -81,12 +80,12 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     final private String ITEM_DESC_NON = "PLN Non-Taglis";
     final private String ITEM_DESC_BPJS = "BPJS";
 
-    private TextView tv_date_from, tv_date_to, sumTotalTrx, sumRelAmount, sumRelTrx, sumUnrelTrx, sumUnrelAmount, tv_invoiceNo;
+    private TextView tv_date_from, tv_date_to, sumTotalTrx, sumRelAmount, sumRelTrx, sumUnrelTrx, sumUnrelAmount, tv_txId;
 
     private View v;
     private LinearLayout layout_filter, layout_summary;
     private int height;
-    private String OrifromDate;
+    private String OrifromDate, comm_id_tagih;
     private String OritoDate;
     private ListView lv_report;
     private ViewGroup footerLayout;
@@ -236,11 +235,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             sumRelTrx = getV().findViewById(R.id.tv_tx_released);
             sumUnrelAmount = getV().findViewById(R.id.tv_amount_unreleased);
             sumUnrelTrx = getV().findViewById(R.id.tv_tx_unreleased);
-            lv_report.setAdapter(adapter);
-        }else if (report_type == REPORT_COL) {
-            ArrayList<ReportAskListModel> mData = new ArrayList<>();
-            ReportAskListAdapter adapter = new ReportAskListAdapter(getActivity(), R.layout.list_transaction_report_collector_item, mData);
-            tv_invoiceNo = getV().findViewById(R.id.text_invoice_no);
             lv_report.setAdapter(adapter);
         }
         setLoadMore(false);
@@ -428,17 +422,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             paramsFee.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
             paramsFee.put(WebParams.USER_ID, user_id);
 
-            RequestParams paramsCollector = MyApiClient.getInstance()
-                    .getSignatureWithParams(MyApiClient.LINK_REPORT_COLLECTOR);
-            paramsFee.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
-            paramsFee.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            paramsFee.put(WebParams.PAGE, _page);
-            paramsFee.put(WebParams.DATE_FROM, _date_from);
-            paramsFee.put(WebParams.DATE_TO, _date_to);
-            paramsFee.put(WebParams.OFFSET, sp.getString(DefineValue.OFFSET, ""));
-            paramsFee.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
-            paramsFee.put(WebParams.USER_ID, user_id);
-
             JsonHttpResponseHandler deHandler = new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -558,9 +541,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                     }
                                     setSummarytoView(SummaryFeeModel);
 
-                                }else if (report_type == REPORT_COL) {
-                                    Timber.d("Isi response report collector:" + response.toString());
-
                                 }
 
                                 int _page = response.optInt(WebParams.NEXT, 0);
@@ -673,10 +653,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 //                Timber.d("Webservice:"+webserviceFee);
                 Timber.d("Isi params report comm fee:" + paramsFee.toString());
                 MyApiClient.sentReportCommFee(getActivity(), paramsFee, deHandler);
-            }else if (report_type == REPORT_COL) {
-//                Timber.d("Webservice:"+webserviceFee);
-                Timber.d("Isi params report collector:" + paramsCollector.toString());
-                MyApiClient.sentReportCollector(getActivity(), paramsCollector, deHandler);
             }
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
@@ -718,9 +694,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         } else if (report_type == REPORT_FEE) {
             ReportCommFeeAdapter ya = (ReportCommFeeAdapter) getUniAdapter();
             ya.clear();
-//        }else if (report_type == REPORT_COL) {
-//            ReportCollectorAdapter ya = (ReportCollectorAdapter) getUniAdapter();
-//            ya.clear();
         }
     }
 
@@ -737,9 +710,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         } else if (report_type == REPORT_FEE) {
             ReportCommFeeAdapter ya = (ReportCommFeeAdapter) getUniAdapter();
             ya.notifyDataSetChanged();
-//        }else if (report_type == REPORT_COL) {
-//            ReportCollectorAdapter ya = (ReportCollectorAdapter) getUniAdapter();
-//            ya.notifyDataSetChanged();
         }
     }
 
@@ -760,10 +730,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             ReportCommFeeAdapter ya = (ReportCommFeeAdapter) getUniAdapter();
             ReportListCommFeeModel obj = (ReportListCommFeeModel) ok;
             ya.add(obj);
-//        }else if (report_type == REPORT_COL) {
-//            ReportCollectorAdapter ya = (ReportCollectorAdapter) getUniAdapter();
-//            ReportListComllectorModel obj = (ReportListComllectorModel) ok;
-//            ya.add(obj);
         }
     }
 
@@ -1000,6 +966,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                         response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.COMM_CODE,""),
                         response.optString(WebParams.MEMBER_CODE,""), response.optString(WebParams.DENOM_DETAIL,""), response.optString(WebParams.ORDER_ID,""));
 
+            }else if (mobj.getBuss_scheme_code().equals("DGI")) {
+                showReportCollectorDialog(response);
             }
         }
     }
@@ -1400,6 +1368,60 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
 
         dialog.setArguments(args);
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.add(dialog, ReportBillerDialog.TAG);
+        ft.commitAllowingStateLoss();
+    }
+
+    private void showReportCollectorDialog(JSONObject response) {
+        Bundle args = new Bundle();
+        String txStatus = response.optString(WebParams.TX_STATUS);
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
+        args.putString(DefineValue.USER_NAME, response.optString(WebParams.MEMBER_CUST_NAME));
+        args.putString(DefineValue.DATE_TIME, response.optString(WebParams.CREATED));
+        args.putString(DefineValue.TX_ID, response.optString(WebParams.TX_ID));
+        args.putString(DefineValue.REPORT_TYPE, DefineValue.DGI);
+
+        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.TX_AMOUNT)));
+
+        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.ADMIN_FEE)));
+        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.TOTAL_AMOUNT)));
+        args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, true);
+
+        Boolean txStat = false;
+        if (txStatus.equals(DefineValue.SUCCESS)) {
+            txStat = true;
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
+            txStat = true;
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+        } else if (txStatus.equals(DefineValue.SUSPECT)) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+        } else if (!txStatus.equals(DefineValue.FAILED)) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+        } else {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+        }
+        args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        if (!txStat)
+            args.putString(DefineValue.TRX_REMARK, response.optString(WebParams.TX_REMARK));
+
+
+        args.putString(DefineValue.DETAILS_BILLER, response.optString(WebParams.DETAIL, ""));
+
+
+        args.putString(DefineValue.INVOICE, response.optString(WebParams.INVOICE));
+        args.putString(DefineValue.BUSS_SCHEME_CODE, response.optString(WebParams.BUSS_SCHEME_CODE));
+        args.putString(DefineValue.BUSS_SCHEME_NAME, response.optString(WebParams.BUSS_SCHEME_NAME));
+        args.putString(DefineValue.PRODUCT_NAME, response.optString(WebParams.PRODUCT_NAME));
+        args.putString(DefineValue.PAYMENT_TYPE_DESC, response.optString(WebParams.PAYMENT_TYPE_DESC));
+        args.putString(DefineValue.DGI_MEMBER_NAME, response.optString(WebParams.DGI_MEMBER_NAME));
+        args.putString(DefineValue.DGI_ANCHOR_NAME, response.optString(WebParams.DGI_ANCHOR_NAME));
+        args.putString(DefineValue.DGI_COMM_NAME, response.optString(WebParams.DGI_COMM_NAME));
+
+        dialog.setArguments(args);
+//        dialog.show(getFragmentManager(), "report biller dialog");
+//        dialog.setTargetFragment(this, 0);
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.add(dialog, ReportBillerDialog.TAG);
         ft.commitAllowingStateLoss();
