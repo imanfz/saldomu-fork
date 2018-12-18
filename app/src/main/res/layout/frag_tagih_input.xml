@@ -91,7 +91,7 @@
             android:id="@+id/et_memberCode"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="5"></EditText>
+            android:layout_weight="5"/>
     </LinearLayout>
 
     <Button
