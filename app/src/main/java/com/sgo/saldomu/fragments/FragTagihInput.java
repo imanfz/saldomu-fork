@@ -1,10 +1,12 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.util.Log;
@@ -24,17 +27,23 @@ import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TagihActivity;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 
 import io.realm.Realm;
@@ -45,14 +54,16 @@ public class FragTagihInput extends BaseFragment {
     Spinner sp_mitra, sp_communtiy;
     SecurePreferences sp;
     EditText et_memberCode;
-    Button btn_submit;
+    Button btn_submit, btn_cancel, btn_regShop;
+    Boolean is_search = false;
     View v;
+    TextView tv_saldo_collector;
     private ArrayAdapter<String> mitraAdapter;
     private ArrayList<String> mitraNameArrayList = new ArrayList<>();
     private ArrayList<TagihModel> mitraNameData = new ArrayList<>();
     private ArrayAdapter<String> communityAdapter;
     private ArrayList<String> communityNameArrayList = new ArrayList<>();
-    String commCodeTagih;
+    String commCodeTagih, balanceCollector;
     ProgressDialog progdialog;
 
     @Nullable
@@ -66,12 +77,22 @@ public class FragTagihInput extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        Bundle bundle = getArguments();
+        if (bundle!=null)
+        {
+            is_search = bundle.getBoolean(DefineValue.IS_SEARCH_DGI,false);
+        }
+
         sp = CustomSecurePref.getInstance().getSecurePrefsInstance();
+
+        getBalanceCollector();
+
         initiatizeView();
 
         InitializeData();
 
         btn_submit.setOnClickListener(submitListener);
+        btn_cancel.setOnClickListener(cancelListener);
     }
 
     Button.OnClickListener submitListener = new Button.OnClickListener() {
@@ -83,11 +104,41 @@ public class FragTagihInput extends BaseFragment {
         }
     };
 
+    Button.OnClickListener cancelListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (inputValidation())
+            {
+                Fragment newFrag = new FragCancelTransactionDGI();
+                Bundle bundle = new Bundle();
+                bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
+                bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+
+                newFrag.setArguments(bundle);
+                if(getActivity() == null){
+                    return;
+                }
+                TagihActivity ftf = (TagihActivity) getActivity();
+                ftf.switchContent(newFrag,"Pembatalan Transaksi",true);
+            }
+        }
+    };
+
+
     private void initiatizeView() {
         sp_mitra = v.findViewById(R.id.sp_mitra);
         sp_communtiy = v.findViewById(R.id.sp_community);
         et_memberCode = v.findViewById(R.id.et_memberCode);
         btn_submit = v.findViewById(R.id.btn_submit);
+        btn_cancel = v.findViewById(R.id.btn_cancel);
+        btn_regShop = v.findViewById(R.id.bt_registTokoDGI);
+        tv_saldo_collector = v.findViewById(R.id.tv_saldoCollector);
+
+        if (is_search)
+        {
+            btn_cancel.setVisibility(View.VISIBLE);
+        }
+
 
         mitraAdapter = new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, mitraNameArrayList);
         sp_mitra.setAdapter(mitraAdapter);
@@ -117,7 +168,10 @@ public class FragTagihInput extends BaseFragment {
 
             }
         });
+
     }
+
+
     public void initializeCommunity(int pos) {
         Realm _realm = RealmManager.getRealmTagih();
         final ArrayList<TagihCommunityModel> listTagih = new ArrayList<>();
@@ -164,6 +218,86 @@ public class FragTagihInput extends BaseFragment {
             return false;
         }
             return true;
+    }
+
+    public void getBalanceCollector(){
+        try{
+            showProgressDialog();
+            if(!memberIDLogin.isEmpty()) {
+
+                extraSignature = memberIDLogin;
+
+                RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_SALDO_COLLECTOR,
+                        userPhoneID, accessKey, extraSignature);
+                params.put(WebParams.MEMBER_ID, memberIDLogin);
+                params.put(WebParams.USER_ID, userPhoneID);
+                params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                params.put(WebParams.IS_AUTO, "Y");
+
+                Timber.d("isi params get Balance Collector:" + params.toString());
+                if (!memberIDLogin.isEmpty()) {
+                    MyApiClient.getSaldoCollector(getActivity(), params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            try {
+
+                                dismissProgressDialog();
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("Isi response getBalance Collector:" + response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                    balanceCollector = response.getString(WebParams.AMOUNT);
+
+                                    tv_saldo_collector.setText(CurrencyFormat.format(balanceCollector));
+
+//                                    SecurePreferences.Editor mEditor = sp.edit();
+//                                    mEditor.putString(DefineValue.BALANCE_COLLECTOR_AMOUNT, response.optString(WebParams.AMOUNT, ""));
+//                                    mEditor.commit();
+
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    if (getActivity().isFinishing()) {
+                                        String message = response.getString(WebParams.ERROR_MESSAGE);
+                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                        test.showDialoginMain(getActivity(), message);
+                                    }
+                                } else {
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            failure(throwable);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            failure(throwable);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            failure(throwable);
+                        }
+
+                        private void failure(Throwable throwable) {
+                            Timber.w("Error Koneksi getBalance Collector:" + throwable.toString());
+                        }
+                    });
+                }
+            }
+        }catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
+        }
     }
 
     public void sendDataTagih() {

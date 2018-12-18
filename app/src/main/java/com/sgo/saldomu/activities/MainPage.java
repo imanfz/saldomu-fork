@@ -55,6 +55,7 @@ import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.fcm.GooglePlayUtils;
 import com.sgo.saldomu.fragments.FragMainPage;
+import com.sgo.saldomu.fragments.FragTagihInput;
 import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.fragments.RightSideDrawMenu;
@@ -97,6 +98,7 @@ public class MainPage extends BaseActivity {
     public static final int RESULT_BBS_MEMBER_OTP = 12;
     public static final int RESULT_BBS_STATUS= 13;
     public static final int RESULT_RETRY= 14;
+    public static final int RESULT_BALANCE_COLLECTOR= 14;
 
     public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;
@@ -110,6 +112,7 @@ public class MainPage extends BaseActivity {
     private String flagLogin = DefineValue.STRING_NO;
     private Fragment mContent;
     private NavigationDrawMenu mNavDrawer;
+    FragTagihInput fragTagihInput;
     private DrawerLayout mDrawerLayout;
     public ActionBarDrawerToggle mDrawerToggle;
     private ProgressDialog progdialog;
@@ -1176,6 +1179,10 @@ public class MainPage extends BaseActivity {
             if(resultCode == RESULT_BALANCE){
                 Timber.w("Masuk result Balance");
                 mNavDrawer.getBalance(true);
+            }
+            if(resultCode == RESULT_BALANCE_COLLECTOR){
+                Timber.w("Masuk result Balance collector");
+                fragTagihInput.getBalanceCollector();
             }
             if(resultCode == RESULT_NOTIF){
                 Timber.w("Masuk result notif");

@@ -31,6 +31,7 @@ public class ReportTab extends Fragment {
 
     private ReportTabAdapter currentAdapternya;
     SecurePreferences sp;
+    String agentType;
     private View currentView;
     private InformationDialog dialogI;
     String[] titles;
@@ -53,6 +54,7 @@ public class ReportTab extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        agentType = sp.getString(DefineValue.AGENT_TYPE,"");
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
 
         ToggleFAB(false);
@@ -63,7 +65,9 @@ public class ReportTab extends Fragment {
             ReportTabAdapter adapternya;
             TabPageIndicator tabs;
             ViewPager pager;
-            if (isAgent){
+            if (isAgent && agentType.equalsIgnoreCase("COL")){
+                titles = getActivity().getResources().getStringArray(R.array.report_list_agen_col);
+            }else if (isAgent && !agentType.equalsIgnoreCase("COL")){
                 titles = getActivity().getResources().getStringArray(R.array.report_list_agen);
             }else
                 titles = getActivity().getResources().getStringArray(R.array.report_list);
@@ -75,6 +79,7 @@ public class ReportTab extends Fragment {
             mList.add(FragReport.newInstance(FragReport.REPORT_SCASH));
             mList.add(FragReport.newInstance(FragReport.REPORT_ASK));
             mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
+            mList.add(FragReport.newInstance(FragReport.REPORT_COL));
 
             tabs = getCurrentView().findViewById(R.id.report_tabs);
             pager = getCurrentView().findViewById(R.id.report_pager);

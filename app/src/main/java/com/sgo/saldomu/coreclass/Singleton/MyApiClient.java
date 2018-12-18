@@ -114,6 +114,7 @@ public class MyApiClient {
     public static String LINK_RESEND_TOKEN_SGOL;
     public static String LINK_INSERT_TRANS_TOPUP;
     public static String LINK_SALDO;
+    public static String LINK_SALDO_COLLECTOR;
     //public static final String LINK_BANK_LIST;
     public static String LINK_BANK_LIST;
     private static String LINK_REQ_TOKEN_REGIST;
@@ -199,6 +200,7 @@ public class MyApiClient {
     private static String LINK_CREATE_PIN_PASS;
     public static String LINK_REPORT_MONEY_REQUEST;
     public static String LINK_REPORT_COMM_FEE;
+    public static String LINK_REPORT_COLLECTOR;
     public static String LINK_ASK4MONEY_REJECT;
 
     private static String LINK_INQUIRY_CUST;
@@ -270,6 +272,7 @@ public class MyApiClient {
     public static String LINK_LIST_INVOICE_DGI;
     public static String LINK_CONFIRM_PAYMENT_DGI;
     public static String LINK_REQ_TOKEN_INVOICE_DGI;
+    public static String LINK_CANCEL_SEARCH_DGI;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -365,6 +368,7 @@ public class MyApiClient {
         LINK_CREATE_PIN_PASS    = headaddressfinal + "CreatePinPass/Invoke";
         LINK_REPORT_MONEY_REQUEST = headaddressfinal + "ReportMoneyReq/Retrieve";
         LINK_REPORT_COMM_FEE    = headaddressfinal + "ReportCommFee/Retrieve";
+        LINK_REPORT_COLLECTOR    = headaddressfinal + "ReportTrxCollector/Retrieve";
         LINK_ASK4MONEY_REJECT   = headaddressfinal + "Ask4Money/Decline";
 
         LINK_INQUIRY_CUST = headaddressfinal + "InquiryCustomer/Retrieve";
@@ -436,10 +440,13 @@ public class MyApiClient {
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
         LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
 
+        //tagih
         LINK_LIST_INVOICE_DGI = headaddressfinal +"invoice/Listinv/Retrieve";
         LINK_REQ_TOKEN_INVOICE_DGI = headaddressfinal +"invoice/ReqToken/Retrieve";
         LINK_CANCEL_TRANSACTION_DGI = headaddressfinal + "invoice/Canceltrx/Invoke";
         LINK_CONFIRM_PAYMENT_DGI = headaddressfinal + "invoice/Payment/Invoke";
+        LINK_CANCEL_SEARCH_DGI = headaddressfinal + "invoice/Payment/Reject";
+        LINK_SALDO_COLLECTOR     = headaddressfinal + "Balancecollector/Retrieve";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
 //        if(PROD_FLAG_ADDRESS)
@@ -848,6 +855,11 @@ public class MyApiClient {
     public static void getSaldo(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address Get Saldo: %1$s ",LINK_SALDO);
         post(mContext,LINK_SALDO, params, responseHandler);
+    }
+
+    public static void getSaldoCollector(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address Get Saldo collector: %1$s ",LINK_SALDO_COLLECTOR);
+        post(mContext,LINK_SALDO_COLLECTOR, params, responseHandler);
     }
 
     public static void getBankList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
@@ -1648,6 +1660,16 @@ public class MyApiClient {
     public static void reqTokenInvDGI (Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address req token invoice DGI: %1$s ",LINK_REQ_TOKEN_INVOICE_DGI);
         post(mContext, LINK_REQ_TOKEN_INVOICE_DGI, params, responseHandler);
+    }
+
+    public static void setLinkCancelSearchDgi (Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address cancel search DGI: %1$s ",LINK_CANCEL_SEARCH_DGI);
+        post(mContext, LINK_CANCEL_SEARCH_DGI, params, responseHandler);
+    }
+
+    public static void sentReportCollector(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent report collector: %1$s ",LINK_REPORT_COLLECTOR);
+        post(mContext,LINK_REPORT_COLLECTOR, params, responseHandler);
     }
 
     public static void getBBSBirthPlace(Context mContext, Boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {

@@ -73,6 +73,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     final static int REPORT_SCASH = 0x0299394;
     final static int REPORT_ESPAY = 0x0299393;
     final static int REPORT_FEE = 0x0299396;
+    final static int REPORT_COL = 0x0299397;
     private final String DATEFROM = "tagFrom";
     private final String DATETO = "tagTo";
     final private String ITEM_DESC_LISTRIK = "Listrik";
@@ -80,7 +81,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     final private String ITEM_DESC_NON = "PLN Non-Taglis";
     final private String ITEM_DESC_BPJS = "BPJS";
 
-    private TextView tv_date_from, tv_date_to, sumTotalTrx, sumRelAmount, sumRelTrx, sumUnrelTrx, sumUnrelAmount;
+    private TextView tv_date_from, tv_date_to, sumTotalTrx, sumRelAmount, sumRelTrx, sumUnrelTrx, sumUnrelAmount, tv_invoiceNo;
 
     private View v;
     private LinearLayout layout_filter, layout_summary;
@@ -235,6 +236,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             sumRelTrx = getV().findViewById(R.id.tv_tx_released);
             sumUnrelAmount = getV().findViewById(R.id.tv_amount_unreleased);
             sumUnrelTrx = getV().findViewById(R.id.tv_tx_unreleased);
+            lv_report.setAdapter(adapter);
+        }else if (report_type == REPORT_COL) {
+            ArrayList<ReportAskListModel> mData = new ArrayList<>();
+            ReportAskListAdapter adapter = new ReportAskListAdapter(getActivity(), R.layout.list_transaction_report_collector_item, mData);
+            tv_invoiceNo = getV().findViewById(R.id.text_invoice_no);
             lv_report.setAdapter(adapter);
         }
         setLoadMore(false);
@@ -422,6 +428,17 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             paramsFee.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
             paramsFee.put(WebParams.USER_ID, user_id);
 
+            RequestParams paramsCollector = MyApiClient.getInstance()
+                    .getSignatureWithParams(MyApiClient.LINK_REPORT_COLLECTOR);
+            paramsFee.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
+            paramsFee.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            paramsFee.put(WebParams.PAGE, _page);
+            paramsFee.put(WebParams.DATE_FROM, _date_from);
+            paramsFee.put(WebParams.DATE_TO, _date_to);
+            paramsFee.put(WebParams.OFFSET, sp.getString(DefineValue.OFFSET, ""));
+            paramsFee.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
+            paramsFee.put(WebParams.USER_ID, user_id);
+
             JsonHttpResponseHandler deHandler = new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -541,6 +558,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                     }
                                     setSummarytoView(SummaryFeeModel);
 
+                                }else if (report_type == REPORT_COL) {
+                                    Timber.d("Isi response report collector:" + response.toString());
+
                                 }
 
                                 int _page = response.optInt(WebParams.NEXT, 0);
@@ -653,6 +673,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 //                Timber.d("Webservice:"+webserviceFee);
                 Timber.d("Isi params report comm fee:" + paramsFee.toString());
                 MyApiClient.sentReportCommFee(getActivity(), paramsFee, deHandler);
+            }else if (report_type == REPORT_COL) {
+//                Timber.d("Webservice:"+webserviceFee);
+                Timber.d("Isi params report collector:" + paramsCollector.toString());
+                MyApiClient.sentReportCollector(getActivity(), paramsCollector, deHandler);
             }
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
@@ -694,6 +718,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         } else if (report_type == REPORT_FEE) {
             ReportCommFeeAdapter ya = (ReportCommFeeAdapter) getUniAdapter();
             ya.clear();
+//        }else if (report_type == REPORT_COL) {
+//            ReportCollectorAdapter ya = (ReportCollectorAdapter) getUniAdapter();
+//            ya.clear();
         }
     }
 
@@ -710,6 +737,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         } else if (report_type == REPORT_FEE) {
             ReportCommFeeAdapter ya = (ReportCommFeeAdapter) getUniAdapter();
             ya.notifyDataSetChanged();
+//        }else if (report_type == REPORT_COL) {
+//            ReportCollectorAdapter ya = (ReportCollectorAdapter) getUniAdapter();
+//            ya.notifyDataSetChanged();
         }
     }
 
@@ -730,6 +760,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             ReportCommFeeAdapter ya = (ReportCommFeeAdapter) getUniAdapter();
             ReportListCommFeeModel obj = (ReportListCommFeeModel) ok;
             ya.add(obj);
+//        }else if (report_type == REPORT_COL) {
+//            ReportCollectorAdapter ya = (ReportCollectorAdapter) getUniAdapter();
+//            ReportListComllectorModel obj = (ReportListComllectorModel) ok;
+//            ya.add(obj);
         }
     }
 
