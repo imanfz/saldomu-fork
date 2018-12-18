@@ -1,5 +1,6 @@
 package com.sgo.saldomu.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +14,7 @@ import com.activeandroid.util.Log;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragListCommunitySCADM;
@@ -38,6 +40,8 @@ public class TagihActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Intent intent = getIntent();
+        Boolean is_search = intent.getBooleanExtra(DefineValue.IS_SEARCH_DGI,false);
 
         InitializeToolbar();
 
@@ -47,6 +51,9 @@ public class TagihActivity extends BaseActivity {
             }
 
             newFragment = new FragTagihInput();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(DefineValue.IS_SEARCH_DGI,is_search);
+            newFragment.setArguments(bundle);
         }
 
         mContent = newFragment;

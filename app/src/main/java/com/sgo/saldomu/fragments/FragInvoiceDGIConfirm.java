@@ -472,7 +472,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                         Timber.d("isi response insertTrxTOpupSGOL:" + response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             getTrxStatus(tx_id, MyApiClient.COMM_ID);
-                            setResultActivity(MainPage.RESULT_BALANCE);
+                            setResultActivity(MainPage.RESULT_BALANCE_COLLECTOR);
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
