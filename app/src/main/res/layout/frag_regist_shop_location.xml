@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="20dp"
@@ -49,16 +50,35 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Koordinat"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Koordinat belum terpasang"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/regis_shop_showmap"
+            android:textSize="18dp"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp">
+            android:layout_height="250dp"
+            android:visibility="gone">
 
-            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+            <fragment
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/map"
-                tools:context=".MapsActivity"
+                tools:context=".activities.TagihActivity"
                 android:name="com.google.android.gms.maps.SupportMapFragment" />
 
             <View

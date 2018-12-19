@@ -1257,7 +1257,7 @@ public class MyApiClient {
 
     public static void sentInquirySMS(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent inquiry sms: %1$s ",LINK_INQUIRY_SMS);
-        postUntrustedSSL(mContext,LINK_INQUIRY_SMS, params, responseHandler);
+        post(mContext,LINK_INQUIRY_SMS, params, responseHandler);
     }
     public static void sentClaimNonMemberTrf(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent claim non member transfer: %1$s ",LINK_CLAIM_TRANSFER_NON_MEMBER);
