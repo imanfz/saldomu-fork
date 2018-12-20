@@ -273,6 +273,7 @@ public class MyApiClient {
     public static String LINK_CONFIRM_PAYMENT_DGI;
     public static String LINK_REQ_TOKEN_INVOICE_DGI;
     public static String LINK_CANCEL_SEARCH_DGI;
+    public static String LINK_SET_MEMBER_LOC;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -447,6 +448,7 @@ public class MyApiClient {
         LINK_CONFIRM_PAYMENT_DGI = headaddressfinal + "invoice/Payment/Invoke";
         LINK_CANCEL_SEARCH_DGI = headaddressfinal + "invoice/Payment/Reject";
         LINK_SALDO_COLLECTOR     = headaddressfinal + "Balancecollector/Retrieve";
+        LINK_SET_MEMBER_LOC = headaddressfinal + "invoice/Setmemberlocation/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
 //        if(PROD_FLAG_ADDRESS)
@@ -1257,7 +1259,7 @@ public class MyApiClient {
 
     public static void sentInquirySMS(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent inquiry sms: %1$s ",LINK_INQUIRY_SMS);
-        postUntrustedSSL(mContext,LINK_INQUIRY_SMS, params, responseHandler);
+        post(mContext,LINK_INQUIRY_SMS, params, responseHandler);
     }
     public static void sentClaimNonMemberTrf(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent claim non member transfer: %1$s ",LINK_CLAIM_TRANSFER_NON_MEMBER);
@@ -1665,6 +1667,11 @@ public class MyApiClient {
     public static void setLinkCancelSearchDgi (Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address cancel search DGI: %1$s ",LINK_CANCEL_SEARCH_DGI);
         post(mContext, LINK_CANCEL_SEARCH_DGI, params, responseHandler);
+    }
+
+    public static void setMemberLoc(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address set member loc: %1$s ",LINK_SET_MEMBER_LOC);
+        post(mContext, LINK_SET_MEMBER_LOC, params, responseHandler);
     }
 
     public static void sentReportCollector(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {

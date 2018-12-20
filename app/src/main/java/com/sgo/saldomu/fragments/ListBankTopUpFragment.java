@@ -484,8 +484,8 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
                     String fee="",va="";
 
 
-                    BankHeaderTopUp bankData = new BankHeaderTopUp(listProduct.getJSONObject(0).getString(WebParams.BANK_NAME)
-                            , bankCode, other_atm);
+                    String header = listProduct.getJSONObject(0).getString(WebParams.BANK_NAME);
+                    BankHeaderTopUp bankData = new BankHeaderTopUp(header, bankCode, other_atm);
                     ArrayList<listBankModel> tempListBankModel = new ArrayList<>();
 
                     for (int j = 0 ; j < listProduct.length() ; j++){
@@ -515,6 +515,9 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
                         }
 
                         tempListBankModels.add(new ListBankDataTopup(listBankModel));
+
+
+
                         tempListBankModel.add(listBankModel);
                     }
 
@@ -544,6 +547,10 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
                     //masukin nama bank untuk title header dan nama bank, BankDataTopup ke hashmap child
                     listDataHeader.add(new BankHeaderTopUp(bankName));
                     listDataChild.put(bankName,temp_list_data_bank);
+
+                    if (bankName.equalsIgnoreCase("BANK MANDIRI")){
+                        bankData.getBankData().add(new listBankModel(bankName, "MANDIRI ONLINE"));
+                    }
 
                     listDataHeader2.add(bankData);
                 }

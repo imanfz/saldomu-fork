@@ -1,70 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="20dp"
-    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/myprofile_text_address"
-        android:textColor="@color/colorPrimaryDark"
-        android:textStyle="bold"
-        android:layout_marginBottom="5dp"
-        android:textSize="18dp"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@color/grey_200"
-        android:hint="@string/address_hint"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/et_address"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/city"
-        android:textColor="@color/colorPrimaryDark"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp"
-        android:textSize="18dp"/>
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:hint="@string/address_hint"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/sp_city"/>
-
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:id="@+id/map"
-        tools:context=".MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:gravity="center">
-        <Button
-            android:layout_margin="20dp"
-            android:layout_width="150dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/cancel"
-            android:id="@+id/btn_cancel"/>
-        <Button
-            android:layout_margin="20dp"
-            android:layout_width="150dp"
+            android:text="@string/myprofile_text_address"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:textSize="18dp"/>
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:gravity="top"
+            android:padding="5dp"
+            android:background="@color/grey_200"
+            android:hint="@string/address_hint"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/et_address"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/city"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:textSize="18dp"/>
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:hint="@string/address_hint"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/sp_city"
+            android:visibility="gone"/>
+
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/get_shop_location_list"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Koordinat"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Koordinat belum terpasang"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/regis_shop_showmap"
+            android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kode Toko"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/regis_shop_store_code"
+            android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Komunitas"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/regis_shop_community"
+            android:textSize="18dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:visibility="gone">
+
+            <fragment
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/map"
+                tools:context=".activities.TagihActivity"
+                android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                android:id="@+id/center"
+                android:layout_centerInParent="true"/>
+
+            <ImageButton
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/location"
+                android:id="@+id/center_ic"
+                android:layout_above="@+id/center"
+                android:layout_centerHorizontal="true"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/center_ic"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/curr_loc_text"
+                    android:text="Tempat"
+                    android:textColor="@color/red"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:text="@string/shop_registration"
-            android:id="@+id/btn_shop_register"/>
+            android:gravity="center">
+            <Button
+                android:layout_margin="20dp"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/cancel"
+                android:id="@+id/btn_cancel"/>
+            <Button
+                android:layout_margin="20dp"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/shop_registration"
+                android:id="@+id/btn_shop_register"/>
+        </LinearLayout>
+
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

@@ -1,12 +1,10 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +32,6 @@ import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
-import com.sgo.saldomu.interfaces.OnLoadDataListener;
-import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -43,7 +39,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 
 import io.realm.Realm;
@@ -109,10 +104,11 @@ public class FragTagihInput extends BaseFragment {
         @Override
         public void onClick(View view) {
             if (inputValidation()) {
-                Fragment newFrag = new FragShopRegistration();
+                Fragment newFrag = new FragShopLocation();
                 Bundle bundle = new Bundle();
                 bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
                 bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+                bundle.putString(DefineValue.COMMUNITY_NAME, communityNameArrayList.get(sp_communtiy.getSelectedItemPosition()));
 
                 newFrag.setArguments(bundle);
                 if(getActivity() == null){
