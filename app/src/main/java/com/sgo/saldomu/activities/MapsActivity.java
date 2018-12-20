@@ -10,9 +10,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,8 +60,9 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
     Bitmap bitmap;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         currLocImage = findViewById(R.id.activity_maps_get_curr_loc);
         useCurrLoc = findViewById(R.id.activity_maps_use_curr_loc);
         currLocLayout = findViewById(R.id.activity_maps_use_curr_loc_layout);
@@ -119,9 +118,15 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION
                     , Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+            getFusedProvideClient().requestLocationUpdates(locationRequest, locationCallback, null);
 
 
+    }
+
+    FusedLocationProviderClient getFusedProvideClient(){
+        if (fusedLocationProviderClient == null)
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        return fusedLocationProviderClient;
     }
 
     void createLocationRequest(){

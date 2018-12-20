@@ -22,7 +22,9 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="80dp"
+            android:minHeight="50dp"
+            android:gravity="top"
+            android:padding="5dp"
             android:background="@color/grey_200"
             android:hint="@string/address_hint"
             android:layout_marginBottom="20dp"
@@ -65,8 +67,27 @@
             android:text="Koordinat belum terpasang"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="20dp"
             android:id="@+id/regis_shop_showmap"
+            android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kode Toko"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/regis_shop_store_code"
             android:textSize="18dp"/>
 
         <RelativeLayout
