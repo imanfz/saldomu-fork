@@ -108,6 +108,7 @@ public class FragTagihInput extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
                 bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+                bundle.putString(DefineValue.COMMUNITY_NAME, communityNameArrayList.get(sp_communtiy.getSelectedItemPosition()));
 
                 newFrag.setArguments(bundle);
                 if(getActivity() == null){

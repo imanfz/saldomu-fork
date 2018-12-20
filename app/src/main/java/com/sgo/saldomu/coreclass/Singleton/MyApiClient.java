@@ -448,7 +448,7 @@ public class MyApiClient {
         LINK_CONFIRM_PAYMENT_DGI = headaddressfinal + "invoice/Payment/Invoke";
         LINK_CANCEL_SEARCH_DGI = headaddressfinal + "invoice/Payment/Reject";
         LINK_SALDO_COLLECTOR     = headaddressfinal + "Balancecollector/Retrieve";
-        LINK_SET_MEMBER_LOC = headaddressfinal + "Setmemberlocation/Invoke";
+        LINK_SET_MEMBER_LOC = headaddressfinal + "invoice/Setmemberlocation/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
 //        if(PROD_FLAG_ADDRESS)

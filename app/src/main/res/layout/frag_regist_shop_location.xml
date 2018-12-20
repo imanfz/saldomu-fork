@@ -90,6 +90,25 @@
             android:id="@+id/regis_shop_store_code"
             android:textSize="18dp"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Komunitas"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/regis_shop_community"
+            android:textSize="18dp"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="250dp"

@@ -43,33 +43,22 @@ import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class FragShopLocation extends BaseFragment {
-//        implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     View v;
     Bundle bundle;
     EditText et_address;
     Spinner sp_city;
     Button bt_regist, bt_back;
-    TextView useCurrLoc, setCoordinate, codeStore;
+    TextView useCurrLoc, setCoordinate, codeStore, commNameText;
     AutoCompleteTextView cityLocField;
 
     CustomAutoCompleteAdapter adapter;
     ArrayAdapter<String> adapters;
 
-    String memberCode, commCode;
+    String memberCode, commCode, commName;
     List<CustomAdapterModel> locList;
     List<String> locLists;
     Double latitude, longitude;
-//    boolean locationUpdateState;
-
-//    private GoogleMap map;
-//    FusedLocationProviderClient fusedLocationProviderClient;
-//    Location lastLocation;
-//    LocationCallback locationCallback;
-//    LocationRequest locationRequest;
-
-    static int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    static int REQUEST_CHECK_SETTINGS = 2;
 
     @Nullable
     @Override
@@ -80,6 +69,7 @@ public class FragShopLocation extends BaseFragment {
         setCoordinate = v.findViewById(R.id.regis_shop_showmap);
         codeStore = v.findViewById(R.id.regis_shop_store_code);
         cityLocField = v.findViewById(R.id.get_shop_location_list);
+        commNameText = v.findViewById(R.id.regis_shop_community);
 
         et_address = v.findViewById(R.id.et_address);
         sp_city = v.findViewById(R.id.sp_city);
@@ -93,32 +83,15 @@ public class FragShopLocation extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
-
-//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
-//        createLocationRequest();
-
-//        locationCallback = new LocationCallback(){
-//            @Override
-//            public void onLocationResult(LocationResult locationResult) {
-//                super.onLocationResult(locationResult);
-//
-//                lastLocation = locationResult.getLastLocation();
-////                placeMarkerOnMap(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
-//                useCurrLoc.setVisibility(View.VISIBLE);
-//                placeMarkerOnMap(map.getCameraPosition().target);
-//            }
-//        };
-
         bundle = getArguments();
         Bundle bundle = getArguments();
         if (bundle != null) {
             memberCode = bundle.getString(DefineValue.MEMBER_CODE, "");
             commCode = bundle.getString(DefineValue.COMMUNITY_CODE, "");
+            commName = bundle.getString(DefineValue.COMMUNITY_NAME, "");
 
             codeStore.setText(memberCode);
+            commNameText.setText(commName);
         }
 
         locList = new ArrayList<>();
@@ -177,132 +150,6 @@ public class FragShopLocation extends BaseFragment {
         return true;
     }
 
-//    void getCurrLoc() {
-//        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED &&
-//                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-//                        != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        map.setMyLocationEnabled(true);
-//
-//        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(getActivity(),
-//                new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//                        if (location != null) {
-//                            lastLocation = location;
-//                            LatLng currLatlng = new LatLng(location.getLatitude(), location.getLongitude());
-//                            placeMarkerOnMap(currLatlng);
-//                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(currLatlng
-//                                    , 12f));
-//                        }
-//                    }
-//                });
-//
-//    }
-
-//    void placeMarkerOnMap(LatLng latLng) {
-////        MarkerOptions markerOptions = new MarkerOptions();
-////        markerOptions.position(latLng);
-//
-//        String title = getAddress(latLng) + "\nGunakan Alamat ini?";
-//
-//        useCurrLoc.setText(title);
-//
-////        markerOptions.title(title);
-//
-////        map.addMarker(markerOptions);
-//
-//    }
-
-//    String getAddress(LatLng latLng) {
-//        // 1
-//        Geocoder geocoder = new Geocoder(getActivity());
-//        List<Address> addresses;
-//        Address address;
-//        String addressText = "";
-//
-//        try {
-//            // 2
-//            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-//            // 3
-//            if (addresses != null && !addresses.isEmpty()) {
-//                address = addresses.get(0);
-//                int c = address.getMaxAddressLineIndex();
-//                for (int i = 0; i <= c; i++) {
-//                    if (i == 0) {
-//                        addressText += address.getAddressLine(i);
-//                    } else addressText += "\n" + address.getAddressLine(i);
-//
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return addressText;
-//    }
-
-//    void createLocationRequest(){
-//        locationRequest = new LocationRequest();
-//
-//        locationRequest.setInterval(10000);
-//        locationRequest.setFastestInterval(5000);
-//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//
-//        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-//        builder.addLocationRequest(locationRequest);
-//
-//        SettingsClient settingsClient = LocationServices.getSettingsClient(getActivity());
-//        Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
-//
-//        task.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
-//            @Override
-//            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-//                locationUpdateState = true;
-//                startLocationUpdates();
-//            }
-//        });
-//        task.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                if (e instanceof ResolvableApiException) {
-//                    try {
-//                        ((ResolvableApiException) e).startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
-//                    } catch (IntentSender.SendIntentException e1) {
-//                        e1.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
-//    }
-//
-//    void startLocationUpdates() {
-//        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION
-//                    , Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-//        } else
-//            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
-//
-//
-//    }
-
     public void setMemberLocation() {
         try {
             showProgressDialog();
@@ -312,7 +159,7 @@ public class FragShopLocation extends BaseFragment {
                     userPhoneID, accessKey, extraSignature);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.MEMBER_CODE, MyApiClient.COMM_ID);
+            params.put(WebParams.MEMBER_CODE, memberCode);
             params.put(WebParams.ADDRESS, et_address.getText().toString());
             params.put(WebParams.LATITUDE, latitude);
             params.put(WebParams.LONGITUDE, longitude);
@@ -331,7 +178,8 @@ public class FragShopLocation extends BaseFragment {
                         Timber.d("Isi response getBalance Collector:" + response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            Toast.makeText(getActivity(), "Sukses", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Sukses memperbaharui lokasi", Toast.LENGTH_SHORT).show();
+                            getFragmentManager().popBackStack();
 
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             if (getActivity().isFinishing()) {
@@ -382,33 +230,12 @@ public class FragShopLocation extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-//        if (!locationUpdateState) {
-//            startLocationUpdates();
-//        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
     }
-
-//    @Override
-//    public void onMapReady(GoogleMap googleMap) {
-//        map = googleMap;
-//
-//        map.getUiSettings().setZoomControlsEnabled(true);
-//        map.setOnMarkerClickListener(this);
-//
-//        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-//            @Override
-//            public void onCameraMove() {
-////                currLocLayout.setVisibility(View.GONE);
-//            }
-//        });
-//
-//        getCurrLoc();
-//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -421,12 +248,6 @@ public class FragShopLocation extends BaseFragment {
                         String address = data.getStringExtra("address");
 
                         setCoordinate.setText(address);
-//                        if (UtilityManager.getInstance().getBitmap() != null) {
-//                            Drawable d = new BitmapDrawable(getResources(), UtilityManager.getInstance().getBitmap());
-////                            gmapsBackground.setBackground(d);
-//                            gmapsBackground.setImageBitmap(UtilityManager.getInstance().getBitmap());
-//                        }
-//                        googleMapsBtn.setError(null);
                         longitude = data.getDoubleExtra("longitude", 0);
                         latitude = data.getDoubleExtra("latitude", 0);
                     }
@@ -435,8 +256,4 @@ public class FragShopLocation extends BaseFragment {
         }
     }
 
-//    @Override
-//    public boolean onMarkerClick(Marker marker) {
-//        return false;
-//    }
 }
