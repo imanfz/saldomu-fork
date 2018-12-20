@@ -25,7 +25,7 @@ import timber.log.Timber;
 public abstract class BaseFragment extends Fragment {
 
     protected SecurePreferences sp;
-    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
+    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey, userNameLogin;
     protected String extraSignature = "";
     protected ProgBarDialog loadingDialog;
     ProgressDialog progressDialog;
@@ -42,6 +42,7 @@ public abstract class BaseFragment extends Fragment {
         commIDLogin = sp.getString(DefineValue.COMMUNITY_ID, "");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+        userNameLogin = sp.getString(DefineValue.USER_NAME, "");
     }
 
     protected void SwitchFragment(Fragment mFragment, String fragName, Boolean isBackstack) {
