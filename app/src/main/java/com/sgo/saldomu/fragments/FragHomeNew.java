@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -41,8 +42,8 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.LevelClass;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopCategory;
@@ -56,7 +57,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import io.realm.Realm;
@@ -66,7 +66,7 @@ import timber.log.Timber;
  * Created by Lenovo Thinkpad on 5/10/2017.
  */
 public class FragHomeNew extends BaseFragmentMainPage {
-    GridView GridHome;
+    GridView GridView;
     Button btn_beli;
     TextView tv_saldo;
     EditText input;
@@ -138,29 +138,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.frag_home_new, container, false);
-        GridHome = (GridView) v.findViewById(R.id.grid);
-        tv_saldo = (TextView) v.findViewById(R.id.tv_saldo);
-        swSettingOnline = (Switch) v.findViewById(R.id.swSettingOnline);
-        llAgentDetail = (LinearLayout) v.findViewById(R.id.llAgentDetail);
-        return v;
+        GridView = v.findViewById(R.id.grid);
+        tv_saldo = v.findViewById(R.id.tv_saldo);
+        swSettingOnline = v.findViewById(R.id.swSettingOnline);
+        llAgentDetail = v.findViewById(R.id.llAgentDetail);
 
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(getActivity(), sp);
-
-        isMemberShopDGI = sp.getString(DefineValue.IS_MEMBER_SHOP_DGI, "0");
-
-        btn_beli = (Button) v.findViewById(R.id.btn_beli);
-        input = (EditText) v.findViewById(R.id.input);
-        tv_pulsa = (TextView) v.findViewById(R.id.tv_pulsa);
-        tv_bpjs = (TextView) v.findViewById(R.id.tv_bpjs);
-        tv_listrikPLN = (TextView) v.findViewById(R.id.tv_listrikPLN);
+        btn_beli = v.findViewById(R.id.btn_beli);
+        input = v.findViewById(R.id.input);
+        tv_pulsa = v.findViewById(R.id.tv_pulsa);
+        tv_bpjs = v.findViewById(R.id.tv_bpjs);
+        tv_listrikPLN = v.findViewById(R.id.tv_listrikPLN);
         view_pulsa = v.findViewById(R.id.view_pulsa);
         view_bpjs = v.findViewById(R.id.view_bpjs);
         view_listrikPLN = v.findViewById(R.id.view_listrikPLN);
@@ -168,7 +155,21 @@ public class FragHomeNew extends BaseFragmentMainPage {
         PLS = v.findViewById(R.id.PLS);
         TKN = v.findViewById(R.id.TKN);
 
-        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+        return v;
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        levelClass = new LevelClass(getActivity(), sp);
+
+        isMemberShopDGI = sp.getString(DefineValue.IS_MEMBER_SHOP_DGI, "0");
+
+        realm = RealmManager.getRealmBiller();
+
         mBillerTypeDataPLS = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "PLS")
                 .findFirst();
@@ -216,7 +217,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (isAgent) {
             if (isAdded()) {
                 GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                GridHome.setAdapter(adapter);
+                GridView.setAdapter(adapter);
             }
         } else {
 //if (!isAgent) {
@@ -253,7 +254,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                     ShopCategory shopCategory = new ShopCategory();
                                     shopCategory.setCategoryId(object.getString("category_id"));
                                     if (shopCategory.getCategoryId().contains("SETOR")) {
-                                        String categoryIDcta = shopCategory.getCategoryId().toString();
+                                        String categoryIDcta = shopCategory.getCategoryId();
                                         SecurePreferences.Editor mEditor = sp.edit();
                                         mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
                                         mEditor.apply();
@@ -280,7 +281,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             //gridBbsCategoryAdapter.notifyDataSetChanged();
                             if (isAdded()) {
                                 GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                                GridHome.setAdapter(adapter);
+                                GridView.setAdapter(adapter);
                             }
 
                         } catch (JSONException e) {
@@ -314,7 +315,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         //gridBbsCategoryAdapter.notifyDataSetChanged();
                         if (isAdded()) {
                             GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                            GridHome.setAdapter(adapter);
+                            GridView.setAdapter(adapter);
                         }
                     }
 
@@ -390,7 +391,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         });
 
-        GridHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        GridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Timber.d("masuk gridhomeonitemclicklistener");

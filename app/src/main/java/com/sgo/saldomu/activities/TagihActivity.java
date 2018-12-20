@@ -5,24 +5,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 
-import com.activeandroid.util.Log;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
-import com.sgo.saldomu.fragments.FragListCommunitySCADM;
 import com.sgo.saldomu.fragments.FragTagihInput;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class TagihActivity extends BaseActivity {
@@ -76,7 +66,9 @@ public class TagihActivity extends BaseActivity {
         switch(item.getItemId())
         {
             case android.R.id.home:
-                finish();
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0){
+                    getSupportFragmentManager().popBackStack();
+                }else finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

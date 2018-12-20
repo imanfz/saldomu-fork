@@ -456,6 +456,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainPage" />
         </activity>
+        <activity android:name=".activities.MapsActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

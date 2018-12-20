@@ -525,6 +525,18 @@
     <string name="listatm_topup_other_ins_4">Masukkan Nominal TOP UP</string>
     <string name="listatm_topup_other_ins_5">Pilih YES/OK untuk menyetujui transaksi</string>
 
+    <string name="instruct_topup_mandiri_online_1">Buka aplikasi Mandiri Online</string>
+    <string name="instruct_topup_mandiri_online_2">Lakukan login dengan akun Mandiri Online</string>
+    <string name="instruct_topup_mandiri_online_3">Pilih menu <b>Bayar</b></string>
+    <string name="instruct_topup_mandiri_online_4">Pilih menu <b>Buat Pembayaran Baru</b></string>
+    <string name="instruct_topup_mandiri_online_5">Pilih menu <b>Multipayment</b></string>
+    <string name="instruct_topup_mandiri_online_6">Pilih Rekening Sumber </string>
+    <string name="instruct_topup_mandiri_online_7">Pilih penyedia jasa <b>Top Up Saldomu</b></string>
+    <string name="instruct_topup_mandiri_online_8">Masukkan Nomor Pelanggan Saldomu</string>
+    <string name="instruct_topup_mandiri_online_9">Masukkan Nominal Top up</string>
+    <string name="instruct_topup_mandiri_online_10">Masukkan Deskripsi (opsional)</string>
+    <string name="instruct_topup_mandiri_online_11">Pilih Lanjut</string>
+
     <string name="about_apps">Tentang Aplikasi</string>
     <string name="about_apps_desc"><b>Saldomu</b> adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
     <string name="about_apps_ver" translatable="false">Version</string>

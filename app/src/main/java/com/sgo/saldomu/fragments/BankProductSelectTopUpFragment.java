@@ -1,6 +1,5 @@
 package com.sgo.saldomu.fragments;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,13 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.BankDataTopUp;
 import com.sgo.saldomu.Beans.BankHeaderTopUp;
-import com.sgo.saldomu.Beans.ListBankDataTopup;
 import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
@@ -27,24 +22,12 @@ import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.adapter.SelectBankProductAdapter;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.JsonUtil;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.Singleton.DataManager;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
-import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
-import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
-import com.sgo.saldomu.widgets.AnimatedExpandableListView;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
