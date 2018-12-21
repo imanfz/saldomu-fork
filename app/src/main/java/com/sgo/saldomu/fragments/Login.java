@@ -247,7 +247,9 @@ public class Login extends BaseFragment implements View.OnClickListener {
                                     showDialog(getString(R.string.login_failed_wrong_pass));
                             } else if (code.equals(DefineValue.ERROR_0002)) {
                                 showDialog(getString(R.string.login_failed_wrong_id));
-                            } else {
+                            }  else if (code.equals("0299")) {
+                                showDialog(msg);
+                            }else {
                                 code = response.getString(WebParams.ERROR_MESSAGE);
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }
@@ -447,26 +449,27 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.putString(DefineValue.AUTHENTICATION_TYPE, arrayJson.getJSONObject(i).getString(WebParams.AUTHENTICATION_TYPE));
                         mEditor.putString(DefineValue.LENGTH_AUTH, arrayJson.getJSONObject(i).getString(WebParams.LENGTH_AUTH));
                         mEditor.putString(DefineValue.IS_HAVE_PIN, arrayJson.getJSONObject(i).getString(WebParams.IS_HAVE_PIN));
-                        if (!arrayJson.getJSONObject(i).getString(WebParams.AGENT_TYPE).isEmpty()){
-                            mEditor.putString(DefineValue.AGENT_TYPE, arrayJson.getJSONObject(i).getString(WebParams.AGENT_TYPE));
-                        }
                         mEditor.putInt(DefineValue.LEVEL_VALUE, arrayJson.getJSONObject(i).optInt(WebParams.MEMBER_LEVEL, 0));
                         if (arrayJson.getJSONObject(i).optString(WebParams.ALLOW_MEMBER_LEVEL, DefineValue.STRING_NO).equals(DefineValue.STRING_YES))
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, true);
                         else
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
                         mEditor.putString(DefineValue.IS_NEW_BULK, arrayJson.getJSONObject(i).getString(WebParams.IS_NEW_BULK));
-                        mEditor.putBoolean(DefineValue.IS_AGENT, arrayJson.getJSONObject(i).optInt(WebParams.IS_AGENT, 0) > 0);
+                        int isagent = arrayJson.getJSONObject(i).optInt(WebParams.IS_AGENT, 0);
+                        mEditor.putBoolean(DefineValue.IS_AGENT, isagent > 0);
 //                        if (!arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES, "").isEmpty()) {
 //                            String array = arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES,"");
-                                String arrJson = arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES, "");
+                        String arrJson = arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES, "");
 //                            for (int a=0; a<arrJson.length(); a++)
 //                            {
-                                mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson
-                                );
+                        mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
 //                            }
 //                        }
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
+
+                        if (!arrayJson.getJSONObject(i).optString(WebParams.AGENT_TYPE, "").isEmpty()){
+                            mEditor.putString(DefineValue.AGENT_TYPE, arrayJson.getJSONObject(i).getString(WebParams.AGENT_TYPE));
+                        }
                         Timber.w("isi comm id yg bener:" + arrayJson.getJSONObject(i).getString(WebParams.COMM_ID));
                         break;
                     }

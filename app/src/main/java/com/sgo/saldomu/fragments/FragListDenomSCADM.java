@@ -90,6 +90,7 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
                     userPhoneID, accessKey);
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.USER_NAME, userNameLogin);
 
             Timber.d("isi params get list community denom scadm:" + params.toString());
 

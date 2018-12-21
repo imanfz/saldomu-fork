@@ -1040,8 +1040,12 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                         finish();
 
-                    } else {
-                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+                    }else if(code.equals("0003"))
+                    {
+                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
+                        finish();
+                    }else {
+                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
                     }
 
                     handler.removeCallbacks(runnable2);
