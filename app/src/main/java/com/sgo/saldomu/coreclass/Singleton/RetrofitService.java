@@ -620,37 +620,37 @@ public class RetrofitService {
                     public void onComplete() {
 
                     }
-                });
+                });public void MultiPartRequest(String link, HashMap<String, RequestBody> param,
+                MultipartBody.Part file, final ObjListener listener) {
+            BuildRetrofit().MultiPartInterface(link, param, file).subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            getCompositeDisposable().add(d);
+
+                        }
+
+                        @Override
+                        public void onNext(JsonObject obj) {
+                            listener.onResponses(obj);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            listener.onResponses(getErrorMessage(e));
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
     }
 
-    public void MultiPartRequest(String link, HashMap<String, RequestBody> param,
-                                 MultipartBody.Part file, final ObjListener listener) {
-        BuildRetrofit().MultiPartInterface(link, param, file).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JsonObject>() {
 
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        getCompositeDisposable().add(d);
-
-                    }
-
-                    @Override
-                    public void onNext(JsonObject obj) {
-                        listener.onResponses(obj);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        listener.onResponses(getErrorMessage(e));
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
 
     public Gson getGson(){
         if (gson== null)
