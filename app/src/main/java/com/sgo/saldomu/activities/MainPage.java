@@ -1088,6 +1088,7 @@ public class MainPage extends BaseActivity {
         mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, "");
         mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
         mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, "");
+        mEditor.putString(DefineValue.IS_POS, "");
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -1117,7 +1118,7 @@ public class MainPage extends BaseActivity {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("logout:"+response.toString());
                             //stopService(new Intent(MainPage.this, UpdateLocationService.class));
-                            Logout(FIRST_SCREEN_LOGIN);
+                            Logout(FIRST_SCREEN_INTRO);
 
                         } else {
                             progdialog.dismiss();
