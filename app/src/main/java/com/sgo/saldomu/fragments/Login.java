@@ -157,8 +157,8 @@ public class Login extends BaseFragment implements View.OnClickListener {
         }
     }
 
-    private void sentDatas(){
-        try{
+    private void sentDatas() {
+        try {
             String comm_id = MyApiClient.COMM_ID;
 //            String encrypted_password = RSA.opensslEncrypt(passLoginValue.getText().toString()
 //                    , BuildConfig.OPENSSL_ENCRYPT_KEY, BuildConfig.OPENSSL_ENCRYPT_IV);
@@ -223,7 +223,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                                 switchFragment(newFrag, "reg1", true);
                             }
                         }
-                    }else if (code.equals(DefineValue.ERROR_0042)) {
+                    } else if (code.equals(DefineValue.ERROR_0042)) {
                         int failed = Integer.valueOf(loginModel.getFailedAttempt());
                         int max = Integer.valueOf(loginModel.getMaxFailed());
                         String message;
@@ -251,7 +251,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         showDialog(getString(R.string.login_failed_wrong_id));
                     } else {
                         Toast.makeText(getActivity(), loginModel.getError_message(), Toast.LENGTH_SHORT).show();
-
                     }
                 }
 
@@ -323,11 +322,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
     }
 
-    private boolean checkCommunity(List<LoginCommunityModel> model){
-        if(model != null){
-            for(int i = 0 ; i < model.size();i++){
-                if(model.get(i).getCommId().equals(MyApiClient.COMM_ID)){
-                    Timber.w("check comm id yg bener: "+model.get(i).getCommId());
+    private boolean checkCommunity(List<LoginCommunityModel> model) {
+        if (model != null) {
+            for (int i = 0; i < model.size(); i++) {
+                if (model.get(i).getCommId().equals(MyApiClient.COMM_ID)) {
+                    Timber.w("check comm id yg bener: " + model.get(i).getCommId());
                     return true;
                 }
             }
@@ -337,14 +336,14 @@ public class Login extends BaseFragment implements View.OnClickListener {
         return false;
     }
 
-    private void setLoginProfile(LoginModel model){
+    private void setLoginProfile(LoginModel model) {
 
         try {
             SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
             SecurePreferences.Editor mEditor = prefs.edit();
             String arraynya;
             String userId = model.getUserId();
-            String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,"");
+            String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, "");
 
             if (prefs.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").equals(userId)) {
                 mEditor.putString(DefineValue.CONTACT_FIRST_TIME, prevContactFT);
@@ -403,11 +402,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
             else
                 mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, true);
 
-            if(!model.getCommunity().isEmpty()){
-                mEditor.putInt(DefineValue.COMMUNITY_LENGTH,model.getCommunity().size());
-                for(int i = 0 ; i < model.getCommunity().size();i++){
+            if (!model.getCommunity().isEmpty()) {
+                mEditor.putInt(DefineValue.COMMUNITY_LENGTH, model.getCommunity().size());
+                for (int i = 0; i < model.getCommunity().size(); i++) {
                     LoginCommunityModel commModel = model.getCommunity().get(i);
-                    if(commModel.getCommId().equals(MyApiClient.COMM_ID)){
+                    if (commModel.getCommId().equals(MyApiClient.COMM_ID)) {
                         mEditor.putString(DefineValue.COMMUNITY_ID, commModel.getCommId());
                         mEditor.putString(DefineValue.CALLBACK_URL_TOPUP, commModel.getCallbackUrl());
                         mEditor.putString(DefineValue.API_KEY_TOPUP, commModel.getApiKey());
@@ -417,10 +416,12 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.putString(DefineValue.AUTHENTICATION_TYPE, commModel.getAuthenticationType());
                         mEditor.putString(DefineValue.LENGTH_AUTH, commModel.getLengthAuth());
                         mEditor.putString(DefineValue.IS_HAVE_PIN, commModel.getIsHavePin());
+                        mEditor.putString(DefineValue.AGENT_TYPE, commModel.getAgent_type());
+
                         mEditor.putInt(DefineValue.LEVEL_VALUE, Integer.valueOf(commModel.getMemberLevel()));
-                        if (commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES))
-                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true);
-                        else
+                        if (commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES)) {
+                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, true);
+                        } else
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
 
                         mEditor.putString(DefineValue.IS_NEW_BULK, commModel.getIsNewBulk());
@@ -433,7 +434,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 //                                String arrJson = arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES, "");
 //                            for (int a=0; a<arrJson.length(); a++)
 //                            {
-                                mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
+                        mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
 //                            }
 //                        }
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
@@ -449,7 +450,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 mEditor.putString(DefineValue.SHOP_AGENT_DATA, getGson().toJson(model.getShopIdAgent()));
             }
 
-            if(model.getSettings() != null){
+            if (model.getSettings() != null) {
                 mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, Integer.valueOf(model.getSettings().get(0).getMaxMemberTransfer()));
 
             }
@@ -457,7 +458,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             mEditor.apply();
 
             changeActivity();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -49,6 +49,7 @@ import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.ReportDataModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -80,12 +81,12 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     final private String ITEM_DESC_NON = "PLN Non-Taglis";
     final private String ITEM_DESC_BPJS = "BPJS";
 
-    private TextView tv_date_from, tv_date_to, sumTotalTrx, sumRelAmount, sumRelTrx, sumUnrelTrx, sumUnrelAmount;
+    private TextView tv_date_from, tv_date_to, sumTotalTrx, sumRelAmount, sumRelTrx, sumUnrelTrx, sumUnrelAmount, tv_txId;
 
     private View v;
     private LinearLayout layout_filter, layout_summary;
     private int height;
-    private String OrifromDate;
+    private String OrifromDate, comm_id_tagih;
     private String OritoDate;
     private ListView lv_report;
     private ViewGroup footerLayout;
@@ -703,6 +704,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             } else if (_object.getBuss_scheme_code().equals("BDK")) {
                 showReportBDKDialog(response);
 
+            }else if (_object.getBuss_scheme_code().equals("DGI")) {
+                showReportCollectorDialog(response);
             }
         }
     }
@@ -1094,6 +1097,104 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         ft.add(dialog, ReportBillerDialog.TAG);
         ft.commitAllowingStateLoss();
     }
+
+    private void showReportCollectorDialog(GetTrxStatusReportModel resp) {
+
+        try {
+            JSONObject response = new JSONObject(getGson().toJson(resp));
+
+            Bundle args = new Bundle();
+            String txStatus = response.optString(WebParams.TX_STATUS);
+            ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
+            args.putString(DefineValue.USER_NAME, response.optString(WebParams.MEMBER_CUST_NAME));
+            args.putString(DefineValue.DATE_TIME, response.optString(WebParams.CREATED));
+            args.putString(DefineValue.TX_ID, response.optString(WebParams.TX_ID));
+            args.putString(DefineValue.REPORT_TYPE, DefineValue.DGI);
+
+            args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.TX_AMOUNT)));
+
+            args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.ADMIN_FEE)));
+            args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.TOTAL_AMOUNT)));
+            args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, true);
+
+            Boolean txStat = false;
+            if (txStatus.equals(DefineValue.SUCCESS)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+            } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+            } else if (txStatus.equals(DefineValue.SUSPECT)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+            } else if (!txStatus.equals(DefineValue.FAILED)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+            } else {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+            }
+            args.putBoolean(DefineValue.TRX_STATUS, txStat);
+            if (!txStat)
+                args.putString(DefineValue.TRX_REMARK, response.optString(WebParams.TX_REMARK));
+
+
+            args.putString(DefineValue.DETAILS_BILLER, response.optString(WebParams.DETAIL, ""));
+
+
+            args.putString(DefineValue.INVOICE, response.optString(WebParams.INVOICE));
+            args.putString(DefineValue.BUSS_SCHEME_CODE, response.optString(WebParams.BUSS_SCHEME_CODE));
+            args.putString(DefineValue.BUSS_SCHEME_NAME, response.optString(WebParams.BUSS_SCHEME_NAME));
+            args.putString(DefineValue.PRODUCT_NAME, response.optString(WebParams.PRODUCT_NAME));
+            args.putString(DefineValue.PAYMENT_TYPE_DESC, response.optString(WebParams.PAYMENT_TYPE_DESC));
+            args.putString(DefineValue.DGI_MEMBER_NAME, response.optString(WebParams.DGI_MEMBER_NAME));
+            args.putString(DefineValue.DGI_ANCHOR_NAME, response.optString(WebParams.DGI_ANCHOR_NAME));
+            args.putString(DefineValue.DGI_COMM_NAME, response.optString(WebParams.DGI_COMM_NAME));
+
+            dialog.setArguments(args);
+//        dialog.show(getFragmentManager(), "report biller dialog");
+//        dialog.setTargetFragment(this, 0);
+            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            ft.add(dialog, ReportBillerDialog.TAG);
+            ft.commitAllowingStateLoss();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    private void showReportEspayDialog(String user_name, String date, String user_id, String txId, String payment_name,
+//                                       String txStatus, String txRemark, String txAmount, String biller_detail,
+//                                       String buss_scheme_code, String buss_scheme_name, String ccy_id){
+//        Bundle args = new Bundle();
+//        args.putString(DefineValue.DATE_TIME,DateTimeFormat.formatToID(date));
+//        args.putString(DefineValue.TX_ID,txId);
+//        args.putString(DefineValue.BUSS_SCHEME_NAME,buss_scheme_name);
+////        args.putString(DefineValue.COMMUNITY_NAME,comm_name);
+//        args.putString(DefineValue.AMOUNT,ccy_id+" "+CurrencyFormat.format(txAmount));
+//        args.putString(DefineValue.FEE,ccy_id+" "+CurrencyFormat.format(fee));
+//
+//        Double total_amount = Double.parseDouble(amount) + Double.parseDouble(fee);
+//        args.putString(DefineValue.TOTAL_AMOUNT,ccy_id+" "+CurrencyFormat.format(total_amount));
+//
+//        args.putString(DefineValue.DESCRIPTION, description);
+//        args.putString(DefineValue.REMARK, remark);
+//        args.putString(DefineValue.REPORT_TYPE, DefineValue.TRANSACTION_ESPAY);
+//        args.putString(DefineValue.BANK_NAME, bankName);
+//        args.putString(DefineValue.PRODUCT_NAME, productName);
+//
+//        if(type_desc.equals(ITEM_DESC_PLN)||type_desc.equals(ITEM_DESC_BPJS)){
+//            args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_PLN);
+//            if(type_desc.equals(ITEM_DESC_BPJS))
+//                args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_BPJS);
+//            try {
+//                args.putString(DefineValue.DETAILS_BILLER,response.getString(WebParams.DETAIL));
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        args.putString(DefineValue.BUSS_SCHEME_CODE,buss_scheme_code);
+//
+//        showBillerDialog(args, txStatus, txRemark);
+//
+//    }
 
     private void showBillerDialog(Bundle args, String txStatus, String txRemark) {
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);

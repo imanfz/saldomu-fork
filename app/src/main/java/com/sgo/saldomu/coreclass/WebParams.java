@@ -455,6 +455,7 @@ public class WebParams {
     public static String MEMBER_TYPE    = "member_type";
     public static String PERIOD_MONTH = "period_month";
     public static String BBS_CITY   = "bbs_city";
+    public static String CITY   = "city";
     public static String COMM_SOURCE= "comm_source";
     public static String GCM_ID     = "gcm_id";
     public static String DEVICE_NAME= "device_name";
@@ -550,5 +551,7 @@ public class WebParams {
     public static String DGI_COMM_NAME= "dgi_comm_name";
     public static String AGENT_SCHEME_CODES= "agent_scheme_codes";
     public static String IS_MEMBER_SHOP_DGI= "is_member_shop_dgi";
+    public static String NEXT_VISIT_DATE= "next_visit_date";
+    public static String AGENT_TYPE = "agent_type";
 
 }

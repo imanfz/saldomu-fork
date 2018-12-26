@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -36,7 +37,6 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.GridHome;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.LevelClass;
@@ -65,7 +65,7 @@ import timber.log.Timber;
  * Created by Lenovo Thinkpad on 5/10/2017.
  */
 public class FragHomeNew extends BaseFragmentMainPage {
-    GridView GridHome;
+    GridView GridView;
     Button btn_beli;
     TextView tv_saldo;
     EditText input;
@@ -137,21 +137,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.frag_home_new, container, false);
-        GridHome = v.findViewById(R.id.grid);
+
+        GridView = v.findViewById(R.id.grid);
         tv_saldo = v.findViewById(R.id.tv_saldo);
         swSettingOnline = v.findViewById(R.id.swSettingOnline);
         llAgentDetail = v.findViewById(R.id.llAgentDetail);
-        return v;
 
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(getActivity(), sp);
         btn_beli = v.findViewById(R.id.btn_beli);
         input = v.findViewById(R.id.input);
         tv_pulsa = v.findViewById(R.id.tv_pulsa);
@@ -164,7 +155,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
         PLS = v.findViewById(R.id.PLS);
         TKN = v.findViewById(R.id.TKN);
 
-        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+        return v;
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        isMemberShopDGI = sp.getString(DefineValue.IS_MEMBER_SHOP_DGI, "0");
+
+        realm = RealmManager.getRealmBiller();
+
         mBillerTypeDataPLS = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "PLS")
                 .findFirst();
@@ -212,7 +214,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (isAgent) {
             if (isAdded()) {
                 GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                GridHome.setAdapter(adapter);
+                GridView.setAdapter(adapter);
             }
         } else {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
@@ -241,8 +243,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                                         ShopCategory shopCategory = new ShopCategory();
                                         shopCategory.setCategoryId(obj.getCategory_id());
-                                        if (shopCategory.getCategoryId().contains("SETOR"))
-                                        {
+                                        if (shopCategory.getCategoryId().contains("SETOR")) {
                                             String categoryIDcta = shopCategory.getCategoryId().toString();
                                             SecurePreferences.Editor mEditor = sp.edit();
                                             mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
@@ -266,10 +267,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                     Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                                 }
 
+
                                 //gridBbsCategoryAdapter.notifyDataSetChanged();
                                 if (isAdded()) {
                                     GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                                    GridHome.setAdapter(adapter);
+                                    GridView.setAdapter(adapter);
                                 }
                             }
 
@@ -354,7 +356,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         });
 
-        GridHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        GridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Timber.d("masuk gridhomeonitemclicklistener");
@@ -458,7 +460,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         RefreshSaldo();
         if (levelClass != null)
             levelClass.refreshData();
-        }
+    }
 
     private ArrayList<String> SetupListMenu() {
         String[] _data;
@@ -469,7 +471,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //            Collections.addAll(data,_data);
 //
 //        } else
-            if (!isAgent){
+        if (!isAgent) {
 
             String[] categories = new String[shopCategories.size()];
             for (int x = 0; x < shopCategories.size(); x++) {
@@ -522,8 +524,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //                        overallIdx++;
 //                    }
 //                } else {
-                    data[x] = R.drawable.ic_location_on_black;
-                    overallIdx++;
+                data[x] = R.drawable.ic_location_on_black;
+                overallIdx++;
 //                }
             }
 

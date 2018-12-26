@@ -102,6 +102,7 @@ public class MyApiClient {
     public static String LINK_RESEND_TOKEN_SGOL;
     public static String LINK_INSERT_TRANS_TOPUP;
     public static String LINK_SALDO;
+    public static String LINK_SALDO_COLLECTOR;
     //public static final String LINK_BANK_LIST;
     public static String LINK_BANK_LIST;
     private static String LINK_REQ_TOKEN_REGIST;
@@ -187,6 +188,7 @@ public class MyApiClient {
     private static String LINK_CREATE_PIN_PASS;
     public static String LINK_REPORT_MONEY_REQUEST;
     public static String LINK_REPORT_COMM_FEE;
+    public static String LINK_REPORT_COLLECTOR;
     public static String LINK_ASK4MONEY_REJECT;
 
     private static String LINK_INQUIRY_CUST;
@@ -258,6 +260,8 @@ public class MyApiClient {
     public static String LINK_LIST_INVOICE_DGI;
     public static String LINK_CONFIRM_PAYMENT_DGI;
     public static String LINK_REQ_TOKEN_INVOICE_DGI;
+    public static String LINK_CANCEL_SEARCH_DGI;
+    public static String LINK_SET_MEMBER_LOC;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -353,6 +357,7 @@ public class MyApiClient {
         LINK_CREATE_PIN_PASS    = headaddressfinal + "CreatePinPass/Invoke";
         LINK_REPORT_MONEY_REQUEST = headaddressfinal + "ReportMoneyReq/Retrieve";
         LINK_REPORT_COMM_FEE    = headaddressfinal + "ReportCommFee/Retrieve";
+        LINK_REPORT_COLLECTOR    = headaddressfinal + "ReportTrxCollector/Retrieve";
         LINK_ASK4MONEY_REJECT   = headaddressfinal + "Ask4Money/Decline";
 
         LINK_INQUIRY_CUST = headaddressfinal + "InquiryCustomer/Retrieve";
@@ -424,10 +429,14 @@ public class MyApiClient {
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
         LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
 
+        //tagih
         LINK_LIST_INVOICE_DGI = headaddressfinal +"invoice/Listinv/Retrieve";
         LINK_REQ_TOKEN_INVOICE_DGI = headaddressfinal +"invoice/ReqToken/Retrieve";
         LINK_CANCEL_TRANSACTION_DGI = headaddressfinal + "invoice/Canceltrx/Invoke";
         LINK_CONFIRM_PAYMENT_DGI = headaddressfinal + "invoice/Payment/Invoke";
+        LINK_CANCEL_SEARCH_DGI = headaddressfinal + "invoice/Payment/Reject";
+        LINK_SALDO_COLLECTOR     = headaddressfinal + "Balancecollector/Retrieve";
+        LINK_SET_MEMBER_LOC = headaddressfinal + "invoice/Setmemberlocation/Invoke";
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
