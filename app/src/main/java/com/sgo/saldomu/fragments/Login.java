@@ -364,7 +364,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 BBSDataManager.resetBBSData();
             }
 
-
             mEditor.putString(DefineValue.USERID_PHONE, userId);
             mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_YES);
             mEditor.putString(DefineValue.USER_NAME, model.getUserName());
