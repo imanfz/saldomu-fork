@@ -308,7 +308,7 @@ public class RetrofitService {
         String msgnya = uuidnya + dtime + BuildConfig.APP_ID + webServiceName + commid + userphoneid + extraSignature;
         String hash = SHA.SHA256(secretKey, msgnya);
 
-        Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash);
+        Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash + ", access key : " + secretKey);
 
         HashMap<String, Object> params = new HashMap<>();
         params.put(WebParams.RC_UUID, uuidnya);
@@ -319,6 +319,7 @@ public class RetrofitService {
     }
 
     public HashMap<String, Object> getSignatureWithParamsFCM(String gcmID, String deviceId, String appID) {
+
 
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
@@ -440,7 +441,7 @@ public class RetrofitService {
     public void PostObjectRequest(String link, HashMap<String, Object> param, final ResponseListener listener) {
         BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .retry(2)
+//                .retry(1)
                 .subscribe(new Observer<JsonObject>() {
                     @Override
                     public void onSubscribe(Disposable d) {

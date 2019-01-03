@@ -57,7 +57,7 @@ public class ForgotPassword extends BaseFragment {
     private String userIDfinale;
     private ProgressDialog progdialog;
     private String is_sms, is_email;
-    private int attempt,failed;
+    private int attempt, failed;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,16 +73,16 @@ public class ForgotPassword extends BaseFragment {
         spin_tipe_notif = v.findViewById(R.id.forgotpass_spin_notif);
         Button btn_submit = v.findViewById(R.id.btn_submit_forgot_pass);
         TextView textMsg = v.findViewById(R.id.textForgotPassmsg);
-        String msg = getString(R.string.forgotpass_text_instruction,getString(R.string.appname));
+        String msg = getString(R.string.forgotpass_text_instruction, getString(R.string.appname));
         textMsg.setText(msg);
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        if(sp.contains(DefineValue.SENDER_ID)) {
+        if (sp.contains(DefineValue.SENDER_ID)) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
             et_user_id.setText(userIDfinale);
         }
 
-        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){ //untuk shorcut dari tombol di activity LoginActivity
+        if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) { //untuk shorcut dari tombol di activity LoginActivity
             et_user_id.setEnabled(true);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
@@ -104,23 +104,19 @@ public class ForgotPassword extends BaseFragment {
         @Override
         public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
 
-            if(i == 1) {
+            if (i == 1) {
                 is_email = DefineValue.STRING_YES;
                 is_sms = DefineValue.STRING_NO;
-            }
-            else if(i == 2) {
+            } else if (i == 2) {
                 is_sms = DefineValue.STRING_YES;
                 is_email = DefineValue.STRING_NO;
-            }
-            else if(i == 3){
+            } else if (i == 3) {
                 is_sms = DefineValue.STRING_YES;
                 is_email = DefineValue.STRING_YES;
-            }
-            else {
+            } else {
                 is_sms = "";
                 is_email = "";
             }
-
 
 
         }
@@ -134,12 +130,13 @@ public class ForgotPassword extends BaseFragment {
     private Button.OnClickListener submitForgotPassListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(InetHandler.isNetworkAvailable(getActivity())){
-                if(inputValidation()){
+            if (InetHandler.isNetworkAvailable(getActivity())) {
+                if (inputValidation()) {
                     userIDfinale = NoHPFormat.formatTo62(et_user_id.getText().toString());
                     CallPINinput(0);
                 }
-            }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -147,8 +144,8 @@ public class ForgotPassword extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == MainPage.REQUEST_FINISH){
-            if(resultCode == InsertPIN.RESULT_PIN_VALUE){
+        if (requestCode == MainPage.REQUEST_FINISH) {
+            if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
 //                Toast.makeText(getActivity(),value_pin,Toast.LENGTH_SHORT).show();
                 sentData(value_pin);
@@ -156,17 +153,17 @@ public class ForgotPassword extends BaseFragment {
         }
     }
 
-    private void CallPINinput(int _attempt){
+    private void CallPINinput(int _attempt) {
         Intent i = new Intent(getActivity(), InsertPIN.class);
         i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
-        i.putExtra(DefineValue.USERID_PHONE,userIDfinale);
-        if(_attempt == 1)
-            i.putExtra(DefineValue.ATTEMPT,_attempt);
+        i.putExtra(DefineValue.USERID_PHONE, userIDfinale);
+        if (_attempt == 1)
+            i.putExtra(DefineValue.ATTEMPT, _attempt);
         startActivityForResult(i, MainPage.REQUEST_FINISH);
     }
 
-    private void sentData(final String value_pin){
-        try{
+    private void sentData(final String value_pin) {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
@@ -213,7 +210,7 @@ public class ForgotPassword extends BaseFragment {
                                     default:
                                         if (MyApiClient.PROD_FAILURE_FLAG) {
                                             Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                        }else
+                                        } else
                                             Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
                                         break;
                                 }
@@ -234,17 +231,19 @@ public class ForgotPassword extends BaseFragment {
                     });
 
 
-        }catch (Exception e){
-            Timber.d("httpclient"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient" + e.getMessage());
         }
     }
 
-    private void getHelpPin(final ProgressBar progDialog, final TextView Message){
-        try{
+    private void getHelpPin(final ProgressBar progDialog, final TextView Message) {
+        try {
             progDialog.setIndeterminate(true);
             progDialog.setVisibility(View.VISIBLE);
 
-            RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_HELP_PIN,
+            params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_HELP_PIN, "");
+
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_HELP_PIN, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -258,8 +257,8 @@ public class ForgotPassword extends BaseFragment {
                                 if (ForgotPassword.this.isVisible()) {
                                     for (int i = 0; i < model.getContact_data().size(); i++) {
                                         ContactDataModel mObject = model.getContact_data().get(i);
-                                        if (i==0) {
-                                            message_value = Message.getText().toString()+"\n"+
+                                        if (i == 0) {
+                                            message_value = Message.getText().toString() + "\n" +
                                                     mObject.getDescription() + " " +
                                                     mObject.getName() + "\n" +
                                                     mObject.getContact_phone() + " " +
@@ -270,7 +269,7 @@ public class ForgotPassword extends BaseFragment {
                                         }
                                     }
                                 }
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -286,12 +285,12 @@ public class ForgotPassword extends BaseFragment {
                             progDialog.setVisibility(View.GONE);
                         }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient" + e.getMessage());
         }
     }
 
-    private void showDialog(String message_error){
+    private void showDialog(String message_error) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -303,11 +302,12 @@ public class ForgotPassword extends BaseFragment {
         Button btnDialogOK = dialog.findViewById(R.id.btn_dialog_notification_ok);
         ProgressBar progBar = dialog.findViewById(R.id.progressBarDialogNotif);
         TextView Title = dialog.findViewById(R.id.title_dialog);
-        TextView Message = dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
+        Message.setVisibility(View.VISIBLE);
 
         Title.setText(getResources().getString(R.string.mainpage_dialog_changepass_title));
         Message.setText(message_error);
-        getHelpPin(progBar,Message);
+        getHelpPin(progBar, Message);
 
         btnDialogOK.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -321,23 +321,22 @@ public class ForgotPassword extends BaseFragment {
     }
 
 
-
-    private void switchFragment(Fragment i, String name, Boolean isBackstack){
+    private void switchFragment(Fragment i, String name, Boolean isBackstack) {
         if (getActivity() == null)
             return;
 
         LoginActivity fca = (LoginActivity) getActivity();
-        fca.switchContent(i,name,isBackstack);
+        fca.switchContent(i, name, isBackstack);
     }
 
 
-    private boolean inputValidation(){
-        if(et_user_id.getText().toString().length()==0){
-            DefinedDialog.showErrorDialog(getActivity(),getString(R.string.forgetpass_edittext_validation),null);
+    private boolean inputValidation() {
+        if (et_user_id.getText().toString().length() == 0) {
+            DefinedDialog.showErrorDialog(getActivity(), getString(R.string.forgetpass_edittext_validation), null);
             return false;
         }
-        if(spin_tipe_notif.getSelectedItemPosition()==0){
-            TextView errorText = (TextView)spin_tipe_notif.getSelectedView();
+        if (spin_tipe_notif.getSelectedItemPosition() == 0) {
+            TextView errorText = (TextView) spin_tipe_notif.getSelectedView();
             errorText.setTextColor(getResources().getColor(R.color.red));
             errorText.setError(errorText.getText().toString());
             errorText.setBackgroundColor(getResources().getColor(R.color.grey_900));

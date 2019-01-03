@@ -81,6 +81,7 @@ public class UtilsLoader {
 
                 Timber.d("isi params get Balance Loader:" + params.toString());
                 if (!member_id.isEmpty()) {
+
                     RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_SALDO, params,
                             new ResponseListener() {
                                 @Override

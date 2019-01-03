@@ -276,8 +276,6 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         btn_refresh_balance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btn_refresh_balance.setEnabled(false);
-                btn_refresh_balance.startAnimation(frameAnimation);
                 getBalance(false);
             }
         });
@@ -342,6 +340,12 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     }
 
     public void getBalance(Boolean isAuto){
+
+        btn_refresh_balance.setEnabled(false);
+        btn_refresh_balance.startAnimation(frameAnimation);
+
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(MainPage.HOME_BALANCE_ANIMATE));
+
         new UtilsLoader(getActivity(),sp).getDataBalance(isAuto,new OnLoadDataListener() {
             @Override
             public void onSuccess(Object deData) {

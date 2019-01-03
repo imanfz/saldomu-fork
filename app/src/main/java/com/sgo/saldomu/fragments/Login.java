@@ -40,14 +40,8 @@ import com.sgo.saldomu.models.retrofit.LoginModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
 import java.util.List;
 
-import retrofit2.http.HEAD;
 import timber.log.Timber;
 
 /**
@@ -116,7 +110,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         if (m != null) {
             if (m.containsKey(DefineValue.IS_POS)) {
                 if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y")) {
-                    is_pos = m.getString(DefineValue.IS_POS, "N");
+                    is_pos = m.getString(DefineValue.IS_POS, "");
                     getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
                     userIDValue.setEnabled(true);
                     userIDValue.setHint("No HP POS yang sudah terdaftar");
@@ -157,6 +151,13 @@ public class Login extends BaseFragment implements View.OnClickListener {
         }
     }
 
+    boolean checkIsPOS() {
+        if (is_pos != null)
+            return !is_pos.equalsIgnoreCase("");
+        return false;
+    }
+
+
     private void sentDatas() {
         try {
             String comm_id = MyApiClient.COMM_ID;
@@ -183,9 +184,8 @@ public class Login extends BaseFragment implements View.OnClickListener {
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
             params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
-            if (is_pos == null)
-                is_pos = "N";
-            params.put(WebParams.IS_POS, is_pos);
+            if (checkIsPOS())
+                params.put(WebParams.IS_POS, is_pos);
 
             Timber.d("isi params login:" + params.toString());
 
@@ -224,16 +224,21 @@ public class Login extends BaseFragment implements View.OnClickListener {
                             }
                         }
                     } else if (code.equals(DefineValue.ERROR_0042)) {
-                        int failed = Integer.valueOf(loginModel.getFailedAttempt());
-                        int max = Integer.valueOf(loginModel.getMaxFailed());
+
                         String message;
 
-                        if (max - failed == 0) {
-                            message = getString(R.string.login_failed_attempt_3);
-                        } else {
-                            message = getString(R.string.login_failed_attempt_1, max - failed);
-                        }
+                        if (checkIsPOS()){
+                            message = loginModel.getError_message();
+                        }else {
+                            int failed = Integer.valueOf(loginModel.getFailedAttempt());
+                            int max = Integer.valueOf(loginModel.getMaxFailed());
 
+                            if (max - failed == 0) {
+                                message = getString(R.string.login_failed_attempt_3);
+                            } else {
+                                message = getString(R.string.login_failed_attempt_1, max - failed);
+                            }
+                        }
                         showDialog(message);
                     } else if (code.equals(DefineValue.ERROR_0126)) {
                         showDialog(getString(R.string.login_failed_attempt_3));

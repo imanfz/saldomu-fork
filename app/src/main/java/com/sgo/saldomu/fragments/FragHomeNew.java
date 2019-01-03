@@ -15,11 +15,14 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -37,6 +40,7 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.GridHome;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.LevelClass;
@@ -79,6 +83,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View BPJS;
     View PLS;
     View TKN;
+    ImageView refreshBtn;
+    private Animation frameAnimation;
     Boolean is_first_time = true;
     private LevelClass levelClass;
     private SecurePreferences sp;
@@ -129,7 +135,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
         filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
 
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
+        frameAnimation.setRepeatCount(Animation.INFINITE);
     }
 
     @Override
@@ -154,6 +163,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         BPJS = v.findViewById(R.id.BPJS);
         PLS = v.findViewById(R.id.PLS);
         TKN = v.findViewById(R.id.TKN);
+        refreshBtn = v.findViewById(R.id.btn_refresh_balance);
 
         return v;
 
@@ -460,6 +470,25 @@ public class FragHomeNew extends BaseFragmentMainPage {
         RefreshSaldo();
         if (levelClass != null)
             levelClass.refreshData();
+
+        refreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                animateRefrestBtn(true);
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(MainPage.RESULT_HOME_BALANCE));
+            }
+        });
+    }
+
+    void animateRefrestBtn(boolean isLoad){
+        if (isLoad){
+            refreshBtn.setEnabled(false);
+            refreshBtn.startAnimation(frameAnimation);
+        }else {
+            refreshBtn.setEnabled(true);
+            refreshBtn.clearAnimation();
+        }
+
     }
 
     private ArrayList<String> SetupListMenu() {
@@ -603,6 +632,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         @Override
         public void onReceive(Context context, Intent intent) {
             Timber.d("receiver service balance");
+            animateRefrestBtn(false);
             RefreshSaldo();
 
             String action = intent.getAction();
@@ -634,6 +664,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
         }
     };
 
+    private BroadcastReceiver refBtnReciever = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            animateRefrestBtn(true);
+        }
+    };
+
     @Override
     public void onResume() {
         super.onResume();
@@ -650,12 +688,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
         }
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(refBtnReciever,
+                new IntentFilter(MainPage.HOME_BALANCE_ANIMATE));
     }
 
     @Override
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(refBtnReciever);
     }
 
     private void switchActivity(Intent mIntent, int j) {

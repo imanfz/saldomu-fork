@@ -2,10 +2,12 @@ package com.sgo.saldomu.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -13,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Display;
@@ -110,6 +113,10 @@ public class MainPage extends BaseActivity {
     private final static int FIRST_SCREEN_LOGIN = 1;
     private final static int FIRST_SCREEN_INTRO = 2;
     private final static int REQCODE_PLAY_SERVICE = 312;
+
+
+    public static String RESULT_HOME_BALANCE = "refresh_home_balance";
+    public static String HOME_BALANCE_ANIMATE = "refresh_home_btn_animate";
 
     private static int AmountNotif = 0;
 
@@ -607,6 +614,13 @@ public class MainPage extends BaseActivity {
         unbindService(UserProfileServiceConnection);
         isBoundUserProfile = false;
     }
+
+    BroadcastReceiver btnReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mNavDrawer.getBalance(true);
+        }
+    };
 
     private void InitializeNavDrawer() {
         mDrawerLayout = findViewById(R.id.main_drawer);
@@ -1342,18 +1356,20 @@ public class MainPage extends BaseActivity {
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
         }
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(btnReceiver, new IntentFilter(MainPage.RESULT_HOME_BALANCE));
+
     }
 
     @Override
     protected void onPause() {
+        super.onPause();
         if (isForeground) {
             if (serviceReferenceBalance != null)
                 serviceReferenceBalance.StopCallBalance();
             if (serviceAppInfoReference != null)
                 serviceAppInfoReference.StopCallAppInfo();
         }
-        super.onPause();
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(btnReceiver);
     }
 
     @Override
