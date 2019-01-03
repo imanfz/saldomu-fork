@@ -290,10 +290,9 @@ public class FragHomeAgent extends BaseFragmentMainPage {
         fca.switchMenu(menuIdx,null);
     }
 
-
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
     }
 
@@ -446,8 +445,10 @@ public class FragHomeAgent extends BaseFragmentMainPage {
                 if(progDialog.isShowing())
                     progDialog.dismiss();
                 if(!intent.getBooleanExtra(DefineValue.IS_SUCCESS,false)){
-                    Toast.makeText(getContext(),getString(R.string.error_message),Toast.LENGTH_LONG).show();
-                    switchMenu(NavigationDrawMenu.MHOME);
+                    if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
+                        Toast.makeText(getContext(),getString(R.string.error_message),Toast.LENGTH_LONG).show();
+                        switchMenu(NavigationDrawMenu.MHOME);
+                    }
                 }
             }
 //            else if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {

@@ -16,7 +16,7 @@ public class BankDataTopUp {
     private String fee;
     private String bankCode;
 
-    public BankDataTopUp(ArrayList<ListBankDataTopup> bankData,String bankCode, String noVa, String fee){
+    public BankDataTopUp(ArrayList<ListBankDataTopup> bankData, String bankCode, String noVa, String fee){
         this.setBankData(bankData);
         this.setNoVa(noVa);
         if (fee != null && !fee.isEmpty() && !fee.equals("null")) {

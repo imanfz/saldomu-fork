@@ -132,16 +132,21 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
 
         if(partialPayment.equalsIgnoreCase("Y")) {
             showInvoiceAmount();
-            lbl_partial.setText("Bisa Lebih");
-        }else lbl_partial.setText("Tidak");
+            lbl_partial.setText("Yes");
+        }else if (partialPayment.equalsIgnoreCase("O"))
+        {
+            showInvoiceAmount();
+            lbl_partial.setText("Over/Bisa Lebih");
+        }
+        else lbl_partial.setText("No");
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String input = inpAmount.getText().toString().trim();
 
-                if (input.equalsIgnoreCase("")) {
-                    input = "0";
+                if (input.equalsIgnoreCase("") || inpAmount.getVisibility()==View.GONE) {
+                    input = obj.getRemain_amount();
             }
 
                 if (checkInput(input)) {

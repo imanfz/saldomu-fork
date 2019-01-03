@@ -9,16 +9,20 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -65,7 +69,7 @@ import timber.log.Timber;
  * Created by Lenovo Thinkpad on 5/10/2017.
  */
 public class FragHomeNew extends BaseFragmentMainPage {
-    GridView GridHome;
+    GridView GridView;
     Button btn_beli;
     TextView tv_saldo;
     EditText input;
@@ -79,6 +83,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View BPJS;
     View PLS;
     View TKN;
+    ImageView refreshBtn;
+    private Animation frameAnimation;
     Boolean is_first_time = true;
     private LevelClass levelClass;
     private SecurePreferences sp;
@@ -92,7 +98,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
     ProgressDialog progdialog2;
-    String shopStatus;
+    String shopStatus, isMemberShopDGI;
 
     private static final int RC_GPS_REQUEST = 1;
 
@@ -129,7 +135,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
         filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
 
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
+        frameAnimation.setRepeatCount(Animation.INFINITE);
     }
 
     @Override
@@ -137,21 +146,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.frag_home_new, container, false);
-        GridHome = v.findViewById(R.id.grid);
+
+        GridView = v.findViewById(R.id.grid);
         tv_saldo = v.findViewById(R.id.tv_saldo);
         swSettingOnline = v.findViewById(R.id.swSettingOnline);
         llAgentDetail = v.findViewById(R.id.llAgentDetail);
-        return v;
-
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(getActivity(), sp);
 
         btn_beli = v.findViewById(R.id.btn_beli);
         input = v.findViewById(R.id.input);
@@ -164,8 +163,20 @@ public class FragHomeNew extends BaseFragmentMainPage {
         BPJS = v.findViewById(R.id.BPJS);
         PLS = v.findViewById(R.id.PLS);
         TKN = v.findViewById(R.id.TKN);
+        refreshBtn = v.findViewById(R.id.btn_refresh_balance);
 
-        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+        return v;
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        isMemberShopDGI = sp.getString(DefineValue.IS_MEMBER_SHOP_DGI, "0");
+
+        realm = RealmManager.getRealmBiller();
+
         mBillerTypeDataPLS = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "PLS")
                 .findFirst();
@@ -213,12 +224,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (isAgent) {
             if (isAdded()) {
                 GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                GridHome.setAdapter(adapter);
+                GridView.setAdapter(adapter);
             }
         } else {
-
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
-
             params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
@@ -244,8 +253,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                                         ShopCategory shopCategory = new ShopCategory();
                                         shopCategory.setCategoryId(obj.getCategory_id());
-                                        if (shopCategory.getCategoryId().contains("SETOR"))
-                                        {
+                                        if (shopCategory.getCategoryId().contains("SETOR")) {
                                             String categoryIDcta = shopCategory.getCategoryId().toString();
                                             SecurePreferences.Editor mEditor = sp.edit();
                                             mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
@@ -269,10 +277,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                     Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                                 }
 
+
                                 //gridBbsCategoryAdapter.notifyDataSetChanged();
                                 if (isAdded()) {
                                     GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                                    GridHome.setAdapter(adapter);
+                                    GridView.setAdapter(adapter);
                                 }
                             }
 
@@ -357,7 +366,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         });
 
-        GridHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        GridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Timber.d("masuk gridhomeonitemclicklistener");
@@ -423,18 +432,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.title_cash_out_member))) {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
-                    switchActivity(i,MainPage.ACTIVITY_RESULT);
-                }else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent)) ) {
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent))) {
                     switchMenu(NavigationDrawMenu.MTAGIH, null);
-                }
-                else
-                {
-                    for(int x=0;x<shopCategories.size();x++) {
+                } else {
+                    for (int x = 0; x < shopCategories.size(); x++) {
                         String categoryName = shopCategories.get(x).getCategoryName();
                         if (menuItemName.indexOf(categoryName) > 0) {
                             Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
                             i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
-                            sp.edit().putString(DefineValue.CATEGORY_ID,shopCategories.get(x).getCategoryId());
+                            sp.edit().putString(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
                             i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
                             i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
                             i.putExtra(DefineValue.AMOUNT, "");
@@ -449,7 +456,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
 
         });
-
         if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
 
             swSettingOnline.setOnCheckedChangeListener(null);
@@ -464,18 +470,37 @@ public class FragHomeNew extends BaseFragmentMainPage {
         RefreshSaldo();
         if (levelClass != null)
             levelClass.refreshData();
+
+        refreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                animateRefrestBtn(true);
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(MainPage.RESULT_HOME_BALANCE));
+            }
+        });
+    }
+
+    void animateRefrestBtn(boolean isLoad){
+        if (isLoad){
+            refreshBtn.setEnabled(false);
+            refreshBtn.startAnimation(frameAnimation);
+        }else {
+            refreshBtn.setEnabled(true);
+            refreshBtn.clearAnimation();
         }
+
+    }
 
     private ArrayList<String> SetupListMenu() {
         String[] _data;
-        ArrayList<String> data = new ArrayList<>() ;
-        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+        ArrayList<String> data = new ArrayList<>();
+        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 //        if(isAgent) {
 //            _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
 //            Collections.addAll(data,_data);
 //
 //        } else
-            if (!isAgent){
+        if (!isAgent) {
 
             String[] categories = new String[shopCategories.size()];
             for (int x = 0; x < shopCategories.size(); x++) {
@@ -499,14 +524,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
         TypedArray taAgent = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home_agent);
         TypedArray taNotAgent = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home_not_agent);
 
-        totalIdx                = ta.length();
-        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+        totalIdx = ta.length();
+        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 //        if(isAgent) {
 //            totalIdx    += taAgent.length();
 //        } else
-        if (!isAgent){
-            totalIdx    += shopCategories.size();
-            totalIdx    += taNotAgent.length();
+        if (!isAgent) {
+            totalIdx += shopCategories.size();
+            totalIdx += taNotAgent.length();
         }
 
         int[] data = new int[totalIdx];
@@ -519,10 +544,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //
 //
 //        } else
-            if (!isAgent){
-            for(int x =0; x < shopCategories.size(); x++ ) {
+        if (!isAgent) {
+            for (int x = 0; x < shopCategories.size(); x++) {
+//
+//                if (shopCategories.get(x).getSchemeCode().contains("DGI")) {
+//                    if (isMemberShopDGI.equalsIgnoreCase("1")) {
+//                        data[x] = R.drawable.ic_location_on_black;
+//                        overallIdx++;
+//                    }
+//                } else {
                 data[x] = R.drawable.ic_location_on_black;
                 overallIdx++;
+//                }
             }
 
 
@@ -599,6 +632,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         @Override
         public void onReceive(Context context, Intent intent) {
             Timber.d("receiver service balance");
+            animateRefrestBtn(false);
             RefreshSaldo();
 
             String action = intent.getAction();
@@ -630,6 +664,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
         }
     };
 
+    private BroadcastReceiver refBtnReciever = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            animateRefrestBtn(true);
+        }
+    };
+
     @Override
     public void onResume() {
         super.onResume();
@@ -646,12 +688,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
         }
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(refBtnReciever,
+                new IntentFilter(MainPage.HOME_BALANCE_ANIMATE));
     }
 
     @Override
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(refBtnReciever);
     }
 
     private void switchActivity(Intent mIntent, int j) {

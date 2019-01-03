@@ -8,7 +8,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_invoice_no"/>
+        android:id="@+id/tv_invoice_no"
+        android:textStyle="bold"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -30,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:id="@+id/view_list_invoice"
-        android:background="@color/grey_200"
+        android:background="@color/grey_400"
         android:visibility="gone"
         />
 

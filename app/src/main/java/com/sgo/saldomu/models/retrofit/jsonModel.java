@@ -10,7 +10,6 @@ public class jsonModel {
     @SerializedName("on_error")
     private boolean on_error;
 
-
     public String getError_code() {
         if (error_code == null)
             error_code = "1111";

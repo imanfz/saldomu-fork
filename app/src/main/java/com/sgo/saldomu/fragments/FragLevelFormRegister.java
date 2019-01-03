@@ -469,7 +469,7 @@ private EditText et_email;
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date_empty))
-                    .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

@@ -5,18 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.sgo.saldomu.Beans.BankDataTopUp;
-import com.sgo.saldomu.Beans.BankHeaderTopUp;
-import com.sgo.saldomu.Beans.ListBankDataTopup;
 import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.widgets.AnimatedExpandableListView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +21,7 @@ import java.util.List;
  */
 
 //public class SelectBankProductAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
-    public class SelectBankProductAdapter extends BaseExpandableListAdapter {
+public class SelectBankProductAdapter extends BaseExpandableListAdapter {
 
     private Context mContext;
     private List<listBankModel> mListDataHeader;
@@ -46,15 +41,14 @@ import java.util.List;
 
     static class ViewHolder {
         private HashMap<Integer, View> storedViews = new HashMap<>();
-        ViewHolder addView(View view)
-        {
+
+        ViewHolder addView(View view) {
             int id = view.getId();
             storedViews.put(id, view);
             return this;
         }
 
-        public View getView(int id)
-        {
+        public View getView(int id) {
             return storedViews.get(id);
         }
     }
@@ -71,7 +65,7 @@ import java.util.List;
         if (v == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = infalInflater.inflate(R.layout.list_topup_child_item, parent,false);
+            v = infalInflater.inflate(R.layout.list_topup_child_item, parent, false);
             itemClick = v.findViewById(R.id.adapter_child_item_layout);
             indicator = v.findViewById(R.id.child_indicator);
             itemTitle = v.findViewById(R.id.adapter_child_title_child);
@@ -89,9 +83,9 @@ import java.util.List;
 
         itemTitle.setText(headerObject.getProduct_name());
 
-        if (isExpanded){
+        if (isExpanded) {
             indicator.setImageResource(R.drawable.child_indicator_small_expand);
-        }else
+        } else
 
             indicator.setImageResource(R.drawable.child_indicator_small_collapse);
 
@@ -103,10 +97,10 @@ import java.util.List;
         listBankModel childDataWrapper = (listBankModel) getChild(groupPosition, childPosition);
         View layout_view_child = convertView;
 
-        if(layout_view_child == null) {
+//        if (layout_view_child == null && !childDataWrapper.getBank_code().equalsIgnoreCase(DefineValue.BankMandiri)) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            layout_view_child = inflater.inflate(getATMLayout(childDataWrapper), parent,false);
+            layout_view_child = inflater.inflate(getATMLayout(childDataWrapper), parent, false);
 
             TextView tvTitleATM = layout_view_child.findViewById(R.id.title_atm);
             TextView tvPinAccount = layout_view_child.findViewById(R.id.pin_account);
@@ -114,13 +108,13 @@ import java.util.List;
             tvPinAccount.setText(childDataWrapper.getNoVA());
 
             TextView tv_fee = layout_view_child.findViewById(R.id.fee_deskripsi);
-            if (tv_fee!=null) {
-                if(childDataWrapper.getFee() == null)
+            if (tv_fee != null) {
+                if (childDataWrapper.getFee() == null)
                     tv_fee.setText("");
                 else
-                    tv_fee.setText(mContext.getString(R.string.listatm_topup_deskripsi_fee,childDataWrapper.getFee()));
+                    tv_fee.setText(mContext.getString(R.string.listatm_topup_deskripsi_fee, childDataWrapper.getFee()));
             }
-        }
+//        }
 
         return layout_view_child;
     }
@@ -264,9 +258,9 @@ import java.util.List;
 //        return layout_view_child;
 //    }
 
-    private int getATMLayoutID(listBankModel bankData){
+    private int getATMLayoutID(listBankModel bankData) {
         String bankCode = bankData.getBank_code();
-        if(bankCode.equals(DefineValue.BankMandiri))
+        if (bankCode.equals(DefineValue.BankMandiri))
             return R.id.layout_atm_mandiri;
         else if (bankCode.equals(DefineValue.BankBRI))
             return R.id.layout_atm_bri;
@@ -277,8 +271,7 @@ import java.util.List;
                 return R.id.layout_atm_bca_klikbcava;
             else if (bankData.getProduct_code().equals(DefineValue.PRODUCT_BCA_MOBILEBANK))
                 return R.id.layout_atm_bca_mbca;
-        }
-        else if (bankCode.equals(DefineValue.BankDanamon))
+        } else if (bankCode.equals(DefineValue.BankDanamon))
             return R.id.layout_atm_danamon;
         else if (bankCode.equals(DefineValue.BankBII))
             return R.id.layout_atm_bii;
@@ -287,11 +280,15 @@ import java.util.List;
         return R.id.layout_atm;
     }
 
-    private int getATMLayout(listBankModel bankData){
+    private int getATMLayout(listBankModel bankData) {
         String bankCode = bankData.getBank_code();
-        if(bankCode.equals(DefineValue.BankMandiri))
-            return R.layout.list_topup_atm_mandiri_item;
-        else if (bankCode.equals(DefineValue.BankBRI))
+        if (bankCode.equals(DefineValue.BankMandiri)) {
+            String bankName = bankData.getProduct_type();
+            if (bankName.equalsIgnoreCase("MANDIRI_ATM")) {
+                return R.layout.list_topup_mandiri_online;
+            }else
+                return R.layout.list_topup_atm_mandiri_item;
+        }else if (bankCode.equals(DefineValue.BankBRI))
             return R.layout.list_topup_atm_bri_item;
         else if (bankCode.equals(DefineValue.BankBCA)) {
             if (bankData.getProduct_code().equals(DefineValue.PRODUCT_BCA_SIMTOOLKIT))
@@ -300,13 +297,13 @@ import java.util.List;
                 return R.layout.list_topup_atm_bca_klikva;
             else if (bankData.getProduct_code().equals(DefineValue.PRODUCT_BCA_MOBILEBANK))
                 return R.layout.list_topup_atm_bca_mbca;
-        }
-        else if (bankCode.equals(DefineValue.BankDanamon))
+        } else if (bankCode.equals(DefineValue.BankDanamon))
             return R.layout.list_topup_atm_danamon_item;
         else if (bankCode.equals(DefineValue.BankBII))
             return R.layout.list_topup_maybank_item;
         else if (bankCode.equals(DefineValue.BankCIMB))
             return R.layout.list_topup_atm_cimb_item;
+
         return R.layout.list_topup_atm_item;
     }
 
@@ -326,7 +323,8 @@ import java.util.List;
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        if (mListDataHeader.get(groupPosition).getProduct_type().equals("ATM"))
+        if (mListDataHeader.get(groupPosition).getProduct_type().equals("ATM") ||
+                mListDataHeader.get(groupPosition).getProduct_type().equals("MANDIRI_ATM"))
             return 1;
         return 0;
     }
@@ -350,7 +348,8 @@ import java.util.List;
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return this.mListDataChild.get(this.mListDataHeader.get(groupPosition).getProduct_code());
+        String product_code = this.mListDataHeader.get(groupPosition).getProduct_code();
+        return this.mListDataChild.get(product_code);
     }
 
     @Override

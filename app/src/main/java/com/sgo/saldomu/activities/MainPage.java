@@ -2,10 +2,12 @@ package com.sgo.saldomu.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -13,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Display;
@@ -56,6 +59,7 @@ import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.fcm.GooglePlayUtils;
 import com.sgo.saldomu.fragments.FragMainPage;
+import com.sgo.saldomu.fragments.FragTagihInput;
 import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.fragments.RightSideDrawMenu;
@@ -99,8 +103,9 @@ public class MainPage extends BaseActivity {
     public static final int RESULT_FIRST_TIME = 9;
     public static final int RESULT_BBS = 11;
     public static final int RESULT_BBS_MEMBER_OTP = 12;
-    public static final int RESULT_BBS_STATUS = 13;
-    public static final int RESULT_RETRY = 14;
+    public static final int RESULT_BBS_STATUS= 13;
+    public static final int RESULT_RETRY= 14;
+    public static final int RESULT_BALANCE_COLLECTOR= 14;
 
     public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;
@@ -109,11 +114,16 @@ public class MainPage extends BaseActivity {
     private final static int FIRST_SCREEN_INTRO = 2;
     private final static int REQCODE_PLAY_SERVICE = 312;
 
+
+    public static String RESULT_HOME_BALANCE = "refresh_home_balance";
+    public static String HOME_BALANCE_ANIMATE = "refresh_home_btn_animate";
+
     private static int AmountNotif = 0;
 
     private String flagLogin = DefineValue.STRING_NO;
     private Fragment mContent;
     private NavigationDrawMenu mNavDrawer;
+    FragTagihInput fragTagihInput;
     private DrawerLayout mDrawerLayout;
     public ActionBarDrawerToggle mDrawerToggle;
     private ProgressDialog progdialog;
@@ -605,6 +615,13 @@ public class MainPage extends BaseActivity {
         isBoundUserProfile = false;
     }
 
+    BroadcastReceiver btnReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mNavDrawer.getBalance(true);
+        }
+    };
+
     private void InitializeNavDrawer() {
         mDrawerLayout = findViewById(R.id.main_drawer);
         mLeftDrawerRelativeLayout = findViewById(R.id.left_drawer);
@@ -1047,6 +1064,8 @@ public class MainPage extends BaseActivity {
         mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, "");
         mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, "");
         mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
+        mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, "");
+        mEditor.putString(DefineValue.IS_POS, "");
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -1064,8 +1083,6 @@ public class MainPage extends BaseActivity {
 //            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
-
-            Timber.d("isi params logout:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGOUT, params
                     , new ResponseListener() {
@@ -1113,7 +1130,11 @@ public class MainPage extends BaseActivity {
                 Timber.w("Masuk result Balance");
                 mNavDrawer.getBalance(true);
             }
-            if (resultCode == RESULT_NOTIF) {
+            if(resultCode == RESULT_BALANCE_COLLECTOR){
+                Timber.w("Masuk result Balance collector");
+                fragTagihInput.getBalanceCollector();
+            }
+            if(resultCode == RESULT_NOTIF){
                 Timber.w("Masuk result notif");
                 CheckNotification();
                 invalidateOptionsMenu();
@@ -1334,18 +1355,20 @@ public class MainPage extends BaseActivity {
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
         }
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(btnReceiver, new IntentFilter(MainPage.RESULT_HOME_BALANCE));
+
     }
 
     @Override
     protected void onPause() {
+        super.onPause();
         if (isForeground) {
             if (serviceReferenceBalance != null)
                 serviceReferenceBalance.StopCallBalance();
             if (serviceAppInfoReference != null)
                 serviceAppInfoReference.StopCallAppInfo();
         }
-        super.onPause();
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(btnReceiver);
     }
 
     @Override

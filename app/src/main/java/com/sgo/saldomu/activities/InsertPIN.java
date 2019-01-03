@@ -33,6 +33,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 import timber.log.Timber;
 
 /**
@@ -212,7 +214,9 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
     public void getHelpPin(final ProgressBar progDialog, final TextView Message){
         try{
 
-            RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_HELP_PIN,
+            HashMap<String, Object>  params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_HELP_PIN, "");
+
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_HELP_PIN, params,
                     new ObjListeners() {
                         @Override
                         public void onResponses(JSONObject response) {

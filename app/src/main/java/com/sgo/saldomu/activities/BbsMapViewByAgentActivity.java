@@ -900,41 +900,50 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                         mEditor.putString(DefineValue.AOD_TX_ID, txId);
                                         mEditor.apply();
 
-                                        Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
-                                        intent.putExtras(bundle);
-                                        startActivity(intent);
-                                        finish();
+//<<<<<<< HEAD
+//                                        Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
+//                                        intent.putExtras(bundle);
+//                                        startActivity(intent);
+//                                        finish();
+//=======
+                                        if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
+                                            Intent intent = new Intent(getApplicationContext(), TagihActivity.class);
+                                            intent.putExtra(DefineValue.IS_SEARCH_DGI, true);
+                                            startActivity(intent);
+                                            finish();
+//>>>>>>> development_tagih
 
-                                    } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
+                                        } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
+                                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+
+                                    } else {
                                         Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(intent);
                                         finish();
                                     }
 
+
                                 } else {
+                                    Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+
+
                                     Intent intent = new Intent(getApplicationContext(), MainPage.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
                                     finish();
                                 }
 
-
-                            } else {
-                                Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
-
-
-                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                                finish();
+                                handler.removeCallbacks(runnable2);
                             }
-
-                            handler.removeCallbacks(runnable2);
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
                     }
 
                     @Override
@@ -949,6 +958,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     }
                 });
     }
+
 
     public void cancelDGI() {
         if (progdialog2 == null)

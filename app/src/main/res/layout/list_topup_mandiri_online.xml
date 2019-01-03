@@ -7,7 +7,7 @@
         android:layout_height="match_parent">
 
             <TextView android:id="@+id/title_atm"
-                android:text="@string/other_bank"
+                android:text="BANK MANDIRI"
                 android:textColor="@color/colorSecondaryDark"
                 android:textSize="@dimen/text_size_medium_material"
                 android:layout_width="245dp"
@@ -48,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/text_size_small_material"
                         android:textColor="@color/colorSecondaryDark"
-                        android:text="@string/listatm_topup_other_ins_1"
+                        android:text="@string/instruct_topup_mandiri_online_1"
                         android:layout_gravity="center"
                         />
                 </LinearLayout>
@@ -79,7 +79,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/text_size_small_material"
                         android:textColor="@color/colorSecondaryDark"
-                        android:text="@string/listatm_topup_other_ins_2"
+                        android:text="@string/instruct_topup_mandiri_online_2"
                         android:layout_gravity="center"
                         />
                 </LinearLayout>
@@ -110,7 +110,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/text_size_small_material"
                         android:textColor="@color/colorSecondaryDark"
-                        android:text="@string/listatm_topup_other_ins_3"
+                        android:text="@string/instruct_topup_mandiri_online_3"
                         android:layout_gravity="center"
                         />
                 </LinearLayout>
@@ -120,7 +120,8 @@
                     android:padding="6dp"
                     android:layout_gravity="center"
                     android:background="@color/colorSecondaryWhite"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -171,7 +172,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/text_size_small_material"
                         android:textColor="@color/colorSecondaryDark"
-                        android:text="@string/listatm_topup_other_ins_4"
+                        android:text="@string/instruct_topup_mandiri_online_4"
                         android:layout_gravity="center"
                         />
                 </LinearLayout>
@@ -181,7 +182,8 @@
                     android:padding="6dp"
                     android:layout_gravity="center"
                     android:background="@color/colorSecondaryWhite"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -192,17 +194,17 @@
                         android:textColor="@color/grey_1000b"
                         android:layout_gravity="center"
                         />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="50000"
-                        android:textSize="@dimen/text_size_small_material"
-                        android:textStyle="italic"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginLeft="4dp"
-                        android:textColor="@color/grey_1000b"
                         android:layout_gravity="center"
-                        />
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="10dp"
+                        android:text="50000"
+                        android:textColor="@color/grey_1000b"
+                        android:textSize="@dimen/text_size_small_material"
+                        android:textStyle="italic" />
                 </LinearLayout>
 
                 <LinearLayout android:layout_width="wrap_content"
@@ -231,21 +233,212 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/text_size_small_material"
                         android:textColor="@color/colorSecondaryDark"
-                        android:text="@string/listatm_topup_other_ins_5"
+                        android:text="@string/instruct_topup_mandiri_online_5"
                         android:layout_gravity="center"
                         />
 
 
                 </LinearLayout>
-                <TextView
-                    android:id="@+id/fee_deskripsi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp"
-                    android:text="asdfasdfasdfa"
-                    />
+
+                <LinearLayout android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="6dp"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        >
+                        <ImageView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/red_ball_icon"
+                            />
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="6"
+                            android:textColor="@color/grey_1000w"
+                            android:textSize="@dimen/text_size_small_material"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"/>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_small_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:text="@string/instruct_topup_mandiri_online_6"
+                        android:layout_gravity="center"
+                        />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="6dp"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        >
+                        <ImageView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/red_ball_icon"
+                            />
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="7"
+                            android:textColor="@color/grey_1000w"
+                            android:textSize="@dimen/text_size_small_material"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"/>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_small_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:text="@string/instruct_topup_mandiri_online_7"
+                        android:layout_gravity="center"
+                        />
+
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="6dp"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        >
+                        <ImageView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/red_ball_icon"
+                            />
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="8"
+                            android:textColor="@color/grey_1000w"
+                            android:textSize="@dimen/text_size_small_material"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"/>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_small_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:text="@string/instruct_topup_mandiri_online_8"
+                        android:layout_gravity="center"
+                        />
+
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="6dp"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        >
+                        <ImageView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/red_ball_icon"
+                            />
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="9"
+                            android:textColor="@color/grey_1000w"
+                            android:textSize="@dimen/text_size_small_material"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"/>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_small_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:text="@string/instruct_topup_mandiri_online_9"
+                        android:layout_gravity="center"
+                        />
+
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="6dp"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        >
+                        <ImageView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/red_ball_icon"
+                            />
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="10"
+                            android:textColor="@color/grey_1000w"
+                            android:textSize="@dimen/text_size_small_material"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"/>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_small_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:text="@string/instruct_topup_mandiri_online_10"
+                        android:layout_gravity="center"
+                        />
+
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="6dp"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        >
+                        <ImageView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/red_ball_icon"
+                            />
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="11"
+                            android:textColor="@color/grey_1000w"
+                            android:textSize="@dimen/text_size_small_material"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"/>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_small_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:text="@string/instruct_topup_mandiri_online_11"
+                        android:layout_gravity="center"
+                        />
+
+
+                </LinearLayout>
+
             </LinearLayout>
 
         <ImageView
@@ -255,7 +448,8 @@
             android:layout_marginLeft="21dp"
             android:layout_toRightOf="@id/title_atm"
             android:gravity="right"
-            android:src="@drawable/atm_other" />
+            android:src="@drawable/atm_other"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

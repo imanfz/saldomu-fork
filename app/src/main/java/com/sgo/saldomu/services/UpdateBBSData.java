@@ -57,7 +57,7 @@ public class UpdateBBSData extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if(intent.hasExtra("receiverTag"))
+        if (intent.hasExtra("receiverTag"))
             localResultReceiver = intent.getParcelableExtra("receiverTag");
 
         curr_date = DateTimeFormat.getCurrentDate();
@@ -67,55 +67,54 @@ public class UpdateBBSData extends IntentService {
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         setUpdatingData(true);
 
-        if(!userID.isEmpty() && !accessKey.isEmpty()) {
-            if(BBSDataManager.isDataCTANotValid())
+        if (!userID.isEmpty() && !accessKey.isEmpty()) {
+            if (BBSDataManager.isDataCTANotValid())
                 getBBSdata(CTA);
             else
                 ctaState = true;
 
-            if(BBSDataManager.isDataATCNotValid())
+            if (BBSDataManager.isDataATCNotValid())
                 getBBSdata(ATC);
             else
                 atcState = true;
-        }
-        else
+        } else
             Timber.d("user id atau access key kosong semua");
 
-        if(!ctaState && !atcState){
+        if (!ctaState && !atcState) {
             sentFailed(null);
             setIsDataUpdated(false);
-        }
-        else {
+        } else {
             sentSuccess(null);
             setIsDataUpdated(true);
-            if(getMustUpdateBBSData())
+            if (getMustUpdateBBSData())
                 setMustUpdateBBSData(false);
         }
 //        EndRealm();
         setUpdatingData(false);
     }
 
-    void setUpdatingData(Boolean value){
-        sp.edit().putBoolean(DefineValue.IS_UPDATING_BBS_DATA,value).apply();
+    void setUpdatingData(Boolean value) {
+        sp.edit().putBoolean(DefineValue.IS_UPDATING_BBS_DATA, value).apply();
     }
 
-    void setIsDataUpdated(Boolean value){
-        sp.edit().putBoolean(DefineValue.IS_BBS_DATA_UPDATED,value).apply();
+    void setIsDataUpdated(Boolean value) {
+        sp.edit().putBoolean(DefineValue.IS_BBS_DATA_UPDATED, value).apply();
     }
 
-    void setDateDataCTA(String value){
-        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_CTA_DATA,value).apply();
-    }
-    void setDateDataATC(String value){
-        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_ATC_DATA,value).apply();
+    void setDateDataCTA(String value) {
+        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_CTA_DATA, value).apply();
     }
 
-    boolean getMustUpdateBBSData(){
-        return sp.getBoolean(DefineValue.IS_MUST_UPDATE_BBS_DATA,false);
+    void setDateDataATC(String value) {
+        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_ATC_DATA, value).apply();
     }
 
-    void setMustUpdateBBSData(boolean value){
-        sp.edit().putBoolean(DefineValue.IS_MUST_UPDATE_BBS_DATA,value).apply();
+    boolean getMustUpdateBBSData() {
+        return sp.getBoolean(DefineValue.IS_MUST_UPDATE_BBS_DATA, false);
+    }
+
+    void setMustUpdateBBSData(boolean value) {
+        sp.edit().putBoolean(DefineValue.IS_MUST_UPDATE_BBS_DATA, value).apply();
     }
 
 //    private Realm getRealm(){
@@ -133,16 +132,16 @@ public class UpdateBBSData extends IntentService {
 //            realm.close();
 //    }
 
-    private void getBBSdata(final String schemeCode){
-        try{
+    private void getBBSdata(final String schemeCode) {
+        try {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_LIST_COMMUNITY_ALL);
 
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
-            params.put(WebParams.SCHEME_CODE,schemeCode);
-            params.put(WebParams.CUST_ID,userID);
-            params.put(WebParams.USER_ID,userID);
+            params.put(WebParams.SCHEME_CODE, schemeCode);
+            params.put(WebParams.CUST_ID, userID);
+            params.put(WebParams.USER_ID, userID);
 
-            Timber.d("params list community %1$s : %2$s",schemeCode,params.toString());
+            Timber.d("params list community %1$s : %2$s", schemeCode, params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_LIST_COMMUNITY_ALL, params,
                     new ResponseListener() {
@@ -155,7 +154,7 @@ public class UpdateBBSData extends IntentService {
 
                                 String code = model.getError_code();
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    insertToRealm(new JSONArray(gson.toJson(model.getCommunity())),schemeCode);
+                                    insertToRealm(new JSONArray(gson.toJson(model.getCommunity())), schemeCode);
                                 }
 
                             } catch (JSONException e) {
@@ -172,25 +171,25 @@ public class UpdateBBSData extends IntentService {
                         public void onComplete() {
 
                         }
-                    } );
-        }catch (Exception e){
-            Timber.d("httpclient %1$s : %2$s",schemeCode,e.getMessage());
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient %1$s : %2$s", schemeCode, e.getMessage());
         }
     }
 
-    private void clearDataRealm(String scheme_code, Realm realm){
+    private void clearDataRealm(String scheme_code, Realm realm) {
         RealmResults<BBSCommModel> jumlahDataComm = realm.where(BBSCommModel.class).
-                equalTo(BBSCommModel.SCHEME_CODE,scheme_code).findAll();
+                equalTo(BBSCommModel.SCHEME_CODE, scheme_code).findAll();
         RealmResults<BBSBankModel> jumlahDataBank = realm.where(BBSBankModel.class).
-                equalTo(BBSBankModel.SCHEME_CODE,scheme_code).findAll();
+                equalTo(BBSBankModel.SCHEME_CODE, scheme_code).findAll();
 
-        if(jumlahDataComm.size() > 0) {
+        if (jumlahDataComm.size() > 0) {
             jumlahDataComm.deleteAllFromRealm();
         }
-        if(jumlahDataBank.size() > 0) {
+        if (jumlahDataBank.size() > 0) {
             jumlahDataBank.deleteAllFromRealm();
         }
-        if(scheme_code.equalsIgnoreCase(ATC))
+        if (scheme_code.equalsIgnoreCase(ATC))
             realm.delete(BBSAccountACTModel.class);
     }
 
@@ -201,13 +200,13 @@ public class UpdateBBSData extends IntentService {
         realm.beginTransaction();
 
         clearDataRealm(scheme_code, realm);
-        if(communityData != null && communityData.length() > 0) {
+        if (communityData != null && communityData.length() > 0) {
 
             BBSCommModel tempBBSCommModel;
             BBSBankModel tempBBSBankModel;
             JSONArray tempBankComm;
 
-            if(scheme_code.equalsIgnoreCase(CTA)) {
+            if (scheme_code.equalsIgnoreCase(CTA)) {
                 ctaState = true;
                 setDateDataCTA(curr_date);
             } else {
@@ -225,8 +224,8 @@ public class UpdateBBSData extends IntentService {
 
                 //insert to bank model source
                 tempBankComm = communityData.getJSONObject(i).optJSONArray(WebParams.COMM_SOURCE);
-                if(tempBankComm != null && tempBankComm.length() > 0){
-                    for(int j = 0; j < tempBankComm.length() ; j++) {
+                if (tempBankComm != null && tempBankComm.length() > 0) {
+                    for (int j = 0; j < tempBankComm.length(); j++) {
                         tempBBSBankModel = realm.createObjectFromJson(BBSBankModel.class, tempBankComm.getJSONObject(j));
                         tempBBSBankModel.setComm_type("SOURCE");
                         tempBBSBankModel.setComm_id(tempBBSCommModel.getComm_id());
@@ -237,10 +236,10 @@ public class UpdateBBSData extends IntentService {
 
                 //insert to bank model benef
                 tempBankComm = communityData.getJSONObject(i).optJSONArray(WebParams.COMM_BENEF);
-                if(tempBankComm != null && tempBankComm.length() > 0){
-                    if (scheme_code.equalsIgnoreCase(ATC)){
+                if (tempBankComm != null && tempBankComm.length() > 0) {
+                    if (scheme_code.equalsIgnoreCase(ATC)) {
                         BBSAccountACTModel bbsAccountACTModel;
-                        for(int j = 0; j < tempBankComm.length() ; j++) {
+                        for (int j = 0; j < tempBankComm.length(); j++) {
                             bbsAccountACTModel = realm.createObjectFromJson(BBSAccountACTModel.class,
                                     tempBankComm.getJSONObject(j));
 
@@ -248,8 +247,7 @@ public class UpdateBBSData extends IntentService {
                             bbsAccountACTModel.setScheme_code(scheme_code);
                             bbsAccountACTModel.setLast_update(curr_date);
                         }
-                    }
-                    else {
+                    } else {
                         for (int j = 0; j < tempBankComm.length(); j++) {
 
                             tempBBSBankModel = realm.createObjectFromJson(BBSBankModel.class, tempBankComm.getJSONObject(j));
@@ -268,26 +266,27 @@ public class UpdateBBSData extends IntentService {
 //            }
         }
 
-        if(realm.isInTransaction())
+        if (realm.isInTransaction())
             realm.commitTransaction();
 
     }
 
-    void sentFailed(Bundle bundle){
-        if(localResultReceiver != null)
-            localResultReceiver.send(FAILED,bundle);
+    void sentFailed(Bundle bundle) {
+        if (localResultReceiver != null)
+            localResultReceiver.send(FAILED, bundle);
 
         Intent i = new Intent(INTENT_ACTION_BBS_DATA);
-        i.putExtra(DefineValue.IS_SUCCESS,false);
+        i.putExtra(DefineValue.IS_SUCCESS, false);
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
         Timber.d("Sent Failed");
     }
-    void sentSuccess(Bundle bundle){
-        if(localResultReceiver != null)
-            localResultReceiver.send(SUCCESS,bundle);
+
+    void sentSuccess(Bundle bundle) {
+        if (localResultReceiver != null)
+            localResultReceiver.send(SUCCESS, bundle);
 
         Intent i = new Intent(INTENT_ACTION_BBS_DATA);
-        i.putExtra(DefineValue.IS_SUCCESS,true);
+        i.putExtra(DefineValue.IS_SUCCESS, true);
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
         Timber.d("Sent Success");
     }

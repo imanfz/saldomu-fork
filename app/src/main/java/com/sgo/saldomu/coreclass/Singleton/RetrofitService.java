@@ -109,8 +109,8 @@ public class RetrofitService {
     //
     static CompositeDisposable compositeDisposable;
 
-    public static RetrofitService getInstance(){
-        if (singleton == null){
+    public static RetrofitService getInstance() {
+        if (singleton == null) {
             singleton = new RetrofitService();
         }
         return singleton;
@@ -131,11 +131,11 @@ public class RetrofitService {
         getCompositeDisposable().dispose();
     }
 
-    private RetrofitInterfaces BuildRetrofit(){
+    private RetrofitInterfaces BuildRetrofit() {
         return BuildRetrofit2();
     }
 
-    private RetrofitInterfaces BuildRetrofit2(){
+    private RetrofitInterfaces BuildRetrofit2() {
         retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(BuildGSON()))
@@ -145,7 +145,7 @@ public class RetrofitService {
         return retrofit.create(RetrofitInterfaces.class);
     }
 
-    private Gson BuildGSON(){
+    private Gson BuildGSON() {
         return new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {
@@ -161,29 +161,29 @@ public class RetrofitService {
 
     private static String getBasicAuth() {
 //        String stringEncode = "dev.api.mobile"+":"+"590@dev.api.mobile!";
-        String stringEncode = "s4LD0mu"+":"+"WPtK9YBa?4g,rfvm(^XD/M]{25TJF8";
+        String stringEncode = "s4LD0mu" + ":" + "WPtK9YBa?4g,rfvm(^XD/M]{25TJF8";
         byte[] encodeByte = Base64.encodeBase64(stringEncode.getBytes());
         String encode = new String(encodeByte);
-        return encode.replace('+','-').replace('/','_');
+        return encode.replace('+', '-').replace('/', '_');
     }
 
-    private OkHttpClient BuildOkHttpClients(){
+    private OkHttpClient BuildOkHttpClients() {
         return BuildOkHttpClient("application/x-www-form-urlencoded");
     }
 
-    private OkHttpClient BuildOkHttpClient2(){
+    private OkHttpClient BuildOkHttpClient2() {
         return BuildOkHttpClient("application/x-www-form-urlencoded");
     }
 
-    private OkHttpClient BuildOkHttpClient(final String content_type){
+    private OkHttpClient BuildOkHttpClient(final String content_type) {
         TrustManager[] trustManagers = new TrustManager[0];
         try {
-        
+
             KeyStore keyStore = KeyStore.getInstance("BKS");
             InputStream is = CoreApp.getAppContext().getResources().openRawResource(R.raw.saldomucom);
-            
+
             keyStore.load(is, PRIVATE_KEY.toCharArray());
-        
+
             is.close();
 
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("X509");
@@ -191,7 +191,7 @@ public class RetrofitService {
 
             TrustManagerFactory tmf =
                     TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmf.init(keyStore );
+            tmf.init(keyStore);
 
             trustManagers = tmf.getTrustManagers();
 
@@ -199,7 +199,7 @@ public class RetrofitService {
                 throw new IllegalStateException(
                         "Unexpected default trust managers:" + Arrays.toString(trustManagers));
             }
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CertificateException e) {
@@ -242,8 +242,8 @@ public class RetrofitService {
         try {
             sf = new TLSSocket();
             builder.sslSocketFactory(sf, sf.systemDefaultTrustManager());
-        }catch (Exception e) {
-            Timber.w("exception tls socket:"+e.toString());
+        } catch (Exception e) {
+            Timber.w("exception tls socket:" + e.toString());
             throw new AssertionError(e);
         }
 
@@ -256,7 +256,7 @@ public class RetrofitService {
 
                 builder1.header("Content-Type", content_type);
 //                if (inApps){
-                    builder1.addHeader("Authorization", "Basic "+getBasicAuth());
+                builder1.addHeader("Authorization", "Basic " + getBasicAuth());
 //                }
 
                 Request url = builder1.build();
@@ -268,48 +268,47 @@ public class RetrofitService {
     }
 
 
-
     private static CertificatePinner certificatePinner
             = new CertificatePinner.Builder()
-            .add(hostname,"sha256/UUsUINnnxiyFSr9zQdrGG9kfl9er17hIN56rmbF1LMg=")
-            .add(hostname,"sha256/klO23nT2ehFDXCfx3eHTDRESMz3asj1muO+4aIdjiuY=")
-            .add(hostname,"sha256/grX4Ta9HpZx6tSHkmCrvpApTQGo67CYDnvprLg5yRME=")
-            .add(hostname,"sha256/lCppFqbkrlJ3EcVFAkeip0+44VaoJUymbnOaEUk7tEU")
+            .add(hostname, "sha256/UUsUINnnxiyFSr9zQdrGG9kfl9er17hIN56rmbF1LMg=")
+            .add(hostname, "sha256/klO23nT2ehFDXCfx3eHTDRESMz3asj1muO+4aIdjiuY=")
+            .add(hostname, "sha256/grX4Ta9HpZx6tSHkmCrvpApTQGo67CYDnvprLg5yRME=")
+            .add(hostname, "sha256/lCppFqbkrlJ3EcVFAkeip0+44VaoJUymbnOaEUk7tEU")
             .build();
 
-    public static UUID getUUID(){
+    public static UUID getUUID() {
         return UUID.randomUUID();
     }
 
-    public static String getWebserviceName(String link){
+    public static String getWebserviceName(String link) {
         return link.substring(link.indexOf("saldomu/"));
     }
 
-    public HashMap<String, Object> getSignatureSecretKey(String linknya, String extraSignature){
+    public HashMap<String, Object> getSignatureSecretKey(String linknya, String extraSignature) {
         return getSignatures(MyApiClient.COMM_ID, "", linknya, BuildConfig.SECRET_KEY, extraSignature);
     }
 
-    public HashMap<String, Object> getSignature(String linknya){
+    public HashMap<String, Object> getSignature(String linknya) {
         return getInstance().getSignatures(getCommIdLogin(), getUserPhoneId(), linknya, getAccessKey(), "");
     }
 
-    public HashMap<String, Object> getSignature(String linknya, String extraSignature){
+    public HashMap<String, Object> getSignature(String linknya, String extraSignature) {
         return getInstance().getSignatures(getCommIdLogin(), getUserPhoneId(), linknya, getAccessKey(), extraSignature);
     }
 
-    public HashMap<String, Object> getSignaturePulsa(String linknya, String extraSignature){
+    public HashMap<String, Object> getSignaturePulsa(String linknya, String extraSignature) {
         return getInstance().getSignatures(MyApiClient.COMM_ID_PULSA, getUserPhoneId(), linknya, getAccessKey(), extraSignature);
     }
 
     private HashMap<String, Object> getSignatures(String commid, String userphoneid, String linknya, String secretKey
-            , String extraSignature){
+            , String extraSignature) {
         String webServiceName = getWebserviceName(linknya);
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commid + userphoneid + extraSignature;
+        String msgnya = uuidnya + dtime + BuildConfig.APP_ID + webServiceName + commid + userphoneid + extraSignature;
         String hash = SHA.SHA256(secretKey, msgnya);
 
-        Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash);
+        Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash + ", access key : " + secretKey);
 
         HashMap<String, Object> params = new HashMap<>();
         params.put(WebParams.RC_UUID, uuidnya);
@@ -319,11 +318,12 @@ public class RetrofitService {
         return params;
     }
 
-    public HashMap<String, Object> getSignatureWithParamsFCM(String gcmID, String deviceId, String appID){
+    public HashMap<String, Object> getSignatureWithParamsFCM(String gcmID, String deviceId, String appID) {
+
 
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = Md5.hashMd5(uuidnya+dtime+gcmID+deviceId+appID);
+        String msgnya = Md5.hashMd5(uuidnya + dtime + gcmID + deviceId + appID);
         Timber.d("isi messageSignatureFCM : " + msgnya);
 
 
@@ -338,16 +338,16 @@ public class RetrofitService {
         return params;
     }
 
-    public HashMap<String, RequestBody> getSignature2(String linknya, String extra){
+    public HashMap<String, RequestBody> getSignature2(String linknya, String extra) {
         return getInstance().getSignatures2(getCommIdLogin(), getUserPhoneId(), linknya, getAccessKey(), extra);
     }
 
     private HashMap<String, RequestBody> getSignatures2(String commid, String userphoneid, String linknya, String secretKey
-            , String extraSignature){
+            , String extraSignature) {
         String webServiceName = getWebserviceName(linknya);
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commid + userphoneid + extraSignature;
+        String msgnya = uuidnya + dtime + BuildConfig.APP_ID + webServiceName + commid + userphoneid + extraSignature;
         String hash = SHA.SHA256(secretKey, msgnya);
 
         Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash);
@@ -366,24 +366,25 @@ public class RetrofitService {
         return params;
     }
 
-    public String getAccessKey(){
-        return getInstance().getSecurePref().getString(DefineValue.ACCESS_KEY,"");
+    public String getAccessKey() {
+        return getInstance().getSecurePref().getString(DefineValue.ACCESS_KEY, "");
     }
 
-    public String getCommIdLogin(){
-        return getInstance().getSecurePref().getString(DefineValue.COMMUNITY_ID,"");
-    }
-    public String getUserPhoneId(){
-        return getInstance().getSecurePref().getString(DefineValue.USERID_PHONE,"");
+    public String getCommIdLogin() {
+        return getInstance().getSecurePref().getString(DefineValue.COMMUNITY_ID, "");
     }
 
-    private SecurePreferences getSecurePref(){
+    public String getUserPhoneId() {
+        return getInstance().getSecurePref().getString(DefineValue.USERID_PHONE, "");
+    }
+
+    private SecurePreferences getSecurePref() {
         if (sp == null)
             sp = CustomSecurePref.getInstance().getmSecurePrefs();
         return sp;
     }
 
-    private JsonObject getErrorMessage(Throwable e){
+    private JsonObject getErrorMessage(Throwable e) {
         JsonObject error = new JsonObject();
         if (e instanceof HttpException) {
 
@@ -400,7 +401,7 @@ public class RetrofitService {
 
                 e1.printStackTrace();
             }
-        }else {
+        } else {
             error.addProperty("error_code", "1111");
             error.addProperty("error_message", e.getMessage());
 
@@ -411,7 +412,7 @@ public class RetrofitService {
         return error;
     }
 
-    public void PostObjectRequest(String link, HashMap<String, Object> param , final ObjListener listener) {
+    public void PostObjectRequest(String link, HashMap<String, Object> param, final ObjListener listener) {
         BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
@@ -437,10 +438,10 @@ public class RetrofitService {
                 });
     }
 
-    public void PostObjectRequest(String link, HashMap<String, Object> param , final ResponseListener listener) {
+    public void PostObjectRequest(String link, HashMap<String, Object> param, final ResponseListener listener) {
         BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .retry(2)
+//                .retry(1)
                 .subscribe(new Observer<JsonObject>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -472,7 +473,7 @@ public class RetrofitService {
                 });
     }
 
-    public void PostJsonObjRequest(String link, HashMap<String, Object> param , final ObjListeners listener) {
+    public void PostJsonObjRequest(String link, HashMap<String, Object> param, final ObjListeners listener) {
         BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
@@ -492,11 +493,11 @@ public class RetrofitService {
 
                     @Override
                     public void onError(Throwable e) {
-                        if(MyApiClient.PROD_FAILURE_FLAG) {
+                        if (MyApiClient.PROD_FAILURE_FLAG) {
                             Toast.makeText(CoreApp.getAppContext(),
                                     CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
                                     Toast.LENGTH_SHORT).show();
-                        }else {
+                        } else {
                             Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
                         }
                         listener.onError(e);
@@ -531,11 +532,11 @@ public class RetrofitService {
 
                     @Override
                     public void onError(Throwable e) {
-                        if(MyApiClient.PROD_FAILURE_FLAG) {
+                        if (MyApiClient.PROD_FAILURE_FLAG) {
                             Toast.makeText(CoreApp.getAppContext(),
                                     CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
                                     Toast.LENGTH_SHORT).show();
-                        }else {
+                        } else {
                             Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
                         }
                         listener.onError(e);
@@ -570,11 +571,11 @@ public class RetrofitService {
 
                     @Override
                     public void onError(Throwable e) {
-                        if(MyApiClient.PROD_FAILURE_FLAG) {
+                        if (MyApiClient.PROD_FAILURE_FLAG) {
                             Toast.makeText(CoreApp.getAppContext(),
                                     CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
                                     Toast.LENGTH_SHORT).show();
-                        }else {
+                        } else {
                             Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
                         }
                         listener.onError(e);
@@ -605,11 +606,11 @@ public class RetrofitService {
 
                     @Override
                     public void onError(Throwable e) {
-                        if(MyApiClient.PROD_FAILURE_FLAG) {
+                        if (MyApiClient.PROD_FAILURE_FLAG) {
                             Toast.makeText(CoreApp.getAppContext(),
                                     CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
                                     Toast.LENGTH_SHORT).show();
-                        }else {
+                        } else {
                             Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
                         }
 
@@ -652,10 +653,12 @@ public class RetrofitService {
                 });
     }
 
-    public Gson getGson(){
-        if (gson== null)
+
+
+    public Gson getGson() {
+        if (gson == null)
             gson = new Gson();
         return gson;
     }
 
- }
+}

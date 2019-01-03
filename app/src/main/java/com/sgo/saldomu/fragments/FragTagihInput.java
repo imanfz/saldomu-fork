@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.util.Log;
@@ -21,16 +22,20 @@ import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TagihActivity;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.TagihCommunityModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
+import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,14 +49,16 @@ public class FragTagihInput extends BaseFragment {
     Spinner sp_mitra, sp_communtiy;
     SecurePreferences sp;
     EditText et_memberCode;
-    Button btn_submit;
+    Button btn_submit, btn_cancel, btn_regShop;
+    Boolean is_search = false;
     View v;
+    TextView tv_saldo_collector;
     private ArrayAdapter<String> mitraAdapter;
     private ArrayList<String> mitraNameArrayList = new ArrayList<>();
     private ArrayList<TagihModel> mitraNameData = new ArrayList<>();
     private ArrayAdapter<String> communityAdapter;
     private ArrayList<String> communityNameArrayList = new ArrayList<>();
-    String commCodeTagih;
+    String commCodeTagih, balanceCollector;
     ProgressDialog progdialog;
 
     @Nullable
@@ -65,12 +72,23 @@ public class FragTagihInput extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        Bundle bundle = getArguments();
+        if (bundle!=null)
+        {
+            is_search = bundle.getBoolean(DefineValue.IS_SEARCH_DGI,false);
+        }
+
         sp = CustomSecurePref.getInstance().getSecurePrefsInstance();
+
+        getBalanceCollector();
+
         initiatizeView();
 
         InitializeData();
 
         btn_submit.setOnClickListener(submitListener);
+        btn_cancel.setOnClickListener(cancelListener);
+        btn_regShop.setOnClickListener(registrationListener);
     }
 
     Button.OnClickListener submitListener = new Button.OnClickListener() {
@@ -82,11 +100,62 @@ public class FragTagihInput extends BaseFragment {
         }
     };
 
+    Button.OnClickListener registrationListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (inputValidation()) {
+                Fragment newFrag = new FragShopLocation();
+                Bundle bundle = new Bundle();
+                bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
+                bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+                bundle.putString(DefineValue.COMMUNITY_NAME, communityNameArrayList.get(sp_communtiy.getSelectedItemPosition()));
+
+                newFrag.setArguments(bundle);
+                if(getActivity() == null){
+                    return;
+                }
+                TagihActivity ftf = (TagihActivity) getActivity();
+                ftf.switchContent(newFrag,"Registrasi Alamat Toko",true);
+            }
+        }
+    };
+
+    Button.OnClickListener cancelListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (inputValidation())
+            {
+                Fragment newFrag = new FragCancelTransactionDGI();
+                Bundle bundle = new Bundle();
+                bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
+                bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+
+                newFrag.setArguments(bundle);
+                if(getActivity() == null){
+                    return;
+                }
+                TagihActivity ftf = (TagihActivity) getActivity();
+                ftf.switchContent(newFrag,"Pembatalan Transaksi",true);
+            }
+        }
+    };
+
+
     private void initiatizeView() {
         sp_mitra = v.findViewById(R.id.sp_mitra);
         sp_communtiy = v.findViewById(R.id.sp_community);
         et_memberCode = v.findViewById(R.id.et_memberCode);
         btn_submit = v.findViewById(R.id.btn_submit);
+        btn_cancel = v.findViewById(R.id.btn_cancel);
+        btn_regShop = v.findViewById(R.id.bt_registTokoDGI);
+        tv_saldo_collector = v.findViewById(R.id.tv_saldoCollector);
+
+        if (is_search)
+        {
+            btn_cancel.setVisibility(View.VISIBLE);
+        }
+
+        mitraNameArrayList.clear();
 
         mitraAdapter = new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, mitraNameArrayList);
         sp_mitra.setAdapter(mitraAdapter);
@@ -116,7 +185,10 @@ public class FragTagihInput extends BaseFragment {
 
             }
         });
+
     }
+
+
     public void initializeCommunity(int pos) {
         Realm _realm = RealmManager.getRealmTagih();
         final ArrayList<TagihCommunityModel> listTagih = new ArrayList<>();
@@ -163,6 +235,70 @@ public class FragTagihInput extends BaseFragment {
             return false;
         }
             return true;
+    }
+
+    public void getBalanceCollector(){
+        try{
+            showProgressDialog();
+            if(!memberIDLogin.isEmpty()) {
+
+                extraSignature = memberIDLogin;
+
+                params =  RetrofitService.getInstance().getSignature(MyApiClient.LINK_SALDO_COLLECTOR, extraSignature);
+                params.put(WebParams.MEMBER_ID, memberIDLogin);
+                params.put(WebParams.USER_ID, userPhoneID);
+                params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                params.put(WebParams.IS_AUTO, "Y");
+
+                if (!memberIDLogin.isEmpty()) {
+
+                    RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CATEGORY_LIST, params,
+                            new ObjListeners() {
+                                @Override
+                                public void onResponses(JSONObject response) {
+                                    try {
+                                        String code = response.getString(WebParams.ERROR_CODE);
+                                        if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                            balanceCollector = response.getString(WebParams.AMOUNT);
+
+                                            tv_saldo_collector.setText(CurrencyFormat.format(balanceCollector));
+
+//                                    SecurePreferences.Editor mEditor = sp.edit();
+//                                    mEditor.putString(DefineValue.BALANCE_COLLECTOR_AMOUNT, response.optString(WebParams.AMOUNT, ""));
+//                                    mEditor.commit();
+
+                                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                            if (getActivity().isFinishing()) {
+                                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                                test.showDialoginMain(getActivity(), message);
+                                            }
+                                        } else {
+                                            code = response.getString(WebParams.ERROR_MESSAGE);
+                                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable throwable) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    dismissProgressDialog();
+                                }
+                            });
+                }
+            }
+        }catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
+        }
     }
 
     public void sendDataTagih() {

@@ -18,7 +18,7 @@ import java.util.*
 
 class PickLanguageDialog : DialogFragment() {
 
-    lateinit var onTap : onClick
+     var onTap : onClick? = null
     var list = ArrayList<String>()
     lateinit var recyclerview : RecyclerView
 
@@ -32,6 +32,7 @@ class PickLanguageDialog : DialogFragment() {
             dialog.onTap = listener
 
             return dialog
+
         }
     }
 
@@ -67,6 +68,8 @@ class PickLanguageDialog : DialogFragment() {
 
         list.add("Indonesia")
         list.add("Inggris")
+
+
 
         recyclerview.adapter.notifyDataSetChanged()
 

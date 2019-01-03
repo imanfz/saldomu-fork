@@ -82,6 +82,10 @@ public class LoginCommunityModel {
     @Expose
     private List<SchemeCodeModel> agent_scheme_codes;
 
+    @SerializedName("agent_type")
+    @Expose
+    private String agent_type;
+
     public String getCommId() {
         return commId;
     }
@@ -260,5 +264,11 @@ public class LoginCommunityModel {
 
     public List<SchemeCodeModel> getAgent_scheme_codes() {
         return agent_scheme_codes;
+    }
+
+    public String getAgent_type() {
+        if (agent_type == null)
+            agent_type = "";
+        return agent_type;
     }
 }

@@ -226,6 +226,7 @@ public class DefineValue {
     public static String STATUS = "status";
     public static String REASON = "reason";
 	public static String BALANCE_AMOUNT = "balanceAmount";
+	public static String BALANCE_COLLECTOR_AMOUNT = "balanceCollectorAmount";
     public static String BALANCE_MAX_TOPUP = "balanceMaxTopup";
     public static String BALANCE_CCYID = "balaceCcyid";
     public static String BALANCE_REMAIN_LIMIT = "balanceRemainLimit";
@@ -552,10 +553,13 @@ public class DefineValue {
     public static String COMM_CODE_DGI = "comm_code_dgi";
     public static String PARAMS = "params";
     public static String PAYMENT_TYPE = "payment_type";
+    public static String AGENT_TYPE = "agent_type";
     public static String PAYMENT_TYPE_DESC= "payment_type_desc";
     public static String INVOICE = "invoice";
     public static String SCHEME_CODE = "scheme_code";
     public static String AGENT_SCHEME_CODES= "agent_scheme_codes";
+    public static String IS_MEMBER_SHOP_DGI= "is_member_shop_dgi";
+    public static String IS_SEARCH_DGI= "is_search_dgi";
 
 }
 

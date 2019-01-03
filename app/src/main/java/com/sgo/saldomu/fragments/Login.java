@@ -40,14 +40,8 @@ import com.sgo.saldomu.models.retrofit.LoginModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
 import java.util.List;
 
-import retrofit2.http.HEAD;
 import timber.log.Timber;
 
 /**
@@ -116,7 +110,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         if (m != null) {
             if (m.containsKey(DefineValue.IS_POS)) {
                 if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y")) {
-                    is_pos = m.getString(DefineValue.IS_POS, "N");
+                    is_pos = m.getString(DefineValue.IS_POS, "");
                     getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
                     userIDValue.setEnabled(true);
                     userIDValue.setHint("No HP POS yang sudah terdaftar");
@@ -157,8 +151,15 @@ public class Login extends BaseFragment implements View.OnClickListener {
         }
     }
 
-    private void sentDatas(){
-        try{
+    boolean checkIsPOS() {
+        if (is_pos != null)
+            return !is_pos.equalsIgnoreCase("");
+        return false;
+    }
+
+
+    private void sentDatas() {
+        try {
             String comm_id = MyApiClient.COMM_ID;
 //            String encrypted_password = RSA.opensslEncrypt(passLoginValue.getText().toString()
 //                    , BuildConfig.OPENSSL_ENCRYPT_KEY, BuildConfig.OPENSSL_ENCRYPT_IV);
@@ -183,9 +184,8 @@ public class Login extends BaseFragment implements View.OnClickListener {
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
             params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
-            if (is_pos == null)
-                is_pos = "N";
-            params.put(WebParams.IS_POS, is_pos);
+            if (checkIsPOS())
+                params.put(WebParams.IS_POS, is_pos);
 
             Timber.d("isi params login:" + params.toString());
 
@@ -223,17 +223,22 @@ public class Login extends BaseFragment implements View.OnClickListener {
                                 switchFragment(newFrag, "reg1", true);
                             }
                         }
-                    }else if (code.equals(DefineValue.ERROR_0042)) {
-                        int failed = Integer.valueOf(loginModel.getFailedAttempt());
-                        int max = Integer.valueOf(loginModel.getMaxFailed());
+                    } else if (code.equals(DefineValue.ERROR_0042)) {
+
                         String message;
 
-                        if (max - failed == 0) {
-                            message = getString(R.string.login_failed_attempt_3);
-                        } else {
-                            message = getString(R.string.login_failed_attempt_1, max - failed);
-                        }
+                        if (checkIsPOS()){
+                            message = loginModel.getError_message();
+                        }else {
+                            int failed = Integer.valueOf(loginModel.getFailedAttempt());
+                            int max = Integer.valueOf(loginModel.getMaxFailed());
 
+                            if (max - failed == 0) {
+                                message = getString(R.string.login_failed_attempt_3);
+                            } else {
+                                message = getString(R.string.login_failed_attempt_1, max - failed);
+                            }
+                        }
                         showDialog(message);
                     } else if (code.equals(DefineValue.ERROR_0126)) {
                         showDialog(getString(R.string.login_failed_attempt_3));
@@ -251,7 +256,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         showDialog(getString(R.string.login_failed_wrong_id));
                     } else {
                         Toast.makeText(getActivity(), loginModel.getError_message(), Toast.LENGTH_SHORT).show();
-
                     }
                 }
 
@@ -323,11 +327,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
     }
 
-    private boolean checkCommunity(List<LoginCommunityModel> model){
-        if(model != null){
-            for(int i = 0 ; i < model.size();i++){
-                if(model.get(i).getCommId().equals(MyApiClient.COMM_ID)){
-                    Timber.w("check comm id yg bener: "+model.get(i).getCommId());
+    private boolean checkCommunity(List<LoginCommunityModel> model) {
+        if (model != null) {
+            for (int i = 0; i < model.size(); i++) {
+                if (model.get(i).getCommId().equals(MyApiClient.COMM_ID)) {
+                    Timber.w("check comm id yg bener: " + model.get(i).getCommId());
                     return true;
                 }
             }
@@ -337,14 +341,14 @@ public class Login extends BaseFragment implements View.OnClickListener {
         return false;
     }
 
-    private void setLoginProfile(LoginModel model){
+    private void setLoginProfile(LoginModel model) {
 
         try {
             SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
             SecurePreferences.Editor mEditor = prefs.edit();
             String arraynya;
             String userId = model.getUserId();
-            String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,"");
+            String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, "");
 
             if (prefs.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").equals(userId)) {
                 mEditor.putString(DefineValue.CONTACT_FIRST_TIME, prevContactFT);
@@ -366,6 +370,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             mEditor.putString(DefineValue.USER_NAME, model.getUserName());
             mEditor.putString(DefineValue.CUST_ID, model.getCustId());
             mEditor.putString(DefineValue.CUST_NAME, model.getCustName());
+            mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, model.getIs_member_shop_dgi());
 
             mEditor.putString(DefineValue.PROFILE_DOB, model.getDateOfBirth());
             mEditor.putString(DefineValue.PROFILE_ADDRESS, model.getAddress());
@@ -402,11 +407,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
             else
                 mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, true);
 
-            if(!model.getCommunity().isEmpty()){
-                mEditor.putInt(DefineValue.COMMUNITY_LENGTH,model.getCommunity().size());
-                for(int i = 0 ; i < model.getCommunity().size();i++){
+            if (!model.getCommunity().isEmpty()) {
+                mEditor.putInt(DefineValue.COMMUNITY_LENGTH, model.getCommunity().size());
+                for (int i = 0; i < model.getCommunity().size(); i++) {
                     LoginCommunityModel commModel = model.getCommunity().get(i);
-                    if(commModel.getCommId().equals(MyApiClient.COMM_ID)){
+                    if (commModel.getCommId().equals(MyApiClient.COMM_ID)) {
                         mEditor.putString(DefineValue.COMMUNITY_ID, commModel.getCommId());
                         mEditor.putString(DefineValue.CALLBACK_URL_TOPUP, commModel.getCallbackUrl());
                         mEditor.putString(DefineValue.API_KEY_TOPUP, commModel.getApiKey());
@@ -416,10 +421,13 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.putString(DefineValue.AUTHENTICATION_TYPE, commModel.getAuthenticationType());
                         mEditor.putString(DefineValue.LENGTH_AUTH, commModel.getLengthAuth());
                         mEditor.putString(DefineValue.IS_HAVE_PIN, commModel.getIsHavePin());
+                        mEditor.putString(DefineValue.AGENT_TYPE, commModel.getAgent_type());
+
                         mEditor.putInt(DefineValue.LEVEL_VALUE, Integer.valueOf(commModel.getMemberLevel()));
-                        if (commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES))
-                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true);
-                        else
+                        if (commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES)) {
+
+                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, true);
+                        } else
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
 
                         mEditor.putString(DefineValue.IS_NEW_BULK, commModel.getIsNewBulk());
@@ -430,13 +438,16 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
                         String arrJson = toJson(commModel.getAgent_scheme_codes()).toString();
 //                                String arrJson = arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES, "");
+
 //                            for (int a=0; a<arrJson.length(); a++)
 //                            {
-                                mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
+                        mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
 //                            }
 //                        }
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
+
                         Timber.w("isi comm id yg bener:" + commModel.getCommId());
+
                         break;
                     }
                 }
@@ -448,7 +459,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 mEditor.putString(DefineValue.SHOP_AGENT_DATA, getGson().toJson(model.getShopIdAgent()));
             }
 
-            if(model.getSettings() != null){
+            if (model.getSettings() != null) {
                 mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, Integer.valueOf(model.getSettings().get(0).getMaxMemberTransfer()));
 
             }
@@ -456,7 +467,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             mEditor.apply();
 
             changeActivity();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

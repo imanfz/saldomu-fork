@@ -7,16 +7,8 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.widgets.TLSSocketFactory;
 
-import org.apache.commons.codec.binary.Base64;
-
-import java.io.InputStream;
-import java.security.KeyStore;
-import java.util.StringTokenizer;
 import java.util.UUID;
-
-import timber.log.Timber;
 
 /**
  Created by Administrator on 7/14/2014.
@@ -102,6 +94,7 @@ public class MyApiClient {
     public static String LINK_RESEND_TOKEN_SGOL;
     public static String LINK_INSERT_TRANS_TOPUP;
     public static String LINK_SALDO;
+    public static String LINK_SALDO_COLLECTOR;
     //public static final String LINK_BANK_LIST;
     public static String LINK_BANK_LIST;
     private static String LINK_REQ_TOKEN_REGIST;
@@ -187,6 +180,7 @@ public class MyApiClient {
     private static String LINK_CREATE_PIN_PASS;
     public static String LINK_REPORT_MONEY_REQUEST;
     public static String LINK_REPORT_COMM_FEE;
+    public static String LINK_REPORT_COLLECTOR;
     public static String LINK_ASK4MONEY_REJECT;
 
     private static String LINK_INQUIRY_CUST;
@@ -258,6 +252,8 @@ public class MyApiClient {
     public static String LINK_LIST_INVOICE_DGI;
     public static String LINK_CONFIRM_PAYMENT_DGI;
     public static String LINK_REQ_TOKEN_INVOICE_DGI;
+    public static String LINK_CANCEL_SEARCH_DGI;
+    public static String LINK_SET_MEMBER_LOC;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -353,6 +349,7 @@ public class MyApiClient {
         LINK_CREATE_PIN_PASS    = headaddressfinal + "CreatePinPass/Invoke";
         LINK_REPORT_MONEY_REQUEST = headaddressfinal + "ReportMoneyReq/Retrieve";
         LINK_REPORT_COMM_FEE    = headaddressfinal + "ReportCommFee/Retrieve";
+        LINK_REPORT_COLLECTOR    = headaddressfinal + "ReportTrxCollector/Retrieve";
         LINK_ASK4MONEY_REJECT   = headaddressfinal + "Ask4Money/Decline";
 
         LINK_INQUIRY_CUST = headaddressfinal + "InquiryCustomer/Retrieve";
@@ -424,10 +421,14 @@ public class MyApiClient {
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
         LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
 
+        //tagih
         LINK_LIST_INVOICE_DGI = headaddressfinal +"invoice/Listinv/Retrieve";
         LINK_REQ_TOKEN_INVOICE_DGI = headaddressfinal +"invoice/ReqToken/Retrieve";
         LINK_CANCEL_TRANSACTION_DGI = headaddressfinal + "invoice/Canceltrx/Invoke";
         LINK_CONFIRM_PAYMENT_DGI = headaddressfinal + "invoice/Payment/Invoke";
+        LINK_CANCEL_SEARCH_DGI = headaddressfinal + "invoice/Payment/Reject";
+        LINK_SALDO_COLLECTOR     = headaddressfinal + "Balancecollector/Retrieve";
+        LINK_SET_MEMBER_LOC = headaddressfinal + "invoice/Setmemberlocation/Invoke";
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
@@ -508,308 +509,9 @@ public class MyApiClient {
         return UUID.randomUUID();
     }
 
-    public static String getWebserviceNames(String link){
-        StringTokenizer tokens = new StringTokenizer(link, "/");
-        int index = 0;
-        while(index<3) {
-            tokens.nextToken();
-            index++;
-        }
-        return tokens.nextToken();
-    }
-
-    public static String getWebserviceName(String link){
-        return link.substring(link.indexOf("saldomu/"));
-    }
-
-//    public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key ){
-//
-//        String webServiceName = getWebserviceName(linknya);
-//        UUID uuidnya = getUUID();
-//        String dtime = DateTimeFormat.getCurrentDateTime();
-//        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id;
-//        Timber.d("isi access_key :" + access_key);
-////
-//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
-//
-//        String hash = SHA.SHA256(access_key,msgnya);
-//
-//        RequestParams params = new RequestParams();
-//        params.put(WebParams.RC_UUID, uuidnya);
-//        params.put(WebParams.RC_DTIME, dtime);
-//        params.put(WebParams.SIGNATURE, hash);
-//        return params;
-//    }
-//
-//    public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key
-//            , String extraSignature){
-//
-//        String webServiceName = getWebserviceName(linknya);
-//        UUID uuidnya = getUUID();
-//        String dtime = DateTimeFormat.getCurrentDateTime();
-//        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id + extraSignature;
-////        Timber.d("isi access_key :" + access_key);
-//
-////        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
-//
-//        String hash = SHA.SHA256(access_key,msgnya);
-//
-//        RequestParams params = new RequestParams();
-//        params.put(WebParams.RC_UUID, uuidnya);
-//        params.put(WebParams.RC_DTIME, dtime);
-//        params.put(WebParams.SIGNATURE, hash);
-//        return params;
-//    }
-//
-//    public RequestParams getSignatureWithParams(String linknya, String extraSignature){
-//        return CreateParams(linknya,extraSignature);
-//    }
-//
-//    public RequestParams getSignatureWithParams(String linknya){
-//        return CreateParams(linknya, "");
-//    }
-//
-//    private RequestParams CreateParams(String linknya, String extraSignature){
-//
-//        String webServiceName = getWebserviceName(linknya);
-//        UUID uuidnya = getUUID();
-//        String dtime = DateTimeFormat.getCurrentDateTime();
-//        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ getCommIdLogin() + getUserPhoneId()+extraSignature;
-//        Timber.d("myapiclient isi access_key :" + getAccessKey());
-//        Timber.d("myapiclient isisnya signature : "+  webServiceName +" / "+getCommIdLogin()+" / " + getUserPhoneId() + " / " + extraSignature);
-//
-//        String hash = SHA.SHA256(getAccessKey(),msgnya);
-//
-//        RequestParams params = new RequestParams();
-//        params.put(WebParams.RC_UUID, uuidnya);
-//        params.put(WebParams.RC_DTIME, dtime);
-//        params.put(WebParams.SIGNATURE, hash);
-//        return params;
-//    }
-//
-//    private RequestParams CreateParams(String commid, String userid, String accesskey
-//            , String linknya, String extraSignature){
-//
-//        String webServiceName = getWebserviceName(linknya);
-//        UUID uuidnya = getUUID();
-//        String dtime = DateTimeFormat.getCurrentDateTime();
-//        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commid + userid+extraSignature;
-//        Timber.d("isi access_key :" + getAccessKey());
-//        Timber.d("isisnya signature : "+  webServiceName +" / "+getCommIdLogin()+" / " + getUserPhoneId() + " / " + extraSignature);
-//
-//        String hash = SHA.SHA256(accesskey,msgnya);
-//
-//        RequestParams params = new RequestParams();
-//        params.put(WebParams.RC_UUID, uuidnya);
-//        params.put(WebParams.RC_DTIME, dtime);
-//        params.put(WebParams.SIGNATURE, hash);
-//        return params;
-//    }
-
-    private String getCommIdLogin(){
-        return getInstance().sp.getString(DefineValue.COMMUNITY_ID,"");
-    }
-    private String getUserPhoneId(){
-        return getInstance().sp.getString(DefineValue.USERID_PHONE,"");
-    }
     public String getAccessKey(){
         return getInstance().sp.getString(DefineValue.ACCESS_KEY,"");
     }
 
-//    public static RequestParams getSignatureWithParamsWithoutLogin(String commID, String linknya, String secret_key, String extraSignature, String uuid, String dtimes){
-//
-//        String webServiceName = getWebserviceName(linknya);
-//        UUID uuidnya = getUUID();
-//        String dtime = DateTimeFormat.getCurrentDateTime();
-//        String msgnya = uuid+dtimes+BuildConfig.APP_ID+webServiceName+ commID + extraSignature;
-//        String hash = SHA.SHA256(secret_key,msgnya);
-//
-//        Log.d("myapiclient", "msg : " + msgnya + ", hashed : " + hash);
-//
-//        RequestParams params = new RequestParams();
-//        params.put(WebParams.RC_UUID, uuid);
-//        params.put(WebParams.RC_DTIME, dtimes);
-//        params.put(WebParams.SIGNATURE, hash);
-//        return params;
-//    }
-//
-//    public static RequestParams getSignatureWithParamsWithoutLogin(String commID, String linknya, String secret_key,  String extraSignature){
-//
-//        String webServiceName = getWebserviceName(linknya);
-//        UUID uuidnya = getUUID();
-//        String dtime = DateTimeFormat.getCurrentDateTime();
-//        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID;
-//        String hash = SHA.SHA256(secret_key,msgnya);
-//
-//        RequestParams params = new RequestParams();
-//        params.put(WebParams.RC_UUID, uuidnya);
-//        params.put(WebParams.RC_DTIME, dtime);
-//        params.put(WebParams.SIGNATURE, hash);
-//        return params;
-//    }
-//
-//    public static RequestParams getSignatureWithParamsWithoutLogin(String commID, String linknya, String secret_key){
-//
-//        String webServiceName = getWebserviceName(linknya);
-//        UUID uuidnya = getUUID();
-//        String dtime = DateTimeFormat.getCurrentDateTime();
-//        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID;
-//        String hash = SHA.SHA256(secret_key,msgnya);
-//
-//        RequestParams params = new RequestParams();
-//        params.put(WebParams.RC_UUID, uuidnya);
-//        params.put(WebParams.RC_DTIME, dtime);
-//        params.put(WebParams.SIGNATURE, hash);
-//        return params;
-//    }
-//
-//    public static RequestParams getSignatureWithParamsFCM(String gcmID, String deviceId, String appID){
-//
-//        UUID uuidnya = getUUID();
-//        String dtime = DateTimeFormat.getCurrentDateTime();
-//        String msgnya = Md5.hashMd5(uuidnya+dtime+gcmID+deviceId+appID);
-//        Timber.d("isi messageSignatureFCM : " + msgnya);
-//
-//
-//        String hash = SHA.SHA1(msgnya);
-//        Timber.d("isi sha1 signatureFCM : " + hash);
-//
-//        RequestParams params = new RequestParams();
-//        params.put(WebParams.RQ_UUID, uuidnya);
-//        params.put(WebParams.RQ_DTIME, dtime);
-//        params.put(WebParams.SIGNATURE, hash);
-//
-//        return params;
-//    }
-//
-//    public static void setCookieStore(PersistentCookieStore cookieStore) {
-//        getClient().setCookieStore(cookieStore);
-//    }
-//
-//    private static void get(Context mContext, String url, AsyncHttpResponseHandler responseHandler) {
-//        getClient().get(mContext, url, responseHandler);
-//    }
-//
-//    private static void post(Context mContext, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-//        getClient().post(mContext, url, params, responseHandler);
-//        Timber.d("isis timeoutnya : %1$s ",String.valueOf(getClient().getConnectTimeout()));
-//    }
-//
-//    private static void postMNotif(Context mContext, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-//        getClientMNotif().post(mContext, url, params, responseHandler);
-//        Timber.d("isis timeoutnya : %1$s ",String.valueOf(getClient().getConnectTimeout()));
-//    }
-//
-//    private static void postUntrustedSSL(Context mContext, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-//        getInstance().asyncHttpClientUnstrusted.post(mContext, url, params, responseHandler);
-//        Timber.d("isis timeoutnya : "+String.valueOf(getClient().getConnectTimeout()));
-//    }
-//
-//    public static void postByTag(Context mContext,String tag,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-//        getClient().post(mContext, url, params, responseHandler).setTag(tag);
-//        Timber.d("isis timeoutnya : %1$s ", String.valueOf(getClient().getConnectTimeout()));
-//    }
-//
-//    public static void postSync(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-//        getInstance().syncHttpClient.post(mContext, url, params, responseHandler);
-//    }
-//
-//    public static void getSync(Context mContext,String url, AsyncHttpResponseHandler responseHandler) {
-//        getInstance().syncHttpClient.get(mContext, url, responseHandler);
-//    }
-//
-//    public static void postSyncMNotif(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-//        getInstance().syncHttpClient_mnotif.post(mContext, url, params, responseHandler);
-//    }
-//
-//    public static void getSyncMNotif(Context mContext,String url, AsyncHttpResponseHandler responseHandler) {
-//        getInstance().syncHttpClient_mnotif.get(mContext, url, responseHandler);
-//    }
-//
-//    private static AsyncHttpClient getClientMNotif(boolean isSync){
-//        if(isSync)
-//            return getInstance().syncHttpClient_mnotif;
-//
-//        return getInstance().asyncHttpClient_mnotif;
-//    }
-//
-//    private static AsyncHttpClient getClientGoogle(boolean isSync){
-//        if(isSync)
-//            return getInstance().syncHttpClient_google;
-//
-//        return getInstance().asyncHttpClient_google;
-//    }
-//
-//    public static AsyncHttpClient getClientMNotif() {
-//        // Return the synchronous HTTP client when the thread is not prepared
-//        if (Looper.myLooper() == null) {
-//            return getInstance().syncHttpClient_mnotif;
-//        }
-//
-//        return getInstance().asyncHttpClient_mnotif;
-//    }
-//
-//    public static AsyncHttpClient getClient() {
-//        // Return the synchronous HTTP client when the thread is not prepared
-//        if (Looper.myLooper() == null) {
-//            return getInstance().syncHttpClient;
-//        }
-//
-//        return getInstance().asyncHttpClient;
-//    }
-
-    private static String getBasicAuth() {
-//        String stringEncode = "dev.api.mobile"+":"+"590@dev.api.mobile!";
-        String stringEncode = "s4LD0mu"+":"+"WPtK9YBa?4g,rfvm(^XD/M]{25TJF8";
-        byte[] encodeByte = Base64.encodeBase64(stringEncode.getBytes());
-        String encode = new String(encodeByte);
-        Timber.d("encode " + encode.replace('+','-').replace('/','_'));
-        return encode.replace('+','-').replace('/','_');
-
-    }
-
-    private static String getBasicAuthForMNotif() {
-        String stringEncode = "dev.api.mobile"+":"+"590@dev.api.mobile!";
-        byte[] encodeByte = Base64.encodeBase64(stringEncode.getBytes());
-        String encode = new String(encodeByte);
-        return encode.replace('+','-').replace('/','_');
-    }
-
-    private TLSSocketFactory getSSLSocketFactory(){
-        try {
-            // Get an instance of the Bouncy Castle KeyStore format
-            KeyStore trusted = KeyStore.getInstance("BKS");
-            // Get the raw resource, which contains the keystore with
-            // your trusted certificates
-            InputStream in = getmContext().getResources().openRawResource(R.raw.saldomucom);
-            try {
-                // Initialize the keystore with the provided trusted certificates
-                // Also provide the password of the keystore
-                trusted.load(in, PRIVATE_KEY.toCharArray());
-            } finally {
-                in.close();
-            }
-            // Pass the keystore to the SSLSocketFactory. The factory is responsible
-            // for the verification of the server certificate.
-            TLSSocketFactory sf = new TLSSocketFactory(trusted);
-            // Hostname verification from certificate
-            // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html#d4e506
-            sf.setHostnameVerifier(TLSSocketFactory.STRICT_HOSTNAME_VERIFIER);
-            return sf;
-        } catch (Exception e) {
-            throw new AssertionError(e);
-        }
-    }
-
-//    public static void CancelRequestWS(Context _context,Boolean interruptIfRunning)
-//    {
-//        getClient().cancelRequests(_context, interruptIfRunning);
-//    }
-//
-//    public static void CancelRequestWSByTag(String tag,Boolean interruptIfRunning)
-//    {
-//        getClient().cancelRequestsByTAG(tag, interruptIfRunning);
-//    }
-    //----------------------------------------------------------------------------------------------------
 }
 
