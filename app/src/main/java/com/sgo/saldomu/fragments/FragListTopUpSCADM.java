@@ -87,6 +87,7 @@ public class FragListTopUpSCADM extends BaseFragment {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_COMMUNITY_TOPUP_SCADM);
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.USER_NAME, userNameLogin);
 
             Timber.d("isi params get list community topup scadm:" + params.toString());
 

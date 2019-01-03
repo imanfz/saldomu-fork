@@ -128,7 +128,12 @@ public class FragShopLocation extends BaseFragment {
             }
         });
 
-
+        bt_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().popBackStack();
+            }
+        });
     }
 
     boolean checkInput() {
@@ -136,7 +141,11 @@ public class FragShopLocation extends BaseFragment {
             et_address.setError("Alamat kosong");
             et_address.requestFocus();
             return false;
-        } else if (cityLocField.getText().toString().trim().length() == 0) {
+        } else if (!locLists.contains(cityLocField.getText().toString())){
+            cityLocField.requestFocus();
+            cityLocField.setError("Nama kota tidak ditemukan!");
+            return false;
+        }else if (cityLocField.getText().toString().trim().length() == 0) {
             cityLocField.setError("Kota kosong");
             cityLocField.requestFocus();
             return false;

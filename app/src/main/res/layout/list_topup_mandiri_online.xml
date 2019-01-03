@@ -233,7 +233,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/text_size_small_material"
                         android:textColor="@color/colorSecondaryDark"
-                        android:text="@string/instruct_topup_mandiri_online_6"
+                        android:text="@string/instruct_topup_mandiri_online_5"
                         android:layout_gravity="center"
                         />
 
@@ -272,6 +272,7 @@
 
 
                 </LinearLayout>
+
 
                 <LinearLayout android:layout_width="wrap_content"
                     android:orientation="horizontal"

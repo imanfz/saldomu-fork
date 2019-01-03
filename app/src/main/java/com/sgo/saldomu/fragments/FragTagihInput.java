@@ -155,6 +155,7 @@ public class FragTagihInput extends BaseFragment {
             btn_cancel.setVisibility(View.VISIBLE);
         }
 
+        mitraNameArrayList.clear();
 
         mitraAdapter = new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, mitraNameArrayList);
         sp_mitra.setAdapter(mitraAdapter);

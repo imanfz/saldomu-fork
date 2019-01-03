@@ -425,6 +425,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
                         mEditor.putInt(DefineValue.LEVEL_VALUE, Integer.valueOf(commModel.getMemberLevel()));
                         if (commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES)) {
+
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, true);
                         } else
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
@@ -437,13 +438,16 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
                         String arrJson = toJson(commModel.getAgent_scheme_codes()).toString();
 //                                String arrJson = arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES, "");
+
 //                            for (int a=0; a<arrJson.length(); a++)
 //                            {
                         mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
 //                            }
 //                        }
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
+
                         Timber.w("isi comm id yg bener:" + commModel.getCommId());
+
                         break;
                     }
                 }
