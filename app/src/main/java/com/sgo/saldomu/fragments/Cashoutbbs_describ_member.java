@@ -291,26 +291,26 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                     layoutEmpty.setVisibility(View.GONE);
                                     layoutNoEmpty.setVisibility(View.VISIBLE);
 
-                                    txId = response.getString(WebParams.TX_ID);
-                                    ccyId = response.getString(WebParams.CCY_ID);
-                                    product_code = response.getString(WebParams.PRODUCT_CODE);
-                                    product_name = response.getString(WebParams.PRODUCT_NAME);
-                                    bank_code = response.getString(WebParams.BANK_CODE);
-                                    bank_name = response.getString(WebParams.BANK_NAME);
-                                    api_key = response.getString(WebParams.API_KEY);
-                                    callback_url = response.getString(WebParams.CALLBACK_URL);
-                                    comm_id = response.getString(WebParams.COMM_ID);
+                                    txId = response.optString(WebParams.TX_ID, "");
+                                    ccyId = response.optString(WebParams.CCY_ID, "");
+                                    product_code = response.optString(WebParams.PRODUCT_CODE, "");
+                                    product_name = response.optString(WebParams.PRODUCT_NAME, "");
+                                    bank_code = response.optString(WebParams.BANK_CODE, "");
+                                    bank_name = response.optString(WebParams.BANK_NAME, "");
+                                    api_key = response.optString(WebParams.API_KEY, "");
+                                    callback_url = response.optString(WebParams.CALLBACK_URL, "");
+                                    comm_id = response.optString(WebParams.COMM_ID, "");
                                     tvTxId.setText(txId);
-                                    tvAgent.setText(response.getString(WebParams.MEMBER_NAME));
+                                    tvAgent.setText(response.optString(WebParams.MEMBER_NAME, ""));
                                     tvBankProduct.setText(product_name);
-                                    tvAmount.setText(ccyId + ". " + CurrencyFormat.format(response.getString(WebParams.TX_AMOUNT)));
-                                    tvFee.setText(ccyId + ". " + CurrencyFormat.format(response.getString(WebParams.FEE_AMOUNT)));
-                                    tvTotal.setText(ccyId + ". " + CurrencyFormat.format(response.getString(WebParams.TOTAL_AMOUNT)));
-                                    amount = response.getString(WebParams.TX_AMOUNT);
-                                    fee = response.getString(WebParams.FEE_AMOUNT);
-                                    total = response.getString(WebParams.TOTAL_AMOUNT);
-                                    product_h2h = response.getString(WebParams.PRODUCT_H2H);
-                                    comm_code = response.getString(WebParams.COMM_CODE);
+                                    tvAmount.setText(ccyId + ". " + CurrencyFormat.format(response.optString(WebParams.TX_AMOUNT, "0")));
+                                    tvFee.setText(ccyId + ". " + CurrencyFormat.format(response.optString(WebParams.FEE_AMOUNT, "0")));
+                                    tvTotal.setText(ccyId + ". " + CurrencyFormat.format(response.optString(WebParams.TOTAL_AMOUNT, "0")));
+                                    amount = response.optString(WebParams.TX_AMOUNT, "0");
+                                    fee = response.optString(WebParams.FEE_AMOUNT, "0");
+                                    total = response.optString(WebParams.TOTAL_AMOUNT, "0");
+                                    product_h2h = response.optString(WebParams.PRODUCT_H2H, "");
+                                    comm_code = response.optString(WebParams.COMM_CODE, "");
                                     setPayment(product_h2h);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
@@ -336,6 +336,9 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                             if (failed < 3) {
                                 failed++;
                                 handlerWS.postDelayed(runnableWS, 60000);
+                            }else {
+                                Toast.makeText(getActivity(), "Silahkan coba kembali", Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
                             }
                         }
 
@@ -561,7 +564,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             out.show();
 
             extraSignature = txId + comm_code;
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_STATUS_BBS, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_STATUS_BBS
+                    , extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.COMM_CODE, comm_code);

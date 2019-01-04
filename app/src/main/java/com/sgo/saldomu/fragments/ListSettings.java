@@ -16,7 +16,6 @@ import com.sgo.saldomu.activities.AboutAppsActivity;
 import com.sgo.saldomu.activities.ChangePIN;
 import com.sgo.saldomu.activities.ChangePassword;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -80,14 +79,17 @@ public class ListSettings extends ListFragment {
         dialogI.setTargetFragment(this,0);
         String[] _data;
 
-        if(!isLevel1){
-            _data = getResources().getStringArray(R.array.settings_list_pin_2);
-            list.addAll(Arrays.asList(_data));
-        }
-//        else
-
         _data = getResources().getStringArray(R.array.settings_list_pin);
         list.addAll(Arrays.asList(_data));
+
+        if(!isLevel1){
+            _data = getResources().getStringArray(R.array.settings_isnot_lvl1);
+            list.addAll(Arrays.asList(_data));
+        }
+        else{
+            _data = getResources().getStringArray(R.array.settings_is_lvl1);
+            list.addAll(Arrays.asList(_data));
+        }
 
         EasyAdapter adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, list);
 

@@ -64,9 +64,9 @@ public class BBSDataManager {
     public static Boolean isDataATCNotValid(){
         BBSDataManager bbsDataManager = new BBSDataManager();
         boolean a = bbsDataManager.isMustUpdate();
-        boolean b = !bbsDataManager.isSameUser();
+        boolean b = bbsDataManager.isSameUser();
         Log.d("bbs data manager", "a: " + a + ", b: " + b);
-        if(a || b) {
+        if(a || !b) {
 //        if(bbsDataManager.isMustUpdate() || !bbsDataManager.isSameUser()) {
             Timber.d("return true data atc must update");
             return true;

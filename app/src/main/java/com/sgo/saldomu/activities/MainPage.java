@@ -865,14 +865,14 @@ public class MainPage extends BaseActivity {
                                 code = model.getError_message();
                                 Toast.makeText(MainPage.this, code, Toast.LENGTH_LONG).show();
 
-                                getDataListMember();
                             }
 
                         }
 
                         @Override
                         public void onError(Throwable throwable) {
-                            sentLogout();
+//                            sentLogout();
+                            getDataListMember();
                         }
 
                         @Override

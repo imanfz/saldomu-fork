@@ -121,6 +121,10 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
     @Expose
     private
     String product_h2h;
+    @SerializedName("product_code")
+    @Expose
+    private
+    String product_code;
 
     public String getTx_id() {
         return tx_id;
@@ -236,5 +240,9 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
 
     public String getProduct_h2h() {
         return product_h2h;
+    }
+
+    public String getProduct_code() {
+        return product_code;
     }
 }

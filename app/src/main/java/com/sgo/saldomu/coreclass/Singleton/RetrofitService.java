@@ -441,7 +441,7 @@ public class RetrofitService {
     public void PostObjectRequest(String link, HashMap<String, Object> param, final ResponseListener listener) {
         BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-//                .retry(1)
+                .retry(2)
                 .subscribe(new Observer<JsonObject>() {
                     @Override
                     public void onSubscribe(Disposable d) {
