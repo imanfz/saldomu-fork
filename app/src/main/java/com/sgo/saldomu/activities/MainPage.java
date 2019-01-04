@@ -865,6 +865,7 @@ public class MainPage extends BaseActivity {
                                 code = model.getError_message();
                                 Toast.makeText(MainPage.this, code, Toast.LENGTH_LONG).show();
 
+                                getDataListMember();
                             }
 
                         }
@@ -1092,7 +1093,7 @@ public class MainPage extends BaseActivity {
 
                             if (model.getError_code().equals(WebParams.SUCCESS_CODE)) {
                                 //stopService(new Intent(MainPage.this, UpdateLocationService.class));
-                                Logout(FIRST_SCREEN_LOGIN);
+                                Logout(FIRST_SCREEN_INTRO);
 
                             } else {
                                 Toast.makeText(MainPage.this, model.getError_message(), Toast.LENGTH_LONG).show();

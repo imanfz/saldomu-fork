@@ -43,7 +43,6 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -85,12 +84,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View TKN;
     ImageView refreshBtn;
     private Animation frameAnimation;
-    Boolean is_first_time = true;
-    private LevelClass levelClass;
     private SecurePreferences sp;
     ProgressDialog progdialog;
     ArrayList<ShopCategory> shopCategories = new ArrayList<>();
-    private String _biller_type_code;
     private Biller_Type_Data_Model mBillerTypeDataPLS;
     private Biller_Type_Data_Model mBillerTypeDataBPJS;
     private Biller_Type_Data_Model mBillerTypeDataTKN;
@@ -376,12 +372,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 if (menuItemName.equals(getString(R.string.newhome_title_topup))) {
                     switchMenu(NavigationDrawMenu.MTOPUP, null);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_pay_friends))) {
-                    if (levelClass.isLevel1QAC()) {
-                        levelClass.showDialogLevel();
+                    if (getLvlClass().isLevel1QAC()) {
+                        getLvlClass().showDialogLevel();
                     } else switchMenu(NavigationDrawMenu.MPAYFRIENDS, null);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_ask_for_money))) {
-                    if (levelClass.isLevel1QAC()) {
-                        levelClass.showDialogLevel();
+                    if (getLvlClass().isLevel1QAC()) {
+                        getLvlClass().showDialogLevel();
                     } else switchMenu(NavigationDrawMenu.MASK4MONEY, null);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_buy))) {
                     switchMenu(NavigationDrawMenu.MBUY, null);
@@ -468,8 +464,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         }
 
         RefreshSaldo();
-        if (levelClass != null)
-            levelClass.refreshData();
+        if (getLvlClass() != null)
+            getLvlClass().refreshData();
 
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override

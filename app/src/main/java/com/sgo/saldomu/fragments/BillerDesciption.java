@@ -261,8 +261,7 @@ public class BillerDesciption extends BaseFragment {
             spin_payment_options.setSelection(1); //set metode pembayaran jadi saldomu
         }
 
-        if (progdialog != null && progdialog.isShowing())
-            progdialog.dismiss();
+        dismissProgressDialog();
     }
 
     private void initializeDescriptionLayout() {
@@ -445,7 +444,7 @@ public class BillerDesciption extends BaseFragment {
     private void sentInquiryBiller() {
         try {
 
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            showProgressDialog();
 
             if (cust_id.equalsIgnoreCase(""))
                 cust_id = userPhoneID;
@@ -510,8 +509,7 @@ description = getGson().toJson(model.getDescription());
 
                         @Override
                         public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
@@ -522,7 +520,7 @@ description = getGson().toJson(model.getDescription());
     private void sentPaymentBiller(final String _amount) {
         try {
 
-            progdialog.show();
+            showProgressDialog();
 
             final String bank_code = mTempBank.getBank_code();
             final String product_code = mTempBank.getProduct_code();
@@ -582,18 +580,18 @@ description = getGson().toJson(model.getDescription());
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
 
                                 getFragmentManager().popBackStack();
+                                dismissProgressDialog();
                             }
                         }
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            dismissProgressDialog();
                         }
 
                         @Override
                         public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+
                             btn_submit.setEnabled(true);
                         }
                     });
@@ -689,8 +687,7 @@ description = getGson().toJson(model.getDescription());
                         @Override
                         public void onComplete() {
                             btn_submit.setEnabled(true);
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {

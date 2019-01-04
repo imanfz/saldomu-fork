@@ -15,6 +15,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ProgBarDialog;
@@ -40,6 +41,7 @@ public abstract class BaseFragment extends Fragment {
     protected View v;
     protected Gson gson;
     JsonParser jsonParser;
+    private LevelClass levelClass;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +54,12 @@ public abstract class BaseFragment extends Fragment {
         userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         userNameLogin = sp.getString(DefineValue.USER_NAME, "");
+    }
+
+    protected LevelClass getLvlClass(){
+        if (levelClass == null)
+            levelClass = new LevelClass(getActivity());
+        return levelClass;
     }
 
     protected Gson getGson(){

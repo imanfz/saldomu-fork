@@ -322,8 +322,10 @@ public class Login extends BaseFragment implements View.OnClickListener {
         if (argsBundleNextLogin != null)
             i.putExtras(argsBundleNextLogin);
 
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         startActivity(i);
-        getActivity().finish();
+//        getActivity().finish();
 
     }
 

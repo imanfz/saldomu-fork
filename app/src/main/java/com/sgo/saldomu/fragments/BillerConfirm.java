@@ -770,7 +770,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             args.putString(DefineValue.BILLER_TYPE, biller_type_code);
         }
 
-        args.putString(DefineValue.BILLER_DETAIL, model.getBiller_detail().getPhoneNumber());
+        args.putString(DefineValue.BILLER_DETAIL, toJson(model.getBiller_detail()).toString());
         args.putString(DefineValue.BUSS_SCHEME_CODE, model.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, model.getBuss_scheme_name());
         args.putString(DefineValue.PRODUCT_NAME, model.getProduct_name());
