@@ -214,10 +214,10 @@ public class RetrofitService {
 
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.readTimeout(600, TimeUnit.SECONDS);
+        builder.readTimeout(10, TimeUnit.MINUTES);
         builder.retryOnConnectionFailure(true);
-        builder.writeTimeout(600, TimeUnit.SECONDS);
-        builder.connectTimeout(600, TimeUnit.SECONDS);
+        builder.writeTimeout(10, TimeUnit.MINUTES);
+        builder.connectTimeout(10, TimeUnit.MINUTES);
         builder.addInterceptor(interceptorLogging);
         builder.certificatePinner(certificatePinner);
         try {

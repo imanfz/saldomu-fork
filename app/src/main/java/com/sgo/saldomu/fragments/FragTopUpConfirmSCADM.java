@@ -388,7 +388,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
     private void getTrxStatus(final String txId, String comm_id, final String _amount) {
         try {
 
-            extraSignature = txId + commIDLogin;
+            extraSignature = txId + comm_id;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
@@ -475,7 +475,9 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
 
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(admin_fee);
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
-        args.putString(DefineValue.BILLER_DETAIL, model.getBiller_detail().getPhoneNumber());
+        args.putString(DefineValue.BILLER_DETAIL, toJson(model.getBiller_detail()).toString()
+//                model.getBiller_detail().getPhoneNumber()
+        );
         args.putString(DefineValue.BUSS_SCHEME_CODE, model.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, model.getBuss_scheme_name());
         args.putString(DefineValue.BANK_PRODUCT, product_name);

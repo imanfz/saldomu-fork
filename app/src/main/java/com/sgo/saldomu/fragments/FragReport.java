@@ -25,6 +25,7 @@ import android.widget.ToggleButton;
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.SummaryReportFeeModel;
 import com.sgo.saldomu.R;
@@ -1086,9 +1087,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
 
         args.putString(DefineValue.DETAILS_BILLER, response.getDetail());
-
-
-        args.putString(DefineValue.BILLER_DETAIL, response.getBiller_detail().getPhoneNumber());
+        JsonParser jsonParser = new JsonParser();
+        Gson gson = new Gson();
+        args.putString(DefineValue.BILLER_DETAIL, jsonParser.parse(gson.toJson(response.getBiller_detail())).toString()
+//                response.getBiller_detail().getPhoneNumber()
+        );
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.getBuss_scheme_name());
 
