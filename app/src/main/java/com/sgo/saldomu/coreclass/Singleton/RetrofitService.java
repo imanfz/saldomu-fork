@@ -549,6 +549,45 @@ public class RetrofitService {
                 });
     }
 
+    public void QueryRequest(String link, HashMap<String, Object> queryMap, final ObjListeners listener) {
+        BuildRetrofit().QueryInterface(link, queryMap).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        getCompositeDisposable().add(d);
+
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        try {
+                            listener.onResponses(new JSONObject(getGson().toJson(obj)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (MyApiClient.PROD_FAILURE_FLAG) {
+                            Toast.makeText(CoreApp.getAppContext(),
+                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        listener.onComplete();
+                    }
+                });
+    }
+
     public void GetArrayRequest(String link, final ArrListeners listener) {
         BuildRetrofit().GetArrayInterface(link).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

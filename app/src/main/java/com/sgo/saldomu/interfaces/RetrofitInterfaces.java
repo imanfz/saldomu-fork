@@ -11,11 +11,13 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
+import retrofit2.http.QueryMap;
 
 public interface RetrofitInterfaces {
     @POST("{url}")
@@ -27,6 +29,10 @@ public interface RetrofitInterfaces {
     @POST("{url}")
 //    @FormUrlEncoded
     Observable<JsonObject> GetObjectInterface(@Path(value = "url", encoded = true) String url);
+
+    @GET("{url}")
+    Observable<JsonObject> QueryInterface(@Path(value = "url", encoded = true) String url,
+                                          @QueryMap HashMap<String, Object> options);
 
     @POST("{url}")
     @FormUrlEncoded
