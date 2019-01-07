@@ -15,8 +15,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.text.Html;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -49,7 +47,6 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
@@ -57,12 +54,6 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
-import com.sgo.saldomu.coreclass.ToggleKeyboard;
-import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.fragments.BBSTransaksiInformasi;
-import com.sgo.saldomu.fragments.FragJoinCommunitySCADM;
-import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.widgets.BaseActivity;
 
@@ -647,6 +638,14 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         @Override
         protected Integer doInBackground(Void... params) {
 
+            HashMap<String, Object> query = new HashMap<>();
+            query.put("origin", dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString());
+            query.put("sensor", "false");
+            query.put("units", "metric");
+            query.put("mode", DefineValue.GMAP_MODE);
+            query.put("language", Locale.getDefault().getLanguage());
+            query.put("destination", targetLatitude.toString() + "," + targetLongitude.toString());
+
             String nextParams = "origin=" + dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString();
             nextParams += "&sensor=false";
             nextParams += "&units=metric";
@@ -662,15 +661,18 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
             String tempParams = nextParams;
             tempParams += "&destination=" + targetLatitude.toString() + "," + targetLongitude.toString();
 
-            getGoogleMapRoute(tempParams, 0);
+            getGoogleMapRoute(query, 0);
             return null;
         }
 
     }
 
-    public void getGoogleMapRoute(String tempParams, final int idx) {
+    public void getGoogleMapRoute(
+//            String tempParams
+            HashMap<String, Object> query, final int idx) {
 
-        RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE + "?" + tempParams,
+        RetrofitService.getInstance().QueryRequest(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
+//                        + "?" + tempParams,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {
@@ -866,7 +868,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     public void onResponses(JSONObject response) {
                         try {
 
-
                             String code = response.getString(WebParams.ERROR_CODE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 benefLatitude = response.getDouble(WebParams.KEY_LATITUDE);
@@ -929,7 +930,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                                 } else {
                                     Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
-
 
                                     Intent intent = new Intent(getApplicationContext(), MainPage.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
