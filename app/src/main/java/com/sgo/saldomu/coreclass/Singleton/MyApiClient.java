@@ -243,6 +243,7 @@ public class MyApiClient {
     //list bank scadm, untuk spinner produk bank
     public static String LINK_GET_LIST_BANK_TOPUP_SCADM;
     public static String LINK_CONFIRM_TOPUP_SCADM;
+    public static String LINK_CONFIRM_TOPUP_SCADM_NEW;
     public static String LINK_GET_LIST_BANK_DENOM_SCADM;
     public static String LINK_GET_DENOM_LIST;
     public static String LINK_GET_DENOM_INVOKE;
@@ -406,6 +407,7 @@ public class MyApiClient {
         LINK_CONFIRM_COMMUNITY_SCADM          = headaddressfinal + "scadm/JoinCommunity/Save";
         LINK_GET_LIST_BANK_TOPUP_SCADM = headaddressfinal +"scadm/ListBank/Topup";
         LINK_CONFIRM_TOPUP_SCADM = headaddressfinal +"scadm/Topup/Invoke";
+        LINK_CONFIRM_TOPUP_SCADM_NEW = headaddressfinal +"scadm/ReqTopup/Invoke";
         LINK_GET_LIST_BANK_DENOM_SCADM = headaddressfinal +"scadm/ListBank/Denom";
         LINK_GET_DENOM_LIST = headaddressfinal +"scadm/ListDenom/Retrieve";
         LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
