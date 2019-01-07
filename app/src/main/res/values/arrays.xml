@@ -215,7 +215,7 @@
         <!-- item>@drawable/ic_tariktunai</item -->
         <item>@drawable/ic_tariktunai</item>
         <!-- item>@drawable/ic_laporan</item -->
-        <item>@drawable/ic_belanja</item>
+        <item>@drawable/settings</item>
         <item>@drawable/ic_location_on_black</item>
     </integer-array>
 
