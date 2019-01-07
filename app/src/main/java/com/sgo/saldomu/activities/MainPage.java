@@ -103,9 +103,9 @@ public class MainPage extends BaseActivity {
     public static final int RESULT_FIRST_TIME = 9;
     public static final int RESULT_BBS = 11;
     public static final int RESULT_BBS_MEMBER_OTP = 12;
-    public static final int RESULT_BBS_STATUS= 13;
-    public static final int RESULT_RETRY= 14;
-    public static final int RESULT_BALANCE_COLLECTOR= 14;
+    public static final int RESULT_BBS_STATUS = 13;
+    public static final int RESULT_RETRY = 14;
+    public static final int RESULT_BALANCE_COLLECTOR = 14;
 
     public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;
@@ -259,6 +259,8 @@ public class MainPage extends BaseActivity {
 //
 //        if(isSimSame) {
 
+        showProgLoading(getString(R.string.initialize));
+
         startLocationService();
 
 //            if (savedInstanceState != null)
@@ -270,8 +272,6 @@ public class MainPage extends BaseActivity {
         UtilsLoader utilsLoader = new UtilsLoader(this, sp);
         utilsLoader.getAppVersion();
         ActiveAndroid.initialize(this);
-        progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-        progdialog.show();
         InitializeNavDrawer();
         setupFab();
         FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userPhoneID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
@@ -871,14 +871,13 @@ public class MainPage extends BaseActivity {
 
                         @Override
                         public void onError(Throwable throwable) {
-//                            sentLogout();
-                            getDataListMember();
+                            sentLogout();
+//                            getDataListMember();
                         }
 
                         @Override
                         public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                            hideProgLoading();
                         }
                     });
 
@@ -1075,10 +1074,7 @@ public class MainPage extends BaseActivity {
 
     private void sentLogout() {
         try {
-            if (progdialog != null && !progdialog.isShowing()) {
-                progdialog = DefinedDialog.CreateProgressDialog(this, "");
-                progdialog.show();
-            }
+            showProgLoading("");
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LOGOUT);
 //            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
@@ -1107,8 +1103,7 @@ public class MainPage extends BaseActivity {
 
                         @Override
                         public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                            hideProgLoading();
                         }
                     });
         } catch (Exception e) {
@@ -1131,11 +1126,11 @@ public class MainPage extends BaseActivity {
                 Timber.w("Masuk result Balance");
                 mNavDrawer.getBalance(true);
             }
-            if(resultCode == RESULT_BALANCE_COLLECTOR){
+            if (resultCode == RESULT_BALANCE_COLLECTOR) {
                 Timber.w("Masuk result Balance collector");
                 fragTagihInput.getBalanceCollector();
             }
-            if(resultCode == RESULT_NOTIF){
+            if (resultCode == RESULT_NOTIF) {
                 Timber.w("Masuk result notif");
                 CheckNotification();
                 invalidateOptionsMenu();
@@ -1380,14 +1375,24 @@ public class MainPage extends BaseActivity {
         doUnbindUserProfileService();
     }
 
+    void showProgLoading(String msg) {
+        progdialog = DefinedDialog.CreateProgressDialog(this, msg);
+        progdialog.show();
+    }
+
+    void hideProgLoading() {
+        if (progdialog != null && progdialog.isShowing()) {
+            progdialog.dismiss();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         Timber.w("destroy main page");
         /*serviceReferenceBalance.StopCallBalance();
         doUnbindService();*/
-        if (progdialog != null && progdialog.isShowing()) {
-            progdialog.dismiss();
-        }
+
+        hideProgLoading();
 
         JobScheduleManager.getInstance(this).cancelAll();
         RetrofitService.dispose();
