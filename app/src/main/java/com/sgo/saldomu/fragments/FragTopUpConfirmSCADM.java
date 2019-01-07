@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
@@ -35,6 +36,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
@@ -42,6 +44,9 @@ import com.sgo.saldomu.models.retrofit.FailedPinModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -156,11 +161,11 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                             String.valueOf(damount), String.valueOf(dfee), String.valueOf(dtotal_amount), bank_name);
                 } else if (bank_gateway.equalsIgnoreCase("Y")) {
                     if (product_code.equalsIgnoreCase("SCASH")) {
-                        CallPINinput(attempt);
+                        confirmToken();
                         btn_next.setEnabled(true);
                     } else {
                         if (inputValidation()) {
-                            sentInsertTransTopup(et_otp.getText().toString(), amount);
+                            confirmToken();
                         } else btn_next.setEnabled(true);
                     }
                 }
@@ -182,6 +187,111 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         if (_attempt == 1)
             i.putExtra(DefineValue.ATTEMPT, _attempt);
         startActivityForResult(i, MainPage.REQUEST_FINISH);
+    }
+
+    public void confirmToken() {
+        showProgressDialog();
+
+//        extraSignature = tx_id + comm_code;
+        params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_PAYMENT_DGI);
+
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+        params.put(WebParams.TX_ID, tx_id);
+        params.put(WebParams.COMM_CODE, comm_code);
+        params.put(WebParams.USER_COMM_CODE, sp.getString(DefineValue.COMMUNITY_CODE, ""));
+        params.put(WebParams.USER_ID, userPhoneID);
+        Timber.d("params confirm payment topup scadm : " + params.toString());
+
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_PAYMENT_DGI, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            dismissProgressDialog();
+
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String error_message = response.getString(WebParams.ERROR_MESSAGE);
+                            Timber.d("response confirm payment topup scadm : " + response.toString());
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                sentInquiry();
+                            } else {
+                                Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+    }
+
+    public void sentInquiry() {
+        try {
+            showProgressDialog();
+
+            extraSignature = tx_id + comm_code + product_code;
+
+            params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
+
+            params.put(WebParams.TX_ID, tx_id);
+            params.put(WebParams.PRODUCT_CODE, product_code);
+            params.put(WebParams.COMM_CODE, comm_code);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.COMM_ID, commIDLogin);
+            Timber.d("isi params InquiryTrx topup scadm:" + params.toString());
+
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                String error_message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("isi response InquiryTrx topup scadm: " + response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    CallPINinput(attempt);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else {
+                                    Timber.d("Error resendTokenSGOL:" + response.toString());
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            dismissProgressDialog();
+//                            btn_confirm.setEnabled(true);
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
     }
 
     private void sentInsertTransTopup(String tokenValue, final String _amount) {
@@ -278,7 +388,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
     private void getTrxStatus(final String txId, String comm_id, final String _amount) {
         try {
 
-            extraSignature = txId + comm_id;
+            extraSignature = txId + commIDLogin;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
             params.put(WebParams.TX_ID, txId);

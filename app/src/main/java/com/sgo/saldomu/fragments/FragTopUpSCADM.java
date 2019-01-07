@@ -50,7 +50,7 @@ public class FragTopUpSCADM extends BaseFragment {
     private ProgressDialog progdialog;
     String memberIDLogin, commIDLogin, userPhoneID, accessKey, member_id_scadm, comm_id_scadm, selectedProductCode, selectedBankCode;
     String tx_id, member_id, member_code, member_name, comm_id, comm_code, comm_name, bank_code, bank_name,
-            product_code, product_name, ccy_id, amount, admin_fee, total_amount, payment_remark, api_key;
+            product_code, product_name, ccy_id, amount, admin_fee, total_amount, api_key;
     String bank_gateway, selectedBankGateway;
     private ArrayList<listBankModel> scadmListBankTopUp = new ArrayList<>();
     private ArrayList<String> spinnerContentStrings = new ArrayList<>();
@@ -214,10 +214,13 @@ public class FragTopUpSCADM extends BaseFragment {
         try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            extraSignature = member_id_scadm + selectedProductCode + MyApiClient.CCY_VALUE + et_jumlah.getText().toString();
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOPUP_SCADM, extraSignature);
+            extraSignature = member_id_scadm + comm_id_scadm + MyApiClient.CCY_VALUE;
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOPUP_SCADM_NEW, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.MEMBER_ID_SCADM, member_id_scadm);
+            params.put(WebParams.MEMBER_ID_GOWORLD, member_id_scadm);
+            params.put(WebParams.COMM_ID_GOWORLD, comm_id_scadm);
+            params.put(WebParams.MEMBER_CODE_GOWORLD, member_code);
+            params.put(WebParams.COMM_CODE_GOWORLD, comm_code);
             params.put(WebParams.BANK_CODE, selectedBankCode);
             params.put(WebParams.BANK_GATEWAY, selectedBankGateway);
             params.put(WebParams.PRODUCT_CODE, selectedProductCode);
@@ -227,7 +230,7 @@ public class FragTopUpSCADM extends BaseFragment {
 
             Timber.d("isi params confirm topup scadm:" + params.toString());
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TOPUP_SCADM, params,
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TOPUP_SCADM_NEW, params,
                     new ObjListeners() {
                         @Override
                         public void onResponses(JSONObject response) {
@@ -236,17 +239,17 @@ public class FragTopUpSCADM extends BaseFragment {
                                 Timber.d("isi response confirm topup scadm:" + response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     tx_id = response.getString(WebParams.TX_ID);
-                                    member_id = response.getString(WebParams.MEMBER_ID);
-                                    member_code = response.getString(WebParams.MEMBER_CODE);
-                                    member_name = response.getString(WebParams.MEMBER_NAME);
-                                    comm_id = response.getString(WebParams.COMM_ID);
-                                    comm_code = response.getString(WebParams.COMM_CODE);
+//                                    member_id = member_id_scadm;
+//                                    member_code = response.getString(WebParams.MEMBER_CODE);
+//                                    member_name = response.getString(WebParams.MEMBER_NAME);
+//                                    comm_id = response.getString(WebParams.COMM_ID);
+//                                    comm_code = response.getString(WebParams.COMM_CODE);
                                     comm_name = response.getString(WebParams.COMM_NAME);
-                                    bank_code = response.getString(WebParams.BANK_CODE);
+//                                    bank_code = response.getString(WebParams.BANK_CODE);
                                     bank_name = response.getString(WebParams.BANK_NAME);
-                                    product_code = response.getString(WebParams.PRODUCT_CODE);
+//                                    product_code = response.getString(WebParams.PRODUCT_CODE);
                                     product_name = response.getString(WebParams.PRODUCT_NAME);
-                                    ccy_id = response.getString(WebParams.CCY_ID);
+//                                    ccy_id = response.getString(WebParams.CCY_ID);
                                     amount = response.getString(WebParams.AMOUNT);
                                     admin_fee = response.getString(WebParams.ADMIN_FEE);
                                     total_amount = response.getString(WebParams.TOTAL_AMOUNT);
@@ -296,18 +299,18 @@ public class FragTopUpSCADM extends BaseFragment {
 
         Bundle bundle1 = new Bundle();
         bundle1.putString(DefineValue.TX_ID, tx_id);
-        bundle1.putString(DefineValue.MEMBER_ID_SCADM, member_id);
+        bundle1.putString(DefineValue.MEMBER_ID_SCADM, member_id_scadm);
         bundle1.putString(DefineValue.MEMBER_CODE, member_code);
         bundle1.putString(DefineValue.MEMBER_NAME, member_name);
-        bundle1.putString(DefineValue.COMM_ID_SCADM, comm_id);
+        bundle1.putString(DefineValue.COMM_ID_SCADM, comm_id_scadm);
         bundle1.putString(DefineValue.COMMUNITY_CODE, comm_code);
         bundle1.putString(DefineValue.COMMUNITY_NAME, comm_name);
         bundle1.putString(DefineValue.BANK_GATEWAY, selectedBankGateway);
-        bundle1.putString(DefineValue.BANK_CODE, bank_code);
+        bundle1.putString(DefineValue.BANK_CODE, selectedBankCode);
         bundle1.putString(DefineValue.BANK_NAME, bank_name);
-        bundle1.putString(DefineValue.PRODUCT_CODE, product_code);
+        bundle1.putString(DefineValue.PRODUCT_CODE, selectedProductCode);
         bundle1.putString(DefineValue.PRODUCT_NAME, product_name);
-        bundle1.putString(DefineValue.CCY_ID, ccy_id);
+        bundle1.putString(DefineValue.CCY_ID, MyApiClient.CCY_VALUE);
         bundle1.putString(DefineValue.AMOUNT, amount);
         bundle1.putString(DefineValue.FEE, admin_fee);
         bundle1.putString(DefineValue.TOTAL_AMOUNT, total_amount);
