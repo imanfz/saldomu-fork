@@ -262,6 +262,11 @@ public class UpdateBBSData extends IntentService {
             } catch (JSONException e) {
                 e.printStackTrace();
                 realm.cancelTransaction();
+            }finally {
+                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                SecurePreferences.Editor mEditor = prefs.edit();
+                mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER, true);
+                mEditor.apply();
             }
 //            }
         }

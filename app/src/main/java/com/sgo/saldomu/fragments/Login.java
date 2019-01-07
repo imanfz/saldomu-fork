@@ -322,8 +322,10 @@ public class Login extends BaseFragment implements View.OnClickListener {
         if (argsBundleNextLogin != null)
             i.putExtras(argsBundleNextLogin);
 
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         startActivity(i);
-        getActivity().finish();
+//        getActivity().finish();
 
     }
 
@@ -363,7 +365,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER, false);
                 BBSDataManager.resetBBSData();
             }
-
 
             mEditor.putString(DefineValue.USERID_PHONE, userId);
             mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_YES);

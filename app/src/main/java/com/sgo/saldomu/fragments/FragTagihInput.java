@@ -34,8 +34,6 @@ import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.TagihCommunityModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -252,7 +250,7 @@ public class FragTagihInput extends BaseFragment {
 
                 if (!memberIDLogin.isEmpty()) {
 
-                    RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CATEGORY_LIST, params,
+                    RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SALDO_COLLECTOR, params,
                             new ObjListeners() {
                                 @Override
                                 public void onResponses(JSONObject response) {

@@ -227,7 +227,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
         tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(tabPageAdapter);
     }
 
@@ -248,10 +248,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
         tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(tabPageAdapter);
 
-        imgDelete   = (ImageView) findViewById(R.id.imgCancel);
+        imgDelete   = findViewById(R.id.imgCancel);
 
         if ( mobility.equals(DefineValue.STRING_NO) ) {
             imgDelete.setVisibility(View.INVISIBLE);
@@ -283,7 +283,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
 
         // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        TabLayout tabLayout = findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
         process();
@@ -321,13 +321,13 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     private void customInitializeToolbar()
     {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_left);
 
-        TextView toolbarTitle = (TextView) findViewById(R.id.main_toolbar_title);
+        TextView toolbarTitle = findViewById(R.id.main_toolbar_title);
         toolbarTitle.setText("Cari Agen");
     }
 
@@ -345,7 +345,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             fragCancelTrxRequest.setArguments(bundle);
             fragCancelTrxRequest.setCancelable(false);
 //            fragCancelTrxRequest.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CustomDialog);
-            fragCancelTrxRequest.show(getSupportFragmentManager(),fragCancelTrxRequest.TAG  );
+            fragCancelTrxRequest.show(getSupportFragmentManager(), FragCancelTrxRequest.TAG);
         }
      }
 
@@ -536,9 +536,16 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         completeAddress = "";
 
+        HashMap<String, Object> options = new HashMap<>();
+        options.put("sensor", false);
+        options.put("key", getResources().getString(R.string.google_maps_key_ws));
+        options.put("language", "id");
+        options.put("latlng", currentLatitude + "," + currentLongitude);
 
-        RetrofitService.getInstance().GetObjectRequest(
-                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE + "&latlng=" + currentLatitude + "," + currentLongitude,
+        RetrofitService.getInstance().QueryRequest(
+//                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE + "&latlng=" + currentLatitude + "," + currentLongitude
+                "https://maps.google.com/maps/api/geocode/json"
+                , options,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {
@@ -847,10 +854,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         setContentView(R.layout.display_error_agent);
         customInitializeToolbar();
 
-        errorMsg = (TextView) findViewById(R.id.errorMsg);
+        errorMsg = findViewById(R.id.errorMsg);
         errorMsg.setText(errorDesc);
 
-        backBtn = (Button) findViewById(R.id.backBtn);
+        backBtn = findViewById(R.id.backBtn);
         backBtn.setOnClickListener(this);
     }
 
@@ -1072,7 +1079,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 params.put(WebParams.KEY_CODE, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.KEY_NAME, sp.getString(DefineValue.CUST_NAME, ""));
-                params.put(WebParams.KEY_ADDRESS, completeAddress);
+                params.put(WebParams.KEY_ADDRESS, getAddress(longitude, latitude));
                 //            params.put(WebParams.KEY_DISTRICT, districtName);
                 //            params.put(WebParams.KEY_PROVINCE, provinceName);
                 //            params.put(WebParams.KEY_COUNTRY, countryName);
@@ -1288,6 +1295,34 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     });
         }
 
+    }
+
+    String getAddress(double lang, double lat) {
+        // 1
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> addresses;
+        Address address;
+        String addressText = "";
+
+        try {
+            // 2
+            addresses = geocoder.getFromLocation(lat, lang, 1);
+            // 3
+            if (addresses != null && !addresses.isEmpty()) {
+                address = addresses.get(0);
+                int c = address.getMaxAddressLineIndex();
+                for (int i = 0; i <= c; i++) {
+                    if (i == 0) {
+                        addressText += address.getAddressLine(i);
+                    } else addressText += "\n" + address.getAddressLine(i);
+
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return addressText;
     }
 
     protected void createLocationRequest() {

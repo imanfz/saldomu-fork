@@ -415,6 +415,7 @@ public class RetrofitService {
     public void PostObjectRequest(String link, HashMap<String, Object> param, final ObjListener listener) {
         BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retry(2)
                 .subscribe(new Observer<JsonObject>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -441,7 +442,7 @@ public class RetrofitService {
     public void PostObjectRequest(String link, HashMap<String, Object> param, final ResponseListener listener) {
         BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-//                .retry(1)
+                .retry(2)
                 .subscribe(new Observer<JsonObject>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -476,6 +477,7 @@ public class RetrofitService {
     public void PostJsonObjRequest(String link, HashMap<String, Object> param, final ObjListeners listener) {
         BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retry(2)
                 .subscribe(new Observer<JsonObject>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -513,6 +515,47 @@ public class RetrofitService {
     public void GetObjectRequest(String link, final ObjListeners listener) {
         BuildRetrofit().GetObjectInterface(link).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retry(2)
+                .subscribe(new Observer<JsonObject>() {
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        getCompositeDisposable().add(d);
+
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        try {
+                            listener.onResponses(new JSONObject(getGson().toJson(obj)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (MyApiClient.PROD_FAILURE_FLAG) {
+                            Toast.makeText(CoreApp.getAppContext(),
+                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        listener.onComplete();
+                    }
+                });
+    }
+
+    public void QueryRequest(String link, HashMap<String, Object> queryMap, final ObjListeners listener) {
+        BuildRetrofit().QueryInterface(link, queryMap).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(2)
                 .subscribe(new Observer<JsonObject>() {
 
                     @Override
@@ -552,6 +595,7 @@ public class RetrofitService {
     public void GetArrayRequest(String link, final ArrListeners listener) {
         BuildRetrofit().GetArrayInterface(link).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retry(2)
                 .subscribe(new Observer<JsonArray>() {
 
                     @Override
@@ -591,6 +635,7 @@ public class RetrofitService {
     public void GetObjectRequest(String link, final ResponseListener listener) {
         BuildRetrofit().GetObjectInterface(link).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retry(2)
                 .subscribe(new Observer<JsonObject>() {
 
                     @Override
@@ -628,6 +673,7 @@ public class RetrofitService {
                                  MultipartBody.Part file, final ObjListener listener) {
         BuildRetrofit().MultiPartInterface(link, param, file).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retry(2)
                 .subscribe(new Observer<JsonObject>() {
 
                     @Override
