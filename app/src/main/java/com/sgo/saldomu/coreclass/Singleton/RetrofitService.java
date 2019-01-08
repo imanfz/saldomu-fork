@@ -27,7 +27,6 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.interfaces.RetrofitInterfaces;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
-import com.sgo.saldomu.widgets.TLSSocket;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
@@ -214,10 +213,10 @@ public class RetrofitService {
 
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.readTimeout(10, TimeUnit.MINUTES);
         builder.retryOnConnectionFailure(true);
-        builder.writeTimeout(10, TimeUnit.MINUTES);
-        builder.connectTimeout(10, TimeUnit.MINUTES);
+//        builder.readTimeout(10, TimeUnit.MINUTES);
+//        builder.writeTimeout(10, TimeUnit.MINUTES);
+//        builder.connectTimeout(10, TimeUnit.MINUTES);
         builder.addInterceptor(interceptorLogging);
         builder.certificatePinner(certificatePinner);
         try {
@@ -238,14 +237,12 @@ public class RetrofitService {
 
         builder.connectionSpecs(specs);
 
-        TLSSocket sf;
-        try {
-            sf = new TLSSocket();
-            builder.sslSocketFactory(sf, sf.systemDefaultTrustManager());
-        } catch (Exception e) {
-            Timber.w("exception tls socket:" + e.toString());
-            throw new AssertionError(e);
-        }
+//        TLSSocket sf;new OkHttpTLSSocketFactory(context), (X509TrustManager) trustManagers[0]ocket();
+//            builder.sslSocketFactory(sf, sf.systemDefaultTrustManager());
+//        } catch (Exception e) {
+//            Timber.w("exception tls socket:" + e.toString());
+//            throw new AssertionError(e);
+//        }
 
         builder.addInterceptor(new Interceptor() {
             @Override
@@ -435,6 +432,42 @@ public class RetrofitService {
                     @Override
                     public void onComplete() {
 
+                    }
+                });
+    }
+
+    public void PostObjectRequestDebounce(String link, HashMap<String, Object> param, final ResponseListener listener) {
+        BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(20)
+                .debounce(2, TimeUnit.SECONDS)
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+//                        getCompositeDisposable().add(d);
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        listener.onResponses(obj);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Context context = CoreApp.getAppContext();
+                        if (context != null) {
+                            if (MyApiClient.PROD_FAILURE_FLAG)
+                                Toast.makeText(CoreApp.getAppContext(), CoreApp.getAppContext().getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        listener.onComplete();
                     }
                 });
     }

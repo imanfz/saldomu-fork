@@ -892,30 +892,29 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                             bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
                                         }
 
-                                        bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
-                                        bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
-                                        bundle.putString(DefineValue.PRODUCT_CODE, response.getString(WebParams.PRODUCT_CODE));
-
-                                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                        SecurePreferences.Editor mEditor = prefs.edit();
-                                        mEditor.putString(DefineValue.AOD_TX_ID, txId);
-                                        mEditor.apply();
-
-//<<<<<<< HEAD
-//                                        Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
-//                                        intent.putExtras(bundle);
-//                                        startActivity(intent);
-//                                        finish();
-//=======
                                         if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
                                             Intent intent = new Intent(getApplicationContext(), TagihActivity.class);
                                             intent.putExtra(DefineValue.IS_SEARCH_DGI, true);
                                             startActivity(intent);
                                             finish();
-//>>>>>>> development_tagih
 
                                         } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
                                             Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }else {
+
+                                            bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
+                                            bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
+                                            bundle.putString(DefineValue.PRODUCT_CODE, response.getString(WebParams.PRODUCT_CODE));
+
+                                            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                            SecurePreferences.Editor mEditor = prefs.edit();
+                                            mEditor.putString(DefineValue.AOD_TX_ID, txId);
+                                            mEditor.apply();
+
+                                            Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
+                                            intent.putExtras(bundle);
                                             startActivity(intent);
                                             finish();
                                         }

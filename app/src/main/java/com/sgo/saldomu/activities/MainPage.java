@@ -753,7 +753,7 @@ public class MainPage extends BaseActivity {
 
             Timber.d("isi params listmember mainpage:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LIST_MEMBER, params
+            RetrofitService.getInstance().PostObjectRequestDebounce(MyApiClient.LINK_LIST_MEMBER, params
                     , new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -867,6 +867,7 @@ public class MainPage extends BaseActivity {
 
                             }
 
+                            hideProgLoading();
                         }
 
                         @Override
@@ -877,7 +878,7 @@ public class MainPage extends BaseActivity {
 
                         @Override
                         public void onComplete() {
-                            hideProgLoading();
+
                         }
                     });
 
@@ -1377,7 +1378,7 @@ public class MainPage extends BaseActivity {
 
     void showProgLoading(String msg) {
         progdialog = DefinedDialog.CreateProgressDialog(this, msg);
-        progdialog.show();
+//        progdialog.show();
     }
 
     void hideProgLoading() {
