@@ -48,6 +48,10 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
     @Expose
     private
     String member_phone;
+    @SerializedName("member_cust_id")
+    @Expose
+    private
+    String member_cust_id;
     @SerializedName("member_name")
     @Expose
     private
@@ -252,5 +256,9 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
 
     public String getComm_id() {
         return comm_id;
+    }
+
+    public String getMember_cust_id() {
+        return member_cust_id;
     }
 }

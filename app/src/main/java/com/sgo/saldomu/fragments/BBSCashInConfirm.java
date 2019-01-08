@@ -812,7 +812,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         args.putString(DefineValue.TYPE_BENEF, response.getBenef_acct_type());
         args.putString(DefineValue.NO_BENEF, response.getBenef_acct_no());
         args.putString(DefineValue.NAME_BENEF, response.getBenef_acct_name());
-//        args.putString(DefineValue.PRODUCT_NAME, response.getProduct_name());
+        args.putString(DefineValue.PRODUCT_NAME, response.getProduct_name());
         args.putString(DefineValue.MEMBER_SHOP_PHONE, response.getMember_shop_phone());
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.getBuss_scheme_name());

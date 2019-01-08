@@ -131,7 +131,13 @@ public class RetrofitService {
     }
 
     private RetrofitInterfaces BuildRetrofit() {
-        return BuildRetrofit2();
+        retrofit = new Retrofit.Builder()
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(BuildGSON()))
+                .baseUrl(BuildConfig.HEAD_ADDRESSS)
+                .client(BuildOkHttpClients())
+                .build();
+        return retrofit.create(RetrofitInterfaces.class);
     }
 
     private RetrofitInterfaces BuildRetrofit2() {
@@ -139,7 +145,7 @@ public class RetrofitService {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(BuildGSON()))
                 .baseUrl(BuildConfig.HEAD_ADDRESSS)
-                .client(BuildOkHttpClients())
+                .client(BuildOkHttpClient2())
                 .build();
         return retrofit.create(RetrofitInterfaces.class);
     }
@@ -167,14 +173,14 @@ public class RetrofitService {
     }
 
     private OkHttpClient BuildOkHttpClients() {
-        return BuildOkHttpClient("application/x-www-form-urlencoded");
+        return BuildOkHttpClient(true);
     }
 
     private OkHttpClient BuildOkHttpClient2() {
-        return BuildOkHttpClient("application/x-www-form-urlencoded");
+        return BuildOkHttpClient(false);
     }
 
-    private OkHttpClient BuildOkHttpClient(final String content_type) {
+    private OkHttpClient BuildOkHttpClient(boolean isCustomTimeout) {
         TrustManager[] trustManagers = new TrustManager[0];
         try {
 
@@ -214,9 +220,11 @@ public class RetrofitService {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.retryOnConnectionFailure(true);
-//        builder.readTimeout(10, TimeUnit.MINUTES);
-//        builder.writeTimeout(10, TimeUnit.MINUTES);
-//        builder.connectTimeout(10, TimeUnit.MINUTES);
+        if (isCustomTimeout) {
+            builder.readTimeout(10, TimeUnit.MINUTES);
+            builder.writeTimeout(10, TimeUnit.MINUTES);
+            builder.connectTimeout(10, TimeUnit.MINUTES);
+        }
         builder.addInterceptor(interceptorLogging);
         builder.certificatePinner(certificatePinner);
         try {
@@ -251,7 +259,7 @@ public class RetrofitService {
 
                 Request.Builder builder1 = chain.request().newBuilder();
 
-                builder1.header("Content-Type", content_type);
+                builder1.header("Content-Type", "application/x-www-form-urlencoded");
 //                if (inApps){
                 builder1.addHeader("Authorization", "Basic " + getBasicAuth());
 //                }
@@ -437,7 +445,7 @@ public class RetrofitService {
     }
 
     public void PostObjectRequestDebounce(String link, HashMap<String, Object> param, final ResponseListener listener) {
-        BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
+        BuildRetrofit2().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(20)
                 .debounce(2, TimeUnit.SECONDS)
@@ -484,7 +492,10 @@ public class RetrofitService {
 
                     @Override
                     public void onNext(JsonObject obj) {
-                        listener.onResponses(obj);
+                        if (obj.get("error_code").getAsString().equalsIgnoreCase("0404")) {
+
+                        } else
+                            listener.onResponses(obj);
                     }
 
                     @Override
@@ -731,7 +742,6 @@ public class RetrofitService {
                     }
                 });
     }
-
 
 
     public Gson getGson() {
