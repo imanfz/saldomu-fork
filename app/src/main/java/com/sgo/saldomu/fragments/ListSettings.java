@@ -16,6 +16,7 @@ import com.sgo.saldomu.activities.AboutAppsActivity;
 import com.sgo.saldomu.activities.ChangePIN;
 import com.sgo.saldomu.activities.ChangePassword;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -103,6 +104,13 @@ public class ListSettings extends ListFragment {
         Intent i;
 
         switch (list.get(position)){
+            case "Profil Saya":
+                i = new Intent(getActivity(), MyProfileNewActivity.class);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                break;
+            case "FAQ":
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                break;
             case "Registrasi SMS Banking":
                 i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
                 switchActivity(i);
