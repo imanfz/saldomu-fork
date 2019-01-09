@@ -704,7 +704,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 showReportEMODialog(response);
             } else if (_object.getBuss_scheme_code().equals("BDK")) {
                 showReportBDKDialog(response);
-
             }else if (_object.getBuss_scheme_code().equals("DGI")) {
                 showReportCollectorDialog(response);
             }
@@ -890,7 +889,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.getBuss_scheme_name());
         args.putString(DefineValue.COMMUNITY_CODE, response.getComm_code());
         args.putString(DefineValue.MEMBER_CODE, response.getMember_code());
-        args.putString(DefineValue.DENOM_DETAIL, response.getDenom_detail());
+        args.putString(DefineValue.DENOM_DETAIL, getGson().toJson(response.getDenom_detail()));
         args.putString(DefineValue.ORDER_ID, response.getOrder_id());
 
         dialog.setArguments(args);
@@ -1109,7 +1108,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             Bundle args = new Bundle();
             String txStatus = response.optString(WebParams.TX_STATUS);
             ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
-            args.putString(DefineValue.USER_NAME, response.optString(WebParams.MEMBER_CUST_NAME));
+            args.putString(DefineValue.USER_NAME, resp.getMember_cust_name());
             args.putString(DefineValue.DATE_TIME, response.optString(WebParams.CREATED));
             args.putString(DefineValue.TX_ID, response.optString(WebParams.TX_ID));
             args.putString(DefineValue.REPORT_TYPE, DefineValue.DGI);
@@ -1142,14 +1141,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             args.putString(DefineValue.DETAILS_BILLER, response.optString(WebParams.DETAIL, ""));
 
 
-            args.putString(DefineValue.INVOICE, response.optString(WebParams.INVOICE));
+            args.putString(DefineValue.INVOICE, resp.getInvoice());
             args.putString(DefineValue.BUSS_SCHEME_CODE, response.optString(WebParams.BUSS_SCHEME_CODE));
             args.putString(DefineValue.BUSS_SCHEME_NAME, response.optString(WebParams.BUSS_SCHEME_NAME));
-            args.putString(DefineValue.PRODUCT_NAME, response.optString(WebParams.PRODUCT_NAME));
-            args.putString(DefineValue.PAYMENT_TYPE_DESC, response.optString(WebParams.PAYMENT_TYPE_DESC));
-            args.putString(DefineValue.DGI_MEMBER_NAME, response.optString(WebParams.DGI_MEMBER_NAME));
-            args.putString(DefineValue.DGI_ANCHOR_NAME, response.optString(WebParams.DGI_ANCHOR_NAME));
-            args.putString(DefineValue.DGI_COMM_NAME, response.optString(WebParams.DGI_COMM_NAME));
+            args.putString(DefineValue.PRODUCT_NAME, resp.getProduct_name());
+            args.putString(DefineValue.PAYMENT_TYPE_DESC, resp.getPayment_type_desc());
+            args.putString(DefineValue.DGI_MEMBER_NAME, resp.getDgi_member_name());
+            args.putString(DefineValue.DGI_ANCHOR_NAME, resp.getDgi_anchor_name());
+            args.putString(DefineValue.DGI_COMM_NAME, resp.getDgi_comm_name());
 
             dialog.setArguments(args);
 //        dialog.show(getFragmentManager(), "report biller dialog");
