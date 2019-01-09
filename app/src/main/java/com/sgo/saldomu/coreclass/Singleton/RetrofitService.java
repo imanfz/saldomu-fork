@@ -135,7 +135,17 @@ public class RetrofitService {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(BuildGSON()))
                 .baseUrl(BuildConfig.HEAD_ADDRESSS)
-                .client(BuildOkHttpClients())
+                .client(BuildOkHttpClients(true))
+                .build();
+        return retrofit.create(RetrofitInterfaces.class);
+    }
+
+    private RetrofitInterfaces BuildRetrofit3() {
+        retrofit = new Retrofit.Builder()
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(BuildGSON()))
+                .baseUrl(BuildConfig.HEAD_ADDRESSS)
+                .client(BuildOkHttpClients(false))
                 .build();
         return retrofit.create(RetrofitInterfaces.class);
     }
@@ -172,51 +182,15 @@ public class RetrofitService {
         return encode.replace('+', '-').replace('/', '_');
     }
 
-    private OkHttpClient BuildOkHttpClients() {
-        return BuildOkHttpClient(true);
+    private OkHttpClient BuildOkHttpClients(boolean isSSL) {
+        return BuildOkHttpClient(true, isSSL);
     }
 
     private OkHttpClient BuildOkHttpClient2() {
-        return BuildOkHttpClient(false);
+        return BuildOkHttpClient(false, true);
     }
 
-    private OkHttpClient BuildOkHttpClient(boolean isCustomTimeout) {
-        TrustManager[] trustManagers = new TrustManager[0];
-        try {
-
-            KeyStore keyStore = KeyStore.getInstance("BKS");
-            InputStream is = CoreApp.getAppContext().getResources().openRawResource(R.raw.saldomucom);
-
-            keyStore.load(is, PRIVATE_KEY.toCharArray());
-
-            is.close();
-
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("X509");
-            keyManagerFactory.init(keyStore, PRIVATE_KEY.toCharArray());
-
-            TrustManagerFactory tmf =
-                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmf.init(keyStore);
-
-            trustManagers = tmf.getTrustManagers();
-
-            if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-                throw new IllegalStateException(
-                        "Unexpected default trust managers:" + Arrays.toString(trustManagers));
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        }
-
+    private OkHttpClient BuildOkHttpClient(boolean isCustomTimeout, boolean isSSL) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.retryOnConnectionFailure(true);
@@ -226,24 +200,68 @@ public class RetrofitService {
             builder.connectTimeout(10, TimeUnit.MINUTES);
         }
         builder.addInterceptor(interceptorLogging);
-        builder.certificatePinner(certificatePinner);
-        try {
-            builder.sslSocketFactory(new OkHttpTLSSocketFactory(CoreApp.getAppContext()), (X509TrustManager) trustManagers[0]);
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+
+        if (isSSL){
+            //
+            TrustManager[] trustManagers = new TrustManager[0];
+            try {
+
+                KeyStore keyStore = KeyStore.getInstance("BKS");
+                InputStream is = CoreApp.getAppContext().getResources().openRawResource(R.raw.saldomucom);
+
+                keyStore.load(is, PRIVATE_KEY.toCharArray());
+
+                is.close();
+
+                KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("X509");
+                keyManagerFactory.init(keyStore, PRIVATE_KEY.toCharArray());
+
+                TrustManagerFactory tmf =
+                        TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                tmf.init(keyStore);
+
+                trustManagers = tmf.getTrustManagers();
+
+                if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+                    throw new IllegalStateException(
+                            "Unexpected default trust managers:" + Arrays.toString(trustManagers));
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (CertificateException e) {
+                e.printStackTrace();
+            } catch (UnrecoverableKeyException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (KeyStoreException e) {
+                e.printStackTrace();
+            }
+
+            //
+            builder.certificatePinner(certificatePinner);
+            try {
+                builder.sslSocketFactory(new OkHttpTLSSocketFactory(CoreApp.getAppContext()), (X509TrustManager) trustManagers[0]);
+            } catch (KeyManagementException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+            //
+            ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                    .tlsVersions(TlsVersion.TLS_1_2)
+                    .build();
+
+            List<ConnectionSpec> specs = new ArrayList<>();
+            specs.add(spec);
+            specs.add(ConnectionSpec.CLEARTEXT);
+
+            builder.connectionSpecs(specs);
         }
 
-        ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                .tlsVersions(TlsVersion.TLS_1_2)
-                .build();
 
-        List<ConnectionSpec> specs = new ArrayList<>();
-        specs.add(spec);
-        specs.add(ConnectionSpec.CLEARTEXT);
-
-        builder.connectionSpecs(specs);
 
 //        TLSSocket sfnew OkHttpTLSSocketFactory(context), (X509TrustManager) trustManagers[0]ocket();
 //            builder.sslSocketFactory(sf, sf.systemDefaultTrustManager());
@@ -597,6 +615,46 @@ public class RetrofitService {
 
     public void QueryRequest(String link, HashMap<String, Object> queryMap, final ObjListeners listener) {
         BuildRetrofit().QueryInterface(link, queryMap).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(2)
+                .subscribe(new Observer<JsonObject>() {
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        getCompositeDisposable().add(d);
+
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        try {
+                            listener.onResponses(new JSONObject(getGson().toJson(obj)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (MyApiClient.PROD_FAILURE_FLAG) {
+                            Toast.makeText(CoreApp.getAppContext(),
+                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        listener.onComplete();
+                    }
+                });
+    }
+
+    public void QueryRequestSSL(String link, HashMap<String, Object> queryMap, final ObjListeners listener) {
+        BuildRetrofit3().QueryInterface(link, queryMap).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(2)
                 .subscribe(new Observer<JsonObject>() {

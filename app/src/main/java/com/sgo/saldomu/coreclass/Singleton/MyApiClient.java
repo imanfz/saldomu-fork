@@ -8,6 +8,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -257,6 +258,7 @@ public class MyApiClient {
     public static String LINK_SET_MEMBER_LOC;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
+    public static String LINK_GOOGLE_MAPS_API_GEOCODE_BASE;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -419,6 +421,7 @@ public class MyApiClient {
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
         LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey+"&language=id";
+        LINK_GOOGLE_MAPS_API_GEOCODE_BASE = "https://maps.google.com/maps/api/geocode/json";
 
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
         LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
@@ -454,6 +457,13 @@ public class MyApiClient {
 //        getInstance().asyncHttpClientUnstrusted.setMaxRetriesAndTimeout(2, 10000);
     }
 
+    public HashMap<String, Object> googleQuery() {
+        HashMap<String, Object> query = new HashMap<>();
+        query.put("sensor", false);
+        query.put("key", getmContext().getString(R.string.google_maps_key_ws));
+        query.put("language", "id");
+        return query;
+    }
 
     public static String URL_HELP_DEV = "https://mobile-dev.saldomu.com/static/pages/help/";
     public static String URL_FAQ;

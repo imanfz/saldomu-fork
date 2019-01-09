@@ -427,11 +427,11 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         progdialog = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
 
-        HashMap<String, Object> query = new HashMap<>();
+        HashMap<String, Object> query = MyApiClient.getInstance().googleQuery();
         query.put("latlng", selectedLat + "," + selectedLong);
 
-        RetrofitService.getInstance().QueryRequest(
-                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE, query,
+        RetrofitService.getInstance().QueryRequestSSL(
+                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, query,
 //                        + "&latlng=" + selectedLat + "," + selectedLong,
                 new ObjListeners() {
                     @Override
@@ -1054,10 +1054,10 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             e.printStackTrace();
         }
 
-        HashMap<String, Object> _query = new HashMap<>();
+        HashMap<String, Object> _query = MyApiClient.getInstance().googleQuery();
         _query.put("address", districtName + ", " + provinceName);
 
-        RetrofitService.getInstance().QueryRequest(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE, _query,
+        RetrofitService.getInstance().QueryRequest(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, _query,
 //                        +"&address="+ query,
                 new ObjListeners() {
                     @Override
@@ -1171,10 +1171,10 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                 e.printStackTrace();
             }
 
-            HashMap<String, Object> _query = new HashMap<>();
+            HashMap<String, Object> _query = MyApiClient.getInstance().googleQuery();
             _query.put("address", memberDefaultAddress);
 
-            RetrofitService.getInstance().QueryRequest(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE, _query,
+            RetrofitService.getInstance().QueryRequest(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, _query,
 //                            +"&address="+ query,
                     new ObjListeners() {
                         @Override
