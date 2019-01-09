@@ -1,16 +1,11 @@
 package com.sgo.saldomu.Beans;
 
-import com.sgo.saldomu.coreclass.DateTimeFormat;
-
 import org.json.JSONObject;
-
-import java.util.Comparator;
-import java.util.Date;
 
 /**
  * Created by thinkpad on 3/19/2015.
  */
-public class NotificationModelClass implements Comparator<NotificationModelClass> {
+public class NotificationModelClass {
 
     private int image;
     private String title;
@@ -27,11 +22,11 @@ public class NotificationModelClass implements Comparator<NotificationModelClass
     private String date_time;
     private String id_result;
 
-    public NotificationModelClass(){
+    public NotificationModelClass() {
 
     }
 
-    public NotificationModelClass(String _notif_id,int _image, String _title,String _to_id, String _from_name,
+    public NotificationModelClass(String _notif_id, int _image, String _title, String _to_id, String _from_name,
                                   String _from_id, String _detail, String _time, int _notif_type,
                                   Boolean _read, JSONObject _notif_detail, String _from_profile_picture,
                                   String _date_time, String _id_result) {
@@ -163,10 +158,4 @@ public class NotificationModelClass implements Comparator<NotificationModelClass
         this.to_id = to_id;
     }
 
-    @Override
-    public int compare(NotificationModelClass o1, NotificationModelClass o2) {
-        Date date1 = DateTimeFormat.convertStringtoCustomDateTime(o1.getDate_time());
-        Date date2 = DateTimeFormat.convertStringtoCustomDateTime(o2.getDate_time());
-        return date1.compareTo(date2);
-    }
 }

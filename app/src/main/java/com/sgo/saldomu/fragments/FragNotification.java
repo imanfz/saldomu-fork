@@ -45,6 +45,8 @@ import org.json.JSONObject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -524,9 +526,14 @@ public class FragNotification extends BaseFragment {
                                             }
                                         }
 
-//                                        Collections.sort(mData, (o1, o2) -> Date date1 = DateTimeFormat.convertStringtoCustomDateTime(o1.getDate_time());
-//                                        Date date2 = DateTimeFormat.convertStringtoCustomDateTime(o2.getDate_time());
-//                                        return date2.compareTo(date1););
+                                        Collections.sort(mData, new Comparator<NotificationModelClass>() {
+                                            @Override
+                                            public int compare(NotificationModelClass o1, NotificationModelClass o2) {
+                                                Date date1 = DateTimeFormat.convertStringtoCustomDateTime(o1.getDate_time());
+                                                Date date2 = DateTimeFormat.convertStringtoCustomDateTime(o2.getDate_time());
+                                                return date2.compareTo(date1);
+                                            }
+                                        });
 
                                         if (mData.size() != 0) {
                                             mAdapter.notifyDataSetChanged();
