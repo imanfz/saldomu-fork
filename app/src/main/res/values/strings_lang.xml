@@ -532,7 +532,7 @@
     <string name="instruct_topup_mandiri_online_5">Pilih menu <b>Multipayment</b></string>
     <string name="instruct_topup_mandiri_online_6">Pilih Rekening Sumber </string>
     <string name="instruct_topup_mandiri_online_7">Pilih penyedia jasa <b>Top Up Saldomu</b></string>
-    <string name="instruct_topup_mandiri_online_8">Masukkan Nomor Pelanggan Saldomu</string>
+    <string name="instruct_topup_mandiri_online_8">Masukkan Nomor Akun</string>
     <string name="instruct_topup_mandiri_online_9">Masukkan Nominal Top up</string>
     <string name="instruct_topup_mandiri_online_10">Masukkan Deskripsi (opsional)</string>
     <string name="instruct_topup_mandiri_online_11">Pilih Lanjut</string>

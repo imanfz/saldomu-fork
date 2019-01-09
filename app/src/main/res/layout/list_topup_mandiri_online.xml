@@ -118,37 +118,6 @@
                 <LinearLayout android:layout_width="wrap_content"
                     android:orientation="horizontal"
                     android:padding="6dp"
-                    android:layout_gravity="center"
-                    android:background="@color/colorSecondaryWhite"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size_small_material"
-                        android:text="@string/exempli_gratia"
-                        android:textStyle="italic"
-                        android:layout_marginLeft="10dp"
-                        android:textColor="@color/grey_1000b"
-                        android:layout_gravity="center"
-                        />
-                    <TextView
-                        android:id="@+id/pin_account"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size_small_material"
-                        android:textStyle="italic"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginLeft="4dp"
-                        android:textColor="@color/grey_1000b"
-                        android:layout_gravity="center"
-                        android:textIsSelectable="true"
-                        />
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="6dp"
                     android:layout_height="wrap_content">
                     <RelativeLayout android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -307,6 +276,8 @@
 
                 </LinearLayout>
 
+
+
                 <LinearLayout android:layout_width="wrap_content"
                     android:orientation="horizontal"
                     android:padding="6dp"
@@ -338,6 +309,27 @@
                         />
 
 
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="6dp"
+                    android:layout_gravity="center"
+                    android:background="@color/colorSecondaryWhite"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/pin_account"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_small_material"
+                        android:textStyle="italic"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="4dp"
+                        android:textColor="@color/grey_1000b"
+                        android:layout_gravity="center"
+                        android:textIsSelectable="true"
+                        />
                 </LinearLayout>
 
                 <LinearLayout android:layout_width="wrap_content"

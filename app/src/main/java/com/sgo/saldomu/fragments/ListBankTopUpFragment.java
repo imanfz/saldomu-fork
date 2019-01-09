@@ -405,7 +405,7 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
                     listDataChild.put(bankName, temp_list_data_bank);
 
                     if (bankName.equalsIgnoreCase("BANK MANDIRI")){
-                        bankData.getBankData().add(new listBankModel(bankName, "MANDIRI ONLINE"));
+                        bankData.getBankData().add(new listBankModel(bankName, "MANDIRI ONLINE", ""));
                     }
 
                     listDataHeader2.add(bankData);

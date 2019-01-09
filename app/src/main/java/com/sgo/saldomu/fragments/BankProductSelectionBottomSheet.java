@@ -93,7 +93,7 @@ public class BankProductSelectionBottomSheet extends BottomSheetDialogFragment {
                 if (obj.getProduct_type().equals("ATM")){
                     listDataChild2.put(obj.getProduct_code(), obj);
                     if (obj.getProduct_name().equalsIgnoreCase("MANDIRI ATM"))
-                        listDataChild2.put("MANDIRI_ONLINE", new listBankModel(obj.getBank_name(), "MANDIRI ONLINE"));
+                        listDataChild2.put("MANDIRI_ONLINE", new listBankModel(obj.getBank_name(), "MANDIRI ONLINE", obj.getNoVA()));
                 }
             }
 
