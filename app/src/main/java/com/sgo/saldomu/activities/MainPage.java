@@ -805,41 +805,51 @@ public class MainPage extends BaseActivity {
 
                                     setupBBSData();
 
-                                    if (!sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO)) {
+//                                    if (!sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO)) {
                                         try {
                                             JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
-                                            Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            intent.putExtra("memberId", shopAgentObject.optString("member_id", ""));
-                                            intent.putExtra("shopId", shopAgentObject.optString("shop_id", ""));
-                                            intent.putExtra("shopName", shopAgentObject.optString("shop_name", ""));
-                                            intent.putExtra("memberType", shopAgentObject.optString("member_type", ""));
-                                            intent.putExtra("memberName", shopAgentObject.optString("member_name", ""));
-                                            intent.putExtra("commName", shopAgentObject.optString("comm_name", ""));
-                                            intent.putExtra("province", shopAgentObject.optString("province", ""));
-                                            intent.putExtra("district", shopAgentObject.optString("district", ""));
-                                            intent.putExtra("address", shopAgentObject.optString("address1", ""));
-                                            intent.putExtra("category", "");
-                                            intent.putExtra("isMobility", shopAgentObject.optString("is_mobility", ""));
-                                            switchActivity(intent, ACTIVITY_RESULT);
+
+                                            if (!shopAgentObject.optString("member_id", "").equalsIgnoreCase("")
+                                                    && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO)){
+                                                Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                intent.putExtra("memberId", shopAgentObject.optString("member_id", ""));
+                                                intent.putExtra("shopId", shopAgentObject.optString("shop_id", ""));
+                                                intent.putExtra("shopName", shopAgentObject.optString("shop_name", ""));
+                                                intent.putExtra("memberType", shopAgentObject.optString("member_type", ""));
+                                                intent.putExtra("memberName", shopAgentObject.optString("member_name", ""));
+                                                intent.putExtra("commName", shopAgentObject.optString("comm_name", ""));
+                                                intent.putExtra("province", shopAgentObject.optString("province", ""));
+                                                intent.putExtra("district", shopAgentObject.optString("district", ""));
+                                                intent.putExtra("address", shopAgentObject.optString("address1", ""));
+                                                intent.putExtra("category", "");
+                                                intent.putExtra("isMobility", shopAgentObject.optString("is_mobility", ""));
+                                                switchActivity(intent, ACTIVITY_RESULT);
+                                            }else if (!shopAgentObject.optString("member_id", "").equalsIgnoreCase("")
+                                                    && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO)){
+                                                Bundle bundle = new Bundle();
+                                                bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
+
+                                                Intent intent = new Intent(MainPage.this, BBSActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                intent.putExtras(bundle);
+                                                startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
+                                                finish();
+                                            }
+
+
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-                                    } else if (!sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO)) {
-                                        try {
-                                            Bundle bundle = new Bundle();
-                                            bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
-
-                                            Intent intent = new Intent(MainPage.this, BBSActivity.class);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            intent.putExtras(bundle);
-                                            startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
-                                            finish();
-
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
+//                                    }
+//                                    else if (!sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO)) {
+//                                        try {
+//
+//
+//                                        } catch (Exception e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    }
 
                                 } else {
 
