@@ -212,9 +212,9 @@
     </string-array>
 
     <integer-array name="list_icon_bbs_agent">
-        <item>@drawable/tagih_id</item>
-        <item>@drawable/ic_tariktunai</item>
-        <item>@drawable/ic_tariktunai</item>
+        <!--<item>@drawable/tagih_id</item>-->
+        <!--<item>@drawable/ic_tariktunai</item>-->
+        <!--<item>@drawable/ic_tariktunai</item>-->
         <item>@drawable/ic_tariktunai</item>
         <!-- item>@drawable/ic_tariktunai</item -->
         <item>@drawable/ic_tariktunai</item>
@@ -274,7 +274,7 @@
         <item>@drawable/ic_tambahsaldo</item>
         <item>@drawable/ic_bayarteman1</item>
         <item>@drawable/ic_mintauang</item>
-        <item>@drawable/ic_belanja</item>
+        <item>@drawable/ic_shoppingcart</item>
         <item>@drawable/ic_laporan</item>
         <item>@drawable/ic_laporan</item>
     </integer-array>

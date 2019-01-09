@@ -105,15 +105,15 @@ public class FragListCommunitySCADM extends Fragment {
                                         String comm_id = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_ID);
                                         String comm_code = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_CODE);
                                         String comm_name = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_NAME);
-                                        String member_code = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_CODE);
-                                        String member_id = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_ID);
+//                                        String member_code = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_CODE);
+//                                        String member_id = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_ID);
 
                                         SCADMCommunityModel scadmCommunityModel = new SCADMCommunityModel();
                                         scadmCommunityModel.setComm_id(comm_id);
                                         scadmCommunityModel.setComm_code(comm_code);
                                         scadmCommunityModel.setComm_name(comm_name);
-                                        scadmCommunityModel.setMember_code(member_code);
-                                        scadmCommunityModel.setMember_id_scadm(member_id);
+//                                        scadmCommunityModel.setMember_code(member_code);
+//                                        scadmCommunityModel.setMember_id_scadm(member_id);
 
                                         scadmCommunityModelArrayList.add(scadmCommunityModel);
                                     }

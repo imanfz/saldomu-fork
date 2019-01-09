@@ -95,7 +95,7 @@ public class FragTopUpSCADM extends BaseFragment {
             @Override
             public void onClick(View view) {
                 if (inputValidation())
-                    if (product_name.equals("SCASH")) {
+                    if (selectedProductCode.equalsIgnoreCase("SCASH")) {
                         sentInsertTopUpSCASH();
                     } else
                         sentInsertTopUp();

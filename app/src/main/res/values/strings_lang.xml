@@ -532,7 +532,7 @@
     <string name="instruct_topup_mandiri_online_5">Pilih menu <b>Multipayment</b></string>
     <string name="instruct_topup_mandiri_online_6">Pilih Rekening Sumber </string>
     <string name="instruct_topup_mandiri_online_7">Pilih penyedia jasa <b>Top Up Saldomu</b></string>
-    <string name="instruct_topup_mandiri_online_8">Masukkan Nomor Pelanggan Saldomu</string>
+    <string name="instruct_topup_mandiri_online_8">Masukkan Nomor Akun</string>
     <string name="instruct_topup_mandiri_online_9">Masukkan Nominal Top up</string>
     <string name="instruct_topup_mandiri_online_10">Masukkan Deskripsi (opsional)</string>
     <string name="instruct_topup_mandiri_online_11">Pilih Lanjut</string>
@@ -1299,7 +1299,7 @@
     <string name="detail">Detail</string>
     <string name="otp">OTP</string>
     <string name="city">Kota</string>
-    <string name="collector_balance">Saldo Kolektor</string>
+    <string name="collector_balance">Collection Limit</string>
     <string name="address_hint">Masukkan Alamat disini</string>
     <string name="cancel_transaction_dgi">Transaksi Sukses Dibatalkan</string>
     <string name="terms_condition_upload_ktp">Dengan ini saya menyatakan bahwa dokumen yang saya unggah adalah benar keabsahannya
