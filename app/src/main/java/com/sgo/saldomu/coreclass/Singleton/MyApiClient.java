@@ -248,6 +248,7 @@ public class MyApiClient {
     public static String LINK_GET_LIST_BANK_DENOM_SCADM;
     public static String LINK_GET_DENOM_LIST;
     public static String LINK_GET_DENOM_INVOKE;
+    public static String LINK_GET_DENOM_INVOKE_NEW;
     public static String LINK_BBS_SEND_DATA_LKD;
     public static String LINK_BBS_MANDIRI_LKD;
     public static String LINK_CANCEL_TRANSACTION_DGI;
@@ -413,6 +414,7 @@ public class MyApiClient {
         LINK_GET_LIST_BANK_DENOM_SCADM = headaddressfinal +"scadm/ListBank/Denom";
         LINK_GET_DENOM_LIST = headaddressfinal +"scadm/ListDenom/Retrieve";
         LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
+        LINK_GET_DENOM_INVOKE_NEW = headaddressfinal +"scadm/ReqDenom/Invoke";
         LINK_BBS_SEND_DATA_LKD = headaddressfinal +"BBSTrxCustomer/Submit";
         LINK_BBS_MANDIRI_LKD = headaddressfinal +"RegAgentLKD/Invoke";
 
