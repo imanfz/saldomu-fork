@@ -245,7 +245,7 @@ public class RetrofitService {
 
         builder.connectionSpecs(specs);
 
-//        TLSSocket sf;new OkHttpTLSSocketFactory(context), (X509TrustManager) trustManagers[0]ocket();
+//        TLSSocket sfnew OkHttpTLSSocketFactory(context), (X509TrustManager) trustManagers[0]ocket();
 //            builder.sslSocketFactory(sf, sf.systemDefaultTrustManager());
 //        } catch (Exception e) {
 //            Timber.w("exception tls socket:" + e.toString());
@@ -539,7 +539,7 @@ public class RetrofitService {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (MyApiClient.PROD_FAILURE_FLAG) {
+                        if (BuildConfig.IS_PROD_DOMAIN) {
                             Toast.makeText(CoreApp.getAppContext(),
                                     CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
                                     Toast.LENGTH_SHORT).show();

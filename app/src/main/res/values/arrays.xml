@@ -132,7 +132,7 @@
         <item>Ganti Password</item>
         <item>Ganti PIN</item>
         <item>Tentang App</item>
-        <item>Bahasa</item>
+        <!--<item>Bahasa</item>-->
 
     </string-array>
 

@@ -55,10 +55,9 @@ public class ListSettings extends ListFragment {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_information:
-                if(!dialogI.isAdded())
+                if (!dialogI.isAdded())
                     dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
             default:
@@ -73,26 +72,26 @@ public class ListSettings extends ListFragment {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 //        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
 
-        levelClass = new LevelClass(getActivity(),sp);
+        levelClass = new LevelClass(getActivity(), sp);
         levelClass.refreshData();
         isLevel1 = levelClass.isLevel1QAC();
         dialogI = InformationDialog.newInstance(11);
-        dialogI.setTargetFragment(this,0);
+        dialogI.setTargetFragment(this, 0);
         String[] _data;
 
         _data = getResources().getStringArray(R.array.settings_list_pin);
         list.addAll(Arrays.asList(_data));
 
-        if(!isLevel1){
+        if (!isLevel1) {
             _data = getResources().getStringArray(R.array.settings_isnot_lvl1);
             list.addAll(Arrays.asList(_data));
         }
-        else{
-            _data = getResources().getStringArray(R.array.settings_is_lvl1);
-            list.addAll(Arrays.asList(_data));
-        }
+//        else{
+        _data = getResources().getStringArray(R.array.settings_is_lvl1);
+        list.addAll(Arrays.asList(_data));
+//        }
 
-        EasyAdapter adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, list);
+        EasyAdapter adapter = new EasyAdapter(getActivity(), R.layout.list_view_item_with_arrow, list);
 
         ListView listView1 = v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
@@ -103,7 +102,7 @@ public class ListSettings extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         Intent i;
 
-        switch (list.get(position)){
+        switch (list.get(position)) {
             case "Profil Saya":
                 i = new Intent(getActivity(), MyProfileNewActivity.class);
                 switchActivity(i, MainPage.ACTIVITY_RESULT);
@@ -136,27 +135,28 @@ public class ListSettings extends ListFragment {
         }
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack){
+    private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack) {
         if (getActivity() == null)
             return;
 
         MainPage fca = (MainPage) getActivity();
-        fca.switchContent(i,name,isBackstack);
-    }
-    private void switchActivity(Intent mIntent,int j){
-        if (getActivity() == null)
-            return;
-
-        MainPage fca = (MainPage) getActivity();
-        fca.switchActivity(mIntent,j);
+        fca.switchContent(i, name, isBackstack);
     }
 
-    private void switchActivity(Intent mIntent){
+    private void switchActivity(Intent mIntent, int j) {
         if (getActivity() == null)
             return;
 
         MainPage fca = (MainPage) getActivity();
-        fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
+        fca.switchActivity(mIntent, j);
+    }
+
+    private void switchActivity(Intent mIntent) {
+        if (getActivity() == null)
+            return;
+
+        MainPage fca = (MainPage) getActivity();
+        fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
 }

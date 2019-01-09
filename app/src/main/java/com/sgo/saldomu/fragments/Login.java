@@ -454,11 +454,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 }
             }
 
-            if (!model.getShopIdAgent().equals("")) {
+//            if (!model.getShopIdAgent().equals("")) {
                 mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
                 mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
                 mEditor.putString(DefineValue.SHOP_AGENT_DATA, getGson().toJson(model.getShopIdAgent()));
-            }
+//            }
 
             if (model.getSettings() != null) {
                 mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, Integer.valueOf(model.getSettings().get(0).getMaxMemberTransfer()));

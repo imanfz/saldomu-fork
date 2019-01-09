@@ -97,7 +97,7 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
         textToSpeech.setLanguage(Locale.getDefault());
 
         lines                   = new ArrayList<>();
-        tvDirection             = (TextView) findViewById(R.id.tvDirection);
+        tvDirection             = findViewById(R.id.tvDirection);
         Intent receiveIntent    = this.getIntent();
         targetLatitude          = receiveIntent.getDoubleExtra("targetLatitude", 0);
         targetLongitude         = receiveIntent.getDoubleExtra("targetLongitude", 0);

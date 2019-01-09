@@ -122,7 +122,7 @@ public class LoginModel extends jsonModel {
     private String socialSignature;
     @SerializedName("shop_id_agent")
     @Expose
-    private String shopIdAgent;
+    private ShopIdAgentModel shopIdAgent;
     @SerializedName("get_notification")
     @Expose
     private String getNotification;
@@ -455,12 +455,8 @@ public class LoginModel extends jsonModel {
         this.socialSignature = socialSignature;
     }
 
-    public String getShopIdAgent() {
+    public ShopIdAgentModel getShopIdAgent() {
         return shopIdAgent;
-    }
-
-    public void setShopIdAgent(String shopIdAgent) {
-        this.shopIdAgent = shopIdAgent;
     }
 
     public String getGetNotification() {
