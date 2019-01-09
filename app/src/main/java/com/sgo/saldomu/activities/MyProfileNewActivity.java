@@ -47,6 +47,7 @@ import com.sgo.saldomu.models.retrofit.UpdateProfileModel;
 import com.sgo.saldomu.models.retrofit.UploadFotoModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
+import com.sgo.saldomu.widgets.BlinkingEffectClass;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -66,7 +67,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
-import retrofit2.http.HEAD;
 import timber.log.Timber;
 
 /**
@@ -912,7 +912,17 @@ public class MyProfileNewActivity extends BaseActivity {
                 new ProgressRequestBody.UploadCallbacks() {
                     @Override
                     public void onProgressUpdate(int percentage) {
-
+                        switch (flag){
+                            case KTP_TYPE:
+                                pb1.setProgress(percentage);
+                                break;
+                            case SELFIE_TYPE:
+                                pb2.setProgress(percentage);
+                                break;
+                            case TTD_TYPE:
+                                pb3.setProgress(percentage);
+                                break;
+                        }
                     }
                 });
 
@@ -929,6 +939,21 @@ public class MyProfileNewActivity extends BaseActivity {
                         String error_code = model.getError_code();
                         String error_message = model.getError_message();
                         if (error_code.equalsIgnoreCase("0000")) {
+
+                            switch (flag){
+                                case KTP_TYPE:
+                                    pb1.setProgress(100);
+                                    BlinkingEffectClass.blink(layoutKTP);
+                                    break;
+                                case SELFIE_TYPE:
+                                    pb2.setProgress(100);
+                                    BlinkingEffectClass.blink(layoutSelfie);
+                                    break;
+                                case TTD_TYPE:
+                                    pb3.setProgress(100);
+                                    BlinkingEffectClass.blink(layoutTTD);
+                                    break;
+                            }
 
                             Timber.d("onsuccess upload foto type: " + flag);
 //                                Timber.d("isi response Upload Foto:"+ response.toString());

@@ -753,7 +753,7 @@ public class MainPage extends BaseActivity {
 
             Timber.d("isi params listmember mainpage:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LIST_MEMBER, params
+            RetrofitService.getInstance().PostObjectRequestDebounce(MyApiClient.LINK_LIST_MEMBER, params
                     , new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -810,17 +810,17 @@ public class MainPage extends BaseActivity {
                                             JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
                                             Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            intent.putExtra("memberId", shopAgentObject.getString("member_id"));
-                                            intent.putExtra("shopId", shopAgentObject.getString("shop_id"));
-                                            intent.putExtra("shopName", shopAgentObject.getString("shop_name"));
-                                            intent.putExtra("memberType", shopAgentObject.getString("member_type"));
-                                            intent.putExtra("memberName", shopAgentObject.getString("member_name"));
-                                            intent.putExtra("commName", shopAgentObject.getString("comm_name"));
-                                            intent.putExtra("province", shopAgentObject.getString("province"));
-                                            intent.putExtra("district", shopAgentObject.getString("district"));
-                                            intent.putExtra("address", shopAgentObject.getString("address1"));
+                                            intent.putExtra("memberId", shopAgentObject.optString("member_id", ""));
+                                            intent.putExtra("shopId", shopAgentObject.optString("shop_id", ""));
+                                            intent.putExtra("shopName", shopAgentObject.optString("shop_name", ""));
+                                            intent.putExtra("memberType", shopAgentObject.optString("member_type", ""));
+                                            intent.putExtra("memberName", shopAgentObject.optString("member_name", ""));
+                                            intent.putExtra("commName", shopAgentObject.optString("comm_name", ""));
+                                            intent.putExtra("province", shopAgentObject.optString("province", ""));
+                                            intent.putExtra("district", shopAgentObject.optString("district", ""));
+                                            intent.putExtra("address", shopAgentObject.optString("address1", ""));
                                             intent.putExtra("category", "");
-                                            intent.putExtra("isMobility", shopAgentObject.getString("is_mobility"));
+                                            intent.putExtra("isMobility", shopAgentObject.optString("is_mobility", ""));
                                             switchActivity(intent, ACTIVITY_RESULT);
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -867,6 +867,7 @@ public class MainPage extends BaseActivity {
 
                             }
 
+                            hideProgLoading();
                         }
 
                         @Override
@@ -877,7 +878,7 @@ public class MainPage extends BaseActivity {
 
                         @Override
                         public void onComplete() {
-                            hideProgLoading();
+
                         }
                     });
 
@@ -1377,7 +1378,7 @@ public class MainPage extends BaseActivity {
 
     void showProgLoading(String msg) {
         progdialog = DefinedDialog.CreateProgressDialog(this, msg);
-        progdialog.show();
+//        progdialog.show();
     }
 
     void hideProgLoading() {

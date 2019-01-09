@@ -1,11 +1,16 @@
 package com.sgo.saldomu.Beans;
 
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+
 import org.json.JSONObject;
+
+import java.util.Comparator;
+import java.util.Date;
 
 /**
  * Created by thinkpad on 3/19/2015.
  */
-public class NotificationModelClass {
+public class NotificationModelClass implements Comparator<NotificationModelClass> {
 
     private int image;
     private String title;
@@ -156,5 +161,12 @@ public class NotificationModelClass {
 
     private void setTo_id(String to_id) {
         this.to_id = to_id;
+    }
+
+    @Override
+    public int compare(NotificationModelClass o1, NotificationModelClass o2) {
+        Date date1 = DateTimeFormat.convertStringtoCustomDateTime(o1.getDate_time());
+        Date date2 = DateTimeFormat.convertStringtoCustomDateTime(o2.getDate_time());
+        return date1.compareTo(date2);
     }
 }

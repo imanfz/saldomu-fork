@@ -150,7 +150,7 @@ public class UpdateBBSData extends IntentService {
                             try {
 
                                 Gson gson = new Gson();
-                                CommDataModel model = gson.fromJson(object, CommDataModel.class);
+                                CommDataModel model = gson.fromJson(gson.toJson(object), CommDataModel.class);
 
                                 String code = model.getError_code();
                                 if (code.equals(WebParams.SUCCESS_CODE)) {

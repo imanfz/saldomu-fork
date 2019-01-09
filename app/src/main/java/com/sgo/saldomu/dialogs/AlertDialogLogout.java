@@ -28,6 +28,7 @@ public class AlertDialogLogout {
   }
 
 
+
     public void showDialoginActivity(final Activity mContext, String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)

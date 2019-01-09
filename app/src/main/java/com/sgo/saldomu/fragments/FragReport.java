@@ -1053,8 +1053,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.USER_NAME, name);
         args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response.getCreated()));
         args.putString(DefineValue.TX_ID, response.getTx_id());
-        args.putString(DefineValue.USERID_PHONE, response.getPayment_name());
-        args.putString(DefineValue.DENOM_DATA, response.getTx_status());
+        args.putString(DefineValue.USERID_PHONE, response.getMember_cust_id());
+        args.putString(DefineValue.DENOM_DATA, response.getPayment_name());
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER);
         args.putString(DefineValue.PRODUCT_NAME, response.getProduct_name());
