@@ -25,6 +25,7 @@ import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.DenomSCADMActivity;
 import com.sgo.saldomu.adapter.DenomItemListAdapter;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -59,6 +60,8 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     ArrayList<String> bankProductList, itemListString;
     ArrayList<DenomBankListData> bankDataList;
     SCADMCommunityModel obj;
+
+    String memberCode,commCode, memberId, commId;
 
     @Nullable
     @Override
@@ -106,6 +109,11 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         bankProductAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, bankProductList);
         bankProductAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ProductBankSpinner.setAdapter(bankProductAdapter);
+
+        Bundle bundle = getArguments();
+
+        commCode = bundle.getString(DefineValue.COMMUNITY_CODE,"");
+        commId = bundle.getString(DefineValue.COMMUNITY_ID, "");
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override

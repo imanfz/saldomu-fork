@@ -381,6 +381,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
                             String code = model.getError_code();
                             String message = model.getError_message();
+                            Timber.d("isi respons sent get Trx Status:" + object.toString());
 
                             try {
                                 if (code.equals(WebParams.SUCCESS_CODE)) {

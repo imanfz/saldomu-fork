@@ -56,6 +56,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import timber.log.Timber;
 
@@ -141,24 +142,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bankGateway.equalsIgnoreCase("N"))
-                {
-                    changeToSGOPlus(txID,productCode, productName,bankCode,
-                            String.valueOf(amount), String.valueOf(fee), String.valueOf(totalAmount), bankName);
-                }
-                else if (bankGateway.equalsIgnoreCase("Y")) {
-                    if (productCode.equalsIgnoreCase("SCASH")){
-                        CallPINinput(attempt);
-//                        btn_next.setEnabled(true);
-                    }
-                    else
-                    {
-                        if(inputValidation()) {
-                            sentInsertTransTopup(OTPedittext.getText().toString(),amount);
-                        }
-//                        else btn_next.setEnabled(true);
-                    }
-                }
+                sentInquiry();
             }
         });
 
@@ -257,23 +241,87 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         startActivityForResult(i, MainPage.REQUEST_FINISH);
     }
 
+//    void getDenomConfirmData(){
+//
+//        showLoading();
+//
+//        extraSignature = obj.getMember_id_scadm()+productCode;
+//
+//        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_INVOKE, extraSignature);
+//
+//        params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
+//        params.put(WebParams.PRODUCT_CODE, productCode);
+//        params.put(WebParams.BANK_CODE, bankCode);
+//        params.put(WebParams.ITEM, buildItem());
+//        params.put(WebParams.USER_ID, userPhoneID);
+//
+//        Timber.d("isi params sent get denom invoke:"+params.toString());
+//
+//        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_DENOM_INVOKE, params,
+//                new ObjListeners() {
+//                    @Override
+//                    public void onResponses(JSONObject response) {
+//                        try {
+//
+//                            Timber.d("isi response get denom invoke:"+response.toString());
+//                            String code = response.getString(WebParams.ERROR_CODE);
+//
+//                            if (code.equals(WebParams.SUCCESS_CODE)) {
+//
+//                                setDataView(response);
+//
+//                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+//                                Timber.d("isi response autologout:"+response.toString());
+//                                String message = response.getString(WebParams.ERROR_MESSAGE);
+//                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+//                                test.showDialoginActivity(getActivity(),message);
+//                            }
+//                            else {
+//                                String msg = response.getString(WebParams.ERROR_MESSAGE);
+////                            showDialog(msg);
+//                            }
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable throwable) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        dismissLoading();
+//
+//                    }
+//                });
+//    }
+
     void getDenomConfirmData(){
 
         showLoading();
 
-        extraSignature = obj.getMember_id_scadm()+productCode;
+        extraSignature = obj.getMember_id_scadm()+obj.getComm_id()+ MyApiClient.CCY_VALUE;
 
-        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_INVOKE, extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_INVOKE_NEW, extraSignature);
 
-        params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
-        params.put(WebParams.PRODUCT_CODE, productCode);
-        params.put(WebParams.BANK_CODE, bankCode);
+//        params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
         params.put(WebParams.ITEM, buildItem());
+
         params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.MEMBER_ID_GOWORLD, obj.getMember_id_scadm());
+        params.put(WebParams.COMM_ID_GOWORLD, obj.getComm_id());
+        params.put(WebParams.MEMBER_CODE_GOWORLD, obj.getMember_code());
+        params.put(WebParams.COMM_CODE_GOWORLD, obj.getComm_code());
+        params.put(WebParams.BANK_CODE, bankCode);
+        params.put(WebParams.PRODUCT_CODE, productCode);
+        params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
 
         Timber.d("isi params sent get denom invoke:"+params.toString());
 
-        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_DENOM_INVOKE, params,
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_DENOM_INVOKE_NEW, params,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {
@@ -313,6 +361,78 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
                     }
                 });
+    }
+
+    public void sentInquiry() {
+        try {
+            showProgressDialog();
+
+            extraSignature = txID + commCode + productCode;
+
+            params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
+
+            params.put(WebParams.TX_ID, txID);
+            params.put(WebParams.PRODUCT_CODE, productCode);
+            params.put(WebParams.COMM_CODE, commCode);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.COMM_ID, commIDLogin);
+            Timber.d("isi params InquiryTrx denom scadm:" + params.toString());
+
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                String error_message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("isi response InquiryTrx denom scadm: " + response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    if(bankGateway.equalsIgnoreCase("N"))
+                                    {
+                                        changeToSGOPlus(txID,productCode, productName,bankCode,
+                                                String.valueOf(amount), String.valueOf(fee), String.valueOf(totalAmount), bankName);
+                                    }
+                                    else if (bankGateway.equalsIgnoreCase("Y")) {
+                                        if (productCode.equalsIgnoreCase("SCASH")){
+                                            CallPINinput(attempt);
+                                        }
+                                        else
+                                        {
+                                            if(inputValidation()) {
+                                                sentInsertTransTopup(OTPedittext.getText().toString(),amount);
+                                            }
+                                        }
+                                    }
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else {
+                                    Timber.d("Error resendTokenSGOL:" + response.toString());
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            dismissProgressDialog();
+//                            btn_confirm.setEnabled(true);
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
     }
 
     private void sentInsertTransTopup(String tokenValue, final String _amount){
@@ -395,10 +515,10 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
     private void getTrxStatus(final String txId, String comm_id, final String _amount){
         try{
 
-            extraSignature = txId + comm_id;
+            extraSignature = txID + comm_id;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
-            params.put(WebParams.TX_ID, txId);
+            params.put(WebParams.TX_ID, txID);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.TYPE, DefineValue.BIL_PAYMENT_TYPE);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
@@ -418,7 +538,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                                 showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""),
                                         DateTimeFormat.formatToID(model.getCreated()),
                                         sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
-                                        txstatus, model.getTx_remark(), _amount, model.getDenom_detail(), model.getBuss_scheme_code(),
+                                        txstatus, model.getTx_remark(), _amount, model.getTotal_amount(), model.getTx_fee(), getGson().toJson(model.getDenom_detail()), model.getBuss_scheme_code(),
                                         model.getBuss_scheme_name(), model.getProduct_name(), model.getOrder_id(), model.getComm_code(),
                                         model.getMember_code());
                             } else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -449,7 +569,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
     }
 
     private void showReportBillerDialog(String name,String date,String userId, String txId,String itemName,String txStatus,
-                                        String txRemark, String _amount, String denom_detail,
+                                        String txRemark, String _amount, String totalAmount, String txFee, String denom_detail,
                                         String buss_scheme_code, String buss_scheme_name, String product_name, String order_id,
                                         String comm_code, String member_code) {
         Bundle args = new Bundle();
@@ -462,7 +582,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 //        args.putString(DefineValue.DENOM_DATA, response.optString(DefineValue.COMMUNITY_CODE));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_amount));
         args.putString(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
-        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
+        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(txFee));
 
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)){
@@ -484,7 +604,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
 
 
-        double totalAmount = Double.parseDouble(amount) + Double.parseDouble(fee);
+//        double totalAmount = Double.parseDouble(amount) + Double.parseDouble(fee);
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
         args.putString(DefineValue.DENOM_DETAIL,denom_detail);
         args.putString(DefineValue.BUSS_SCHEME_CODE,buss_scheme_code);
@@ -531,10 +651,10 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
     void setDataView(JSONObject resp){
         try {
 
-            commName = resp.getString("comm_name");
-            commCode = resp.getString("comm_code");
-            commID = resp.getString("comm_id");
-            memberCode = resp.getString("member_code");
+            commName = obj.getComm_name();
+            commCode = obj.getComm_code();
+            commID = obj.getComm_id();
+            memberCode = obj.getMember_code();
             productName = resp.getString("product_name");
             if (productName.equalsIgnoreCase("MANDIRI SMS"))
             {
@@ -546,8 +666,8 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             ccyID = resp.getString("ccy_id");
             txID = resp.getString("tx_id");
             bankName = resp.getString("bank_name");
-            bankCode = resp.getString("bank_code");
-            memberIdSACDM = resp.getString("member_id");
+            bankCode = bankCode;
+            memberIdSACDM = obj.getMember_id_scadm();
             memberName = resp.getString("member_name");
 
             commNameTextview.setText(commName);
@@ -565,11 +685,16 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             if (orderList.size() > 0)
                 orderList.clear();
 
-            JSONArray itemArr = resp.getJSONArray("item");
-            for (int i=0; i<itemArr.length(); i++){
-                JSONObject obj = itemArr.getJSONObject(i);
+            JSONObject itemArr = resp.getJSONObject("item");
+            Iterator<String> keys = itemArr.keys();
+            while (keys.hasNext()){
+                JSONObject obj = itemArr.getJSONObject(keys.next());
                 orderList.add(new DenomOrderListModel(obj));
             }
+//            for (int i=0; i<itemArr.length(); i++){
+//                JSONObject obj = itemArr.getJSONObject(i);
+//                orderList.add(new DenomOrderListModel(obj));
+//            }
 
             itemListAdapter.notifyDataSetChanged();
 

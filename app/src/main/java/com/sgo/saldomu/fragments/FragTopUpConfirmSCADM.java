@@ -165,7 +165,8 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                         btn_next.setEnabled(true);
                     } else {
                         if (inputValidation()) {
-                            confirmToken();
+                            sentInsertTransTopup(et_otp.getText().toString(), amount);
+//                            confirmToken();
                         } else btn_next.setEnabled(true);
                     }
                 }

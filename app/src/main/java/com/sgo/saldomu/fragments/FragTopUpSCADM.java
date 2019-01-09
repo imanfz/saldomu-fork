@@ -95,13 +95,15 @@ public class FragTopUpSCADM extends BaseFragment {
             @Override
             public void onClick(View view) {
                 if (inputValidation())
-                    sentInsertTopUp();
+                    if (product_name.equals("SCASH")) {
+                        sentInsertTopUpSCASH();
+                    } else
+                        sentInsertTopUp();
             }
         });
     }
 
-    public boolean inputValidation()
-    {
+    public boolean inputValidation() {
         if (et_jumlah == null || et_jumlah.getText().toString().isEmpty()) {
             et_jumlah.requestFocus();
             et_jumlah.setError("Jumlah harus diisi!");
@@ -124,6 +126,7 @@ public class FragTopUpSCADM extends BaseFragment {
                 selectedBankCode = scadmListBankTopUp.get(i).getBank_code();
                 selectedBankGateway = scadmListBankTopUp.get(i).getBank_gateway();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -210,7 +213,7 @@ public class FragTopUpSCADM extends BaseFragment {
         }
     }
 
-    public void sentInsertTopUp() {
+    public void sentInsertTopUpSCASH() {
         try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -250,6 +253,88 @@ public class FragTopUpSCADM extends BaseFragment {
 //                                    product_code = response.getString(WebParams.PRODUCT_CODE);
                                     product_name = response.getString(WebParams.PRODUCT_NAME);
 //                                    ccy_id = response.getString(WebParams.CCY_ID);
+                                    amount = response.getString(WebParams.AMOUNT);
+                                    admin_fee = response.getString(WebParams.ADMIN_FEE);
+                                    total_amount = response.getString(WebParams.TOTAL_AMOUNT);
+//                            payment_remark = response.getString(WebParams.PAYMENT_REMARK);
+
+                                    changeToConfirmTopup();
+
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else {
+                                    Timber.d("Error isi response confirm topup  scadm:" + response.toString());
+                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
+
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+//                            getActivity().finish();
+                                }
+
+
+                            } catch (JSONException e) {
+                                Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            getFragmentManager().popBackStack();
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
+
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
+    }
+
+    public void sentInsertTopUp() {
+        try {
+
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            extraSignature = member_id_scadm + selectedProductCode + MyApiClient.CCY_VALUE + et_jumlah.getText().toString();
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOPUP_SCADM, extraSignature);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.MEMBER_ID_SCADM, member_id_scadm);
+            params.put(WebParams.BANK_CODE, selectedBankCode);
+            params.put(WebParams.BANK_GATEWAY, selectedBankGateway);
+            params.put(WebParams.PRODUCT_CODE, selectedProductCode);
+            params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
+            params.put(WebParams.AMOUNT, et_jumlah.getText().toString());
+            params.put(WebParams.PAYMENT_REMARK, et_pesan.getText().toString());
+
+            Timber.d("isi params confirm topup scadm:" + params.toString());
+
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TOPUP_SCADM, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("isi response confirm topup scadm:" + response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    tx_id = response.getString(WebParams.TX_ID);
+                                    member_id = member_id_scadm;
+                                    member_code = response.getString(WebParams.MEMBER_CODE);
+                                    member_name = response.getString(WebParams.MEMBER_NAME);
+                                    comm_id = response.getString(WebParams.COMM_ID);
+                                    comm_code = response.getString(WebParams.COMM_CODE);
+                                    comm_name = response.getString(WebParams.COMM_NAME);
+                                    bank_code = response.getString(WebParams.BANK_CODE);
+                                    bank_name = response.getString(WebParams.BANK_NAME);
+                                    product_code = response.getString(WebParams.PRODUCT_CODE);
+                                    product_name = response.getString(WebParams.PRODUCT_NAME);
+                                    ccy_id = response.getString(WebParams.CCY_ID);
                                     amount = response.getString(WebParams.AMOUNT);
                                     admin_fee = response.getString(WebParams.ADMIN_FEE);
                                     total_amount = response.getString(WebParams.TOTAL_AMOUNT);

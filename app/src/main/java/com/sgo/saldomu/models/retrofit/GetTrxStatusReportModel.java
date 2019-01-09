@@ -3,6 +3,8 @@ package com.sgo.saldomu.models.retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class GetTrxStatusReportModel extends GetTrxStatusModel{
     @SerializedName("tx_id")
     @Expose
@@ -36,6 +38,10 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
     @Expose
     private
     String admin_fee;
+    @SerializedName("tx_fee")
+    @Expose
+    private
+    String tx_fee;
     @SerializedName("fee_amount")
     @Expose
     private
@@ -108,7 +114,7 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
     @SerializedName("denom_detail")
     @Expose
     private
-    String denom_detail;
+    List<String> denom_detail;
     @SerializedName("order_id")
     @Expose
     private
@@ -129,6 +135,34 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
     @Expose
     private
     String comm_id;
+    @SerializedName("productName")
+    @Expose
+    private
+    String productName;
+    @SerializedName("payment_type_desc")
+    @Expose
+    private
+    String payment_type_desc;
+    @SerializedName("dgi_member_name")
+    @Expose
+    private
+    String dgi_member_name;
+    @SerializedName("dgi_anchor_name")
+    @Expose
+    private
+    String dgi_anchor_name;
+    @SerializedName("dgi_comm_name")
+    @Expose
+    private
+    String dgi_comm_name;
+    @SerializedName("member_cust_name")
+    @Expose
+    private
+    String member_cust_name;
+    @SerializedName("invoice")
+    @Expose
+    private
+    String invoice;
 
     public String getTx_id() {
         return tx_id;
@@ -226,10 +260,6 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
         return member_code;
     }
 
-    public String getDenom_detail() {
-        return denom_detail;
-    }
-
     public String getOrder_id() {
         return order_id;
     }
@@ -252,5 +282,46 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
 
     public String getComm_id() {
         return comm_id;
+    }
+
+    @Override
+    public String getProduct_name() {
+        return super.getProduct_name();
+    }
+
+    public String getPayment_type_desc() {
+        return payment_type_desc;
+    }
+
+    public String getDgi_member_name() {
+        return dgi_member_name;
+    }
+
+    public String getDgi_anchor_name() {
+        return dgi_anchor_name;
+    }
+
+    public String getDgi_comm_name() {
+        return dgi_comm_name;
+    }
+
+    public String getMember_cust_name() {
+        return member_cust_name;
+    }
+
+    public String getInvoice() {
+        return invoice;
+    }
+
+    public List<String> getDenom_detail() {
+        return denom_detail;
+    }
+
+    public String getTx_fee() {
+        return tx_fee;
+    }
+
+    public String getProductName() {
+        return productName;
     }
 }
