@@ -256,7 +256,6 @@ public class RetrofitService {
             @Override
             public Response intercept(@NonNull Chain chain) throws IOException {
 
-
                 Request.Builder builder1 = chain.request().newBuilder();
 
                 builder1.header("Content-Type", "application/x-www-form-urlencoded");
