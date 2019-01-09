@@ -149,11 +149,13 @@ public class UpdateBBSData extends IntentService {
                         public void onResponses(JsonObject object) {
                             try {
 
-                                Gson gson = new Gson();
-                                CommDataModel model = gson.fromJson(gson.toJson(object), CommDataModel.class);
 
-                                String code = model.getError_code();
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
+//                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                if (object.get("error_code").getAsString().equals(WebParams.SUCCESS_CODE)) {
+                                    Gson gson = new Gson();
+                                    CommDataModel model = gson.fromJson(gson.toJson(object), CommDataModel.class);
+
+//                                    String code = model.getError_code();
                                     insertToRealm(new JSONArray(gson.toJson(model.getCommunity())), schemeCode);
                                 }
 
@@ -262,7 +264,7 @@ public class UpdateBBSData extends IntentService {
             } catch (JSONException e) {
                 e.printStackTrace();
                 realm.cancelTransaction();
-            }finally {
+            } finally {
                 SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
                 SecurePreferences.Editor mEditor = prefs.edit();
                 mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER, true);
