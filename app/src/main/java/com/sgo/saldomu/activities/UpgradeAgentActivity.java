@@ -649,7 +649,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         dialognya.setCanceledOnTouchOutside(false);
         dialognya.setCancelable(false);
 
-//        dialognya.show();
+        dialognya.show();
     }
 
     @Override

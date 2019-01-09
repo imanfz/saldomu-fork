@@ -27,7 +27,6 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.interfaces.RetrofitInterfaces;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
-import com.sgo.saldomu.widgets.TLSSocket;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
@@ -132,7 +131,23 @@ public class RetrofitService {
     }
 
     private RetrofitInterfaces BuildRetrofit() {
-        return BuildRetrofit2();
+        retrofit = new Retrofit.Builder()
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(BuildGSON()))
+                .baseUrl(BuildConfig.HEAD_ADDRESSS)
+                .client(BuildOkHttpClients(true))
+                .build();
+        return retrofit.create(RetrofitInterfaces.class);
+    }
+
+    private RetrofitInterfaces BuildRetrofit3() {
+        retrofit = new Retrofit.Builder()
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(BuildGSON()))
+                .baseUrl(BuildConfig.HEAD_ADDRESSS)
+                .client(BuildOkHttpClients(false))
+                .build();
+        return retrofit.create(RetrofitInterfaces.class);
     }
 
     private RetrofitInterfaces BuildRetrofit2() {
@@ -140,7 +155,7 @@ public class RetrofitService {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(BuildGSON()))
                 .baseUrl(BuildConfig.HEAD_ADDRESSS)
-                .client(BuildOkHttpClients())
+                .client(BuildOkHttpClient2())
                 .build();
         return retrofit.create(RetrofitInterfaces.class);
     }
@@ -167,94 +182,101 @@ public class RetrofitService {
         return encode.replace('+', '-').replace('/', '_');
     }
 
-    private OkHttpClient BuildOkHttpClients() {
-        return BuildOkHttpClient("application/x-www-form-urlencoded");
+    private OkHttpClient BuildOkHttpClients(boolean isSSL) {
+        return BuildOkHttpClient(true, isSSL);
     }
 
     private OkHttpClient BuildOkHttpClient2() {
-        return BuildOkHttpClient("application/x-www-form-urlencoded");
+        return BuildOkHttpClient(false, true);
     }
 
-    private OkHttpClient BuildOkHttpClient(final String content_type) {
-        TrustManager[] trustManagers = new TrustManager[0];
-        try {
-
-            KeyStore keyStore = KeyStore.getInstance("BKS");
-            InputStream is = CoreApp.getAppContext().getResources().openRawResource(R.raw.saldomucom);
-
-            keyStore.load(is, PRIVATE_KEY.toCharArray());
-
-            is.close();
-
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("X509");
-            keyManagerFactory.init(keyStore, PRIVATE_KEY.toCharArray());
-
-            TrustManagerFactory tmf =
-                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmf.init(keyStore);
-
-            trustManagers = tmf.getTrustManagers();
-
-            if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-                throw new IllegalStateException(
-                        "Unexpected default trust managers:" + Arrays.toString(trustManagers));
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        }
-
+    private OkHttpClient BuildOkHttpClient(boolean isCustomTimeout, boolean isSSL) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.readTimeout(10, TimeUnit.MINUTES);
         builder.retryOnConnectionFailure(true);
-        builder.writeTimeout(10, TimeUnit.MINUTES);
-        builder.connectTimeout(10, TimeUnit.MINUTES);
+        if (isCustomTimeout) {
+            builder.readTimeout(10, TimeUnit.MINUTES);
+            builder.writeTimeout(10, TimeUnit.MINUTES);
+            builder.connectTimeout(10, TimeUnit.MINUTES);
+        }
         builder.addInterceptor(interceptorLogging);
-        builder.certificatePinner(certificatePinner);
-        try {
-            builder.sslSocketFactory(new OkHttpTLSSocketFactory(CoreApp.getAppContext()), (X509TrustManager) trustManagers[0]);
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+
+        if (isSSL){
+            //
+            TrustManager[] trustManagers = new TrustManager[0];
+            try {
+
+                KeyStore keyStore = KeyStore.getInstance("BKS");
+                InputStream is = CoreApp.getAppContext().getResources().openRawResource(R.raw.saldomucom);
+
+                keyStore.load(is, PRIVATE_KEY.toCharArray());
+
+                is.close();
+
+                KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("X509");
+                keyManagerFactory.init(keyStore, PRIVATE_KEY.toCharArray());
+
+                TrustManagerFactory tmf =
+                        TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                tmf.init(keyStore);
+
+                trustManagers = tmf.getTrustManagers();
+
+                if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+                    throw new IllegalStateException(
+                            "Unexpected default trust managers:" + Arrays.toString(trustManagers));
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (CertificateException e) {
+                e.printStackTrace();
+            } catch (UnrecoverableKeyException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (KeyStoreException e) {
+                e.printStackTrace();
+            }
+
+            //
+            builder.certificatePinner(certificatePinner);
+            try {
+                builder.sslSocketFactory(new OkHttpTLSSocketFactory(CoreApp.getAppContext()), (X509TrustManager) trustManagers[0]);
+            } catch (KeyManagementException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+            //
+            ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                    .tlsVersions(TlsVersion.TLS_1_2)
+                    .build();
+
+            List<ConnectionSpec> specs = new ArrayList<>();
+            specs.add(spec);
+            specs.add(ConnectionSpec.CLEARTEXT);
+
+            builder.connectionSpecs(specs);
         }
 
-        ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                .tlsVersions(TlsVersion.TLS_1_2)
-                .build();
 
-        List<ConnectionSpec> specs = new ArrayList<>();
-        specs.add(spec);
-        specs.add(ConnectionSpec.CLEARTEXT);
 
-        builder.connectionSpecs(specs);
-
-        TLSSocket sf;
-        try {
-            sf = new TLSSocket();
-            builder.sslSocketFactory(sf, sf.systemDefaultTrustManager());
-        } catch (Exception e) {
-            Timber.w("exception tls socket:" + e.toString());
-            throw new AssertionError(e);
-        }
+//        TLSSocket sfnew OkHttpTLSSocketFactory(context), (X509TrustManager) trustManagers[0]ocket();
+//            builder.sslSocketFactory(sf, sf.systemDefaultTrustManager());
+//        } catch (Exception e) {
+//            Timber.w("exception tls socket:" + e.toString());
+//            throw new AssertionError(e);
+//        }
 
         builder.addInterceptor(new Interceptor() {
             @Override
             public Response intercept(@NonNull Chain chain) throws IOException {
 
-
                 Request.Builder builder1 = chain.request().newBuilder();
 
-                builder1.header("Content-Type", content_type);
+                builder1.header("Content-Type", "application/x-www-form-urlencoded");
 //                if (inApps){
                 builder1.addHeader("Authorization", "Basic " + getBasicAuth());
 //                }
@@ -439,6 +461,42 @@ public class RetrofitService {
                 });
     }
 
+    public void PostObjectRequestDebounce(String link, HashMap<String, Object> param, final ResponseListener listener) {
+        BuildRetrofit2().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(20)
+                .debounce(2, TimeUnit.SECONDS)
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+//                        getCompositeDisposable().add(d);
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        listener.onResponses(obj);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Context context = CoreApp.getAppContext();
+                        if (context != null) {
+                            if (MyApiClient.PROD_FAILURE_FLAG)
+                                Toast.makeText(CoreApp.getAppContext(), CoreApp.getAppContext().getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        listener.onComplete();
+                    }
+                });
+    }
+
     public void PostObjectRequest(String link, HashMap<String, Object> param, final ResponseListener listener) {
         BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -451,7 +509,10 @@ public class RetrofitService {
 
                     @Override
                     public void onNext(JsonObject obj) {
-                        listener.onResponses(obj);
+                        if (obj.get("error_code").getAsString().equalsIgnoreCase("0404")) {
+
+                        } else
+                            listener.onResponses(obj);
                     }
 
                     @Override
@@ -495,7 +556,7 @@ public class RetrofitService {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (MyApiClient.PROD_FAILURE_FLAG) {
+                        if (BuildConfig.IS_PROD_DOMAIN) {
                             Toast.makeText(CoreApp.getAppContext(),
                                     CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
                                     Toast.LENGTH_SHORT).show();
@@ -554,6 +615,46 @@ public class RetrofitService {
 
     public void QueryRequest(String link, HashMap<String, Object> queryMap, final ObjListeners listener) {
         BuildRetrofit().QueryInterface(link, queryMap).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(2)
+                .subscribe(new Observer<JsonObject>() {
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        getCompositeDisposable().add(d);
+
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        try {
+                            listener.onResponses(new JSONObject(getGson().toJson(obj)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (MyApiClient.PROD_FAILURE_FLAG) {
+                            Toast.makeText(CoreApp.getAppContext(),
+                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        listener.onComplete();
+                    }
+                });
+    }
+
+    public void QueryRequestSSL(String link, HashMap<String, Object> queryMap, final ObjListeners listener) {
+        BuildRetrofit3().QueryInterface(link, queryMap).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(2)
                 .subscribe(new Observer<JsonObject>() {
@@ -698,7 +799,6 @@ public class RetrofitService {
                     }
                 });
     }
-
 
 
     public Gson getGson() {

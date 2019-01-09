@@ -425,7 +425,8 @@ public class FragNotification extends BaseFragment {
 
                                     JSONArray mArrayData = new JSONArray(getGson().toJson(model.getData_user_notif()));
 
-                                    String title = null, detail = "", time, to_id, from_name, from_id, notif_id, from_profile_picture, date_time, id_result;
+                                    String title = null, detail = "", time, to_id, from_name, from_id, notif_id, from_profile_picture
+                                            , date_time, id_result;
                                     mData.clear();
                                     mDataNotifDetail.clear();
                                     int notif_type, image = 0;
@@ -522,6 +523,11 @@ public class FragNotification extends BaseFragment {
 
                                             }
                                         }
+
+//                                        Collections.sort(mData, (o1, o2) -> Date date1 = DateTimeFormat.convertStringtoCustomDateTime(o1.getDate_time());
+//                                        Date date2 = DateTimeFormat.convertStringtoCustomDateTime(o2.getDate_time());
+//                                        return date2.compareTo(date1););
+
                                         if (mData.size() != 0) {
                                             mAdapter.notifyDataSetChanged();
                                         } else {
@@ -638,7 +644,7 @@ public class FragNotification extends BaseFragment {
                                 if (out.isShowing())
                                     out.dismiss();
                         }
-                    } );
+                    });
         } catch (Exception e) {
             String err = (e.getMessage() == null) ? "Connection failed" : e.getMessage();
             Timber.e("http err:" + err);

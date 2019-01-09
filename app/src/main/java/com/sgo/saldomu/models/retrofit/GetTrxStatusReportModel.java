@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class GetTrxStatusReportModel extends GetTrxStatusModel{
+public class GetTrxStatusReportModel extends GetTrxStatusModel {
     @SerializedName("tx_id")
     @Expose
     private
@@ -54,6 +54,10 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
     @Expose
     private
     String member_phone;
+    @SerializedName("member_cust_id")
+    @Expose
+    private
+    String member_cust_id;
     @SerializedName("member_name")
     @Expose
     private
@@ -284,9 +288,8 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
         return comm_id;
     }
 
-    @Override
-    public String getProduct_name() {
-        return super.getProduct_name();
+    public String getMember_cust_id() {
+        return member_cust_id;
     }
 
     public String getPayment_type_desc() {
