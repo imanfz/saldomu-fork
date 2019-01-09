@@ -356,7 +356,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
     };
 
-
     private void getDataReport(int _page, final String _date_from, String _date_to, final Boolean isRefresh) {
         try {
             if (isRefresh == null) {
