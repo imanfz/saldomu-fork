@@ -56,7 +56,7 @@ public class listBankModel {
         this.setFee(fee);
     }
 
-    public listBankModel(String _bank_name, String _product_name) {
+    public listBankModel(String _bank_name, String _product_name, String nova) {
         super();
         this.setBank_code(DefineValue.BankMandiri);
         this.setBank_name(_bank_name);
@@ -64,7 +64,7 @@ public class listBankModel {
         this.setProduct_name(_product_name);
         this.setProduct_type("MANDIRI_ATM");
         this.setProduct_h2h("");
-        this.setNoVA("");
+        this.setNoVA(nova);
         this.setFee("");
     }
 
