@@ -491,11 +491,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         String[] _data;
         ArrayList<String> data = new ArrayList<>();
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
-//        if(isAgent) {
-//            _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
-//            Collections.addAll(data,_data);
-//
-//        } else
         if (!isAgent) {
 
             String[] categories = new String[shopCategories.size()];
@@ -532,28 +527,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         int[] data = new int[totalIdx];
 
-//        if(isAgent) {
-//            for( int j = 0; j < taAgent.length(); j++) {
-//                data[j] = taAgent.getResourceId(j, -1);
-//                overallIdx++;
-//            }
-//
-//
-//        } else
         if (!isAgent) {
             for (int x = 0; x < shopCategories.size(); x++) {
-//
-//                if (shopCategories.get(x).getSchemeCode().contains("DGI")) {
-//                    if (isMemberShopDGI.equalsIgnoreCase("1")) {
-//                        data[x] = R.drawable.ic_location_on_black;
-//                        overallIdx++;
-//                    }
-//                } else {
                 data[x] = R.drawable.ic_location_on_black;
                 overallIdx++;
-//                }
             }
-
 
             for (int j = 0; j < taNotAgent.length(); j++) {
                 data[overallIdx] = taNotAgent.getResourceId(j, -1);
@@ -600,7 +578,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         String balance = sp.getString(DefineValue.BALANCE_AMOUNT, "0");
         tv_saldo.setText(CurrencyFormat.format(balance));
     }
-
 
     @Override
     protected int getInflateFragmentLayout() {
