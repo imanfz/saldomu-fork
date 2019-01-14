@@ -61,7 +61,6 @@ public class GridHome extends BaseAdapter {
         return convertView;
     }
 
-
     private class ViewHolder {
         TextView textView;
         ImageView imageView;

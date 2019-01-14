@@ -907,6 +907,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
         HashMap<String, Object> query = MyApiClient.getInstance().googleQuery();
         query.put("latlng", latitude + "," + longitude);
+//        query.put("address", districtName + ", " + provinceName);
 
         RetrofitService.getInstance().QueryRequestSSL(
                 MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, query,
