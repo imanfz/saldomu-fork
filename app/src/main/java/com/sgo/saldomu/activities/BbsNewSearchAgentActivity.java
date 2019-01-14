@@ -905,8 +905,12 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private void getAddressByLatLng() {
         btnProses.setEnabled(false);
 
-        RetrofitService.getInstance().GetObjectRequest(
-                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE + "&latlng=" + latitude + "," + longitude,
+        HashMap<String, Object> query = MyApiClient.getInstance().googleQuery();
+        query.put("latlng", latitude + "," + longitude);
+
+        RetrofitService.getInstance().QueryRequestSSL(
+                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, query,
+//                        + "&latlng=" + latitude + "," + longitude,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {

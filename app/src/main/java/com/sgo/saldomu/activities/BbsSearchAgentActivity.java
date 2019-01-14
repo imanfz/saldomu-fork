@@ -542,7 +542,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         options.put("language", "id");
         options.put("latlng", currentLatitude + "," + currentLongitude);
 
-        RetrofitService.getInstance().QueryRequest(
+        RetrofitService.getInstance().QueryRequestSSL(
 //                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE + "&latlng=" + currentLatitude + "," + currentLongitude
                 "https://maps.google.com/maps/api/geocode/json"
                 , options,
@@ -1284,7 +1284,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            if ( progdialog.isShowing() )
+                                progdialog.dismiss();
                         }
 
                         @Override

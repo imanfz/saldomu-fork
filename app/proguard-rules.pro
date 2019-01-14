@@ -117,3 +117,6 @@
 # RxAndroid
 -dontwarn rx.internal.util.unsafe.**
 -dontwarn com.zj.command.**
+
+# okhttp
+-dontwarn okhttp3.internal.platform.*
