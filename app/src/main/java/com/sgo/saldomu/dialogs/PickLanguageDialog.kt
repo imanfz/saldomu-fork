@@ -69,8 +69,6 @@ class PickLanguageDialog : DialogFragment() {
         list.add("Indonesia")
         list.add("Inggris")
 
-
-
         recyclerview.adapter.notifyDataSetChanged()
 
     }

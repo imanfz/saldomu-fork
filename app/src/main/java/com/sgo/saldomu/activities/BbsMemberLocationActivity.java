@@ -1057,7 +1057,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         HashMap<String, Object> _query = MyApiClient.getInstance().googleQuery();
         _query.put("address", districtName + ", " + provinceName);
 
-        RetrofitService.getInstance().QueryRequest(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, _query,
+        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, _query,
 //                        +"&address="+ query,
                 new ObjListeners() {
                     @Override
@@ -1174,7 +1174,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             HashMap<String, Object> _query = MyApiClient.getInstance().googleQuery();
             _query.put("address", memberDefaultAddress);
 
-            RetrofitService.getInstance().QueryRequest(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, _query,
+            RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, _query,
 //                            +"&address="+ query,
                     new ObjListeners() {
                         @Override
