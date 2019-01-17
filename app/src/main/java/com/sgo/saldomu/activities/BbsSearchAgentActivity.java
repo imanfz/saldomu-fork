@@ -225,7 +225,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         }
 
         menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
-        tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
+        tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext()
+                , menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(tabPageAdapter);
@@ -1102,7 +1103,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                         public void onResponses(JSONObject response) {
                             //llHeaderProgress.setVisibility(View.GONE);
                             //pbHeaderProgress.setVisibility(View.GONE);
-                            Timber.d("Response search toko:" + response.toString());
+//                            Timber.d("Response search toko:" + response.toString());
 
                             try {
 
@@ -1280,11 +1281,13 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
                         }
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            if ( progdialog.isShowing() )
+                                progdialog.dismiss();
                         }
 
                         @Override
@@ -1548,6 +1551,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             nextParams += "&mode="+DefineValue.GMAP_MODE;
             nextParams += "&language="+DefineValue.DEFAULT_LANGUAGE_CODE;
 
+            HashMap<String, Object> query = new HashMap<>();
+            query.put("origin", dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString());
+            query.put("sensor", false);
+            query.put("units", "metric");
+            query.put("mode", DefineValue.GMAP_MODE);
+            query.put("language", DefineValue.DEFAULT_LANGUAGE_CODE);
+            query.put("key", getString(R.string.google_maps_key));
+
 //            RequestParams rqParams = new RequestParams();
 //            rqParams.put("origin", dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString());
 //            rqParams.put("sensor", "false");
@@ -1560,15 +1571,20 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 String tempParams = nextParams;
                 tempParams += "&destination=" + tempShopDetail.getShopLatitude().toString() + "," + tempShopDetail.getShopLongitude();
 
-                getGoogleMapRoute(tempParams, idx);
+                query.put("destination", tempShopDetail.getShopLatitude().toString() + "," + tempShopDetail.getShopLongitude());
+
+                getGoogleMapRoute(query, idx);
             }
             return newShopDetail;
         }
     }
 
-    public void getGoogleMapRoute(String tempParams, final int idx) {
+    public void getGoogleMapRoute(
+//            String tempParams
+            HashMap<String, Object> query, final int idx) {
 
-        RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE + "?" + tempParams,
+        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
+//                        + "?" + tempParams,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +12,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
-import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.GlideManager;
@@ -33,10 +30,6 @@ import org.json.JSONException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-
-import timber.log.Timber;
-
-import static android.media.CamcorderProfile.get;
 
 /**
  * Created by Lenovo Thinkpad on 12/5/2016.
@@ -56,8 +49,7 @@ public class AgentListArrayAdapter extends BaseAdapter
 
     public AgentListArrayAdapter(Context context, int layoutResourceId,
                                  ArrayList<ShopDetail> shopDetails,
-                                 AgentListFragment.OnListAgentItemClick mOnListAgentItemClick)
-    {
+                                 AgentListFragment.OnListAgentItemClick mOnListAgentItemClick){
         //super(context, layoutResourceId, shopDetails);
         this.layoutResourceId = layoutResourceId;
         this.context  = context;
@@ -128,18 +120,18 @@ public class AgentListArrayAdapter extends BaseAdapter
         //ViewHolder viewHolder = new ViewHolder();
 
         //pengambilan ID component dari layout
-        viewHolder.agentServiceList       = (LinearLayout) rootView.findViewById(R.id.agent_service_list);
-        viewHolder.agentName       = (TextView)rootView.findViewById(R.id.agentName);
+        viewHolder.agentServiceList       = rootView.findViewById(R.id.agent_service_list);
+        viewHolder.agentName       = rootView.findViewById(R.id.agentName);
         //viewHolder.agentLastOnline = (TextView)rootView.findViewById(R.id.agentLastOnline);
         //viewHolder.agentAddress    = (TextView)rootView.findViewById(R.id.agentAddress);
-        viewHolder.agentProfilePic = (ImageView)rootView.findViewById(R.id.agentProfilePic);
+        viewHolder.agentProfilePic = rootView.findViewById(R.id.agentProfilePic);
         //viewHolder.agentRate = (ImageView)rootView.findViewById(R.id.agentRate);
-        viewHolder.agentDistance   = (TextView)rootView.findViewById(R.id.agentDistance);
+        viewHolder.agentDistance   = rootView.findViewById(R.id.agentDistance);
         //viewHolder.agentAvailable   = (TextView)rootView.findViewById(R.id.available);
-        viewHolder.tvCountTrx       = (TextView) rootView.findViewById(R.id.tvCountTrx);
-        viewHolder.ratingBar        = (RatingBar) rootView.findViewById(R.id.ratingBar);
+        viewHolder.tvCountTrx       = rootView.findViewById(R.id.tvCountTrx);
+        viewHolder.ratingBar        = rootView.findViewById(R.id.ratingBar);
 
-        viewHolder.agentMapBtn = (ImageView) rootView.findViewById(R.id.agentMapBtn);
+        viewHolder.agentMapBtn = rootView.findViewById(R.id.agentMapBtn);
         //viewHolder.agentMapBtn.setOnClickListener(this);
         //viewHolder.agentMapBtn.setOnClickListener(imgClickListener);
         viewHolder.agentMapBtn.setOnClickListener(new View.OnClickListener() {

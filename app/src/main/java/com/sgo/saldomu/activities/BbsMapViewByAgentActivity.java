@@ -638,12 +638,12 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         @Override
         protected Integer doInBackground(Void... params) {
 
-            HashMap<String, Object> query = new HashMap<>();
+            HashMap<String, Object> query = MyApiClient.googleDestination();
             query.put("origin", dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString());
-            query.put("sensor", "false");
-            query.put("units", "metric");
-            query.put("mode", DefineValue.GMAP_MODE);
-            query.put("language", Locale.getDefault().getLanguage());
+//            query.put("sensor", "false");
+//            query.put("units", "metric");
+//            query.put("mode", DefineValue.GMAP_MODE);
+//            query.put("language", Locale.getDefault().getLanguage());
             query.put("destination", targetLatitude.toString() + "," + targetLongitude.toString());
 
             String nextParams = "origin=" + dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString();
@@ -671,7 +671,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 //            String tempParams
             HashMap<String, Object> query, final int idx) {
 
-        RetrofitService.getInstance().QueryRequest(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
+        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
 //                        + "?" + tempParams,
                 new ObjListeners() {
                     @Override

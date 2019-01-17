@@ -120,7 +120,8 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
 
         //if ( shopDetails.size() > 0 )
         //{
-            agentListArrayAdapter = new AgentListArrayAdapter(activity, R.layout.agent_list_listview, this.shopDetails, mOnListAgentItemClick);
+            agentListArrayAdapter = new AgentListArrayAdapter(activity, R.layout.agent_list_listview
+                    , this.shopDetails, mOnListAgentItemClick);
             //agentListArrayAdapter.setAgentList(agentLocation);
             listView.setAdapter(agentListArrayAdapter);
 
