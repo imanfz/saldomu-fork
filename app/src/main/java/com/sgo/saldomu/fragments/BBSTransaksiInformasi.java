@@ -651,9 +651,20 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                         if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("TCASH")
                                                 && !source_product_code.equalsIgnoreCase("MANDIRILKD"))
                                             sentDataReqToken(model);
-                                        else changeToConfirmCashIn(model);
+                                        else
+                                        {
+                                            changeToConfirmCashIn(model);
+                                            isOwner = true;
+                                            changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
+                                                    model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
+                                                    model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name());
+                                        }
                                     } else {
                                         changeToConfirmCashIn(model);
+                                        isOwner = true;
+                                        changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
+                                                model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
+                                                model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name());
                                     }
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {

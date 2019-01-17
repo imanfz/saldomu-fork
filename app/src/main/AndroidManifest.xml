@@ -375,7 +375,11 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".activities.AskForMoneyActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.DenomSCADMActivity"
             android:windowSoftInputMode="stateAlwaysHidden"

@@ -41,6 +41,7 @@ import com.sgo.saldomu.Beans.navdrawmainmenuModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.ActivityProfileQr;
+import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
@@ -521,9 +522,12 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 if(levelClass.isLevel1QAC()) {
                    levelClass.showDialogLevel();
                 }else {
-                    newFragment = new FragAskForMoney();
-                    if (data != null && !data.isEmpty()) newFragment.setArguments(data);
-                    switchFragment(newFragment, getString(R.string.menu_item_title_ask_for_money));
+//                    newFragment = new FragAskForMoney();
+//                    if (data != null && !data.isEmpty()) newFragment.setArguments(data);
+//                    switchFragment(newFragment, getString(R.string.menu_item_title_ask_for_money));
+                    Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
+                    startActivity(i);
+                    break;
                 }
                 break;
             case MDAP:
