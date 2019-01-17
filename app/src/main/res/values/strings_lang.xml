@@ -185,7 +185,7 @@
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
-    <string name="menu_item_title_scadm">B2B Telko</string>
+    <string name="menu_item_title_scadm">B2B</string>
     <string name="menu_group_title_account">Akun</string>
     <string name="menu_item_title_my_profile">Profil Saya</string>
     <string name="menu_item_title_my_friends">Teman Saya</string>
@@ -1258,7 +1258,7 @@
     <string name="camer">No pictures</string>
     <string name="msg_error">Input errors, please check!</string>
 
-    <string name="scadm_join">Gabung Komunitas B2B Telko</string>
+    <string name="scadm_join">Gabung Komunitas B2B</string>
     <string name="scadm_topup">Bayar</string>
     <string name="scadm_denom">Beli Denom Telko</string>
     <string name="bank_product">Produk Bank</string>
