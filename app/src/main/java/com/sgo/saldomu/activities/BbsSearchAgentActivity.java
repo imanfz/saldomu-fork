@@ -1284,7 +1284,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            if ( progdialog.isShowing() )
+                                progdialog.dismiss();
                         }
 
                         @Override

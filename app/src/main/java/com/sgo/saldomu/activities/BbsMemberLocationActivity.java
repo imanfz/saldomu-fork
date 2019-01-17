@@ -423,7 +423,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                 });
     }
 
-    public void setAdministrativeName(boolean proceed) {
+    public void setAdministrativeName(final boolean proceed) {
 
         progdialog = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
 
