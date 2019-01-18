@@ -899,14 +899,21 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             String tempParams = nextParams;
             tempParams += "&destination=" + targetLatitude.toString() + "," + targetLongitude.toString();
 
-            getGoogleMapRoute(tempParams, 0);
+            HashMap<String, Object> query = MyApiClient.googleDestination();
+            query.put("origin", dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString());
+            query.put("destination", targetLatitude.toString() + "," + targetLongitude.toString());
+
+            getGoogleMapRoute(query, 0);
             return null;
         }
 
     }
 
-    public void getGoogleMapRoute(String tempParams, final int idx) {
-        RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE + "?" + tempParams,
+    public void getGoogleMapRoute(
+//            String tempParams
+            HashMap<String, Object> query, final int idx) {
+        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
+//                        + "?" + tempParams,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {

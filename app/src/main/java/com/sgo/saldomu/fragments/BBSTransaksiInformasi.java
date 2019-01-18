@@ -933,7 +933,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     else
                                         changeToConfirmCashIn(A2CModel);
                                 } else {
-                                    changeToConfirmCashout(model, A2CModel.getTx_product_code());
+                                    changeToConfirmCashout(A2CModel, A2CModel.getTx_product_code());
                                 }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();

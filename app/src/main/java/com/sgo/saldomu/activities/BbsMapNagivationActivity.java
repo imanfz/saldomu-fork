@@ -53,6 +53,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -393,15 +394,22 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
             String tempParams = nextParams;
             tempParams += "&destination=" + targetLatitude.toString() + "," + targetLongitude.toString();
 
-            getGoogleMapRoute(tempParams, 0);
+            HashMap<String, Object> query = MyApiClient.googleDestination();
+            query.put("destination", targetLatitude.toString() + "," + targetLongitude.toString());
+            query.put("origin", dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString());
+
+            getGoogleMapRoute(query, 0);
             return null;
         }
 
     }
 
-    public void getGoogleMapRoute(String tempParams, final int idx) {
+    public void getGoogleMapRoute(HashMap<String, Object> query
+//            String tempParams
+            , final int idx) {
 
-        RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE + "?" + tempParams,
+        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
+//                        + "?" + tempParams,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {
