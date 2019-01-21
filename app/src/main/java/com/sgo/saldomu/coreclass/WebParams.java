@@ -32,6 +32,7 @@ public class WebParams {
     public static String COUNT_RESEND = "count_resend";
 
     public static String PASSWORD_LOGIN = "password";
+    public static String FLAG_LOGIN = "flag_login";
     public static String USER_NAME = "user_name";
     public static String COMMUNITY= "community";
     public static String BUSS_SCHEME_NAME= "buss_scheme_name";
