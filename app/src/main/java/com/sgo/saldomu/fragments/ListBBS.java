@@ -149,7 +149,10 @@ public class ListBBS extends Fragment {
                     } else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_out))) {
                         posIdx = BBSActivity.TRANSACTION;
                         trxType = DefineValue.BBS_CASHOUT;
-                    } else {
+                    } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent)) ) {
+                        posIdx = BBSActivity.BBSONPROGRESSAGENT;
+                        trxType = DefineValue.INDEX;
+                    }else {
                         posIdx = -1;
                     }
                 } else {

@@ -92,16 +92,16 @@ public class SMSDialog extends Dialog {
         smsClass = new SMSclass(getContext());
         // set values for custom dialog components - text, image and button
 
-        img_view = (ImageView) findViewById(R.id.dialog_pic_msg);
-        progBar = (ProgressBar) findViewById(R.id.dialog_probar_inquiry);
-        progText = (TextView) findViewById(R.id.dialog_duration_inquiry);
-        tvMessage = (TextView) findViewById(R.id.message_dialog);
+        img_view = findViewById(R.id.dialog_pic_msg);
+        progBar = findViewById(R.id.dialog_probar_inquiry);
+        progText = findViewById(R.id.dialog_duration_inquiry);
+        tvMessage = findViewById(R.id.message_dialog);
 
         progBar.setMax(100);
 
         message1 = getContext().getString(R.string.appname) + " " + getContext().getString(R.string.dialog_sms_msg);
 
-        btnOk = (Button) findViewById(R.id.btn_dialog_ok);
+        btnOk = findViewById(R.id.btn_dialog_ok);
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,7 +130,7 @@ public class SMSDialog extends Dialog {
             }
         });
 
-        btnCancel = (Button) findViewById(R.id.btn_dialog_cancel);
+        btnCancel = findViewById(R.id.btn_dialog_cancel);
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -304,8 +304,6 @@ public class SMSDialog extends Dialog {
                                     }, 3000);
 
                                 } else {
-
-
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {

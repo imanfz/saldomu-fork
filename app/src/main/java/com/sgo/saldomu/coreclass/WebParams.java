@@ -255,6 +255,7 @@ public class WebParams {
     public static String CONTACT_DATA = "contact_data";
     public static String CONTACT_PHONE = "contact_phone";
     public static String CONTACT_EMAIL = "contact_email";
+    public static String CONTACT_WHATSAPP = "contact_whatsapp";
 
     public static String NO_HP = "no_hp";
     public static String ACCT_NO = "acct_no";
@@ -494,9 +495,13 @@ public class WebParams {
     public static String REJECT_KTP = "reject_ktp";
     public static String REJECT_FOTO = "reject_foto";
     public static String REJECT_TTD = "reject_ttd";
+    public static String REJECT_SIUP = "reject_siup";
+    public static String REJECT_NPWP = "reject_npwp";
     public static String REMARK_KTP = "remark_ktp";
     public static String REMARK_FOTO = "remark_foto";
     public static String REMARK_TTD = "remark_ttd";
+    public static String REMARK_SIUP = "remark_siup";
+    public static String REMARK_NPWP = "remark_npwp";
 
     public static String MAXIMUM_RATING = "maximum_rating";
     public static String DEFAULT_RATING = "default_rating";
@@ -508,6 +513,23 @@ public class WebParams {
     public static String BUSS_SCHEME_TITLE  = "buss_scheme_title";
     public static String TX_DESCRIPTION  = "tx_description";
     public static String TRANSFER_DATA  = "transfer_data";
+    public static String TRANSFER_TO  = "transfer_to";
     public static String BANK  = "bank";
     public static String ORDER_ID  = "order_id";
+    public static String REFERAL_NO  = "referral_no";
+    public static String LKD_PRODUCT_CODE  = "lkd_product_code";
+    public static String SOURCE_OF_FUND = "source_of_fund";
+    public static String IS_POS = "is_pos";
+    public static String MOBILE_PHONE = "mobile_phone";
+    public static String PHONE_DATA = "phone_data";
+    public static String FEE_DATA = "fee_data";
+    public static String PAYMENT_TYPE = "payment_type";
+    public static String PAYMENT_CODE = "payment_code";
+    public static String BUYER_FEE = "buyer_fee";
+    public static String SELLER_FEE = "seller_fee";
+    public static String COMMISSION_FEE = "commission_fee";
+    public static String MIN_AMOUNT = "min_amount";
+    public static String MAX_AMOUNT = "max_amount";
+
+
 }

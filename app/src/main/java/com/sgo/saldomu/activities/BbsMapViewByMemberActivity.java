@@ -508,7 +508,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             return;
 
         //progdialog              = DefinedDialog.CreateProgressDialog(this, "");
-        String extraSignature = txId + memberLatitude + memberLongitude;
+        String extraSignature = txId;
         RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_LOCATION_MEMBER,
                 userPhoneID, accessKey, extraSignature);
 

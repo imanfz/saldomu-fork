@@ -101,9 +101,11 @@ public class MyProfileNewActivity extends BaseActivity {
     private String listContactPhone = "";
     private String listAddress = "";
     private String contactCenter;
-    private String is_new_bulk, reject_KTP, reject_selfie, reject_ttd, respon_reject_ktp, respon_reject_selfie, respon_reject_ttd;
+    private String is_new_bulk, reject_KTP, reject_selfie, reject_ttd, respon_reject_ktp, respon_reject_selfie,
+            respon_reject_ttd, reject_npwp;
     private ProgressDialog progdialog;
     private PickAndCameraUtil pickAndCameraUtil;
+    private LinearLayout lytVerifiedMember;
 
     @Override
     protected int getLayoutResource() {
@@ -179,6 +181,7 @@ public class MyProfileNewActivity extends BaseActivity {
         is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
         is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
         reject_KTP = sp.getString(DefineValue.REJECT_KTP,"N");
+        reject_npwp = sp.getString(DefineValue.REJECT_NPWP,"N");
         reject_selfie = sp.getString(DefineValue.REJECT_FOTO,"N");
         reject_ttd = sp.getString(DefineValue.REJECT_TTD,"N");
         respon_reject_ktp = sp.getString(DefineValue.REMARK_KTP,"");
@@ -234,6 +237,8 @@ public class MyProfileNewActivity extends BaseActivity {
         cameraTTD = v.findViewById(R.id.camera_ttd);
         btn1 = v.findViewById(R.id.button1);
         btn2 = v.findViewById(R.id.button2);
+        lytVerifiedMember = v.findViewById(R.id.lyt_verifying_member);
+
         levelClass = new LevelClass(this,sp);
 
 //        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
@@ -267,8 +272,10 @@ public class MyProfileNewActivity extends BaseActivity {
                                 RESULT = MainPage.RESULT_FIRST_TIME;
                                 setResult(MainPage.RESULT_FIRST_TIME);
                                 finish();
-                            }else
-                                finish();
+                            }else{
+                                Intent intent1 = new Intent(MyProfileNewActivity.this, MainPage.class);
+                                startActivity(intent1);
+                            }
                         }
                     });
 
@@ -283,8 +290,8 @@ public class MyProfileNewActivity extends BaseActivity {
 
         if(levelClass.isLevel1QAC())
         {
-            btn1.setVisibility(View.VISIBLE);
-            dataVerifiedMember.setVisibility(View.GONE);
+            btn1.setVisibility(View.GONE);
+
         }
 
         if(!levelClass.isLevel1QAC() || is_agent)
@@ -307,6 +314,13 @@ public class MyProfileNewActivity extends BaseActivity {
         if (isUpgradeAgent && !is_agent)
         {
             DialogWaitingUpgradeAgent();
+        }
+
+        if (is_agent && reject_npwp.equalsIgnoreCase(""))
+        {
+            finish();
+            Intent intent1 = new Intent(MyProfileNewActivity.this, UpgradeAgentActivity.class);
+            startActivity(intent1);
         }
 
         dataMemberBasic.setOnClickListener(member_basic_click);
@@ -377,7 +391,7 @@ public class MyProfileNewActivity extends BaseActivity {
         else {
         setActionBarIcon(R.drawable.ic_arrow_left);
         }
-        setActionBarTitle(getString(R.string.myprofile_ab_title));
+        setActionBarTitle(getString(R.string.lbl_profil_saya));
     }
 
     @Override
@@ -542,6 +556,13 @@ public class MyProfileNewActivity extends BaseActivity {
         dedate = sp.getString(DefineValue.PROFILE_DOB, "");
         if (dedate.equals("")){
             tv_dob.setEnabled(true);
+            btn1.setVisibility(View.VISIBLE);
+
+        }else{
+            Timber.d("TEST Log lvl...."+levelClass.isLevel1QAC());
+            if(levelClass.isLevel1QAC() && !isRegisteredLevel){
+                lytVerifiedMember.setVisibility(View.VISIBLE);
+            }
         }
 
         if(!dedate.equals("")){
@@ -623,6 +644,8 @@ public class MyProfileNewActivity extends BaseActivity {
                             setLoginProfile(response);
                             Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
                             Timber.d("isi response Update Profile:"+ response.toString());
+
+
                             if (levelClass.isLevel1QAC()){
                                     android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
                                     builder1.setTitle(R.string.upgrade_member);
@@ -1059,7 +1082,7 @@ public class MyProfileNewActivity extends BaseActivity {
         dialognya.setCanceledOnTouchOutside(false);
         dialognya.setCancelable(false);
 
-        dialognya.show();
+//        dialognya.show();
     }
 
     private void DialogWaitingUpgradeAgent()
@@ -1078,7 +1101,7 @@ public class MyProfileNewActivity extends BaseActivity {
         dialognya.setCanceledOnTouchOutside(false);
         dialognya.setCancelable(false);
 
-        dialognya.show();
+//        dialognya.show();
     }
 
     private static boolean isValidEmail(CharSequence target) {
@@ -1156,6 +1179,9 @@ public class MyProfileNewActivity extends BaseActivity {
 
                             mEdit.apply();
                             DialogSuccessUploadPhoto();
+                            Toast.makeText(MyProfileNewActivity.this,"Selesai daftar",Toast.LENGTH_LONG).show();
+                            finish();
+
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);

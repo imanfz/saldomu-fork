@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -38,13 +39,18 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.navdrawmainmenuModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.ActivityProfileQr;
+import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
+import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
+import com.sgo.saldomu.activities.InfoHargaWebActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -52,13 +58,15 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.LevelClass;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.ShopCategory;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
@@ -117,6 +125,8 @@ public class NavigationDrawMenu extends ListFragment{
 
     public static final int MTARIKDANA = 26;
     public static final int MSCADM = 27;
+    public static final int MINFO = 28;
+    public static final int MTAGIH = 29;
 
     private static final int RC_GPS_REQUEST = 1;
 
@@ -144,7 +154,10 @@ public class NavigationDrawMenu extends ListFragment{
     private final int RESULT_CAMERA = 200;
     final int RC_CAMERA_STORAGE = 14;
     private PickAndCameraUtil pickAndCameraUtil;
+    Boolean isAgent;
     private String isRegisteredLevel; //saat antri untuk diverifikasi
+    String categoryIdcta;
+    ArrayList<ShopCategory> shopCategories = new ArrayList<>();
 
     Boolean isLevel1;
 
@@ -154,7 +167,6 @@ public class NavigationDrawMenu extends ListFragment{
         filter = new IntentFilter();
         filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         pickAndCameraUtil = new PickAndCameraUtil(getActivity(),this);
     }
 
@@ -171,7 +183,9 @@ public class NavigationDrawMenu extends ListFragment{
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         levelClass = new LevelClass(getActivity(),sp);
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL,"0");
+        categoryIdcta = sp.getString(DefineValue.CATEGORY_ID_CTA,"");
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
         ListView mListView = v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
@@ -238,8 +252,12 @@ public class NavigationDrawMenu extends ListFragment{
         llHeaderProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), MyProfileNewActivity.class);
-                switchActivity(i, MainPage.ACTIVITY_RESULT);
+
+                Intent i = new Intent(getActivity(), ActivityProfileQr.class);
+                startActivity(i);
+
+//                Intent i = new Intent(getActivity(), MyProfileNewActivity.class);
+//                switchActivity(i, MainPage.ACTIVITY_RESULT);
             }
         });
 
@@ -341,9 +359,10 @@ public class NavigationDrawMenu extends ListFragment{
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
-        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
-        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
-        else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
+//        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
+//        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
+//        else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
+        _url_profpic = sp.getString(DefineValue.IMG_URL, null);
 
         Timber.wtf("url prof pic:" + _url_profpic);
 
@@ -459,7 +478,8 @@ public class NavigationDrawMenu extends ListFragment{
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));                                        //10
         models.add(new navdrawmainmenuModel(R.drawable.ic_report,R.drawable.ic_report,getString(R.string.menu_item_title_report),MREPORT));              //6
         models.add(new navdrawmainmenuModel(R.drawable.ic_setting,R.drawable.ic_setting,getString(R.string.menu_item_title_setting),MSETTINGS));                    //11
-        models.add(new navdrawmainmenuModel(R.drawable.ic_help,R.drawable.ic_help,getString(R.string.menu_item_title_help),MHELP));                          //12
+        models.add(new navdrawmainmenuModel(R.drawable.ic_help,R.drawable.ic_help,getString(R.string.menu_item_title_help1),MHELP));                          //12
+        models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color,R.drawable.ic_buy_icon_color,getString(R.string.menu_item_title_info_harga),MINFO)); //28                         //15
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_logout)));                                        //13
         models.add(new navdrawmainmenuModel(R.drawable.ic_logout_icon,R.drawable.ic_logout_icon,getString(R.string.menu_item_title_logout),MLOGOUT));                 //14
 
@@ -511,10 +531,27 @@ public class NavigationDrawMenu extends ListFragment{
                 if(levelClass.isLevel1QAC()) {
                     levelClass.showDialogLevel();
                 }
-                else {
-                    newFragment = new ListCashOut();
-                    switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
+                else if (!levelClass.isLevel1QAC() && !isAgent)
+                {
+                        Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
+                        i.putExtra(DefineValue.CATEGORY_ID,categoryIdcta);
+                        i.putExtra(DefineValue.CATEGORY_NAME, "Setor Tunai");
+                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                        i.putExtra(DefineValue.AMOUNT, "");
+                        i.putExtra(DefineValue.BBS_SCHEME_CODE, "CTA");
+                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                        break;
+                }else if (isAgent)
+                {
+                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                    i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
                 }
+//                else {
+//                    newFragment = new ListCashOut();
+//                    switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
+//                }
                 break;
             case MSCADM:
                 newFragment = new FragSCADM();
@@ -534,13 +571,18 @@ public class NavigationDrawMenu extends ListFragment{
                 break;
             case MHELP:
                 newFragment = new ContactTab();
-                switchFragment(newFragment, getString(R.string.menu_item_title_help));
+                switchFragment(newFragment, getString(R.string.menu_item_title_help1));
                 break;
             case MBBS:
-                newFragment = new ListBBS();
-                if(data != null)
-                    newFragment.setArguments(data);
-                switchFragment(newFragment,getString(R.string.menu_item_title_bbs));
+                if (isAgent)
+                {
+                    newFragment = new ListBBS();
+                    if(data != null)
+                        newFragment.setArguments(data);
+                    switchFragment(newFragment,getString(R.string.menu_item_title_bbs));
+                }
+                else showDialogNotAgent();
+
                 break;
             case MLOGOUT:
                 AlertDialog.Builder alertbox=new AlertDialog.Builder(getActivity());
@@ -600,6 +642,9 @@ public class NavigationDrawMenu extends ListFragment{
                 break;
             case MMAPVIEWBYMEMBER:
                 startActivity(new Intent(getActivity(), BbsMapViewByMemberActivity.class));
+                break;
+            case MINFO:
+                startActivity(new Intent(getActivity(), InfoHargaWebActivity.class));
                 break;
         }
     }
@@ -900,5 +945,33 @@ public class NavigationDrawMenu extends ListFragment{
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public void showDialogNotAgent()
+    {
+        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_title),
+                getActivity().getString(R.string.level_dialog_message_agent), getActivity().getString(R.string.level_dialog_btn_ok),
+                getActivity().getString(R.string.cancel), false);
+        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent mI = new Intent(getActivity(), MyProfileNewActivity.class);
+                getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
+            }
+        });
+        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog_frag.dismiss();
+            }
+        });
+
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.add(dialog_frag,null);
+        ft.commitAllowingStateLoss();
     }
 }

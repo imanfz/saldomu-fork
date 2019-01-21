@@ -72,6 +72,39 @@
                 android:textSize="@dimen/abc_text_size_small_material" />
 
         </TableRow>
+
+        <TableRow android:id="@+id/tr_whatsapp"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:background="@drawable/cell_shape"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:minHeight="50dp"
+                >
+                <ImageView
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/whatsapp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                     />
+            </RelativeLayout>
+
+            <TextView
+                android:background="@drawable/cell_shape_white"
+                android:padding="10dp"
+                android:id="@+id/help_phone_whatsapp_value"
+                android:layout_weight="7"
+                android:layout_width="0dp"
+                android:minHeight="50dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+
+        </TableRow>
+
     </TableLayout>
 
 </LinearLayout>

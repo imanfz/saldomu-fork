@@ -146,6 +146,31 @@
             android:text="@string/termsncondition_checkbox_2"
             android:textColor="@color/white" />
 
+        <EditText
+            android:id="@+id/referal_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:enabled="true"
+            android:gravity="center_horizontal"
+            android:hint="@string/regist1_edithint_referal"
+            android:inputType="number"
+            android:maxLength="80"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/grey_1000w"
+            android:textColorHint="@color/semi_white_transparant"
+            android:textSize="@dimen/abc_text_size_medium_material"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="*Tidak wajib diisi"
+            android:textSize="12dp"
+            android:textColor="@color/white"/>
+
 
         <com.balysv.materialripple.MaterialRippleLayout
             android:layout_width="wrap_content"
@@ -174,6 +199,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@drawable/color_selector" />
         </com.balysv.materialripple.MaterialRippleLayout>
+
     </LinearLayout>
 
     <FrameLayout android:layout_width="fill_parent"

@@ -222,6 +222,7 @@ public class MyApiClient {
 
     public static String LINK_RESEND_TOKEN_LKD;
     public static String LINK_BBS_CITY;
+    public static String LINK_BBS_BIRTH_PLACE;
     public static String LINK_GLOBAL_BBS_COMM;
     public static String LINK_GLOBAL_BBS_BANK_C2A;
     public static String LINK_GLOBAL_BBS_INSERT_C2A;
@@ -262,6 +263,10 @@ public class MyApiClient {
     public static String LINK_GET_LIST_BANK_DENOM_SCADM;
     public static String LINK_GET_DENOM_LIST;
     public static String LINK_GET_DENOM_INVOKE;
+    public static String LINK_BBS_SEND_DATA_LKD;
+    public static String LINK_BBS_MANDIRI_LKD;
+    public static String LINK_CANCEL_TRANSACTION_DGI;
+    public static String LINK_LIST_INVOICE_DGI;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -378,7 +383,7 @@ public class MyApiClient {
         LINK_BANKCASHOUT    = headaddressfinal + "BankCashout/Retrieve";
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
         if(BuildConfig.IS_PROD_DOMAIN)
-            LINK_INQUIRY_SMS   = "https://mobile.goworld.asia/hpku/" + "InquirySMS/Retrieve";
+            LINK_INQUIRY_SMS   = "https://mobile.saldomu.com/saldomu/" + "InquirySMS/Retrieve";
 //            LINK_INQUIRY_SMS   = "https://mobile.espay.id/hpku/" + "InquirySMS/Retrieve";
         else
             LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
@@ -396,6 +401,7 @@ public class MyApiClient {
         LINK_BBS_JOIN_AGENT = headaddressfinal + "BBSJoinAgent/Invoke";
         LINK_BBS_REQ_ACCT = headaddressfinal + "BBSRegAcct/Invoke";
         LINK_BBS_GLOBAL_COMM = headaddressfinal + "GlobalComm/Retrieve";
+        LINK_BBS_BIRTH_PLACE = headaddressfinal + "ServiceBBSBirthPlace/Retrieve";
         LINK_TRX_STATUS_BBS = headaddressfinal + "TrxBBSStatus/Retrieve";
         LINK_GLOBAL_BBS_BANK_A2C = headaddressfinal + "GlobalBBSBankA2C/Retrieve";
         LINK_GLOBAL_BBS_INSERT_A2C = headaddressfinal + "GlobalBBSInsertA2C/Invoke";
@@ -415,13 +421,20 @@ public class MyApiClient {
         LINK_GET_LIST_BANK_DENOM_SCADM = headaddressfinal +"scadm/ListBank/Denom";
         LINK_GET_DENOM_LIST = headaddressfinal +"scadm/ListDenom/Retrieve";
         LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
+        LINK_BBS_SEND_DATA_LKD = headaddressfinal +"BBSTrxCustomer/Submit";
+        LINK_BBS_MANDIRI_LKD = headaddressfinal +"RegAgentLKD/Invoke";
+
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
+//        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
         LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey+"&language=id";
 
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
         LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
+
+        LINK_LIST_INVOICE_DGI = headaddressfinal +"invoice/Listinv/Retrieve";
+        LINK_CANCEL_TRANSACTION_DGI = headaddressfinal + "invoice/Canceltrx/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
 //        if(PROD_FLAG_ADDRESS)
@@ -446,13 +459,13 @@ public class MyApiClient {
     }
 
 
-    public static String URL_HELP_DEV = "https://mobile-dev.espay.id/static/pages/help/";
+    public static String URL_HELP_DEV = "https://mobile-dev.saldomu.com/static/pages/help/";
     public static String URL_FAQ;
-    public static String URL_FAQ_PROD = "https://mobile.espay.id/static/pages/help/pin_faq_saldomu.html";
+    public static String URL_FAQ_PROD = "https://mobile.saldomu.com/static/pages/help/pin_faq_saldomu.html";
     public static String URL_FAQ_DEV = URL_HELP_DEV +"pin_faq_saldomu.html";
 
     public static String URL_TERMS;
-    public static String URL_TERMS_PROD = "https://mobile.espay.id/static/pages/help/pin_terms_conditions_id_saldomu.html";
+    public static String URL_TERMS_PROD = "https://mobile.saldomu.com/static/pages/help/pin_terms_conditions_id_saldomu.html";
     public static String URL_TERMS_DEV = URL_HELP_DEV +"pin_terms_conditions_id_saldomu.html";
 
 
@@ -514,7 +527,7 @@ public class MyApiClient {
     }
 
     public static String getWebserviceName(String link){
-        return link.substring(link.indexOf("saldomu"));
+        return link.substring(link.indexOf("saldomu/"));
     }
 
     public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key ){
@@ -543,9 +556,9 @@ public class MyApiClient {
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id + extraSignature;
-//        Timber.d("isi access_key :" + access_key);
+        Timber.d("isi access_key :" + access_key);
 
-//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
+        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
 
         String hash = SHA.SHA256(access_key,msgnya);
 
@@ -757,7 +770,7 @@ public class MyApiClient {
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
             // your trusted certificates
-            InputStream in = getmContext().getResources().openRawResource(R.raw.espayid);
+            InputStream in = getmContext().getResources().openRawResource(R.raw.saldomucom);
             try {
                 // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
@@ -1537,6 +1550,7 @@ public class MyApiClient {
 
     public static void getBillerType(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address Get Biller Type: %1$s ",LINK_GET_BILLER_TYPE);
+        Timber.d("param get biller type : ", params);
         post(mContext, LINK_GET_BILLER_TYPE, params, responseHandler);
     }
 
@@ -1598,6 +1612,33 @@ public class MyApiClient {
         post(mContext, LINK_GET_DENOM_INVOKE, params, responseHandler);
     }
 
+    public static void getBBSSendDataLKD(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs send data lkd: %1$s ",LINK_BBS_SEND_DATA_LKD);
+        post(mContext, LINK_BBS_SEND_DATA_LKD, params, responseHandler);
+    }
+
+    public static void sentDataMemberMandiriLKD(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs data member mandiri lkd: %1$s ",LINK_BBS_MANDIRI_LKD);
+        post(mContext, LINK_BBS_MANDIRI_LKD, params, responseHandler);
+    }
+
+    public static void cancelTransactionDGI(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address cancel transaction DGI: %1$s ",LINK_CANCEL_TRANSACTION_DGI);
+        post(mContext, LINK_CANCEL_TRANSACTION_DGI, params, responseHandler);
+    }
+
+    public static void inputDataDGI (Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address list invoice DGI: %1$s ",LINK_LIST_INVOICE_DGI);
+        post(mContext, LINK_LIST_INVOICE_DGI, params, responseHandler);
+    }
+
+    public static void getBBSBirthPlace(Context mContext, Boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address getBBSBirthPlace: %1$s ",LINK_BBS_BIRTH_PLACE);
+        if(isSync)
+            postSync(mContext,LINK_BBS_BIRTH_PLACE, params, responseHandler);
+        else
+            post(mContext,LINK_BBS_BIRTH_PLACE, params, responseHandler);
+    }
     //get Data------------------------------------------------------------------------------------------
 
 

@@ -9,6 +9,7 @@ public class HelpModel {
     private String desc;
     private String phone;
     private String mail;
+    private String whatsappPhone;
 
     public String getDesc() {
         return desc;
@@ -48,5 +49,13 @@ public class HelpModel {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getWhatsappPhone() {
+        return whatsappPhone;
+    }
+
+    public void setWhatsappPhone(String whatsappPhone) {
+        this.whatsappPhone = whatsappPhone;
     }
 }

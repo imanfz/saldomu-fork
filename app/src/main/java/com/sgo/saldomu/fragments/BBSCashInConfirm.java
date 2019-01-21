@@ -36,8 +36,8 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -360,6 +360,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
+//            DialogSignature dialogSignature;
             if(InetHandler.isNetworkAvailable(getActivity())){
                 btnSubmit.setEnabled(false);
                 if(isSMS) {
@@ -403,11 +404,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             }
                             layout_btn_resend.setVisibility(View.GONE);
                             validasiNomor = true;
-//                        if(InetHandler.isNetworkAvailable(getActivity())){
-//                            requestResendToken();
-//                        }
-//                        else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
-
                         }
 
                     }else sentInsertTransTopup(tokenValue.getText().toString());
@@ -433,7 +429,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
-
+    
     Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {

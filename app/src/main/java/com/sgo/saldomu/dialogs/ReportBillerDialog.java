@@ -276,7 +276,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_fee_value = inflated.findViewById(R.id.dialog_reportbbs_fee_value);
                     TextView tv_total_amount_value = inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
                     TextView tv_member_shop_phone = inflated.findViewById(R.id.dialog_reportbbs_member_shop_phone);
+                    Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
+                    tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                    if (!isSuccess) {
+                        String transRemark = args.getString(DefineValue.TRX_REMARK);
+                        tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                        tv_trans_remark_sub.setText(transRemark);
+                    }
                     tv_transaction_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                     tv_userid_value.setText(args.getString(DefineValue.MEMBER_PHONE));
                     tv_name_value.setText(args.getString(DefineValue.MEMBER_NAME));
@@ -284,6 +291,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     if (args.getBoolean(DefineValue.IS_REPORT) == false && !args.getString(DefineValue.OTP_MEMBER).isEmpty()) {
                         tv_kode.setVisibility(View.VISIBLE);
                         tv_token_value.setVisibility(View.VISIBLE);
+                    }else if(args.getBoolean(DefineValue.IS_REPORT)== true && !args.getString(DefineValue.TOKEN_ID).isEmpty())
+                    {
+                        tv_kode.setVisibility(View.VISIBLE);
+                        tv_token_value.setVisibility(View.VISIBLE);
+                        tv_token_value.setText(args.getString(DefineValue.TOKEN_ID));
                     }
                     tv_source_bank_name_value.setText(args.getString(DefineValue.SOURCE_ACCT));
                     tv_source_acc_no_value.setText(args.getString(DefineValue.MEMBER_SHOP_NO));
@@ -521,7 +533,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     mLayoutFailed.setVisibility(View.VISIBLE);
                     tv_error_recipient_value.setText(args.getString(DefineValue.RECIPIENTS_ERROR));
                 }
-            } else if (buss_scheme_code.equals("OR")) {
+            } else if (buss_scheme_code.equals("OR") || buss_scheme_code.equals("ORP")) {
 //                    laporan transfer yg out
 
                 stub.setLayoutResource(R.layout.layout_dialog_report_transaction);

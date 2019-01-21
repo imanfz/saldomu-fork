@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/myprofile_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/windowBackgroundColor"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/card_bk"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleColor="@color/white"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            app:mrl_rippleOverlay="true">
+
+            <Button
+                android:id="@+id/btn_cancel_mandirilkd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_transparant"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/colorPrimaryDark" />
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/card_bk"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleColor="@color/white"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            app:mrl_rippleOverlay="true">
+
+            <Button
+                android:id="@+id/btn_submit_data_mandirilkd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_transparant"
+                android:gravity="center"
+                android:text="@string/proses"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/colorPrimaryDark" />
+        </com.balysv.materialripple.MaterialRippleLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/myprofile_bottom_layout"
+        android:layout_below="@id/main_toolbar"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarStyle="insideOverlay"
+        android:background="@color/grey_1000w">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="6dp"
+            android:background="@color/grey_1000w"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NIK"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/socialId_value"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+                    android:inputType="number"
+                    android:maxLength="16"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lkd_benef_name"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/name_mandiriLKD"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:inputType="text"
+                    android:maxLength="100"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/myprofile_text_address"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/address_value"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:inputType="text"
+                    android:maxLength="150"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                android:id="@+id/layout_tempat_lahir"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/myprofile_text_pob"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/mandiriLKD_pob"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                    android:hint="Pilih Kota Tempat Lahir"
+                    android:inputType="textCapWords"
+                    android:maxLength="30"
+                    android:paddingLeft="10dp"
+                    android:textSize="@dimen/abc_text_size_medium_material">
+                    <requestFocus />
+                </AutoCompleteTextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                android:id="@+id/layout_tanggal_lahir"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/myprofile_text_bod"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/dob_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="4dp"
+                    android:clickable="true"
+                    android:text="@string/myprofile_text_date_click"
+                    android:textColor="@color/grey_500"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nomor Handphone"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/noHP_value"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:inputType="number"
+                    android:maxLength="@integer/et_address"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical">
+                <TextView android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sumber Dana"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    />
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/datalkd_sumber_dana"
+                    android:layout_gravity="right"
+                    android:gravity="right"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/et_sumber_dana"
+                    android:maxLength="100"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>
