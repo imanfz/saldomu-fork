@@ -9,6 +9,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -467,6 +468,16 @@ public class MyApiClient {
         return query;
     }
 
+    public static HashMap<String, Object> googleDestination() {
+        HashMap<String, Object> query = new HashMap<>();
+        query.put("sensor", false);
+        query.put("units", "metric");
+        query.put("mode", DefineValue.GMAP_MODE);
+        query.put("language", Locale.getDefault().getLanguage());
+        query.put("key", getInstance().getmContext().getString(R.string.google_maps_key));
+        return query;
+    }
+
     public static String URL_HELP_DEV = "https://mobile-dev.saldomu.com/static/pages/help/";
     public static String URL_FAQ;
     public static String URL_FAQ_PROD = "https://mobile.saldomu.com/static/pages/help/pin_faq_saldomu.html";
@@ -486,7 +497,7 @@ public class MyApiClient {
     public static String LINK_SEARCH_TOKO = headaodaddressfinal + "Agent/Retrieve";
     public static String LINK_REGISTER_OPEN_CLOSE_TOKO = headaodaddressfinal + "Membershop/Registeropenclosed";
     public static String LINK_UPDATE_CLOSE_SHOP_TODAY = headaodaddressfinal + "Manage/UpdateClosedShopToday";
-    public static String LINK_GOOGLE_MAP_API_ROUTE = "http://maps.googleapis.com/maps/api/directions/json";
+    public static String LINK_GOOGLE_MAP_API_ROUTE = "https://maps.googleapis.com/maps/api/directions/json";
     public static String LINK_TRANSACTION_AGENT = headaodaddressfinal + "Transaction/Retrieve";
     public static String LINK_UPDATE_APPROVAL_TRX_AGENT = headaodaddressfinal + "Transaction/Updatetransaction";
     public static String LINK_UPDATE_LOCATION_AGENT = headaodaddressfinal + "Transaction/Updateagent";

@@ -592,6 +592,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                 final BBSTransModel model = getGson().fromJson(object, BBSTransModel.class);
 
                                 String code = model.getError_code();
+
+                                dismissProgressDialog();
                                 if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282")) {
 
                                     SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -874,6 +876,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                             final BBSTransModel model = getGson().fromJson(object, BBSTransModel.class);
 
                             String code = model.getError_code();
+
+                            dismissProgressDialog();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -944,7 +948,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     else
                                         changeToConfirmCashIn(A2CModel);
                                 } else {
-                                    changeToConfirmCashout(model, A2CModel.getTx_product_code());
+                                    changeToConfirmCashout(A2CModel, A2CModel.getTx_product_code());
                                 }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();

@@ -545,6 +545,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                         try {
 
                             String code = response.getString(WebParams.ERROR_CODE);
+
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 if ( flagTxStatus.equals(DefineValue.STRING_ACCEPT) ) {
@@ -588,7 +589,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        progdialog2.dismiss();
                     }
 
                     @Override

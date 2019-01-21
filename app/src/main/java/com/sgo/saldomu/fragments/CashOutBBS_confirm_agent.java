@@ -194,6 +194,9 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
+
+                            progdialog.dismiss();
+
                             jsonModel response = getGson().fromJson(object, jsonModel.class);
 
                             String code = response.getError_code();
@@ -292,6 +295,7 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
                                 Timber.d("isi error sentRetryToken:" + response.toString());
                                 String code_msg = response.getError_message();
                                 Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                progdialog.dismiss();
                             }
                         }
 

@@ -464,7 +464,7 @@ public class RetrofitService {
     public void PostObjectRequestDebounce(String link, HashMap<String, Object> param, final ResponseListener listener) {
         BuildRetrofit2().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .retry(20)
+                .retry(2)
                 .debounce(2, TimeUnit.SECONDS)
                 .subscribe(new Observer<JsonObject>() {
                     @Override
