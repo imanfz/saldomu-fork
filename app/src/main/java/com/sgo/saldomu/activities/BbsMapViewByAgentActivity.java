@@ -49,10 +49,12 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
+import com.sgo.saldomu.coreclass.Singleton.InterfaceManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ConfirmDialogInterface;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -549,11 +551,16 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                 //progdialog.dismiss();
 
                                 code = response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-
-                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                                startActivity(intent);
-                                finish();
+//                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                InterfaceManager.showConfirmDialog(BbsMapViewByAgentActivity.this, code,
+                                        new ConfirmDialogInterface() {
+                                            @Override
+                                            public void OnOK() {
+                                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        });
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -926,17 +933,23 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                         finish();
                                     }
 
-
-                                } else {
-                                    Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
-
-                                    Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(intent);
-                                    finish();
                                 }
-
                                 handler.removeCallbacks(runnable2);
+                            }else {
+//                                Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+
+                                InterfaceManager.showConfirmDialog(BbsMapViewByAgentActivity.this,
+                                        response.getString(WebParams.ERROR_MESSAGE),
+                                        new ConfirmDialogInterface() {
+                                            @Override
+                                            public void OnOK() {
+                                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        });
+
                             }
 
                         } catch (JSONException e) {

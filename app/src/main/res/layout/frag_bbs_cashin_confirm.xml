@@ -280,7 +280,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="6dp"
-                    android:id="@+id/tb_name_benef">
+                    android:id="@+id/tb_name_benef"
+                    android:paddingRight="20dp">
 
                     <TextView
                         android:layout_weight="1"

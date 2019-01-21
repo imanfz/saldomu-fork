@@ -289,7 +289,6 @@ public class RetrofitService {
         return builder.build();
     }
 
-
     private static CertificatePinner certificatePinner
             = new CertificatePinner.Builder()
             .add(hostname, "sha256/UUsUINnnxiyFSr9zQdrGG9kfl9er17hIN56rmbF1LMg=")
@@ -308,6 +307,10 @@ public class RetrofitService {
 
     public HashMap<String, Object> getSignatureSecretKey(String linknya, String extraSignature) {
         return getSignatures(MyApiClient.COMM_ID, "", linknya, BuildConfig.SECRET_KEY, extraSignature);
+    }
+
+    public HashMap<String, Object> getSignatureSecretKeyPIN(String linknya, String extraSignature, String userid) {
+        return getSignatures(MyApiClient.COMM_ID, userid, linknya, BuildConfig.SECRET_KEY, extraSignature);
     }
 
     public HashMap<String, Object> getSignature(String linknya) {
