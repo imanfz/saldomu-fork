@@ -293,7 +293,8 @@ public final class TabBuyItem extends ListFragment {
         Intent i = new Intent(getActivity(), BillerActivity.class);
         i.putExtra(DefineValue.BILLER_TYPE,_biller_type);
         i.putExtra(DefineValue.BILLER_NAME,_biller_name);
-        switchActivity(i);
+        startActivity(i);
+
     }
 
     private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack){

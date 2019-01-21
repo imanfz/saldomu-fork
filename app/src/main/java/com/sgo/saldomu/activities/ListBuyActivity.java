@@ -1,30 +1,24 @@
-package com.sgo.saldomu.fragments;
+package com.sgo.saldomu.activities;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Account_Collection_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.BuyFragmentTabAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.dialogs.InformationDialog;
+import com.sgo.saldomu.fragments.ListBuyRF;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
@@ -33,10 +27,11 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 
-/*
-  Created by Administrator on 1/30/2015.
+/**
+ * Created by Lenovo Thinkpad on 12/11/2017.
  */
-public class ListBuy extends Fragment {
+
+public class ListBuyActivity extends BaseActivity {
 
     private View v;
     private View layout_empty;
@@ -48,53 +43,33 @@ public class ListBuy extends Fragment {
     private RealmChangeListener realmListener;
     private ArrayList<String> Title_tab;
     private SecurePreferences sp;
-//    String userID,accessKey;
-
     private InformationDialog dialogI;
-
     private Realm realm;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-//        v = inflater.inflate(R.layout.frag_list_buy, container, false);
-        v = inflater.inflate(R.layout.activity_list_buy, container, false);
+    protected int getLayoutResource() {
+        return R.layout.activity_list_buy;
+    }
 
-        return v;
+    public void InitializeToolbar(){
+        setActionBarIcon(R.drawable.ic_arrow_left);
+        setActionBarTitle(getString(R.string.menu_item_title_buy));
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.information, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        switch(item.getItemId())
-        {
-            case R.id.action_information:
-                if(!dialogI.isAdded())
-                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        InitializeToolbar();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        super.onActivityCreated(savedInstanceState);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
 
-        tabs = v.findViewById(R.id.buy_tabs);
-        pager = v.findViewById(R.id.buy_pager);
-        layout_empty = v.findViewById(R.id.empty_layout);
+        tabs = (TabPageIndicator)findViewById(R.id.buy_tabs);
+        pager = (ViewPager) findViewById(R.id.buy_pager);
+        layout_empty = findViewById(R.id.empty_layout);
 
         layout_empty.setVisibility(View.GONE);
-        Button btn_refresh = layout_empty.findViewById(R.id.btnRefresh);
+        Button btn_refresh = (Button) layout_empty.findViewById(R.id.btnRefresh);
         btn_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,37 +79,10 @@ public class ListBuy extends Fragment {
 
         pager.setPageMargin(pageMargin);
         dialogI = InformationDialog.newInstance(8);
-        dialogI.setTargetFragment(this,0);
+//        dialogI.setTargetFragment(this,0);
         realm = Realm.getInstance(RealmManager.BillerConfiguration);
-
-//        // auto updater realm biller
-//        FragmentManager fm = getFragmentManager();
-//        // Check to see if we have retained the worker fragment.
-//        mWorkFragment = (ListBuyRF) fm.findFragmentByTag(ListBuyRF.LISTBUYRF_TAG);
-//        // If not retained (or first time running), we need to create it.
-//        if (mWorkFragment == null) {
-//            mWorkFragment = new ListBuyRF();
-//            // Tell it who it is working with.
-//            mWorkFragment.setTargetFragment(this, 0);
-//            fm.beginTransaction().add(mWorkFragment, ListBuyRF.LISTBUYRF_TAG).commit();
-//        }
-//        else
-//            mWorkFragment.getDataBiller();
-//
-//        realmListener = new RealmChangeListener() {
-//            @Override
-//            public void onChange() {
-//                if(isVisible()){
-////                    Timber.d("masukk realm listener gannnn");
-//                }
-//            }};
-//        realm.addChangeListener(realmListener);
-
         initializeData();
-
     }
-
-
 
     private void initializeData(){
 
@@ -169,7 +117,7 @@ public class ListBuy extends Fragment {
         else
             layout_empty.setVisibility(View.GONE);
 
-        adapternya = new BuyFragmentTabAdapter(getChildFragmentManager(),getActivity(),Title_tab);
+        adapternya = new BuyFragmentTabAdapter(getSupportFragmentManager(),this,Title_tab);
         pager.setAdapter(adapternya);
         tabs.setViewPager(pager);
         if(out != null && out.isShowing())
@@ -186,13 +134,6 @@ public class ListBuy extends Fragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-//        setTargetFragment(null, -1);
-//        cleanupRetainInstanceFragment();
-    }
-
-    @Override
     public void onDestroy() {
         if(!realm.isInTransaction() && !realm.isClosed()) {
 //            realm.removeChangeListener(realmListener);
@@ -201,10 +142,24 @@ public class ListBuy extends Fragment {
         super.onDestroy();
     }
 
-    public void cleanupRetainInstanceFragment() {
-        if(!getActivity().isFinishing()) {
-            FragmentManager fm = getFragmentManager();
-            fm.beginTransaction().remove(this.mWorkFragment).commitAllowingStateLoss();
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.action_information:
+                if(!dialogI.isAdded())
+                    dialogI.show(this.getSupportFragmentManager(), InformationDialog.TAG);
+                return true;
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
     }
 }

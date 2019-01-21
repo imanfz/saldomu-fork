@@ -592,6 +592,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                 final BBSTransModel model = getGson().fromJson(object, BBSTransModel.class);
 
                                 String code = model.getError_code();
+                                Log.d("response insert c2a: " ,model.toString());
 
                                 dismissProgressDialog();
                                 if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282")) {
@@ -651,9 +652,12 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                             smsDialog.show();
                                     } else if (source_product_h2h.equalsIgnoreCase("Y") && source_product_type.equalsIgnoreCase(DefineValue.EMO)) {
                                         if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("TCASH")
-                                                && !source_product_code.equalsIgnoreCase("MANDIRILKD"))
-                                            sentDataReqToken(model);
-                                        else
+                                                && !source_product_code.equalsIgnoreCase("MANDIRILKD")) {
+//                                            sentDataReqToken(model);
+                                            changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
+                                                    model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
+                                                    model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name());
+                                        }else
                                         {
                                             changeToConfirmCashIn(model);
                                             isOwner = true;
@@ -1121,8 +1125,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
         if (TCASHValidation != null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
-        if (MandiriLKDValidation != null)
-            mArgs.putBoolean(DefineValue.MANDIRI_LKD_VALIDATION, MandiriLKDValidation);
+//        if (MandiriLKDValidation != null)
+//            mArgs.putBoolean(DefineValue.MANDIRI_LKD_VALIDATION, MandiriLKDValidation);
         if (code_success != null)
             mArgs.putBoolean(DefineValue.CODE_SUCCESS, code_success);
         btnNext.setEnabled(true);

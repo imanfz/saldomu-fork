@@ -37,6 +37,7 @@ import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
+import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.adapter.GridHome;
@@ -390,7 +391,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         switchActivity(i, MainPage.ACTIVITY_RESULT);
                     }
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_buy))) {
-                    switchMenu(NavigationDrawMenu.MBUY, null);
+//                    switchMenu(NavigationDrawMenu.MBUY, null);
+                    Intent i = new Intent(getActivity(), ListBuyActivity.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_report))) {
                     switchMenu(NavigationDrawMenu.MREPORT, null);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
