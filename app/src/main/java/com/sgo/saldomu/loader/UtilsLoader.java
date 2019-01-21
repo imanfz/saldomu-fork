@@ -149,11 +149,26 @@ public class UtilsLoader {
     }
 
     public void getFailedPIN(String user_id, final OnLoadDataListener mListener) {
+        HashMap<String, Object> params = RetrofitService.getInstance()
+                .getSignature(MyApiClient.LINK_GET_FAILED_PIN);
+        params.put(WebParams.USER_ID, user_id);
+        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+
+        getFailedPIN(params, mListener);
+    }
+
+    public void getFailedPINNo(String user_id, final OnLoadDataListener mListener) {
+        HashMap<String, Object> params = RetrofitService.getInstance()
+                .getSignatureSecretKey(MyApiClient.LINK_GET_FAILED_PIN, "");
+        params.put(WebParams.USER_ID, user_id);
+        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+        params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_NO);
+
+        getFailedPIN(params, mListener);
+    }
+
+    void getFailedPIN(HashMap<String, Object> params, final OnLoadDataListener mListener){
         try {
-            HashMap<String, Object> params = RetrofitService.getInstance()
-                    .getSignature(MyApiClient.LINK_GET_FAILED_PIN);
-            params.put(WebParams.USER_ID, user_id);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params get FailedPin Loader:" + params.toString());
 

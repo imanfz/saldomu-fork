@@ -64,23 +64,45 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         if(userId.isEmpty())
             userId = getIntent().getExtras().getString(DefineValue.USERID_PHONE,"");
 
-        new UtilsLoader(this,sp).getFailedPIN(userId, new OnLoadDataListener() {
-            @Override
-            public void onSuccess(Object deData) {
-                String _dedata = String.valueOf(deData);
-                setTextAttempt(_dedata);
-            }
+        String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
 
-            @Override
-            public void onFail(Bundle message) {
+        if (flagLogin.equalsIgnoreCase(DefineValue.STRING_NO)){
+            new UtilsLoader(this,sp).getFailedPINNo(userId, new OnLoadDataListener() {
+                @Override
+                public void onSuccess(Object deData) {
+                    String _dedata = String.valueOf(deData);
+                    setTextAttempt(_dedata);
+                }
 
-            }
+                @Override
+                public void onFail(Bundle message) {
 
-            @Override
-            public void onFailure(String message) {
+                }
 
-            }
-        });
+                @Override
+                public void onFailure(String message) {
+
+                }
+            });
+        }else {
+            new UtilsLoader(this,sp).getFailedPIN(userId, new OnLoadDataListener() {
+                @Override
+                public void onSuccess(Object deData) {
+                    String _dedata = String.valueOf(deData);
+                    setTextAttempt(_dedata);
+                }
+
+                @Override
+                public void onFail(Bundle message) {
+
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+            });
+        }
 
         InitializeToolbar();
 
