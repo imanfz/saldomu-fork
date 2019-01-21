@@ -154,47 +154,54 @@
                     android:text="Selanjutnya"
                     android:textColor="@color/white" />
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@color/colorPrimaryDark"
-                android:layout_marginBottom="10dp"/>
+
             <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="horizontal"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="15dp"
-                android:paddingTop="5dp"
-                android:id="@+id/verified_member_layout">
-
-                <TextView
-                    android:id="@+id/group_title2"
-                    android:layout_width="0dp"
+                android:id="@+id/lyt_verifying_member"
+                android:visibility="gone"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_marginBottom="10dp"/>
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_weight="2.81"
-                    android:maxLines="1"
-                    android:text="@string/data_verified_member"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
-                    android:textStyle="bold" />
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="5dp"
+                    android:id="@+id/verified_member_layout">
 
-                <!--<ImageView-->
+                    <TextView
+                        android:id="@+id/group_title2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_weight="2.81"
+                        android:maxLines="1"
+                        android:text="@string/data_verified_member"
+                        android:textColor="@color/black"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <!--<ImageView-->
                     <!--android:layout_width="wrap_content"-->
                     <!--android:layout_height="wrap_content"-->
                     <!--android:id="@+id/triangle1"-->
                     <!--android:src="@drawable/triangle_close"-->
                     <!--android:layout_gravity="right|center_vertical"-->
                     <!--/>-->
-            </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@color/colorPrimaryDark"
-                android:layout_marginBottom="15dp"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_marginBottom="15dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -265,7 +272,7 @@
                             android:minWidth="200dp"
                             android:progress="1"
                             android:max="100"
-                           />
+                            />
 
                     </RelativeLayout>
 
@@ -417,6 +424,8 @@
                         android:textColor="@color/white" />
 
                 </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

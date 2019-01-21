@@ -59,8 +59,8 @@ public class UpdateBBSCity extends IntentService {
 
     private void getListBBSCity(){
         try{
-            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_CITY,
-                    BuildConfig.SECRET_KEY);
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_CITY, BuildConfig.SECRET_KEY);
+            Timber.d("isi params BBS city " +params.toString());
 
             MyApiClient.getBBSCity(this,true, params, new JsonHttpResponseHandler() {
                 @Override

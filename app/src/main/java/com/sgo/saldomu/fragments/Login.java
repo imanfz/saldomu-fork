@@ -30,6 +30,7 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.ScanQRUtils;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -49,7 +50,7 @@ import timber.log.Timber;
  */
 public class Login extends BaseFragment implements View.OnClickListener {
 
-    private String userIDfinale = null;
+    private String userIDfinale = null, is_pos;
     private Button btnforgetPass;
     private Button btnRegister;
     private EditText userIDValue;
@@ -73,6 +74,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         super.onActivityCreated(savedInstanceState);
 
         argsBundleNextLogin = getArguments();
+
 
         userIDValue = (EditText) v.findViewById(R.id.userID_value);
         passLoginValue = (EditText) v.findViewById(R.id.passLogin_value);
@@ -98,11 +100,30 @@ public class Login extends BaseFragment implements View.OnClickListener {
             userIDValue.setText(userIDfinale);
         }
 
+        Bundle m = getArguments();
+
         if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){ //untuk shorcut dari tombol di activity LoginActivity
-            Bundle m = getArguments();
             if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
                 getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
             }
+            userIDValue.setEnabled(true);
+        }
+
+        if (m!=null)
+        {
+            if (m.containsKey(DefineValue.IS_POS))
+            {
+                if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y"))
+                {
+                    is_pos = m.getString(DefineValue.IS_POS,"N");
+                    getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
+                    userIDValue.setEnabled(true);
+                    userIDValue.setHint("No HP POS yang sudah terdaftar");
+                }
+            }
+        }else if (sp.getString(DefineValue.IS_POS,"N").equalsIgnoreCase("Y"))
+        {
+            getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
             userIDValue.setEnabled(true);
         }
 
@@ -167,12 +188,14 @@ public class Login extends BaseFragment implements View.OnClickListener {
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
             params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
+            params.put(WebParams.IS_POS, is_pos);
 
             Timber.d("isi params login:" + params.toString());
 
             MyApiClient.sentDataLogin(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
                     image_spinner.clearAnimation();
                     image_spinner.setVisibility(View.INVISIBLE);
                     btnLogin.setEnabled(true);
@@ -189,6 +212,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         Timber.d("isi params response login:"+response.toString());
 
                         if (code.equals(WebParams.SUCCESS_CODE)) {
+                            sp.edit().putString(DefineValue.IS_POS, is_pos).commit();
                             String unregist_member = response.optString(WebParams.UNREGISTER_MEMBER,"N");
                             if(checkCommunity(response)){
                                 if (unregist_member.equals("N"))

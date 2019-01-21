@@ -86,7 +86,7 @@ public class PromoAdapter extends BaseAdapter {
 //        }
 
         if(!pic.equals("") || !pic.equals(null)){
-            GlideManager.sharedInstance().initializeGlide(context, pic, null, holder.imagePromo);
+            GlideManager.sharedInstance().initializeGlidePromo(context, pic, null, holder.imagePromo);
             if(name.equals("") || name.equals(null)) {
                 holder.llPromoDesc.setVisibility(View.GONE);
             }

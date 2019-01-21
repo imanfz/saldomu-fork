@@ -271,6 +271,19 @@ public class FragNotification extends BaseFragment {
                     getActivity().setResult(MainPage.RESULT_NOTIF, dataProfile);
                     getActivity().finish();
                     break;
+                case NotificationActivity.REJECTED_SIUP_NPWP:
+                    SecurePreferences.Editor editor1 = sp.edit();
+                    editor1.putString(DefineValue.REJECT_SIUP,mObjDetail.optString(WebParams.REJECT_SIUP,"N"));
+                    editor1.putString(DefineValue.REJECT_NPWP,mObjDetail.optString(WebParams.REJECT_NPWP,"N"));
+                    editor1.putString(DefineValue.REMARK_SIUP,mObjDetail.optString(WebParams.REMARK_SIUP,"N"));
+                    editor1.putString(DefineValue.REMARK_NPWP,mObjDetail.optString(WebParams.REMARK_NPWP,"N"));
+                    editor1.putString(DefineValue.IS_AGENT,mObjDetail.optString(WebParams.IS_AGENT,"N"));
+                    editor1.apply();
+                    Intent dataUpgradeAgent = new Intent();
+                    dataUpgradeAgent.putExtra(DefineValue.NOTIF_TYPE,NotificationActivity.REJECTED_KTP);
+                    getActivity().setResult(MainPage.RESULT_NOTIF, dataUpgradeAgent);
+                    getActivity().finish();
+                    break;
             }
 
 
@@ -640,8 +653,10 @@ public class FragNotification extends BaseFragment {
                     out.show();
             }
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER,
-                    _userid,accessKey);
+            extraSignature = _hold_id + MyApiClient.COMM_ID;
+
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER,
+                    _userid, accessKey, extraSignature);
             params.put(WebParams.USER_ID,_userid);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.HOLD_ID, _hold_id);

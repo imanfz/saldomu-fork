@@ -593,7 +593,9 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     }
 
     private void searchAgent() {
-        String extraSignature = categoryId + latitude + longitude;
+        Double tempLatitude = latitude;
+        Double tempLongitude = longitude;
+        String extraSignature = categoryId;
         RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_NEW_SEARCH_AGENT,
                 userPhoneID, accessKey, extraSignature);
 
@@ -601,10 +603,11 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.CATEGORY_ID, categoryId);
-        params.put(WebParams.LATITUDE, latitude);
-        params.put(WebParams.LONGITUDE, longitude);
+        params.put(WebParams.LATITUDE, tempLatitude);
+        params.put(WebParams.LONGITUDE, tempLongitude);
         params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
         params.put(WebParams.USER_ID, userPhoneID);
+        Timber.d("Params new search agent :" +params);
 
         //Start
         handlerSearchAgent.removeCallbacks(runnableSearchAgent);
@@ -804,9 +807,11 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 latitude            = singleAddress.getLatitude();
                 longitude           = singleAddress.getLongitude();
 
+                mGoogleApiClient.disconnect();
                 this.getAddressByLatLng();
 
                 searchLocationEditText.clearFocus();
+                searchAgent();
 
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -860,7 +865,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
             globalMap.getUiSettings().setAllGesturesEnabled(true);
             globalMap.getUiSettings().setMapToolbarEnabled(false);
             globalMap.setIndoorEnabled(false);
-            globalMap.setMyLocationEnabled(false);
+//            globalMap.setMyLocationEnabled(false);
 
             if ( latitude != null && longitude != null ) {
                 LatLng latLng = new LatLng(latitude, longitude);

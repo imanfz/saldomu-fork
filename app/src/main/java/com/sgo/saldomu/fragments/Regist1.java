@@ -58,7 +58,7 @@ import timber.log.Timber;
 public class Regist1 extends BaseFragment implements EasyPermissions.PermissionCallbacks{
 
     String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",member_code = "",max_resend_token = "3", authType, memberID;
-    EditText namaValue,emailValue,noHPValue;
+    EditText namaValue,emailValue,noHPValue,referalValue;
     Button btnLanjut;
     String flag_change_pwd, flag_change_pin, pass, confPass;
     CheckBox cb_terms;
@@ -96,6 +96,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
         emailValue=(EditText)getActivity().findViewById(R.id.email_value);
         noHPValue=(EditText)getActivity().findViewById(R.id.noHP_value);
         cb_terms = (CheckBox) v.findViewById(R.id.cb_termsncondition);
+        referalValue = v.findViewById(R.id.referal_value);
 
         btnLanjut = (Button)getActivity().findViewById(R.id.btn_reg1_verification);
         btnLanjut.setOnClickListener(btnNextClickListener);
@@ -254,6 +255,10 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             params.put(WebParams.CUST_EMAIL, emailValue.getText());
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.FLAG_NEW_FLOW, DefineValue.Y);
+            if (referalValue.getText().toString()!=null)
+            {
+                params.put(WebParams.REFERAL_NO, referalValue.getText());
+            }else params.put(WebParams.REFERAL_NO, "");
 
             Timber.d("isi params reg1:" + params.toString());
 
@@ -625,6 +630,20 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             emailValue.requestFocus();
             emailValue.setError(getString(R.string.regist1_validation_email));
             return false;
+        }
+        else if (referalValue.getText().toString().length()!=0)
+        {
+            if (referalValue.length()<9||referalValue.length()>13)
+            {
+                referalValue.requestFocus();
+                referalValue.setError("Masukkan No. HP Referal yang sesuai!");
+                return false;
+            }else if (referalValue.getText().toString().equals(noHPValue.getText().toString()))
+            {
+                referalValue.requestFocus();
+                referalValue.setError("Nomor Referal tidak boleh sama dengan No. HP Pelanggan!");
+                return false;
+            }
         }
         return true;
     }

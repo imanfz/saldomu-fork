@@ -9,6 +9,7 @@ import android.support.multidex.MultiDex;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
+import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 /*
@@ -71,6 +73,8 @@ public class CoreApp extends Application {
 
 
         set_instance(this);
+
+        Fabric.with(this, new Crashlytics());
 
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)

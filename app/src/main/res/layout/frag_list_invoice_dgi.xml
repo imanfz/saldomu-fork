@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/background">
+
+    <!--<ProgressBar-->
+    <!--android:id="@+id/prgLoading"-->
+    <!--style="@android:style/Widget.ProgressBar.Inverse"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerInParent="true" />-->
+
+    <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layout_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:visibility="visible">
+
+            <AutoCompleteTextView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="0.25"
+                android:background="@drawable/background_search"
+                android:hint="@string/invoice_dgi_search"
+                android:padding="4dp"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1.75"
+                android:src="@drawable/ic_search_black_24dp" />
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/listMenu"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tabel_footer"
+            android:layout_below="@+id/layout_search"
+            android:divider="@color/background"
+            android:dividerHeight="1dp"
+            android:fadeScrollbars="true"
+            android:fastScrollEnabled="true"
+            android:visibility="visible" />
+
+
+        <TextView
+            android:id="@+id/txtAlert"
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="15.0dip"
+            android:layout_marginTop="12.0dip"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:text=""
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@android:color/black"
+            android:visibility="visible" />
+
+        <TableLayout
+            android:id="@+id/tabel_footer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:stretchColumns="2"
+            android:visibility="visible">
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="3.0dip"
+                android:background="@color/grey_400" />
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8.0dip"
+                    android:layout_marginLeft="8.0dip"
+                    android:layout_marginRight="8.0dip"
+                    android:layout_marginTop="12.0dip"
+                    android:text="@string/metode_pembayaran"
+                    android:textColor="@color/black"
+                    android:textSize="14.0sp" />
+
+                <View
+                    style="@style/VerticalLine"
+                    android:layout_width="1.0dip"
+                    android:layout_height="50.0dip"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip" />
+
+                <Spinner
+                    android:id="@+id/sp_metode_pembayaran"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:popupBackground="@android:color/white" />
+            </TableRow>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0dip"
+                android:background="@color/grey_400" />
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8.0dip"
+                    android:layout_marginLeft="8.0dip"
+                    android:layout_marginRight="8.0dip"
+                    android:layout_marginTop="12.0dip"
+                    android:text="@string/payment_type"
+                    android:textColor="@color/black"
+                    android:textSize="14.0sp" />
+
+                <View
+                    style="@style/VerticalLine"
+                    android:layout_width="1.0dip"
+                    android:layout_height="50.0dip"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip" />
+
+                <Spinner
+                    android:id="@+id/cbo_payment_type"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:popupBackground="@android:color/white" />
+            </TableRow>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0dip"
+                android:background="@color/grey_400" />
+
+            <TableRow
+                android:id="@+id/row_phone"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8.0dip"
+                    android:layout_marginLeft="8.0dip"
+                    android:layout_marginRight="8.0dip"
+                    android:layout_marginTop="12.0dip"
+                    android:text="@string/phone_number"
+                    android:textColor="@color/black"
+                    android:textSize="14.0sp" />
+
+                <View
+                    style="@style/VerticalLine"
+                    android:layout_width="1.0dip"
+                    android:layout_height="50.0dip"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip" />
+
+                <Spinner
+                    android:id="@+id/cbo_phone_number"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:popupBackground="@android:color/white" />
+            </TableRow>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0dip"
+                android:background="@color/grey_400" />
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextOnForm"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:paddingLeft="8.0dip"
+                    android:paddingRight="20.0dip"
+                    android:text="@string/total_bayar"
+                    android:textColor="@color/black" />
+
+                <View
+                    style="@style/VerticalLine"
+                    android:layout_width="1.0dip"
+                    android:layout_height="50.0dip"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip" />
+
+                <TextView
+                    android:id="@+id/lbl_total_pay_amount"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8.0dip"
+                    android:layout_marginLeft="8.0dip"
+                    android:layout_marginRight="8.0dip"
+                    android:layout_marginTop="12.0dip"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="14.0sp" />
+            </TableRow>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0dip"
+                android:background="@color/grey_400" />
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_back"
+                    style="@style/ButtonYellow"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12.0dip"
+                    android:layout_marginLeft="5.0dip"
+                    android:layout_marginRight="5.0dip"
+                    android:layout_marginTop="5.0dip"
+                    android:layout_weight="1"
+                    android:text="@string/kembali" />
+
+                <Button
+                    android:id="@id/btnCancel"
+                    style="@style/ButtonYellow"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12.0dip"
+                    android:layout_marginLeft="5.0dip"
+                    android:layout_marginRight="5.0dip"
+                    android:layout_marginTop="5.0dip"
+                    android:layout_weight="2"
+                    android:text="@string/reset" />
+
+                <Button
+                    android:id="@+id/btn_done"
+                    style="@style/ButtonYellow"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12.0dip"
+                    android:layout_marginLeft="5.0dip"
+                    android:layout_marginRight="5.0dip"
+                    android:layout_marginTop="5.0dip"
+                    android:layout_weight="1"
+                    android:text="@string/checkout" />
+            </TableRow>
+
+        </TableLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

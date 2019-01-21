@@ -31,6 +31,9 @@
         android:theme="@style/Theme.MyTheme"
         tools:replace="android:label,allowBackup">
         <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+        <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
@@ -298,6 +301,18 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
+            android:name=".activities.ActivityProfileQr"
+            android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage"
+                />
+        </activity>
+
+        <activity
             android:name=".activities.MyProfileNewActivity"
             android:configChanges="orientation"
             android:parentActivityName=".activities.MainPage"
@@ -311,6 +326,13 @@
 
         <activity android:name=".BluetoothPrinter.zj.DevicesList"/>
 
+
+        <activity
+            android:name=".activities.ScanQRActivity"
+            android:enabled="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+
+        </activity>
         <service
             android:name=".services.AgentShopService"
             android:exported="false" />
@@ -343,6 +365,16 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.InfoHargaWebActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.TagihActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
         <service
             android:name=".services.BalanceService"
             android:exported="false" />
@@ -354,6 +386,9 @@
             android:exported="false" />
         <service
             android:name=".services.UpdateBBSCity"
+            android:exported="false" />
+        <service
+            android:name=".services.UpdateBBSBirthPlace"
             android:exported="false" />
         <service
             android:name=".services.UpdateBBSData"

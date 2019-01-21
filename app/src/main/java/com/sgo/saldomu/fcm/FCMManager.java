@@ -15,6 +15,7 @@ import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.UpgradeAgentActivity;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -44,6 +45,7 @@ public class FCMManager {
     public final static int SHOP_NOTIF_TRANSACTION                  = 1007;
     public final static int MEMBER_RATING_TRX                       = 1008;
     public final static int REJECT_UPGRADE_MEMBER                   = 2;
+    public final static int REJECT_UPGRADE_AGENT                    = 202;
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
@@ -339,6 +341,31 @@ public class FCMManager {
                             sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
 
                             i = new Intent(mContext, MyProfileNewActivity.class);
+                        }
+                        catch (JSONException e)
+                        {
+                            Timber.d("JSONException: " + e.getMessage());
+                        }
+                    }
+                    break;
+                case FCMManager.REJECT_UPGRADE_AGENT:
+                    sp = CustomSecurePref.getInstance().getmSecurePrefs();
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            String reject_siup = jsonOptions.getJSONObject(0).getString("reject_siup");
+                            String reject_npwp = jsonOptions.getJSONObject(0).getString("reject_npwp");
+                            String remark_siup = jsonOptions.getJSONObject(0).getString("remark_siup");
+                            String remark_npwp = jsonOptions.getJSONObject(0).getString("remark_npwp");
+
+                            sp.edit().putString(DefineValue.REJECT_SIUP,reject_siup).apply();
+                            sp.edit().putString(DefineValue.REJECT_NPWP,reject_npwp).apply();
+                            sp.edit().putString(DefineValue.REMARK_SIUP,remark_siup).apply();
+                            sp.edit().putString(DefineValue.REMARK_NPWP,remark_npwp).apply();
+                            sp.edit().putBoolean(DefineValue.IS_UPGRADE_AGENT,false).apply();
+                            sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_AGENT, jsonOptions.toString()).apply();
+
+                            i = new Intent(mContext, UpgradeAgentActivity.class);
                         }
                         catch (JSONException e)
                         {
