@@ -52,6 +52,7 @@ import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.InfoHargaWebActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -513,9 +514,11 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                    levelClass.showDialogLevel();
                 }
                 else {
-                    newFragment = new FragPayFriends();
-                    if (data != null && !data.isEmpty()) newFragment.setArguments(data);
-                    switchFragment(newFragment, getString(R.string.menu_item_title_pay_friends));
+//                    newFragment = new FragPayFriends();
+//                    if (data != null && !data.isEmpty()) newFragment.setArguments(data);
+//                    switchFragment(newFragment, getString(R.string.menu_item_title_pay_friends));
+                    Intent i = new Intent(getActivity(), PayFriendsActivity.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
                 break;
             case MASK4MONEY:

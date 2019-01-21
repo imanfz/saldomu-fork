@@ -37,6 +37,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.activities.PayFriendsConfirmTokenActivity;
 import com.sgo.saldomu.activities.ScanQRActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
@@ -610,11 +611,14 @@ public class FragPayFriends extends BaseFragment {
                 @Override
                 public void onClick(View view) {
                     dialog.dismiss();
-                    Intent i = new Intent(getActivity(), PayFriendsConfirmTokenActivity.class);
+
+                    Intent i = new Intent(getActivity(), PayFriendsActivity.class);
+
                     i.putExtra(WebParams.DATA_TRANSFER, _data_transfer);
                     i.putExtra(WebParams.DATA, _nameJson);
                     i.putExtra(WebParams.MESSAGE, _message);
                     i.putExtra(DefineValue.TRANSACTION_TYPE, isNotification);
+                    i.putExtra(DefineValue.CONFIRM_PAYFRIEND, true);
                     i.putExtra(WebParams.DATA_MAPPER, _data_mapper);
 
                     switchActivity(i);
@@ -628,11 +632,12 @@ public class FragPayFriends extends BaseFragment {
         else if(authType.equalsIgnoreCase("PIN")) {
             //clear data in edit text
 
-            Intent i = new Intent(getActivity(), PayFriendsConfirmTokenActivity.class);
+            Intent i = new Intent(getActivity(), PayFriendsActivity.class);
             i.putExtra(WebParams.DATA_TRANSFER, _data_transfer);
             i.putExtra(WebParams.DATA, _nameJson);
             i.putExtra(WebParams.MESSAGE, _message);
             i.putExtra(DefineValue.TRANSACTION_TYPE, isNotification);
+            i.putExtra(DefineValue.CONFIRM_PAYFRIEND, true);
             i.putExtra(WebParams.DATA_MAPPER, _data_mapper);
 
             switchActivity(i);
