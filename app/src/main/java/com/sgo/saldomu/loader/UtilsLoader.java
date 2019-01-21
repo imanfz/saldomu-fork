@@ -159,7 +159,7 @@ public class UtilsLoader {
 
     public void getFailedPINNo(String user_id, final OnLoadDataListener mListener) {
         HashMap<String, Object> params = RetrofitService.getInstance()
-                .getSignatureSecretKey(MyApiClient.LINK_GET_FAILED_PIN, "");
+                .getSignatureSecretKeyPIN(MyApiClient.LINK_GET_FAILED_PIN, "", user_id);
         params.put(WebParams.USER_ID, user_id);
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
         params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_NO);
