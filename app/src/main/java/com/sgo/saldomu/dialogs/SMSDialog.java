@@ -57,6 +57,12 @@ public class SMSDialog extends Dialog {
     private Handler handler;
     private int idx_fail;
 
+    public Handler getHandler() {
+        if (handler == null)
+            handler = new Handler();
+        return handler;
+    }
+
 
     public interface DialogButtonListener {
         void onClickOkButton(View v, boolean isLongClick);
@@ -263,11 +269,12 @@ public class SMSDialog extends Dialog {
     private void sentInquirySMS() {
         try {
             Timber.d("idx fail = " + String.valueOf(idx_fail));
+
             if (idx_fail <= max_fail_connect && InetHandler.isNetworkAvailable(getContext())) {
                 if (!isStop) {
                     String extraSignature = ICCIDDevice + imeiDevice;
 
-                    HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_ADD_COMMENT, extraSignature);
+                    HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_INQUIRY_SMS, extraSignature);
                     params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                     params.put(WebParams.IMEI, imeiDevice);
                     params.put(WebParams.ICCID, ICCIDDevice);
@@ -275,7 +282,7 @@ public class SMSDialog extends Dialog {
 
                     Timber.d("isi params inquiry sms:" + params.toString());
 
-                    RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN, params
+                    RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INQUIRY_SMS, params
                             , new ResponseListener() {
                                 @Override
                                 public void onResponses(JsonObject object) {
@@ -284,8 +291,6 @@ public class SMSDialog extends Dialog {
                                     final InqSMSModel model = gson.fromJson(object, InqSMSModel.class);
 
                                     String code = model.getError_code();
-                                    if (handler == null)
-                                        handler = new Handler();
 
                                     if (code.equals(WebParams.SUCCESS_CODE)) {
                                         isStop = true;
@@ -299,7 +304,7 @@ public class SMSDialog extends Dialog {
                                         }
                                         cdTimer.cancel();
 
-                                        handler.postDelayed(new Runnable() {
+                                        getHandler().postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
                                                 saveData(model);
@@ -309,7 +314,7 @@ public class SMSDialog extends Dialog {
                                     } else {
 //                                            if ()
 //                                idx_fail++;
-                                        handler.postDelayed(new Runnable() {
+                                        getHandler().postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
                                                 sentInquirySMS();
@@ -320,7 +325,7 @@ public class SMSDialog extends Dialog {
 
                                 @Override
                                 public void onError(Throwable throwable) {
-                                    handler.postDelayed(new Runnable() {
+                                    getHandler().postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
                                             sentInquirySMS();
