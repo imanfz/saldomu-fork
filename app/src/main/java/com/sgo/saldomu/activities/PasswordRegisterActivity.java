@@ -109,7 +109,7 @@ public class PasswordRegisterActivity extends BaseActivity {
             et_pass_new.setError(this.getString(R.string.changepass_edit_error_newpass));
             return false;
         }
-        else if(et_pass_new.getText().toString().length()<6){
+        else if(et_pass_new.getText().toString().length()<8 || et_pass_new.getText().toString().length()>20 ){
             et_pass_new.requestFocus();
             et_pass_new.setError(this.getString(R.string.changepass_edit_error_newpasslength));
             return false;

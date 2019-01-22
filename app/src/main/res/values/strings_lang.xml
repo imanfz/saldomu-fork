@@ -268,10 +268,11 @@
     <string name="changepass_text_currentpass">Password Berlaku</string>
     <string name="changepass_text_newpass">Password Baru</string>
     <string name="changepass_text_retypenewpass">Ketik Ulang Password Baru</string>
+    <string name="password_clue">*Password harus terdiri dari 8-20 karakter! Password merupakan kombinasi dari huruf kapital, huruf kecil dan angka.</string>
     <string name="changepass_edit_error_currentpass">Password dibutuhkan!</string>
     <string name="changepass_edit_error_newpass">Password Baru dibutuhkan!</string>
     <string name="changepass_edit_error_retypenewpass">Ketik Ulang Password dibutuhkan!</string>
-    <string name="changepass_edit_error_newpasslength">Minimal 6 karakter!</string>
+    <string name="changepass_edit_error_newpasslength">Password harus terdiri dari 8-20 karakter!</string>
     <string name="changepass_edit_error_retypenewpass_confirm">Password tidak cocok!</string>
     <string name="changepass_checkbox_showpass">Tampilkan Password</string>
     <string name="changepass_toast_success">Ganti Password Berhasil</string>
@@ -1302,6 +1303,7 @@
     <string name="collector_balance">Collection Limit</string>
     <string name="address_hint">Masukkan Alamat disini</string>
     <string name="cancel_transaction_dgi">Transaksi Sukses Dibatalkan</string>
+    <string name="password_validation">Validasi Password</string>
     <string name="terms_condition_upload_ktp">Dengan ini saya menyatakan bahwa dokumen yang saya unggah adalah benar keabsahannya
         dan saya akan bertanggung jawab serta bersedia di hukum sesuai hukum yang berlaku jika di kemudian hari ditemukan ketidaksesuaian.</string>
 </resources>
