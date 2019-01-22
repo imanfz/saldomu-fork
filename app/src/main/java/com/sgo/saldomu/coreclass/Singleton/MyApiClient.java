@@ -202,7 +202,7 @@ public class MyApiClient {
     private static String LINK_ATMTOPUP;
     public static String LINK_BANKCASHOUT;
     public static String LINK_USER_PROFILE;
-    private static String LINK_INQUIRY_SMS;
+    public static String LINK_INQUIRY_SMS;
     public static String LINK_CLAIM_TRANSFER_NON_MEMBER;
 
     public static String LINK_RESEND_TOKEN_LKD;
