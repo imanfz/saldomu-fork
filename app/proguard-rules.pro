@@ -120,3 +120,5 @@
 
 # okhttp
 -dontwarn okhttp3.internal.platform.*
+-dontwarn okio.**
+-dontwarn retrofit2.Platform$Java8
