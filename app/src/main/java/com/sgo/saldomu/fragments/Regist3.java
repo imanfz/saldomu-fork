@@ -419,6 +419,16 @@ public class Regist3 extends BaseFragment {
                                 Intent i = new Intent(getActivity(), CreatePIN.class);
                                 i.putExtra(DefineValue.REGISTRATION, true);
                                 switchActivityPIN(i);
+                            }else if(code.equals("0301")){
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                builder.setTitle(getActivity().getResources().getString(R.string.logout)).setMessage(model.getError_message())
+                                        .setCancelable(false)
+                                        .setPositiveButton(getActivity().getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
                             } else {
 
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();

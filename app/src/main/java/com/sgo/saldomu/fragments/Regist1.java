@@ -1,10 +1,12 @@
 package com.sgo.saldomu.fragments;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,6 +28,7 @@ import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.ChangePassword;
 import com.sgo.saldomu.activities.CreatePIN;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.PasswordRegisterActivity;
@@ -354,7 +357,19 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                                 } else {
                                     showDialog(code);
                                 }
-                            } else {
+//                            }  else if(code.equals("0301")){
+//                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                                builder.setTitle(getString(R.string.password_validation))
+//                                        .setMessage(getString(R.string.password_clue))
+//                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(DialogInterface dialog, int which) {
+//                                                dialog.dismiss();
+//                                            }
+//                                        });
+//                                AlertDialog dialog = builder.create();
+//                                dialog.show();
+                            }else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
                                 i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);

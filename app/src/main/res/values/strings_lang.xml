@@ -162,9 +162,9 @@
     <string name="purchase_token_dialog_merchantcode">\Penjual = </string>
     <string name="purchase_token_dialog_amount">\nJumlah = </string>
 
-    <string name="toolbar_title_purchase">Belanja</string>
-    <string name="toolbar_title_pay_friends">Kirim Saldo</string>
-    <string name="toolbar_title_topup" translatable="false">Tambah Saldo</string>
+    <string name="toolbar_title_purchase">Biller</string>
+    <string name="toolbar_title_pay_friends">Transfer Saldo</string>
+    <string name="toolbar_title_topup" translatable="false">Top Up Saldo</string>
     <string name="toolbar_title_evoucherhp">Beli E-Voucher HP</string>
     <string name="toolbar_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="toolbar_title_myfriends">Teman Saya</string>
@@ -176,13 +176,13 @@
     <string name="menu_group_title_main_menu">Menu Utama</string>
     <string name="menu_item_title_home">Beranda</string>
     <string name="menu_item_title_accounts">Akun Saya</string>
-    <string name="menu_item_title_pay_friends">Kirim Saldo</string>
+    <string name="menu_item_title_pay_friends">Transfer Saldo</string>
     <string name="menu_item_title_ask_for_money">Minta Saldo</string>
     <string name="menu_item_title_purchase_pulsa">Pembelian E-Voucher HP</string>
-    <string name="menu_item_title_buy">PPOB</string>
+    <string name="menu_item_title_buy">Biller</string>
     <string name="menu_item_title_beli">Beli</string>
     <string name="menu_item_title_cash_out">Transfer ke Bank via Setor Tunai</string>
-    <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
+    <string name="menu_item_title_topup" translatable="false">Top Up Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
     <string name="menu_item_title_scadm">B2B</string>
@@ -268,10 +268,11 @@
     <string name="changepass_text_currentpass">Password Berlaku</string>
     <string name="changepass_text_newpass">Password Baru</string>
     <string name="changepass_text_retypenewpass">Ketik Ulang Password Baru</string>
+    <string name="password_clue">*Password harus terdiri dari 8-20 karakter! Password merupakan kombinasi dari huruf kapital, huruf kecil dan angka.</string>
     <string name="changepass_edit_error_currentpass">Password dibutuhkan!</string>
     <string name="changepass_edit_error_newpass">Password Baru dibutuhkan!</string>
     <string name="changepass_edit_error_retypenewpass">Ketik Ulang Password dibutuhkan!</string>
-    <string name="changepass_edit_error_newpasslength">Minimal 6 karakter!</string>
+    <string name="changepass_edit_error_newpasslength">Password harus terdiri dari 8-20 karakter!</string>
     <string name="changepass_edit_error_retypenewpass_confirm">Password tidak cocok!</string>
     <string name="changepass_checkbox_showpass">Tampilkan Password</string>
     <string name="changepass_toast_success">Ganti Password Berhasil</string>
@@ -361,14 +362,14 @@
     <string name="payfriends_message">* maks. 30 karakter</string>
     <string name="payfriends_number_recipients">* Jumlah Penerima</string>
     <string name="payfriends_otp">* maks. 10 karakter</string>
-    <string name="payfriends_ab_title_activity">Kirim Saldo</string>
+    <string name="payfriends_ab_title_activity">Transfer Saldo</string>
     <string name="payfriends_recipients_validation">Nomor Penerima Dibutuhkan !</string>
     <string name="payfriends_recipients_alpha_validation">Nomor Penerima Tidak Valid !</string>
     <string name="payfriends_recipients_max_validation1">Maksimal Penerima</string>
     <string name="payfriends_recipients_max_validation2">Orang!</string>
     <string name="payfriends_recipients_duplicate_validation">Nomor penerima duplikasi!</string>
     <string name="payfriends_amount_validation">Jumlah Dibutuhkan !</string>
-    <string name="payfriends_dialog_validation_title">Validasi Kirim Saldo</string>
+    <string name="payfriends_dialog_validation_title">Validasi Transfer Saldo</string>
     <string name="payfriends_text_total_amount">Total Jumlah</string>
     <string name="payfriends_text_error_recipient">Gagal transfer :</string>
     <string name="payfriends_amount_zero">Jumlah harus lebih besar dari nol</string>
@@ -390,7 +391,7 @@
     <string name="notifications_ab_title">Notifikasi</string>
     <string name="notif_text_ask4money_name">Minta Saldo dari</string>
     <string name="notif_text_decline_name">Tolak Minta Saldo dari</string>
-    <string name="notif_text_paid_name">Kirim Saldo dari</string>
+    <string name="notif_text_paid_name">Transfer Saldo dari</string>
     <string name="notif_text_comment_name">menulis komentar di post Anda</string>
     <string name="notif_text_like_name">suka post Anda</string>
     <string name="notif_text_non_member">Klaim kirim uang dari</string>
@@ -665,7 +666,7 @@
     <string name="level_dialog_btn_ok">Isi Form</string>
 
     <string name="level_title">Registrasi Perbaharui Keanggotaan</string>
-    <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran dibawah ini, maka Anda dapat melakukan Fitur - fitur Kirim Saldo , Minta Saldo, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
+    <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran dibawah ini, maka Anda dapat melakukan Fitur - fitur Transfer Saldo , Minta Saldo, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
     <string name="level_dialog_finish_title">Data Perbaharuan telah masuk Antrian</string>
     <string name="upgrade_agent_dialog_finish_title">Data Perbaharuan menjadi Agen telah masuk Antrian</string>
     <string name="upgrade_dialog_finish_title">Data Perbaharuan telah masuk Antrian</string>
@@ -1302,6 +1303,7 @@
     <string name="collector_balance">Collection Limit</string>
     <string name="address_hint">Masukkan Alamat disini</string>
     <string name="cancel_transaction_dgi">Transaksi Sukses Dibatalkan</string>
+    <string name="password_validation">Validasi Password</string>
     <string name="terms_condition_upload_ktp">Dengan ini saya menyatakan bahwa dokumen yang saya unggah adalah benar keabsahannya
         dan saya akan bertanggung jawab serta bersedia di hukum sesuai hukum yang berlaku jika di kemudian hari ditemukan ketidaksesuaian.</string>
 </resources>

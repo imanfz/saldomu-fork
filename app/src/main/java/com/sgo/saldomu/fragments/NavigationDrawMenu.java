@@ -41,6 +41,7 @@ import com.sgo.saldomu.Beans.navdrawmainmenuModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.ActivityProfileQr;
+import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
@@ -49,8 +50,10 @@ import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.InfoHargaWebActivity;
+import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -165,6 +168,8 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     private String isRegisteredLevel; //saat antri untuk diverifikasi
     String categoryIdcta;
     ArrayList<ShopCategory> shopCategories = new ArrayList<>();
+
+    Intent i;
 
     Boolean isLevel1;
 
@@ -512,18 +517,23 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                    levelClass.showDialogLevel();
                 }
                 else {
-                    newFragment = new FragPayFriends();
-                    if (data != null && !data.isEmpty()) newFragment.setArguments(data);
-                    switchFragment(newFragment, getString(R.string.menu_item_title_pay_friends));
+//                    newFragment = new FragPayFriends();
+//                    if (data != null && !data.isEmpty()) newFragment.setArguments(data);
+//                    switchFragment(newFragment, getString(R.string.menu_item_title_pay_friends));
+                    Intent i = new Intent(getActivity(), PayFriendsActivity.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
                 break;
             case MASK4MONEY:
                 if(levelClass.isLevel1QAC()) {
                    levelClass.showDialogLevel();
                 }else {
-                    newFragment = new FragAskForMoney();
-                    if (data != null && !data.isEmpty()) newFragment.setArguments(data);
-                    switchFragment(newFragment, getString(R.string.menu_item_title_ask_for_money));
+//                    newFragment = new FragAskForMoney();
+//                    if (data != null && !data.isEmpty()) newFragment.setArguments(data);
+//                    switchFragment(newFragment, getString(R.string.menu_item_title_ask_for_money));
+                    Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
+                    startActivity(i);
+                    break;
                 }
                 break;
             case MDAP:
@@ -532,8 +542,10 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 switchFragment(newFragment, getString(R.string.toolbar_title_pulsa_agent));
                 break;
             case MBUY:
-                newFragment = new ListBuy();
-                switchFragment(newFragment, getString(R.string.toolbar_title_purchase));
+//                newFragment = new ListBuy();
+//                switchFragment(newFragment, getString(R.string.toolbar_title_purchase));
+                Intent i = new Intent(getActivity(), ListBuyActivity.class);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
 
             case MMYFRIENDS:
@@ -546,7 +558,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 }
                 else if (!levelClass.isLevel1QAC() && !isAgent)
                 {
-                        Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
+                        i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
                         i.putExtra(DefineValue.CATEGORY_ID,categoryIdcta);
                         i.putExtra(DefineValue.CATEGORY_NAME, "Setor Tunai");
                         i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
@@ -556,7 +568,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                         break;
                 }else if (isAgent)
                 {
-                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION);
                     i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN);
                     switchActivity(i,MainPage.ACTIVITY_RESULT);
@@ -614,7 +626,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 alertbox.show();
                 break;
             case MREGISTERLOCATION:
-                Intent i = new Intent(getActivity(), BbsMerchantCommunityList.class);
+                i = new Intent(getActivity(), BbsMerchantCommunityList.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
                 getActivity().finish();

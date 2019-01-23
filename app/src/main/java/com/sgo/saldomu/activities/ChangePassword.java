@@ -1,6 +1,8 @@
 package com.sgo.saldomu.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -186,7 +188,21 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
 //                                    String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(ChangePassword.this, model.getError_message());
-                                } else {
+                                }
+//                                else if(code.equals("0301")){
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(ChangePassword.this);
+//                                    builder.setTitle(getString(R.string.password_validation))
+//                                            .setMessage(getString(R.string.password_clue))
+//                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                                @Override
+//                                                public void onClick(DialogInterface dialog, int which) {
+//                                                    dialog.dismiss();
+//                                                }
+//                                            });
+//                                    AlertDialog dialog = builder.create();
+//                                    dialog.show();
+//                                }
+                                    else {
 //                                    code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(ChangePassword.this, model.getError_message(), Toast.LENGTH_LONG).show();
                                 }
@@ -233,7 +249,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
 //            et_pass_new.setError(getString(validIdx));
 //            return false;
 //        }
-        else if (et_pass_new.getText().toString().length() < lenght_auth_min) {
+        else if (et_pass_new.getText().toString().length() < 8 || et_pass_new.getText().toString().length() >20) {
             et_pass_new.requestFocus();
             et_pass_new.setError(this.getString(R.string.changepass_edit_error_newpasslength));
             return false;

@@ -33,10 +33,13 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
+import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.adapter.GridHome;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -374,13 +377,23 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_pay_friends))) {
                     if (getLvlClass().isLevel1QAC()) {
                         getLvlClass().showDialogLevel();
-                    } else switchMenu(NavigationDrawMenu.MPAYFRIENDS, null);
+                    } else {
+//                        switchMenu(NavigationDrawMenu.MASK4MONEY, null);
+                        Intent i = new Intent(getActivity(), PayFriendsActivity.class);
+                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                    }
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_ask_for_money))) {
                     if (getLvlClass().isLevel1QAC()) {
                         getLvlClass().showDialogLevel();
-                    } else switchMenu(NavigationDrawMenu.MASK4MONEY, null);
+                    } else {
+//                        switchMenu(NavigationDrawMenu.MASK4MONEY, null);
+                        Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
+                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                    }
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_buy))) {
-                    switchMenu(NavigationDrawMenu.MBUY, null);
+//                    switchMenu(NavigationDrawMenu.MBUY, null);
+                    Intent i = new Intent(getActivity(), ListBuyActivity.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_report))) {
                     switchMenu(NavigationDrawMenu.MREPORT, null);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {

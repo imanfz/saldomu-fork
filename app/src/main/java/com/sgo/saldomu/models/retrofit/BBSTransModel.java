@@ -48,6 +48,14 @@ public class BBSTransModel extends jsonModel{
     @Expose
     private
     String benef_product_value_name;
+    @SerializedName("benef_acct_no")
+    @Expose
+    private
+    String benef_acct_no;
+    @SerializedName("benef_acct_name")
+    @Expose
+    private
+    String benef_acct_name;
 
     public String getTx_id() {
         if (tx_id == null)
@@ -113,6 +121,18 @@ public class BBSTransModel extends jsonModel{
         if (benef_product_value_name == null)
             benef_product_value_name = "";
         return benef_product_value_name;
+    }
+
+    public String getBenef_acct_no() {
+        if (benef_acct_no == null)
+            benef_acct_no = "";
+        return benef_acct_no;
+    }
+
+    public String getBenef_acct_name() {
+        if (benef_acct_name == null)
+            benef_acct_name = "";
+        return benef_acct_name;
     }
 
 }

@@ -592,6 +592,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                 final BBSTransModel model = getGson().fromJson(object, BBSTransModel.class);
 
                                 String code = model.getError_code();
+                                Log.d("response insert c2a: " ,model.toString());
 
                                 dismissProgressDialog();
                                 if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282")) {
@@ -650,12 +651,26 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                         if (isSimExist)
                                             smsDialog.show();
                                     } else if (source_product_h2h.equalsIgnoreCase("Y") && source_product_type.equalsIgnoreCase(DefineValue.EMO)) {
-                                        if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("TCASH")
-                                                && !source_product_code.equalsIgnoreCase("MANDIRILKD"))
-                                            sentDataReqToken(model);
-                                        else changeToConfirmCashIn(model);
+//                                        if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("TCASH")
+//                                                && !source_product_code.equalsIgnoreCase("MANDIRILKD")) {
+////                                            sentDataReqToken(model);
+//                                            changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
+//                                                    model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
+//                                                    model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name());
+//                                        }else
+//                                        {
+                                            changeToConfirmCashIn(model);
+                                            isOwner = true;
+                                            changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
+                                                    model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
+                                                    model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name(), model.getBenef_product_value_code());
+//                                        }
                                     } else {
                                         changeToConfirmCashIn(model);
+                                        isOwner = true;
+                                        changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
+                                                model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
+                                                model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name(), model.getBenef_product_value_code());
                                     }
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
@@ -744,7 +759,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                         isOwner = true;
                         changeToDataMandiriLKD(_tx_id, _product_code, _product_name, _bank_code,
                                 _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
-                                _benef_acct_no, _benef_acct_name);
+                                _benef_acct_no, _benef_acct_name, no_benef);
                     }
                 });
 
@@ -755,7 +770,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                         isOwner = false;
                         changeToDataMandiriLKD(_tx_id, _product_code, _product_name, _bank_code,
                                 _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
-                                _benef_acct_no, _benef_acct_name);
+                                _benef_acct_no, _benef_acct_name, no_benef);
                     }
                 });
 
@@ -1077,7 +1092,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
     private void changeToDataMandiriLKD(String _tx_id, String _product_code, String _product_name, String _bank_code,
                                         String _amount, String fee, String totalAmount, String _bank_name, String _max_resend_token,
-                                        String _benef_acct_no, String _benef_acct_name) {
+                                        String _benef_acct_no, String _benef_acct_name, String no_benef) {
 
         Bundle mArgs = new Bundle();
         if (benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
@@ -1100,7 +1115,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
         mArgs.putString(DefineValue.BANK_BENEF, benef_product_name);
         mArgs.putString(DefineValue.NAME_BENEF, _benef_acct_name);
-        mArgs.putString(DefineValue.NO_BENEF, _benef_acct_no);
+        mArgs.putString(DefineValue.NO_BENEF, no_benef);
         mArgs.putString(DefineValue.TYPE_BENEF, benef_product_type);
         mArgs.putString(DefineValue.NO_HP_BENEF, etNoHp.getText().toString());
         mArgs.putString(DefineValue.REMARK, etRemark.getText().toString());
@@ -1110,8 +1125,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
         if (TCASHValidation != null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
-        if (MandiriLKDValidation != null)
-            mArgs.putBoolean(DefineValue.MANDIRI_LKD_VALIDATION, MandiriLKDValidation);
+//        if (MandiriLKDValidation != null)
+//            mArgs.putBoolean(DefineValue.MANDIRI_LKD_VALIDATION, MandiriLKDValidation);
         if (code_success != null)
             mArgs.putBoolean(DefineValue.CODE_SUCCESS, code_success);
         btnNext.setEnabled(true);

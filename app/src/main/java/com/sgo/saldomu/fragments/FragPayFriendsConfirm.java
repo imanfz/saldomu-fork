@@ -34,6 +34,7 @@ import com.sgo.saldomu.Beans.RecepientModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.activities.PayFriendsConfirmTokenActivity;
 import com.sgo.saldomu.adapter.RecipientAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -773,8 +774,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     private void toggleMyBroadcastReceiver(Boolean _on) {
         if (getActivity() == null)
             return;
-
-        PayFriendsConfirmTokenActivity fca = (PayFriendsConfirmTokenActivity) getActivity();
+        PayFriendsActivity fca = (PayFriendsActivity) getActivity();
         fca.togglerBroadcastReceiver(_on, myReceiver);
     }
 

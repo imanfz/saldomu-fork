@@ -1,8 +1,10 @@
 package com.sgo.saldomu.fragments;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -213,7 +215,17 @@ public class Regist2 extends BaseFragment {
                                 memberID = model.getMember_id();
                                 flag_change_pwd = "N";
                                 check();
-                            } else {
+                            } else if(code.equals("0301")){
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                builder.setTitle(getActivity().getResources().getString(R.string.logout)).setMessage(model.getError_message())
+                                        .setCancelable(false)
+                                        .setPositiveButton(getActivity().getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                            }else {
 
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);

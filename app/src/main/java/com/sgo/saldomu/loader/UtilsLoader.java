@@ -153,6 +153,7 @@ public class UtilsLoader {
                 .getSignature(MyApiClient.LINK_GET_FAILED_PIN);
         params.put(WebParams.USER_ID, user_id);
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+        params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_YES);
 
         getFailedPIN(params, mListener);
     }

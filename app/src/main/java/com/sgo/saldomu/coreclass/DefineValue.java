@@ -217,6 +217,7 @@ public class DefineValue {
     public static String ACCESS_SECRET = "accessSecret";
     public static String NEW_PASSWORD = "newPassword";
     public static String CONFIRM_PASSWORD = "confirmPassword";
+    public static String CONFIRM_PAYFRIEND = "confirmPayfriend";
     public static String REGISTRATION = "registration";
     public static String CONTACT_ALIAS = "contactAlias";
     public static String CONF_PIN = "confPin";
