@@ -40,6 +40,7 @@ import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsActivity;
+import com.sgo.saldomu.activities.ReportActivity;
 import com.sgo.saldomu.adapter.GridHome;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -395,7 +396,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent i = new Intent(getActivity(), ListBuyActivity.class);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_report))) {
-                    switchMenu(NavigationDrawMenu.MREPORT, null);
+//                    switchMenu(NavigationDrawMenu.MREPORT, null);
+                    Intent i = new Intent(getActivity(), ReportActivity.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     switchMenu(NavigationDrawMenu.MSCADM, null);
                 } else if (menuItemName.equals(getString(R.string.menu_item_search_agent))) {
