@@ -90,6 +90,7 @@ public class MyApiClient {
     private static String LINK_REGISTRASI;
     private static String LINK_VALID_REGISTRASI;
     public static String LINK_LOGIN;
+    public static String LINK_LOGIN_temp;
     public static String LINK_VALID_TOPUP;
     public static String LINK_LIST_MEMBER;
     public static String LINK_REQ_TOKEN_SGOL;
@@ -269,6 +270,7 @@ public class MyApiClient {
         LINK_REG_STEP3           = headaddressfinal + "RegStep3/Invoke";
         LINK_VALID_REGISTRASI    = headaddressfinal + "InsertCustomer/Invoke";
         LINK_LOGIN               = headaddressfinal + "MemberLogin/SignIn";
+        LINK_LOGIN_temp               = headaddressfinal + "MemberLoginTemp/SignIn";
         LINK_VALID_TOPUP         = headaddressfinal + "TopUp/Invoke";
         LINK_LIST_MEMBER         = headaddressfinal + "Member/Retrieve";
         LINK_REQ_TOKEN_SGOL      = headaddressfinal + "InquiryTrx/Retrieve";
