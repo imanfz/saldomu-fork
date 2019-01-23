@@ -595,7 +595,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                 Log.d("response insert c2a: " ,model.toString());
 
                                 dismissProgressDialog();
-                                if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282") || code.equals("0296")) {
+                                if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282")) {
 
                                     SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
                                     SecurePreferences.Editor mEditor = prefs.edit();
