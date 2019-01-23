@@ -71,10 +71,10 @@ import timber.log.Timber;
  */
 public class FragReport extends ListFragment implements ReportBillerDialog.OnDialogOkCallback {
 
-    final static int REPORT_ASK = 0x0299395;
-    final static int REPORT_SCASH = 0x0299394;
-    final static int REPORT_ESPAY = 0x0299393;
-    final static int REPORT_FEE = 0x0299396;
+    public static int REPORT_ASK = 0x0299395;
+    public static int REPORT_SCASH = 0x0299394;
+    public static int REPORT_ESPAY = 0x0299393;
+    public static int REPORT_FEE = 0x0299396;
     private final String DATEFROM = "tagFrom";
     private final String DATETO = "tagTo";
     final private String ITEM_DESC_LISTRIK = "Listrik";
