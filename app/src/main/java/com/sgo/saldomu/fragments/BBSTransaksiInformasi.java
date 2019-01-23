@@ -595,7 +595,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                 Log.d("response insert c2a: " ,model.toString());
 
                                 dismissProgressDialog();
-                                if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282")) {
+                                if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282") || code.equals("0296")) {
 
                                     SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
                                     SecurePreferences.Editor mEditor = prefs.edit();
@@ -651,20 +651,20 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                         if (isSimExist)
                                             smsDialog.show();
                                     } else if (source_product_h2h.equalsIgnoreCase("Y") && source_product_type.equalsIgnoreCase(DefineValue.EMO)) {
-                                        if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("TCASH")
-                                                && !source_product_code.equalsIgnoreCase("MANDIRILKD")) {
-//                                            sentDataReqToken(model);
-                                            changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
-                                                    model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
-                                                    model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name());
-                                        }else
-                                        {
+//                                        if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("TCASH")
+//                                                && !source_product_code.equalsIgnoreCase("MANDIRILKD")) {
+////                                            sentDataReqToken(model);
+//                                            changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
+//                                                    model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
+//                                                    model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name());
+//                                        }else
+//                                        {
                                             changeToConfirmCashIn(model);
                                             isOwner = true;
                                             changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
                                                     model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
                                                     model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name());
-                                        }
+//                                        }
                                     } else {
                                         changeToConfirmCashIn(model);
                                         isOwner = true;
