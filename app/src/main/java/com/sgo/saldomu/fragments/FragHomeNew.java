@@ -41,6 +41,7 @@ import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.activities.ReportActivity;
+import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.adapter.GridHome;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -374,7 +375,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 String menuItemName = ((TextView) view.findViewById(R.id.grid_text)).getText().toString();
 
                 if (menuItemName.equals(getString(R.string.newhome_title_topup))) {
-                    switchMenu(NavigationDrawMenu.MTOPUP, null);
+//                    switchMenu(NavigationDrawMenu.MTOPUP, null);
+                    Intent i = new Intent(getActivity(), TopUpActivity.class);
+                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_pay_friends))) {
                     if (getLvlClass().isLevel1QAC()) {
                         getLvlClass().showDialogLevel();

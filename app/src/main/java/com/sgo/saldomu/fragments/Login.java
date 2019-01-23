@@ -176,7 +176,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             extraSignature = userIDfinale + passLoginValue.getText().toString();
 
             params = RetrofitService.getInstance()
-                    .getSignatureSecretKey(MyApiClient.LINK_LOGIN_temp, extraSignature);
+                    .getSignatureSecretKey(MyApiClient.LINK_LOGIN, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userIDfinale);
             params.put(WebParams.PASSWORD_LOGIN, RSA.opensslEncrypt(passLoginValue.getText().toString()));
@@ -189,7 +189,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
             Timber.d("isi params login:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN_temp, params, new ResponseListener() {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN, params, new ResponseListener() {
 
                 @Override
                 public void onResponses(JsonObject response) {
