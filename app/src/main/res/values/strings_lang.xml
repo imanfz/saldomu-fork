@@ -265,7 +265,7 @@
     </string>
 
     <string name="changepass_ab_changepass">Ganti Password</string>
-    <string name="changepass_text_currentpass">Password Berlaku</string>
+    <string name="changepass_text_currentpass">Password Lama</string>
     <string name="changepass_text_newpass">Password Baru</string>
     <string name="changepass_text_retypenewpass">Ketik Ulang Password Baru</string>
     <string name="password_clue">*Password harus terdiri dari 8-20 karakter! Password merupakan kombinasi dari huruf kapital, huruf kecil dan angka.</string>
