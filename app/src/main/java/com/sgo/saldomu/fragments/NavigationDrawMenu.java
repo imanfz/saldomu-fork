@@ -54,6 +54,8 @@ import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.PayFriendsActivity;
+import com.sgo.saldomu.activities.ReportActivity;
+import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -467,7 +469,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         models.add(new navdrawmainmenuModel(R.drawable.ic_ask_icon_color,R.drawable.ic_ask_icon_color,getString(R.string.menu_item_title_ask_for_money),MASK4MONEY));            //3
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_pulsa,R.drawable.ic_topup_pulsa,getString(R.string.menu_item_title_pulsa_agent), MDAP));
         models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color,R.drawable.ic_buy_icon_color,getString(R.string.menu_item_title_buy),MBUY));//4
-        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,R.drawable.ic_cashout_icon_color,getString(R.string.menu_item_title_cash_out),MTARIKDANA));
+//        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,R.drawable.ic_cashout_icon_color,getString(R.string.menu_item_title_cash_out),MTARIKDANA));
         models.add(new navdrawmainmenuModel(R.drawable.ic_report,R.drawable.ic_report,getString(R.string.menu_item_title_scadm),MSCADM));              //6
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,0,getString(R.string.menu_item_title_cash_out),false));       //5
 
@@ -509,8 +511,11 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
         switch (itemId) {
             case MTOPUP:
-                newFragment = new ListBankTopUpFragment();
-                switchFragment(newFragment, getString(R.string.toolbar_title_topup));
+//                newFragment = new ListBankTopUpFragment();
+//                switchFragment(newFragment, getString(R.string.toolbar_title_topup));
+                i = new Intent(getActivity(), TopUpActivity.class);
+                i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                switchActivity(i,MainPage.ACTIVITY_RESULT);
                 break;
             case MPAYFRIENDS:
                 if(levelClass.isLevel1QAC()) {
@@ -520,7 +525,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 //                    newFragment = new FragPayFriends();
 //                    if (data != null && !data.isEmpty()) newFragment.setArguments(data);
 //                    switchFragment(newFragment, getString(R.string.menu_item_title_pay_friends));
-                    Intent i = new Intent(getActivity(), PayFriendsActivity.class);
+                    i = new Intent(getActivity(), PayFriendsActivity.class);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
                 break;
@@ -587,8 +592,10 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 switchFragment(newFragment, getString(R.string.toolbar_title_mygroup));
                 break;
             case MREPORT:
-                newFragment = new ReportTab();
-                switchFragment(newFragment, getString(R.string.menu_item_title_report));
+//                newFragment = new ReportTab();
+//                switchFragment(newFragment, getString(R.string.menu_item_title_report));
+                i = new Intent(getActivity(), ReportActivity.class);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
             case MSETTINGS:
                 newFragment = new ListSettings();
