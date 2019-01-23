@@ -54,6 +54,7 @@ import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.PayFriendsActivity;
+import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -509,8 +510,11 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
         switch (itemId) {
             case MTOPUP:
-                newFragment = new ListBankTopUpFragment();
-                switchFragment(newFragment, getString(R.string.toolbar_title_topup));
+//                newFragment = new ListBankTopUpFragment();
+//                switchFragment(newFragment, getString(R.string.toolbar_title_topup));
+                i = new Intent(getActivity(), TopUpActivity.class);
+                i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                switchActivity(i,MainPage.ACTIVITY_RESULT);
                 break;
             case MPAYFRIENDS:
                 if(levelClass.isLevel1QAC()) {
@@ -520,7 +524,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 //                    newFragment = new FragPayFriends();
 //                    if (data != null && !data.isEmpty()) newFragment.setArguments(data);
 //                    switchFragment(newFragment, getString(R.string.menu_item_title_pay_friends));
-                    Intent i = new Intent(getActivity(), PayFriendsActivity.class);
+                    i = new Intent(getActivity(), PayFriendsActivity.class);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
                 break;
