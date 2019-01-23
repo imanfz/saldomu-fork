@@ -491,6 +491,7 @@ public class RetrofitService {
                         }
 
                         listener.onError(e);
+                        listener.onComplete();
                     }
 
                     @Override
@@ -529,6 +530,7 @@ public class RetrofitService {
                         }
 
                         listener.onError(e);
+                        listener.onComplete();
                     }
 
                     @Override
@@ -764,11 +766,12 @@ public class RetrofitService {
                         }
 
                         listener.onResponses(getErrorMessage(e));
+                        listener.onComplete();
                     }
 
                     @Override
                     public void onComplete() {
-
+                        listener.onComplete();
                     }
                 });
     }
