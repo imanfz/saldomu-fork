@@ -592,7 +592,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                 final BBSTransModel model = getGson().fromJson(object, BBSTransModel.class);
 
                                 String code = model.getError_code();
-                                Log.d("response insert c2a: " ,model.toString());
+                                Log.d("response insert c2a: ", model.toString());
 
                                 dismissProgressDialog();
                                 if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282")) {
@@ -653,20 +653,17 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     } else if (source_product_h2h.equalsIgnoreCase("Y") && source_product_type.equalsIgnoreCase(DefineValue.EMO)) {
 //                                        if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("TCASH")
 //                                                && !source_product_code.equalsIgnoreCase("MANDIRILKD")) {
-////                                            sentDataReqToken(model);
+                                        sentDataReqToken(model);
 //                                            changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
 //                                                    model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
 //                                                    model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name());
 //                                        }else
 //                                        {
-                                            changeToConfirmCashIn(model);
-                                            isOwner = true;
-                                            changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
-                                                    model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
-                                                    model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name(), model.getBenef_product_value_code());
+//                                            changeToConfirmCashIn(model);
+
 //                                        }
                                     } else {
-                                        changeToConfirmCashIn(model);
+//                                        changeToConfirmCashIn(model);
                                         isOwner = true;
                                         changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
                                                 model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
@@ -950,7 +947,11 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     if (isSMSBanking)
                                         showDialog(model);
                                     else
-                                        changeToConfirmCashIn(A2CModel);
+//                                        changeToConfirmCashIn(A2CModel);
+                                        isOwner = true;
+                                    changeToDataMandiriLKD(A2CModel.getTx_id(), A2CModel.getTx_product_code(), A2CModel.getTx_product_name(), A2CModel.getTx_bank_code(),
+                                            A2CModel.getAmount(), A2CModel.getAdmin_fee(), A2CModel.getTotal_amount(), A2CModel.getTx_bank_name(),
+                                            A2CModel.getMax_resend_token(), A2CModel.getBenef_acct_no(), A2CModel.getBenef_acct_name(), A2CModel.getBenef_product_value_code());
                                 } else {
                                     changeToConfirmCashout(A2CModel, A2CModel.getTx_product_code());
                                 }

@@ -176,7 +176,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             extraSignature = userIDfinale + passLoginValue.getText().toString();
 
             params = RetrofitService.getInstance()
-                    .getSignatureSecretKey(MyApiClient.LINK_LOGIN, extraSignature);
+                    .getSignatureSecretKey(MyApiClient.LINK_LOGIN_temp, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userIDfinale);
             params.put(WebParams.PASSWORD_LOGIN, RSA.opensslEncrypt(passLoginValue.getText().toString()));
@@ -189,7 +189,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
             Timber.d("isi params login:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN, params, new ResponseListener() {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN_temp, params, new ResponseListener() {
 
                 @Override
                 public void onResponses(JsonObject response) {
@@ -454,11 +454,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 }
             }
 
-//            if (!model.getShopIdAgent().equals("")) {
+            if (!model.getShopIdAgent().equals("")) {
                 mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
                 mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
                 mEditor.putString(DefineValue.SHOP_AGENT_DATA, getGson().toJson(model.getShopIdAgent()));
-//            }
+            }
 
             if (model.getSettings() != null) {
                 mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, Integer.valueOf(model.getSettings().get(0).getMaxMemberTransfer()));
