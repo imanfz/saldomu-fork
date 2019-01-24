@@ -68,22 +68,40 @@
                 <requestFocus />
             </EditText>
 
-            <EditText
-                android:id="@+id/passLogin_value"
-                style="@style/EditTextyellow"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                android:enabled="true"
-                android:gravity="left|center_vertical"
-                android:hint="@string/login_edithint_pass"
-                android:inputType="textPassword"
-                android:maxLength="13"
-                android:textColor="@color/black"
-                android:textColorHint="@color/grey_400"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:textStyle="bold" />
+                android:layout_marginTop="16dp">
+
+                <EditText
+                    android:id="@+id/passLogin_value"
+                    style="@style/EditTextyellow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                    android:enabled="true"
+                    android:gravity="left|center_vertical"
+                    android:hint="@string/login_edithint_pass"
+                    android:inputType="textPassword"
+                    android:maxLength="13"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/grey_400"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" android:layout_centerVertical="true"/>
+
+                <ImageView
+                    android:id="@+id/passLogin_toogle_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/icon_filled_eye"
+                    android:visibility="invisible"/>
+
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/btn_login"

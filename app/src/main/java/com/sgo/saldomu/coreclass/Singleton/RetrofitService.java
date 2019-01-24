@@ -86,21 +86,12 @@ import timber.log.Timber;
 public class RetrofitService {
     private static String hostname = "mobile-dev.espay.id";
 
-    public static final String idService = "dev.api.mobile";
-    public static final String passService = "590@dev.api.mobile!";
-    public static final String PRIVATE_KEY = "590mobil3";
+    public static final String PRIVATE_KEY = BuildConfig.HEADER_AUTH_3;
 
-    public static final int DEFAULT_RETRIES_REQUEST = 3;
-
-    private static Context mContext;
     private static RetrofitService singleton;
     Retrofit retrofit;
     Gson gson;
     private SecurePreferences sp;
-
-    //URL
-    public static String LINK_LOGIN = "saldomu/MemberLogin/SignIn";
-    public static String LINK_LIST_MEMBER = "saldomu/Member/Retrieve";
 
     private static HttpLoggingInterceptor interceptorLogging = new HttpLoggingInterceptor()
             .setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -175,8 +166,7 @@ public class RetrofitService {
     }
 
     private static String getBasicAuth() {
-//        String stringEncode = "dev.api.mobile"+":"+"590@dev.api.mobile!";
-        String stringEncode = "s4LD0mu" + ":" + "WPtK9YBa?4g,rfvm(^XD/M]{25TJF8";
+        String stringEncode = BuildConfig.HEADER_AUTH_1 + ":" + BuildConfig.HEADER_AUTH_2;
         byte[] encodeByte = Base64.encodeBase64(stringEncode.getBytes());
         String encode = new String(encodeByte);
         return encode.replace('+', '-').replace('/', '_');
@@ -291,10 +281,10 @@ public class RetrofitService {
 
     private static CertificatePinner certificatePinner
             = new CertificatePinner.Builder()
-            .add(hostname, "sha256/UUsUINnnxiyFSr9zQdrGG9kfl9er17hIN56rmbF1LMg=")
-            .add(hostname, "sha256/klO23nT2ehFDXCfx3eHTDRESMz3asj1muO+4aIdjiuY=")
-            .add(hostname, "sha256/grX4Ta9HpZx6tSHkmCrvpApTQGo67CYDnvprLg5yRME=")
-            .add(hostname, "sha256/lCppFqbkrlJ3EcVFAkeip0+44VaoJUymbnOaEUk7tEU")
+            .add(hostname, BuildConfig.CERTIFICATE_1)
+            .add(hostname, BuildConfig.CERTIFICATE_2)
+            .add(hostname, BuildConfig.CERTIFICATE_3)
+            .add(hostname, BuildConfig.CERTIFICATE_4)
             .build();
 
     public static UUID getUUID() {
@@ -333,7 +323,7 @@ public class RetrofitService {
         String msgnya = uuidnya + dtime + BuildConfig.APP_ID + webServiceName + commid + userphoneid + extraSignature;
         String hash = SHA.SHA256(secretKey, msgnya);
 
-        Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash + ", access key : " + secretKey);
+        Log.d("okhttp retrofit", "msg : " + msgnya + ", hashed : " + hash + ", access key : " + secretKey);
 
         HashMap<String, Object> params = new HashMap<>();
         params.put(WebParams.RC_UUID, uuidnya);

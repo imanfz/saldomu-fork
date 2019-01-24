@@ -2,9 +2,12 @@ package com.sgo.saldomu.fragments;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -54,7 +57,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
     private Button btnRegister;
     private EditText userIDValue;
     private EditText passLoginValue;
-    private ImageView image_spinner;
+    private ImageView image_spinner, toogleViewPass;
     private Button btnLogin;
     private Animation frameAnimation;
     //    private MaterialRippleLayout btnLayout;
@@ -64,6 +67,15 @@ public class Login extends BaseFragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.frag_login_new, container, false);
+
+        toogleViewPass = v.findViewById(R.id.passLogin_toogle_view);
+        userIDValue = v.findViewById(R.id.userID_value);
+        passLoginValue = v.findViewById(R.id.passLogin_value);
+        btnLogin = v.findViewById(R.id.btn_login);
+        btnforgetPass = v.findViewById(R.id.btn_forgetPass);
+        btnRegister = v.findViewById(R.id.btn_register);
+        image_spinner = v.findViewById(R.id.image_spinning_wheel);
+
         return v;
     }
 
@@ -74,21 +86,12 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
         argsBundleNextLogin = getArguments();
 
-        userIDValue = v.findViewById(R.id.userID_value);
-        passLoginValue = v.findViewById(R.id.passLogin_value);
 
-        btnLogin = v.findViewById(R.id.btn_login);
-        btnLogin.setOnClickListener(this);
 
 //        btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
 
-        btnforgetPass = v.findViewById(R.id.btn_forgetPass);
-        btnforgetPass.setOnClickListener(this);
 
-        btnRegister = v.findViewById(R.id.btn_register);
-        btnRegister.setOnClickListener(this);
 
-        image_spinner = v.findViewById(R.id.image_spinning_wheel);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
@@ -121,6 +124,20 @@ public class Login extends BaseFragment implements View.OnClickListener {
             userIDValue.setEnabled(true);
         }
 
+        btnLogin.setOnClickListener(this);
+        btnforgetPass.setOnClickListener(this);
+        btnRegister.setOnClickListener(this);
+        toogleViewPass.setOnClickListener(this);
+        passLoginValue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    toogleViewPass.setVisibility(View.VISIBLE);
+                }else {
+                    toogleViewPass.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
 
 //        String mcAddress = new DeviceUtils(getActivity()).getWifiMcAddress();
 //        String deviceModel = new DeviceUtils(getActivity()).getDeviceModelID();
@@ -147,6 +164,24 @@ public class Login extends BaseFragment implements View.OnClickListener {
             case R.id.btn_register:
                 newFrag = new Regist1();
                 switchFragment(newFrag, "reg1", true);
+                break;
+
+            case R.id.passLogin_toogle_view:
+                toogleViewPass.setOnTouchListener((v1, event) -> {
+                    switch ( event.getAction() ) {
+                        case MotionEvent.ACTION_DOWN:
+                            passLoginValue.setInputType(InputType.TYPE_CLASS_TEXT);
+                            passLoginValue.setTypeface(Typeface.DEFAULT_BOLD);
+                            passLoginValue.setSelection(passLoginValue.getText().length());
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            passLoginValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                            passLoginValue.setTypeface(Typeface.DEFAULT_BOLD);
+                            passLoginValue.setSelection(passLoginValue.getText().length());
+                            break;
+                    }
+                    return true;
+                });
                 break;
         }
     }
