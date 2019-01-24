@@ -40,6 +40,7 @@ public class PayFriendsActivity extends BaseActivity {
             String _memberID = sp.getString(DefineValue.MEMBER_ID, "");
 
             Intent intent    = getIntent();
+            Bundle bundle = intent.getBundleExtra("data");
             Fragment newFragment;
             if (intent.getBooleanExtra(DefineValue.CONFIRM_PAYFRIEND,false)) {
                 Bundle args = new Bundle();
@@ -51,7 +52,21 @@ public class PayFriendsActivity extends BaseActivity {
 
                 newFragment = new FragPayFriendsConfirm();
                 newFragment.setArguments(args);
-            }else  newFragment = new FragPayFriends();
+            }else
+            {
+                Bundle args = new Bundle();
+                if (bundle!=null) {
+                    args.putBoolean(DefineValue.CONFIRM_PAYFRIEND, true);
+                    args.putString(DefineValue.AMOUNT, bundle.getString(DefineValue.AMOUNT));
+                    args.putString(DefineValue.CUST_NAME, bundle.getString(DefineValue.CUST_NAME));
+                    args.putString(DefineValue.MESSAGE, bundle.getString(DefineValue.MESSAGE));
+                    args.putString(DefineValue.USERID_PHONE, bundle.getString(DefineValue.USERID_PHONE));
+                    args.putString(DefineValue.TRX, bundle.getString(DefineValue.TRX));
+                    args.putString(DefineValue.REQUEST_ID, bundle.getString(DefineValue.REQUEST_ID));
+                }
+                newFragment = new FragPayFriends();
+                newFragment.setArguments(args);
+            }
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

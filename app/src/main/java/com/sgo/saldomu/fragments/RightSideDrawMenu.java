@@ -12,6 +12,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.PromoObject;
@@ -30,6 +31,7 @@ import com.sgo.saldomu.interfaces.ObjListeners;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,9 +72,9 @@ public class RightSideDrawMenu extends Fragment {
 
         ptrFrameLayout = (PtrFrameLayout) getActivity().findViewById(R.id.promo_ptr_frame);
         ListView lvPromo = (ListView) getActivity().findViewById(R.id.lvPromo);
-        ImageView title = (ImageView) getActivity().findViewById(R.id.title);
+        TextView title = (TextView) getActivity().findViewById(R.id.title);
 
-        title.setImageResource(R.drawable.socialpromo_icon_bar);
+//        title.setImageResource(R.drawable.socialpromo_icon_bar);
 
         listPromo = new ArrayList<>();
 
