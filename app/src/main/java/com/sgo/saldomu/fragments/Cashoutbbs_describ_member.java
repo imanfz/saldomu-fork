@@ -10,6 +10,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +45,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
@@ -63,8 +66,9 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
     public final static String TAG = "com.sgo.saldomu.fragments.Cashoutbbs_describ_member";
     View v;
     //    layout_button_transaction;
-    String authType, amount, fee, total, ccyId, txId, product_h2h, comm_code,
+    String authType, amount, fee, total, ccyId, txId, comm_code,
             product_name, product_code, bank_code, bank_name, callback_url, api_key, comm_id, otp_member;
+    private String product_h2h;
     TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvAlert, tvBankProduct;
     LinearLayout layoutOTP, layoutNoEmpty, layoutButton;
     RelativeLayout layoutEmpty;
@@ -93,11 +97,9 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
         if (flagLogin == null)
@@ -150,7 +152,33 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         };
         handlerWS.post(runnableWS);
 
-        btnOk.setOnClickListener(btnOkListener);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (InetHandler.isNetworkAvailable(getActivity())) {
+                    if (getProduct_h2h().equalsIgnoreCase("Y")) {
+                        if (isPIN) {
+                            Intent i = new Intent(getActivity(), InsertPIN.class);
+                            if (pin_attempt != -1 && pin_attempt < 2)
+                                i.putExtra(DefineValue.ATTEMPT, pin_attempt);
+                            startActivityForResult(i, MainPage.REQUEST_FINISH);
+                        } else if (isOTP) {
+                            if (inputValidation()) {
+                                OTPMemberATC(tokenValue.getText().toString(), txId);
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), "Authentication type kosong", Toast.LENGTH_LONG).show();
+                        }
+                    } else if (getProduct_h2h().equalsIgnoreCase("N")) {
+                        changeToSGOPlus(txId, product_code, product_name, bank_code, amount, fee, total, bank_name);
+                    }
+//                    else
+//                        Toast.makeText(getActivity(), "on click producth2h:" + String.valueOf(tempResponse), Toast.LENGTH_SHORT).show();
+                } else {
+                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+                }
+            }
+        });
         btnCancel.setOnClickListener(btnCancelListener);
 //        btn_proses_transaction.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -179,31 +207,6 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_konfirmasi_cashout_bbs);
         startActivity(intent);
     }
-
-    Button.OnClickListener btnOkListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (InetHandler.isNetworkAvailable(getActivity())) {
-                if (product_h2h.equalsIgnoreCase("Y")) {
-                    if (isPIN) {
-                        Intent i = new Intent(getActivity(), InsertPIN.class);
-                        if (pin_attempt != -1 && pin_attempt < 2)
-                            i.putExtra(DefineValue.ATTEMPT, pin_attempt);
-                        startActivityForResult(i, MainPage.REQUEST_FINISH);
-                    } else if (isOTP) {
-                        if (inputValidation()) {
-                            OTPMemberATC(tokenValue.getText().toString(), txId);
-                        }
-                    } else {
-                        Toast.makeText(getActivity(), "Authentication type kosong", Toast.LENGTH_LONG).show();
-                    }
-                } else if (product_h2h.equalsIgnoreCase("N")) {
-                    changeToSGOPlus(txId, product_code, product_name, bank_code, amount, fee, total, bank_name);
-                }
-            } else
-                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
-        }
-    };
 
     Button.OnClickListener btnCancelListener = new Button.OnClickListener() {
         @Override
@@ -275,16 +278,17 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
 
             Timber.d("isi params sent list member atc:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_LIST_MEMBER_A2C, params,
-                    new ResponseListener() {
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_LIST_MEMBER_A2C, params,
+                    new ObjListeners() {
                         @Override
-                        public void onResponses(JsonObject object) {
+                        public void onResponses(JSONObject response) {
                             try {
 
-                                GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
+//                                GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
-                                JSONObject response = new JSONObject(getGson().toJson(model));
-
+//                                JSONObject response = new JSONObject(getGson().toJson(model));
+//                                tempResponse = new JSONObject(getGson().toJson(model));
+                                String error_message = response.getString(WebParams.ERROR_MESSAGE);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     handlerWS.removeCallbacks(runnableWS);
@@ -309,23 +313,20 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                     amount = response.optString(WebParams.TX_AMOUNT, "0");
                                     fee = response.optString(WebParams.FEE_AMOUNT, "0");
                                     total = response.optString(WebParams.TOTAL_AMOUNT, "0");
-                                    product_h2h = response.optString(WebParams.PRODUCT_H2H, "");
+                                    setProduct_h2h(response.optString(WebParams.PRODUCT_H2H, ""));
                                     comm_code = response.optString(WebParams.COMM_CODE, "");
-                                    setPayment(product_h2h);
+                                    setPayment(getProduct_h2h());
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    test.showDialoginActivity(getActivity(), error_message);
                                 } else if (code.equals(ErrorDefinition.NO_TRANSACTION)) {
                                     loading.setVisibility(View.GONE);
                                     tvAlert.setText(getString(R.string.cashoutmember_alert_no_tx));
                                     handlerWS.postDelayed(runnableWS, 60000);
                                 } else {
-                                    String message = model.getError_message();
-                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                                     handlerWS.postDelayed(runnableWS, 60000);
                                 }
-
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -336,7 +337,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                             if (failed < 3) {
                                 failed++;
                                 handlerWS.postDelayed(runnableWS, 60000);
-                            }else {
+                            } else {
                                 Toast.makeText(getActivity(), "Silahkan coba kembali", Toast.LENGTH_SHORT).show();
                                 getActivity().finish();
                             }
@@ -794,5 +795,13 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
     @Override
     public void onOkButton() {
         getActivity().finish();
+    }
+
+    public String getProduct_h2h() {
+        return product_h2h;
+    }
+
+    public void setProduct_h2h(String product_h2h) {
+        this.product_h2h = product_h2h;
     }
 }
