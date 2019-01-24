@@ -68,15 +68,15 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
             Fragment mFrag;
             Bundle mArgs = i.getExtras();
 
-//            if(is_full_activity){
+            if(is_full_activity){
                 mFrag = new ListBankTopUpFragment();
                 mArgs.putBoolean(DefineValue.IS_ACTIVITY_FULL,is_full_activity);
                 mArgs.putString("Toolbar", i.getStringExtra("Toolbar"));
                 setToolbarTitle(getString(R.string.toolbar_title_topup));
-//            }
-//            else {
-//                mFrag = new SgoPlus_input();
-//            }
+            }
+            else {
+                mFrag = new SgoPlus_input();
+            }
             mFrag.setArguments(mArgs);
             fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

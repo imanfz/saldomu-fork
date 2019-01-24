@@ -1156,6 +1156,7 @@ public class MainPage extends BaseActivity {
                             dataBundle.putString(DefineValue.USERID_PHONE, data.getStringExtra(DefineValue.USERID_PHONE));
                             dataBundle.putString(DefineValue.TRX, data.getStringExtra(DefineValue.TRX));
                             dataBundle.putString(DefineValue.REQUEST_ID, data.getStringExtra(DefineValue.REQUEST_ID));
+                            dataBundle.putBoolean(DefineValue.CONFIRM_PAYFRIEND, true);
 
                             mNavDrawer.selectItem(NavigationDrawMenu.MPAYFRIENDS, dataBundle);
                             break;

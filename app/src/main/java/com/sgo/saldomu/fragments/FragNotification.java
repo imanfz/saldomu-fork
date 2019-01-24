@@ -199,6 +199,7 @@ public class FragNotification extends BaseFragment {
                         data.putExtra(DefineValue.REQUEST_ID, mObjDetail.getString(WebParams.REQUEST_ID));
                         data.putExtra(DefineValue.TRX, mObjDetail.getString(WebParams.TRX_ID));
                         data.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.TYPE_TRANSFER);
+                        data.putExtra(DefineValue.CONFIRM_PAYFRIEND, true);
                         getActivity().setResult(MainPage.RESULT_NOTIF, data);
                         getActivity().finish();
 

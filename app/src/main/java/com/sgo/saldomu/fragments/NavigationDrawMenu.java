@@ -526,6 +526,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 //                    if (data != null && !data.isEmpty()) newFragment.setArguments(data);
 //                    switchFragment(newFragment, getString(R.string.menu_item_title_pay_friends));
                     i = new Intent(getActivity(), PayFriendsActivity.class);
+                    i.putExtra("data", data);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
                 break;
