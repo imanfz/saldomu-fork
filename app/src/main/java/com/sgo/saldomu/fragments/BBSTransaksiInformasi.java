@@ -952,7 +952,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                         isOwner = true;
                                     changeToDataMandiriLKD(A2CModel.getTx_id(), A2CModel.getTx_product_code(), A2CModel.getTx_product_name(), A2CModel.getTx_bank_code(),
                                             A2CModel.getAmount(), A2CModel.getAdmin_fee(), A2CModel.getTotal_amount(), A2CModel.getTx_bank_name(),
-                                            A2CModel.getMax_resend_token(), A2CModel.getBenef_acct_no(), A2CModel.getBenef_acct_name(), A2CModel.getBenef_product_value_code());
+                                            A2CModel.getMax_resend_token(), A2CModel.getBenef_acct_no(), A2CModel.getBenef_product_value_name(), A2CModel.getBenef_product_value_code());
                                 } else {
                                     changeToConfirmCashout(A2CModel, A2CModel.getTx_product_code());
                                 }
