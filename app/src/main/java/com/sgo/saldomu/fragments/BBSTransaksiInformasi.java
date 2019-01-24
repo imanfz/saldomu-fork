@@ -976,7 +976,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                         AlertDialog dialog = builder.create();
                                         dialog.show();
                                     } else {
-                                        String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
+                                        String message_dialog = "\""+ "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
                                         AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
                                                 message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
                                         dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
@@ -988,7 +988,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                             }
                                         });
                                         dialog_frag.setTargetFragment(BBSTransaksiInformasi.this, 0);
-                                        dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                        dialog_frag.show(getFragmentManager(), AlertDialogFrag.TAG);
                                     }
                                 } else {
                                     code = model.getError_code() + " : " + model.getError_message();

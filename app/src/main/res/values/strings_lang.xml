@@ -401,7 +401,7 @@
     <string name="notifications_p2p_status_paid">Anda sudah melakukan transaksi ini.</string>
     <string name="notif_detail_claim_non_member">sudah bergabung di PIN</string>
 
-    <string name="social_promo">Promo Sosial</string>
+    <string name="social_promo">Promo</string>
     <string name="title_add_friends">Tambah Teman</string>
     <string name="title_add_friends_by_qrcode">Tambah Teman Dengan Scan QRCode</string>
     <string name="desc_add_by_qrcode">*Posisikan barcode pada panel tampilan \ndan tahan posisinya</string>
