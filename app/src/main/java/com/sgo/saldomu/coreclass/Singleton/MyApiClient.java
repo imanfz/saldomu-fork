@@ -19,13 +19,8 @@ public class MyApiClient {
 
     private static MyApiClient singleton = null;
     private Context mContext;
-//    private AsyncHttpClient asyncHttpClient;
-//    private AsyncHttpClient asyncHttpClient_google;
-//    private AsyncHttpClient syncHttpClient_google;
-//    private SyncHttpClient syncHttpClient;
-//    private AsyncHttpClient asyncHttpClientUnstrusted;
-//    private AsyncHttpClient asyncHttpClient_mnotif;
-//    private SyncHttpClient syncHttpClient_mnotif;
+//    public static final String idService = "dev.api.mobile";
+//    public static final String passService = "590@dev.api.mobile!";
     private SecurePreferences sp;
 
     private Context getmContext() {
