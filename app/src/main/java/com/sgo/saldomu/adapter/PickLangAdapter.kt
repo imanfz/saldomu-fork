@@ -29,8 +29,8 @@ class PickLangAdapter(var context: FragmentActivity?, var list: ArrayList<String
     }
 
 
-    class holder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
-        var arrow : TextView = itemView!!.findViewById(R.id.arrow)
-        var langItem : TextView = itemView!!.findViewById(R.id.lang_item)
+    class holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var arrow : TextView = itemView.findViewById(R.id.arrow)
+        var langItem : TextView = itemView.findViewById(R.id.lang_item)
 }
 }

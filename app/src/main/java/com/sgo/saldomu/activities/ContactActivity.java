@@ -44,8 +44,8 @@ public class ContactActivity extends BaseActivity {
             ViewPager pager;
             String[] titles = this.getResources().getStringArray(R.array.contact_tab_list);
 
-            tabs = (TabPageIndicator) findViewById(R.id.contact_tabs);
-            pager = (ViewPager) findViewById(R.id.contact_pager);
+            tabs = findViewById(R.id.contact_tabs);
+            pager = findViewById(R.id.contact_pager);
             adapternya = new ContactTabAdapter(getSupportFragmentManager(), this, titles);
 //            setTargetFragment(this, 0);
             pager.setAdapter(adapternya);

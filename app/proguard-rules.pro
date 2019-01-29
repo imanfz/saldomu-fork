@@ -112,7 +112,6 @@
 -dontwarn okio.**
 -dontwarn org.joda.time.**
 -dontwarn com.google.android.gms.**
--dontnote com.google.android.gms.**
 
 # RxAndroid
 -dontwarn rx.internal.util.unsafe.**
@@ -122,3 +121,6 @@
 -dontwarn okhttp3.internal.platform.*
 -dontwarn okio.**
 -dontwarn retrofit2.Platform$Java8
+-dontwarn com.squareup.okhttp.**
+-dontwarn com.squareup.okhttp3.**
+-dontwarn javax.annotation.**
