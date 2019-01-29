@@ -1,7 +1,6 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +23,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +52,6 @@ import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.ShopCategory;
 import com.sgo.saldomu.models.retrofit.CategoriesModel;
@@ -90,7 +89,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
     ImageView refreshBtn;
     private Animation frameAnimation;
     private SecurePreferences sp;
-    ProgressDialog progdialog;
     ArrayList<ShopCategory> shopCategories = new ArrayList<>();
     private Biller_Type_Data_Model mBillerTypeDataPLS;
     private Biller_Type_Data_Model mBillerTypeDataBPJS;
@@ -98,8 +96,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Realm realm;
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
-    ProgressDialog progdialog2;
     String shopStatus, isMemberShopDGI;
+    ProgressBar gridview_progbar;
 
     private static final int RC_GPS_REQUEST = 1;
 
@@ -152,6 +150,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         tv_saldo = v.findViewById(R.id.tv_saldo);
         swSettingOnline = v.findViewById(R.id.swSettingOnline);
         llAgentDetail = v.findViewById(R.id.llAgentDetail);
+        gridview_progbar = v.findViewById(R.id.gridview_progbar);
 
         btn_beli = v.findViewById(R.id.btn_beli);
         input = v.findViewById(R.id.input);
@@ -223,10 +222,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         if (isAgent) {
-            if (isAdded()) {
+//            if (isAdded()) {
                 GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
                 GridView.setAdapter(adapter);
-            }
+//            }
         } else {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
             params.put(WebParams.APP_ID, BuildConfig.APP_ID);
@@ -236,68 +235,70 @@ public class FragHomeNew extends BaseFragmentMainPage {
             params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
             Timber.d("isi params shop category:" + params.toString());
 
-            if (this.isVisible()) {
-                progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+//            if (this.isVisible()) {
+//                showProgressDialog();
+            showView(gridview_progbar);
 
-                RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CATEGORY_LIST, params,
-                        new ResponseListener() {
-                            @Override
-                            public void onResponses(JsonObject object) {
-                                CategoryListModel model = getGson().fromJson(object, CategoryListModel.class);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CATEGORY_LIST, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            CategoryListModel model = getGson().fromJson(object, CategoryListModel.class);
 
-                                String code = model.getError_code();
+                            String code = model.getError_code();
 
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    for (int i = 0; i < model.getCategories().size(); i++) {
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                for (int i = 0; i < model.getCategories().size(); i++) {
 
-                                        CategoriesModel obj = model.getCategories().get(i);
+                                    CategoriesModel obj = model.getCategories().get(i);
 
-                                        ShopCategory shopCategory = new ShopCategory();
-                                        shopCategory.setCategoryId(obj.getCategory_id());
-                                        if (shopCategory.getCategoryId().contains("SETOR")) {
-                                            String categoryIDcta = shopCategory.getCategoryId().toString();
-                                            SecurePreferences.Editor mEditor = sp.edit();
-                                            mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
-                                            mEditor.apply();
-                                        }
-                                        shopCategory.setSchemeCode(obj.getScheme_code());
-                                        String tempCategory = obj.getCategory_name().toLowerCase();
+                                    ShopCategory shopCategory = new ShopCategory();
+                                    shopCategory.setCategoryId(obj.getCategory_id());
+                                    if (shopCategory.getCategoryId().contains("SETOR")) {
+                                        String categoryIDcta = shopCategory.getCategoryId().toString();
+                                        SecurePreferences.Editor mEditor = sp.edit();
+                                        mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
+                                        mEditor.apply();
+                                    }
+                                    shopCategory.setSchemeCode(obj.getScheme_code());
+                                    String tempCategory = obj.getCategory_name().toLowerCase();
 
-                                        String[] strArray = tempCategory.split(" ");
-                                        StringBuilder builder = new StringBuilder();
-                                        for (String s : strArray) {
-                                            String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                                            builder.append(cap + " ");
-                                        }
-
-                                        shopCategory.setCategoryName(builder.toString());
-                                        shopCategories.add(shopCategory);
+                                    String[] strArray = tempCategory.split(" ");
+                                    StringBuilder builder = new StringBuilder();
+                                    for (String s : strArray) {
+                                        String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
+                                        builder.append(cap + " ");
                                     }
 
-                                } else {
-                                    Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
+                                    shopCategory.setCategoryName(builder.toString());
+                                    shopCategories.add(shopCategory);
                                 }
 
-
-                                //gridBbsCategoryAdapter.notifyDataSetChanged();
-                                if (isAdded()) {
-                                    GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                                    GridView.setAdapter(adapter);
-                                }
+                            } else {
+                                Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                             }
 
-                            @Override
-                            public void onError(Throwable throwable) {
 
-                            }
+                            //gridBbsCategoryAdapter.notifyDataSetChanged();
+//                                if (isAdded()) {
+                            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                            GridView.setAdapter(adapter);
+//                                }
+                        }
 
-                            @Override
-                            public void onComplete() {
-                                if (progdialog.isShowing())
-                                    progdialog.dismiss();
-                            }
-                        });
-            }
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            dismissProgressDialog();
+                            hideView(gridview_progbar);
+                            Timber.d("hide view");
+                        }
+                    });
+//            }
         }
 
         btn_beli.setOnClickListener(new View.OnClickListener() {
@@ -378,7 +379,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //                    switchMenu(NavigationDrawMenu.MTOPUP, null);
                     Intent i = new Intent(getActivity(), TopUpActivity.class);
                     i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                    switchActivity(i,MainPage.ACTIVITY_RESULT);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_pay_friends))) {
                     if (getLvlClass().isLevel1QAC()) {
                         getLvlClass().showDialogLevel();
@@ -496,11 +497,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
         });
     }
 
-    void animateRefrestBtn(boolean isLoad){
-        if (isLoad){
+    void animateRefrestBtn(boolean isLoad) {
+        if (isLoad) {
             refreshBtn.setEnabled(false);
             refreshBtn.startAnimation(frameAnimation);
-        }else {
+        } else {
             refreshBtn.setEnabled(true);
             refreshBtn.clearAnimation();
         }
@@ -734,7 +735,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             } else {
                 if (isCallWebservice) {
 
-                    progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+                    showProgressDialog();
 
                     params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                     params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -777,7 +778,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                                 @Override
                                 public void onComplete() {
-                                    progdialog2.dismiss();
+                                    dismissProgressDialog();
                                 }
                             });
                 }

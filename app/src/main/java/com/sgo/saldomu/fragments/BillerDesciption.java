@@ -212,7 +212,7 @@ public class BillerDesciption extends BaseFragment {
                 initializeDescriptionLayout();
             }
 
-            if (is_input_amount) {
+            if (getIs_input_amount()) {
                 View inputAmountLayout = v.findViewById(R.id.billertoken_layout_amount_desired);
                 inputAmountLayout.setVisibility(View.VISIBLE);
                 et_desired_amount = v.findViewById(R.id.billertoken_amount_desired_value);
@@ -427,7 +427,7 @@ public class BillerDesciption extends BaseFragment {
                     btn_submit.setEnabled(false);
                     String _amount;
 
-                    if (is_input_amount)
+                    if (getIs_input_amount())
                         _amount = et_desired_amount.getText().toString();
                     else
                         _amount = amount;
@@ -469,7 +469,7 @@ public class BillerDesciption extends BaseFragment {
                             String code = model.getError_code();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                is_input_amount = model.getBiller_input_amount().equals(DefineValue.STRING_YES);
+                                setIs_input_amount(model.getBiller_input_amount().equals(DefineValue.STRING_YES));
                                 is_display_amount = model.getBiller_display_amount().equals(DefineValue.STRING_YES);
 
                                 tx_id = model.getTx_id();
@@ -815,7 +815,7 @@ description = getGson().toJson(model.getDescription());
         mArgs.putString(DefineValue.PRODUCT_CODE, product_code);
 
         mArgs.putBoolean(DefineValue.IS_DISPLAY, is_display_amount);
-        mArgs.putBoolean(DefineValue.IS_INPUT, is_input_amount);
+        mArgs.putBoolean(DefineValue.IS_INPUT, getIs_input_amount());
         mArgs.putString(DefineValue.SHARE_TYPE, shareType);
 
         mArgs.putBoolean(DefineValue.IS_SGO_PLUS, mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB));
@@ -825,7 +825,7 @@ description = getGson().toJson(model.getDescription());
         if (is_display_amount)
             mArgs.putString(DefineValue.DESCRIPTION, description);
 
-        if (is_input_amount) {
+        if (getIs_input_amount()) {
             String desired_amount = et_desired_amount.getText().toString();
             totalAmount = Double.parseDouble(desired_amount) + Double.parseDouble(fee);
             mArgs.putString(DefineValue.AMOUNT_DESIRED, desired_amount);
@@ -869,7 +869,7 @@ description = getGson().toJson(model.getDescription());
 
 
     private boolean inputValidation() {
-        if (is_input_amount) {
+        if (getIs_input_amount()) {
             if (et_desired_amount.getText().toString().length() == 0) {
                 et_desired_amount.requestFocus();
                 et_desired_amount.setError(this.getString(R.string.billertoken_validation_payment_input_amount));
@@ -914,5 +914,13 @@ description = getGson().toJson(model.getDescription());
             realm.close();
         }
         super.onDestroy();
+    }
+
+    public Boolean getIs_input_amount() {
+        return is_input_amount;
+    }
+
+    public void setIs_input_amount(Boolean is_input_amount) {
+        this.is_input_amount = is_input_amount;
     }
 }

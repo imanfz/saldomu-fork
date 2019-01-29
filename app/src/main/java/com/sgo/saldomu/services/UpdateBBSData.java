@@ -148,8 +148,6 @@ public class UpdateBBSData extends IntentService {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
-
-
 //                                if (code.equals(WebParams.SUCCESS_CODE)) {
                                 if (object.get("error_code").getAsString().equals(WebParams.SUCCESS_CODE)) {
                                     Gson gson = new Gson();

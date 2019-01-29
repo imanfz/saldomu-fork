@@ -87,22 +87,32 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/colorSecondaryWhiteFixed">
-        <GridView
-            android:layout_weight="2"
-            android:numColumns="auto_fit"
-            android:gravity="center"
-            android:columnWidth="100dp"
-            android:stretchMode="columnWidth"
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/grid"
-            android:padding="2dp"
-            android:background="@color/colorSecondaryWhiteFixed"
-            android:verticalSpacing="2dp"
-            android:horizontalSpacing="2dp"
-            />
+            android:layout_weight="2">
+            <GridView
+                android:numColumns="auto_fit"
+                android:gravity="center"
+                android:columnWidth="100dp"
+                android:stretchMode="columnWidth"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/grid"
+                android:padding="2dp"
+                android:background="@color/colorSecondaryWhiteFixed"
+                android:verticalSpacing="2dp"
+                android:horizontalSpacing="2dp"
+                />
 
-
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:id="@+id/gridview_progbar"
+                android:visibility="invisible"/>
+        </RelativeLayout>
         <!--<View-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="8dp"-->

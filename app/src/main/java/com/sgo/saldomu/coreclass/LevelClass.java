@@ -179,7 +179,7 @@ public class LevelClass {
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
         isAllowedLevel = sp.getBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
         if(contactCenter.equals("")) {
-            getHelpList();
+//            getHelpList();
         }
         else {
             try {

@@ -1306,4 +1306,6 @@
     <string name="password_validation">Validasi Password</string>
     <string name="terms_condition_upload_ktp">Dengan ini saya menyatakan bahwa dokumen yang saya unggah adalah benar keabsahannya
         dan saya akan bertanggung jawab serta bersedia di hukum sesuai hukum yang berlaku jika di kemudian hari ditemukan ketidaksesuaian.</string>
+
+    <string name="error_bbs_updating">Mohon tunggu sebentar.</string>
 </resources>

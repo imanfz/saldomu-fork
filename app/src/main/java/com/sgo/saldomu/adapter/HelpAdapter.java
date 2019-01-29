@@ -17,10 +17,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.stetho.common.StringUtil;
 import com.sgo.saldomu.Beans.HelpModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 
 import java.io.UnsupportedEncodingException;
@@ -69,14 +67,14 @@ public class HelpAdapter extends BaseAdapter {
         if (convertView == null) {
             view = mInflater.inflate(R.layout.list_help_center_item, parent, false);
             holder = new ViewHolder();
-            holder.name = (TextView) view.findViewById(R.id.help_name_value);
-            holder.phone = (TextView) view.findViewById(R.id.help_phone_value);
-            holder.mail = (TextView) view.findViewById(R.id.help_mail_value);
+            holder.name = view.findViewById(R.id.help_name_value);
+            holder.phone = view.findViewById(R.id.help_phone_value);
+            holder.mail = view.findViewById(R.id.help_mail_value);
             holder.whatsapp = view.findViewById(R.id.help_phone_whatsapp_value);
 
-            holder.trPhone = (TableRow) view.findViewById(R.id.tr_phone);
-            holder.trMail = (TableRow) view.findViewById(R.id.tr_mail);
-            holder.trWhatsapp = (TableRow) view.findViewById(R.id.tr_whatsapp);
+            holder.trPhone = view.findViewById(R.id.tr_phone);
+            holder.trMail = view.findViewById(R.id.tr_mail);
+            holder.trWhatsapp = view.findViewById(R.id.tr_whatsapp);
 
             view.setTag(holder);
 
@@ -93,7 +91,7 @@ public class HelpAdapter extends BaseAdapter {
                         //                                          int[] grantResults)
                         // to handle the case where the user grants the permission. See the documentation
                         // for ActivityCompat#requestPermissions for more details.
-                        ActivityCompat.requestPermissions((Activity)activity, new String[]{Manifest.permission.CALL_PHONE}, 1);
+                        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CALL_PHONE}, 1);
                     }
                     else {
                         context.startActivity(callIntent);
