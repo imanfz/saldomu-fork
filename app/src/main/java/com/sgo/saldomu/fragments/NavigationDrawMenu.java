@@ -40,7 +40,9 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.navdrawmainmenuModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.ActivityListSettings;
 import com.sgo.saldomu.activities.ActivityProfileQr;
+import com.sgo.saldomu.activities.ActivitySCADM;
 import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
@@ -49,8 +51,10 @@ import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
+import com.sgo.saldomu.activities.ContactActivity;
 import com.sgo.saldomu.activities.InfoHargaWebActivity;
 import com.sgo.saldomu.activities.ListBuyActivity;
+import com.sgo.saldomu.activities.ListContactActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.PayFriendsActivity;
@@ -585,8 +589,10 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 //                }
                 break;
             case MSCADM:
-                newFragment = new FragSCADM();
-                switchFragment(newFragment, getString(R.string.menu_item_title_scadm));
+//                newFragment = new FragSCADM();
+//                switchFragment(newFragment, getString(R.string.menu_item_title_scadm));
+                i = new Intent(getActivity(), ActivitySCADM.class);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
             case MMYGROUP:
                 newFragment = new FragMyGroup();
@@ -599,12 +605,17 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
             case MSETTINGS:
-                newFragment = new ListSettings();
-                switchFragment(newFragment, getString(R.string.menu_item_title_setting));
+//                newFragment = new ListSettings();
+//                switchFragment(newFragment, getString(R.string.menu_item_title_setting));
+                i = new Intent(getActivity(), ActivityListSettings.class);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
             case MHELP:
-                newFragment = new ContactTab();
-                switchFragment(newFragment, getString(R.string.menu_item_title_help1));
+//                newFragment = new ContactTab();
+//                switchFragment(newFragment, getString(R.string.menu_item_title_help1));
+
+                i = new Intent(getActivity(), ContactActivity.class);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
             case MBBS:
                 if (isAgent)
