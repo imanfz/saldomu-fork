@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -127,13 +128,6 @@ public class BillerDesciption extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.frag_biller_description, container, false);
-        return v;
-    }
-
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
         tv_item_name_value = v.findViewById(R.id.billertoken_item_name_value);
         tv_amount_value = v.findViewById(R.id.billertoken_amount_value);
@@ -144,6 +138,13 @@ public class BillerDesciption extends BaseFragment {
         tv_id_cust = v.findViewById(R.id.billertoken_biller_id_value);
         spin_payment_options = v.findViewById(R.id.spinner_billerinput_payment_options);
 
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);
 
@@ -153,7 +154,6 @@ public class BillerDesciption extends BaseFragment {
 
         if (isAdded())
             sentInquiryBiller();
-
     }
 
     private void initializeData() {
@@ -276,6 +276,8 @@ public class BillerDesciption extends BaseFragment {
             mIconArrow.setOnClickListener(descriptionClickListener);
             mDescLayout.setOnClickListener(descriptionClickListener);
 
+            animateDescLayout();
+
             JSONObject mDataDesc = new JSONObject(description);
             TextView detail_field;
             TextView detail_value;
@@ -382,36 +384,39 @@ public class BillerDesciption extends BaseFragment {
     private View.OnClickListener descriptionClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Animation mRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_arrow);
-            mRotate.setInterpolator(new LinearInterpolator());
-            mRotate.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mIconArrow.invalidate();
-                    if (mTableLayout.getVisibility() == View.VISIBLE) {
-                        mIconArrow.setImageResource(R.drawable.ic_circle_arrow_down);
-                        mTableLayout.setVisibility(View.GONE);
-                    } else {
-                        mIconArrow.setImageResource(R.drawable.ic_circle_arrow);
-                        mTableLayout.setVisibility(View.VISIBLE);
-                    }
-                    mIconArrow.invalidate();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            mIconArrow.startAnimation(mRotate);
-
+            animateDescLayout();
         }
     };
+
+    void animateDescLayout(){
+        Animation mRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_arrow);
+        mRotate.setInterpolator(new LinearInterpolator());
+        mRotate.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mIconArrow.invalidate();
+                if (mTableLayout.getVisibility() == View.VISIBLE) {
+                    mIconArrow.setImageResource(R.drawable.ic_circle_arrow_down);
+                    mTableLayout.setVisibility(View.GONE);
+                } else {
+                    mIconArrow.setImageResource(R.drawable.ic_circle_arrow);
+                    mTableLayout.setVisibility(View.VISIBLE);
+                }
+                mIconArrow.invalidate();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mIconArrow.startAnimation(mRotate);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -449,7 +454,7 @@ public class BillerDesciption extends BaseFragment {
             if (cust_id.equalsIgnoreCase(""))
                 cust_id = userPhoneID;
 
-            extraSignature = biller_comm_id+item_id+cust_id;
+            extraSignature = biller_comm_id + item_id + cust_id;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_BILLER, extraSignature);
             params.put(WebParams.DENOM_ITEM_ID, item_id);
@@ -480,7 +485,7 @@ public class BillerDesciption extends BaseFragment {
 //                                DescriptionModel descObj = getGson().fromJson(toJson(model.getDescription()), DescriptionModel.class);
 //                                description = descObj.getPhoneNumber();
 //                                description = toJson(model.getDescription()).getAsString();
-description = getGson().toJson(model.getDescription());
+                                description = getGson().toJson(model.getDescription());
 //                            if(isPLN ) {
                                 fee = model.getAdmin_fee();
 //                            }
@@ -504,7 +509,7 @@ description = getGson().toJson(model.getDescription());
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            getFragmentManager().popBackStack();
                         }
 
                         @Override

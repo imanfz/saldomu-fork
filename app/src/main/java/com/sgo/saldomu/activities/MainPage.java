@@ -1389,11 +1389,12 @@ public class MainPage extends BaseActivity {
 
     void showProgLoading(String msg, boolean islogout) {
         if (islogout){
-            progdialog = DefinedDialog.CreateProgressDialog(this, msg, true);
+            progdialog = DefinedDialog.CreateProgressDialog(this, msg);
         }else {
-            if (progdialog == null) {
-                progdialog = DefinedDialog.CreateProgressDialog(this, msg, true);
-            } else
+            if (progdialog == null)
+//            {
+                progdialog = DefinedDialog.CreateProgressDialog(this, msg);
+//            } else
                 progdialog.show();
         }
     }

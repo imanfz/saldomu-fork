@@ -52,7 +52,7 @@ public class SMSDialog extends Dialog {
     private String imeiDevice, ICCIDDevice;
     private SMSclass smsClass;
     private String message1;
-    private String timeStamp;
+    private String timeStamp, dateTime;
     private SMSclass.SMS_VERIFY_LISTENER smsVerifyListener;
     private Handler handler;
     private int idx_fail;
@@ -231,6 +231,7 @@ public class SMSDialog extends Dialog {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
+        dateTime = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
         Timber.i("isi timestamp : " + timeStamp);
     }
 
@@ -262,7 +263,7 @@ public class SMSDialog extends Dialog {
             Timber.d("ICC ID: "+ICCIDDevice+ ", Network Code : "+ mobileNetworkCode + ", mobile Dest : " + mobileDestination);
             Timber.d("jalanin sentSMSVerify "+ICCIDDevice);
 
-            smsClass.sendSMSVerify(mobileDestination, imeiDevice, ICCIDDevice, timeStamp, smsVerifyListener);
+            smsClass.sendSMSVerify(mobileDestination, imeiDevice, ICCIDDevice, timeStamp, dateTime, smsVerifyListener);
         }
     }
 

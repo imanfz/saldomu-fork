@@ -88,9 +88,9 @@ public class SMSclass {
             simStateReceiver = simListener;
     }
 
-    public void sendSMSVerify(String phoneNo,String imei, String iccid,String TimeStamp, SMS_VERIFY_LISTENER listener){
+    public void sendSMSVerify(String phoneNo,String imei, String iccid,String TimeStamp,String DateTime, SMS_VERIFY_LISTENER listener){
 
-        String msg = SMS_VERIFY + " "+imei+"_"+iccid+"_"+TimeStamp+"_"+ MyApiClient.APP_ID;
+        String msg = SMS_VERIFY + " "+imei+"_"+iccid+"_"+TimeStamp+"_"+ MyApiClient.APP_ID+"_"+DateTime;
         sendSMS(phoneNo,msg,listener);
 
     }

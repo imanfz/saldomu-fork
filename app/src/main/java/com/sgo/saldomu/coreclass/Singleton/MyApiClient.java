@@ -68,7 +68,6 @@ public class MyApiClient {
     public static Boolean IS_PROD = BuildConfig.IS_PROD_DOMAIN;
     public static Boolean PROD_FLAG_ADDRESS = BuildConfig.IS_PROD_DOMAIN;
     public static Boolean IS_INTERNET_BANKING;
-    public static final String PRIVATE_KEY = "590mobil3";
     public static String COMM_ID;
     public static String COMM_ID_PULSA;
     public static String COMM_ID_TAGIH;

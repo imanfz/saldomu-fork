@@ -112,12 +112,12 @@ public class ListBBS extends Fragment {
         //ListView listView1 = (ListView) v.findViewById(android.R.id.list);
         //listView1.setAdapter(adapter);
 
-        llAgentDetail = (LinearLayout) v.findViewById(R.id.llAgentDetail);
-        swSettingOnline = (Switch) v.findViewById(R.id.swSettingOnline);
+        llAgentDetail = v.findViewById(R.id.llAgentDetail);
+        swSettingOnline = v.findViewById(R.id.swSettingOnline);
         llAgentDetail.setVisibility(View.GONE);
         setAgentDetailToUI();
 
-        GridView gvListBbs = (GridView) v.findViewById(R.id.gvListBbs);
+        GridView gvListBbs = v.findViewById(R.id.gvListBbs);
 
         GridBbsMenu gridBbsMenuAdapter = new GridBbsMenu(getActivity(), SetupMenuItems(), SetupMenuIcons());
         gvListBbs.setAdapter(gridBbsMenuAdapter);

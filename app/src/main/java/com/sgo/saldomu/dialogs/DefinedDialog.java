@@ -23,31 +23,22 @@ public class DefinedDialog {
     }
 
     public static ProgressDialog CreateProgressDialog(Context context) {
-        return CreateProgressDialog(context, "", true);
+        return CreateProgressDialog(context, "");
     }
 
     public static ProgressDialog CreateProgressDialog(Context context, String message) {
-        return CreateProgressDialog(context, message, true);
-    }
-
-    public static ProgressDialog BaseCreateProgressDialog(Context context) {
-        return CreateProgressDialog(context, "", false);
-    }
-
-    public static ProgressDialog CreateProgressDialog(Context context, String message, boolean show) {
         ProgressDialog dialog = new ProgressDialog(context);
         try {
-            if (show)
                 dialog.show();
         } catch (WindowManager.BadTokenException e) {
             Timber.w("define dialog error:" + e.getMessage());
         }
-        dialog.setContentView(R.layout.dialog_progress);
-        TextView text1 = dialog.findViewById(R.id.progressText1);
-        text1.setText(message);
         dialog.setIndeterminate(true);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(R.layout.dialog_progress);
+        TextView text1 = dialog.findViewById(R.id.progressText1);
+        text1.setText(message);
         return dialog;
     }
 

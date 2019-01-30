@@ -139,23 +139,23 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
         lvSettingAdapter        = new EasyAdapter(getActivity(),R.layout.list_view_item_setting_with_arrow, menuItems);
 
-        lvSetting               = (ListView) v.findViewById(R.id.lvSetting);
+        lvSetting               = v.findViewById(R.id.lvSetting);
         lvSetting.setOverscrollFooter(new ColorDrawable(Color.TRANSPARENT));
         lvSetting.setVisibility(View.GONE);
 
         llMemberDetail          =  v.findViewById(R.id.llMemberDetail);
         llMemberDetail.setVisibility(View.GONE);
 
-        btnSettingLokasi        = (Button) v.findViewById(R.id.btnSettingLokasi);
+        btnSettingLokasi        = v.findViewById(R.id.btnSettingLokasi);
         btnSettingLokasi.setVisibility(View.GONE);
-        tvDetailMemberName      = (TextView) v.findViewById(R.id.tvDetailMemberName);
-        tvCategoryName          = (TextView) v.findViewById(R.id.tvCategoryName);
-        tvCommName              = (TextView) v.findViewById(R.id.tvCommName);
-        tvAddress               = (TextView) v.findViewById(R.id.tvAddress);
-        tvTutupSekarangLabel    = (TextView) v.findViewById(R.id.tvTutupSekarangLabel);
+        tvDetailMemberName      = v.findViewById(R.id.tvDetailMemberName);
+        tvCategoryName          = v.findViewById(R.id.tvCategoryName);
+        tvCommName              = v.findViewById(R.id.tvCommName);
+        tvAddress               = v.findViewById(R.id.tvAddress);
+        tvTutupSekarangLabel    = v.findViewById(R.id.tvTutupSekarangLabel);
         tvTutupSekarangLabel.setVisibility(View.GONE);
 
-        swTutupToko             = (Switch) v.findViewById(R.id.swTutupToko);
+        swTutupToko             = v.findViewById(R.id.swTutupToko);
 
         lvSetting.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -304,7 +304,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                                         if ( getActivity() != null ) {
                                             BBSActivity bbc = (BBSActivity) getActivity();
 
-                                            TextView title_detoolbar = (TextView) getActivity().findViewById(R.id.main_toolbar_title);
+                                            TextView title_detoolbar = getActivity().findViewById(R.id.main_toolbar_title);
                                             title_detoolbar.setText(getString(R.string.menu_item_title_waktu_beroperasi));
                                         }
                                         fragmentTransaction.commit();
@@ -422,7 +422,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
     protected void setActionBarTitle(String _title) {
 
-        TextView title_detoolbar = (TextView) getActivity().findViewById(R.id.main_toolbar_title);
+        TextView title_detoolbar = getActivity().findViewById(R.id.main_toolbar_title);
         title_detoolbar.setText(_title);
     }
 

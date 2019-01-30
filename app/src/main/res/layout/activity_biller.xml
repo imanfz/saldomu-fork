@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+    android:id="@+id/root_frame_layout">
 
-    <include android:id="@+id/main_toolbar"
-             layout="@layout/toolbar_main"/>
-    <ScrollView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include android:id="@+id/main_toolbar"
+            layout="@layout/toolbar_main"/>
+        <ScrollView
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
             android:layout_below="@id/main_toolbar"
             android:fillViewport="true"
             >
-        <FrameLayout
+            <FrameLayout
                 android:id="@+id/biller_content"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 >
-        </FrameLayout>
-    </ScrollView>
+            </FrameLayout>
+        </ScrollView>
 
-</RelativeLayout>
+    </RelativeLayout>
+
+</FrameLayout>

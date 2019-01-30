@@ -32,9 +32,13 @@ public class DateTimeFormat {
         return calendar.getTimeInMillis();
     }
 
-
     public static String getCurrentDateTime(){
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
+        return df.format(Calendar.getInstance().getTime());
+    }
+
+    public static String getCurrentDateTimeSMS(){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss", new Locale("ID","INDONESIA"));
         return df.format(Calendar.getInstance().getTime());
     }
 
