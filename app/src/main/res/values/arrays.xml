@@ -23,14 +23,14 @@
     </string-array>
 
     <string-array name="myprofilelist_list_item">
-        <item>Profil</item>
-        <item>Ganti Password</item>
+        <item>@string/menu_setting_profile</item>
+        <item>@string/menu_setting_change_pass</item>
     </string-array>
 
     <string-array name="myprofilelist_list_item_pin">
-        <item>Profil</item>
-        <item>Ganti Password</item>
-        <item>Ganti PIN</item>
+        <item>@string/menu_setting_profile</item>
+        <item>@string/menu_setting_change_pass</item>
+        <item>@string/menu_setting_change_pin</item>
     </string-array>
 
     <string-array name="home_vpi_title">
@@ -118,8 +118,8 @@
     </integer-array>
 
     <string-array name="settings_list_pin">
-        <item>Profil Saya</item>
-        <item>Informasi</item>
+        <item>@string/menu_setting_profile</item>
+        <item>@string/menu_setting_info</item>
         <!--<item>FAQ</item>-->
 
     </string-array>
@@ -129,9 +129,9 @@
     </string-array>
 
     <string-array name="settings_is_lvl1">
-        <item>Ganti Password</item>
-        <item>Ganti PIN</item>
-        <item>Tentang App</item>
+        <item>@string/menu_setting_change_pass</item>
+        <item>@string/menu_setting_change_pin</item>
+        <item>@string/menu_setting_about</item>
         <!--<item>Bahasa</item>-->
 
     </string-array>
@@ -307,7 +307,7 @@
 
     <string-array name="list_bbs_setting">
         <!-- item>@string/setup_agent_open_hour</item -->
-        <item>@string/setup_tutup_manual</item>
+        <!--<item>@string/setup_tutup_manual</item>-->
     </string-array>
 
     <string-array name="list_denom_amount">
