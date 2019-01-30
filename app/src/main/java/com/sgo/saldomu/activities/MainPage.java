@@ -258,8 +258,7 @@ public class MainPage extends BaseActivity {
 //        }
 //
 //        if(isSimSame) {
-
-        showProgLoading(getString(R.string.initialize));
+        showProgLoading(getString(R.string.initialize), false);
 
         startLocationService();
 
@@ -761,6 +760,7 @@ public class MainPage extends BaseActivity {
 
                             String code = model.getError_code();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
+
                                 if (!model.getMemberData().isEmpty()) {
 
                                     MemberDataModel memberModel = model.getMemberData().get(0);
@@ -806,41 +806,41 @@ public class MainPage extends BaseActivity {
                                     setupBBSData();
 
 //                                    if (!sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO)) {
-                                        try {
-                                            JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
+                                    try {
+                                        JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
 
-                                            if (!shopAgentObject.optString("member_id", "").equalsIgnoreCase("")
-                                                    && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO)){
-                                                Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
-                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                intent.putExtra("memberId", shopAgentObject.optString("member_id", ""));
-                                                intent.putExtra("shopId", shopAgentObject.optString("shop_id", ""));
-                                                intent.putExtra("shopName", shopAgentObject.optString("shop_name", ""));
-                                                intent.putExtra("memberType", shopAgentObject.optString("member_type", ""));
-                                                intent.putExtra("memberName", shopAgentObject.optString("member_name", ""));
-                                                intent.putExtra("commName", shopAgentObject.optString("comm_name", ""));
-                                                intent.putExtra("province", shopAgentObject.optString("province", ""));
-                                                intent.putExtra("district", shopAgentObject.optString("district", ""));
-                                                intent.putExtra("address", shopAgentObject.optString("address1", ""));
-                                                intent.putExtra("category", "");
-                                                intent.putExtra("isMobility", shopAgentObject.optString("is_mobility", ""));
-                                                switchActivity(intent, ACTIVITY_RESULT);
-                                            }else if (!shopAgentObject.optString("member_id", "").equalsIgnoreCase("")
-                                                    && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO)){
-                                                Bundle bundle = new Bundle();
-                                                bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
+                                        if (!shopAgentObject.optString("member_id", "").equalsIgnoreCase("")
+                                                && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO)) {
+                                            Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.putExtra("memberId", shopAgentObject.optString("member_id", ""));
+                                            intent.putExtra("shopId", shopAgentObject.optString("shop_id", ""));
+                                            intent.putExtra("shopName", shopAgentObject.optString("shop_name", ""));
+                                            intent.putExtra("memberType", shopAgentObject.optString("member_type", ""));
+                                            intent.putExtra("memberName", shopAgentObject.optString("member_name", ""));
+                                            intent.putExtra("commName", shopAgentObject.optString("comm_name", ""));
+                                            intent.putExtra("province", shopAgentObject.optString("province", ""));
+                                            intent.putExtra("district", shopAgentObject.optString("district", ""));
+                                            intent.putExtra("address", shopAgentObject.optString("address1", ""));
+                                            intent.putExtra("category", "");
+                                            intent.putExtra("isMobility", shopAgentObject.optString("is_mobility", ""));
+                                            switchActivity(intent, ACTIVITY_RESULT);
+                                        } else if (!shopAgentObject.optString("member_id", "").equalsIgnoreCase("")
+                                                && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO)) {
+                                            Bundle bundle = new Bundle();
+                                            bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
 
-                                                Intent intent = new Intent(MainPage.this, BBSActivity.class);
-                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                intent.putExtras(bundle);
-                                                startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
-                                                finish();
-                                            }
-
-
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
+                                            Intent intent = new Intent(MainPage.this, BBSActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.putExtras(bundle);
+                                            startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
+                                            finish();
                                         }
+
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
 //                                    }
 //                                    else if (!sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO)) {
 //                                        try {
@@ -1085,7 +1085,7 @@ public class MainPage extends BaseActivity {
 
     private void sentLogout() {
         try {
-            showProgLoading("");
+            showProgLoading("", true);
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LOGOUT);
 //            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
@@ -1387,14 +1387,21 @@ public class MainPage extends BaseActivity {
         doUnbindUserProfileService();
     }
 
-    void showProgLoading(String msg) {
-        progdialog = DefinedDialog.CreateProgressDialog(this, msg);
-//        progdialog.show();
+    void showProgLoading(String msg, boolean islogout) {
+        if (islogout){
+            progdialog = DefinedDialog.CreateProgressDialog(this, msg, true);
+        }else {
+            if (progdialog == null) {
+                progdialog = DefinedDialog.CreateProgressDialog(this, msg, true);
+            } else
+                progdialog.show();
+        }
     }
 
     void hideProgLoading() {
-        if (progdialog != null && progdialog.isShowing()) {
-            progdialog.dismiss();
+        if (progdialog != null) {
+            if (progdialog.isShowing())
+                progdialog.dismiss();
         }
     }
 

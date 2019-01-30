@@ -119,13 +119,13 @@
 
     <string-array name="settings_list_pin">
         <item>Profil Saya</item>
-        <item>FAQ</item>
+        <item>Informasi</item>
+        <!--<item>FAQ</item>-->
 
     </string-array>
 
     <string-array name="settings_isnot_lvl1">
-        <item>Registrasi SMS Banking</item>
-
+        <!--<item>Registrasi SMS Banking</item>-->
     </string-array>
 
     <string-array name="settings_is_lvl1">

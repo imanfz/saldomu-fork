@@ -99,7 +99,7 @@ public class LevelClass {
         }
     }
 
-    private void getHelpList() {
+        private void getHelpList() {
         try {
             String ownerId = getSp().getString(DefineValue.USERID_PHONE,"");
             String accessKey = getSp().getString(DefineValue.ACCESS_KEY,"");

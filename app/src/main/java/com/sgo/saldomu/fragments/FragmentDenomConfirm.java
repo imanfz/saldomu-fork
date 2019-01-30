@@ -301,7 +301,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
     void getDenomConfirmData(){
 
-        showLoading();
+        showProgressDialog();
 
         extraSignature = obj.getMember_id_scadm()+obj.getComm_id()+ MyApiClient.CCY_VALUE;
 
@@ -352,12 +352,12 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        dismissProgressDialog();
                     }
 
                     @Override
                     public void onComplete() {
-                        dismissLoading();
+                        dismissProgressDialog();
 
                     }
                 });

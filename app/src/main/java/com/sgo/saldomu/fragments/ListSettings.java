@@ -102,12 +102,13 @@ public class ListSettings extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         Intent i;
 
+
         switch (list.get(position)) {
-            case "Profil Saya":
+            case "":
                 i = new Intent(getActivity(), MyProfileNewActivity.class);
                 switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
-            case "FAQ":
+            case "Informasi":
                 dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 break;
             case "Registrasi SMS Banking":

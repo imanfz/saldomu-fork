@@ -34,6 +34,7 @@ import com.sgo.saldomu.Beans.CashOutHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.TutorialActivity;
+import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
@@ -51,6 +52,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import timber.log.Timber;
 
 /**
  * Created by thinkpad on 4/20/2017.
@@ -669,8 +671,21 @@ public class BBSTransaksiAmount extends Fragment {
             else
                 Toast.makeText(getActivity(), getString(R.string.bbstransaction_toast_not_registered,
                         getString(R.string.cash_out)), Toast.LENGTH_LONG).show();
+
+            boolean isUpdatingData = sp.getBoolean(DefineValue.IS_UPDATING_BBS_DATA, false);
+            if (!isUpdatingData)
+                checkAndRunServiceBBS();
         }
 
+    }
+
+    void checkAndRunServiceBBS() {
+        BBSDataManager bbsDataManager = new BBSDataManager();
+        if (!bbsDataManager.isDataUpdated()) {
+//            showProgressDialog();
+            bbsDataManager.runServiceUpdateData(getContext());
+            Timber.d("Run Service update data BBS");
+        }
     }
 
     private boolean inputValidation() {

@@ -167,7 +167,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     void getBankProductList(){
         try{
 
-            showLoading();
+            showProgressDialog();
 
             extraSignature = obj.getMember_id_scadm();
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_BANK_DENOM_SCADM, extraSignature);
@@ -221,12 +221,12 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
                         @Override
                         public void onError(Throwable throwable) {
-                            dismissLoading();
+                            dismissProgressDialog();
                         }
 
                         @Override
                         public void onComplete() {
-
+                            dismissProgressDialog();
                         }
                     });
         }catch (Exception e){
@@ -294,11 +294,12 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
                         @Override
                         public void onError(Throwable throwable) {
+                            dismissProgressDialog();
                         }
 
                         @Override
                         public void onComplete() {
-                            dismissLoading();
+                            dismissProgressDialog();
                         }
                     });
         }catch (Exception e){

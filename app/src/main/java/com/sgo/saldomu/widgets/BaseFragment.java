@@ -18,7 +18,6 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.dialogs.ProgBarDialog;
 
 import java.util.HashMap;
 
@@ -33,9 +32,7 @@ public abstract class BaseFragment extends Fragment {
     protected SecurePreferences sp;
     protected String memberIDLogin, commIDLogin, userPhoneID, accessKey, userNameLogin;
     protected String extraSignature = "";
-    protected ProgBarDialog loadingDialog;
-    protected ProgressDialog progdialog;
-    ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
     protected HashMap<String, Object> params;
 
     protected View v;
@@ -96,13 +93,9 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
-    void buildLoadingDialog() {
-        loadingDialog = ProgBarDialog.showLoading();
-    }
-
     ProgressDialog getProgDialog() {
         if (progressDialog == null)
-            progressDialog = DefinedDialog.CreateProgressDialog(getActivity());
+            progressDialog = DefinedDialog.BaseCreateProgressDialog(getActivity());
         return progressDialog;
     }
 
@@ -116,23 +109,18 @@ public abstract class BaseFragment extends Fragment {
             getProgDialog().dismiss();
     }
 
-    protected void showLoading() {
-        if (loadingDialog == null) {
-            buildLoadingDialog();
-        }
-        loadingDialog.show(getFragmentManager(), "loading_dialog");
-    }
-
-    protected void dismissLoading() {
-        try {
-            loadingDialog.dismiss();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public FragmentManager getFragManager(){
+    protected FragmentManager getFragManager(){
         return getActivity().getSupportFragmentManager();
+    }
+
+    protected void hideView(View view){
+        if (view.getVisibility() == View.VISIBLE) {
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    protected void showView(View view){
+        if (view.getVisibility() != View.VISIBLE)
+            view.setVisibility(View.VISIBLE);
     }
 }

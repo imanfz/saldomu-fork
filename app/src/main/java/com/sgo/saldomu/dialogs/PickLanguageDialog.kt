@@ -21,6 +21,7 @@ class PickLanguageDialog : DialogFragment() {
      var onTap : onClick? = null
     var list = ArrayList<String>()
     lateinit var recyclerview : RecyclerView
+    lateinit var _adapter : PickLangAdapter
 
     interface onClick{
         fun onTap()
@@ -41,7 +42,7 @@ class PickLanguageDialog : DialogFragment() {
 
         if (dialog.window != null){
 //            dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
 
@@ -54,7 +55,7 @@ class PickLanguageDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        _adapter = PickLangAdapter(activity, list)
+        _adapter = PickLangAdapter(activity, list)
 
         recyclerview.adapter = PickLangAdapter(activity, list)
         recyclerview.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -69,7 +70,7 @@ class PickLanguageDialog : DialogFragment() {
         list.add("Indonesia")
         list.add("Inggris")
 
-        recyclerview.adapter.notifyDataSetChanged()
+        _adapter.notifyDataSetChanged()
 
     }
 

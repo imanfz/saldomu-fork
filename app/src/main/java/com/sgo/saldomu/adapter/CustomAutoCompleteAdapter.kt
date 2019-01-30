@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.sgo.saldomu.Beans.CustomAdapterModel
 import java.util.*
 
-class CustomAutoCompleteAdapter(context: Context, val locList: MutableList<CustomAdapterModel>? = ArrayList(), var resource : Int)
+class CustomAutoCompleteAdapter(context: Context, val locList: MutableList<CustomAdapterModel> = ArrayList(), var resource : Int)
     : ArrayAdapter<CustomAdapterModel>(context, resource, locList){
 
     val locLists: MutableList<CustomAdapterModel>? = locList

@@ -18,18 +18,27 @@ import timber.log.Timber;
 
 public class DefinedDialog {
 
-    public interface DialogButtonListener{
+    public interface DialogButtonListener {
         void onClickButton(View v, boolean isLongClick);
     }
 
     public static ProgressDialog CreateProgressDialog(Context context) {
-        return  CreateProgressDialog(context,"");
+        return CreateProgressDialog(context, "", true);
     }
 
     public static ProgressDialog CreateProgressDialog(Context context, String message) {
+        return CreateProgressDialog(context, message, true);
+    }
+
+    public static ProgressDialog BaseCreateProgressDialog(Context context) {
+        return CreateProgressDialog(context, "", false);
+    }
+
+    public static ProgressDialog CreateProgressDialog(Context context, String message, boolean show) {
         ProgressDialog dialog = new ProgressDialog(context);
         try {
-            dialog.show();
+            if (show)
+                dialog.show();
         } catch (WindowManager.BadTokenException e) {
             Timber.w("define dialog error:" + e.getMessage());
         }
@@ -43,7 +52,7 @@ public class DefinedDialog {
     }
 
     public static void showErrorDialog(Context context, String message) {
-        showErrorDialog(context, message,null);
+        showErrorDialog(context, message, null);
     }
 
     public static void showErrorDialog(Context context, String message, final DialogButtonListener mButtonListener) {
@@ -62,18 +71,18 @@ public class DefinedDialog {
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mButtonListener!=null)
-                    mButtonListener.onClickButton(view,false);
+                if (mButtonListener != null)
+                    mButtonListener.onClickButton(view, false);
                 dialog.dismiss();
             }
         });
 
 
-        if(LifeCycleHandler.isApplicationVisible())
+        if (LifeCycleHandler.isApplicationVisible())
             dialog.show();
     }
 
-    public static Dialog MessageDialog(Context context, String _title, String _message, final DialogButtonListener _dialogListener ){
+    public static Dialog MessageDialog(Context context, String _title, String _message, final DialogButtonListener _dialogListener) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         // Include dialog.xml file
@@ -90,7 +99,7 @@ public class DefinedDialog {
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _dialogListener.onClickButton(v,false);
+                _dialogListener.onClickButton(v, false);
                 dialog.dismiss();
             }
         });
@@ -98,7 +107,7 @@ public class DefinedDialog {
         return dialog;
     }
 
-    public static Dialog MessageP2P(Context context){
+    public static Dialog MessageP2P(Context context) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_p2p_color_help);
@@ -113,7 +122,7 @@ public class DefinedDialog {
     }
 
     public static AlertDialog BuildAlertDialog(Context context, String title, String msg, int icon, Boolean isCancelable,
-                                               String okbtn, DialogInterface.OnClickListener ok){
+                                               String okbtn, DialogInterface.OnClickListener ok) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(msg)

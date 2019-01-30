@@ -950,7 +950,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
     @Override
     public void onOkButton() {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        fm.popBackStackImmediate(BillerActivity.FRAG_BIL_INPUT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        assert getFragmentManager() != null;
+        getFragmentManager().popBackStackImmediate(BillerActivity.FRAG_BIL_INPUT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

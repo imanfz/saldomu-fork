@@ -1085,11 +1085,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
 
         args.putString(DefineValue.DETAILS_BILLER, response.getDetail());
-        JsonParser jsonParser = new JsonParser();
-        Gson gson = new Gson();
-        args.putString(DefineValue.BILLER_DETAIL, jsonParser.parse(gson.toJson(response.getBiller_detail())).toString()
+
+        if (!String.valueOf(response.getBiller_detail()).equalsIgnoreCase("")) {
+            JsonParser jsonParser = new JsonParser();
+            Gson gson = new Gson();
+            args.putString(DefineValue.BILLER_DETAIL, jsonParser.parse(gson.toJson(response.getBiller_detail())).toString()
 //                response.getBiller_detail().getPhoneNumber()
-        );
+            );
+        }
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.getBuss_scheme_name());
 

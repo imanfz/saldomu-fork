@@ -258,7 +258,6 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
 //        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(
 //                BitmapFactory.decodeResource(resources, R.mipmap.ic_user_location)))
 
-
         map = googleMap;
 
         map.getUiSettings().setZoomControlsEnabled(true);
