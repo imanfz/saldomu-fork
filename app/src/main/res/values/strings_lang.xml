@@ -1322,5 +1322,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 <string name="level_dialog_agent">Belum Menjadi Agen?</string>
 <string name="level_dialog_agent1">Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini.</string>
 <string name="dialog_change_email">Ganti Email</string>
-<string name="dialog_change_email1">Email anda sudah berhasil diubah.</string>
+<string name="dialog_change_email1">Silahkan cek Inbox Email anda, untuk lakukan memverifikasi perubahan Email anda.</string>
 </resources>

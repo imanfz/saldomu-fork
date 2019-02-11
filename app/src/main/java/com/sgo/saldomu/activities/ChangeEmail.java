@@ -42,6 +42,7 @@ public class ChangeEmail extends BaseActivity {
     SecurePreferences sp;
     private int attempt = 0, failed;
     private ProgressDialog progdialog;
+    String message;
 
     @Override
     protected int getLayoutResource() {
@@ -121,7 +122,6 @@ public class ChangeEmail extends BaseActivity {
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.EMAIL, et_new_email.getText().toString());
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(value_pin));
             params.put(WebParams.MEMBER_ID, memberIDLogin);
 
@@ -143,27 +143,21 @@ public class ChangeEmail extends BaseActivity {
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(ChangeEmail.this, model.getError_message());
                                 } else {
-//                                    code = response.getString(WebParams.ERROR_MESSAGE);
-                                    Toast.makeText(ChangeEmail.this, model.getError_message(), Toast.LENGTH_LONG).show();
-                                }
-                            } else {
-                                code = model.getError_code() + " : " + model.getError_message();
-//                                Toast.makeText(ChangeEmail.this, code, Toast.LENGTH_LONG).show();
-                                String message = model.getError_message();
+                                    message = model.getError_message();
 
-                                if (message.equals("PIN tidak sesuai")) {
-                                    Intent i = new Intent(ChangeEmail.this, InsertPIN.class);
+                                    if (code.equals("0097")) {
+                                        Intent i = new Intent(ChangeEmail.this, InsertPIN.class);
 
-                                    attempt = model.getFailed_attempt();
-                                    failed = model.getMax_failed();
+                                        attempt = model.getFailed_attempt();
+                                        failed = model.getMax_failed();
 
-                                    if (attempt != -1)
-                                        i.putExtra(DefineValue.ATTEMPT, failed - attempt);
+                                        if (attempt != -1)
+                                            i.putExtra(DefineValue.ATTEMPT, failed - attempt);
 
-                                    startActivityForResult(i, MainPage.REQUEST_FINISH);
-                                } else {
-
-                                    Toast.makeText(ChangeEmail.this, message, Toast.LENGTH_LONG).show();
+                                        startActivityForResult(i, MainPage.REQUEST_FINISH);
+                                    } else {
+                                        Toast.makeText(ChangeEmail.this, message, Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }
                         }
@@ -183,8 +177,7 @@ public class ChangeEmail extends BaseActivity {
         }
     }
 
-    private void dialogSuccessChangeEmail()
-    {
+    private void dialogSuccessChangeEmail() {
         Dialog dialognya = DefinedDialog.MessageDialog(ChangeEmail.this, this.getString(R.string.dialog_change_email),
                 this.getString(R.string.dialog_change_email1),
                 new DefinedDialog.DialogButtonListener() {
