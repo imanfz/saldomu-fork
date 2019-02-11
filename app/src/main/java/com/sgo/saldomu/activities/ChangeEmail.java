@@ -144,7 +144,7 @@ public class ChangeEmail extends BaseActivity {
                                     test.showDialoginActivity(ChangeEmail.this, model.getError_message());
                                 } else {
                                     message = model.getError_message();
-
+                                    Toast.makeText(ChangeEmail.this, message, Toast.LENGTH_LONG).show();
                                     if (code.equals("0097")) {
                                         Intent i = new Intent(ChangeEmail.this, InsertPIN.class);
 
