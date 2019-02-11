@@ -73,24 +73,6 @@ public class ActivityListSettings extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i;
 
-//                String menu = list.get(position);
-
-//                if (menu.equalsIgnoreCase(getString(R.string.menu_setting_profile))){
-//                    i = new Intent(ActivityListSettings.this, MyProfileNewActivity.class);
-//                    startActivity(i);
-//                }else if (menu.equalsIgnoreCase(getString(R.string.menu_setting_info))) {
-//                    dialogI.show(ActivityListSettings.this.getSupportFragmentManager(), InformationDialog.TAG);
-//                }else if (menu.equalsIgnoreCase(getString(R.string.menu_setting_change_pass))) {
-//                    i = new Intent(ActivityListSettings.this, ChangePassword.class);
-//                    startActivity(i);
-//                }else if (menu.equalsIgnoreCase(getString(R.string.menu_setting_change_pin))) {
-//                    i = new Intent(ActivityListSettings.this, ChangePIN.class);
-//                    startActivity(i);
-//                }else if (menu.equalsIgnoreCase(getString(R.string.menu_setting_about))) {
-//                    i = new Intent(ActivityListSettings.this, AboutAppsActivity.class);
-//                    startActivity(i);
-//                }
-
                 switch (list.get(position)) {
                     case "Profil Saya":
                         i = new Intent(ActivityListSettings.this, MyProfileNewActivity.class);
@@ -99,16 +81,20 @@ public class ActivityListSettings extends BaseActivity {
                     case "Informasi":
                         dialogI.show(ActivityListSettings.this.getSupportFragmentManager(), InformationDialog.TAG);
                         break;
-//                    case "Registrasi SMS Banking":
-//                        i = new Intent(ActivityListSettings.this, RegisterSMSBankingActivity.class);
-//                        startActivity(i);
-//                        break;
+                    case "Registrasi SMS Banking":
+                        i = new Intent(ActivityListSettings.this, RegisterSMSBankingActivity.class);
+                        startActivity(i);
+                        break;
                     case "Ganti Password":
                         i = new Intent(ActivityListSettings.this, ChangePassword.class);
                         startActivity(i);
                         break;
                     case "Ganti PIN":
                         i = new Intent(ActivityListSettings.this, ChangePIN.class);
+                        startActivity(i);
+                        break;
+                    case "Ganti Email":
+                        i = new Intent(ActivityListSettings.this, ChangeEmail.class);
                         startActivity(i);
                         break;
                     case "Tentang App":

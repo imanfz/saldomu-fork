@@ -253,12 +253,12 @@ public class MyProfileNewActivity extends BaseActivity {
 
         if (!is_agent && !levelClass.isLevel1QAC() && !isUpgradeAgent) {
             android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
-            builder1.setTitle(R.string.upgrade_agent);
-            builder1.setMessage(R.string.message_upgrade_agent);
+            builder1.setTitle(R.string.level_dialog_agent);
+            builder1.setMessage(R.string.level_dialog_agent1);
             builder1.setCancelable(false);
 
             builder1.setPositiveButton(
-                    "Yes",
+                    getString(R.string.level_dialog_btn_ok),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             finish();
@@ -268,18 +268,19 @@ public class MyProfileNewActivity extends BaseActivity {
                     });
 
             builder1.setNegativeButton(
-                    "No",
+                    getString(R.string.cancel),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            tv_dob.setEnabled(false);
-                            if (is_first_time) {
-                                RESULT = MainPage.RESULT_FIRST_TIME;
-                                setResult(MainPage.RESULT_FIRST_TIME);
-                                finish();
-                            } else {
-                                Intent intent1 = new Intent(MyProfileNewActivity.this, MainPage.class);
-                                startActivity(intent1);
-                            }
+//                            tv_dob.setEnabled(false);
+//                            if (is_first_time) {
+//                                RESULT = MainPage.RESULT_FIRST_TIME;
+//                                setResult(MainPage.RESULT_FIRST_TIME);
+//                                finish();
+//                            } else {
+//                                Intent intent1 = new Intent(MyProfileNewActivity.this, MainPage.class);
+//                                startActivity(intent1);
+//                            }
+                            dialog.dismiss();
                         }
                     });
 

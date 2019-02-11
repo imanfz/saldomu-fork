@@ -164,8 +164,8 @@ public class FragMainPage extends Fragment {
 
     public void showDialogNotAgent()
     {
-        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_title),
-                getActivity().getString(R.string.level_dialog_message_agent), getActivity().getString(R.string.level_dialog_btn_ok),
+        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_agent),
+                getActivity().getString(R.string.level_dialog_agent1), getActivity().getString(R.string.level_dialog_btn_ok),
                 getActivity().getString(R.string.cancel), false);
         dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
             @Override

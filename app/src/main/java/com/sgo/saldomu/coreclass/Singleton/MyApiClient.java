@@ -144,6 +144,7 @@ public class MyApiClient {
 
     public static String LINK_CREATE_PIN;
     public static String LINK_CHANGE_PIN;
+    public static String LINK_CHANGE_EMAIL;
 
     public static String LINK_INQUIRY_BILLER;
     public static String LINK_PAYMENT_BILLER;
@@ -318,6 +319,7 @@ public class MyApiClient {
         LINK_REMOVE_LIKE         = headaddressfinal + "UserLikes/Remove";
         LINK_CREATE_PIN          = headaddressfinal + "CreatePIN/Invoke";
         LINK_CHANGE_PIN          = headaddressfinal + "ChangePIN/Invoke";
+        LINK_CHANGE_EMAIL        = headaddressfinal + "ChangeEmail/Invoke";
         LINK_PAYMENT_BILLER      = headaddressfinal + "PaymentBiller/Invoke";
         LINK_TRANSACTION_REPORT  = headaddressfinal +"ReportTrx/Retrieve";
 

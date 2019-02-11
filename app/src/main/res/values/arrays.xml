@@ -31,6 +31,7 @@
         <item>@string/menu_setting_profile</item>
         <item>@string/menu_setting_change_pass</item>
         <item>@string/menu_setting_change_pin</item>
+        <item>@string/menu_setting_change_email</item>
     </string-array>
 
     <string-array name="home_vpi_title">
@@ -131,6 +132,7 @@
     <string-array name="settings_is_lvl1">
         <item>@string/menu_setting_change_pass</item>
         <item>@string/menu_setting_change_pin</item>
+        <item>@string/menu_setting_change_email</item>
         <item>@string/menu_setting_about</item>
         <!--<item>Bahasa</item>-->
 
