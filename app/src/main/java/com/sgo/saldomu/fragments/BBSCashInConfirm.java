@@ -783,7 +783,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         args.putString(DefineValue.USERID_PHONE, userId);
         args.putString(DefineValue.BANK_NAME, response.getTx_bank_name());
         args.putString(DefineValue.BANK_PRODUCT, response.getProduct_name());
-        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
+        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
 

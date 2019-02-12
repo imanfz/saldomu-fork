@@ -56,6 +56,10 @@ public class BBSTransModel extends jsonModel{
     @Expose
     private
     String benef_acct_name;
+    @SerializedName("lkd_product_code")
+    @Expose
+    private
+    String lkd_product_code;
 
     public String getTx_id() {
         if (tx_id == null)
@@ -133,6 +137,12 @@ public class BBSTransModel extends jsonModel{
         if (benef_acct_name == null)
             benef_acct_name = "";
         return benef_acct_name;
+    }
+
+    public String getLkd_product_code() {
+        if (lkd_product_code == null)
+            lkd_product_code = "";
+        return lkd_product_code;
     }
 
 }

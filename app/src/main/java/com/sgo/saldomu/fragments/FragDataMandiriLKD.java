@@ -161,7 +161,7 @@ public class FragDataMandiriLKD extends BaseFragment {
             MandiriLKDValidation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION, false);
             code_success = bundle.getBoolean(DefineValue.CODE_SUCCESS);
             benef_product_type = bundle.getString(DefineValue.TYPE_BENEF, "");
-            isOwner = bundle.getBoolean(DefineValue.IS_OWNER, true);
+            isOwner = bundle.getBoolean(DefineValue.IS_OWNER, false);
         }
 
         RealmResults<List_BBS_Birth_Place> results = realm.where(List_BBS_Birth_Place.class).findAll();
