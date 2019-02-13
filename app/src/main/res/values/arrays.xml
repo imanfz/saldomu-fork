@@ -246,7 +246,7 @@
 
 
     <string-array name="list_menu_frag_new_home">
-        <item>@string/newhome_title_topup</item>
+        <!--<item>@string/newhome_title_topup</item>-->
         <item>@string/menu_item_title_pay_friends</item>
         <item>@string/menu_item_title_ask_for_money</item>
         <item>@string/menu_item_title_buy</item>
@@ -273,7 +273,7 @@
     </integer-array>
 
     <integer-array name="list_menu_icon_frag_new_home">
-        <item>@drawable/ic_tambahsaldo</item>
+        <!--<item>@drawable/ic_tambahsaldo</item>-->
         <item>@drawable/ic_bayarteman1</item>
         <item>@drawable/ic_mintauang</item>
         <item>@drawable/ic_shoppingcart</item>

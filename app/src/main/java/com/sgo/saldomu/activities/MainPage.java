@@ -178,6 +178,7 @@ public class MainPage extends BaseActivity {
                         devRootedDeviceAlertDialog.show();
                 } else {
                     switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
+//                    initializeDashboard();
                 }
             } else {
                 initializeDashboard();

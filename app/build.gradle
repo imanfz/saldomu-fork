@@ -270,6 +270,6 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
 
     implementation 'com.scottyab:aes-crypto:0.0.4'
-
+    implementation 'com.jakewharton:butterknife:8.8.1'
 }
 apply plugin: 'com.google.gms.google-services'

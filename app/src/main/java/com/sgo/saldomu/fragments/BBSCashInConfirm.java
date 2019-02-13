@@ -51,7 +51,9 @@ import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 import timber.log.Timber;
 
@@ -82,6 +84,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     private SMSclass smSclass;
     private ActionListener actionListener;
     private Boolean finishTransaction = false, retryToken = false;
+    ArrayList<String> name = new ArrayList<String>();
 
     public interface ActionListener {
         void ChangeActivityFromCashInConfirm(Intent data);
@@ -191,9 +194,25 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             tvTotal.setText(CurrencyFormat.format(total_amount));
             tvBankBenef.setText(benef_product_name);
             tvBenefCity.setText(benef_city);
-            tvNameBenefAcct.setText(name_benef);
+
             if (name_benef.equalsIgnoreCase("")) {
                 tbNameBenef.setVisibility(View.GONE);
+            }else {
+                StringBuilder maskedName = new StringBuilder();
+                String[] nameArray = name_benef.split(" ");
+                for (int i = 0; i < nameArray.length; i++) {
+                    String originName = nameArray[i];
+                    String tempName = "";
+
+                    StringBuilder maskingName = new StringBuilder();
+                    for (int j = 0; j < originName.length()-2; j++) {
+                        maskingName.append("*");
+                    }
+                    tempName = originName.replace(originName.substring(2, originName.length()), maskingName);
+                    maskedName.append(tempName + " ");
+                }
+
+                tvNameBenefAcct.setText(maskedName);
             }
             tvNoBenefAcct.setText(no_benef);
             tvNoHp.setText(no_hp_benef);

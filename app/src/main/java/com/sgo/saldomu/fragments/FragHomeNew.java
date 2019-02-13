@@ -73,7 +73,7 @@ import timber.log.Timber;
  */
 public class FragHomeNew extends BaseFragmentMainPage {
     GridView GridView;
-    Button btn_beli;
+    Button btn_beli, btn_topup;
     TextView tv_saldo;
     EditText input;
     TextView tv_pulsa;
@@ -153,6 +153,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         gridview_progbar = v.findViewById(R.id.gridview_progbar);
 
         btn_beli = v.findViewById(R.id.btn_beli);
+        btn_topup = v.findViewById(R.id.btn_topup);
         input = v.findViewById(R.id.input);
         tv_pulsa = v.findViewById(R.id.tv_pulsa);
         tv_bpjs = v.findViewById(R.id.tv_bpjs);
@@ -300,6 +301,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     });
 //            }
         }
+
+        btn_topup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), TopUpActivity.class);
+                i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
+            }
+        });
 
         btn_beli.setOnClickListener(new View.OnClickListener() {
             @Override

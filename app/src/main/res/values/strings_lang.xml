@@ -164,7 +164,7 @@
 
 <string name="toolbar_title_purchase">Biller</string>
 <string name="toolbar_title_pay_friends">Transfer Saldo</string>
-<string name="toolbar_title_topup" translatable="false">Top Up Saldo</string>
+<string name="toolbar_title_topup" translatable="false">Tambah Saldo</string>
 <string name="toolbar_title_evoucherhp">Beli E-Voucher HP</string>
 <string name="toolbar_title_pulsa_agent" translatable="false">Pulsa</string>
 <string name="toolbar_title_myfriends">Teman Saya</string>
@@ -182,7 +182,7 @@
 <string name="menu_item_title_buy">Biller</string>
 <string name="menu_item_title_beli">Beli</string>
 <string name="menu_item_title_cash_out">Transfer ke Bank via Setor Tunai</string>
-<string name="menu_item_title_topup" translatable="false">Top Up Saldo</string>
+<string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
 <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
 <string name="menu_item_title_report">Laporan</string>
 <string name="menu_item_title_scadm">B2B</string>

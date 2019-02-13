@@ -37,15 +37,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="16dp">
+        android:layout_marginTop="5dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:text="@string/balance"
-            android:textSize="@dimen/text_size_medium_material"
+            android:layout_marginLeft="15dp"
+            android:textSize="12sp"
+            android:layout_gravity="center"
             />
 
     </LinearLayout>
@@ -54,7 +54,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
         android:layout_marginBottom="16dp">
 
         <TextView
@@ -62,22 +61,37 @@
             android:layout_height="wrap_content"
             android:text="@string/currency"
             android:textSize="@dimen/text_size_large_material"
+            android:layout_marginLeft="15dp"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_saldo"
             android:text="123.000"
-            android:textSize="@dimen/text_size_display_1_material"
+            android:textSize="26sp"
             android:textColor="@color/colorPrimary"
             />
 
         <ImageView
             android:id="@+id/btn_refresh_balance"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_refresh_balance" />
+            android:src="@drawable/ic_refresh_balance"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="15dp"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_background_orange"
+            android:text="@string/menu_item_title_topup"
+            android:id="@+id/btn_topup"
+            android:singleLine="false"
+            android:textSize="12sp"
+            />
 
     </LinearLayout>
 
@@ -234,7 +248,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/menu_item_title_beli"
                     android:textColor="@color/white"
-                    android:background="@color/colorPrimary"
+                    android:background="@drawable/rounded_background_orange"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"/>
             </LinearLayout>

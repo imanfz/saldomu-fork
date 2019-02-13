@@ -311,7 +311,7 @@ public class FragDataMandiriLKD extends BaseFragment {
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 Timber.d("response bbs send data : ", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    changeToBBSCashInConfirm();
+                                    changeToBBSCashInConfirm(response.getString(WebParams.ADMIN_FEE), response.getString(WebParams.AMOUNT), response.getString(WebParams.TOTAL_AMOUNT));
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:" + response.toString());
@@ -346,7 +346,7 @@ public class FragDataMandiriLKD extends BaseFragment {
 
     }
 
-    private void changeToBBSCashInConfirm() {
+    private void changeToBBSCashInConfirm(String fee, String amount, String total_amount) {
 
         Bundle mArgs = new Bundle();
         if (benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
