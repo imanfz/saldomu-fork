@@ -2,6 +2,8 @@ package com.sgo.saldomu.adapter;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -75,28 +77,37 @@ public class HelpAdapter extends BaseAdapter {
             holder.trPhone = view.findViewById(R.id.tr_phone);
             holder.trMail = view.findViewById(R.id.tr_mail);
             holder.trWhatsapp = view.findViewById(R.id.tr_whatsapp);
+            holder.tvCopy = view.findViewById(R.id.tv_copy);
 
             view.setTag(holder);
 
-            holder.phone.setOnClickListener(new View.OnClickListener() {
+//            holder.phone.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+//                    callIntent.setData(Uri.parse("tel:"+ holder.phone.getText().toString()));
+//                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//                        // TODO: Consider calling
+//                        //    ActivityCompat#requestPermissions
+//                        // here to request the missing permissions, and then overriding
+//                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                        //                                          int[] grantResults)
+//                        // to handle the case where the user grants the permission. See the documentation
+//                        // for ActivityCompat#requestPermissions for more details.
+//                        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CALL_PHONE}, 1);
+//                    }
+//                    else {
+//                        context.startActivity(callIntent);
+//                       }
+//
+//                }
+//            });
+
+            holder.tvCopy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    callIntent.setData(Uri.parse("tel:"+ holder.phone.getText().toString()));
-                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CALL_PHONE}, 1);
-                    }
-                    else {
-                        context.startActivity(callIntent);
-                       }
 
+                    copyRefNo(data.get(position).getPhone());
                 }
             });
 
@@ -174,8 +185,15 @@ public class HelpAdapter extends BaseAdapter {
 
     }
 
+    private void copyRefNo(String text){
+        Toast.makeText(context,"Copy to clipboard",Toast.LENGTH_SHORT).show();
+        ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData = ClipData.newPlainText("asd", text);
+        clipboardManager.setPrimaryClip(clipData);
+    }
+
     private class ViewHolder {
-        public TextView name, phone, mail, whatsapp;
+        public TextView name, phone, mail, whatsapp, tvCopy;
         public TableRow trPhone, trMail, trWhatsapp;
     }
 }
