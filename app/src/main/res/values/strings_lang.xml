@@ -1278,7 +1278,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 <string name="lbl_member_lvl_gold">GOLD</string>
 <string name="lbl_member_lvl_agent">AGENT</string>
 
-<string name="lbl_need_help">Hi Support, i want to ask.</string>
+<string name="lbl_need_help">Halo SaldoMu, </string>
 <string name="mitra">Mitra</string>
 <string name="error_input_tagih">Kode Toko dibutuhkan!</string>
 <string name="invoice_dgi_search">Cari Invoice</string>

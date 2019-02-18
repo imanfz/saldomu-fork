@@ -137,7 +137,7 @@ android {
 
             signingConfig signingConfigs.prodKey
             versionCode = 35
-            versionName "3.1"
+            versionName "3.0.1"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
     }
