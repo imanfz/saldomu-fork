@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -377,6 +378,9 @@ public class AskForMoneyActivity extends BaseActivity {
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
+
+
+                            Log.wtf("asd", "code"+code);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 JSONArray mArrayData;
@@ -396,6 +400,7 @@ public class AskForMoneyActivity extends BaseActivity {
                                             getString(R.string.askfriends_dialog_text_amount) + " : " + amount + "\n" +
                                             getString(R.string.askfriends_dialog_text_desc) + " : " + _message + "\n";
                                 } catch (JSONException e) {
+                                    Timber.d("error" + e.toString());
                                     e.printStackTrace();
                                 }
                                 showDialog(messageDialog);
@@ -418,6 +423,7 @@ public class AskForMoneyActivity extends BaseActivity {
                         @Override
                         public void onError(Throwable throwable) {
 
+                            Log.wtf("asd2", "asd2");
                         }
 
                         @Override

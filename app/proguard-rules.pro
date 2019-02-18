@@ -70,6 +70,7 @@
 -keep class com.sgo.saldomu.fragments.FragPayFriends$TempObjectData { *; }
 -keep class com.sgo.saldomu.fragments.FragPayFriendsConfirm$TempTxID { *; }
 -keep class com.sgo.saldomu.fragments.ListBillerMerchant$ListObject{ *; }
+-keep class com.sgo.saldomu.activities.AskForMoneyActivity$TempObjectData{ *; }
 
 -keep class com.sgo.saldomu.services.BalanceService { *; }
 -keep class io.codetail.animation.arcanimator.** { *; }

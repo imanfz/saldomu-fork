@@ -14,12 +14,14 @@ import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.coreclass.CoreApp;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.OkHttpTLSSocketFactory;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.interfaces.ArrListeners;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
@@ -189,7 +191,10 @@ public class RetrofitService {
             builder.writeTimeout(10, TimeUnit.MINUTES);
             builder.connectTimeout(10, TimeUnit.MINUTES);
         }
-        builder.addInterceptor(interceptorLogging);
+
+        if(BuildConfig.DEBUG){
+            builder.addInterceptor(interceptorLogging);
+        }
 
         if (isSSL){
             //
@@ -503,9 +508,11 @@ public class RetrofitService {
 
                     @Override
                     public void onNext(JsonObject obj) {
-                        if (obj.get("error_code").getAsString().equalsIgnoreCase("0404")) {
-
-                        } else
+//                        if (obj.get("error_code").getAsString().equalsIgnoreCase("0404")) {
+//                            String message = obj.get("error_message").getAsString();
+//                            Timber.d("message" +message);
+//                            AlertDialogLogout test = AlertDialogLogout.getInstance();wewer
+//                        } else
                             listener.onResponses(obj);
                     }
 
