@@ -150,10 +150,12 @@ public class BillerDesciption extends BaseFragment {
 
         realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
-        initializeData();
 
         if (isAdded())
             sentInquiryBiller();
+
+
+        initializeData();
     }
 
     private void initializeData() {

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/nav_menu_layout"
-              android:orientation="vertical"
-              android:layout_width="240dp"
-              android:layout_height="match_parent"
-              android:background="@color/transparent"
-        >
+    android:id="@+id/nav_menu_layout"
+    android:layout_width="240dp"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
-            android:baselineAligned="false">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -41,7 +41,6 @@
 
             </RelativeLayout>
 
-
             <LinearLayout
                 android:id="@+id/llHeaderProfile"
                 android:layout_width="0dp"
@@ -57,16 +56,32 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLength="25"
+                    android:text="asd"
                     android:textColor="@color/grey_1000w"
-                    android:textSize="@dimen/abc_text_size_title_material" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/header_cust_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="0123"
                     android:textColor="@color/grey_1000w"
-                    android:textSize="@dimen/abc_text_size_subhead_material" />
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/show_status"
+                    android:textColor="@color/grey_300"
+                    android:textSize="12sp" />
             </LinearLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/filled"
+                android:layout_marginRight="10dp"/>
 
         </LinearLayout>
 
@@ -166,11 +181,12 @@
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:padding="8dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/agent_name"
                     android:layout_weight="1"
+                    android:text="@string/agent_name"
                     android:textSize="@dimen/abc_text_size_small_material" />
 
                 <TextView
@@ -193,15 +209,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/set_online"
                     android:layout_weight="1"
+                    android:text="@string/set_online"
                     android:textSize="@dimen/abc_text_size_small_material" />
 
                 <Switch
-                    android:layout_gravity="center_vertical"
                     android:id="@+id/swSettingOnline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:textOff="@string/no"
                     android:textOn="@string/yes" />
@@ -219,10 +235,10 @@
     </LinearLayout>
 
     <ListView
-            android:id="@android:id/list"
-            android:layout_width="240dp"
-            android:dividerHeight="1dp"
-            android:layout_height="wrap_content">
+        android:id="@android:id/list"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:dividerHeight="1dp">
 
     </ListView>
 

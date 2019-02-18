@@ -205,13 +205,20 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                     String tempName = "";
 
                     StringBuilder maskingName = new StringBuilder();
-                    for (int j = 0; j < originName.length()-2; j++) {
-                        maskingName.append("*");
-                    }
-                    tempName = originName.replace(originName.substring(2, originName.length()), maskingName);
-                    maskedName.append(tempName + " ");
-                }
+                    if (originName.length()>2)
+                    {
+                        for (int j = 0; j < originName.length()-2; j++) {
+                            maskingName.append("*");
+                        }
+                        tempName = originName.replace(originName.substring(2, originName.length()), maskingName);
 
+                    }
+                    else {
+                        maskedName.append(originName);
+                    }
+                    maskedName.append(tempName + " ");
+
+                }
                 tvNameBenefAcct.setText(maskedName);
             }
             tvNoBenefAcct.setText(no_benef);

@@ -1273,7 +1273,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
 
 <string name="lbl_profil_saya">Profil Saya</string>
-<string name="lbl_member_saya">Member Saya</string>
+<string name="lbl_member_saya">Status Saya</string>
 <string name="lbl_member_lvl_silver">SILVER</string>
 <string name="lbl_member_lvl_gold">GOLD</string>
 <string name="lbl_member_lvl_agent">AGENT</string>
@@ -1323,4 +1323,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 <string name="level_dialog_agent1">Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini.</string>
 <string name="dialog_change_email">Ganti Email</string>
 <string name="dialog_change_email1">Silahkan cek Inbox Email anda, untuk lakukan memverifikasi perubahan Email anda.</string>
+<string name="show_status">Tampilkan Status</string>
+<string name="member_status">Status Keanggotaan :</string>
 </resources>

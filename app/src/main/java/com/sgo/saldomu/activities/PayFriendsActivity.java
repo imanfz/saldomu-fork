@@ -135,10 +135,6 @@ public class PayFriendsActivity extends BaseActivity {
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch(item.getItemId())
         {
-            case R.id.action_information:
-                if(!dialogI.isAdded())
-                    dialogI.show(this.getSupportFragmentManager(), InformationDialog.TAG);
-                return true;
             case android.R.id.home:
                 finish();
                 return true;

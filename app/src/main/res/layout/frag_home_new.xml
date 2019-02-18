@@ -78,7 +78,8 @@
             android:layout_height="15dp"
             android:layout_marginLeft="10dp"
             android:src="@drawable/ic_refresh_balance"
-            android:layout_gravity="center"/>
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center_vertical"/>
 
         <Button
             android:layout_width="match_parent"
