@@ -51,7 +51,7 @@ import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
-import com.sgo.saldomu.dialogs.AgentDetailFragmentDialog;
+//import com.sgo.saldomu.dialogs.AgentDetailFragmentDialog;
 import com.sgo.saldomu.models.ShopDetail;
 
 import org.json.JSONArray;
@@ -598,17 +598,17 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
                     this.shopDetails.get(index).setIsPolyline("0");
                 }
 
-                if (marker.equals(hashMarker.get(index))) {
-                    ShopDetail shopDetail = this.shopDetails.get(index);
-                    FragmentManager fragmentManager = getFragmentManager();
-                    AgentDetailFragmentDialog agentDetailBbsFragmentDialog = new AgentDetailFragmentDialog();
-                    agentDetailBbsFragmentDialog.setAgentInfoSingle(shopDetail, index);
-                    agentDetailBbsFragmentDialog.setCurrentLatitude(currentLatitude);
-                    agentDetailBbsFragmentDialog.setCurrentLongitude(currentLongitude);
-                    agentDetailBbsFragmentDialog.setCancelable(false);
-                    agentDetailBbsFragmentDialog.setMobility(mobility);
-                    agentDetailBbsFragmentDialog.show(fragmentManager, AgentConstant.AGENT_DETAIL_FRAGMENT_DIALOG_TAG);
-                }
+//                if (marker.equals(hashMarker.get(index))) {
+//                    ShopDetail shopDetail = this.shopDetails.get(index);
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    AgentDetailFragmentDialog agentDetailBbsFragmentDialog = new AgentDetailFragmentDialog();
+//                    agentDetailBbsFragmentDialog.setAgentInfoSingle(shopDetail, index);
+//                    agentDetailBbsFragmentDialog.setCurrentLatitude(currentLatitude);
+//                    agentDetailBbsFragmentDialog.setCurrentLongitude(currentLongitude);
+//                    agentDetailBbsFragmentDialog.setCancelable(false);
+//                    agentDetailBbsFragmentDialog.setMobility(mobility);
+//                    agentDetailBbsFragmentDialog.show(fragmentManager, AgentConstant.AGENT_DETAIL_FRAGMENT_DIALOG_TAG);
+//                }
             }
 
             setPolyline();

@@ -19,7 +19,7 @@ import com.sgo.saldomu.adapter.AgentListArrayAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
-import com.sgo.saldomu.dialogs.AgentDetailFragmentDialog;
+//import com.sgo.saldomu.dialogs.AgentDetailFragmentDialog;
 import com.sgo.saldomu.models.ShopDetail;
 
 import org.json.JSONArray;
@@ -137,16 +137,16 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
     {
 
 
-        if (mobility.equals(DefineValue.STRING_NO)) {
-
-            //show fragment dialog for agent detail
-            FragmentManager fragmentManager = getFragmentManager();
-            AgentDetailFragmentDialog agentDetailBbsFragmentDialog = new AgentDetailFragmentDialog();
-            agentDetailBbsFragmentDialog.setAgentInfoSingle(this.shopDetails.get(position), position);
-            agentDetailBbsFragmentDialog.setCancelable(false);
-            agentDetailBbsFragmentDialog.show(fragmentManager, AgentConstant.AGENT_DETAIL_FRAGMENT_DIALOG_TAG);
-
-        }
+//        if (mobility.equals(DefineValue.STRING_NO)) {
+//
+//            //show fragment dialog for agent detail
+//            FragmentManager fragmentManager = getFragmentManager();
+//            AgentDetailFragmentDialog agentDetailBbsFragmentDialog = new AgentDetailFragmentDialog();
+//            agentDetailBbsFragmentDialog.setAgentInfoSingle(this.shopDetails.get(position), position);
+//            agentDetailBbsFragmentDialog.setCancelable(false);
+//            agentDetailBbsFragmentDialog.show(fragmentManager, AgentConstant.AGENT_DETAIL_FRAGMENT_DIALOG_TAG);
+//
+//        }
 
     }
 

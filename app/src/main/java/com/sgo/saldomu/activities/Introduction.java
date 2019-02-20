@@ -83,7 +83,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
         donebtn.setOnClickListener(POSlistener);
 
-        perms = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS,
+//        perms = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS,
+        perms = new String[]{Manifest.permission.READ_CONTACTS,
                 Manifest.permission.ACCESS_FINE_LOCATION};
 
         if (EasyPermissions.hasPermissions(this, perms)) {
