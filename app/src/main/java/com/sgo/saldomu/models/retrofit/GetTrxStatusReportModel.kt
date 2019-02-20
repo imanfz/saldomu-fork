@@ -124,4 +124,7 @@ open class GetTrxStatusReportModel : GetTrxStatusModel() {
     @SerializedName("invoice")
     @Expose
     val invoice: String? = ""
+    @SerializedName("benef_product_code")
+    @Expose
+    val benef_product_code: String? = ""
 }
