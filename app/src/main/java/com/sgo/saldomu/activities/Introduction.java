@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +26,9 @@ import com.sgo.saldomu.loader.UtilsLoader;
 import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
+import timber.log.Timber;
+
+import static com.activeandroid.Cache.getContext;
 
 /*
  Created by Lenovo Thinkpad on 12/21/2015.
@@ -83,8 +87,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
         donebtn.setOnClickListener(POSlistener);
 
-//        perms = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS,
-        perms = new String[]{Manifest.permission.READ_CONTACTS,
+        perms = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS,
                 Manifest.permission.ACCESS_FINE_LOCATION};
 
         if (EasyPermissions.hasPermissions(this, perms)) {
