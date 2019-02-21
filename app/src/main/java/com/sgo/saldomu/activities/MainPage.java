@@ -429,6 +429,9 @@ public class MainPage extends BaseActivity {
                     bundle.putString(DefineValue.BBS_DEFAULT_RATING, jsonObj.getString(WebParams.DEFAULT_RATING));
                     i.putExtras(bundle);
                     break;
+                case FCMManager.BLAST_INFO:
+                    i = new Intent(this, MainPage.class);
+                    break;
                 default:
                     i = new Intent(this, MainPage.class);
                     break;

@@ -65,25 +65,25 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
 
             Timber.d("Message data payload: " + remoteMessage.getData());
-            if(remoteMessage.getData().containsKey(WebParams.SYNC_CODE)){
-                    switch (Integer.valueOf(remoteMessage.getData().get(WebParams.SYNC_CODE))){
-                        case SYNC_BBS_DATA :
-                            if(UserUtils.isLogin())
-                                scheduleJob();
-                            else
-                                CustomSecurePref.getSecurePrefsInstance().edit().putBoolean(DefineValue.IS_MUST_UPDATE_BBS_DATA,true).apply();
-                            break;
-                    }
+            if (remoteMessage.getData().containsKey(WebParams.SYNC_CODE)) {
+                switch (Integer.valueOf(remoteMessage.getData().get(WebParams.SYNC_CODE))) {
+                    case SYNC_BBS_DATA:
+                        if (UserUtils.isLogin())
+                            scheduleJob();
+                        else
+                            CustomSecurePref.getSecurePrefsInstance().edit().putBoolean(DefineValue.IS_MUST_UPDATE_BBS_DATA, true).apply();
+                        break;
+                }
             }
 
-            if(remoteMessage.getData().containsKey(DefineValue.MODEL_NOTIF)) {
-                int modelNotif      = Integer.parseInt(remoteMessage.getData().get(DefineValue.MODEL_NOTIF));
-                String jsonOptions  = remoteMessage.getData().get(DefineValue.FCM_OPTIONS);
+            if (remoteMessage.getData().containsKey(DefineValue.MODEL_NOTIF)) {
+                int modelNotif = Integer.parseInt(remoteMessage.getData().get(DefineValue.MODEL_NOTIF));
+                String jsonOptions = remoteMessage.getData().get(DefineValue.FCM_OPTIONS);
 
-                if ( modelNotif == MEMBER_RATING_TRX ) {
+                if (modelNotif == MEMBER_RATING_TRX) {
                     sp = CustomSecurePref.getInstance().getmSecurePrefs();
                     String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-                    if(flagLogin == null)
+                    if (flagLogin == null)
                         flagLogin = DefineValue.STRING_NO;
 
                     try {
@@ -92,13 +92,13 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         jsonObj2.put("model_notif", modelNotif);
 
                         SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,jsonObj2.toString());
+                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, jsonObj2.toString());
                         mEditor.apply();
                     } catch (JSONException e) {
                         Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
                     }
 
-                    if ( flagLogin.equals(DefineValue.STRING_YES) ) {
+                    if (flagLogin.equals(DefineValue.STRING_YES)) {
                         Intent broadcast = new Intent();
                         broadcast.setAction(DefineValue.INTENT_ACTION_FCM_DATA);
                         broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
@@ -144,25 +144,24 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
         // handle notification here
         /*
-		 * types of notification 1. result update 2. circular update 3. student
-		 * corner update 4. App custom update 5. Custom Message 6. Notice from
-		 * College custom
-		 */
+         * types of notification 1. result update 2. circular update 3. student
+         * corner update 4. App custom update 5. Custom Message 6. Notice from
+         * College custom
+         */
 //        int num = ++NOTIFICATION_ID;
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         PendingIntent contentIntent = null;
-        Intent intent   = null;
+        Intent intent = null;
         FCMManager fcmManager = new FCMManager(this);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         String bundleToJSONString = null;
         SecurePreferences.Editor mEditor = null;
 
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        if(flagLogin == null)
+        if (flagLogin == null)
             flagLogin = DefineValue.STRING_NO;
-
 
 
         Bundle msg = new Bundle();
@@ -182,8 +181,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 //        SharedPreferences sp;
 //        Editor editor;
 
-
-        if ( msg.containsKey("model_notif") && msg.getString("model_notif") != null ) {
+        if (msg.containsKey("model_notif") && msg.getString("model_notif") != null) {
 
             int modelNotif = Integer.parseInt(msg.getString("model_notif"));
             Bundle bundle = new Bundle();
@@ -191,255 +189,253 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
             bundle.putInt("model_notif", modelNotif);
 
 
-                switch (modelNotif) {
-                    case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
-                        intent = new Intent(this, BbsMemberLocationActivity.class);
-                        if (msg.containsKey("options") && msg.getString("options") != null) {
-                            try {
-                                JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+            switch (modelNotif) {
+                case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
+                    intent = new Intent(this, BbsMemberLocationActivity.class);
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
 
+                            bundle.putString("memberId", jsonOptions.getJSONObject(0).getString("member_id"));
+                            bundle.putString("shopId", jsonOptions.getJSONObject(0).getString("shop_id"));
+                            bundle.putString("shopName", jsonOptions.getJSONObject(0).getString("shop_name"));
+                            bundle.putString("memberType", jsonOptions.getJSONObject(0).getString("member_type"));
+                            bundle.putString("memberName", jsonOptions.getJSONObject(0).getString("member_name"));
+                            bundle.putString("commName", jsonOptions.getJSONObject(0).getString("comm_name"));
 
-                                bundle.putString("memberId", jsonOptions.getJSONObject(0).getString("member_id"));
-                                bundle.putString("shopId", jsonOptions.getJSONObject(0).getString("shop_id"));
-                                bundle.putString("shopName", jsonOptions.getJSONObject(0).getString("shop_name"));
-                                bundle.putString("memberType", jsonOptions.getJSONObject(0).getString("member_type"));
-                                bundle.putString("memberName", jsonOptions.getJSONObject(0).getString("member_name"));
-                                bundle.putString("commName", jsonOptions.getJSONObject(0).getString("comm_name"));
+                            bundle.putString("province", jsonOptions.getJSONObject(0).getString("province"));
+                            bundle.putString("district", jsonOptions.getJSONObject(0).getString("district"));
+                            bundle.putString("address", jsonOptions.getJSONObject(0).getString("address"));
+                            bundle.putString("category", "");
+                            bundle.putString("isMobility", jsonOptions.getJSONObject(0).getString("is_mobility"));
+                            intent.putExtras(bundle);
 
-                                bundle.putString("province", jsonOptions.getJSONObject(0).getString("province"));
-                                bundle.putString("district", jsonOptions.getJSONObject(0).getString("district"));
-                                bundle.putString("address", jsonOptions.getJSONObject(0).getString("address"));
-                                bundle.putString("category", "");
-                                bundle.putString("isMobility", jsonOptions.getJSONObject(0).getString("is_mobility"));
-                                intent.putExtras(bundle);
+                            if (flagLogin.equals(DefineValue.STRING_NO)) {
+                                bundleToJSONString = bundleToJSON.getJson(bundle);
+                                mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
+                                mEditor.apply();
 
-                                if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                    bundleToJSONString = bundleToJSON.getJson(bundle);
-                                    mEditor = sp.edit();
-                                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                                    mEditor.apply();
+                            } else {
+                                stackBuilder.addParentStack(BbsMemberLocationActivity.class);
+                                stackBuilder.addNextIntent(intent);
 
-                                } else {
-                                    stackBuilder.addParentStack(BbsMemberLocationActivity.class);
-                                    stackBuilder.addNextIntent(intent);
-
-                                    contentIntent =
-                                            stackBuilder.getPendingIntent(
-                                                    1,
-                                                    PendingIntent.FLAG_UPDATE_CURRENT
-                                            );
-                                }
-
-                            } catch (JSONException e) {
-                                Timber.d("JSONException: " + e.getMessage());
+                                contentIntent =
+                                        stackBuilder.getPendingIntent(
+                                                1,
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        );
                             }
 
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
                         }
 
-                        break;
-                    case FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT:
+                    }
 
-                        intent = new Intent(this, BBSActivity.class);
-                        intent.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
+                    break;
+                case FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT:
 
+                    intent = new Intent(this, BBSActivity.class);
+                    intent.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
+
+                    bundleToJSONString = bundleToJSON.getJson(bundle);
+                    mEditor = sp.edit();
+                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
+                    mEditor.apply();
+
+                    if (flagLogin.equals(DefineValue.STRING_YES)) {
+                        stackBuilder.addParentStack(BBSActivity.class);
+                        stackBuilder.addNextIntent(intent);
+
+                        contentIntent =
+                                stackBuilder.getPendingIntent(
+                                        1,
+                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                );
+                    }
+
+
+                    break;
+                case FCMManager.AGENT_LOCATION_KEY_REJECT_TRANSACTION:
+                    intent = new Intent(this, BbsSearchAgentActivity.class);
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+
+                            String keyCode = jsonOptions.getJSONObject(0).getString("key_code");
+                            String keyAmount = jsonOptions.getJSONObject(0).getString("amount");
+                            String categoryName = jsonOptions.getJSONObject(0).getString("category_name");
+                            String categoryId = jsonOptions.getJSONObject(0).getString("category_id");
+                            Double benefLatitude = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_latitude"));
+                            Double benefLongitude = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_longitude"));
+
+                            bundle.putString(DefineValue.CATEGORY_ID, categoryId);
+                            bundle.putString(DefineValue.CATEGORY_NAME, categoryName);
+                            bundle.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                            bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
+                            bundle.putString(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
+                            bundle.putDouble(DefineValue.LAST_CURRENT_LATITUDE, benefLatitude);
+                            bundle.putDouble(DefineValue.LAST_CURRENT_LONGITUDE, benefLongitude);
+
+                            intent.putExtras(bundle);
+
+                            if (flagLogin.equals(DefineValue.STRING_NO)) {
+                                bundleToJSONString = bundleToJSON.getJson(bundle);
+                                mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
+                                mEditor.apply();
+
+                            } else {
+                                stackBuilder.addParentStack(BbsSearchAgentActivity.class);
+                                stackBuilder.addNextIntent(intent);
+
+                                contentIntent =
+                                        stackBuilder.getPendingIntent(
+                                                1,
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        );
+                            }
+
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
+                        }
+
+                    }
+                    break;
+                case FCMManager.AGENT_LOCATION_SHOP_REJECT_TRANSACTION:
+                    intent = new Intent(this, MainPage.class);
+                    if (flagLogin.equals(DefineValue.STRING_YES)) {
+                        stackBuilder.addParentStack(MainPage.class);
+                        stackBuilder.addNextIntent(intent);
+
+                        contentIntent =
+                                stackBuilder.getPendingIntent(
+                                        1,
+                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                );
+                    } else {
                         bundleToJSONString = bundleToJSON.getJson(bundle);
                         mEditor = sp.edit();
-                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
                         mEditor.apply();
+                    }
+                    break;
+                case FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION:
 
-                        if ( flagLogin.equals(DefineValue.STRING_YES) ) {
-                            stackBuilder.addParentStack(BBSActivity.class);
-                            stackBuilder.addNextIntent(intent);
+                    Timber.d("MASUK SINI FCM APP MESSAGING");
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
 
-                            contentIntent =
-                                    stackBuilder.getPendingIntent(
-                                            1,
-                                            PendingIntent.FLAG_UPDATE_CURRENT
-                                    );
-                        }
+                    bundleToJSONString = bundleToJSON.getJson(bundle);
+                    mEditor = sp.edit();
+                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
+                    mEditor.apply();
+
+                    if (flagLogin.equals(DefineValue.STRING_YES)) {
+                        intent = new Intent(this, BBSActivity.class);
+                        intent.putExtras(bundle);
 
 
-                        break;
-                    case FCMManager.AGENT_LOCATION_KEY_REJECT_TRANSACTION:
-                        intent = new Intent(this, BbsSearchAgentActivity.class);
-                        if (msg.containsKey("options") && msg.getString("options") != null) {
-                            try {
-                                JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                        stackBuilder.addParentStack(BBSActivity.class);
+                        stackBuilder.addNextIntent(intent);
 
-                                String keyCode = jsonOptions.getJSONObject(0).getString("key_code");
-                                String keyAmount = jsonOptions.getJSONObject(0).getString("amount");
-                                String categoryName = jsonOptions.getJSONObject(0).getString("category_name");
-                                String categoryId = jsonOptions.getJSONObject(0).getString("category_id");
-                                Double benefLatitude = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_latitude"));
-                                Double benefLongitude = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_longitude"));
+                        contentIntent =
+                                stackBuilder.getPendingIntent(
+                                        1,
+                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                );
+                    }
+                    break;
+                case FCMManager.SHOP_ACCEPT_TRX:
+                    intent = new Intent(this, BbsMapViewByMemberActivity.class);
 
-                                bundle.putString(DefineValue.CATEGORY_ID, categoryId);
-                                bundle.putString(DefineValue.CATEGORY_NAME, categoryName);
-                                bundle.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                                bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
-                                bundle.putString(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
-                                bundle.putDouble(DefineValue.LAST_CURRENT_LATITUDE, benefLatitude);
-                                bundle.putDouble(DefineValue.LAST_CURRENT_LONGITUDE, benefLongitude);
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
-                                intent.putExtras(bundle);
+                            bundle.putString(DefineValue.BBS_TX_ID, jsonOptions.getJSONObject(0).getString("tx_id"));
+                            bundle.putString(DefineValue.CATEGORY_NAME, jsonOptions.getJSONObject(0).getString("category_name"));
+                            bundle.putString(DefineValue.AMOUNT, jsonOptions.getJSONObject(0).getString("amount"));
 
-                                if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                    bundleToJSONString = bundleToJSON.getJson(bundle);
-                                    mEditor = sp.edit();
-                                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                                    mEditor.apply();
+                            intent.putExtras(bundle);
 
-                                } else {
-                                    stackBuilder.addParentStack(BbsSearchAgentActivity.class);
-                                    stackBuilder.addNextIntent(intent);
-
-                                    contentIntent =
-                                            stackBuilder.getPendingIntent(
-                                                    1,
-                                                    PendingIntent.FLAG_UPDATE_CURRENT
-                                            );
-                                }
-
-                            } catch (JSONException e) {
-                                Timber.d("JSONException: " + e.getMessage());
-                            }
-
-                        }
-                        break;
-                    case FCMManager.AGENT_LOCATION_SHOP_REJECT_TRANSACTION:
-                        intent = new Intent(this, MainPage.class);
-                        if ( flagLogin.equals(DefineValue.STRING_YES) ) {
-                            stackBuilder.addParentStack(MainPage.class);
-                            stackBuilder.addNextIntent(intent);
-
-                            contentIntent =
-                                    stackBuilder.getPendingIntent(
-                                            1,
-                                            PendingIntent.FLAG_UPDATE_CURRENT
-                                    );
-                        } else {
                             bundleToJSONString = bundleToJSON.getJson(bundle);
                             mEditor = sp.edit();
-                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
                             mEditor.apply();
+
+                            if (flagLogin.equals(DefineValue.STRING_NO)) {
+
+
+                            } else {
+                                stackBuilder.addParentStack(BbsMapViewByMemberActivity.class);
+                                stackBuilder.addNextIntent(intent);
+
+                                contentIntent =
+                                        stackBuilder.getPendingIntent(
+                                                getNotifId(),
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        );
+                            }
+
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
                         }
-                        break;
-                    case FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION:
 
-                        Timber.d("MASUK SINI FCM APP MESSAGING");
-                        bundle.putInt(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
+                    }
 
-                        bundleToJSONString = bundleToJSON.getJson(bundle);
-                        mEditor = sp.edit();
-                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                        mEditor.apply();
+                    break;
+                case FCMManager.SHOP_NOTIF_TRANSACTION:
 
-                        if ( flagLogin.equals(DefineValue.STRING_YES) ) {
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+
+
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+
+                            String keyCode = jsonOptions.getJSONObject(0).getString("key_code");
+                            String keyAmount = jsonOptions.getJSONObject(0).getString("amount");
+                            String keySchemeCode = jsonOptions.getJSONObject(0).getString("scheme_code");
+
+                            bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                            if (keySchemeCode.equals(DefineValue.CTA)) {
+                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                            } else if (keySchemeCode.equals(DefineValue.ATC)) {
+                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                            }
+
+                            bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
+                            bundle.putString(DefineValue.KEY_CODE, keyCode);
+
                             intent = new Intent(this, BBSActivity.class);
                             intent.putExtras(bundle);
 
+                            bundleToJSONString = bundleToJSON.getJson(bundle);
+                            mEditor = sp.edit();
+                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
+                            mEditor.apply();
 
+                            if (flagLogin.equals(DefineValue.STRING_NO)) {
 
-                            stackBuilder.addParentStack(BBSActivity.class);
-                            stackBuilder.addNextIntent(intent);
+                            } else {
+                                stackBuilder.addParentStack(BBSActivity.class);
+                                stackBuilder.addNextIntent(intent);
 
-                            contentIntent =
-                                    stackBuilder.getPendingIntent(
-                                            1,
-                                            PendingIntent.FLAG_UPDATE_CURRENT
-                                    );
-                        }
-                        break;
-                    case FCMManager.SHOP_ACCEPT_TRX:
-                        intent = new Intent(this, BbsMapViewByMemberActivity.class);
-
-                        if ( msg.containsKey("options") && msg.getString("options") != null ) {
-                            try {
-                                JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
-
-                                bundle.putString(DefineValue.BBS_TX_ID, jsonOptions.getJSONObject(0).getString("tx_id"));
-                                bundle.putString(DefineValue.CATEGORY_NAME, jsonOptions.getJSONObject(0).getString("category_name"));
-                                bundle.putString(DefineValue.AMOUNT, jsonOptions.getJSONObject(0).getString("amount"));
-
-                                intent.putExtras(bundle);
-
-                                bundleToJSONString = bundleToJSON.getJson(bundle);
-                                mEditor = sp.edit();
-                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                                mEditor.apply();
-
-                                if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-
-
-                                } else {
-                                    stackBuilder.addParentStack(BbsMapViewByMemberActivity.class);
-                                    stackBuilder.addNextIntent(intent);
-
-                                    contentIntent =
-                                            stackBuilder.getPendingIntent(
-                                                    getNotifId(),
-                                                    PendingIntent.FLAG_UPDATE_CURRENT
-                                            );
-                                }
-
-                            } catch (JSONException e) {
-                                Timber.d("JSONException: "+e.getMessage());
+                                contentIntent =
+                                        stackBuilder.getPendingIntent(
+                                                1,
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        );
                             }
-
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
                         }
+                    }
+                    break;
+                case FCMManager.AGENT_LOCATION_KEY_ACCEPT_TRANSACTION:
 
-                        break;
-                    case FCMManager.SHOP_NOTIF_TRANSACTION:
-
-                        if (msg.containsKey("options") && msg.getString("options") != null) {
-
-
-                            try {
-                                JSONArray jsonOptions = new JSONArray(msg.getString("options"));
-
-                                String keyCode = jsonOptions.getJSONObject(0).getString("key_code");
-                                String keyAmount = jsonOptions.getJSONObject(0).getString("amount");
-                                String keySchemeCode = jsonOptions.getJSONObject(0).getString("scheme_code");
-
-                                bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
-                                if (keySchemeCode.equals(DefineValue.CTA)) {
-                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
-                                } else if (keySchemeCode.equals(DefineValue.ATC)) {
-                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
-                                }
-
-                                bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
-                                bundle.putString(DefineValue.KEY_CODE, keyCode);
-
-                                intent = new Intent(this, BBSActivity.class);
-                                intent.putExtras(bundle);
-
-                                bundleToJSONString = bundleToJSON.getJson(bundle);
-                                mEditor = sp.edit();
-                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                                mEditor.apply();
-
-                                if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-
-                                } else {
-                                    stackBuilder.addParentStack(BBSActivity.class);
-                                    stackBuilder.addNextIntent(intent);
-
-                                    contentIntent =
-                                            stackBuilder.getPendingIntent(
-                                                    1,
-                                                    PendingIntent.FLAG_UPDATE_CURRENT
-                                            );
-                                }
-                            } catch (JSONException e) {
-                                Timber.d("JSONException: " + e.getMessage());
-                            }
-                        }
-                        break;
-                    case FCMManager.AGENT_LOCATION_KEY_ACCEPT_TRANSACTION:
-
-                        if (msg.containsKey("options") && msg.getString("options") != null) {
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
 
                             /*intent = new Intent(this, BbsMapViewByMemberActivity.class);
 
@@ -452,144 +448,156 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                             PendingIntent.FLAG_UPDATE_CURRENT
                                     );*/
 
-                            try {
-                                JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
-                                String keyCode = jsonOptions.getJSONObject(0).getString("key_code");
-                                String keyAmount = jsonOptions.getJSONObject(0).getString("amount");
-                                String keySchemeCode = jsonOptions.getJSONObject(0).getString("scheme_code");
+                            String keyCode = jsonOptions.getJSONObject(0).getString("key_code");
+                            String keyAmount = jsonOptions.getJSONObject(0).getString("amount");
+                            String keySchemeCode = jsonOptions.getJSONObject(0).getString("scheme_code");
 
-                                bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
-                                if (keySchemeCode.equals(DefineValue.CTA)) {
-                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
-                                } else if (keySchemeCode.equals(DefineValue.ATC)) {
-                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
-                                }
-
-                                bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
-                                if (keySchemeCode.equals(DefineValue.CTA)) {
-                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
-                                } else if (keySchemeCode.equals(DefineValue.ATC)) {
-                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
-                                }
-
-                                bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
-                                bundle.putString(DefineValue.KEY_CODE, keyCode);
-
-                                intent = new Intent(this, BBSActivity.class);
-                                intent.putExtras(bundle);
-
-                                bundleToJSONString = bundleToJSON.getJson(bundle);
-                                mEditor = sp.edit();
-                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                                mEditor.apply();
-
-                                if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-
-                                } else {
-                                    stackBuilder.addParentStack(BBSActivity.class);
-                                    stackBuilder.addNextIntent(intent);
-                                    contentIntent =
-                                            stackBuilder.getPendingIntent(
-                                                    1,
-                                                    PendingIntent.FLAG_UPDATE_CURRENT
-                                            );
-                                }
-                            } catch (JSONException e) {
-                                Timber.d("JSONException: " + e.getMessage());
+                            bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                            if (keySchemeCode.equals(DefineValue.CTA)) {
+                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                            } else if (keySchemeCode.equals(DefineValue.ATC)) {
+                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
                             }
-                        }
-                        break;
-                    case FCMManager.REJECT_UPGRADE_MEMBER:
 
-                        if (msg.containsKey("options") && msg.getString("options") != null) {
-                            try {
-                                JSONArray jsonOptions = new JSONArray(msg.getString("options"));
-                                Integer isRegisteredLevel = jsonOptions.getJSONObject(0).getInt("is_registered");
-                                String reject_ktp = jsonOptions.getJSONObject(0).getString("reject_ktp");
-                                String reject_foto = jsonOptions.getJSONObject(0).getString("reject_foto");
-                                String reject_ttd = jsonOptions.getJSONObject(0).getString("reject_ttd");
-                                String remark_ktp = jsonOptions.getJSONObject(0).getString("remark_ktp");
-                                String remark_foto = jsonOptions.getJSONObject(0).getString("remark_foto");
-                                String remark_ttd = jsonOptions.getJSONObject(0).getString("remark_ttd");
+                            bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                            if (keySchemeCode.equals(DefineValue.CTA)) {
+                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                            } else if (keySchemeCode.equals(DefineValue.ATC)) {
+                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                            }
 
-                                sp.edit().putInt(DefineValue.IS_REGISTERED_LEVEL,isRegisteredLevel).apply();
-                                sp.edit().putString(DefineValue.REJECT_KTP,reject_ktp).apply();
-                                sp.edit().putString(DefineValue.REJECT_FOTO,reject_foto).apply();
-                                sp.edit().putString(DefineValue.REJECT_TTD,reject_ttd).apply();
-                                sp.edit().putString(DefineValue.REMARK_KTP,remark_ktp).apply();
-                                sp.edit().putString(DefineValue.REMARK_FOTO,remark_foto).apply();
-                                sp.edit().putString(DefineValue.REMARK_TTD,remark_ttd).apply();
-                                sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
+                            bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
+                            bundle.putString(DefineValue.KEY_CODE, keyCode);
 
-                                intent = new Intent(this, MyProfileNewActivity.class);
+                            intent = new Intent(this, BBSActivity.class);
+                            intent.putExtras(bundle);
 
-                                stackBuilder.addParentStack(MyProfileNewActivity.class);
+                            bundleToJSONString = bundleToJSON.getJson(bundle);
+                            mEditor = sp.edit();
+                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
+                            mEditor.apply();
+
+                            if (flagLogin.equals(DefineValue.STRING_NO)) {
+
+                            } else {
+                                stackBuilder.addParentStack(BBSActivity.class);
                                 stackBuilder.addNextIntent(intent);
-
                                 contentIntent =
                                         stackBuilder.getPendingIntent(
                                                 1,
                                                 PendingIntent.FLAG_UPDATE_CURRENT
                                         );
-
                             }
-                            catch (JSONException e)
-                            {
-                                Timber.d("JSONException: " + e.getMessage());
-                            }
-
-
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
                         }
-                        break;
-                    case FCMManager.REJECT_UPGRADE_AGENT:
+                    }
+                    break;
+                case FCMManager.REJECT_UPGRADE_MEMBER:
 
-                        if (msg.containsKey("options") && msg.getString("options") != null) {
-                            try {
-                                JSONArray jsonOptions = new JSONArray(msg.getString("options"));
-                                String reject_siup = jsonOptions.getJSONObject(0).getString("reject_siup");
-                                String reject_npwp = jsonOptions.getJSONObject(0).getString("reject_npwp");
-                                String remark_siup = jsonOptions.getJSONObject(0).getString("remark_siup");
-                                String remark_npwp = jsonOptions.getJSONObject(0).getString("remark_npwp");
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            Integer isRegisteredLevel = jsonOptions.getJSONObject(0).getInt("is_registered");
+                            String reject_ktp = jsonOptions.getJSONObject(0).getString("reject_ktp");
+                            String reject_foto = jsonOptions.getJSONObject(0).getString("reject_foto");
+                            String reject_ttd = jsonOptions.getJSONObject(0).getString("reject_ttd");
+                            String remark_ktp = jsonOptions.getJSONObject(0).getString("remark_ktp");
+                            String remark_foto = jsonOptions.getJSONObject(0).getString("remark_foto");
+                            String remark_ttd = jsonOptions.getJSONObject(0).getString("remark_ttd");
 
-                                sp.edit().putString(DefineValue.REJECT_SIUP,reject_siup).apply();
-                                sp.edit().putString(DefineValue.REJECT_NPWP,reject_npwp).apply();
-                                sp.edit().putString(DefineValue.REMARK_SIUP,remark_siup).apply();
-                                sp.edit().putString(DefineValue.REMARK_NPWP,remark_npwp).apply();
-                                sp.edit().putBoolean(DefineValue.IS_UPGRADE_AGENT,false).apply();
-                                sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_AGENT, jsonOptions.toString()).apply();
+                            sp.edit().putInt(DefineValue.IS_REGISTERED_LEVEL, isRegisteredLevel).apply();
+                            sp.edit().putString(DefineValue.REJECT_KTP, reject_ktp).apply();
+                            sp.edit().putString(DefineValue.REJECT_FOTO, reject_foto).apply();
+                            sp.edit().putString(DefineValue.REJECT_TTD, reject_ttd).apply();
+                            sp.edit().putString(DefineValue.REMARK_KTP, remark_ktp).apply();
+                            sp.edit().putString(DefineValue.REMARK_FOTO, remark_foto).apply();
+                            sp.edit().putString(DefineValue.REMARK_TTD, remark_ttd).apply();
+                            sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
 
-                                intent = new Intent(this, UpgradeAgentActivity.class);
+                            intent = new Intent(this, MyProfileNewActivity.class);
 
-                                stackBuilder.addParentStack(UpgradeAgentActivity.class);
-                                stackBuilder.addNextIntent(intent);
+                            stackBuilder.addParentStack(MyProfileNewActivity.class);
+                            stackBuilder.addNextIntent(intent);
 
-                                contentIntent =
-                                        stackBuilder.getPendingIntent(
-                                                1,
-                                                PendingIntent.FLAG_UPDATE_CURRENT
-                                        );
+                            contentIntent =
+                                    stackBuilder.getPendingIntent(
+                                            1,
+                                            PendingIntent.FLAG_UPDATE_CURRENT
+                                    );
 
-                            }
-                            catch (JSONException e)
-                            {
-                                Timber.d("JSONException: " + e.getMessage());
-                            }
-
-
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
                         }
-                        break;
-                    default:
 
-                        break;
-                }
 
-        }
-        else if(msg.containsKey("type")) {
+                    }
+                    break;
+                case FCMManager.REJECT_UPGRADE_AGENT:
+
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            String reject_siup = jsonOptions.getJSONObject(0).getString("reject_siup");
+                            String reject_npwp = jsonOptions.getJSONObject(0).getString("reject_npwp");
+                            String remark_siup = jsonOptions.getJSONObject(0).getString("remark_siup");
+                            String remark_npwp = jsonOptions.getJSONObject(0).getString("remark_npwp");
+
+                            sp.edit().putString(DefineValue.REJECT_SIUP, reject_siup).apply();
+                            sp.edit().putString(DefineValue.REJECT_NPWP, reject_npwp).apply();
+                            sp.edit().putString(DefineValue.REMARK_SIUP, remark_siup).apply();
+                            sp.edit().putString(DefineValue.REMARK_NPWP, remark_npwp).apply();
+                            sp.edit().putBoolean(DefineValue.IS_UPGRADE_AGENT, false).apply();
+                            sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_AGENT, jsonOptions.toString()).apply();
+
+                            intent = new Intent(this, UpgradeAgentActivity.class);
+
+                            stackBuilder.addParentStack(UpgradeAgentActivity.class);
+                            stackBuilder.addNextIntent(intent);
+
+                            contentIntent =
+                                    stackBuilder.getPendingIntent(
+                                            1,
+                                            PendingIntent.FLAG_UPDATE_CURRENT
+                                    );
+
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
+                        }
+
+
+                    }
+                    break;
+
+                case FCMManager.BLAST_INFO:
+                    intent = new Intent(this, MainPage.class);
+                    if (flagLogin.equals(DefineValue.STRING_NO)) {
+
+
+                    } else {
+                        stackBuilder.addParentStack(MainPage.class);
+                        stackBuilder.addNextIntent(intent);
+
+                        contentIntent =
+                                stackBuilder.getPendingIntent(
+                                        getNotifId(),
+                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                );
+                    }
+                default:
+
+
+                    break;
+            }
+
+        } else if (msg.containsKey("type")) {
 
             int msgType = Integer.parseInt(msg.getString("type"));
 
-            Map<String, String> mapData = new HashMap<String,String>();
+            Map<String, String> mapData = new HashMap<String, String>();
 
             switch (msgType) {
                 case FCMManager.OPEN_PLAYSTORE:
@@ -643,7 +651,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         }
 
         if (contentIntent == null) {
-            contentIntent = PendingIntent.getActivity(getApplicationContext(),1,new Intent(),PendingIntent.FLAG_CANCEL_CURRENT);
+            contentIntent = PendingIntent.getActivity(getApplicationContext(), 1, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
         }
 
         mBuilder.setContentIntent(contentIntent);
@@ -662,7 +670,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         mNotifyMgr.notify(getNotifId(), mBuilder.build());
     }
 
-    int getNotifId(){
+    int getNotifId() {
         long time = new Date().getTime();
         String tmpStr = String.valueOf(time);
         String last4Str = tmpStr.substring(tmpStr.length() - 5);
