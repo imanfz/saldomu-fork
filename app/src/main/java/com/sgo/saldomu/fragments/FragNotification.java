@@ -290,6 +290,9 @@ public class FragNotification extends BaseFragment {
                     getActivity().setResult(MainPage.RESULT_NOTIF, dataUpgradeAgent);
                     getActivity().finish();
                     break;
+                case NotificationActivity.BLAST_INFO:
+                    getActivity().finish();
+                    break;
             }
 
 
@@ -419,6 +422,8 @@ public class FragNotification extends BaseFragment {
 
                                 String code = model.getError_code();
 
+                                Timber.d("response usernotif : " + object.toString());
+
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                     if (mRecyclerView.getVisibility() == View.GONE) {
@@ -428,8 +433,7 @@ public class FragNotification extends BaseFragment {
 
                                     JSONArray mArrayData = new JSONArray(getGson().toJson(model.getData_user_notif()));
 
-                                    String title = null, detail = "", time, to_id, from_name, from_id, notif_id, from_profile_picture
-                                            , date_time, id_result;
+                                    String title = null, detail = "", time, to_id, from_name, from_id, notif_id, from_profile_picture, date_time, id_result;
                                     mData.clear();
                                     mDataNotifDetail.clear();
                                     int notif_type, image = 0;
@@ -503,6 +507,11 @@ public class FragNotification extends BaseFragment {
                                                         image = R.drawable.ic_photo_camera_rejected;
                                                         title = getString(R.string.notif_title_photo_ktp_rejected);
                                                         break;
+                                                    case NotificationActivity.BLAST_INFO:
+                                                        image = R.drawable.ic_cash_out;
+                                                        title = notif_detail.getString(WebParams.SUBJECT);
+                                                        detail = notif_detail.getString(WebParams.DESC);
+                                                        break;
                                                 }
 
                                                 if (notif_type == NotificationActivity.TYPE_LIKE ||
@@ -512,8 +521,9 @@ public class FragNotification extends BaseFragment {
                                                         notif_type == NotificationActivity.TYPE_DECLINE ||
                                                         notif_type == NotificationActivity.TYPE_NON_MEMBER ||
                                                         notif_type == NotificationActivity.CLAIM_NON_MEMBER ||
-                                                        notif_type == NotificationActivity.REJECTED_KTP
-                                                        ) {
+                                                        notif_type == NotificationActivity.REJECTED_KTP ||
+                                                        notif_type == NotificationActivity.BLAST_INFO
+                                                ) {
                                                     mDataNotifDetail.add(notif_detail);
 
                                                     time1 = DateTimeFormat.convertStringtoCustomDateTime(date_time);

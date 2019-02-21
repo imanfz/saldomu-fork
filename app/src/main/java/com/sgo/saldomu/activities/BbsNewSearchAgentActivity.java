@@ -80,6 +80,7 @@ import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static com.activeandroid.Cache.getContext;
@@ -194,16 +195,16 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.agentMap);
         mapFrag.getMapAsync(this);
 
-//        if (isHasAppPermission()) {
-//            if (!GlobalSetting.isLocationEnabled(this)) {
-//                showAlertEnabledGPS();
-//            } else {
-//                runningApp();
-//            }
-//        } else {
-            // Do not have permissions, request them now
-            //EasyPermissions.requestPermissions(this, getString(R.string.rationale_location), BaseActivity.RC_LOCATION_PERM, perms);
-//        }
+        if (isHasAppPermission()) {
+            if (!GlobalSetting.isLocationEnabled(this)) {
+                showAlertEnabledGPS();
+            } else {
+                runningApp();
+            }
+        } else {
+//             Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location), BaseActivity.RC_LOCATION_PERM, perms);
+        }
 
 
     }
