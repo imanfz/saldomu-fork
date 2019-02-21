@@ -392,19 +392,19 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                         + MyApiClient.CCY_VALUE + amount;
 
                 if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                    if (isSMSBanking) {
-                        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
-                            initializeSmsClass();
-                            if (isSimExist)
-                                SubmitAction(true);
-                        } else {
-                            // Ask for one permission
-                            EasyPermissions.requestPermissions(BBSTransaksiInformasi.this, getString(R.string.rationale_phone_state),
-                                    RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
-                        }
-                    } else {
+//                    if (isSMSBanking) {
+//                        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+//                            initializeSmsClass();
+//                            if (isSimExist)
+//                                SubmitAction(true);
+//                        } else {
+//                            // Ask for one permission
+//                            EasyPermissions.requestPermissions(BBSTransaksiInformasi.this, getString(R.string.rationale_phone_state),
+//                                    RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
+//                        }
+//                    } else {
                         SubmitAction(true);
-                    }
+//                    }
                 } else {
 //                    btnNext.setEnabled(false);
                     if (inputValidation()) {

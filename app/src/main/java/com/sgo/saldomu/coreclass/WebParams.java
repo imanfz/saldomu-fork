@@ -559,5 +559,6 @@ public class WebParams {
     public static String MEMBER_CODE_GOWORLD = "member_code_goworld";
     public static String COMM_ID_GOWORLD = "comm_id_goworld";
     public static String COMM_CODE_GOWORLD = "comm_code_goworld";
+    public static String SUBJECT = "subject";
 
 }
