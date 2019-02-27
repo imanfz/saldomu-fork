@@ -86,19 +86,28 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         }
 
         donebtn.setOnClickListener(POSlistener);
+        skipbtn.setOnClickListener(VerifyOTPListener);
 
         perms = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS,
                 Manifest.permission.ACCESS_FINE_LOCATION};
 
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            InitializeSmsClass();
-        } else {
-            EasyPermissions.requestPermissions(this,
-                    getString(R.string.rational_readphonestate_readcontacts),
-                    RC_READPHONESTATE_GETACCOUNT_PERM, perms);
-        }
+//        if (EasyPermissions.hasPermissions(this, perms)) {
+//            InitializeSmsClass();
+//        } else {
+//            EasyPermissions.requestPermissions(this,
+//                    getString(R.string.rational_readphonestate_readcontacts),
+//                    RC_READPHONESTATE_GETACCOUNT_PERM, perms);
+//        }
 
     }
+
+    private Button.OnClickListener VerifyOTPListener = new Button.OnClickListener(){
+        @Override
+        public void onClick(View view) {
+            Intent i = new Intent(Introduction.this, OTPVerificationActivity.class);
+            startActivity(i);
+        }
+    };
 
     private Button.OnClickListener POSlistener = new Button.OnClickListener() {
         @Override
@@ -107,43 +116,42 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                     i.putExtra(DefineValue.USER_IS_NEW,-2);
                     i.putExtra(DefineValue.IS_POS, "Y");
                     startActivity(i);
-//                    Introduction.this.finish();
         }
     };
 
-    private void InitializeSmsClass(){
-        if(smsclass == null)
-            smsclass = new SMSclass(this);
-
-        smsDialog = new SMSDialog(this, new SMSDialog.DialogButtonListener() {
-            @Override
-            public void onClickOkButton(View v, boolean isLongClick) {
-                if (EasyPermissions.hasPermissions(Introduction.this,Manifest.permission.SEND_SMS)){
-                    smsDialog.sentSms();
-                }
-                else {
-                    EasyPermissions.requestPermissions(Introduction.this,
-                            getString(R.string.rational_sent_sms),
-                            RC_SENTSMS_PERM, Manifest.permission.SEND_SMS);
-                }
-            }
-
-            @Override
-            public void onClickCancelButton(View v, boolean isLongClick) {
-
-            }
-
-            @Override
-            public void onSuccess(int user_is_new) {
-                openLogin(user_is_new);
-            }
-
-            @Override
-            public void onSuccess(String product_value) {
-
-            }
-        });
-    }
+//    private void InitializeSmsClass(){
+//        if(smsclass == null)
+//            smsclass = new SMSclass(this);
+//
+//        smsDialog = new SMSDialog(this, new SMSDialog.DialogButtonListener() {
+//            @Override
+//            public void onClickOkButton(View v, boolean isLongClick) {
+//                if (EasyPermissions.hasPermissions(Introduction.this,Manifest.permission.SEND_SMS)){
+//                    smsDialog.sentSms();
+//                }
+//                else {
+//                    EasyPermissions.requestPermissions(Introduction.this,
+//                            getString(R.string.rational_sent_sms),
+//                            RC_SENTSMS_PERM, Manifest.permission.SEND_SMS);
+//                }
+//            }
+//
+//            @Override
+//            public void onClickCancelButton(View v, boolean isLongClick) {
+//
+//            }
+//
+//            @Override
+//            public void onSuccess(int user_is_new) {
+//                openLogin(user_is_new);
+//            }
+//
+//            @Override
+//            public void onSuccess(String product_value) {
+//
+//            }
+//        });
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -151,16 +159,16 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
     }
 
-    private void doAction(){
-        if(InetHandler.isNetworkAvailable(this)) {
-            if (smsclass.isSimSameSP()) {
-                openLogin(-1);
-            } else {
-                smsDialog.show();
-            }
-        }
-        else DefinedDialog.showErrorDialog(this, getString(R.string.inethandler_dialog_message), null);
-    }
+//    private void doAction(){
+//        if(InetHandler.isNetworkAvailable(this)) {
+//            if (smsclass.isSimSameSP()) {
+//                openLogin(-1);
+//            } else {
+//                smsDialog.show();
+//            }
+//        }
+//        else DefinedDialog.showErrorDialog(this, getString(R.string.inethandler_dialog_message), null);
+//    }
 
     @Override
     protected void onResume() {
@@ -194,7 +202,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
         @Override
     public void onSkipPressed() {
-        doAction();
+//        doAction();
     }
 
     @Override
@@ -204,7 +212,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
     @Override
     public void onDonePressed() {
-        doAction();
+//        doAction();
     }
 
     @Override
@@ -238,13 +246,13 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         switch(requestCode) {
-            case RC_READPHONESTATE_GETACCOUNT_PERM:
-                for (int i = 0 ; i < perms.size() ; i++){
-                    if(perms.get(i).equalsIgnoreCase(Manifest.permission.READ_PHONE_STATE)) {
-                        InitializeSmsClass();
-                    }
-                }
-                break;
+//            case RC_READPHONESTATE_GETACCOUNT_PERM:
+//                for (int i = 0 ; i < perms.size() ; i++){
+//                    if(perms.get(i).equalsIgnoreCase(Manifest.permission.READ_PHONE_STATE)) {
+//                        InitializeSmsClass();
+//                    }
+//                }
+//                break;
             case RC_SENTSMS_PERM:
                 smsDialog.sentSms();
                 break;
@@ -253,15 +261,15 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
-        switch (requestCode) {
-            case RC_READPHONESTATE_GETACCOUNT_PERM:
-                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-                finish();
-                break;
-            case RC_SENTSMS_PERM:
-                smsDialog.dismiss();
-                smsDialog.reset();
-                break;
-        }
+//        switch (requestCode) {
+//            case RC_READPHONESTATE_GETACCOUNT_PERM:
+//                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+//                finish();
+//                break;
+//            case RC_SENTSMS_PERM:
+//                smsDialog.dismiss();
+//                smsDialog.reset();
+//                break;
+//        }
     }
 }
