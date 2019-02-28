@@ -96,10 +96,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        if (sp.contains(DefineValue.SENDER_ID)) {
-            userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
-            userIDValue.setText(userIDfinale);
-        }
+
 
         Bundle m = getArguments();
 
@@ -122,6 +119,12 @@ public class Login extends BaseFragment implements View.OnClickListener {
         } else if (sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
             getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
             userIDValue.setEnabled(true);
+        }
+
+        if (sp.contains(DefineValue.SENDER_ID) && !sp.getString(DefineValue.IS_POS,"N").equalsIgnoreCase("Y")) {
+            userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
+            userIDValue.setText(userIDfinale);
+            userIDValue.setVisibility(View.GONE);
         }
 
         btnLogin.setOnClickListener(this);
@@ -458,6 +461,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.putString(DefineValue.LENGTH_AUTH, commModel.getLengthAuth());
                         mEditor.putString(DefineValue.IS_HAVE_PIN, commModel.getIsHavePin());
                         mEditor.putString(DefineValue.AGENT_TYPE, commModel.getAgent_type());
+                        mEditor.remove(DefineValue.SENDER_ID);
 
                         mEditor.putInt(DefineValue.LEVEL_VALUE, Integer.valueOf(commModel.getMemberLevel()));
                         if (commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES)) {

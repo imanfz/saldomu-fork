@@ -258,6 +258,9 @@ public class MyApiClient {
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
     public static String LINK_GOOGLE_MAPS_API_GEOCODE_BASE;
 
+    public static String LINK_GET_OTP;
+    public static String LINK_CONFIRM_OTP;
+
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
         LINK_REG_STEP1           = headaddressfinal + "RegStep1/Invoke";
@@ -435,6 +438,8 @@ public class MyApiClient {
         LINK_CANCEL_SEARCH_DGI = headaddressfinal + "invoice/Payment/Reject";
         LINK_SALDO_COLLECTOR     = headaddressfinal + "Balancecollector/Retrieve";
         LINK_SET_MEMBER_LOC = headaddressfinal + "invoice/Setmemberlocation/Invoke";
+        LINK_GET_OTP = headaddressfinal + "VerifySIMCardByOTP/Retrieve";
+        LINK_CONFIRM_OTP = headaddressfinal + "VerifySIMCardConfirmOTP/Retrieve";
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)

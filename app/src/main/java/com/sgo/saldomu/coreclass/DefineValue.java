@@ -561,6 +561,7 @@ public class DefineValue {
     public static String AGENT_SCHEME_CODES= "agent_scheme_codes";
     public static String IS_MEMBER_SHOP_DGI= "is_member_shop_dgi";
     public static String IS_SEARCH_DGI= "is_search_dgi";
+    public static String DEVICE_NAME= "device_name";
 
 }
 

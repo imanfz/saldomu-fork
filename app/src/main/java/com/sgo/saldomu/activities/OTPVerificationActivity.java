@@ -23,7 +23,7 @@ public class OTPVerificationActivity extends BaseActivity {
 
 
 
-        if (findViewById(R.id.loginContent) != null) {
+        if (findViewById(R.id.otpVerificationContent) != null) {
             if (savedInstanceState != null) {
                 return;
             }
@@ -31,7 +31,7 @@ public class OTPVerificationActivity extends BaseActivity {
             Fragment newFrag = new OTPVerification();
             FragmentManager fragmentManager= getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.loginContent, newFrag, "login");
+            fragmentTransaction.add(R.id.otpVerificationContent, newFrag, "otpVerification");
             fragmentTransaction.commit();
         }
 

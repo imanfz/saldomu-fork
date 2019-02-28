@@ -55,6 +55,7 @@
 <string name="data_not_found">Data Tidak Ditemukan</string>
 <string name="initialize">Inisialisasi</string>
 <string name="sent">Kirim</string>
+<string name="resend">Kirim Ulang</string>
 
 <string name="firstscreen_desc_background" translatable="false">background</string>
 <string name="firstscreen_button_daftar">DAFTAR</string>

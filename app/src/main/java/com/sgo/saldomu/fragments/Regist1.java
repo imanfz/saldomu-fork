@@ -115,18 +115,18 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             }
         });
 
-        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.READ_PHONE_STATE)) {
-            if (isSimExists()) {
-
-                TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-                String Nomor1 = tm.getLine1Number();
-
-                noHPValue.setText(Nomor1);
-            }
-        } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_check_phone_number),
-                    RC_READ_SMS, Manifest.permission.READ_PHONE_STATE);
-        }
+//        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.READ_PHONE_STATE)) {
+//            if (isSimExists()) {
+//
+//                TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+//                String Nomor1 = tm.getLine1Number();
+//
+//                noHPValue.setText(Nomor1);
+//            }
+//        } else {
+//            EasyPermissions.requestPermissions(this, getString(R.string.rationale_check_phone_number),
+//                    RC_READ_SMS, Manifest.permission.READ_PHONE_STATE);
+//        }
 
 
         noHPValue.requestFocus();
@@ -142,10 +142,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
         });
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        if (sp.contains(DefineValue.SENDER_ID)) {
-            noHPValid = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
-            noHPValue.setText(noHPValid);
-        }
+
 
         if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
             Bundle m = getArguments();
@@ -163,6 +160,12 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                 noHPValue.setText(userId);
                 noHPValue.setEnabled(false);
             }
+        }
+
+        if (sp.contains(DefineValue.SENDER_ID)) {
+            noHPValid = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
+            noHPValue.setText(noHPValid);
+            noHPValue.setEnabled(false);
         }
     }
 

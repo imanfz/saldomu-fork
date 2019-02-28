@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 
+import android.app.ProgressDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.BinderThread;
@@ -12,25 +13,44 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.LoginActivity;
+import com.sgo.saldomu.activities.OTPVerificationActivity;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.widgets.BaseFragment;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OTPVerification extends Fragment {
+public class OTPVerification extends BaseFragment {
 
     View v;
 
-    @BindView(R.id.btn_send)
-    Button btn_send;
+    private ProgressDialog progdialog;
 
-    @BindView(R.id.userID_value)
+    String user_id;
+
+    Button btn_send;
     EditText et_phone_value;
 
     public OTPVerification() {
@@ -42,20 +62,102 @@ public class OTPVerification extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.frag_otp_verification_1, container, false);
-        ButterKnife.bind(this,v);
         return v;
-    }
-
-    @OnClick (R.id.btn_send)
-    public void btnSendListener()
-    {
-
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         getDeviceName();
+
+        et_phone_value = v.findViewById(R.id.userID_value);
+        btn_send = v.findViewById(R.id.btn_send);
+
+        btn_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (inputValidation())
+
+                    user_id = NoHPFormat.formatTo62(et_phone_value.getText().toString());
+                    getOTP();
+            }
+        });
+
+    }
+
+    public void  getOTP()
+    {
+        try {
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            progdialog.show();
+
+            extraSignature = user_id;
+
+            HashMap<String, Object> params = RetrofitService.getInstance()
+                    .getSignatureSecretKey(MyApiClient.LINK_GET_OTP, extraSignature);
+            params.put(WebParams.USER_ID, user_id);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.DEVICE_NAME, getDeviceName());
+
+            Timber.d("isi params get OTP:" + params.toString());
+
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_OTP, params
+                    , new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(object, jsonModel.class);
+
+                            if (!model.getOn_error()) {
+
+                                String code = model.getError_code();
+                                Timber.d("isi response get OTP : "+object.toString());
+
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.d("Sukses");
+                                    Fragment mFragment = new OTPVerificationConfirm();
+                                    Bundle mBun = new Bundle();
+                                    mBun.putString(DefineValue.USER_ID, user_id);
+                                    mBun.putString(DefineValue.DEVICE_NAME, getDeviceName());
+                                    mFragment.setArguments(mBun);
+                                    switchFragment(mFragment, "OtpConfirmation", true);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), model.getError_message());
+                                }
+                                else {
+                                    Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            progdialog.dismiss();
+                        }
+                    } );
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
+    }
+
+
+    public boolean inputValidation()
+    {
+        if (et_phone_value.length()==0 || et_phone_value.equals(""))
+        {
+            et_phone_value.requestFocus();
+            et_phone_value.setError(getActivity().getString(R.string.login_validation_userID));
+            return true;
+        }
+        return true;
     }
 
     public static String getDeviceName() {
@@ -87,5 +189,13 @@ public class OTPVerification extends Fragment {
         }
 
         return phrase.toString();
+    }
+
+    private void switchFragment(Fragment i, String name, Boolean isBackstack) {
+        if (getActivity() == null)
+            return;
+
+        OTPVerificationActivity fca = (OTPVerificationActivity) getActivity();
+        fca.switchContent(i, name, isBackstack);
     }
 }

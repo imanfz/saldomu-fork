@@ -88,7 +88,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         donebtn.setOnClickListener(POSlistener);
         skipbtn.setOnClickListener(VerifyOTPListener);
 
-        perms = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS,
+        perms = new String[]{Manifest.permission.READ_CONTACTS,
                 Manifest.permission.ACCESS_FINE_LOCATION};
 
 //        if (EasyPermissions.hasPermissions(this, perms)) {
@@ -175,11 +175,11 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         super.onResume();
         if (EasyPermissions.hasPermissions(this, perms))
             checkIsSimExist();
-        else {
-            EasyPermissions.requestPermissions(this,
-                    getString(R.string.rational_readphonestate_readcontacts),
-                    RC_READPHONESTATE_GETACCOUNT_PERM, perms);
-        }
+//        else {
+//            EasyPermissions.requestPermissions(this,
+//                    getString(R.string.rational_readphonestate_readcontacts),
+//                    RC_READPHONESTATE_GETACCOUNT_PERM, perms);
+//        }
     }
 
     private void checkIsSimExist() {

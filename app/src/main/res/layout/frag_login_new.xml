@@ -83,7 +83,7 @@
                     android:gravity="left|center_vertical"
                     android:hint="@string/login_edithint_pass"
                     android:inputType="textPassword"
-                    android:maxLength="13"
+                    android:maxLength="@integer/nomor_lenght_20"
                     android:textColor="@color/black"
                     android:textColorHint="@color/grey_400"
                     android:textSize="@dimen/abc_text_size_medium_material"
