@@ -13,8 +13,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.paolorotolo.appintro.AppIntro;
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.SMSclass;
@@ -40,6 +42,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     private SMSclass smsclass;
     private String[] perms;
 
+    SecurePreferences sp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
@@ -51,6 +54,11 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             new UtilsLoader(this).getAppVersion();
 
         addSlide(IntroPage.newInstance(R.layout.intro_fragment));
+
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        sp.edit().remove(DefineValue.SENDER_ID).commit();
 
         setFlowAnimation();
         Button skipbtn = (Button)skipButton;

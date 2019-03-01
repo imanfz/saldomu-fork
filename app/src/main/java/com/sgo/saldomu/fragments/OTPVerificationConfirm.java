@@ -174,6 +174,7 @@ public class OTPVerificationConfirm extends BaseFragment {
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     Timber.d("Sukses");
+                                    pinView.setText("");
                                     is_new = model.getIs_new();
                                     Intent intent = new Intent(getContext(), LoginActivity.class);
                                     sp.edit().putString(DefineValue.SENDER_ID, user_id).commit();
@@ -184,7 +185,8 @@ public class OTPVerificationConfirm extends BaseFragment {
                                         intent.putExtra(DefineValue.USER_IS_NEW, -2);
                                     }
 
-                                    getActivity().startActivity(intent);
+                                    startActivity(intent);
+                                    getActivity().finish();
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
