@@ -561,5 +561,6 @@ public class WebParams {
     public static String COMM_CODE_GOWORLD = "comm_code_goworld";
     public static String SUBJECT = "subject";
     public static String OTP = "otp";
+    public static String IS_MANUAL = "is_manual";
 
 }

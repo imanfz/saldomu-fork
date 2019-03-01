@@ -76,6 +76,10 @@ public class UtilsLoader {
                 params.put(WebParams.MEMBER_ID, member_id);
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                if (sp.getString(DefineValue.IS_MANUAL,"N").equalsIgnoreCase("Y"))
+                {
+                    params.put(WebParams.IS_MANUAL,"Y");
+                }
                 String isAuto = (is_auto) ? DefineValue.STRING_YES : DefineValue.STRING_NO;
                 params.put(WebParams.IS_AUTO, isAuto);
 
@@ -88,6 +92,8 @@ public class UtilsLoader {
                                 public void onResponses(JsonObject object) {
                                     Gson gson = new Gson();
 
+
+
                                     GetBalanceModel model = gson.fromJson(object, GetBalanceModel.class);
 
                                     String code = model.getError_code();
@@ -98,6 +104,7 @@ public class UtilsLoader {
                                         if (unread.equals("")) {
                                             SecurePreferences.Editor mEditor = sp.edit();
                                             mEditor.putString(WebParams.UNREAD_NOTIF, model.getUnread_notif());
+
                                             mEditor.apply();
 
                                             setNotifCount(model.getUnread_notif());
@@ -110,6 +117,7 @@ public class UtilsLoader {
                                         mEditor.putString(DefineValue.BALANCE_REMAIN_LIMIT, model.getRemain_limit());
                                         mEditor.putString(DefineValue.BALANCE_PERIOD_LIMIT, model.getPeriod_limit());
                                         mEditor.putString(DefineValue.BALANCE_NEXT_RESET, model.getNext_reset());
+                                        mEditor.remove(DefineValue.IS_MANUAL);
                                         mEditor.apply();
 
                                         mListener.onSuccess(true);

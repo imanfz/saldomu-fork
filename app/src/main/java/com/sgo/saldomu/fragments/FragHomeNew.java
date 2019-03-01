@@ -502,6 +502,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             @Override
             public void onClick(View v) {
                 animateRefrestBtn(true);
+                sp.edit().putString(DefineValue.IS_MANUAL, "Y").commit();
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(MainPage.RESULT_HOME_BALANCE));
             }
         });
