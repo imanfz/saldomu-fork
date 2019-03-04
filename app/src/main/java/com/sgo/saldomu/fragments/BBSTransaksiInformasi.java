@@ -621,12 +621,12 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                         smsDialog.setListener(new SMSDialog.DialogButtonListener() {
                                             @Override
                                             public void onClickOkButton(View v, boolean isLongClick) {
-                                                if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.SEND_SMS)) {
+                                                if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.CAMERA)) {
                                                     smsDialog.sentSms();
                                                     RegSimCardReceiver(true);
                                                 } else {
                                                     EasyPermissions.requestPermissions(BBSTransaksiInformasi.this, getString(R.string.rationale_send_sms),
-                                                            RC_SEND_SMS, Manifest.permission.SEND_SMS);
+                                                            RC_SEND_SMS, Manifest.permission.CAMERA);
                                                 }
                                             }
 

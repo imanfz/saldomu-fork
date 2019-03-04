@@ -95,7 +95,6 @@ public class OTPVerificationConfirm extends BaseFragment {
             btResend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    initiateCountDownTimerForResendOTP();
                     pinView.setText("");
                     getOTP();
                 }
@@ -108,22 +107,27 @@ public class OTPVerificationConfirm extends BaseFragment {
 
     private void initiateCountDownTimerForResendOTP() {
         countDownTimer = new CountDownTimer(300000, 1000) {
+
+            String sisa;
             @Override
             public void onTick(long l) {
-
                 tvCountDown.setText("Sisa Waktu: " +(TimeUnit.MILLISECONDS.toMinutes(l)
                         - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(l))) + ":"
                         +(TimeUnit.MILLISECONDS.toSeconds(l)
                         - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l))));
-
+                sisa = (TimeUnit.MILLISECONDS.toMinutes(l)
+                        - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(l))) + ":"
+                        +(TimeUnit.MILLISECONDS.toSeconds(l)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l)));
+                Timber.d("sisa ontick timer " +sisa);
                 btResend.setEnabled(false);
             }
 
             @Override
             public void onFinish() {
-                btResend.setEnabled(true);
-                btResend.setBackground(getActivity().getResources().getDrawable(R.drawable.rounded_background_orange));
-
+                    Timber.d("sisa onfinish timer " +sisa);
+                    btResend.setEnabled(true);
+                    btResend.setBackground(getActivity().getResources().getDrawable(R.drawable.rounded_background_orange));
             }
         }.start();
     }
@@ -201,7 +205,7 @@ public class OTPVerificationConfirm extends BaseFragment {
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            Timber.d("eror confirm otp");
                         }
 
                         @Override
@@ -246,6 +250,7 @@ public class OTPVerificationConfirm extends BaseFragment {
                                     initiateCountDownTimerForResendOTP();
                                     Toast.makeText(getActivity(), "OTP baru berhasil dikirim kembali!", Toast.LENGTH_LONG).show();
                                     btResend.setEnabled(false);
+                                    btResend.setBackground(getActivity().getResources().getDrawable(R.color.transparant));
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), model.getError_message());

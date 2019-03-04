@@ -77,10 +77,11 @@ public class OTPVerification extends BaseFragment {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (inputValidation())
+                if (inputValidation()) {
 
                     user_id = NoHPFormat.formatTo62(et_phone_value.getText().toString());
                     getOTP();
+                }
             }
         });
 
@@ -155,7 +156,7 @@ public class OTPVerification extends BaseFragment {
         {
             et_phone_value.requestFocus();
             et_phone_value.setError(getActivity().getString(R.string.login_validation_userID));
-            return true;
+            return false;
         }
         return true;
     }
