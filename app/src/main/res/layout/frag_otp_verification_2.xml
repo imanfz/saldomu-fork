@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:gravity="center"
-        android:text="Masukkan kode yang dikirimkan ke nomor"
+        android:text="Masukkan kode OTP yang dikirimkan ke nomor"
         android:textSize="16sp" />
 
     <TextView

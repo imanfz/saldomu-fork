@@ -37,9 +37,6 @@ public class OTPVerificationActivity extends BaseActivity {
 
     }
 
-
-
-
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_verification_otp;

@@ -153,7 +153,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     };
 
     //FragmentManager fragment;
-    String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS};
+    String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
 //    String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE, Manifest.permission.SEND_SMS};
 
 

@@ -205,12 +205,12 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
             smsDialog = new SMSDialog(getActivity(), new SMSDialog.DialogButtonListener() {
                 @Override
                 public void onClickOkButton(View v, boolean isLongClick) {
-                    if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.SEND_SMS)) {
+                    if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.CAMERA)) {
                         smsDialog.sentSms();
                     } else {
                         EasyPermissions.requestPermissions(SgoPlus_input.this,
                                 getString(R.string.rational_sent_sms),
-                                RC_SENDSMS, Manifest.permission.SEND_SMS);
+                                RC_SENDSMS, Manifest.permission.CAMERA);
                     }
                 }
 

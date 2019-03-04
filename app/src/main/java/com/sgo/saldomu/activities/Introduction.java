@@ -112,8 +112,16 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     private Button.OnClickListener VerifyOTPListener = new Button.OnClickListener(){
         @Override
         public void onClick(View view) {
-            Intent i = new Intent(Introduction.this, OTPVerificationActivity.class);
-            startActivity(i);
+            if(!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").isEmpty())
+            {
+                Intent i = new Intent(Introduction.this,LoginActivity.class);
+                i.putExtra(DefineValue.USER_IS_NEW,-2);
+                i.putExtra(DefineValue.IS_POS, "N");
+                startActivity(i);
+            }else {
+                Intent i = new Intent(Introduction.this, OTPVerificationActivity.class);
+                startActivity(i);
+            }
         }
     };
 
