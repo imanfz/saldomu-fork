@@ -283,7 +283,8 @@
 <string name="forgotpass_text_title">Lupa Password</string>
 <string name="forgotpass_text_instruction">%1$s akan mengirimkan prosedur Lupa Password. Pilih tipe notifikasi Lupa Password yang akan diproses.</string>
 <string name="forgotpass_text_instruction3">Isi nomor handphone anda yang terhubung dengan akun anda dan password yang baru.</string>
-<string name="forgotpass_text_message_success">Ganti password berhasil. Silahkan cek email atau sms anda sesuai pilihan tipe notifikasi yang anda pilih.</string>
+<!--<string name="forgotpass_text_message_success">Ganti password berhasil. Silahkan cek email atau sms anda sesuai pilihan tipe notifikasi yang anda pilih.</string>-->
+<string name="forgotpass_text_message_success">Ganti password berhasil. Silahkan cek sms anda, sesuai pilihan tipe notifikasi yang anda pilih.</string>
 <string name="validation_minimal">Minimal</string>
 <string name="validation_character">karakter!</string>
 

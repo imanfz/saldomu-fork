@@ -104,19 +104,25 @@ public class ForgotPassword extends BaseFragment {
         @Override
         public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
 
-            if (i == 1) {
-                is_email = DefineValue.STRING_YES;
-                is_sms = DefineValue.STRING_NO;
-            } else if (i == 2) {
+            if (i==0)
+            {
                 is_sms = DefineValue.STRING_YES;
                 is_email = DefineValue.STRING_NO;
-            } else if (i == 3) {
-                is_sms = DefineValue.STRING_YES;
-                is_email = DefineValue.STRING_YES;
-            } else {
-                is_sms = "";
-                is_email = "";
             }
+
+//            if (i == 1) {
+//                is_email = DefineValue.STRING_YES;
+//                is_sms = DefineValue.STRING_NO;
+//            } else if (i == 2) {
+//                is_sms = DefineValue.STRING_YES;
+//                is_email = DefineValue.STRING_NO;
+//            } else if (i == 3) {
+//                is_sms = DefineValue.STRING_YES;
+//                is_email = DefineValue.STRING_YES;
+//            } else {
+//                is_sms = "";
+//                is_email = "";
+//            }
 
 
         }
@@ -335,13 +341,13 @@ public class ForgotPassword extends BaseFragment {
             DefinedDialog.showErrorDialog(getActivity(), getString(R.string.forgetpass_edittext_validation), null);
             return false;
         }
-        if (spin_tipe_notif.getSelectedItemPosition() == 0) {
-            TextView errorText = (TextView) spin_tipe_notif.getSelectedView();
-            errorText.setTextColor(getResources().getColor(R.color.red));
-            errorText.setError(errorText.getText().toString());
-            errorText.setBackgroundColor(getResources().getColor(R.color.grey_900));
-            return false;
-        }
+//        if (spin_tipe_notif.getSelectedItemPosition() == 0) {
+//            TextView errorText = (TextView) spin_tipe_notif.getSelectedView();
+//            errorText.setTextColor(getResources().getColor(R.color.red));
+//            errorText.setError(errorText.getText().toString());
+//            errorText.setBackgroundColor(getResources().getColor(R.color.grey_900));
+//            return false;
+//        }
         return true;
     }
 }

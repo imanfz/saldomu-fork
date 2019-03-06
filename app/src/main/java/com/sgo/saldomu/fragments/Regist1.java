@@ -502,6 +502,8 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
         TextView Message3 = dialog.findViewById(R.id.message_dialog3);
         Message3.setVisibility(View.VISIBLE);
 
+        sp.edit().putString(DefineValue.PREVIOUS_LOGIN_USER_ID,noHPValue.getText().toString()).commit();
+
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title));
         if (code.equals("0002")) {

@@ -132,6 +132,12 @@ public class OTPVerificationConfirm extends BaseFragment {
         }.start();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        countDownTimer.cancel();
+    }
 
     private void initiateData() {
         Bundle args = getArguments();
