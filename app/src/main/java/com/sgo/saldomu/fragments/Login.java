@@ -107,19 +107,19 @@ public class Login extends BaseFragment implements View.OnClickListener {
             userIDValue.setEnabled(true);
         }
 
-        if (m != null) {
-            if (m.containsKey(DefineValue.IS_POS)) {
-                if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y")) {
-                    is_pos = m.getString(DefineValue.IS_POS, "");
-                    getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
-                    userIDValue.setEnabled(true);
-                    userIDValue.setHint("No HP POS yang sudah terdaftar");
-                }
-            }
-        } else if (sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
-            getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
-            userIDValue.setEnabled(true);
-        }
+//        if (m != null) {
+//            if (m.containsKey(DefineValue.IS_POS)) {
+//                if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y")) {
+//                    is_pos = m.getString(DefineValue.IS_POS, "");
+//                    getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
+//                    userIDValue.setEnabled(true);
+//                    userIDValue.setHint("No HP POS yang sudah terdaftar");
+//                }
+//            }
+//        } else if (sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
+//            getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
+//            userIDValue.setEnabled(true);
+//        }
 
         if (sp.contains(DefineValue.SENDER_ID) && !sp.getString(DefineValue.IS_POS,"N").equalsIgnoreCase("Y")) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
