@@ -69,9 +69,9 @@ public class FragMainPage extends Fragment {
         final List<BaseFragmentMainPage> mList = new ArrayList<>();
 //        mList.add(new Home());
 
-        mList.add(new FragHomeAgent());
+//        mList.add(new FragHomeAgent());
         mList.add(new FragHomeNew());
-        mList.add(new MyHistory());
+//        mList.add(new MyHistory());
 //        mList.add(new TimeLine());
 //        mList.add(new Group());
 
@@ -103,8 +103,8 @@ public class FragMainPage extends Fragment {
         pager.setAdapter(adapternya);
         pager.setPageMargin(pageMargin);
         tabs.setViewPager(pager);
-        pager.setCurrentItem(1);
-        pager.setOffscreenPageLimit(3);
+        pager.setCurrentItem(0);
+        pager.setOffscreenPageLimit(1);
 
         setCurrentAdapternya(adapternya);
 
@@ -157,6 +157,8 @@ public class FragMainPage extends Fragment {
                 getCurrentAdapternya().mCurrentFragment.goToTop();
             }
         });
+
+        tabs.setVisibility(View.GONE);
 
 
         ToggleFAB(false);

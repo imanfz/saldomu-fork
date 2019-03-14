@@ -292,7 +292,8 @@ public class BBSTransaksiAmount extends Fragment {
             }
             validasiTutorialCashIn();
         }
-        else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
+
+        if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
         {
             if ( !defaultProductCode.equals("") ) {
                 BBSBankModel bbsBankModel = realmBBS.where(BBSBankModel.class).

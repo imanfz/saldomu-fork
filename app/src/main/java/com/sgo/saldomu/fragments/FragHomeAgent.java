@@ -190,8 +190,6 @@ public class FragHomeAgent extends BaseFragmentMainPage {
         super.onActivityCreated(savedInstanceState);
 
         EasyAdapter adapter = new EasyAdapter(getActivity(), R.layout.list_view_item_with_arrow, _data);
-
-
     }
 
     void checkAndRunServiceBBS() {

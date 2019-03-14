@@ -35,9 +35,9 @@
     </string-array>
 
     <string-array name="home_vpi_title">
-        <item>AGEN</item>
+        <!--<item>AGEN</item>-->
         <item>BERANDA</item>
-        <item>RIWAYAT</item>
+        <!--<item>RIWAYAT</item>-->
         <!--<item>LINI WAKTU</item>-->
         <!--<item>GROUP</item>-->
     </string-array>
@@ -200,27 +200,15 @@
     </string-array>
 
     <string-array name="list_bbs_agent">
-        <!--<item>@string/menu_item_title_tagih_agent</item>-->
-        <!--<item>@string/cash_in</item>-->
-        <!--<item>@string/cash_out</item>-->
         <item>@string/menu_item_title_trx_agent</item>
         <item>@string/title_bbs_list_account_bbs</item>
-        <!-- item>@string/transaction</item -->
-        <item>@string/menu_item_title_kelola</item>
-        <!-- item>@string/menu_item_title_list_approval</item -->
-        <!-- item>@string/menu_item_title_waktu_beroperasi</item -->
-        <!-- item>@string/menu_item_title_tutup_manual</item -->
+        <item>@string/menu_item_title_kelola</item>\
         <item>@string/menu_item_title_onprogress_agent</item>
     </string-array>
 
     <integer-array name="list_icon_bbs_agent">
-        <!--<item>@drawable/tagih_id</item>-->
-        <!--<item>@drawable/ic_tariktunai</item>-->
-        <!--<item>@drawable/ic_tariktunai</item>-->
         <item>@drawable/ic_tariktunai</item>
-        <!-- item>@drawable/ic_tariktunai</item -->
         <item>@drawable/ic_tariktunai</item>
-        <!-- item>@drawable/ic_laporan</item -->
         <item>@drawable/ic_settings</item>
         <item>@drawable/ic_location_on_black</item>
     </integer-array>
@@ -320,4 +308,21 @@
         <item>150000</item>
         <item>200000</item>
     </string-array>
+
+    <string-array name="item_pulsa">
+         <item>@string/menu_item_title_pulsa_agent</item>
+    </string-array>
+
+    <string-array name="item_bpjs">
+        <item>@string/newhome_bpjs</item>
+    </string-array>
+
+    <string-array name="item_emoney">
+        <item>@string/newhome_ovo</item>
+    </string-array>
+
+    <string-array name="item_tkn">
+        <item>@string/newhome_listrik_pln</item>
+    </string-array>
+
 </resources>

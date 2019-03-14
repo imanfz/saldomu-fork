@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,7 @@ import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.activities.ReportActivity;
+import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.adapter.GridHome;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
@@ -52,6 +55,7 @@ import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.ShopCategory;
 import com.sgo.saldomu.models.retrofit.CategoriesModel;
@@ -60,8 +64,14 @@ import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -79,6 +89,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     TextView tv_pulsa;
     TextView tv_bpjs;
     TextView tv_listrikPLN;
+    TextView tv_greetings;
     View view_pulsa;
     View view_bpjs;
     View view_listrikPLN;
@@ -87,16 +98,19 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View PLS;
     View TKN;
     ImageView refreshBtn;
+    ImageView img_greetings;
     private Animation frameAnimation;
     private SecurePreferences sp;
     ArrayList<ShopCategory> shopCategories = new ArrayList<>();
     private Biller_Type_Data_Model mBillerTypeDataPLS;
     private Biller_Type_Data_Model mBillerTypeDataBPJS;
     private Biller_Type_Data_Model mBillerTypeDataTKN;
+    private Biller_Type_Data_Model mBillerTypeDataEMoney;
     private Realm realm;
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
-    String shopStatus, isMemberShopDGI;
+    String shopStatus, isMemberShopDGI, isDormant, objs, string;
+    Boolean isAgent;
     ProgressBar gridview_progbar;
 
     private static final int RC_GPS_REQUEST = 1;
@@ -112,15 +126,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             R.drawable.ic_location_on_black,
 
     };
-//    String[] text = {
-//            getString(R.string.newhome_title_topup),
-//            "BAYAR TEMAN",
-//            "MINTA UANG",
-//            "BELANJA",
-//            "LAPORAN",
-//            "CASH IN",
-//            "CASH OUT",
-//    } ;
 
     public FragHomeNew() {
         // Required empty public constructor
@@ -158,6 +163,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         tv_pulsa = v.findViewById(R.id.tv_pulsa);
         tv_bpjs = v.findViewById(R.id.tv_bpjs);
         tv_listrikPLN = v.findViewById(R.id.tv_listrikPLN);
+        tv_greetings = v.findViewById(R.id.tv_greetings);
         view_pulsa = v.findViewById(R.id.view_pulsa);
         view_bpjs = v.findViewById(R.id.view_bpjs);
         view_listrikPLN = v.findViewById(R.id.view_listrikPLN);
@@ -165,6 +171,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         PLS = v.findViewById(R.id.PLS);
         TKN = v.findViewById(R.id.TKN);
         refreshBtn = v.findViewById(R.id.btn_refresh_balance);
+        img_greetings = v.findViewById(R.id.img_greeting);
 
         return v;
 
@@ -175,6 +182,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
         super.onViewCreated(view, savedInstanceState);
 
         isMemberShopDGI = sp.getString(DefineValue.IS_MEMBER_SHOP_DGI, "0");
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
+
+        string = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
 
         realm = RealmManager.getRealmBiller();
 
@@ -208,6 +219,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
             TKN.setVisibility(View.GONE);
         }
 
+        mBillerTypeDataEMoney = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "OVO")
+                .findFirst();
+
         if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
             llAgentDetail.setVisibility(View.GONE);
 
@@ -220,12 +235,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         }
 
-        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        setGreeting();
 
         if (isAgent) {
 //            if (isAdded()) {
-                GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                GridView.setAdapter(adapter);
+            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+            GridView.setAdapter(adapter);
 //            }
         } else {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
@@ -322,10 +337,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
                         startActivity(intent);
                     }
-//                    Bundle bundle;
-//                    bundle= new Bundle();
-//                    bundle.putString(DefineValue.PHONE_NUMBER, input.getText().toString());
-//                    switchMenu(NavigationDrawMenu.MDAP,bundle);
                 }
                 if (view_bpjs.getVisibility() == View.VISIBLE) {
                     Intent intent = new Intent(getActivity(), BillerActivity.class);
@@ -384,105 +395,227 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 Timber.d("masuk gridhomeonitemclicklistener");
 
                 String menuItemName = ((TextView) view.findViewById(R.id.grid_text)).getText().toString();
+                String trxType = "";
+                int posIdx = -1;
 
                 if (menuItemName.equals(getString(R.string.newhome_title_topup))) {
-//                    switchMenu(NavigationDrawMenu.MTOPUP, null);
                     Intent i = new Intent(getActivity(), TopUpActivity.class);
                     i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_pay_friends))) {
-                    if (getLvlClass().isLevel1QAC()) {
-                        getLvlClass().showDialogLevel();
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
                     } else {
-//                        switchMenu(NavigationDrawMenu.MASK4MONEY, null);
-                        Intent i = new Intent(getActivity(), PayFriendsActivity.class);
-                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                        if (getLvlClass().isLevel1QAC()) {
+                            getLvlClass().showDialogLevel();
+                        } else {
+                            Intent i = new Intent(getActivity(), PayFriendsActivity.class);
+                            switchActivity(i, MainPage.ACTIVITY_RESULT);
+                        }
                     }
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_ask_for_money))) {
-                    if (getLvlClass().isLevel1QAC()) {
-                        getLvlClass().showDialogLevel();
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
                     } else {
-//                        switchMenu(NavigationDrawMenu.MASK4MONEY, null);
-                        Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
-                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                        if (getLvlClass().isLevel1QAC()) {
+                            getLvlClass().showDialogLevel();
+                        } else {
+                            Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
+                            switchActivity(i, MainPage.ACTIVITY_RESULT);
+                        }
                     }
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_buy))) {
-//                    switchMenu(NavigationDrawMenu.MBUY, null);
-                    Intent i = new Intent(getActivity(), ListBuyActivity.class);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Intent i = new Intent(getActivity(), ListBuyActivity.class);
+                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                    }
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_report))) {
-//                    switchMenu(NavigationDrawMenu.MREPORT, null);
                     Intent i = new Intent(getActivity(), ReportActivity.class);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
-                    switchMenu(NavigationDrawMenu.MSCADM, null);
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else
+                        switchMenu(NavigationDrawMenu.MSCADM, null);
                 } else if (menuItemName.equals(getString(R.string.menu_item_search_agent))) {
-                    Bundle bundle = new Bundle();
-                    switchMenu(NavigationDrawMenu.MCATEGORYBBS, bundle);
-                /*} else if ( menuItemName.equals(getString(R.string.menu_item_search_agent_cta)) ) {
-//                    Bundle bundle = new Bundle();
-//                    switchMenu(NavigationDrawMenu.MBBSCTA, bundle);
-                    Intent i = new Intent(getActivity(), BbsSearchAgentActivity.class);
-                    i.putExtra(DefineValue.CATEGORY_ID, "CAT2");
-                    i.putExtra(DefineValue.CATEGORY_NAME, "SETOR TUNAI");
-                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                    i.putExtra(DefineValue.AMOUNT, "");
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else if ( menuItemName.equals(getString(R.string.menu_item_search_agent_atc)) ) {
-//                    Bundle bundle = new Bundle();
-//                    switchMenu(NavigationDrawMenu.MCATEGORYBBS, bundle);
-
-                    Intent i = new Intent(getActivity(), BbsSearchAgentActivity.class);
-                    i.putExtra(DefineValue.CATEGORY_ID, "CAT3");
-                    i.putExtra(DefineValue.CATEGORY_NAME, "TARIK TUNAI");
-                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                    i.putExtra(DefineValue.AMOUNT, "");
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);*/
-                } else if (menuItemName.equals(getString(R.string.cash_in))) {
-                    Intent i = new Intent(getActivity(), BBSActivity.class);
-                    i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION);
-                    i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else if (menuItemName.equals(getString(R.string.cash_out))) {
-                    Intent i = new Intent(getActivity(), BBSActivity.class);
-                    i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION);
-                    i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_trx_agent))) {
-                    Intent i = new Intent(getActivity(), BBSActivity.class);
-                    i.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent))) {
-                    Intent i = new Intent(getActivity(), BBSActivity.class);
-                    i.putExtra(DefineValue.INDEX, BBSActivity.BBSONPROGRESSAGENT);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else if (menuItemName.equals(getString(R.string.title_cash_out_member))) {
-                    Intent i = new Intent(getActivity(), BBSActivity.class);
-                    i.putExtra(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent))) {
-                    switchMenu(NavigationDrawMenu.MTAGIH, null);
-                } else {
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Bundle bundle = new Bundle();
+                        switchMenu(NavigationDrawMenu.MCATEGORYBBS, bundle);
+                    }
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_pulsa_agent))) {
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Intent intent = new Intent(getActivity(), BillerActivity.class);
+                        intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
+                        intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
+                        startActivity(intent);
+                    }
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_pulsa_agent))) {
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Intent intent = new Intent(getActivity(), BillerActivity.class);
+                        intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
+                        intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
+                        startActivity(intent);
+                    }
+                } else if (menuItemName.equals(getString(R.string.newhome_listrik_pln))) {
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Intent intent = new Intent(getActivity(), BillerActivity.class);
+                        intent.putExtra(DefineValue.BILLER_TYPE, "TKN");
+                        intent.putExtra(DefineValue.BILLER_NAME, "Voucher Token Listrik");
+                        startActivity(intent);
+                    }
+                }else if (menuItemName.equals(getString(R.string.newhome_ovo))) {
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Intent intent = new Intent(getActivity(), BillerActivity.class);
+                        intent.putExtra(DefineValue.BILLER_TYPE, "OVO");
+                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_ovo));
+                        startActivity(intent);
+                    }
+                }else if (menuItemName.equals(getString(R.string.newhome_bpjs))) {
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Intent intent = new Intent(getActivity(), BillerActivity.class);
+                        intent.putExtra(DefineValue.BILLER_TYPE, "BPJS");
+                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_bpjs));
+                        startActivity(intent);
+                    }
+                }
+                else {
                     for (int x = 0; x < shopCategories.size(); x++) {
                         String categoryName = shopCategories.get(x).getCategoryName();
                         if (menuItemName.indexOf(categoryName) > 0) {
-                            Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
-                            i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
-                            sp.edit().putString(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
-                            i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
-                            i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                            i.putExtra(DefineValue.AMOUNT, "");
-                            i.putExtra(DefineValue.BBS_SCHEME_CODE, shopCategories.get(x).getSchemeCode());
-                            switchActivity(i, MainPage.ACTIVITY_RESULT);
-                            break;
+                            if (isDormant.equalsIgnoreCase("Y")) {
+                                dialogDormant();
+                            } else {
+                                Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
+                                i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
+                                sp.edit().putString(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
+                                i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
+                                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                                i.putExtra(DefineValue.AMOUNT, "");
+                                i.putExtra(DefineValue.BBS_SCHEME_CODE, shopCategories.get(x).getSchemeCode());
+                                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                                break;
+                            }
                         }
                     }
                     //switchMenu(NavigationDrawMenu.MCASHOUT,null);
                 }
 
+                if (isAgent) {
+                    if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            posIdx = BBSActivity.LISTACCBBS;
+                    else if (menuItemName.equalsIgnoreCase(getString(R.string.transaction)))
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            posIdx = BBSActivity.TRANSACTION;
+                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            posIdx = BBSActivity.CONFIRMCASHOUT;
+                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_kelola)))
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            posIdx = BBSActivity.BBSKELOLA;
+                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_trx_agent)))
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            posIdx = BBSActivity.BBSTRXAGENT;
+                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_waktu_beroperasi)))
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            posIdx = BBSActivity.BBSWAKTUBEROPERASI;
+                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_tutup_manual)))
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            posIdx = BBSActivity.BBSTUTUPMANUAL;
+                    else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_in))) {
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else {
+                            posIdx = BBSActivity.TRANSACTION;
+                            trxType = DefineValue.BBS_CASHIN;
+                        }
+                    } else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_out))) {
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else {
+                            posIdx = BBSActivity.TRANSACTION;
+                            trxType = DefineValue.BBS_CASHOUT;
+                        }
+                    } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent))) {
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else {
+                            posIdx = BBSActivity.BBSONPROGRESSAGENT;
+                            trxType = DefineValue.INDEX;
+                        }
+                    } else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent))) {
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            startActivity(new Intent(getActivity(), TagihActivity.class));
+                    } else {
+                        posIdx = -1;
+                    }
+                } else {
+                    if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            posIdx = BBSActivity.CONFIRMCASHOUT;
+                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_rating_by_member)))
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            posIdx = BBSActivity.BBSRATINGBYMEMBER;
+                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_my_orders)))
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            posIdx = BBSActivity.BBSMYORDERS;
+                    else {
+                        posIdx = -1;
+                    }
+
+                }
+                if (posIdx != -1) {
+                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, posIdx);
+
+                    if (!trxType.equals(""))
+                        i.putExtra(DefineValue.TYPE, trxType);
+
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                }
+
+
             }
 
         });
+
+
         if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
 
             swSettingOnline.setOnCheckedChangeListener(null);
@@ -522,9 +655,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private ArrayList<String> SetupListMenu() {
         String[] _data;
         ArrayList<String> data = new ArrayList<>();
-        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
-        if (!isAgent) {
 
+        if (!isAgent) {
             String[] categories = new String[shopCategories.size()];
             for (int x = 0; x < shopCategories.size(); x++) {
                 categories[x] = getString(R.string.menu_item_search_agent_bbs) + " " + shopCategories.get(x).getCategoryName();
@@ -533,10 +665,60 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             _data = getResources().getStringArray(R.array.list_menu_frag_new_home_not_agent);
             Collections.addAll(data, _data);
+        } else {
+            checkSchemeCode(data);
+            _data = getResources().getStringArray(R.array.list_bbs_agent);
+            Collections.addAll(data, _data);
         }
+
+        if (mBillerTypeDataPLS != null) {
+            _data = getResources().getStringArray(R.array.item_pulsa);
+            Collections.addAll(data, _data);
+        }
+
+        if (mBillerTypeDataPLS != null) {
+            _data = getResources().getStringArray(R.array.item_bpjs);
+            Collections.addAll(data, _data);
+        }
+
+        if (mBillerTypeDataTKN != null) {
+            _data = getResources().getStringArray(R.array.item_tkn);
+            Collections.addAll(data, _data);
+        }
+
+        if (mBillerTypeDataEMoney != null) {
+            _data = getResources().getStringArray(R.array.item_emoney);
+            Collections.addAll(data, _data);
+        }
+
         _data = getResources().getStringArray(R.array.list_menu_frag_new_home);
         Collections.addAll(data, _data);
         return data;
+    }
+
+    void checkSchemeCode(ArrayList<String> data) {
+        try {
+            JSONArray arr = new JSONArray(string);
+
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject obj = arr.getJSONObject(i);
+                objs = obj.optString(WebParams.SCHEME_CODE, "");
+
+                switch (objs) {
+                    case "ATC":
+                        data.add(0, getResources().getString(R.string.cash_out));
+                        break;
+                    case "CTA":
+                        data.add(1, getResources().getString(R.string.cash_in));
+                        break;
+                    case "DGI":
+                        data.add(2, getResources().getString(R.string.menu_item_title_tagih_agent));
+                        break;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private int[] SetupListMenuIcons() {
@@ -544,17 +726,41 @@ public class FragHomeNew extends BaseFragmentMainPage {
         int totalIdx = 0;
         int overallIdx = 0;
         TypedArray ta = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home);
-        TypedArray taAgent = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home_agent);
+        TypedArray taAgent = getResources().obtainTypedArray(R.array.list_icon_bbs_agent);
         TypedArray taNotAgent = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home_not_agent);
 
         totalIdx = ta.length();
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
-//        if(isAgent) {
-//            totalIdx    += taAgent.length();
-//        } else
-        if (!isAgent) {
+        if (isAgent) {
+            if (objs.equalsIgnoreCase("ATC")) {
+                totalIdx += totalIdx;
+            }
+            if (objs.equalsIgnoreCase("CTA")) {
+                totalIdx += totalIdx;
+            }
+            if (objs.equalsIgnoreCase("DGI")) {
+                totalIdx += totalIdx;
+            }
+            totalIdx += taAgent.length();
+        } else if (!isAgent) {
             totalIdx += shopCategories.size();
             totalIdx += taNotAgent.length();
+        }
+
+        if (mBillerTypeDataPLS != null) {
+            totalIdx += totalIdx;
+        }
+
+        if (mBillerTypeDataBPJS != null) {
+            totalIdx += totalIdx;
+        }
+
+        if (mBillerTypeDataTKN != null) {
+            totalIdx += totalIdx;
+        }
+
+        if (mBillerTypeDataEMoney != null) {
+            totalIdx += totalIdx;
         }
 
         int[] data = new int[totalIdx];
@@ -569,6 +775,57 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 data[overallIdx] = taNotAgent.getResourceId(j, -1);
                 overallIdx++;
             }
+        } else {
+            try {
+                JSONArray arr = new JSONArray(string);
+
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = arr.getJSONObject(i);
+                    String _objs = obj.optString(WebParams.SCHEME_CODE, "");
+
+                    switch (_objs) {
+                        case "ATC":
+                            data[i] = R.drawable.ic_tariktunai;
+                            overallIdx++;
+                            break;
+                        case "CTA":
+                            data[i] = R.drawable.ic_tariktunai;
+                            overallIdx++;
+                            break;
+                        case "DGI":
+                            data[i] = R.drawable.tagih_id;
+                            overallIdx++;
+                            break;
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            for (int j = 0; j < taAgent.length(); j++) {
+                data[overallIdx] = taAgent.getResourceId(j, -1);
+                overallIdx++;
+            }
+        }
+
+        if (mBillerTypeDataPLS != null) {
+            data[overallIdx] = R.drawable.ic_pulsa;
+            overallIdx++;
+        }
+
+        if (mBillerTypeDataBPJS != null) {
+            data[overallIdx] = R.drawable.ic_bpjs;
+            overallIdx++;
+        }
+
+        if (mBillerTypeDataTKN != null) {
+            data[overallIdx] = R.drawable.ic_listrik;
+            overallIdx++;
+        }
+
+        if (mBillerTypeDataEMoney != null) {
+            data[overallIdx] = R.drawable.ic_emoney;
+            overallIdx++;
         }
 
         for (int j = 0; j < ta.length(); j++) {
@@ -668,6 +925,30 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         }
     };
+
+    private void setGreeting() {
+        //Get the time of day
+        Date date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+
+
+
+        if(hour>= 12 && hour < 17){
+            tv_greetings.setText(getString(R.string.good_afternoon) +userNameLogin);
+            img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.sun));
+        } else if(hour >= 17 && hour < 21){
+            tv_greetings.setText(getString(R.string.good_evening) +userNameLogin );
+            img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.moon));
+        } else if(hour >= 21 && hour < 24){
+            tv_greetings.setText(getString(R.string.good_night) +userNameLogin);
+            img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.moon));
+        } else {
+            tv_greetings.setText(getString(R.string.good_morning) +userNameLogin);
+            img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.sun));
+        }
+    }
 
     private BroadcastReceiver refBtnReciever = new BroadcastReceiver() {
 
@@ -821,5 +1102,21 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void dialogDormant() {
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getActivity().getString(R.string.title_dialog_dormant),
+                getActivity().getString(R.string.message_dialog_dormant_),
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                        Intent i = new Intent(getActivity(), TopUpActivity.class);
+                        i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                    }
+                }
+        );
+
+        dialognya.show();
     }
 }

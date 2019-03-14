@@ -32,6 +32,10 @@ public class GetBalanceModel extends jsonModel {
     @Expose
     private
     String next_reset;
+    @SerializedName("is_dormant")
+    @Expose
+    private
+    String is_dormant;
 
     public String getUnread_notif() {
         return unread_notif;
@@ -59,5 +63,9 @@ public class GetBalanceModel extends jsonModel {
 
     public String getNext_reset() {
         return next_reset;
+    }
+
+    public String getIs_dormant() {
+        return is_dormant;
     }
 }

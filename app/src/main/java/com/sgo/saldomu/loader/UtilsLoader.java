@@ -92,8 +92,6 @@ public class UtilsLoader {
                                 public void onResponses(JsonObject object) {
                                     Gson gson = new Gson();
 
-
-
                                     GetBalanceModel model = gson.fromJson(object, GetBalanceModel.class);
 
                                     String code = model.getError_code();
@@ -117,6 +115,7 @@ public class UtilsLoader {
                                         mEditor.putString(DefineValue.BALANCE_REMAIN_LIMIT, model.getRemain_limit());
                                         mEditor.putString(DefineValue.BALANCE_PERIOD_LIMIT, model.getPeriod_limit());
                                         mEditor.putString(DefineValue.BALANCE_NEXT_RESET, model.getNext_reset());
+                                        mEditor.putString(DefineValue.IS_DORMANT, model.getIs_dormant());
                                         mEditor.remove(DefineValue.IS_MANUAL);
                                         mEditor.apply();
 
