@@ -4,9 +4,12 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +35,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.PrefixOperatorValidator;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -156,7 +160,10 @@ public class BillerInput extends Fragment {
         realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
         initializeLayout();
-        initializeSpinnerDenom();
+        if (biller_type_code.equalsIgnoreCase(billerType[0])) {
+
+        } else
+            initializeSpinnerDenom();
 
         realmListener = new RealmChangeListener() {
             @Override
@@ -186,6 +193,31 @@ public class BillerInput extends Fragment {
             }
         };
         realm.addChangeListener(realmListener);
+
+        initEditTextPhoneNumberPrefix();
+    }
+
+    private void initEditTextPhoneNumberPrefix() {
+        et_payment_remark.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String number = editable.toString();
+                if (number.length() > 3) {
+                    PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(), number);
+
+                }
+            }
+        });
     }
 
     private void initializeLayout() {

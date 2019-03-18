@@ -457,6 +457,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             mEditor.putString(DefineValue.ACCESS_SECRET, model.getAccessSecret());
 
             mEditor.putString(DefineValue.LINK_APP, model.getSocialSignature());
+            mEditor.putString(DefineValue.IS_DORMANT, model.getIs_dormant());
 
             if (Integer.valueOf(model.getIsRegistered()) == 0)
                 mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
@@ -490,19 +491,9 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.putString(DefineValue.IS_NEW_BULK, commModel.getIsNewBulk());
 
                         mEditor.putBoolean(DefineValue.IS_AGENT, commModel.getIsAgent() > 0);
-//                        if (!arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES, "").isEmpty()) {
-//                            String array = arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES,"");
 
                         String arrJson = toJson(commModel.getAgent_scheme_codes()).toString();
-//                                String arrJson = arrayJson.getJSONObject(i).optString(WebParams.AGENT_SCHEME_CODES, "");
-
-//                            for (int a=0; a<arrJson.length(); a++)
-//                            {
                         mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
-//                            }
-//                        }
-//                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
-
                         Timber.w("isi comm id yg bener:" + commModel.getCommId());
 
                         break;

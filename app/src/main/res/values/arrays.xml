@@ -34,6 +34,14 @@
         <item>@string/menu_setting_change_email</item>
     </string-array>
 
+    <string-array name="myprofilelist_list_item_agen">
+        <item>@string/menu_setting_profile</item>
+        <item>@string/menu_setting_change_pass</item>
+        <item>@string/menu_setting_change_pin</item>
+        <item>@string/menu_setting_change_email</item>
+        <item>@string/menu_item_title_kelola</item>
+    </string-array>
+
     <string-array name="home_vpi_title">
         <!--<item>AGEN</item>-->
         <item>BERANDA</item>
@@ -129,12 +137,20 @@
         <!--<item>Registrasi SMS Banking</item>-->
     </string-array>
 
-    <string-array name="settings_is_lvl1">
+    <string-array name="settings_is_agent">
         <item>@string/menu_setting_change_pass</item>
         <item>@string/menu_setting_change_pin</item>
         <item>@string/menu_setting_change_email</item>
         <item>@string/menu_setting_about</item>
+        <item>@string/menu_item_title_kelola</item>
         <!--<item>Bahasa</item>-->
+
+    </string-array>
+    <string-array name="settings_is_member">
+        <item>@string/menu_setting_change_pass</item>
+        <item>@string/menu_setting_change_pin</item>
+        <item>@string/menu_setting_change_email</item>
+        <item>@string/menu_setting_about</item>
 
     </string-array>
 
@@ -202,14 +218,12 @@
     <string-array name="list_bbs_agent">
         <item>@string/menu_item_title_trx_agent</item>
         <item>@string/title_bbs_list_account_bbs</item>
-        <item>@string/menu_item_title_kelola</item>\
         <item>@string/menu_item_title_onprogress_agent</item>
     </string-array>
 
     <integer-array name="list_icon_bbs_agent">
         <item>@drawable/ic_tariktunai</item>
         <item>@drawable/ic_tariktunai</item>
-        <item>@drawable/ic_settings</item>
         <item>@drawable/ic_location_on_black</item>
     </integer-array>
 

@@ -87,8 +87,8 @@ public class ListSettings extends ListFragment {
             list.addAll(Arrays.asList(_data));
         }
 //        else{
-        _data = getResources().getStringArray(R.array.settings_is_lvl1);
-        list.addAll(Arrays.asList(_data));
+//        _data = getResources().getStringArray(R.array.settings_is_lvl1);
+//        list.addAll(Arrays.asList(_data));
 //        }
 
         EasyAdapter adapter = new EasyAdapter(getActivity(), R.layout.list_view_item_with_arrow, list);

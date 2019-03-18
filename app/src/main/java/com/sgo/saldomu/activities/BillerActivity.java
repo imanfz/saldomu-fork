@@ -57,38 +57,37 @@ public class BillerActivity extends BaseActivity {
     private RealmChangeListener realmListener;
     BillerActivityRF mWorkFragment;
     ProgressDialog progdialog;
-    String IdNumber=null;
+    String IdNumber = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        userID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         if (savedInstanceState != null) {
             return;
         }
 
         realm = Realm.getInstance(RealmManager.BillerConfiguration);
-        Intent intent    = getIntent();
+        Intent intent = getIntent();
         _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
         Timber.d("isi biller type code " + _biller_type_code);
         _biller_merchant_name = intent.getStringExtra(DefineValue.BILLER_NAME);
-        Timber.d("isi biller merchant name " +_biller_merchant_name);
+        Timber.d("isi biller merchant name " + _biller_merchant_name);
         isEmptyBiller = false;
 
-        if(intent.hasExtra(DefineValue.BILLER_ID_NUMBER))
-        {
-            IdNumber=intent.getStringExtra(DefineValue.BILLER_ID_NUMBER);
+        if (intent.hasExtra(DefineValue.BILLER_ID_NUMBER)) {
+            IdNumber = intent.getStringExtra(DefineValue.BILLER_ID_NUMBER);
         }
         Timber.d("isi biller activity " + intent.getExtras().toString());
         InitializeToolbar();
 
         initializeData();
 
-        Log.wtf("onCreate BillerActivity","onCreate BillerActivity");
+        Log.wtf("onCreate BillerActivity", "onCreate BillerActivity");
 
 //        //auto updater realm biller
 //        realmListener = new RealmChangeListener() {
@@ -135,18 +134,17 @@ public class BillerActivity extends BaseActivity {
 //        });
     }
 
-    private void initializeData(){
+    private void initializeData() {
         mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, _biller_type_code)
                 .findFirst();
 
 
-        if (mBillerTypeData!=null)
-        {
-            Timber.d("isi billeractivity isinya "+ mBillerTypeData.getBiller_data_models().size());
+        if (mBillerTypeData != null) {
+            Timber.d("isi billeractivity isinya " + mBillerTypeData.getBiller_data_models().size());
             mListBillerData = mBillerTypeData.getBiller_data_models();
 
-            if(mListBillerData != null) {
+            if (mListBillerData != null) {
                 if (mListBillerData.size() != 0) {
                     if (findViewById(R.id.biller_content) != null) {
                         isEmptyBiller = false;
@@ -154,9 +152,9 @@ public class BillerActivity extends BaseActivity {
                         initializeListBiller();
                     }
                 } else {
-                    Toast.makeText(this,getString(R.string.biller_empty_data),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.biller_empty_data), Toast.LENGTH_SHORT).show();
                     this.finish();
-        }
+                }
 
 
 //                if(!isEmptyBiller) {
@@ -173,42 +171,44 @@ public class BillerActivity extends BaseActivity {
     }
 
 
-    private void initializeListBiller(){
+    private void initializeListBiller() {
         Bundle mArgs = new Bundle();
-        mArgs.putString(DefineValue.BILLER_TYPE,_biller_type_code);
-        Fragment mLBM ;
+        mArgs.putString(DefineValue.BILLER_TYPE, _biller_type_code);
+        Fragment mLBM;
         String tag;
 
-        if(isOneBiller){
+        if (isOneBiller) {
             mLBM = new BillerInput();
-            mArgs.putString(DefineValue.COMMUNITY_ID,mListBillerData.get(0).getComm_id());
-            mArgs.putString(DefineValue.COMMUNITY_NAME,mListBillerData.get(0).getComm_name());
-            mArgs.putString(DefineValue.BILLER_ITEM_ID,mListBillerData.get(0).getItem_id());
+            mArgs.putString(DefineValue.COMMUNITY_ID, mListBillerData.get(0).getComm_id());
+            mArgs.putString(DefineValue.COMMUNITY_NAME, mListBillerData.get(0).getComm_name());
+            mArgs.putString(DefineValue.BILLER_ITEM_ID, mListBillerData.get(0).getItem_id());
 
             tag = BillerInput.TAG;
+        } else {
+            if (_biller_type_code.equalsIgnoreCase("PLS")) {
+                mLBM = new BillerInput();
+                tag = BillerInput.TAG;
+            } else {
+                mLBM = new ListBillerMerchant();
+                tag = ListBillerMerchant.TAG;
+                Log.wtf("ListBillerMerchant ", "ListBillerMerchant");
+            }
         }
-        else {
 
-            mLBM = new ListBillerMerchant();
-            tag = ListBillerMerchant.TAG;
-            Log.wtf("ListBillerMerchant ","ListBillerMerchant");
-        }
-
-        if (IdNumber!=null)
-        {
+        if (IdNumber != null) {
             mArgs.putString(DefineValue.BILLER_ID_NUMBER, IdNumber);
-            Log.wtf("IdNumber ","IdNumber");
+            Log.wtf("IdNumber ", "IdNumber");
         }
 
-        setToolbarTitle(getString(R.string.biller_ab_title)+ " - " +_biller_merchant_name);
+        setToolbarTitle(getString(R.string.biller_ab_title) + " - " + _biller_merchant_name);
 
         mLBM.setArguments(mArgs);
         fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.biller_content, mLBM,tag);
+        fragmentTransaction.replace(R.id.biller_content, mLBM, tag);
         fragmentTransaction.commitAllowingStateLoss();
         setResult(MainPage.RESULT_NORMAL);
-        Log.wtf("initializeBiller ","initializeBiller");
+        Log.wtf("initializeBiller ", "initializeBiller");
     }
 
     @Override
@@ -225,32 +225,31 @@ public class BillerActivity extends BaseActivity {
 //            mWorkFragment.getDenomRetail(comm_id, comm_name);
 //    }
 
-    public void switchContent(Fragment mFragment,String fragName,String next_frag_title,Boolean isBackstack,String tag) {
+    public void switchContent(Fragment mFragment, String fragName, String next_frag_title, Boolean isBackstack, String tag) {
 
-        if(isBackstack){
-            Timber.d("backstack:"+ "masuk");
+        if (isBackstack) {
+            Timber.d("backstack:" + "masuk");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.biller_content, mFragment, tag)
                     .addToBackStack(fragName)
                     .commitAllowingStateLoss();
-        }
-        else {
-            Timber.d("bukan backstack:"+"masuk");
+        } else {
+            Timber.d("bukan backstack:" + "masuk");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.biller_content, mFragment, tag)
                     .commitAllowingStateLoss();
 
         }
-        if(next_frag_title!=null)setActionBarTitle(next_frag_title);
+        if (next_frag_title != null) setActionBarTitle(next_frag_title);
         ToggleKeyboard.hide_keyboard(this);
     }
 
     public void switchActivity(Intent mIntent, int j) {
-        switch (j){
+        switch (j) {
             case MainPage.ACTIVITY_RESULT:
-                startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
+                startActivityForResult(mIntent, MainPage.REQUEST_FINISH);
                 this.setResult(MainPage.RESULT_BALANCE);
                 break;
             case 2:
@@ -259,7 +258,7 @@ public class BillerActivity extends BaseActivity {
         ToggleKeyboard.hide_keyboard(this);
     }
 
-    public void setResultActivity(int result){
+    public void setResultActivity(int result) {
         setResult(MainPage.RESULT_BALANCE);
     }
 
@@ -269,15 +268,14 @@ public class BillerActivity extends BaseActivity {
         //Log.d("onActivity result", "Biller Activity"+" / "+requestCode+" / "+resultCode);
         if (requestCode == MainPage.REQUEST_FINISH) {
 //            Log.d("onActivity result", "Biller Activity masuk request exit");
-            if(resultCode == MainPage.RESULT_BILLER){
+            if (resultCode == MainPage.RESULT_BILLER) {
 //                Log.d("onActivity result", "Biller Activity masuk result normal" + " / " + getSupportFragmentManager().getBackStackEntryCount());
-                if(getSupportFragmentManager().getBackStackEntryCount()>1){
+                if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
                     FragmentManager fm = getSupportFragmentManager();
                     fm.popBackStackImmediate(BillerActivity.FRAG_BIL_INPUT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 //                    Log.d("onActivity result", "Biller Activity masuk backstack entry > 1");
                 }
-            }
-            else if (resultCode == MainPage.RESULT_LOGOUT) {
+            } else if (resultCode == MainPage.RESULT_LOGOUT) {
                 setResult(MainPage.RESULT_LOGOUT);
                 finish();
             }
@@ -286,25 +284,24 @@ public class BillerActivity extends BaseActivity {
 
     }
 
-    private void InitializeToolbar(){
+    private void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.biller_ab_title));
     }
 
-    public void togglerBroadcastReceiver(Boolean _on, BroadcastReceiver _myreceiver){
-        Timber.wtf("masuk turnOnBR:"+"oke");
-        if(_on){
+    public void togglerBroadcastReceiver(Boolean _on, BroadcastReceiver _myreceiver) {
+        Timber.wtf("masuk turnOnBR:" + "oke");
+        if (_on) {
             IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-            registerReceiver(_myreceiver,filter);
+            registerReceiver(_myreceiver, filter);
             filter.setPriority(999);
             filter.addCategory("android.intent.category.DEFAULT");
-        }
-        else unregisterReceiver(_myreceiver);
+        } else unregisterReceiver(_myreceiver);
 
     }
 
-    public Boolean isFragmentValid(){
-        BillerDesciption myFragment = (BillerDesciption)getSupportFragmentManager().findFragmentByTag(BillerDesciption.TAG);
+    public Boolean isFragmentValid() {
+        BillerDesciption myFragment = (BillerDesciption) getSupportFragmentManager().findFragmentByTag(BillerDesciption.TAG);
         return !(myFragment != null && myFragment.isVisible());
     }
 
@@ -317,7 +314,7 @@ public class BillerActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        if(realm != null && !realm.isInTransaction() && !realm.isClosed()) {
+        if (realm != null && !realm.isInTransaction() && !realm.isClosed()) {
 //            realm.removeChangeListener(realmListener);
             realm.close();
         }
@@ -326,7 +323,7 @@ public class BillerActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(getFragmentManager().getBackStackEntryCount()>0)
+        if (getFragmentManager().getBackStackEntryCount() > 0)
             getFragmentManager().popBackStack();
         else super.onBackPressed();
     }

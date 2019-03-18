@@ -270,5 +270,10 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     implementation 'com.chaos.view:pinview:1.4.2'
+
+
+    //banner
+    implementation 'com.synnapps:carouselview:0.1.4'
+    implementation 'io.realm:android-adapters:2.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

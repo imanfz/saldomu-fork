@@ -1081,6 +1081,7 @@ public class MainPage extends BaseActivity {
         mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
         mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, "");
         mEditor.putString(DefineValue.IS_POS, "");
+        mEditor.remove(DefineValue.IS_DORMANT);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();

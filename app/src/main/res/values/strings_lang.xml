@@ -208,7 +208,7 @@
     <string name="menu_item_bbs_register_location">Registrasi Toko Member</string>
     <string name="menu_item_bbs_search_toko">Search Toko</string>
     <string name="menu_item_search_agent">Cari Agen</string>
-    <string name="menu_item_title_kelola">Pengaturan</string>
+    <string name="menu_item_title_kelola">Pengaturan Agen</string>
     <string name="menu_item_title_list_toko">Kelola Member</string>
     <string name="menu_item_title_list_approval">Daftar Persetujuan</string>
     <string name="menu_item_title_trx_agent">Permintaan Transaksi</string>
@@ -1330,7 +1330,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="member_status">Status Keanggotaan :</string>
     <string name="title_dialog_dormant">User ID Dormant</string>
     <string name="message_dialog_dormant_">User ID Anda dalam status Dormant. Silahkan melakukan Tambah Saldo untuk mengaktifkan kembali User ID Anda.</string>
-    <string name="newhome_ovo">Voucher Top Up GRAB-OVO</string>
+    <string name="newhome_ovo">Voucher GRAB-OVO</string>
     <string name="good_morning">Selamat Pagi, </string>
     <string name="good_afternoon">Selamat Siang, </string>
     <string name="good_evening">Selamat Sore, </string>

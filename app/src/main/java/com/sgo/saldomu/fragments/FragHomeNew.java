@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,9 +31,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
+import com.sgo.saldomu.Beans.PromoObject;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.AskForMoneyActivity;
@@ -55,14 +58,20 @@ import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.ShopCategory;
+import com.sgo.saldomu.models.retrofit.Banner;
 import com.sgo.saldomu.models.retrofit.CategoriesModel;
 import com.sgo.saldomu.models.retrofit.CategoryListModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
+import com.synnapps.carouselview.CarouselView;
+import com.synnapps.carouselview.ImageClickListener;
+import com.synnapps.carouselview.ImageListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +82,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import io.realm.Realm;
@@ -112,20 +122,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
     String shopStatus, isMemberShopDGI, isDormant, objs, string;
     Boolean isAgent;
     ProgressBar gridview_progbar;
+    ProgressBar progBanner;
+    private CarouselView carouselView;
+    private ArrayList<PromoObject> listPromo = new ArrayList<>();
 
     private static final int RC_GPS_REQUEST = 1;
-
-    int[] imageId = {
-            R.drawable.ic_tariktunai,
-            R.drawable.ic_tariktunai,
-            R.drawable.ic_tambahsaldo,
-            R.drawable.ic_bayarteman1,
-            R.drawable.ic_mintauang,
-            R.drawable.ic_belanja,
-            R.drawable.ic_laporan,
-            R.drawable.ic_location_on_black,
-
-    };
 
     public FragHomeNew() {
         // Required empty public constructor
@@ -140,6 +141,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
 
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
@@ -156,22 +159,24 @@ public class FragHomeNew extends BaseFragmentMainPage {
         swSettingOnline = v.findViewById(R.id.swSettingOnline);
         llAgentDetail = v.findViewById(R.id.llAgentDetail);
         gridview_progbar = v.findViewById(R.id.gridview_progbar);
-
-        btn_beli = v.findViewById(R.id.btn_beli);
-        btn_topup = v.findViewById(R.id.btn_topup);
-        input = v.findViewById(R.id.input);
-        tv_pulsa = v.findViewById(R.id.tv_pulsa);
-        tv_bpjs = v.findViewById(R.id.tv_bpjs);
-        tv_listrikPLN = v.findViewById(R.id.tv_listrikPLN);
-        tv_greetings = v.findViewById(R.id.tv_greetings);
-        view_pulsa = v.findViewById(R.id.view_pulsa);
-        view_bpjs = v.findViewById(R.id.view_bpjs);
-        view_listrikPLN = v.findViewById(R.id.view_listrikPLN);
-        BPJS = v.findViewById(R.id.BPJS);
-        PLS = v.findViewById(R.id.PLS);
-        TKN = v.findViewById(R.id.TKN);
         refreshBtn = v.findViewById(R.id.btn_refresh_balance);
         img_greetings = v.findViewById(R.id.img_greeting);
+        tv_greetings = v.findViewById(R.id.tv_greetings);
+        btn_topup = v.findViewById(R.id.btn_topup);
+        progBanner = v.findViewById(R.id.progressBarBanner);
+        carouselView = v.findViewById(R.id.carouselView);
+
+//        btn_beli = v.findViewById(R.id.btn_beli);
+//        input = v.findViewById(R.id.input);
+//        tv_pulsa = v.findViewById(R.id.tv_pulsa);
+//        tv_bpjs = v.findViewById(R.id.tv_bpjs);
+//        tv_listrikPLN = v.findViewById(R.id.tv_listrikPLN);
+//        view_pulsa = v.findViewById(R.id.view_pulsa);
+//        view_bpjs = v.findViewById(R.id.view_bpjs);
+//        view_listrikPLN = v.findViewById(R.id.view_listrikPLN);
+//        BPJS = v.findViewById(R.id.BPJS);
+//        PLS = v.findViewById(R.id.PLS);
+//        TKN = v.findViewById(R.id.TKN);
 
         return v;
 
@@ -183,7 +188,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         isMemberShopDGI = sp.getString(DefineValue.IS_MEMBER_SHOP_DGI, "0");
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
-        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
 
         string = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
 
@@ -193,31 +197,31 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 .equalTo(WebParams.BILLER_TYPE_CODE, "PLS")
                 .findFirst();
 
-        if (mBillerTypeDataPLS != null) {
-            PLS.setVisibility(View.VISIBLE);
-        } else {
-            PLS.setVisibility(View.GONE);
-        }
+//        if (mBillerTypeDataPLS != null) {
+//            PLS.setVisibility(View.VISIBLE);
+//        } else {
+//            PLS.setVisibility(View.GONE);
+//        }
 
         mBillerTypeDataBPJS = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "BPJS")
                 .findFirst();
 
-        if (mBillerTypeDataBPJS != null) {
-            BPJS.setVisibility(View.VISIBLE);
-        } else {
-            BPJS.setVisibility(View.GONE);
-        }
+//        if (mBillerTypeDataBPJS != null) {
+//            BPJS.setVisibility(View.VISIBLE);
+//        } else {
+//            BPJS.setVisibility(View.GONE);
+//        }
 
         mBillerTypeDataTKN = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "TKN")
                 .findFirst();
 
-        if (mBillerTypeDataTKN != null) {
-            TKN.setVisibility(View.VISIBLE);
-        } else {
-            TKN.setVisibility(View.GONE);
-        }
+//        if (mBillerTypeDataTKN != null) {
+//            TKN.setVisibility(View.VISIBLE);
+//        } else {
+//            TKN.setVisibility(View.GONE);
+//        }
 
         mBillerTypeDataEMoney = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "OVO")
@@ -238,10 +242,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         setGreeting();
 
         if (isAgent) {
-//            if (isAdded()) {
             GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
             GridView.setAdapter(adapter);
-//            }
         } else {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
             params.put(WebParams.APP_ID, BuildConfig.APP_ID);
@@ -251,8 +253,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
             Timber.d("isi params shop category:" + params.toString());
 
-//            if (this.isVisible()) {
-//                showProgressDialog();
             showView(gridview_progbar);
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CATEGORY_LIST, params,
@@ -295,11 +295,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             }
 
 
-                            //gridBbsCategoryAdapter.notifyDataSetChanged();
-//                                if (isAdded()) {
                             GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
                             GridView.setAdapter(adapter);
-//                                }
                         }
 
                         @Override
@@ -314,8 +311,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             Timber.d("hide view");
                         }
                     });
-//            }
         }
+
 
         btn_topup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -326,68 +323,68 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         });
 
-        btn_beli.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (view_pulsa.getVisibility() == View.VISIBLE) {
-                    if (inputValidation() == true) {
-                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
-                        intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
-                        intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
-                        startActivity(intent);
-                    }
-                }
-                if (view_bpjs.getVisibility() == View.VISIBLE) {
-                    Intent intent = new Intent(getActivity(), BillerActivity.class);
-                    intent.putExtra(DefineValue.BILLER_TYPE, "BPJS");
-                    intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
-                    intent.putExtra(DefineValue.BILLER_NAME, "BPJS");
-                    startActivity(intent);
-                }
-                if (view_listrikPLN.getVisibility() == View.VISIBLE) {
-                    Intent intent = new Intent(getActivity(), BillerActivity.class);
-                    intent.putExtra(DefineValue.BILLER_TYPE, "TKN");
-                    intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
-                    intent.putExtra(DefineValue.BILLER_NAME, "Voucher Token Listrik");
-                    startActivity(intent);
-                }
-            }
-        });
-        tv_pulsa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                input.setText("");
-                view_pulsa.setVisibility(View.VISIBLE);
-                view_bpjs.setVisibility(View.INVISIBLE);
-                view_listrikPLN.setVisibility(View.INVISIBLE);
-                input.setHint("Masukkan No. Hp");
-            }
-        });
-        tv_bpjs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                input.setText("");
-                input.setError(null);
-                input.clearFocus();
-                view_pulsa.setVisibility(View.INVISIBLE);
-                view_bpjs.setVisibility(View.VISIBLE);
-                view_listrikPLN.setVisibility(View.INVISIBLE);
-                input.setHint("Masukkan No. BPJS");
-            }
-        });
-        tv_listrikPLN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                input.setText("");
-                input.setError(null);
-                input.clearFocus();
-                view_pulsa.setVisibility(View.INVISIBLE);
-                view_bpjs.setVisibility(View.INVISIBLE);
-                view_listrikPLN.setVisibility(View.VISIBLE);
-                input.setHint("Masukkan No. Listrik");
-            }
-        });
+//        btn_beli.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (view_pulsa.getVisibility() == View.VISIBLE) {
+//                    if (inputValidation() == true) {
+//                        Intent intent = new Intent(getActivity(), BillerActivity.class);
+//                        intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
+//                        intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
+//                        intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
+//                        startActivity(intent);
+//                    }
+//                }
+//                if (view_bpjs.getVisibility() == View.VISIBLE) {
+//                    Intent intent = new Intent(getActivity(), BillerActivity.class);
+//                    intent.putExtra(DefineValue.BILLER_TYPE, "BPJS");
+//                    intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
+//                    intent.putExtra(DefineValue.BILLER_NAME, "BPJS");
+//                    startActivity(intent);
+//                }
+//                if (view_listrikPLN.getVisibility() == View.VISIBLE) {
+//                    Intent intent = new Intent(getActivity(), BillerActivity.class);
+//                    intent.putExtra(DefineValue.BILLER_TYPE, "TKN");
+//                    intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
+//                    intent.putExtra(DefineValue.BILLER_NAME, "Voucher Token Listrik");
+//                    startActivity(intent);
+//                }
+//            }
+//        });
+//        tv_pulsa.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                input.setText("");
+//                view_pulsa.setVisibility(View.VISIBLE);
+//                view_bpjs.setVisibility(View.INVISIBLE);
+//                view_listrikPLN.setVisibility(View.INVISIBLE);
+//                input.setHint("Masukkan No. Hp");
+//            }
+//        });
+//        tv_bpjs.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                input.setText("");
+//                input.setError(null);
+//                input.clearFocus();
+//                view_pulsa.setVisibility(View.INVISIBLE);
+//                view_bpjs.setVisibility(View.VISIBLE);
+//                view_listrikPLN.setVisibility(View.INVISIBLE);
+//                input.setHint("Masukkan No. BPJS");
+//            }
+//        });
+//        tv_listrikPLN.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                input.setText("");
+//                input.setError(null);
+//                input.clearFocus();
+//                view_pulsa.setVisibility(View.INVISIBLE);
+//                view_bpjs.setVisibility(View.INVISIBLE);
+//                view_listrikPLN.setVisibility(View.VISIBLE);
+//                input.setHint("Masukkan No. Listrik");
+//            }
+//        });
 
         GridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -473,7 +470,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         intent.putExtra(DefineValue.BILLER_NAME, "Voucher Token Listrik");
                         startActivity(intent);
                     }
-                }else if (menuItemName.equals(getString(R.string.newhome_ovo))) {
+                } else if (menuItemName.equals(getString(R.string.newhome_ovo))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();
                     } else {
@@ -482,7 +479,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_ovo));
                         startActivity(intent);
                     }
-                }else if (menuItemName.equals(getString(R.string.newhome_bpjs))) {
+                } else if (menuItemName.equals(getString(R.string.newhome_bpjs))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();
                     } else {
@@ -491,8 +488,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_bpjs));
                         startActivity(intent);
                     }
-                }
-                else {
+                } else {
                     for (int x = 0; x < shopCategories.size(); x++) {
                         String categoryName = shopCategories.get(x).getCategoryName();
                         if (menuItemName.indexOf(categoryName) > 0) {
@@ -511,7 +507,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             }
                         }
                     }
-                    //switchMenu(NavigationDrawMenu.MCASHOUT,null);
                 }
 
                 if (isAgent) {
@@ -639,7 +634,111 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(MainPage.RESULT_HOME_BALANCE));
             }
         });
+
+        getPromoList();
     }
+
+    private void getPromoList() {
+        try {
+
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_PROMO_LIST);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.PAGE, Integer.toString(0));
+            params.put(WebParams.COUNT, "5");
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+
+            Timber.d("isi params get promo list:" + params.toString());
+
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_PROMO_LIST, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.d("isi params promo list:" + response.toString());
+                                    String count = response.getString(WebParams.COUNT);
+                                    if (!count.equals("0")) {
+                                        JSONArray mArrayPromo = new JSONArray(response.getString(WebParams.PROMO_DATA));
+
+                                        for (int i = 0; i < mArrayPromo.length(); i++) {
+                                            String id = mArrayPromo.getJSONObject(i).getString(WebParams.ID);
+                                            boolean flagSame = false;
+
+                                            // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
+                                            if (listPromo.size() > 0) {
+                                                for (int index = 0; index < listPromo.size(); index++) {
+                                                    if (listPromo.get(index).getId().equals(id)) {
+                                                        flagSame = true;
+                                                        break;
+                                                    } else {
+                                                        flagSame = false;
+                                                    }
+                                                }
+                                            }
+
+                                            if (!flagSame) {
+                                                String name = mArrayPromo.getJSONObject(i).getString(WebParams.NAME);
+                                                String description = mArrayPromo.getJSONObject(i).getString(WebParams.DESCRIPTION);
+                                                String banner_pic = mArrayPromo.getJSONObject(i).getString(WebParams.BANNER_PIC);
+                                                String target_url = mArrayPromo.getJSONObject(i).getString(WebParams.TARGET_URL);
+                                                String type = mArrayPromo.getJSONObject(i).getString(WebParams.TYPE);
+
+                                                PromoObject promoObject = new PromoObject();
+                                                promoObject.setId(id);
+                                                promoObject.setName(name);
+                                                promoObject.setDesc(description);
+                                                promoObject.setImage(banner_pic);
+                                                promoObject.setUrl(target_url);
+                                                promoObject.setType(type);
+
+                                                listPromo.add(promoObject);
+                                            }
+                                        }
+                                        populateBanner();
+                                    }
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout", response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getActivity(), message);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
+    }
+
+    private void populateBanner() {
+        carouselView.setImageListener(imageListener);
+        carouselView.setPageCount(listPromo.size());
+        carouselView.setImageClickListener(position -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(listPromo.get(position).getUrl()));
+            startActivity(browserIntent);
+        });
+        carouselView.setVisibility(View.VISIBLE);
+        progBanner.setVisibility(View.GONE);
+    }
+
+    ImageListener imageListener = (position, imageView) -> Glide.with(getActivity())
+            .load(listPromo.get(position).getImage())
+            .into(imageView);
 
     void animateRefrestBtn(boolean isLoad) {
         if (isLoad) {
@@ -934,18 +1033,17 @@ public class FragHomeNew extends BaseFragmentMainPage {
         int hour = cal.get(Calendar.HOUR_OF_DAY);
 
 
-
-        if(hour>= 12 && hour < 17){
-            tv_greetings.setText(getString(R.string.good_afternoon) +userNameLogin);
+        if (hour >= 12 && hour < 17) {
+            tv_greetings.setText(getString(R.string.good_afternoon) + " " + userNameLogin);
             img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.sun));
-        } else if(hour >= 17 && hour < 21){
-            tv_greetings.setText(getString(R.string.good_evening) +userNameLogin );
+        } else if (hour >= 17 && hour < 21) {
+            tv_greetings.setText(getString(R.string.good_evening) + " " + userNameLogin);
             img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.moon));
-        } else if(hour >= 21 && hour < 24){
-            tv_greetings.setText(getString(R.string.good_night) +userNameLogin);
+        } else if (hour >= 21 && hour < 24) {
+            tv_greetings.setText(getString(R.string.good_night) + " " + userNameLogin);
             img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.moon));
         } else {
-            tv_greetings.setText(getString(R.string.good_morning) +userNameLogin);
+            tv_greetings.setText(getString(R.string.good_morning) + " " + userNameLogin);
             img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.sun));
         }
     }
