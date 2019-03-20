@@ -466,44 +466,18 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         ArrayList<navdrawmainmenuModel> models = new ArrayList<>();
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_main_menu)));
         if (!levelClass.isLevel1QAC()) {
-            models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color, R.drawable.ic_topup_icon_color, getString(R.string.menu_item_title_bbs), MBBS));
+            models.add(new navdrawmainmenuModel(R.drawable.ic_agent, R.drawable.ic_agent, getString(R.string.menu_item_title_bbs), MBBS));
         }
         models.add(new navdrawmainmenuModel(R.drawable.ic_topup, R.drawable.ic_topup, getString(R.string.menu_item_title_topup), MTOPUP));              //1
-        models.add(new navdrawmainmenuModel(R.drawable.ic_payfriends_icon_color, R.drawable.ic_payfriends_icon_color, getString(R.string.menu_item_title_pay_friends), MPAYFRIENDS));    //2
-        models.add(new navdrawmainmenuModel(R.drawable.ic_ask_icon_color, R.drawable.ic_ask_icon_color, getString(R.string.menu_item_title_ask_for_money), MASK4MONEY));            //3
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_pulsa,R.drawable.ic_topup_pulsa,getString(R.string.menu_item_title_pulsa_agent), MDAP));
-        models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color, R.drawable.ic_buy_icon_color, getString(R.string.menu_item_title_buy), MBUY));//4
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,R.drawable.ic_cashout_icon_color,getString(R.string.menu_item_title_cash_out),MTARIKDANA));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_transfer_saldo, R.drawable.ic_transfer_saldo, getString(R.string.menu_item_title_pay_friends), MPAYFRIENDS));    //2
+        models.add(new navdrawmainmenuModel(R.drawable.ic_minta_saldo, R.drawable.ic_minta_saldo, getString(R.string.menu_item_title_ask_for_money), MASK4MONEY));            //3
+        models.add(new navdrawmainmenuModel(R.drawable.ic_belanja, R.drawable.ic_belanja, getString(R.string.menu_item_title_buy), MBUY));//4
         models.add(new navdrawmainmenuModel(R.drawable.ic_report, R.drawable.ic_report, getString(R.string.menu_item_title_scadm), MSCADM));              //6
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,0,getString(R.string.menu_item_title_cash_out),false));       //5
-
-
-//        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_account)));                                         //7
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_friends_icon_color,0,getString(R.string.menu_item_title_my_friends),MMYFRIENDS));        //8
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_groups_icon_color,0,getString(R.string.menu_item_title_my_groups),false));          //9
-
-
-        if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
-            //models.add(new navdrawmainmenuModel(R.drawable.ic_location_on_dark_blue,R.drawable.ic_location_on_dark_blue,getString(R.string.menu_item_search_agent),MCATEGORYBBS));
-            //models.add(new navdrawmainmenuModel(R.drawable.ic_location_on_dark_blue,R.drawable.ic_location_on_dark_blue,getString(R.string.menu_item_title_map_member),MMAPVIEWBYMEMBER));
-        } else {
-
-            //models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp, R.drawable.ic_list_black_36dp, getString(R.string.menu_item_title_kelola), MKELOLA));
-            //models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp, R.drawable.ic_list_black_36dp, getString(R.string.menu_item_title_list_approval), MLISTAPPROVAL));
-            //models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp, R.drawable.ic_list_black_36dp, getString(R.string.menu_item_title_list_toko), MLISTTOKO));
-            //models.add(new navdrawmainmenuModel(R.drawable.ic_location_on_dark_blue,R.drawable.ic_location_on_dark_blue,getString(R.string.menu_item_bbs_register_location),MREGISTERLOCATION));
-
-            //models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp,R.drawable.ic_list_black_36dp,getString(R.string.menu_item_title_trx_agent),MLISTTRXAGENT));
-            //models.add(new navdrawmainmenuModel(R.drawable.ic_location_on_dark_blue,R.drawable.ic_location_on_dark_blue,getString(R.string.menu_item_title_map_agent),MMAPVIEWBYAGENT));
-        }
-        //models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_bbs_search_toko),MREGISTERTOKO));
-        //models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_search_agent),MSEARCHAGENT));
-
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));                                        //10
         models.add(new navdrawmainmenuModel(R.drawable.ic_report, R.drawable.ic_report, getString(R.string.menu_item_title_report), MREPORT));              //6
         models.add(new navdrawmainmenuModel(R.drawable.ic_setting, R.drawable.ic_setting, getString(R.string.menu_item_title_setting), MSETTINGS));                    //11
-        models.add(new navdrawmainmenuModel(R.drawable.ic_help, R.drawable.ic_help, getString(R.string.menu_item_title_help1), MHELP));                          //12
-        models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color, R.drawable.ic_buy_icon_color, getString(R.string.menu_item_title_info_harga), MINFO)); //28                         //15
+        models.add(new navdrawmainmenuModel(R.drawable.ic_user, R.drawable.ic_user, getString(R.string.menu_item_title_help1), MHELP));                          //12
+        models.add(new navdrawmainmenuModel(R.drawable.ic_belanja, R.drawable.ic_belanja, getString(R.string.menu_item_title_info_harga), MINFO)); //28                         //15
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_logout)));                                        //13
         models.add(new navdrawmainmenuModel(R.drawable.ic_logout_icon, R.drawable.ic_logout_icon, getString(R.string.menu_item_title_logout), MLOGOUT));                 //14
 

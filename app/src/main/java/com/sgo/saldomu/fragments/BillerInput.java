@@ -114,6 +114,8 @@ public class BillerInput extends Fragment {
     private String selectedMonth;
     private LinearLayout layout_warn_pln;
     SecurePreferences sp;
+    private ArrayList<String> _data;
+    private List<Biller_Data_Model> mListBillerData;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -160,9 +162,7 @@ public class BillerInput extends Fragment {
         realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
         initializeLayout();
-        if (biller_type_code.equalsIgnoreCase(billerType[0])) {
-
-        } else
+        if (!biller_type_code.equalsIgnoreCase(billerType[0]))
             initializeSpinnerDenom();
 
         realmListener = new RealmChangeListener() {
@@ -214,7 +214,26 @@ public class BillerInput extends Fragment {
                 String number = editable.toString();
                 if (number.length() > 3) {
                     PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(), number);
+                    if (BillerIdNumber != null) {
+                        for (int i = 0; i < _data.size(); i++) {
+                            Timber.d("_data" + _data.get(i));
+                            if (_data != null) {
+                                Timber.d("prefix name = " + BillerIdNumber.prefix_name);
+                                if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
+                                            biller_comm_id = mListBillerData.get(i).getComm_id();
+                                            biller_comm_name = mListBillerData.get(i).getComm_name();
+                                            biller_item_id = mListBillerData.get(i).getItem_id();
+                                }
+                                mBillerData = realm.where(Biller_Data_Model.class).
+                                        equalTo(WebParams.COMM_ID, biller_comm_id).
+                                        equalTo(WebParams.COMM_NAME, biller_comm_name).
+                                        equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
+                                        findFirst();
+                            }
 
+                            initializeSpinnerDenom();
+                        }
+                    }
                 }
             }
         });

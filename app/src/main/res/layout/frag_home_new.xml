@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/windowBackgroundColor"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -114,7 +114,7 @@
             android:layout_marginRight="15dp"
             android:background="@drawable/rounded_background_orange"
             android:singleLine="false"
-            android:text="@string/menu_item_title_topup"
+            android:text="@string/topup"
             android:textColor="@color/white"
             android:textSize="12sp" />
 
@@ -136,7 +136,7 @@
                 android:id="@+id/grid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorSecondaryWhiteFixed"
+                android:background="@color/white"
                 android:columnWidth="100dp"
                 android:gravity="center"
                 android:horizontalSpacing="2dp"
@@ -290,7 +290,6 @@
                 android:id="@+id/carouselView"
                 android:layout_width="match_parent"
                 android:layout_height="135dp"
-                android:background="@drawable/ab_notification_background"
                 app:fillColor="#FFFFFFFF"
                 app:pageColor="#00000000"
                 app:radius="3dp"

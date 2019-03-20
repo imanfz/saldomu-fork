@@ -85,7 +85,7 @@ public class GridBbsMenu extends BaseAdapter {
             case "Dalam Proses":
                 return R.drawable.ic_location_on_black;
             default:
-                return R.drawable.ic_tariktunai;
+                return R.drawable.ic_tarik_tunai;
 
         }
     }

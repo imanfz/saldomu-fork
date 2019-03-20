@@ -1,6 +1,8 @@
 package com.sgo.saldomu.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Lenovo Thinkpad on 5/5/2017.
@@ -21,14 +24,16 @@ import java.util.ArrayList;
 public class GridHome extends BaseAdapter {
 
     private Context mContext;
-    private final ArrayList<String> text;
-    private final int[] icons;
+    private ArrayList<String> text = new ArrayList<>();
+    private ArrayList<Drawable> drawable = new ArrayList<>();
+    private int[] icons = new int[100];
     SecurePreferences sp;
 
-    public GridHome(Context c, ArrayList<String> text, int[] icons ) {
+    public GridHome(Context c, ArrayList<String> text, ArrayList<Drawable> drawable) {
         mContext = c;
-        this.icons = icons;
         this.text = text;
+        this.drawable = drawable;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -62,14 +67,9 @@ public class GridHome extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-//        if (sp.getBoolean(DefineValue.IS_AGENT,false)==true)
-//        {
-//            holder.textView.setText(text.get(position));
-//            holder.imageView.setImageResource(getIcons(text.get(position)));
-//        }
-
         holder.textView.setText(text.get(position));
-        holder.imageView.setImageResource(icons[position]);
+        holder.imageView.setImageDrawable(drawable.get(position));
+
         return convertView;
     }
 
@@ -78,17 +78,4 @@ public class GridHome extends BaseAdapter {
         ImageView imageView;
     }
 
-    int getIcons(String item) {
-        switch (item) {
-            case "Tagih.id":
-                return R.drawable.tagih_id;
-            case "Pengaturan":
-                return R.drawable.ic_settings;
-            case "Dalam Proses":
-                return R.drawable.ic_location_on_black;
-            default:
-                return R.drawable.ic_tariktunai;
-
-        }
-    }
 }

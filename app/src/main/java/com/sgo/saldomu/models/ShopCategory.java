@@ -50,7 +50,7 @@ public class ShopCategory {
     public ShopCategory() {
         mappingImages   = new ArrayList<>();
         mappingImages.add(new MappingImage(R.drawable.ic_tambahsaldo, "CAT2"));
-        mappingImages.add(new MappingImage(R.drawable.ic_tariktunai, "CAT3"));
+        mappingImages.add(new MappingImage(R.drawable.ic_tarik_tunai, "CAT3"));
     }
 
     public String getCategoryId() {
