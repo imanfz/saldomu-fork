@@ -105,7 +105,7 @@ public class BillerInput extends Fragment {
     private RealmChangeListener realmListener;
     private Boolean isToken;
     Boolean isHaveItemID;
-    private Spinner sp_privacy;
+//    private Spinner sp_privacy;
     private int privacy;
     private String digitsListener = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private Realm realm;
@@ -144,7 +144,7 @@ public class BillerInput extends Fragment {
         spinWheelDenom = v.findViewById(R.id.spinning_wheel_billerinput_denom);
         btn_submit = v.findViewById(R.id.btn_submit_billerinput);
         layout_denom = v.findViewById(R.id.billerinput_layout_denom);
-        sp_privacy = v.findViewById(R.id.privacy_spinner);
+//        sp_privacy = v.findViewById(R.id.privacy_spinner);
         spin_month = v.findViewById(R.id.spinner_billerinput_month);
         tv_month = v.findViewById(R.id.billerinput_text_month);
         spinWheelMonth = v.findViewById(R.id.spinning_wheel_billerinput_month);
@@ -194,49 +194,6 @@ public class BillerInput extends Fragment {
         };
         realm.addChangeListener(realmListener);
 
-        initEditTextPhoneNumberPrefix();
-    }
-
-    private void initEditTextPhoneNumberPrefix() {
-        et_payment_remark.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String number = editable.toString();
-                if (number.length() > 3) {
-                    PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(), number);
-                    if (BillerIdNumber != null) {
-                        for (int i = 0; i < _data.size(); i++) {
-                            Timber.d("_data" + _data.get(i));
-                            if (_data != null) {
-                                Timber.d("prefix name = " + BillerIdNumber.prefix_name);
-                                if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
-                                            biller_comm_id = mListBillerData.get(i).getComm_id();
-                                            biller_comm_name = mListBillerData.get(i).getComm_name();
-                                            biller_item_id = mListBillerData.get(i).getItem_id();
-                                }
-                                mBillerData = realm.where(Biller_Data_Model.class).
-                                        equalTo(WebParams.COMM_ID, biller_comm_id).
-                                        equalTo(WebParams.COMM_NAME, biller_comm_name).
-                                        equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
-                                        findFirst();
-                            }
-
-                            initializeSpinnerDenom();
-                        }
-                    }
-                }
-            }
-        });
     }
 
     private void initializeLayout() {
@@ -262,7 +219,6 @@ public class BillerInput extends Fragment {
 
 
         if (mBillerData == null || mBillerData.getItem_id().isEmpty() && mBillerData.getDenom_data_models().size() == 0) {
-            Timber.d("masukk sini kosong mbiller data");
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
         }
 
@@ -386,8 +342,8 @@ public class BillerInput extends Fragment {
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.privacy_list, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_privacy.setAdapter(spinAdapter);
-        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
+//        sp_privacy.setAdapter(spinAdapter);
+//        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
 
     }
 

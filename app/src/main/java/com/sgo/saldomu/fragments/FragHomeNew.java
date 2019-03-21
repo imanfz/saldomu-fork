@@ -438,15 +438,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
                         startActivity(intent);
                     }
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_pulsa_agent))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
-                        intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
-                        startActivity(intent);
-                    }
                 } else if (menuItemName.equals(getString(R.string.newhome_listrik_pln))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();
@@ -477,7 +468,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else {
                     for (int x = 0; x < shopCategories.size(); x++) {
                         String categoryName = shopCategories.get(x).getCategoryName();
-                        if (menuItemName.indexOf(categoryName) > 0) {
+                        String categoryNameModified = "Cari Agen " + categoryName;
+                        String menuItemNameModified = menuItemName + " ";
+                        if (menuItemNameModified.equals(categoryNameModified)) {
                             if (isDormant.equalsIgnoreCase("Y")) {
                                 dialogDormant();
                             } else {
@@ -579,7 +572,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     else {
                         posIdx = -1;
                     }
-
                 }
                 if (posIdx != -1) {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
@@ -742,18 +734,20 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private void setupIconAndTitle() {
         if (isAgent) {
             checkSchemeCodeAgent();
+            menuStrings.add(getResources().getString(R.string.menu_item_title_trx_agent));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
+
+            menuStrings.add(getResources().getString(R.string.title_bbs_list_account_bbs));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_rekening_saya));
+
+            menuStrings.add(getResources().getString(R.string.menu_item_title_onprogress_agent));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_dalam_proses));
         } else {
             checkSchemeCodeMember();
+
+            menuStrings.add(getResources().getString(R.string.title_cash_out_member));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
         }
-
-        menuStrings.add(getResources().getString(R.string.menu_item_title_trx_agent));
-        menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
-
-        menuStrings.add(getResources().getString(R.string.title_bbs_list_account_bbs));
-        menuDrawables.add(getResources().getDrawable(R.drawable.ic_rekening_saya));
-
-        menuStrings.add(getResources().getString(R.string.menu_item_title_onprogress_agent));
-        menuDrawables.add(getResources().getDrawable(R.drawable.ic_dalam_proses));
 
         if (mBillerTypeDataPLS != null) {
             menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));

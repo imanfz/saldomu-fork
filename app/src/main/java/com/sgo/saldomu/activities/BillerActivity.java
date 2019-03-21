@@ -15,6 +15,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.fragments.BillerInputPulsa;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -186,7 +187,7 @@ public class BillerActivity extends BaseActivity {
             tag = BillerInput.TAG;
         } else {
             if (_biller_type_code.equalsIgnoreCase("PLS")) {
-                mLBM = new BillerInput();
+                mLBM = new BillerInputPulsa();
                 tag = BillerInput.TAG;
             } else {
                 mLBM = new ListBillerMerchant();

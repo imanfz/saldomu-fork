@@ -464,22 +464,23 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
     private ArrayList<navdrawmainmenuModel> generateData() {
         ArrayList<navdrawmainmenuModel> models = new ArrayList<>();
-        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_main_menu)));
-        if (!levelClass.isLevel1QAC()) {
-            models.add(new navdrawmainmenuModel(R.drawable.ic_agent, R.drawable.ic_agent, getString(R.string.menu_item_title_bbs), MBBS));
-        }
-        models.add(new navdrawmainmenuModel(R.drawable.ic_topup, R.drawable.ic_topup, getString(R.string.menu_item_title_topup), MTOPUP));              //1
-        models.add(new navdrawmainmenuModel(R.drawable.ic_transfer_saldo, R.drawable.ic_transfer_saldo, getString(R.string.menu_item_title_pay_friends), MPAYFRIENDS));    //2
-        models.add(new navdrawmainmenuModel(R.drawable.ic_minta_saldo, R.drawable.ic_minta_saldo, getString(R.string.menu_item_title_ask_for_money), MASK4MONEY));            //3
-        models.add(new navdrawmainmenuModel(R.drawable.ic_belanja, R.drawable.ic_belanja, getString(R.string.menu_item_title_buy), MBUY));//4
+//        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_main_menu)));
+//        if (!levelClass.isLevel1QAC()) {
+//            models.add(new navdrawmainmenuModel(R.drawable.ic_agent, R.drawable.ic_agent, getString(R.string.menu_item_title_bbs), MBBS));
+//        }
+//        models.add(new navdrawmainmenuModel(R.drawable.ic_topup, R.drawable.ic_topup, getString(R.string.menu_item_title_topup), MTOPUP));              //1
+//        models.add(new navdrawmainmenuModel(R.drawable.ic_transfer_saldo, R.drawable.ic_transfer_saldo, getString(R.string.menu_item_title_pay_friends), MPAYFRIENDS));    //2
+//        models.add(new navdrawmainmenuModel(R.drawable.ic_minta_saldo, R.drawable.ic_minta_saldo, getString(R.string.menu_item_title_ask_for_money), MASK4MONEY));            //3
+//        models.add(new navdrawmainmenuModel(R.drawable.ic_belanja, R.drawable.ic_belanja, getString(R.string.menu_item_title_buy), MBUY));//4
+
+//        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));
         models.add(new navdrawmainmenuModel(R.drawable.ic_report, R.drawable.ic_report, getString(R.string.menu_item_title_scadm), MSCADM));              //6
-        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));                                        //10
-        models.add(new navdrawmainmenuModel(R.drawable.ic_report, R.drawable.ic_report, getString(R.string.menu_item_title_report), MREPORT));              //6
+//        models.add(new navdrawmainmenuModel(R.drawable.ic_report, R.drawable.ic_report, getString(R.string.menu_item_title_report), MREPORT));              //6
         models.add(new navdrawmainmenuModel(R.drawable.ic_setting, R.drawable.ic_setting, getString(R.string.menu_item_title_setting), MSETTINGS));                    //11
         models.add(new navdrawmainmenuModel(R.drawable.ic_user, R.drawable.ic_user, getString(R.string.menu_item_title_help1), MHELP));                          //12
         models.add(new navdrawmainmenuModel(R.drawable.ic_belanja, R.drawable.ic_belanja, getString(R.string.menu_item_title_info_harga), MINFO)); //28                         //15
-        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_logout)));                                        //13
-        models.add(new navdrawmainmenuModel(R.drawable.ic_logout_icon, R.drawable.ic_logout_icon, getString(R.string.menu_item_title_logout), MLOGOUT));                 //14
+//        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_logout)));                                        //13
+        models.add(new navdrawmainmenuModel(R.drawable.ic_logout, R.drawable.ic_logout, getString(R.string.menu_item_title_logout), MLOGOUT));                 //14
 
         return models;
     }

@@ -120,33 +120,33 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="6dp"
-            android:gravity="right"
-            android:orientation="horizontal">
+        <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="right"-->
+            <!--android:layout_marginRight="30dp"-->
+            <!--android:layout_marginBottom="6dp"-->
+            <!--android:gravity="right"-->
+            <!--android:orientation="horizontal">-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="right"
-                android:text="@string/share_options"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/abc_text_size_caption_material"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:gravity="right"-->
+                <!--android:text="@string/share_options"-->
+                <!--android:textColor="@color/colorPrimaryDark"-->
+                <!--android:textSize="@dimen/abc_text_size_caption_material"-->
+                <!--android:textStyle="bold" />-->
 
-            <Spinner
-                android:id="@+id/privacy_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="right" />
+            <!--<Spinner-->
+                <!--android:id="@+id/privacy_spinner"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:gravity="right" />-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/layout_warn_pln"

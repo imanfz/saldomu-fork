@@ -172,6 +172,7 @@ public class BillerDesciption extends BaseFragment {
         if (args.containsKey(DefineValue.VALUE_ITEM_DATA))
             value_item_data = args.getString(DefineValue.VALUE_ITEM_DATA);
 
+
         mBillerData = realm.where(Biller_Data_Model.class).
                 equalTo(WebParams.COMM_ID, biller_comm_id).
                 equalTo(WebParams.COMM_NAME, biller_name).

@@ -701,7 +701,7 @@ public class MainPage extends BaseActivity {
 //                if (drawerView == mLeftDrawerRelativeLayout)
 //                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mRightDrawerRelativeLayout);
 //                else
-                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mLeftDrawerRelativeLayout);
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mLeftDrawerRelativeLayout);
             }
         };
         mDrawerToggle.syncState();
@@ -808,8 +808,6 @@ public class MainPage extends BaseActivity {
                                     }
 
                                     setupBBSData();
-
-//                                    if (!sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO)) {
                                     try {
                                         JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
 
@@ -1395,14 +1393,14 @@ public class MainPage extends BaseActivity {
     }
 
     void showProgLoading(String msg, boolean islogout) {
-        if (islogout){
+        if (islogout) {
             progdialog = DefinedDialog.CreateProgressDialog(this, msg);
-        }else {
+        } else {
             if (progdialog == null)
 //            {
                 progdialog = DefinedDialog.CreateProgressDialog(this, msg);
 //            } else
-                progdialog.show();
+            progdialog.show();
         }
     }
 
