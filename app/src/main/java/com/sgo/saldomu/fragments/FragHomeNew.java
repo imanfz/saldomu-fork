@@ -468,7 +468,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else {
                     for (int x = 0; x < shopCategories.size(); x++) {
                         String categoryName = shopCategories.get(x).getCategoryName();
-                        String categoryNameModified = "Cari Agen " + categoryName;
+                        String categoryNameModified = "Panggil Agen " + categoryName;
                         String menuItemNameModified = menuItemName + " ";
                         if (menuItemNameModified.equals(categoryNameModified)) {
                             if (isDormant.equalsIgnoreCase("Y")) {

@@ -207,7 +207,7 @@
     <string name="menu_item_share">Bagikan</string>
     <string name="menu_item_bbs_register_location">Registrasi Toko Member</string>
     <string name="menu_item_bbs_search_toko">Search Toko</string>
-    <string name="menu_item_search_agent">Cari Agen</string>
+    <string name="menu_item_search_agent">Panggil Agen</string>
     <string name="menu_item_title_kelola">Pengaturan Agen</string>
     <string name="menu_item_title_list_toko">Kelola Member</string>
     <string name="menu_item_title_list_approval">Daftar Persetujuan</string>
@@ -749,9 +749,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="dialog_p2p_color_help_title">Warna Indikator Penerima</string>
 
-    <string name="dialog_p2p_color_success_msg">Penerima siap dan bisa menerima transfer scash.</string>
-    <string name="dialog_p2p_color_failed_msg">Penerima gagal dan tidak bisa menerima transfer scash dikarenakan suatu hal (limit saldo penerima telah maksimum, penerima dorman,suspend, atau tidak aktif).</string>
-    <string name="dialog_p2p_color_nonmember_msg">Penerima belum terdaftar sebagai member. Jumlah scash akan diterima ketika penerima telah mendaftar sebagai member.</string>
+    <string name="dialog_p2p_color_success_msg">Penerima siap dan bisa menerima transfer saldo.</string>
+    <string name="dialog_p2p_color_failed_msg">Penerima gagal dan tidak bisa menerima transfer saldo dikarenakan suatu hal (limit saldo penerima telah maksimum, penerima dorman,suspend, atau tidak aktif).</string>
+    <string name="dialog_p2p_color_nonmember_msg">Penerima belum terdaftar sebagai member. Jumlah saldo akan diterima ketika penerima telah mendaftar sebagai member.</string>
 
     <string name="dialog_p2p_nonmember_title">Ajak temanmu gabung %1$s ?</string>
     <string name="dialog_p2p_nonmember_msg">Nomor %1$s belum punya %2$s. Tekan \'Ya\' bila ingin mengajak untuk bergabung %2$s. Ajakan akan kadaluarsa dalam %3$s jam. Saldo akan terkirim saat temanmu bergabung.</string>
@@ -891,7 +891,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="setting_setup_shop_hour">Atur Jam Toko Buka</string>
     <string name="err_empty_shop_hour">Silakan isi jam toko</string>
     <string name="type_your_keyword">Type your keyword here</string>
-    <string name="search_agent">Cari Agen</string>
+    <string name="search_agent">Panggil Agen</string>
     <string name="cari_alamat">Cari Berdasarkan Alamat</string>
     <string name="shop_list">Manage Member</string>
     <string name="list_approval">List Approval</string>
@@ -1051,7 +1051,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="menu_item_search_agent_cta">Agen Setor Tunai</string>
     <string name="menu_item_search_agent_atc">Agen Tarik Tunai</string>
-    <string name="menu_item_search_agent_bbs">Cari Agen</string>
+    <string name="menu_item_search_agent_bbs">Panggil Agen</string>
 
     <string name="setting_permission_location">Setting Lokasi</string>
     <string name="err_disallow_permission_location">Silakan aktifkan lokasi Anda</string>

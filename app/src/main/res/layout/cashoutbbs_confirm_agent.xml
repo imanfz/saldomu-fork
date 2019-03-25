@@ -110,7 +110,7 @@
                 app:circlestep_current_outer_circle_color="@color/colorPrimaryDark"
                 app:circlestep_circle_color="@color/grey_500"
                 app:circlestep_circle_text_size="14sp"
-                app:circlestep_text_below_circle_size="14sp"
+                app:circlestep_text_below_circle_size="12sp"
                 app:circlestep_text_below_circle_color="@color/grey_800"/>
 
             <View

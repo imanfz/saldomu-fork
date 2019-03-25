@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ import timber.log.Timber;
 public class BillerInputPulsa extends BaseFragment {
     private View v;
     private TextView tv_denom;
+    private ImageView img_operator;
     private TextView tv_payment_remark;
     private EditText et_payment_remark;
     private Spinner spin_denom;
@@ -86,6 +88,7 @@ public class BillerInputPulsa extends BaseFragment {
 
         spin_denom = v.findViewById(R.id.spinner_billerinput_denom);
         tv_denom = v.findViewById(R.id.billerinput_text_denom);
+        img_operator = v.findViewById(R.id.img_operator);
         tv_payment_remark = v.findViewById(R.id.billerinput_text_payment_remark);
         et_payment_remark = v.findViewById(R.id.payment_remark_billerinput_value);
         btn_submit = v.findViewById(R.id.btn_submit_billerinput);
@@ -115,7 +118,20 @@ public class BillerInputPulsa extends BaseFragment {
                 String string = editable.toString();
                 if (string.length() > 3) {
                     PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(), string);
+
                     if (BillerIdNumber != null) {
+
+                        if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("telkomsel")) {
+                            img_operator.setBackground(getResources().getDrawable(R.drawable.telkomsel));
+                        } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("xl")) {
+                            img_operator.setBackground(getResources().getDrawable(R.drawable.xl));
+                        } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("indosat")) {
+                            img_operator.setBackground(getResources().getDrawable(R.drawable.indosat));
+                        } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("three")) {
+                            img_operator.setBackground(getResources().getDrawable(R.drawable.three));
+                        } else
+                            img_operator.setVisibility(View.GONE);
+
                         for (int i = 0; i < _data.size(); i++) {
                             Timber.d("_data" + _data.get(i));
                             if (_data != null) {

@@ -109,10 +109,12 @@
                     android:id="@+id/circle_step_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="50dp"
-                    android:paddingRight="50dp"
+                    android:paddingLeft="70dp"
+                    android:paddingRight="@dimen/margin_10dp"
                     android:paddingBottom="16dp"
-                    android:paddingStart="16dp"
+                    android:paddingStart="50dp"
+                    android:layout_marginLeft="@dimen/margin_10dp"
+                    android:layout_marginRight="@dimen/margin_10dp"
                     android:layout_marginBottom="15dp"
                     app:circlestep_circle_count="3"
                     app:circlestep_path_color="@color/colorPrimaryDark"
@@ -120,8 +122,9 @@
                     app:circlestep_current_outer_circle_color="@color/colorPrimaryDark"
                     app:circlestep_circle_color="@color/grey_500"
                     app:circlestep_circle_text_size="14sp"
-                    app:circlestep_text_below_circle_size="14sp"
-                    app:circlestep_text_below_circle_color="@color/grey_800"/>
+                    app:circlestep_text_below_circle_size="12sp"
+                    app:circlestep_text_below_circle_color="@color/grey_800"
+                    android:layout_gravity="center"/>
 
                 <View
                     android:layout_width="match_parent"

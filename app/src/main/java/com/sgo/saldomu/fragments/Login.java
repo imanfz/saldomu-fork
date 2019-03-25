@@ -63,6 +63,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
     //    private MaterialRippleLayout btnLayout;
     private View v;
     private Bundle argsBundleNextLogin = new Bundle();
+    private Boolean isTexted = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,9 +88,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         argsBundleNextLogin = getArguments();
 
 
-
 //        btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
-
 
 
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
@@ -121,16 +120,15 @@ public class Login extends BaseFragment implements View.OnClickListener {
 //            userIDValue.setEnabled(true);
 //        }
 
-        if (sp.contains(DefineValue.SENDER_ID) && !sp.getString(DefineValue.IS_POS,"N").equalsIgnoreCase("Y")) {
+        if (sp.contains(DefineValue.SENDER_ID) && !sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
-        }else if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").isEmpty() && m.getString(DefineValue.IS_POS,"N").equalsIgnoreCase("N"))
-        {
+        } else if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty() && m.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("N")) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
-        }else if (m != null) {
+        } else if (m != null) {
             if (m.containsKey(DefineValue.IS_POS)) {
                 if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y")) {
                     is_pos = m.getString(DefineValue.IS_POS, "");
@@ -139,7 +137,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                     userIDValue.setHint("No HP POS yang sudah terdaftar");
                 }
             }
-        }else if (sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
+        } else if (sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
             getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
             userIDValue.setEnabled(true);
         }
@@ -151,9 +149,9 @@ public class Login extends BaseFragment implements View.OnClickListener {
         passLoginValue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus){
+                if (hasFocus) {
                     toogleViewPass.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     toogleViewPass.setVisibility(View.INVISIBLE);
                 }
             }
@@ -187,22 +185,26 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 break;
 
             case R.id.passLogin_toogle_view:
-                toogleViewPass.setOnTouchListener((v1, event) -> {
-                    switch ( event.getAction() ) {
-                        case MotionEvent.ACTION_DOWN:
-                            passLoginValue.setInputType(InputType.TYPE_CLASS_TEXT);
-                            passLoginValue.setTypeface(Typeface.DEFAULT_BOLD);
-                            passLoginValue.setSelection(passLoginValue.getText().length());
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            passLoginValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                            passLoginValue.setTypeface(Typeface.DEFAULT_BOLD);
-                            passLoginValue.setSelection(passLoginValue.getText().length());
-                            break;
-                    }
-                    return true;
-                });
-                break;
+//                toogleViewPass.setOnTouchListener((v1, event) -> {
+//                    switch ( event.getAction() ) {
+                if (isTexted == false) {
+//                    case MotionEvent.ACTION_DOWN:
+                    passLoginValue.setInputType(InputType.TYPE_CLASS_TEXT);
+                    passLoginValue.setTypeface(Typeface.DEFAULT_BOLD);
+                    passLoginValue.setSelection(passLoginValue.getText().length());
+                    isTexted = true;
+                    break;
+                } else {
+//                        case MotionEvent.ACTION_UP:
+                    passLoginValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    passLoginValue.setTypeface(Typeface.DEFAULT_BOLD);
+                    passLoginValue.setSelection(passLoginValue.getText().length());
+                    isTexted = false;
+                    break;
+                }
+//                    return true;
+//                });
+//                break;
         }
     }
 
@@ -282,9 +284,9 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
                         String message;
 
-                        if (checkIsPOS()){
+                        if (checkIsPOS()) {
                             message = loginModel.getError_message();
-                        }else {
+                        } else {
                             int failed = Integer.valueOf(loginModel.getFailedAttempt());
                             int max = Integer.valueOf(loginModel.getMaxFailed());
 
@@ -457,7 +459,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             mEditor.putString(DefineValue.ACCESS_SECRET, model.getAccessSecret());
 
             mEditor.putString(DefineValue.LINK_APP, model.getSocialSignature());
-//            mEditor.putString(DefineValue.IS_DORMANT, model.getIs_dormant());
+            mEditor.putString(DefineValue.IS_DORMANT, model.getIs_dormant());
 
             if (Integer.valueOf(model.getIsRegistered()) == 0)
                 mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);

@@ -123,7 +123,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorSecondaryWhiteFixed"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -140,7 +140,6 @@
                 android:gravity="center"
                 android:horizontalSpacing="2dp"
                 android:numColumns="4"
-                android:padding="2dp"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="2dp" />
 

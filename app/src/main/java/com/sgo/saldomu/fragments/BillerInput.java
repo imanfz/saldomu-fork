@@ -80,6 +80,7 @@ public class BillerInput extends Fragment {
     private TextView tv_denom;
     private TextView tv_payment_remark;
     private TextView tv_month;
+    private TextView tv_ovo;
     private EditText et_payment_remark;
     private Spinner spin_denom;
     private Spinner spin_month;
@@ -147,6 +148,7 @@ public class BillerInput extends Fragment {
 //        sp_privacy = v.findViewById(R.id.privacy_spinner);
         spin_month = v.findViewById(R.id.spinner_billerinput_month);
         tv_month = v.findViewById(R.id.billerinput_text_month);
+        tv_ovo = v.findViewById(R.id.tv_ovo);
         spinWheelMonth = v.findViewById(R.id.spinning_wheel_billerinput_month);
         layout_month = v.findViewById(R.id.billerinput_layout_month);
         layout_warn_pln = v.findViewById(R.id.layout_warn_pln);
@@ -266,6 +268,11 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PAM));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (biller_type_code.equals(billerType[7]) || biller_type_code.equals(billerType[19])) {
+            if (biller_type_code.equals(billerType[19]))
+            {
+                tv_ovo.setVisibility(View.VISIBLE);
+                tv_ovo.setText(R.string.newhome_ovo);
+            }
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
@@ -294,6 +301,7 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setVisibility(View.GONE);
             et_payment_remark.setVisibility(View.GONE);
         } else {
+
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
