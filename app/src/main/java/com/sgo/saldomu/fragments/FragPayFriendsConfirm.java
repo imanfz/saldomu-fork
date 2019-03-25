@@ -1,4 +1,4 @@
-package com.sgo.saldomu.fragments;
+ package com.sgo.saldomu.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;

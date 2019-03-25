@@ -193,7 +193,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         TextView tv_trans_remark = view.findViewById(R.id.dialog_report_transaction_remark);
         TextView tv_trans_remark_sub = view.findViewById(R.id.dialog_report_transaction_remark_sub);
 
-        if (buss_scheme_code.equals("P2P") || type.equals(DefineValue.PAYFRIENDS)) {
+        if (buss_scheme_code.equals("P2P") || type.equals(DefineValue.PAYFRIENDS) || buss_scheme_code.equals("OR") || buss_scheme_code.equals("ORP")) {
             layout_txId.setVisibility(View.GONE);
         }
 

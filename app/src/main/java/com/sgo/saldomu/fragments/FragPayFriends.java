@@ -79,7 +79,7 @@ public class FragPayFriends extends BaseFragment {
     private ImageView imgRecipients;
     private TextView txtName;
     private TextView txtNumberRecipients;
-    private Spinner sp_privacy;
+//    private Spinner sp_privacy;
     private RecipientEditTextView phoneRetv;
     private Button btnGetOTP;
     private EditText etAmount;
@@ -160,13 +160,13 @@ public class FragPayFriends extends BaseFragment {
             btnGetOTP.setText(R.string.submit);
         }
 
-        sp_privacy = v.findViewById(R.id.payfriend_privacy_spinner);
+//        sp_privacy = v.findViewById(R.id.payfriend_privacy_spinner);
 
-        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.privacy_list, android.R.layout.simple_spinner_item);
-        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_privacy.setAdapter(spinAdapter);
-        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
+//        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
+//                R.array.privacy_list, android.R.layout.simple_spinner_item);
+//        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        sp_privacy.setAdapter(spinAdapter);
+//        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
 
 
         Bitmap bmRecipients = BitmapFactory.decodeResource(getResources(), R.drawable.grey_background);
@@ -650,7 +650,7 @@ public class FragPayFriends extends BaseFragment {
         phoneRetv.removeMoreChip();
         etAmount.setText("");
         etMessage.setText("");
-        sp_privacy.setSelection(0);
+//        sp_privacy.setSelection(0);
         phoneRetv.requestFocus();
         phoneRetv.clearFocus();
         etAmount.setEnabled(true);
