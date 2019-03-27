@@ -75,7 +75,7 @@ public class AskForMoneyActivity extends BaseActivity {
     private TextView txtName;
     private TextView txtNumberRecipients;
     private RecipientEditTextView phoneRetv;
-    private Spinner sp_privacy;
+//    private Spinner sp_privacy;
     private Button btnRequestMoney;
     private EditText etAmount;
     private EditText etMessage;
@@ -114,13 +114,13 @@ public class AskForMoneyActivity extends BaseActivity {
         etMessage = (EditText) findViewById(R.id.askformoney_value_message);
         txtNumberRecipients = (TextView) findViewById(R.id.askformoney_value_number_recipients);
         btnRequestMoney = (Button) findViewById(R.id.btn_request_money);
-        sp_privacy = (Spinner) findViewById(R.id.askformoney_privacy_spinner);
-
-        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(this,
-                R.array.privacy_list, android.R.layout.simple_spinner_item);
-        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_privacy.setAdapter(spinAdapter);
-        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
+//        sp_privacy = (Spinner) findViewById(R.id.askformoney_privacy_spinner);
+//
+//        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(this,
+//                R.array.privacy_list, android.R.layout.simple_spinner_item);
+//        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        sp_privacy.setAdapter(spinAdapter);
+//        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
 
         Bitmap bmRecipients = BitmapFactory.decodeResource(getResources(), R.drawable.grey_background);
         RoundImageTransformation roundedImageRecipients = new RoundImageTransformation(bmRecipients);
@@ -474,7 +474,7 @@ public class AskForMoneyActivity extends BaseActivity {
         phoneRetv.setText("");
         etAmount.setText("");
         etMessage.setText("");
-        sp_privacy.setSelection(0);
+//        sp_privacy.setSelection(0);
         txtNumberRecipients.setText(getString(R.string.Zero));
         setNumberRecipients();
         txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));

@@ -292,7 +292,8 @@ public class BBSTransaksiAmount extends Fragment {
             }
             validasiTutorialCashIn();
         }
-        else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
+
+        if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
         {
             if ( !defaultProductCode.equals("") ) {
                 BBSBankModel bbsBankModel = realmBBS.where(BBSBankModel.class).
@@ -429,7 +430,7 @@ public class BBSTransaksiAmount extends Fragment {
                             nameLayout.setVisibility(View.VISIBLE);
 
 //                        if(benef_product_code.equalsIgnoreCase("TCASH") || benef_product_code.equalsIgnoreCase("MANDIRILKD"))
-                        if(benef_product_code.equalsIgnoreCase("TCASH"))
+                        if(benef_product_code.equalsIgnoreCase("tcash"))
                         {
                             etNoOTPC2A.setVisibility(View.VISIBLE);
                         }
@@ -510,7 +511,7 @@ public class BBSTransaksiAmount extends Fragment {
                             args.putString(DefineValue.ACCT_CITY_CODE, city_id);
                             args.putString(DefineValue.ACCT_CITY_NAME, city_name);
                         }
-                        if(benef_product_code.equalsIgnoreCase("TCASH"))
+                        if(benef_product_code.equalsIgnoreCase("tcash"))
                         {
                             args.putString(DefineValue.BENEF_PRODUCT_VALUE_TOKEN, etNoOTPC2A.getText().toString());
                         }
@@ -729,7 +730,7 @@ public class BBSTransaksiAmount extends Fragment {
                     return false;
                 }
             }
-            if (benef_product_code.equalsIgnoreCase("TCASH"))
+            if (benef_product_code.equalsIgnoreCase("tcash"))
             {
                 if (etNoOTPC2A.getText().toString().length() == 0) {
                     etNoOTPC2A.requestFocus();

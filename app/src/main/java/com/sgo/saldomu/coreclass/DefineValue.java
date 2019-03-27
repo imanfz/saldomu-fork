@@ -563,6 +563,7 @@ public class DefineValue {
     public static String IS_SEARCH_DGI= "is_search_dgi";
     public static String DEVICE_NAME= "device_name";
     public static String IS_MANUAL= "is_manual";
+    public static String IS_DORMANT= "is_dormant";
 
 }
 

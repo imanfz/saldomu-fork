@@ -11,6 +11,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -25,7 +26,7 @@ import java.util.Arrays;
 public class ActivityListSettings extends BaseActivity {
     private SecurePreferences sp;
     private InformationDialog dialogI;
-    private Boolean isLevel1;
+    private Boolean isLevel1, isAgent;
     private LevelClass levelClass;
     ListView list_setting;
 
@@ -50,19 +51,26 @@ public class ActivityListSettings extends BaseActivity {
         isLevel1 = levelClass.isLevel1QAC();
         dialogI = InformationDialog.newInstance(11);
 
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+
         String[] _data;
 
         _data = getResources().getStringArray(R.array.settings_list_pin);
         list.addAll(Arrays.asList(_data));
 
-        if (!isLevel1) {
-            _data = getResources().getStringArray(R.array.settings_isnot_lvl1);
+//        if (!isLevel1) {
+//            _data = getResources().getStringArray(R.array.settings_isnot_lvl1);
+//            list.addAll(Arrays.asList(_data));
+//        }
+        if (isAgent)
+        {
+            _data = getResources().getStringArray(R.array.settings_is_agent);
             list.addAll(Arrays.asList(_data));
         }
-//        else{
-        _data = getResources().getStringArray(R.array.settings_is_lvl1);
+        else{
+        _data = getResources().getStringArray(R.array.settings_is_member);
         list.addAll(Arrays.asList(_data));
-//        }
+        }
 
         EasyAdapter adapter = new EasyAdapter(this, R.layout.list_view_item_with_arrow, list);
 
@@ -99,6 +107,11 @@ public class ActivityListSettings extends BaseActivity {
                         break;
                     case "Tentang App":
                         i = new Intent(ActivityListSettings.this, AboutAppsActivity.class);
+                        startActivity(i);
+                        break;
+                    case "Pengaturan Agen":
+                        i = new Intent(ActivityListSettings.this, BBSActivity.class);
+                        i.putExtra(DefineValue.INDEX, BBSActivity.BBSKELOLA);
                         startActivity(i);
                         break;
 //                    case "Bahasa":

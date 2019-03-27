@@ -26,6 +26,7 @@
             android:title="@string/social_promo"
             android:icon="@drawable/ic_menu_promo"
             someNamespace:showAsAction="ifRoom"
+        android:visible="false"
             />
 
 </menu>

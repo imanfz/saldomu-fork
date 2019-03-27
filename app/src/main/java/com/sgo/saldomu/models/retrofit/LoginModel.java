@@ -156,6 +156,9 @@ public class LoginModel extends jsonModel {
     @SerializedName("access_secret")
     @Expose
     private String accessSecret;
+    @SerializedName("is_dormant")
+    @Expose
+    private String is_dormant;
 
     public String getUserId() {
         return userId;
@@ -549,5 +552,9 @@ public class LoginModel extends jsonModel {
 
     public String getIs_member_shop_dgi() {
         return is_member_shop_dgi;
+    }
+
+    public String getIs_dormant() {
+        return is_dormant;
     }
 }

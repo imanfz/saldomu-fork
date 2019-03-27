@@ -628,7 +628,7 @@ public class MainPage extends BaseActivity {
     private void InitializeNavDrawer() {
         mDrawerLayout = findViewById(R.id.main_drawer);
         mLeftDrawerRelativeLayout = findViewById(R.id.left_drawer);
-        mRightDrawerRelativeLayout = findViewById(R.id.right_drawer);
+//        mRightDrawerRelativeLayout = findViewById(R.id.right_drawer);
         mDrawerLayout.setScrimColor(getResources().getColor(R.color.transparent));
         mOuterRelativeContent = findViewById(R.id.outer_layout_content);
         findViewById(R.id.layout_include_fab).setVisibility(View.VISIBLE);
@@ -639,8 +639,8 @@ public class MainPage extends BaseActivity {
         int width = size.x - 150;
         int height = size.y;
 
-        mRightDrawerRelativeLayout.getLayoutParams().width = width;
-        mRightDrawerRelativeLayout.getLayoutParams().height = height;
+//        mRightDrawerRelativeLayout.getLayoutParams().width = width;
+//        mRightDrawerRelativeLayout.getLayoutParams().height = height;
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, getToolbar(), R.string.drawer_open, R.string.drawer_close) {
             @Override
@@ -649,10 +649,10 @@ public class MainPage extends BaseActivity {
                 invalidateOptionsMenu();
                 ToggleKeyboard.hide_keyboard(MainPage.this);
 
-                if (drawerView == mLeftDrawerRelativeLayout)
-                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mRightDrawerRelativeLayout);
-                else
-                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mLeftDrawerRelativeLayout);
+//                if (drawerView == mLeftDrawerRelativeLayout)
+//                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mRightDrawerRelativeLayout);
+//                else
+//                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mLeftDrawerRelativeLayout);
             }
 
             @Override
@@ -681,8 +681,8 @@ public class MainPage extends BaseActivity {
 
                     if (drawerView == mLeftDrawerRelativeLayout)
                         anim = new TranslateAnimation(lastTranslate, moveFactor, 0.0f, 0.0f);
-                    else if (drawerView == mRightDrawerRelativeLayout)
-                        anim = new TranslateAnimation(lastTranslate, -moveFactor, 0.0f, 0.0f);
+//                    else if (drawerView == mRightDrawerRelativeLayout)
+//                        anim = new TranslateAnimation(lastTranslate, -moveFactor, 0.0f, 0.0f);
 
                     if (anim != null) {
                         anim.setDuration(0);
@@ -698,10 +698,10 @@ public class MainPage extends BaseActivity {
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 invalidateOptionsMenu();
-                if (drawerView == mLeftDrawerRelativeLayout)
-                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mRightDrawerRelativeLayout);
-                else
-                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mLeftDrawerRelativeLayout);
+//                if (drawerView == mLeftDrawerRelativeLayout)
+//                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mRightDrawerRelativeLayout);
+//                else
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mLeftDrawerRelativeLayout);
             }
         };
         mDrawerToggle.syncState();
@@ -713,11 +713,11 @@ public class MainPage extends BaseActivity {
     }
 
 
-    private void refreshPromo() {
-        RightSideDrawMenu mRightDrawer = (RightSideDrawMenu) getSupportFragmentManager().findFragmentById(R.id.main_list_menu_fragment_right);
-        if (mRightDrawer != null)
-            mRightDrawer.autoRefreshList();
-    }
+//    private void refreshPromo() {
+//        RightSideDrawMenu mRightDrawer = (RightSideDrawMenu) getSupportFragmentManager().findFragmentById(R.id.main_list_menu_fragment_right);
+//        if (mRightDrawer != null)
+//            mRightDrawer.autoRefreshList();
+//    }
 
     private void initializeNavDrawer() {
         if (mNavDrawer != null) {
@@ -808,8 +808,6 @@ public class MainPage extends BaseActivity {
                                     }
 
                                     setupBBSData();
-
-//                                    if (!sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO)) {
                                     try {
                                         JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
 
@@ -1081,6 +1079,7 @@ public class MainPage extends BaseActivity {
         mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
         mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, "");
         mEditor.putString(DefineValue.IS_POS, "");
+        mEditor.remove(DefineValue.IS_DORMANT);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -1262,14 +1261,16 @@ public class MainPage extends BaseActivity {
                 switchActivity(i, ACTIVITY_RESULT);
             } else getSupportFragmentManager().popBackStack();
             return true;
-        } else if (item.getItemId() == R.id.right_drawer_menu) {
-            refreshPromo();
-            if (mDrawerLayout.isDrawerOpen(mRightDrawerRelativeLayout)) {
-                mDrawerLayout.closeDrawer(mRightDrawerRelativeLayout);
-            }
-            mDrawerLayout.openDrawer(mRightDrawerRelativeLayout);
-            return true;
-        } else if (item.getItemId() == R.id.menu_item_home) {
+        }
+//        else if (item.getItemId() == R.id.right_drawer_menu) {
+//            refreshPromo();
+//            if (mDrawerLayout.isDrawerOpen(mRightDrawerRelativeLayout)) {
+//                mDrawerLayout.closeDrawer(mRightDrawerRelativeLayout);
+//            }
+//            mDrawerLayout.openDrawer(mRightDrawerRelativeLayout);
+//            return true;
+//        }
+        else if (item.getItemId() == R.id.menu_item_home) {
             invalidateOptionsMenu();
             Fragment newFragment = new FragMainPage();
             switchContent(newFragment, getString(R.string.appname).toUpperCase());
@@ -1392,14 +1393,14 @@ public class MainPage extends BaseActivity {
     }
 
     void showProgLoading(String msg, boolean islogout) {
-        if (islogout){
+        if (islogout) {
             progdialog = DefinedDialog.CreateProgressDialog(this, msg);
-        }else {
+        } else {
             if (progdialog == null)
 //            {
                 progdialog = DefinedDialog.CreateProgressDialog(this, msg);
 //            } else
-                progdialog.show();
+            progdialog.show();
         }
     }
 

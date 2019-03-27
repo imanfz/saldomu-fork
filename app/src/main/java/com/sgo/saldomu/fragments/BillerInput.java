@@ -4,9 +4,12 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +35,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.PrefixOperatorValidator;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -76,6 +80,7 @@ public class BillerInput extends Fragment {
     private TextView tv_denom;
     private TextView tv_payment_remark;
     private TextView tv_month;
+    private TextView tv_ovo;
     private EditText et_payment_remark;
     private Spinner spin_denom;
     private Spinner spin_month;
@@ -101,7 +106,7 @@ public class BillerInput extends Fragment {
     private RealmChangeListener realmListener;
     private Boolean isToken;
     Boolean isHaveItemID;
-    private Spinner sp_privacy;
+//    private Spinner sp_privacy;
     private int privacy;
     private String digitsListener = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private Realm realm;
@@ -110,6 +115,8 @@ public class BillerInput extends Fragment {
     private String selectedMonth;
     private LinearLayout layout_warn_pln;
     SecurePreferences sp;
+    private ArrayList<String> _data;
+    private List<Biller_Data_Model> mListBillerData;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -138,9 +145,10 @@ public class BillerInput extends Fragment {
         spinWheelDenom = v.findViewById(R.id.spinning_wheel_billerinput_denom);
         btn_submit = v.findViewById(R.id.btn_submit_billerinput);
         layout_denom = v.findViewById(R.id.billerinput_layout_denom);
-        sp_privacy = v.findViewById(R.id.privacy_spinner);
+//        sp_privacy = v.findViewById(R.id.privacy_spinner);
         spin_month = v.findViewById(R.id.spinner_billerinput_month);
         tv_month = v.findViewById(R.id.billerinput_text_month);
+        tv_ovo = v.findViewById(R.id.tv_ovo);
         spinWheelMonth = v.findViewById(R.id.spinning_wheel_billerinput_month);
         layout_month = v.findViewById(R.id.billerinput_layout_month);
         layout_warn_pln = v.findViewById(R.id.layout_warn_pln);
@@ -156,7 +164,8 @@ public class BillerInput extends Fragment {
         realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
         initializeLayout();
-        initializeSpinnerDenom();
+        if (!biller_type_code.equalsIgnoreCase(billerType[0]))
+            initializeSpinnerDenom();
 
         realmListener = new RealmChangeListener() {
             @Override
@@ -186,6 +195,7 @@ public class BillerInput extends Fragment {
             }
         };
         realm.addChangeListener(realmListener);
+
     }
 
     private void initializeLayout() {
@@ -211,7 +221,6 @@ public class BillerInput extends Fragment {
 
 
         if (mBillerData == null || mBillerData.getItem_id().isEmpty() && mBillerData.getDenom_data_models().size() == 0) {
-            Timber.d("masukk sini kosong mbiller data");
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
         }
 
@@ -259,6 +268,11 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PAM));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (biller_type_code.equals(billerType[7]) || biller_type_code.equals(billerType[19])) {
+            if (biller_type_code.equals(billerType[19]))
+            {
+                tv_ovo.setVisibility(View.VISIBLE);
+                tv_ovo.setText(R.string.newhome_ovo);
+            }
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
@@ -287,6 +301,7 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setVisibility(View.GONE);
             et_payment_remark.setVisibility(View.GONE);
         } else {
+
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -335,8 +350,8 @@ public class BillerInput extends Fragment {
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.privacy_list, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_privacy.setAdapter(spinAdapter);
-        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
+//        sp_privacy.setAdapter(spinAdapter);
+//        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
 
     }
 

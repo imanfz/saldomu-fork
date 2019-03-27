@@ -101,16 +101,16 @@ public class ListBuyActivity extends BaseActivity {
                 }
             }
 
-            if (isBuy)
-                Title_tab.add(getString(R.string.purchase));
+//            if (isBuy)
+//                Title_tab.add(getString(R.string.purchase));
             if (isPay)
                 Title_tab.add(getString(R.string.payment));
         }
 
 
-        if(mListACL.size() > 0) {
-            Title_tab.add(getString(R.string.collection));
-        }
+//        if(mListACL.size() > 0) {
+//            Title_tab.add(getString(R.string.collection));
+//        }
 
         if(Title_tab.isEmpty())
             layout_empty.setVisibility(View.VISIBLE);
@@ -122,8 +122,8 @@ public class ListBuyActivity extends BaseActivity {
         tabs.setViewPager(pager);
         if(out != null && out.isShowing())
             out.dismiss();
-        pager.setVisibility(View.VISIBLE);
-        tabs.setVisibility(View.VISIBLE);
+//        pager.setVisibility(View.VISIBLE);
+//        tabs.setVisibility(View.VISIBLE);
 
     }
 

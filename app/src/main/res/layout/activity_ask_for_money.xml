@@ -142,34 +142,34 @@
                         android:text="@string/askformoney_number_recipients"/>
             </LinearLayout>
 
-            <LinearLayout android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal"
-                          android:gravity="right"
-                          android:layout_gravity="right"
-                          android:layout_marginBottom="6dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_marginRight="16dp"
-                    >
+            <!--<LinearLayout android:layout_width="wrap_content"-->
+                          <!--android:layout_height="wrap_content"-->
+                          <!--android:orientation="horizontal"-->
+                          <!--android:gravity="right"-->
+                          <!--android:layout_gravity="right"-->
+                          <!--android:layout_marginBottom="6dp"-->
+                          <!--android:layout_marginLeft="16dp"-->
+                          <!--android:layout_marginRight="16dp"-->
+                    <!--&gt;-->
 
-                <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:layout_gravity="center_vertical"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/abc_text_size_caption_material"
-                        android:text="@string/share_options"/>
+                <!--<TextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:gravity="right"-->
+                        <!--android:layout_gravity="center_vertical"-->
+                        <!--android:textStyle="bold"-->
+                        <!--android:textColor="@color/colorPrimary"-->
+                        <!--android:textSize="@dimen/abc_text_size_caption_material"-->
+                        <!--android:text="@string/share_options"/>-->
 
-                <Spinner
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/askformoney_privacy_spinner"
-                        android:gravity="right"
-                        android:layout_gravity="center_vertical"/>
+                <!--<Spinner-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:id="@+id/askformoney_privacy_spinner"-->
+                        <!--android:gravity="right"-->
+                        <!--android:layout_gravity="center_vertical"/>-->
 
-            </LinearLayout>
+            <!--</LinearLayout>-->
 
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
