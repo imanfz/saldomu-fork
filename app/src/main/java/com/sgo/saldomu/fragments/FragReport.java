@@ -1025,7 +1025,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private void showReportBillerDialog(ReportDataModel _object, GetTrxStatusReportModel response, String ccyId) {
         Bundle args = new Bundle();
         args.putString(DefineValue.DATE_TIME, _object.getDatetime());
-        args.putString(DefineValue.TX_ID, _object.getTx_id());
+        args.putString(DefineValue.TX_ID, response.getTx_id());
         args.putString(DefineValue.DETAIL, _object.getDetail());
         args.putString(DefineValue.TYPE, _object.getType());
         args.putString(DefineValue.REMARK, response.getPayment_remark());
@@ -1219,6 +1219,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
+        args.getString(DefineValue.TX_ID, args.getString(DefineValue.TX_ID) );
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);

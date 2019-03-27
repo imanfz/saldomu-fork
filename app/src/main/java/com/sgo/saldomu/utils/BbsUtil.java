@@ -39,8 +39,8 @@ public class BbsUtil {
                 hm.put("flag", Integer.toString(R.drawable.logo_bank_nobu));
             else if(bankMember.get(i).getProduct_name().toLowerCase().contains("saldomu"))
                 hm.put("flag", Integer.toString(R.drawable.logo_small));
-            else if(bankMember.get(i).getProduct_name().toLowerCase().contains("telkomsel"))
-                hm.put("flag", Integer.toString(R.drawable.tcash_small));
+            else if(bankMember.get(i).getProduct_name().toLowerCase().contains("linkaja"))
+                hm.put("flag", Integer.toString(R.drawable.linkaja));
             else if(bankMember.get(i).getProduct_name().toLowerCase().contains("akardaya"))
                 hm.put("flag", Integer.toString(R.drawable.mad_small));
             else if(bankMember.get(i).getProduct_code().toLowerCase().contains("emoedikk"))

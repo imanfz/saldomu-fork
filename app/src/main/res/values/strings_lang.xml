@@ -234,7 +234,7 @@
     <string name="listatm_item_expand_ins_1">Pilih Menu Transfer</string>
     <string name="listatm_item_expand_ins_2">Pilih Transfer ke Bank Mandiri </string>
     <string name="listatm_item_expand_ins_3">Masukkan Nomor Akun</string>
-    <string name="listatm_item_expand_ins_4">Masukkan Nominal Top Up</string>
+    <string name="listatm_item_expand_ins_4">Masukkan Nominal Top Up (minimal Rp 10.001).</string>
 
     <string name="myprofile_ab_title">Profil</string>
     <string name="myprofile_text_date_click">Tekan untuk memilih tanggal</string>
@@ -519,14 +519,14 @@
 
     <string name="listatm_topup_ins_1">Pilih Menu Transfer</string>
     <string name="listatm_topup_ins_2">Pilih Transfer ke </string>
-    <string name="listatm_topup_ins_3">Masukkan Nominal Top Up</string>
+    <string name="listatm_topup_ins_3">Masukkan Nominal Top Up (minimal Rp 10.001).</string>
     <string name="listatm_topup_ins_4">Masukkan Nomor Akun</string>
     <string name="listatm_topup_ins_5">Pilih YES/OK untuk menyetujui transaksi</string>
 
     <string name="listatm_topup_other_ins_1">Pilih Menu Transfer</string>
     <string name="listatm_topup_other_ins_2">Pilih Transfer \nke Bank Lain </string>
     <string name="listatm_topup_other_ins_3">Masukkan Kode Bank \n+ Nomor Akun</string>
-    <string name="listatm_topup_other_ins_4">Masukkan Nominal TOP UP</string>
+    <string name="listatm_topup_other_ins_4">Masukkan Nominal TOP UP (minimal Rp 10.001).</string>
     <string name="listatm_topup_other_ins_5">Pilih YES/OK untuk menyetujui transaksi</string>
 
     <string name="instruct_topup_mandiri_online_1">Buka aplikasi Mandiri Online</string>
@@ -537,7 +537,7 @@
     <string name="instruct_topup_mandiri_online_6">Pilih Rekening Sumber </string>
     <string name="instruct_topup_mandiri_online_7">Pilih penyedia jasa <b>Top Up Saldomu</b></string>
     <string name="instruct_topup_mandiri_online_8">Masukkan Nomor Akun</string>
-    <string name="instruct_topup_mandiri_online_9">Masukkan Nominal Top up</string>
+    <string name="instruct_topup_mandiri_online_9">Masukkan Nominal Top up (minimal Rp 10.001).</string>
     <string name="instruct_topup_mandiri_online_10">Masukkan Deskripsi (opsional)</string>
     <string name="instruct_topup_mandiri_online_11">Pilih Lanjut</string>
 
@@ -1180,7 +1180,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="listatm_topup_mandiri_1">Pilih Menu Bayar/Beli</string>
     <string name="listatm_topup_mandiri_2">Pilih Lainnya > Lainnya > multi Payment</string>
     <string name="listatm_topup_mandiri_3">Masukan Kode Perusahaan Top Up Saldomu : 89898</string>
-    <string name="listatm_topup_mandiri_5">Masukkan Nominal Top Up</string>
+    <string name="listatm_topup_mandiri_5">Masukkan Nominal Top Up (minimal Rp 10.001).</string>
     <string name="listatm_topup_mandiri_4">Masukkan Nomor Akun</string>
     <string name="listatm_topup_mandiri_6">Masukkan angka : 1</string>
     <string name="listatm_topup_mandiri_7">Pilih YA untuk menyetujui transaksi</string>
@@ -1189,7 +1189,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="listatm_topup_bri_2">Pilih Lainnya > Lainnya > Briva</string>
     <string name="listatm_topup_bri_3">Masukan Nomor Briva</string>
     <string name="listatm_topup_bri_4">Pilih YA</string>
-    <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP</string>
+    <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP (minimal Rp 10.001).</string>
 
     <string name="join_lkd">Join Member Mandiri LKD</string>
     <string name="c2a_lkd">Setor Tunai Mandiri LKD</string>

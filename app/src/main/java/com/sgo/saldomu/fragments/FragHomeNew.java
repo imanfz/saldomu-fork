@@ -708,7 +708,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             @Override
             public void setImageForPosition(int position, ImageView imageView) {
                 Glide.with(getActivity())
-                        .load(listPromo.get(position).getImage())
+//                        .load(listPromo.get(position).getImage())
+                        .load(R.drawable.tagih_id)
                         .into(imageView);
             }
         });
@@ -924,13 +925,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
         int hour = cal.get(Calendar.HOUR_OF_DAY);
 
 
-        if (hour >= 12 && hour < 17) {
+        if (hour > 10 && hour <= 14) {
             tv_greetings.setText(getString(R.string.good_afternoon) + " " + userNameLogin);
             img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.sun));
-        } else if (hour >= 17 && hour < 21) {
+        } else if (hour > 14  && hour <= 18.30) {
             tv_greetings.setText(getString(R.string.good_evening) + " " + userNameLogin);
             img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.moon));
-        } else if (hour >= 21 && hour < 24) {
+        } else if (hour > 18.30 || hour < 4) {
             tv_greetings.setText(getString(R.string.good_night) + " " + userNameLogin);
             img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.moon));
         } else {
