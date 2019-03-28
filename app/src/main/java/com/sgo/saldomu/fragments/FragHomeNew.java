@@ -708,8 +708,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             @Override
             public void setImageForPosition(int position, ImageView imageView) {
                 Glide.with(getActivity())
-//                        .load(listPromo.get(position).getImage())
-                        .load(R.drawable.tagih_id)
+                        .load(listPromo.get(position).getImage())
+//                        .load(R.drawable.tagih_id)
                         .into(imageView);
             }
         });
