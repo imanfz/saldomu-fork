@@ -354,6 +354,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
     public void getBalance(Boolean isAuto) {
 
+
         btn_refresh_balance.setEnabled(false);
         btn_refresh_balance.startAnimation(frameAnimation);
 
@@ -487,6 +488,8 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
     public void selectItem(int itemId, Bundle data) {
         Fragment newFragment;
+
+        isDormant = sp.getString(DefineValue.IS_DORMANT,"N");
 
         switch (itemId) {
             case MTOPUP:

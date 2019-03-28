@@ -118,6 +118,7 @@ public class UtilsLoader {
                                         mEditor.putString(DefineValue.IS_DORMANT, model.getIs_dormant());
                                         mEditor.remove(DefineValue.IS_MANUAL);
                                         mEditor.apply();
+                                        mEditor.commit();
 
                                         mListener.onSuccess(true);
                                         Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);

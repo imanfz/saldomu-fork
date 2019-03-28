@@ -147,8 +147,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
-
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
     }
@@ -169,7 +167,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         tv_greetings = v.findViewById(R.id.tv_greetings);
         btn_topup = v.findViewById(R.id.btn_topup);
         progBanner = v.findViewById(R.id.progressBarBanner);
-        carouselView = v.findViewById(R.id.carouselView);
+        carouselView = v.findViewById(R.id.carouselView1);
 
 //        btn_beli = v.findViewById(R.id.btn_beli);
 //        input = v.findViewById(R.id.input);
@@ -193,6 +191,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         isMemberShopDGI = sp.getString(DefineValue.IS_MEMBER_SHOP_DGI, "0");
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+
+        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
 
         string = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
 
@@ -376,6 +376,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Timber.d("masuk gridhomeonitemclicklistener");
+
+                isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
 
                 String menuItemName = ((TextView) view.findViewById(R.id.grid_text)).getText().toString();
                 String trxType = "";

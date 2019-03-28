@@ -285,7 +285,7 @@
                 android:layout_centerInParent="true" />
 
             <com.synnapps.carouselview.CarouselView
-                android:id="@+id/carouselView"
+                android:id="@+id/carouselView1"
                 android:layout_width="match_parent"
                 android:layout_height="135dp"
                 app:fillColor="#FFFFFFFF"
