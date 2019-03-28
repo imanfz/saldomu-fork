@@ -140,6 +140,7 @@ public class MainPage extends BaseActivity {
     AlertDialog devRootedDeviceAlertDialog;
     private Bundle savedInstanceState;
     private SMSclass smSclass;
+    private String isDormant;
 
     private LevelClass levelClass;
 

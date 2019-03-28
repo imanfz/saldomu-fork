@@ -459,7 +459,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             mEditor.putString(DefineValue.ACCESS_SECRET, model.getAccessSecret());
 
             mEditor.putString(DefineValue.LINK_APP, model.getSocialSignature());
-//            mEditor.putString(DefineValue.IS_DORMANT, model.getIs_dormant());
+            mEditor.putString(DefineValue.IS_DORMANT, model.getIs_dormant());
 
             if (Integer.valueOf(model.getIsRegistered()) == 0)
                 mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
