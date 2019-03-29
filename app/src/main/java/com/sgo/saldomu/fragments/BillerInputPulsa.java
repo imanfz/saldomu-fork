@@ -129,7 +129,9 @@ public class BillerInputPulsa extends BaseFragment {
                             img_operator.setBackground(getResources().getDrawable(R.drawable.indosat));
                         } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("three")) {
                             img_operator.setBackground(getResources().getDrawable(R.drawable.three));
-                        } else
+                        } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("smart")) {
+                            img_operator.setBackground(getResources().getDrawable(R.drawable.smartfren));
+                        }else
                             img_operator.setVisibility(View.GONE);
 
                         for (int i = 0; i < _data.size(); i++) {
