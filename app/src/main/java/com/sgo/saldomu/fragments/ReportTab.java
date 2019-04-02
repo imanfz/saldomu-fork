@@ -31,6 +31,7 @@ public class ReportTab extends Fragment {
 
     private ReportTabAdapter currentAdapternya;
     SecurePreferences sp;
+    String agentType;
     private View currentView;
     private InformationDialog dialogI;
     String[] titles;
@@ -38,7 +39,8 @@ public class ReportTab extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        View v = inflater.inflate(R.layout.frag_report_tab, container, false);
+//        View v = inflater.inflate(R.layout.frag_report_tab, container, false);
+        View v = inflater.inflate(R.layout.activity_report, container, false);
         setCurrentView(v);
         return v;
     }
@@ -53,6 +55,7 @@ public class ReportTab extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        agentType = sp.getString(DefineValue.AGENT_TYPE,"");
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
 
         ToggleFAB(false);
@@ -63,7 +66,7 @@ public class ReportTab extends Fragment {
             ReportTabAdapter adapternya;
             TabPageIndicator tabs;
             ViewPager pager;
-            if (isAgent){
+            if (isAgent ){
                 titles = getActivity().getResources().getStringArray(R.array.report_list_agen);
             }else
                 titles = getActivity().getResources().getStringArray(R.array.report_list);
@@ -76,8 +79,10 @@ public class ReportTab extends Fragment {
             mList.add(FragReport.newInstance(FragReport.REPORT_ASK));
             mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
 
-            tabs = getCurrentView().findViewById(R.id.report_tabs);
-            pager = getCurrentView().findViewById(R.id.report_pager);
+//            tabs = getCurrentView().findViewById(R.id.report_tabs);
+//            pager = getCurrentView().findViewById(R.id.report_pager);
+            tabs = (TabPageIndicator) getCurrentView().findViewById(R.id.report_tabs_activity);
+            pager = (ViewPager) getCurrentView().findViewById(R.id.report_pager_activity);
             adapternya = new ReportTabAdapter(getChildFragmentManager(), getActivity(), mList, titles);
             pager.setAdapter(adapternya);
             pager.setPageMargin(pageMargin);

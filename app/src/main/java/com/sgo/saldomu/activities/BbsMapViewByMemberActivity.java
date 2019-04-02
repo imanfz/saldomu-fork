@@ -38,33 +38,30 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fcm.FCMManager;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -509,8 +506,9 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         //progdialog              = DefinedDialog.CreateProgressDialog(this, "");
         String extraSignature = txId;
-        RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_LOCATION_MEMBER,
-                userPhoneID, accessKey, extraSignature);
+//        + memberLatitude + memberLongitude;
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION_MEMBER,
+                extraSignature);
 
         isInquiryRoute          = false;
 
@@ -529,40 +527,37 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         handler.removeCallbacks(runnable2);
 
-
-        MyApiClient.updateLocationMember(getApplication(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //if ( progdialog.isShowing())
-                    //progdialog.dismiss();
-
-                try {
-                    isRunning = false;
-                    String code = response.getString(WebParams.ERROR_CODE);
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_LOCATION_MEMBER, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            isRunning = false;
+                            String code = response.getString(WebParams.ERROR_CODE);
 
 
 
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        agentLatitude = response.getDouble(WebParams.SHOP_LATITUDE);
-                        agentLongitude = response.getDouble(WebParams.SHOP_LONGITUDE);
-                        cancelFee = String.valueOf(response.getDouble(WebParams.CANCEL_FEE));
+                                agentLatitude = response.getDouble(WebParams.SHOP_LATITUDE);
+                                agentLongitude = response.getDouble(WebParams.SHOP_LONGITUDE);
+                                cancelFee = String.valueOf(response.getDouble(WebParams.CANCEL_FEE));
 
-                        tvMemberName.setText(response.getString(WebParams.SHOP_NAME));
-                        //tvShop.setText(response.getString(WebParams.SHOP_NAME));
-                        tvCategoryName.setText(categoryName);
-                        tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(amount));
+                                tvMemberName.setText(response.getString(WebParams.SHOP_NAME));
+                                //tvShop.setText(response.getString(WebParams.SHOP_NAME));
+                                tvCategoryName.setText(categoryName);
+                                tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(amount));
 
-                        if ( response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ) {
-                            tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
-                        } else {
-                            tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
-                        }
+                                if ( response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ) {
+                                    tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
+                                } else {
+                                    tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
+                                }
 
-                        tvAcctName.setText(response.getString(WebParams.PRODUCT_NAME));
+                                tvAcctName.setText(response.getString(WebParams.PRODUCT_NAME));
 
-                        setMapCamera();
-                        handler.postDelayed(runnable2, timeDelayed);
+                                setMapCamera();
+                                handler.postDelayed(runnable2, timeDelayed);
 
                     /*
                     //remove redirection to rating page
@@ -596,55 +591,36 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         finish();
 */
 
-                    } else if ( code.equals("0001") || code.equals("0012") || code.equals("0003") || code.equals("0005") ) {
+                            } else if ( code.equals("0001") || code.equals("0012") || code.equals("0003") || code.equals("0005") ) {
 
-                        sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
-                        finish();
+                                sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
+                                finish();
 
-                    } else {
-                        //progdialog.dismiss();
-                        code = response.getString(WebParams.ERROR_MESSAGE);
-                        Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-                        handler.postDelayed(runnable2, timeDelayed);
-                        //startActivity(new Intent(getApplicationContext(), MainPage.class));
+                            } else {
+                                //progdialog.dismiss();
+                                code = response.getString(WebParams.ERROR_MESSAGE);
+                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                handler.postDelayed(runnable2, timeDelayed);
+                                //startActivity(new Intent(getApplicationContext(), MainPage.class));
+                            }
+
+                        } catch (JSONException e) {
+                            //Timber.d(String.valueOf(e.printStackTrace()));
+                            e.printStackTrace();
+                        }
                     }
 
-                } catch (JSONException e) {
-                    //Timber.d(String.valueOf(e.printStackTrace()));
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onComplete() {
 
-            private void ifFailure(Throwable throwable) {
-
-                //if ( progdialog.isShowing())
-                    //progdialog.dismiss();
-
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                isRunning = false;
-
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
-
+                        isRunning = false;
+                    }
+                });
     }
 
     /**
@@ -661,94 +637,93 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
     private void confirmTransactionMember() {
 
-        RequestParams params = new RequestParams();
-        UUID rcUUID = UUID.randomUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
-
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-        params.put(WebParams.TX_ID, txId);
-        params.put(WebParams.KEY_VALUE, gcmId);
-        params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
-
-        params.put(WebParams.SIGNATURE, signature);
-
-        MyApiClient.confirmTransactionMember(getApplicationContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                try {
-
-                    if ( progdialog2.isShowing())
-                        progdialog2.dismiss();
-
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                        handler.removeCallbacks(runnable2);
-
-                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
-                    }
-
-                    handler.removeCallbacks(runnable2);
-
-                    Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //llHeaderProgress.setVisibility(View.GONE);
-                //pbHeaderProgress.setVisibility(View.GONE);
-                if ( progdialog2.isShowing())
-                    progdialog2.dismiss();
-
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
+//        RequestParams params = new RequestParams();
+//        UUID rcUUID = UUID.randomUUID();
+//        String dtime = DateTimeFormat.getCurrentDateTime();
+//
+//        params.put(WebParams.RC_UUID, rcUUID);
+//        params.put(WebParams.RC_DATETIME, dtime);
+//        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+//        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+//        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+//        params.put(WebParams.TX_ID, txId);
+//        params.put(WebParams.KEY_VALUE, gcmId);
+//        params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
+//
+//        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
+//                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
+//
+//        params.put(WebParams.SIGNATURE, signature);
+//
+//        MyApiClient.confirmTransactionMember(getApplicationContext(), params, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//
+//                try {
+//
+//                    if ( progdialog2.isShowing())
+//                        progdialog2.dismiss();
+//
+//                    String code = response.getString(WebParams.ERROR_CODE);
+//                    if (code.equals(WebParams.SUCCESS_CODE)) {
+//
+//                        handler.removeCallbacks(runnable2);
+//
+//                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        startActivity(intent);
+//                        finish();
+//                    } else {
+//                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+//                    }
+//
+//                    handler.removeCallbacks(runnable2);
+//
+//                    Intent intent = new Intent(getApplicationContext(), MainPage.class);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intent);
+//                    finish();
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                super.onFailure(statusCode, headers, responseString, throwable);
+//                ifFailure(throwable);
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                super.onFailure(statusCode, headers, throwable, errorResponse);
+//                ifFailure(throwable);
+//            }
+//
+//            private void ifFailure(Throwable throwable) {
+//                //llHeaderProgress.setVisibility(View.GONE);
+//                //pbHeaderProgress.setVisibility(View.GONE);
+//                if ( progdialog2.isShowing())
+//                    progdialog2.dismiss();
+//
+//                if (MyApiClient.PROD_FAILURE_FLAG)
+//                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+//
+//                Timber.w("Error Koneksi login:" + throwable.toString());
+//
+//            }
+//
+//        });
 
     }
 
     private void cancelTransactionMember() {
 
         String extraSignature = txId + sp.getString(DefineValue.MEMBER_ID, "");
-        RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CANCEL_TRANSACTION_MEMBER,
-                userPhoneID, accessKey, extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CANCEL_TRANSACTION_MEMBER, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -759,56 +734,39 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
         params.put(WebParams.USER_ID, userPhoneID);
 
-        MyApiClient.cancelTransactionMember(getApplicationContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CANCEL_TRANSACTION_MEMBER, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            String code = response.getString(WebParams.ERROR_CODE);
 
-                try {
-                    progdialog2.dismiss();
-                    String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
 
-                        sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
-
-                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(getApplicationContext(), getString(R.string.msg_notif_tidak_bisa_batal), Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(getApplicationContext(), getString(R.string.msg_notif_tidak_bisa_batal), Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+                    }
 
-            private void ifFailure(Throwable throwable) {
-                //llHeaderProgress.setVisibility(View.GONE);
-                //pbHeaderProgress.setVisibility(View.GONE);
-                progdialog2.dismiss();
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onComplete() {
 
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
-
+                        progdialog2.dismiss();
+                    }
+                });
     }
 
     @Override
@@ -930,67 +888,74 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             nextParams += "&mode="+DefineValue.GMAP_MODE;
             nextParams += "&language="+ Locale.getDefault().getLanguage();
 
-            RequestParams rqParams = new RequestParams();
-            rqParams.put("origin", agentLatitude.toString()+","+agentLongitude.toString());
-            rqParams.put("sensor", "false");
-            rqParams.put("units", "metric");
-            rqParams.put("mode", DefineValue.GMAP_MODE);
-            rqParams.put("language", Locale.getDefault().getLanguage() );
+//            RequestParams rqParams = new RequestParams();
+//            rqParams.put("origin", agentLatitude.toString()+","+agentLongitude.toString());
+//            rqParams.put("sensor", "false");
+//            rqParams.put("units", "metric");
+//            rqParams.put("mode", DefineValue.GMAP_MODE);
+//            rqParams.put("language", Locale.getDefault().getLanguage() );
 
 
             String tempParams = nextParams;
             tempParams += "&destination=" + targetLatitude.toString() + "," + targetLongitude.toString();
 
-            getGoogleMapRoute(tempParams, 0);
+            HashMap<String, Object> query = MyApiClient.googleDestination();
+            query.put("origin", dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString());
+            query.put("destination", targetLatitude.toString() + "," + targetLongitude.toString());
+
+            getGoogleMapRoute(query, 0);
             return null;
         }
 
     }
 
-    public void getGoogleMapRoute(String tempParams, final int idx) {
-        MyApiClient.getGoogleMapRoute(getApplicationContext(), tempParams, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Timber.w("Response google map route:" + response.toString());
-                try {
+    public void getGoogleMapRoute(
+//            String tempParams
+            HashMap<String, Object> query, final int idx) {
+        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
+//                        + "?" + tempParams,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                    JSONArray array = response.getJSONArray("routes");
-                    JSONObject routes = array.getJSONObject(0);
-                    JSONArray legs = routes.getJSONArray("legs");
-                    JSONObject steps = legs.getJSONObject(0);
-                    JSONObject distance = steps.getJSONObject("distance");
-                    JSONObject duration = steps.getJSONObject("duration");
+                            JSONArray array = response.getJSONArray("routes");
+                            JSONObject routes = array.getJSONObject(0);
+                            JSONArray legs = routes.getJSONArray("legs");
+                            JSONObject steps = legs.getJSONObject(0);
+                            JSONObject distance = steps.getJSONObject("distance");
+                            JSONObject duration = steps.getJSONObject("duration");
 
-                    String parsedDistance = distance.getString("text");
-                    distanceBetween = distance.getInt("value");
+                            String parsedDistance = distance.getString("text");
+                            distanceBetween = distance.getInt("value");
 
-                    isInquiryRoute = true;
+                            isInquiryRoute = true;
                     /*if ( DefineValue.MIN_DISTANCE_ALMOST_ARRIVE > iDistance ) {
 
 
 
                     }*/
 
-                    final String parseDuration =  duration.getString("text");
+                            final String parseDuration =  duration.getString("text");
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvDurasi.setText(parseDuration);
-                        }
-                    });
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvDurasi.setText(parseDuration);
+                                }
+                            });
 
 
-                    JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
-                    String points = overviewPolyline.getString("points");
+                            JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
+                            String points = overviewPolyline.getString("points");
 
-                    //encodedPoints = points;
+                            //encodedPoints = points;
 
-                    JSONArray directions = steps.getJSONArray("steps");
+                            JSONArray directions = steps.getJSONArray("steps");
 
-                    if ( directions.length() > 0 ) {
-                        JSONObject toDirection = directions.getJSONObject(0);
-                        //htmlDirections = toDirection.getString("html_instructions");
+                            if ( directions.length() > 0 ) {
+                                JSONObject toDirection = directions.getJSONObject(0);
+                                //htmlDirections = toDirection.getString("html_instructions");
 
                         /*JSONArray toDistanceArray = toDirection.getJSONArray("distance");
                         JSONObject toDistanceObject = toDistanceArray.getJSONObject(0);
@@ -999,38 +964,26 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         htmlDirections += " ( " + toDistanceString + " ) ";
                         //tvDirection.setText(Html.fromHtml(toDirection.getString("html_instructions")));
                         */
+                            }
+
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
+                    @Override
+                    public void onError(Throwable throwable) {
 
+                    }
 
+                    @Override
+                    public void onComplete() {
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
-
-
-
+                    }
+                });
     }
 
     public void setPolyline() {

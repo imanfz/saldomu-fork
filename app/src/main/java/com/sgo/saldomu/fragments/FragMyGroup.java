@@ -7,12 +7,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewCompat;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.MyGroupObject;
 import com.sgo.saldomu.R;
@@ -22,18 +24,22 @@ import com.sgo.saldomu.adapter.MyGroupAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.PtrHandler;
-import in.srain.cube.views.ptr.header.StoreHouseHeader;
-import org.apache.http.Header;
+import com.sgo.saldomu.interfaces.ObjListeners;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.header.StoreHouseHeader;
 import timber.log.Timber;
 
 /**
@@ -133,8 +139,7 @@ public class FragMyGroup extends ListFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_GROUP_LIST,
-                    _ownerID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GROUP_LIST);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PAGE, page);
             params.put(WebParams.COUNT, DefineValue.COUNT);
@@ -142,118 +147,100 @@ public class FragMyGroup extends ListFragment {
 
             Timber.d("isi params get group list:" + params.toString());
 
-            MyApiClient.getGroupList(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GROUP_LIST, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String count = response.getString(WebParams.COUNT);
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                String count = response.getString(WebParams.COUNT);
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                            Timber.d("isi params group list:"+response.toString());
-                            JSONArray mArrayGroup = new JSONArray(response.getString(WebParams.DATA_GROUP));
-                            for(int i = 0 ; i < mArrayGroup.length() ; i++) {
-                                String groupid = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_ID);
-                                String groupName = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_NAME);
+                                if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+                                    Timber.d("isi params group list:"+response.toString());
+                                    JSONArray mArrayGroup = new JSONArray(response.getString(WebParams.DATA_GROUP));
+                                    for(int i = 0 ; i < mArrayGroup.length() ; i++) {
+                                        String groupid = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_ID);
+                                        String groupName = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_NAME);
 //                                String groupDesc = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_DESC);
 
-                                boolean flagSame = false;
+                                        boolean flagSame = false;
 
-                                // cek apakah ada group id yang sama.. kalau ada tidak dimasukan ke array
-                                if(groups.size() > 0) {
-                                    for (int index = 0; index < groups.size(); index++) {
-                                        if (!groups.get(index).getGroupID().equals(groupid)) {
-                                            flagSame = false;
-                                        } else {
-                                            flagSame = true;
-                                            break;
+                                        // cek apakah ada group id yang sama.. kalau ada tidak dimasukan ke array
+                                        if(groups.size() > 0) {
+                                            for (int index = 0; index < groups.size(); index++) {
+                                                if (!groups.get(index).getGroupID().equals(groupid)) {
+                                                    flagSame = false;
+                                                } else {
+                                                    flagSame = true;
+                                                    break;
+                                                }
+                                            }
                                         }
-                                    }
-                                }
 
-                                if(!flagSame) {
-                                    MyGroupObject myGroupObject = new MyGroupObject();
-                                    myGroupObject.setType(0);
-                                    myGroupObject.setGroupID(groupid);
-                                    myGroupObject.setGroupName(groupName);
-                                    myGroupObject.setSectionPosition(sectionPosition);
-                                    myGroupObject.setListPosition(listPosition++);
-                                    groups.add(myGroupObject);
+                                        if(!flagSame) {
+                                            MyGroupObject myGroupObject = new MyGroupObject();
+                                            myGroupObject.setType(0);
+                                            myGroupObject.setGroupID(groupid);
+                                            myGroupObject.setGroupName(groupName);
+                                            myGroupObject.setSectionPosition(sectionPosition);
+                                            myGroupObject.setListPosition(listPosition++);
+                                            groups.add(myGroupObject);
 
-                                    if(!mArrayGroup.getJSONObject(i).getString(WebParams.MEMBERS).equals("")) {
-                                        JSONArray mArrayMember = new JSONArray(mArrayGroup.getJSONObject(i).getString(WebParams.MEMBERS));
+                                            if(!mArrayGroup.getJSONObject(i).getString(WebParams.MEMBERS).equals("")) {
+                                                JSONArray mArrayMember = new JSONArray(mArrayGroup.getJSONObject(i).getString(WebParams.MEMBERS));
 
-                                        for (int j = 0; j < mArrayMember.length(); j++) {
+                                                for (int j = 0; j < mArrayMember.length(); j++) {
 //                                            String memberid = mArrayMember.getJSONObject(j).getString(WebParams.MEMBER_ID);
-                                            String memberName = mArrayMember.getJSONObject(j).getString(WebParams.MEMBER_NAME);
-                                            String memberProfilePicture = mArrayMember.getJSONObject(j).getString(WebParams.MEMBER_PROFILE_PICTURE);
+                                                    String memberName = mArrayMember.getJSONObject(j).getString(WebParams.MEMBER_NAME);
+                                                    String memberProfilePicture = mArrayMember.getJSONObject(j).getString(WebParams.MEMBER_PROFILE_PICTURE);
 
-                                            MyGroupObject myMemberObject = new MyGroupObject();
-                                            myMemberObject.setType(1);
-                                            myMemberObject.setGroupID(groupid);
-                                            myMemberObject.setGroupName(groupName);
-                                            myMemberObject.setMemberName(memberName);
-                                            myMemberObject.setMemberProfilePicture(memberProfilePicture);
-                                            myMemberObject.setSectionPosition(sectionPosition);
-                                            myMemberObject.setListPosition(listPosition++);
-                                            groups.add(myMemberObject);
+                                                    MyGroupObject myMemberObject = new MyGroupObject();
+                                                    myMemberObject.setType(1);
+                                                    myMemberObject.setGroupID(groupid);
+                                                    myMemberObject.setGroupName(groupName);
+                                                    myMemberObject.setMemberName(memberName);
+                                                    myMemberObject.setMemberProfilePicture(memberProfilePicture);
+                                                    myMemberObject.setSectionPosition(sectionPosition);
+                                                    myMemberObject.setListPosition(listPosition++);
+                                                    groups.add(myMemberObject);
+                                                }
+
+                                            }
+                                            sectionPosition++;
                                         }
-
                                     }
-                                    sectionPosition++;
+
+                                    myGroupAdapter.notifyDataSetChanged();
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getActivity(),message);
+                                }
+                                else {
+                                    Timber.d("isi error group list:"+response.toString());
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 }
                             }
-
-                            myGroupAdapter.notifyDataSetChanged();
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(),message);
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                        else {
-                            Timber.d("isi error group list:"+response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
+                        @Override
+                        public void onComplete() {
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                    }
-                    catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    Timber.w("Error Koneksi get group list Mygroup:"+throwable.toString());
-                }
-            });
+                    });
 
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());

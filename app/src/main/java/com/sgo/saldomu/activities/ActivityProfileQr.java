@@ -13,8 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -23,15 +21,18 @@ import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.ScanQRUtils;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -390,89 +391,70 @@ public class ActivityProfileQr extends BaseActivity {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    userPhoneID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 
-            MyApiClient.getHelpList(ActivityProfileQr.this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params help list:"+response.toString());
-
-                            contactCenter = response.getString(WebParams.CONTACT_DATA);
-
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
-                            mEditor.apply();
-
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_USER_CONTACT_INSERT, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
                             try {
-                                JSONArray arrayContact = new JSONArray(contactCenter);
-                                for(int i=0 ; i<arrayContact.length() ; i++) {
-                                    if(i == 0) {
-                                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.d("isi params help list:"+response.toString());
+
+                                    contactCenter = response.getString(WebParams.CONTACT_DATA);
+
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
+                                    mEditor.apply();
+
+                                    try {
+                                        JSONArray arrayContact = new JSONArray(contactCenter);
+                                        for(int i=0 ; i<arrayContact.length() ; i++) {
+                                            if(i == 0) {
+                                                listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
+                                                listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
+
                                 }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(ActivityProfileQr.this,message);
+                                }
+                                else {
+                                    Timber.d("isi error help list:"+response.toString());
+                                    Toast.makeText(ActivityProfileQr.this, message, Toast.LENGTH_LONG).show();
+                                }
+
+
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                                Timber.d("Error JSON catch contact:"+e.toString());
                             }
-
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(ActivityProfileQr.this,message);
-                        }
-                        else {
-                            Timber.d("isi error help list:"+response.toString());
-                            Toast.makeText(ActivityProfileQr.this, message, Toast.LENGTH_LONG).show();
                         }
 
-                        progdialog.dismiss();
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Timber.d("Error JSON catch contact:"+e.toString());
-                    }
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(ActivityProfileQr.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(ActivityProfileQr.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi help list help:"+throwable.toString());
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
         }
         catch (Exception e){
             if(progdialog.isShowing())

@@ -15,22 +15,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.JoinCommunitySCADMActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -102,98 +103,61 @@ public class FragJoinCommunitySCADM extends BaseFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = comm_id_scadm + et_member_code.getText().toString();
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_PREVIEW_COMMUNITY_SCADM,
-                    userPhoneID, accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_PREVIEW_COMMUNITY_SCADM, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_SCADM, comm_id_scadm);
             params.put(WebParams.MEMBER_CODE, et_member_code.getText().toString());
 
             Timber.d("isi params sent preview join community scadm:" + params.toString());
 
-            JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response sent preview join community scadm:" + response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_PREVIEW_COMMUNITY_SCADM, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("isi response sent preview join community scadm:" + response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            comm_name = response.getString(WebParams.COMM_NAME);
-                            comm_code = response.getString(WebParams.COMM_CODE);
-                            comm_id_scadm = response.getString(WebParams.COMM_ID);
-                            member_code = response.getString(WebParams.MEMBER_CODE);
-                            member_name = response.getString(WebParams.MEMBER_NAME);
+                                    comm_name = response.getString(WebParams.COMM_NAME);
+                                    comm_code = response.getString(WebParams.COMM_CODE);
+                                    comm_id_scadm = response.getString(WebParams.COMM_ID);
+                                    member_code = response.getString(WebParams.MEMBER_CODE);
+                                    member_name = response.getString(WebParams.MEMBER_NAME);
 
-                            progdialog.dismiss();
+                                    changeToConfirm();
 
-                            changeToConfirm();
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else {
+                                    Timber.d("Error isi response sent preview join community scadm:" + response.toString());
+                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(), message);
-                        } else {
-                            Timber.d("Error isi response sent preview join community scadm:" + response.toString());
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    getActivity().finish();
+                                }
 
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            getActivity().finish();
+                            } catch (JSONException e) {
+                                Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
+                            }
                         }
-                        if (progdialog.isShowing())
-                            progdialog.dismiss();
 
-                    } catch (JSONException e) {
-                        progdialog.dismiss();
-                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
+                            getActivity().finish();
 
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-                    getActivity().finish();
-                    Timber.w("Error Koneksi sent preview join community scadm:" + throwable.toString());
-                }
-
-                @Override
-                public void onProgress(long bytesWritten, long totalSize) {
-                    super.onProgress(bytesWritten, totalSize);
-                }
-
-                @Override
-                public void onCancel() {
-                    super.onCancel();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-                }
-            };
-
-            MyApiClient.sentPreviewJoinCommunitySCADM(getActivity(), params, mHandler);
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
 
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());

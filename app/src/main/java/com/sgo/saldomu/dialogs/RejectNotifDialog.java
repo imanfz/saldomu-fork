@@ -12,19 +12,21 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.jsonModel;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -71,11 +73,11 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        _userId = sp.getString(DefineValue.USERID_PHONE,"");
-        _accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        _userId = sp.getString(DefineValue.USERID_PHONE, "");
+        _accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Bundle bundle = getArguments();
-        if(bundle != null) {
+        if (bundle != null) {
             req_id = bundle.getString(DefineValue.REQUEST_ID);
             trx_id = bundle.getString(DefineValue.TRX_ID);
             from = bundle.getString(DefineValue.FROM);
@@ -105,19 +107,19 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
     }
 
 
-    private void sentAsk4MoneyReject(){
-        try{
+    private void sentAsk4MoneyReject() {
+        try {
 //
 //            UUID uuid = MyApiClient.getUUID();
 //            String dtime = DateTimeFormat.getCurrentDateTime();
 //            String webservice = MyApiClient.getWebserviceName(MyApiClient.LINK_ASK4MONEY_REJECT);
 //            Timber.d("Webservice:"+webservice);
-            String extraSignature = req_id+trx_id+from;
+            String extraSignature = req_id + trx_id + from;
 //            String signature = MyApiClient.getSignature(webservice, MyApiClient.COMM_ID
 //                    , _userId, _accessKey, extraSignature);
 
-            RequestParams params = MyApiClient.getInstance()
-                    .getSignatureWithParams(MyApiClient.LINK_ASK4MONEY_REJECT, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_ASK4MONEY_REJECT,
+                    extraSignature);
             params.put(WebParams.USER_ID, _userId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.REQUEST_ID, req_id);
@@ -133,78 +135,53 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
 
             Timber.d("isi params ask for money reject:" + params.toString());
 
-            MyApiClient.sentAsk4MoneyReject(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        dismiss();
-                        //btnOk.setEnabled(true);
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.w("isi response ask for money reject:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            if (mListener != null) {
-                                mListener.onItemSelected(true);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ASK4MONEY_REJECT, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            Gson gson = new Gson();
+                            jsonModel model = gson.fromJson(object, jsonModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                if (mListener != null) {
+                                    mListener.onItemSelected(true);
+                                }
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(), message);
+                            } else {
+                                code = model.getError_code() + " : " + model.getError_message();
+
+                                if (!getActivity().isFinishing()) {
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                }
                             }
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(), message);
-                        } else {
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                         }
 
-                    } catch (JSONException e) {
-                        if (!getActivity().isFinishing())
-                            Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onComplete() {
+                            dismiss();
+                        }
+                    });
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-
-                    if (!getActivity().isFinishing()) {
-                        if (MyApiClient.PROD_FAILURE_FLAG)
-                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    dismiss();
-                    Timber.w("Error ask for money reject:"+throwable.toString());
-                }
-            });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         Dialog dialog = getDialog();
-        if (dialog != null)
-        {
+        if (dialog != null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             dialog.getWindow().setLayout(width, height);

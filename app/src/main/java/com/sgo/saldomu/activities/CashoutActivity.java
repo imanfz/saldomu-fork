@@ -8,11 +8,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 
-
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivityOTP;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragCashOut;
 import com.sgo.saldomu.fragments.FragCashOutAgen;
@@ -137,7 +136,7 @@ public class CashoutActivity extends BaseActivityOTP implements TransactionResul
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MyApiClient.CancelRequestWS(this, true);
+        RetrofitService.dispose();
     }
 
     @Override

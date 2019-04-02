@@ -28,31 +28,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.balysv.materialripple.MaterialRippleLayout;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.CountryModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GeneralizeImage;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -535,113 +528,113 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
     }
 
     private void sendDataUpdate(){
-        try{
-            progdialog = DefinedDialog.CreateProgressDialog(this, "");
-            progdialog.show();
-
-            tempCountry = spinner_country.getSelectedItem().toString();
-            tempHobby = spinner_hobby.getSelectedItem().toString();
-
-            String extraSignature = memberIDLogin;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
-                    userPhoneID,accessKey, extraSignature);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.MEMBER_ID, memberIDLogin);
-            params.put(WebParams.SOCIAL_ID,et_socialID.getText().toString());
-            params.put(WebParams.USER_ID,userID);
-            params.put(WebParams.EMAIL,et_email.getText().toString());
-            params.put(WebParams.FULL_NAME,et_name.getText().toString());
-            params.put(WebParams.POB,et_pob.getText().toString());
-            params.put(WebParams.ID_TYPE,spinner_id_types.getSelectedItem().toString());
-
-            if(dedate.equals(""))params.put(WebParams.DOB,"");
-            else params.put(WebParams.DOB,date_dob);
-
-            if(!CountryModel.allCountry[0].equals(tempCountry))
-                params.put(WebParams.COUNTRY,tempCountry);
-            else params.put(WebParams.COUNTRY,"");
-
-            params.put(WebParams.ADDRESS, et_address.getText().toString());
-            params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-
-            if(tempHobby.equals(list_hobby[0])) params.put(WebParams.HOBBY,"");
-            else params.put(WebParams.HOBBY,tempHobby);
-
-            if(spinner_gender.getSelectedItemPosition()==0)
-                params.put(WebParams.GENDER, gender_value[0]);
-            else
-                params.put(WebParams.GENDER, gender_value[1]);
-
-            params.put(WebParams.BIO, et_bio.getText().toString());
-            params.put(WebParams.MOTHER_NAME, et_bom.getText().toString());
-            params.put(WebParams.IS_REGISTER, "N");
-
-            Timber.d("isi params update profile:"+ params.toString());
-
-            MyApiClient.sentUpdateProfile(this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                    progdialog.dismiss();
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            setLoginProfile(response);
-                            Toast.makeText(MyProfileActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
-                            Timber.d("isi response Update Profile:"+ response.toString());
-                            if(is_first_time) {
-                                RESULT = MainPage.RESULT_FIRST_TIME;
-                            }
-                            closethis();
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+ response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(MyProfileActivity.this,message);
-                        }
-                        else {
-                            Timber.d("Error Update Profile:"+ response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(MyProfileActivity.this, code, Toast.LENGTH_LONG).show();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(MyProfileActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(MyProfileActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    Timber.w("Error Koneksi data update myprofile:"+ throwable.toString());
-                }
-            });
-        }catch (Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
-        }
+//        try{
+//            progdialog = DefinedDialog.CreateProgressDialog(this, "");
+//            progdialog.show();
+//
+//            tempCountry = spinner_country.getSelectedItem().toString();
+//            tempHobby = spinner_hobby.getSelectedItem().toString();
+//
+//            String extraSignature = memberIDLogin;
+//            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
+//                    userPhoneID,accessKey, extraSignature);
+//            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+//            params.put(WebParams.MEMBER_ID, memberIDLogin);
+//            params.put(WebParams.SOCIAL_ID,et_socialID.getText().toString());
+//            params.put(WebParams.USER_ID,userID);
+//            params.put(WebParams.EMAIL,et_email.getText().toString());
+//            params.put(WebParams.FULL_NAME,et_name.getText().toString());
+//            params.put(WebParams.POB,et_pob.getText().toString());
+//            params.put(WebParams.ID_TYPE,spinner_id_types.getSelectedItem().toString());
+//
+//            if(dedate.equals(""))params.put(WebParams.DOB,"");
+//            else params.put(WebParams.DOB,date_dob);
+//
+//            if(!CountryModel.allCountry[0].equals(tempCountry))
+//                params.put(WebParams.COUNTRY,tempCountry);
+//            else params.put(WebParams.COUNTRY,"");
+//
+//            params.put(WebParams.ADDRESS, et_address.getText().toString());
+//            params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+//
+//            if(tempHobby.equals(list_hobby[0])) params.put(WebParams.HOBBY,"");
+//            else params.put(WebParams.HOBBY,tempHobby);
+//
+//            if(spinner_gender.getSelectedItemPosition()==0)
+//                params.put(WebParams.GENDER, gender_value[0]);
+//            else
+//                params.put(WebParams.GENDER, gender_value[1]);
+//
+//            params.put(WebParams.BIO, et_bio.getText().toString());
+//            params.put(WebParams.MOTHER_NAME, et_bom.getText().toString());
+//            params.put(WebParams.IS_REGISTER, "N");
+//
+//            Timber.d("isi params update profile:"+ params.toString());
+//
+//            MyApiClient.sentUpdateProfile(this,params, new JsonHttpResponseHandler() {
+//                @Override
+//                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//
+//                    progdialog.dismiss();
+//                    try {
+//                        String code = response.getString(WebParams.ERROR_CODE);
+//                        if (code.equals(WebParams.SUCCESS_CODE)) {
+//                            setLoginProfile(response);
+//                            Toast.makeText(MyProfileActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
+//                            Timber.d("isi response Update Profile:"+ response.toString());
+//                            if(is_first_time) {
+//                                RESULT = MainPage.RESULT_FIRST_TIME;
+//                            }
+//                            closethis();
+//                        }
+//                        else if(code.equals(WebParams.LOGOUT_CODE)){
+//                            Timber.d("isi response autologout:"+ response.toString());
+//                            String message = response.getString(WebParams.ERROR_MESSAGE);
+//                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+//                            test.showDialoginActivity(MyProfileActivity.this,message);
+//                        }
+//                        else {
+//                            Timber.d("Error Update Profile:"+ response.toString());
+//                            code = response.getString(WebParams.ERROR_MESSAGE);
+//                            Toast.makeText(MyProfileActivity.this, code, Toast.LENGTH_LONG).show();
+//                        }
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                    super.onFailure(statusCode, headers, responseString, throwable);
+//                    failure(throwable);
+//                }
+//
+//                @Override
+//                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                    super.onFailure(statusCode, headers, throwable, errorResponse);
+//                    failure(throwable);
+//                }
+//
+//                @Override
+//                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+//                    super.onFailure(statusCode, headers, throwable, errorResponse);
+//                    failure(throwable);
+//                }
+//
+//                private void failure(Throwable throwable){
+//                    if(MyApiClient.PROD_FAILURE_FLAG)
+//                        Toast.makeText(MyProfileActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                    else
+//                        Toast.makeText(MyProfileActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
+//                    if(progdialog.isShowing())
+//                        progdialog.dismiss();
+//                    Timber.w("Error Koneksi data update myprofile:"+ throwable.toString());
+//                }
+//            });
+//        }catch (Exception e){
+//            Timber.d("httpclient:"+ e.getMessage());
+//        }
     }
 
 
@@ -784,94 +777,94 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
     }
 
     private void uploadFileToServer(File photoFile) {
-//        Picasso.with(this).load(R.drawable.progress_animation).into(profilePicContent);
-        prgLoading.setVisibility(View.VISIBLE);
-
-        RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_PROFILE_PIC,
-                userID,accessKey);
-
-        try {
-            params.put(WebParams.USER_ID,userID);
-            params.put(WebParams.USER_FILE, photoFile);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        Timber.d("params upload profile picture: " + params.toString());
-
-        MyApiClient.sentProfilePicture(this, params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    String error_code = response.getString("error_code");
-                    String error_message = response.getString("error_message");
-                    prgLoading.setVisibility(View.GONE);
-                    Timber.d("response Listbank:" + response.toString());
-                    if (error_code.equalsIgnoreCase("0000")) {
-                        SecurePreferences.Editor mEditor = sp.edit();
-
-                        mEditor.putString(DefineValue.IMG_URL, response.getString(WebParams.IMG_URL));
-                        mEditor.putString(DefineValue.IMG_SMALL_URL, response.getString(WebParams.IMG_SMALL_URL));
-                        mEditor.putString(DefineValue.IMG_MEDIUM_URL, response.getString(WebParams.IMG_MEDIUM_URL));
-                        mEditor.putString(DefineValue.IMG_LARGE_URL, response.getString(WebParams.IMG_LARGE_URL));
-
-                        mEditor.apply();
-
-                        setImageProfPic();
-
-                        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
-                    } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
-                        Timber.d("isi response autologout:" + response.toString());
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                        test.showDialoginActivity(MyProfileActivity.this, message);
-                    } else {
-                        AlertDialog.Builder alert = new AlertDialog.Builder(MyProfileActivity.this);
-                        alert.setTitle("Upload Image");
-                        alert.setMessage("Upload Image : " + error_message);
-                        alert.setPositiveButton("OK", null);
-                        alert.show();
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Unexpected Error occurred! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                failure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            private void failure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(MyProfileActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(MyProfileActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                if (prgLoading.getVisibility() == View.VISIBLE)
-                    prgLoading.setVisibility(View.GONE);
-                setImageProfPic();
-                Timber.w("Error Koneksi data update myprofile:" + throwable.toString());
-            }
-
-        });
+////        Picasso.with(this).load(R.drawable.progress_animation).into(profilePicContent);
+//        prgLoading.setVisibility(View.VISIBLE);
+//
+//        RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_PROFILE_PIC,
+//                userID,accessKey);
+//
+//        try {
+//            params.put(WebParams.USER_ID,userID);
+//            params.put(WebParams.USER_FILE, photoFile);
+//            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Timber.d("params upload profile picture: " + params.toString());
+//
+//        MyApiClient.sentProfilePicture(this, params, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                try {
+//                    String error_code = response.getString("error_code");
+//                    String error_message = response.getString("error_message");
+//                    prgLoading.setVisibility(View.GONE);
+//                    Timber.d("response Listbank:" + response.toString());
+//                    if (error_code.equalsIgnoreCase("0000")) {
+//                        SecurePreferences.Editor mEditor = sp.edit();
+//
+//                        mEditor.putString(DefineValue.IMG_URL, response.getString(WebParams.IMG_URL));
+//                        mEditor.putString(DefineValue.IMG_SMALL_URL, response.getString(WebParams.IMG_SMALL_URL));
+//                        mEditor.putString(DefineValue.IMG_MEDIUM_URL, response.getString(WebParams.IMG_MEDIUM_URL));
+//                        mEditor.putString(DefineValue.IMG_LARGE_URL, response.getString(WebParams.IMG_LARGE_URL));
+//
+//                        mEditor.apply();
+//
+//                        setImageProfPic();
+//
+//                        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
+//                    } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
+//                        Timber.d("isi response autologout:" + response.toString());
+//                        String message = response.getString(WebParams.ERROR_MESSAGE);
+//
+//                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+//                        test.showDialoginActivity(MyProfileActivity.this, message);
+//                    } else {
+//                        AlertDialog.Builder alert = new AlertDialog.Builder(MyProfileActivity.this);
+//                        alert.setTitle("Upload Image");
+//                        alert.setMessage("Upload Image : " + error_message);
+//                        alert.setPositiveButton("OK", null);
+//                        alert.show();
+//
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(getApplicationContext(), "Unexpected Error occurred! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                super.onFailure(statusCode, headers, responseString, throwable);
+//                failure(throwable);
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                super.onFailure(statusCode, headers, throwable, errorResponse);
+//                failure(throwable);
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+//                super.onFailure(statusCode, headers, throwable, errorResponse);
+//                failure(throwable);
+//            }
+//
+//            private void failure(Throwable throwable) {
+//                if (MyApiClient.PROD_FAILURE_FLAG)
+//                    Toast.makeText(MyProfileActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(MyProfileActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
+//                if (prgLoading.getVisibility() == View.VISIBLE)
+//                    prgLoading.setVisibility(View.GONE);
+//                setImageProfPic();
+//                Timber.w("Error Koneksi data update myprofile:" + throwable.toString());
+//            }
+//
+//        });
     }
 
     private void setLoginProfile(JSONObject response){

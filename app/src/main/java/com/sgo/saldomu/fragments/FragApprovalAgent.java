@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +32,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -42,17 +41,19 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
@@ -344,8 +345,8 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
             progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
             String extraSignature   = shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus;
-            RequestParams params3 = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT,
-                    sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
+            HashMap<String, Object> params3 = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT,
+                    extraSignature);
 
             params3.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params3.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -362,39 +363,39 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                 params3.put(WebParams.LONGITUDE, currentLongitude);
             }
 
+            Log.d("paarm", "param: " + params3.toString());
 
-            MyApiClient.updateTransactionAgent(getContext(), params3, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog2.dismiss();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT, params3,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
 
-                    try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    if (flagTxStatus.equals(DefineValue.STRING_ACCEPT)) {
+                                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                        SecurePreferences.Editor mEditor = prefs.edit();
+                                        mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
+                                        mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
+                                        mEditor.putString(DefineValue.BBS_TX_ID, shopDetails.get(itemId).getTxId());
+                                        mEditor.putDouble(DefineValue.AGENT_LATITUDE, currentLatitude);
+                                        mEditor.putDouble(DefineValue.AGENT_LONGITUDE, currentLongitude);
+                                        mEditor.putString(DefineValue.KEY_CCY, response.getString(DefineValue.KEY_CCY));
+                                        mEditor.putString(DefineValue.KEY_AMOUNT, response.getString(DefineValue.KEY_AMOUNT));
+                                        mEditor.putString(DefineValue.KEY_ADDRESS, response.getString(DefineValue.KEY_ADDRESS));
+                                        mEditor.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
+                                        mEditor.putString(DefineValue.KEY_NAME, response.getString(DefineValue.KEY_NAME));
+                                        mEditor.putDouble(DefineValue.BENEF_LATITUDE, response.getDouble(DefineValue.KEY_LATITUDE));
+                                        mEditor.putDouble(DefineValue.BENEF_LONGITUDE, response.getDouble(DefineValue.KEY_LONGITUDE));
+                                        mEditor.apply();
 
-                            if (flagTxStatus.equals(DefineValue.STRING_ACCEPT)) {
-                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                SecurePreferences.Editor mEditor = prefs.edit();
-                                mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
-                                mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
-                                mEditor.putString(DefineValue.BBS_TX_ID, shopDetails.get(itemId).getTxId());
-                                mEditor.putDouble(DefineValue.AGENT_LATITUDE, currentLatitude);
-                                mEditor.putDouble(DefineValue.AGENT_LONGITUDE, currentLongitude);
-                                mEditor.putString(DefineValue.KEY_CCY, response.getString(DefineValue.KEY_CCY));
-                                mEditor.putString(DefineValue.KEY_AMOUNT, response.getString(DefineValue.KEY_AMOUNT));
-                                mEditor.putString(DefineValue.KEY_ADDRESS, response.getString(DefineValue.KEY_ADDRESS));
-                                mEditor.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
-                                mEditor.putString(DefineValue.KEY_NAME, response.getString(DefineValue.KEY_NAME));
-                                mEditor.putDouble(DefineValue.BENEF_LATITUDE, response.getDouble(DefineValue.KEY_LATITUDE));
-                                mEditor.putDouble(DefineValue.BENEF_LONGITUDE, response.getDouble(DefineValue.KEY_LONGITUDE));
-                                mEditor.apply();
-
-                                Intent i = new Intent(getContext(), BbsMapViewByAgentActivity.class);
-                                i.putExtra(DefineValue.AOD_TX_ID, shopDetails.get(itemId).getTxId());
-                                startActivity(i);
-                                getActivity().finish();
-                            } else {
+                                        Intent i = new Intent(getContext(), BbsMapViewByAgentActivity.class);
+                                        i.putExtra(DefineValue.AOD_TX_ID, shopDetails.get(itemId).getTxId());
+                                        startActivity(i);
+                                        getActivity().finish();
+                                    } else {
                             /*Bundle bundle = new Bundle();
                             bundle.putInt(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
 
@@ -403,14 +404,14 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                             intent.putExtras(bundle);
                             startActivity(intent);*/
 
-                                Intent i = new Intent(getContext(), MainPage.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(i);
-                                getActivity().finish();
-                            }
-                        } else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getContext(), code, Toast.LENGTH_LONG).show();
+                                        Intent i = new Intent(getContext(), MainPage.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                        getActivity().finish();
+                                    }
+                                } else {
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getContext(), code, Toast.LENGTH_LONG).show();
 
                         /*Bundle bundle = new Bundle();
                         bundle.putInt(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
@@ -420,40 +421,27 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         intent.putExtras(bundle);
                         startActivity(intent);*/
 
-                            Intent i = new Intent(getContext(), MainPage.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(i);
-                            getActivity().finish();
+                                    Intent i = new Intent(getContext(), MainPage.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(i);
+                                    getActivity().finish();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
+                        }
 
-                private void ifFailure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onComplete() {
+                            progdialog2.dismiss();
 
-                    progdialog2.dismiss();
-                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                }
-
-            });
+                        }
+                    });
 
         }
     }
@@ -687,8 +675,8 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_TRANSACTION_AGENT,
-                customerId, sp.getString(DefineValue.ACCESS_KEY, ""));
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRANSACTION_AGENT);
+
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -697,66 +685,64 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         params.put(WebParams.SHOP_REMARK, gcmId);
         params.put(WebParams.USER_ID, customerId);
 
-        MyApiClient.getListTransactionAgent(getContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_TRANSACTION_AGENT, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
+                            String code = response.getString(WebParams.ERROR_CODE);
 
-                try {
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                rlApproval.setVisibility(View.VISIBLE);
 
-                    String code = response.getString(WebParams.ERROR_CODE);
+                                shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
+                                shopDetail.setTxId(response.getString(DefineValue.TX_ID2));
+                                shopDetail.setCategoryId(response.getString(DefineValue.CATEGORY_ID));
+                                shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
+                                shopDetail.setCategoryCode(response.getString(DefineValue.CATEGORY_CODE));
+                                shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
+                                shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
+                                //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
+                                shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
+                                //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
+                                //shopDetail.setKeyCountry(response.getString(DefineValue.KEY_COUNTRY));
+                                shopDetail.setCommId(response.getString(WebParams.COMM_ID));
 
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                        progdialog.dismiss();
-                        rlApproval.setVisibility(View.VISIBLE);
+                                shopDetail.setMemberId(response.getString(WebParams.MEMBER_ID));
+                                shopDetail.setMemberCode(response.getString(WebParams.MEMBER_CODE));
+                                shopDetail.setMemberName(response.getString(WebParams.MEMBER_NAME));
+                                shopDetail.setMemberType(response.getString(WebParams.MEMBER_TYPE));
+                                shopDetail.setShopId(response.getString(WebParams.SHOP_ID));
+                                shopDetail.setShopName(response.getString(WebParams.SHOP_NAME));
 
-                        shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
-                        shopDetail.setTxId(response.getString(DefineValue.TX_ID2));
-                        shopDetail.setCategoryId(response.getString(DefineValue.CATEGORY_ID));
-                        shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
-                        shopDetail.setCategoryCode(response.getString(DefineValue.CATEGORY_CODE));
-                        shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
-                        shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
-                        //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
-                        shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
-                        //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
-                        //shopDetail.setKeyCountry(response.getString(DefineValue.KEY_COUNTRY));
-                        shopDetail.setCommId(response.getString(WebParams.COMM_ID));
+                                shopId  = response.getString(WebParams.SHOP_ID);
+                                memberId  = response.getString(WebParams.MEMBER_ID);
+                                shopDetails.add(shopDetail);
 
-                        shopDetail.setMemberId(response.getString(WebParams.MEMBER_ID));
-                        shopDetail.setMemberCode(response.getString(WebParams.MEMBER_CODE));
-                        shopDetail.setMemberName(response.getString(WebParams.MEMBER_NAME));
-                        shopDetail.setMemberType(response.getString(WebParams.MEMBER_TYPE));
-                        shopDetail.setShopId(response.getString(WebParams.SHOP_ID));
-                        shopDetail.setShopName(response.getString(WebParams.SHOP_NAME));
+                                tvCategoryName.setText(shopDetail.getCategoryName());
+                                tvMemberName.setText(response.getString(WebParams.KEY_NAME));
+                                //tvShop.setText(shopDetail.getShopName());
+                                tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
 
-                        shopId  = response.getString(WebParams.SHOP_ID);
-                        memberId  = response.getString(WebParams.MEMBER_ID);
-                        shopDetails.add(shopDetail);
+                                if ( response.getString(WebParams.BBS_NOTE) != null ) {
+                                    tvBbsNote.setText(response.getString(WebParams.BBS_NOTE));
+                                } else {
+                                    tvBbsNote.setText("");
+                                }
+                                tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
+                                tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
 
-                        tvCategoryName.setText(shopDetail.getCategoryName());
-                        tvMemberName.setText(response.getString(WebParams.KEY_NAME));
-                        //tvShop.setText(shopDetail.getShopName());
-                        tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
+                                if ( response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ) {
+                                    tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
+                                } else {
+                                    tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
+                                }
 
-                        if ( response.getString(WebParams.BBS_NOTE) != null ) {
-                            tvBbsNote.setText(response.getString(WebParams.BBS_NOTE));
-                        } else {
-                            tvBbsNote.setText("");
-                        }
-                        tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
-                        tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
+                                tvAcctName.setText(response.getString(WebParams.PRODUCT_NAME));
 
-                        if ( response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ) {
-                            tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
-                        } else {
-                            tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
-                        }
-
-                        tvAcctName.setText(response.getString(WebParams.PRODUCT_NAME));
-
-                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
-                        RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
+                                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
+                                RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
                         /*if ( !response.getString(DefineValue.MEMBER_PROFILE_PICTURE).equals("") ) {
                             GlideManager.sharedInstance().initializeGlide(getContext(), response.getString(DefineValue.MEMBER_PROFILE_PICTURE), roundedImage, ivPPMember);
@@ -765,55 +751,40 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         }*/
 
 
-                    } else {
-                        progdialog.dismiss();
-                        code = response.getString(WebParams.ERROR_MESSAGE);
-                        //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                            } else {
+                                code = response.getString(WebParams.ERROR_MESSAGE);
+                                //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
 
-                        rlApproval.setVisibility(View.GONE);
+                                rlApproval.setVisibility(View.GONE);
 
-                        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                        alertDialog.setMessage(getString(R.string.alertbox_message_information));
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        getActivity().finish();
+                                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                                alertDialog.setCanceledOnTouchOutside(false);
+                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                alertDialog.setMessage(getString(R.string.alertbox_message_information));
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                getActivity().finish();
 
-                                    }
-                                });
-                        alertDialog.show();
+                                            }
+                                        });
+                                alertDialog.show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+                    }
 
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                progdialog.dismiss();
-                Timber.w("Error Koneksi getListTrxAgent:" + throwable.toString());
-
-            }
-
-        });
+                    @Override
+                    public void onComplete() {
+                        progdialog.dismiss();
+                    }
+                });
     }
 }

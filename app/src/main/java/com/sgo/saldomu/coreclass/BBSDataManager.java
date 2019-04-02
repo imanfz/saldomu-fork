@@ -3,6 +3,7 @@ package com.sgo.saldomu.coreclass;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
@@ -36,7 +37,10 @@ public class BBSDataManager {
 
     public static Boolean isDataCTANotValid(){
         BBSDataManager bbsDataManager = new BBSDataManager();
-        if(bbsDataManager.isMustUpdate() || !bbsDataManager.isSameUser()) {
+        boolean a = bbsDataManager.isMustUpdate();
+        boolean b = bbsDataManager.isSameUser();
+        Log.d("bbs data manager", "a: " + a + ", b: " + b);
+        if(a || !b) {
             Timber.d("return true data cta must update");
             return true;
         }
@@ -59,7 +63,11 @@ public class BBSDataManager {
 
     public static Boolean isDataATCNotValid(){
         BBSDataManager bbsDataManager = new BBSDataManager();
-        if(bbsDataManager.isMustUpdate() || !bbsDataManager.isSameUser()) {
+        boolean a = bbsDataManager.isMustUpdate();
+        boolean b = bbsDataManager.isSameUser();
+        Log.d("bbs data manager", "a: " + a + ", b: " + b);
+        if(a || !b) {
+//        if(bbsDataManager.isMustUpdate() || !bbsDataManager.isSameUser()) {
             Timber.d("return true data atc must update");
             return true;
         }

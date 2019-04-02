@@ -1,4 +1,4 @@
-package com.sgo.saldomu.fragments;
+ package com.sgo.saldomu.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -10,35 +10,59 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.RecepientModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.activities.PayFriendsConfirmTokenActivity;
 import com.sgo.saldomu.adapter.RecipientAdapter;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.ErrorDefinition;
+import com.sgo.saldomu.coreclass.GlideManager;
+import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.PayFriendConfirmModel;
+import com.sgo.saldomu.models.retrofit.PayfriendDataModel;
+import com.sgo.saldomu.models.retrofit.PayfriendDataTrfModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
@@ -71,7 +95,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     private Button btnCancel;
     private Button btnResend;
     private ProgressDialog progdialog;
-    private int max_token_resend = 3, total_receive_recepient = 0, attempt=-1;
+    private int max_token_resend = 3, total_receive_recepient = 0, attempt = -1;
     private View v;
     private AlertDialogFrag mDialogNonMember;
 
@@ -88,11 +112,11 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         return v;
     }
 
-    private class TempTxID{
+    private class TempTxID {
 
         private String tx_id;
 
-        public TempTxID(String _tx_id){
+        public TempTxID(String _tx_id) {
             this.tx_id = _tx_id;
         }
 
@@ -110,7 +134,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
+        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE, "");
 
         imgProfile = v.findViewById(R.id.img_profile);
         imgRecipients = v.findViewById(R.id.img_recipients);
@@ -128,10 +152,10 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         TextView tv_fee = v.findViewById(R.id.payfriends_confirm_value_fee);
         TextView tv_total_amount = v.findViewById(R.id.payfriends_confirm_value_total_amount);
 
-        if(authType.equalsIgnoreCase("PIN")) {
+        if (authType.equalsIgnoreCase("PIN")) {
             layoutOTP.setVisibility(View.GONE);
             btnSubmit.setText(R.string.proses);
-            new UtilsLoader(getActivity(),sp).getFailedPIN(userPhoneID,new OnLoadDataListener() { // get pin attempt
+            new UtilsLoader(getActivity(), sp).getFailedPIN(userPhoneID, new OnLoadDataListener() { // get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     attempt = (int) deData;
@@ -147,8 +171,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
 
                 }
             });
-        }
-        else if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
+        } else if (authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
             layoutOTP.setVisibility(View.VISIBLE);
             btnResend = v.findViewById(R.id.btn_resend_token);
 
@@ -164,7 +187,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
 
 
         Bundle bundle = this.getArguments();
-        if(bundle != null) {
+        if (bundle != null) {
             isNotification = bundle.getBoolean(DefineValue.TRANSACTION_TYPE);
             dataJson = bundle.getString(WebParams.DATA_TRANSFER);
             dataName = bundle.getString(WebParams.DATA);
@@ -180,72 +203,76 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
             Gson json = new Gson();
             String finalName;
             String finalTxid;
-            String number_recipient_nonmember="";
+            String number_recipient_nonmember = "";
             Double total_fee = 0.0, total_amount = 0.0;
             String expired_period_date = "";
 
-            try {
-                JSONArray mArrayData = new JSONArray(dataJson);
-                listName = json.fromJson(dataName, new TypeToken<List<String>>(){}.getType());
+            //                JSONArray mArrayData = new JSONArray(dataJson);
+            List<PayfriendDataTrfModel> dataTrf = json.fromJson(dataJson, new TypeToken<List<PayfriendDataTrfModel>>() {
+            }.getType());
+            listName = json.fromJson(dataName, new TypeToken<List<String>>() {
+            }.getType());
 
-                if(mArrayData.length() > 0){
-                    amountEach = mArrayData.getJSONObject(0).getDouble(WebParams.AMOUNT);
-                    fee = mArrayData.getJSONObject(0).getDouble(WebParams.FEE);
-                    totalAmount = mArrayData.getJSONObject(0).getDouble(WebParams.TOTAL);
+//                if(mArrayData.length() > 0){
+//                    amountEach = mArrayData.getJSONObject(0).getDouble(WebParams.AMOUNT);
+//                    fee = mArrayData.getJSONObject(0).getDouble(WebParams.FEE);
+//                    totalAmount = mArrayData.getJSONObject(0).getDouble(WebParams.TOTAL);
+//                }
+
+            if (dataTrf.size() > 0) {
+                amountEach = Double.valueOf(dataTrf.get(0).getAmount());
+                fee = Double.valueOf(dataTrf.get(0).getFee());
+                totalAmount = Double.valueOf(dataTrf.get(0).getTotal());
+            }
+
+            for (int i = 0; i < dataTrf.size(); i++) {
+
+                PayfriendDataTrfModel obj = dataTrf.get(i);
+
+                if (obj.getMember_status().equals(DefineValue.FAILED)) {
+                    finalName = listName.get(i);
+                    finalTxid = "";
+                } else {
+                    total_receive_recepient++;
+                    finalTxid = obj.getTx_id();
+                    finalName = obj.getMember_name_to();
+                    mTempTxID.add(new TempTxID(obj.getTx_id()));
+                    if (expired_period_date.isEmpty() || expired_period_date.equals(""))
+                        expired_period_date = obj.getExp_duration_hour();
                 }
 
-                for(int i = 0 ; i < mArrayData.length() ; i++){
+                listObjectRecipient.add(new RecepientModel(finalTxid, finalName, obj
+//                                                                mArrayData.getJSONObject(i).getString(WebParams.MEMBER_PHONE),
+//                                                                mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS),
+//                                                                mArrayData.getJSONObject(i).optString(WebParams.IS_MEMBER_TEMP,"")
+                ));
+                if (listObjectRecipient.get(i).getStatus().equals(DefineValue.SUCCESS)) {
+                    amount = amount + amountEach;
+                    total_fee = total_fee + fee;
+                    total_amount = total_amount + totalAmount;
 
-                    if(mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS).equals(DefineValue.FAILED)){
-                        finalName = listName.get(i);
-                        finalTxid = "";
-                    }
-                    else {
-                        total_receive_recepient++;
-                        finalTxid = mArrayData.getJSONObject(i).getString(WebParams.TX_ID);
-                        finalName = mArrayData.getJSONObject(i).getString(WebParams.MEMBER_NAME_TO);
-                        mTempTxID.add(new TempTxID(mArrayData.getJSONObject(i).getString(WebParams.TX_ID)));
-                        if(expired_period_date.isEmpty() || expired_period_date.equals(""))
-                            expired_period_date = mArrayData.getJSONObject(i).optString(WebParams.EXP_DURATION_HOUR,"");
-                    }
-
-                    listObjectRecipient.add(new RecepientModel(finalTxid,
-                                                                finalName,
-                                                                mArrayData.getJSONObject(i).getString(WebParams.MEMBER_PHONE),
-                                                                mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS),
-                                                                mArrayData.getJSONObject(i).optString(WebParams.IS_MEMBER_TEMP,"")
-                                                                ));
-                    if(listObjectRecipient.get(i).getStatus().equals(DefineValue.SUCCESS)){
-                        amount = amount + amountEach;
-                        total_fee = total_fee + fee;
-                        total_amount = total_amount + totalAmount;
-
-                        if(listObjectRecipient.get(i).getIs_member_temp().equals(DefineValue.STRING_YES)){
-                            list_non_member.add(listObjectRecipient.get(i));
-                            if(number_recipient_nonmember.isEmpty())
-                                number_recipient_nonmember = listObjectRecipient.get(i).getNumber();
-                            else {
-                                number_recipient_nonmember = number_recipient_nonmember + ", "+ listObjectRecipient.get(i).getNumber();
-                            }
+                    if (listObjectRecipient.get(i).getIs_member_temp().equals(DefineValue.STRING_YES)) {
+                        list_non_member.add(listObjectRecipient.get(i));
+                        if (number_recipient_nonmember.isEmpty())
+                            number_recipient_nonmember = listObjectRecipient.get(i).getNumber();
+                        else {
+                            number_recipient_nonmember = number_recipient_nonmember + ", " + listObjectRecipient.get(i).getNumber();
                         }
                     }
-
-
                 }
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+
             }
 
             txID = json.toJson(mTempTxID);
 
-            tv_fee.setText(MyApiClient.CCY_VALUE +". "+CurrencyFormat.format(total_fee));
-            tv_total_amount.setText(MyApiClient.CCY_VALUE +". "+CurrencyFormat.format(total_amount));
-            tv_amount_each.setText(MyApiClient.CCY_VALUE +". "+CurrencyFormat.format(amountEach));
-            tv_amount.setText(MyApiClient.CCY_VALUE +". "+CurrencyFormat.format(amount));
+            tv_fee.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_fee));
+            tv_total_amount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
+            tv_amount_each.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amountEach));
+            tv_amount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
             txtMessage.setText(message);
 
-            Timber.d("isi tx id:"+txID );
+            Timber.d("isi tx id:" + txID);
 
             RecipientAdapter recipientAdapter = new RecipientAdapter(getActivity().getApplicationContext(), listObjectRecipient);
             listRecipient.setAdapter(recipientAdapter);
@@ -258,21 +285,21 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
 
             setImageProfPic();
 
-            txtName.setText(sp.getString(DefineValue.USER_NAME,""));
+            txtName.setText(sp.getString(DefineValue.USER_NAME, ""));
             txtNumberRecipients.setText(Integer.toString(total_receive_recepient));
 
-            if(!list_non_member.isEmpty()) {
+            if (!list_non_member.isEmpty()) {
                 String messageDialog = getString(R.string.dialog_p2p_nonmember_msg,
-                        number_recipient_nonmember,getString(R.string.appname),expired_period_date) ;
-                mDialogNonMember = AlertDialogFrag.newInstance(getString(R.string.dialog_p2p_nonmember_title,getString(R.string.appname)), messageDialog,
-                        getString(R.string.yes),getString(R.string.cancel),false);
+                        number_recipient_nonmember, getString(R.string.appname), expired_period_date);
+                mDialogNonMember = AlertDialogFrag.newInstance(getString(R.string.dialog_p2p_nonmember_title, getString(R.string.appname)), messageDialog,
+                        getString(R.string.yes), getString(R.string.cancel), false);
                 mDialogNonMember.setOkListener(new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         btnSubmitAction();
                     }
                 });
-                mDialogNonMember.setTargetFragment(FragPayFriendsConfirm.this,0);
+                mDialogNonMember.setTargetFragment(FragPayFriendsConfirm.this, 0);
 
             }
         }
@@ -296,27 +323,26 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         @Override
         public void onClick(View view) {
 
-            if(InetHandler.isNetworkAvailable(getActivity())){
-                if(mDialogNonMember != null)
-                    mDialogNonMember.show(getFragmentManager(),TAG_FRAGPAYFRIENDCONFIRM);
+            if (InetHandler.isNetworkAvailable(getActivity())) {
+                if (mDialogNonMember != null)
+                    mDialogNonMember.show(getFragmentManager(), TAG_FRAGPAYFRIENDCONFIRM);
                 else
                     btnSubmitAction();
-            }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 
         }
     };
 
-    private void btnSubmitAction(){
-        if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
+    private void btnSubmitAction() {
+        if (authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
             if (inputValidation()) {
-                sentDataConfirm(txID,etOTP.getText().toString());
+                sentDataConfirm(txID, etOTP.getText().toString());
             }
-        }
-        else if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN)){
+        } else if (authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN)) {
             Intent i = new Intent(getActivity(), InsertPIN.class);
-            if(attempt != -1 && attempt < 2)
-                i.putExtra(DefineValue.ATTEMPT,attempt);
+            if (attempt != -1 && attempt < 2)
+                i.putExtra(DefineValue.ATTEMPT, attempt);
             startActivityForResult(i, MainPage.REQUEST_FINISH);
         }
     }
@@ -324,20 +350,20 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     private Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(InetHandler.isNetworkAvailable(getActivity())){
-                if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
+            if (InetHandler.isNetworkAvailable(getActivity())) {
+                if (authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
                     if (max_token_resend != 0)
                         sentResendToken(txID);
 
                 }
-            }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 
         }
     };
 
-    private boolean inputValidation(){
-        if(etOTP.getText().toString().length()==0){
+    private boolean inputValidation() {
+        if (etOTP.getText().toString().length() == 0) {
             etOTP.requestFocus();
             etOTP.setError(this.getString(R.string.regist2_validation_otp));
             return false;
@@ -345,31 +371,32 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         return true;
     }
 
-    private void showReportBillerDialog(String name,String date,String userId, String txId, String recipients,String amountEach, String amount,
-                                        String fee,String totalAmount, String message, String errorRecipients, String buss_scheme_code,
-                                        String buss_scheme_name, String transfer_data) {
+    private void showReportBillerDialog(String name, String date, String userId, String txId, String recipients, String amountEach, String amount,
+                                        String fee, String totalAmount, String message, String errorRecipients, PayFriendConfirmModel model) {
 
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
-        args.putString(DefineValue.USER_NAME,name);
-        args.putString(DefineValue.DATE_TIME,date);
-        args.putString(DefineValue.TX_ID,txId);
-        args.putString(DefineValue.USERID_PHONE,userId);
-        args.putString(DefineValue.RECIPIENTS,recipients);
-        args.putString(DefineValue.AMOUNT_EACH,amountEach);
-        args.putString(DefineValue.AMOUNT,amount);
-        args.putString(DefineValue.FEE,fee);
-        args.putString(DefineValue.TOTAL_AMOUNT,totalAmount);
-        args.putString(DefineValue.MESSAGE,message);
-        args.putString(DefineValue.RECIPIENTS_ERROR,errorRecipients);
+        args.putString(DefineValue.USER_NAME, name);
+        args.putString(DefineValue.DATE_TIME, date);
+        args.putString(DefineValue.TX_ID, txId);
+        args.putString(DefineValue.USERID_PHONE, userId);
+        args.putString(DefineValue.RECIPIENTS, recipients);
+        args.putString(DefineValue.AMOUNT_EACH, amountEach);
+        args.putString(DefineValue.AMOUNT, amount);
+        args.putString(DefineValue.FEE, fee);
+        args.putString(DefineValue.TOTAL_AMOUNT, totalAmount);
+        args.putString(DefineValue.MESSAGE, message);
+        args.putString(DefineValue.RECIPIENTS_ERROR, errorRecipients);
         args.putString(DefineValue.REPORT_TYPE, DefineValue.PAYFRIENDS);
-        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
-        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
-        args.putString(DefineValue.TRANSFER_DATA, transfer_data);
+        args.putString(DefineValue.BUSS_SCHEME_CODE, model.getBuss_scheme_code());
+        args.putString(DefineValue.BUSS_SCHEME_NAME, model.getBuss_scheme_name());
+//        getGson().toJson(model.getTransfer_data());
+        String trfData = getGson().toJson(model.getTransfer_data());
+        args.putString(DefineValue.TRANSFER_DATA, trfData);
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
+        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
 
@@ -377,7 +404,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms)+" ("+max_token_resend+")");
+                btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")");
             }
         });
     }
@@ -392,10 +419,10 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Timber.d("onActivity result"+ " Biller Fragment"+" / "+requestCode+" / "+resultCode);
-        if(requestCode == MainPage.REQUEST_FINISH){
-              Timber.d("onActivity result", "Biller Fragment masuk request exit");
-            if(resultCode == InsertPIN.RESULT_PIN_VALUE){
+        Timber.d("onActivity result" + " Biller Fragment" + " / " + requestCode + " / " + resultCode);
+        if (requestCode == MainPage.REQUEST_FINISH) {
+            Timber.d("onActivity result", "Biller Fragment masuk request exit");
+            if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
                 Timber.d("onActivity result", "Biller Fragment result pin value");
                 sentDataConfirm(txID, value_pin);
@@ -403,17 +430,22 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         }
     }
 
-    private void sentDataConfirm(String _data, String _token){
-        try{
+    private void sentDataConfirm(String _data, String _token) {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
-            extraSignature = memberIDLogin+_token;
-            RequestParams params;
-            if(isNotification) {
+            extraSignature = memberIDLogin + _token;
+            HashMap<String, Object> params;
+            String url;
+            if (isNotification) {
 
-                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF, extraSignature);
-            }else {
-                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P,extraSignature);
+//                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF, extraSignature);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF, extraSignature);
+                url = MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF;
+            } else {
+//                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P,extraSignature);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TRANS_P2P, extraSignature);
+                url = MyApiClient.LINK_CONFIRM_TRANS_P2P;
             }
 
             params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
@@ -422,153 +454,131 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
             params.put(WebParams.DATA, _data);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.DATA_MAPPER, dataMapper);
-            Timber.d("isi params sent confirm token p2p:"+params.toString());
+            Timber.d("isi params sent confirm token p2p:" + params.toString());
 
-            JsonHttpResponseHandler myHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
+            RetrofitService.getInstance().PostObjectRequest(url, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            try {
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response confirm token p2p:"+response.toString());
-                            //Toast.makeText(getActivity(), getString(R.string.transaction_success), Toast.LENGTH_LONG).show();
+                                PayFriendConfirmModel model = getGson().fromJson(object, PayFriendConfirmModel.class);
 
-                            JSONArray mArrayData = new JSONArray(response.getString(WebParams.DATA));
-                            Timber.d("isi response data:"+mArrayData.toString());
-                            int isFailed=0 ;
-                            String error_msg = "";
+                                String code = model.getError_code();
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    //Toast.makeText(getActivity(), getString(R.string.transaction_success), Toast.LENGTH_LONG).show();
 
-                            String _txid = "", _recipient = "", _recipient_error = null,_message;
-                            double _Amount = 0.0,_fee = 0.0, _total_amount = 0.0, _total_wc = 0.0;
-                            _message = message;
+                                    int isFailed = 0;
+                                    String error_msg = "";
 
-                            for(int i = 0 ; i < mArrayData.length() ; i++) {
-                                for (RecepientModel aListObjectRecipient : listObjectRecipient) {
-                                    if (aListObjectRecipient.getTx_id().equals(mArrayData.getJSONObject(i).getString(WebParams.TX_ID))) {
-                                        if(mArrayData.getJSONObject(i).getString(WebParams.TX_STATUS).equals(DefineValue.SUCCESS)) {
-                                            if (_txid.equals("")) {
-                                                _txid = mArrayData.getJSONObject(i).getString(WebParams.TX_ID);
-                                                _recipient = aListObjectRecipient.getName();
-                                            } else {
-                                                _txid = _txid + "\n" + mArrayData.getJSONObject(i).getString(WebParams.TX_ID);
-                                                _recipient = _recipient + "\n" + aListObjectRecipient.getName();
+                                    String _txid = "", _recipient = "", _recipient_error = null, _message;
+                                    double _Amount = 0.0, _fee = 0.0, _total_amount = 0.0, _total_wc = 0.0;
+                                    _message = message;
+                                    JsonParser jsonParser = new JsonParser();
+                                    List<PayfriendDataModel> temp = getGson().fromJson(toJson(model.getData()),
+                                            new TypeToken<List<PayfriendDataModel>>() {}.getType());
+
+//                        if (!model.getData().equals("")){
+//                            Type type = new TypeToken<List<PayfriendDataModel>>() {}.getType();
+//                            temp = getGson().fromJson(model.getData(), type);
+//                        }
+
+                                    for (PayfriendDataModel obj : temp) {
+                                        for (RecepientModel aListObjectRecipient : listObjectRecipient) {
+                                            if (aListObjectRecipient.getTx_id().equals(obj.getTx_id())) {
+                                                if (obj.getTx_status().equals(DefineValue.SUCCESS)) {
+                                                    if (_txid.equals("")) {
+                                                        _txid = obj.getTx_id();
+                                                        _recipient = aListObjectRecipient.getName();
+                                                    } else {
+                                                        _txid = _txid + "\n" + obj.getTx_id();
+                                                        _recipient = _recipient + "\n" + aListObjectRecipient.getName();
+                                                    }
+
+                                                    _Amount = _Amount + amountEach;
+                                                    _fee = _fee + fee;
+                                                    _total_amount = _total_amount + totalAmount;
+                                                } else if (obj.getTx_status().equals(DefineValue.FAILED)) {
+                                                    isFailed++;
+                                                    error_msg = obj.getTx_remark();
+                                                    if (_recipient_error == null)
+                                                        _recipient_error = aListObjectRecipient.getName() + " = " + error_msg;
+                                                    else
+                                                        _recipient_error = _recipient_error + "\n" +
+                                                                aListObjectRecipient.getName() + " = " + error_msg;
+                                                } else if (obj.getTx_status().equals(DefineValue.WAITING_CLAIM)) {
+                                                    _total_wc = _total_wc + totalAmount;
+                                                }
+
                                             }
-
-                                            _Amount = _Amount + amountEach;
-                                            _fee = _fee + fee;
-                                            _total_amount = _total_amount + totalAmount;
                                         }
-                                        else if(mArrayData.getJSONObject(i).getString(WebParams.TX_STATUS).equals(DefineValue.FAILED)) {
-                                            isFailed++ ;
-                                            error_msg = mArrayData.getJSONObject(i).getString(WebParams.TX_REMARK);
-                                            if (_recipient_error == null)
-                                                _recipient_error = aListObjectRecipient.getName()+ " = " + error_msg;
-                                            else _recipient_error = _recipient_error + "\n" +
-                                                    aListObjectRecipient.getName()+ " = " + error_msg;
-                                        }
-                                        else if(mArrayData.getJSONObject(i).getString(WebParams.TX_STATUS).equals(DefineValue.WAITING_CLAIM)){
-                                            _total_wc = _total_wc + totalAmount;
-                                        }
-
                                     }
-                                }
-                            }
 
+                                    if (isFailed != temp.size()) {
 
-                            if(isFailed != mArrayData.length()){
-
-                                String name = sp.getString(DefineValue.USER_NAME,"");
+                                        String name = sp.getString(DefineValue.USER_NAME, "");
 //                                String _totalAmount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(_Amount);
 
-                                if(list_non_member.size() == mArrayData.length()){
-                                    showDialogClaim(getString(R.string.toast_msg_wait_claim, CurrencyFormat.format(_total_wc)));
+                                        if (list_non_member.size() == temp.size()) {
+                                            showDialogClaim(getString(R.string.toast_msg_wait_claim, CurrencyFormat.format(_total_wc)));
+                                        } else {
+                                            showReportBillerDialog(name,
+                                                    DateTimeFormat.getCurrentDateTime(),
+                                                    sp.getString(DefineValue.USERID_PHONE, ""),
+                                                    _txid,
+                                                    _recipient,
+                                                    MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amountEach),
+                                                    MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_Amount),
+                                                    MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_fee),
+                                                    MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_total_amount),
+                                                    _message,
+                                                    _recipient_error, model);
+//                                            response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.TRANSFER_DATA)
+                                        }
+                                    } else showDialog(error_msg);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else if (code.equals(ErrorDefinition.WRONG_PIN_P2P)) {
+                                    code = model.getError_message();
+                                    showDialogError(code);
+                                } else {
+                                    code = model.getError_message();
+
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
+                                    if (authType.equalsIgnoreCase("PIN")) {
+                                        Intent i = new Intent(getActivity(), InsertPIN.class);
+                                        attempt = attempt - 1;
+                                        if (attempt != -1 && attempt < 2)
+                                            i.putExtra(DefineValue.ATTEMPT, attempt);
+                                        startActivityForResult(i, MainPage.REQUEST_FINISH);
+                                    }
                                 }
-                                else {
-                                    showReportBillerDialog(name,
-                                            DateTimeFormat.getCurrentDateTime(),
-                                            sp.getString(DefineValue.USERID_PHONE, ""),
-                                            _txid,
-                                            _recipient,
-                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amountEach),
-                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_Amount),
-                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_fee),
-                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_total_amount),
-                                            _message,
-                                            _recipient_error, response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.TRANSFER_DATA));
-                                }
-                            }
-                            else showDialog(error_msg);
 
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            showDialogError(code);
-                        }
-                        else {
-                            Timber.d("isi error confirm token p2p:" + response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            if(authType.equalsIgnoreCase("PIN")) {
-                                Intent i = new Intent(getActivity(), InsertPIN.class);
-                                attempt = attempt-1;
-                                if(attempt != -1 && attempt < 2)
-                                    i.putExtra(DefineValue.ATTEMPT, attempt);
-                                startActivityForResult(i,MainPage.REQUEST_FINISH);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi confirm proses p2p confirm:"+throwable.toString());
-                }
-            };
-
-            if(isNotification)
-                MyApiClient.sentConfirmTransP2PNotif(getActivity(),params, myHandler );
-            else
-                MyApiClient.sentConfirmTransP2P(getActivity(),params, myHandler );
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void showDialogClaim(String message){
+    private void showDialogClaim(String message) {
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.transaction_success),
                 message,
                 new DefinedDialog.DialogButtonListener() {
@@ -581,95 +591,71 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         dialognya.show();
     }
 
-    private void showDialogError(String message){
+    private void showDialogError(String message) {
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title),
                 message, new DefinedDialog.DialogButtonListener() {
                     @Override
                     public void onClickButton(View v, boolean isLongClick) {
 
                     }
-                }) ;
+                });
         dialognya.show();
     }
 
-    private void sentResendToken(String _data){
-        try{
+    private void sentResendToken(String _data) {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESENT_TOKEN_P2P,
-                    userPhoneID,accessKey);
-            params.put(WebParams.MEMBER_ID,memberIDLogin);
-            params.put(WebParams.DATA,_data);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_RESENT_TOKEN_P2P);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
+            params.put(WebParams.DATA, _data);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params sent resend token p2p:"+params.toString());
+            Timber.d("isi params sent resend token p2p:" + params.toString());
 
-            MyApiClient.sentResentTokenP2P(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params resend confirm token p2p:"+response.toString());
-                            max_token_resend = max_token_resend - 1;
-                            changeTextBtnSub();
-                            Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_RESENT_TOKEN_P2P, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                max_token_resend = max_token_resend - 1;
+                                changeTextBtnSub();
+                                Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(), message);
+                            } else {
+                                if (MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    code = model.getError_message();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                            }
+                            if (max_token_resend == 0) {
+                                btnResend.setEnabled(false);
+                                Toast.makeText(getActivity(), getString(R.string.reg2_notif_max_resend_token_empty), Toast.LENGTH_LONG).show();
+                            }
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE) ){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                        else {
-                            Timber.d("isi error resend token p2p:"+response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                        if(max_token_resend == 0 ){
-                            btnResend.setEnabled(false);
-                            Toast.makeText(getActivity(), getString(R.string.reg2_notif_max_resend_token_empty), Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi resend p2p confirm:" + throwable.toString());
-                }
-            });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+                    } );
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
 
 
@@ -731,15 +717,15 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     }
 
 
-    private void setImageProfPic(){
+    private void setImageProfPic() {
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
-        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
-        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
+        if (density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
+        else if (density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
         else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
 
-        Timber.wtf("url prof pic:"+_url_profpic);
+        Timber.wtf("url prof pic:" + _url_profpic);
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
@@ -750,10 +736,9 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
 //        else
 //            mPic= Picasso.with(getActivity());
 
-        if(_url_profpic != null && _url_profpic.isEmpty()){
+        if (_url_profpic != null && _url_profpic.isEmpty()) {
             GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, imgProfile);
-        }
-        else {
+        } else {
             GlideManager.sharedInstance().initializeGlide(getActivity(), _url_profpic, roundedImage, imgProfile);
         }
     }
@@ -786,12 +771,11 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         toggleMyBroadcastReceiver(false);
     }
 
-    private void toggleMyBroadcastReceiver(Boolean _on){
+    private void toggleMyBroadcastReceiver(Boolean _on) {
         if (getActivity() == null)
             return;
-
-        PayFriendsConfirmTokenActivity fca = (PayFriendsConfirmTokenActivity ) getActivity();
-        fca.togglerBroadcastReceiver(_on,myReceiver);
+        PayFriendsActivity fca = (PayFriendsActivity) getActivity();
+        fca.togglerBroadcastReceiver(_on, myReceiver);
     }
 
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
@@ -804,43 +788,42 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
             String _member_code = "";
             String[] kode = context.getResources().getStringArray(R.array.broadcast_kode_compare);
             Timber.wtf("masuk myreceiver fragpayfriends");
-            if(mBundle != null){
+            if (mBundle != null) {
                 Object[] pdus = (Object[]) mBundle.get("pdus");
                 assert pdus != null;
                 mSMS = new SmsMessage[pdus.length];
 
-                for (int i = 0; i < mSMS.length ; i++){
-                    mSMS[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
+                for (int i = 0; i < mSMS.length; i++) {
+                    mSMS[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                     strMessage += mSMS[i].getMessageBody();
                     strMessage += "\n";
                 }
-                Timber.wtf("masuk myreceiver fragpayfriends:"+strMessage);
+                Timber.wtf("masuk myreceiver fragpayfriends:" + strMessage);
                 String[] words = strMessage.split(" ");
-                for (int i = 0 ; i <words.length;i++)
-                {
-                    if(_kode_otp.equalsIgnoreCase("")){
-                        if(words[i].equalsIgnoreCase(kode[0])){
-                            if(words[i+1].equalsIgnoreCase(kode[1]))
-                                _kode_otp = words[i+2];
-                            _kode_otp =  _kode_otp.replace(".","").replace(" ","");
+                for (int i = 0; i < words.length; i++) {
+                    if (_kode_otp.equalsIgnoreCase("")) {
+                        if (words[i].equalsIgnoreCase(kode[0])) {
+                            if (words[i + 1].equalsIgnoreCase(kode[1]))
+                                _kode_otp = words[i + 2];
+                            _kode_otp = _kode_otp.replace(".", "").replace(" ", "");
                         }
                     }
 
-                    if(_member_code.equals("")){
-                        if(words[i].equalsIgnoreCase(kode[2]))
-                            _member_code = words[i+1];
+                    if (_member_code.equals("")) {
+                        if (words[i].equalsIgnoreCase(kode[2]))
+                            _member_code = words[i + 1];
                     }
                 }
 
-                insertTokenEdit(_kode_otp,_member_code);
+                insertTokenEdit(_kode_otp, _member_code);
                 //Toast.makeText(context,strMessage,Toast.LENGTH_SHORT).show();
             }
         }
     };
 
-    private void insertTokenEdit(String _kode_otp, String _member_kode){
-        Timber.d("isi _kode_otp, _member_kode, member kode session:"+_kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
-        if(_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE,""))){
+    private void insertTokenEdit(String _kode_otp, String _member_kode) {
+        Timber.d("isi _kode_otp, _member_kode, member kode session:" + _kode_otp + " / " + _member_kode + " / " + sp.getString(DefineValue.MEMBER_CODE, ""));
+        if (_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE, ""))) {
             etOTP.setText(_kode_otp);
         }
     }

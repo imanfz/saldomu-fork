@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sgo.saldomu.widgets.BaseFragment;
+
 import in.srain.cube.views.ptr.PtrFrameLayout;
 
 /*
   Created by Administrator on 11/24/2014.
  */
-public abstract class BaseFragmentMainPage extends Fragment {
+public abstract class BaseFragmentMainPage extends BaseFragment {
 
     protected View mView;
 

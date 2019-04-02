@@ -12,22 +12,37 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.QuickContactBadge;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.listHistoryModel;
 import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlideManager;
+import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.LikesModel;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -243,27 +258,27 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 
         public SimpleHolder(View itemView) {
             super(itemView);
-            fromId = (TextView) itemView.findViewById(R.id.from_id);
-            toId = (TextView)itemView.findViewById(R.id.to_id);
-            messageTransaction = (TextView)itemView.findViewById(R.id.message_transaction);
-            amount = (TextView)itemView.findViewById(R.id.amount);
-            dateTime = (TextView)itemView.findViewById(R.id.datetime);
-            iconPicture = (QuickContactBadge)itemView.findViewById(R.id.icon_picture);
-            iconPictureRight = (QuickContactBadge)itemView.findViewById(R.id.icon_picture_right);
-            likeCount = (TextView)itemView.findViewById(R.id.like_count);
-            commentCount = (TextView)itemView.findViewById(R.id.comment_count);
-            iconPictureComment1 = (QuickContactBadge)itemView.findViewById(R.id.icon_picture_comment1);
-            iconPictureComment2 = (QuickContactBadge)itemView.findViewById(R.id.icon_picture_comment2);
-            layoutComment = (LinearLayout)itemView.findViewById(R.id.layout_comment);
-            layoutComment1 = (LinearLayout)itemView.findViewById(R.id.layout_comment1);
-            layoutComment2 = (LinearLayout)itemView.findViewById(R.id.layout_comment2);
-            nameComment1 = (TextView)itemView.findViewById(R.id.name_comment1);
-            nameComment2 = (TextView)itemView.findViewById(R.id.name_comment2);
-            textComment1 = (TextView)itemView.findViewById(R.id.text_comment1);
-            textComment2 = (TextView)itemView.findViewById(R.id.text_comment2);
-            status = (TextView)itemView.findViewById(R.id.status);
-            imageLove = (ImageView)itemView.findViewById(R.id.image_love);
-            comment = (TextView) itemView.findViewById(R.id.value_comment);
+            fromId = itemView.findViewById(R.id.from_id);
+            toId = itemView.findViewById(R.id.to_id);
+            messageTransaction = itemView.findViewById(R.id.message_transaction);
+            amount = itemView.findViewById(R.id.amount);
+            dateTime = itemView.findViewById(R.id.datetime);
+            iconPicture = itemView.findViewById(R.id.icon_picture);
+            iconPictureRight = itemView.findViewById(R.id.icon_picture_right);
+            likeCount = itemView.findViewById(R.id.like_count);
+            commentCount = itemView.findViewById(R.id.comment_count);
+            iconPictureComment1 = itemView.findViewById(R.id.icon_picture_comment1);
+            iconPictureComment2 = itemView.findViewById(R.id.icon_picture_comment2);
+            layoutComment = itemView.findViewById(R.id.layout_comment);
+            layoutComment1 = itemView.findViewById(R.id.layout_comment1);
+            layoutComment2 = itemView.findViewById(R.id.layout_comment2);
+            nameComment1 = itemView.findViewById(R.id.name_comment1);
+            nameComment2 = itemView.findViewById(R.id.name_comment2);
+            textComment1 = itemView.findViewById(R.id.text_comment1);
+            textComment2 = itemView.findViewById(R.id.text_comment2);
+            status = itemView.findViewById(R.id.status);
+            imageLove = itemView.findViewById(R.id.image_love);
+            comment = itemView.findViewById(R.id.value_comment);
             itemView.setOnClickListener(this);
         }
 
@@ -288,8 +303,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
     private void addLike(final String post_id, String from_id, final String jumlahLike) {
         try {
             String extraSignature = post_id + from_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_LIKE,
-                    user_id,accessKey,extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_ADD_LIKE, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, user_id);
             params.put(WebParams.TO, from_id);
@@ -299,63 +313,41 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 
             Timber.d("isi params add like:"+params.toString());
 
-            MyApiClient.sentAddLike(mContext,params, new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String count = response.getString(WebParams.COUNT);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ADD_LIKE, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            Gson gson = new Gson();
+                            LikesModel model = gson.fromJson(object, LikesModel.class);
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                            Timber.d("isi params add like:" + response.toString());
+                            String code = model.getError_code();
+                            String count = model.getCount();
+                            String data_likes = gson.toJson(model.getData_likes());
 
-                            String data_likes = response.getString(WebParams.DATA_LIKES);
-                            listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
+                            if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+
+                                listHistoryModel.updateLikes(data_likes, Integer.parseInt(post_id));
+                            } else if (code.equals(WebParams.NO_DATA_CODE)) {
+
+                                listHistoryModel.updateLikes(data_likes, Integer.parseInt(post_id));
+                            } else {
+                                Toast.makeText(mContext, model.getError_message(), Toast.LENGTH_SHORT).show();
+
+                                listHistoryModel.updateNumlikes(Integer.toString(Integer.parseInt(jumlahLike) - 1), Integer.parseInt(post_id));
+                                listHistoryModel.updateIsLike("0", Integer.parseInt(post_id));
+                            }
                         }
-                        else if(code.equals(WebParams.NO_DATA_CODE)) {
-                            Timber.d("isi params add like:"+response.toString());
 
-                            String data_likes = response.getString(WebParams.DATA_LIKES);
-                            listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                        else {
-                            Timber.d("isi error add like:"+response.toString());
 
-                            listTimeLineModel.updateNumlikes(Integer.toString(Integer.parseInt(jumlahLike)-1), Integer.parseInt(post_id));
-                            listTimeLineModel.updateIsLike("0", Integer.parseInt(post_id));
+                        @Override
+                        public void onComplete() {
+
                         }
-                    }
-                    catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(mContext, mContext.getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(mContext, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    Timber.w("Error Koneksi add like:"+throwable.toString());
-                }
-            });
+                    } );
         }
         catch(Exception e){
             Timber.d("httpclient:"+e.getMessage());
@@ -367,8 +359,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
         try {
 
             String extraSignature = post_id + like_id + to;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_LIKE,
-                    user_id,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REMOVE_LIKE, extraSignature);
             params.put(WebParams.LIKE_ID, like_id);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, from);
@@ -378,64 +369,43 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 
             Timber.d("isi params remove like:"+params.toString());
 
-            MyApiClient.sentRemoveLike(mContext, params, new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String count = response.getString(WebParams.COUNT);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REMOVE_LIKE, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            Gson gson = new Gson();
+                            LikesModel model = gson.fromJson(object, LikesModel.class);
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                            Timber.d("isi params remove like:"+response.toString());
+                            String code = model.getError_code();
+                            String count = model.getCount();
+                            String data_likes = gson.toJson(model.getData_likes());
 
-                            String data_likes = response.getString(WebParams.DATA_LIKES);
-                            listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
+                            if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+
+                                listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
+                            }
+                            else if(code.equals(WebParams.NO_DATA_CODE)) {
+
+                                listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
+                            }
+                            else {
+                                Toast.makeText(mContext, model.getError_message(), Toast.LENGTH_SHORT).show();
+
+                                listTimeLineModel.updateNumlikes(Integer.toString(Integer.parseInt(jumlahLike)+1), Integer.parseInt(post_id));
+                                listTimeLineModel.updateIsLike("1", Integer.parseInt(post_id));
+                            }
                         }
-                        else if(code.equals(WebParams.NO_DATA_CODE)) {
-                            Timber.d("isi params remove like:"+response.toString());
 
-                            String data_likes = response.getString(WebParams.DATA_LIKES);
-                            listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                        else {
-                            Timber.d("isi error remove like:"+response.toString());
 
-                            listTimeLineModel.updateNumlikes(Integer.toString(Integer.parseInt(jumlahLike)+1), Integer.parseInt(post_id));
-                            listTimeLineModel.updateIsLike("1", Integer.parseInt(post_id));
+                        @Override
+                        public void onComplete() {
+
                         }
-                    }
-                    catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(mContext, mContext.getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(mContext, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    Timber.w("Error Koneksi remove like:"+throwable.toString());
-                }
-            });
+                    } );
         }
         catch(Exception e){
             Timber.d("httpclient:"+ e.getMessage());

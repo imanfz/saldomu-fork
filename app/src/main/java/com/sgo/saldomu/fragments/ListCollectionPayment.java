@@ -13,10 +13,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CollectionActivity;
@@ -25,15 +25,18 @@ import com.sgo.saldomu.adapter.CollectionBankAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import org.apache.http.Header;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.BBSRetrieveBankModel;
+
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -64,8 +67,8 @@ public class ListCollectionPayment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        userID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         _listType = new ArrayList<>();
 
@@ -80,7 +83,7 @@ public class ListCollectionPayment extends ListFragment {
 
         sentBankCollect();
 
-        adapter = new CollectionBankAdapter(getActivity(),R.layout.list_view_item_with_arrow, _listType);
+        adapter = new CollectionBankAdapter(getActivity(), R.layout.list_view_item_with_arrow, _listType);
 
         ListView listView1 = (ListView) v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
@@ -96,38 +99,36 @@ public class ListCollectionPayment extends ListFragment {
                 gsonBuilder.setPrettyPrinting();
                 final Gson gson = gsonBuilder.create();
 
-                if(_listType.get(position).equalsIgnoreCase("Internet Banking")) {
+                if (_listType.get(position).equalsIgnoreCase("Internet Banking")) {
                     String listBankIBJson = gson.toJson(listBankIB);
-                    Timber.d("isi json build:"+listBankIBJson);
+                    Timber.d("isi json build:" + listBankIBJson);
                     mbun.putString(DefineValue.BANKLIST_DATA, listBankIBJson);
                     mbun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.INTERNET_BANKING);
 
-                    title = getToolbarTitle()+"-"+getString(R.string.internetBanking_ab_title);
-                }
-                else if(_listType.get(position).equalsIgnoreCase("SMS Banking")) {
+                    title = getToolbarTitle() + "-" + getString(R.string.internetBanking_ab_title);
+                } else if (_listType.get(position).equalsIgnoreCase("SMS Banking")) {
                     String listBankSMSJson = gson.toJson(listBankSMS);
                     mbun.putString(DefineValue.BANKLIST_DATA, listBankSMSJson);
                     mbun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.SMS_BANKING);
 
-                    title = getToolbarTitle()+"-"+getString(R.string.smsBanking_ab_title);
-                }
-                else {
+                    title = getToolbarTitle() + "-" + getString(R.string.smsBanking_ab_title);
+                } else {
                     String listBankScashJson = gson.toJson(listBankScash);
                     mbun.putString(DefineValue.BANKLIST_DATA, listBankScashJson);
                     mbun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.EMONEY);
 
-                    title = getToolbarTitle()+"-"+getString(R.string.scash);
+                    title = getToolbarTitle() + "-" + getString(R.string.scash);
                 }
 
                 mFrag = new CollectionInput();
                 mFrag.setArguments(mbun);
-                switchFragment(mFrag,title,true);
+                switchFragment(mFrag, title, true);
 
             }
         });
     }
 
-    private void setActionBarTitle(String _title){
+    private void setActionBarTitle(String _title) {
         if (getActivity() == null)
             return;
 
@@ -150,8 +151,8 @@ public class ListCollectionPayment extends ListFragment {
         private String product_type;
         private String product_h2h;
 
-        public TempObjectData(String _bank_code, String _bank_name,String _product_code, String _product_name,
-                             String _product_type, String _product_h2h){
+        public TempObjectData(String _bank_code, String _bank_name, String _product_code, String _product_name,
+                              String _product_type, String _product_h2h) {
             this.setBank_code(_bank_code);
             this.setBank_name(_bank_name);
             this.setProduct_code(_product_code);
@@ -209,15 +210,15 @@ public class ListCollectionPayment extends ListFragment {
         }
     }
 
-    private void switchFragment(Fragment i, String name, Boolean isBackstack){
+    private void switchFragment(Fragment i, String name, Boolean isBackstack) {
         if (getActivity() == null)
             return;
 
         CollectionActivity fca = (CollectionActivity) getActivity();
-        fca.switchContent(i,name,isBackstack);
+        fca.switchContent(i, name, isBackstack);
     }
 
-    private String getToolbarTitle(){
+    private String getToolbarTitle() {
         if (getActivity() == null)
             return null;
 
@@ -225,12 +226,12 @@ public class ListCollectionPayment extends ListFragment {
         return fca.getToolbarTitle();
     }
 
-    private void switchActivity(Intent mIntent){
+    private void switchActivity(Intent mIntent) {
         if (getActivity() == null)
             return;
 
         CollectionActivity fca = (CollectionActivity) getActivity();
-        fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
+        fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
     @Override
@@ -251,10 +252,10 @@ public class ListCollectionPayment extends ListFragment {
 
     private void separateType(JSONArray _mdata) {
         try {
-            for(int j=0 ; j<_mdata.length() ; j++) {
+            for (int j = 0; j < _mdata.length(); j++) {
                 boolean flagSame = false;
-                if(_listType.size() > 0) {
-                    Timber.d("list type length flagSame:"+Integer.toString(_listType.size()));
+                if (_listType.size() > 0) {
+                    Timber.d("list type length flagSame:" + Integer.toString(_listType.size()));
                     for (String a_listType : _listType) {
                         if (a_listType.equalsIgnoreCase(_mdata.getJSONObject(j).getString(WebParams.PRODUCT_TYPE))) {
                             flagSame = true;
@@ -276,7 +277,7 @@ public class ListCollectionPayment extends ListFragment {
                 }
             }
 
-            for(int i=0 ; i<_mdata.length() ; i++) {
+            for (int i = 0; i < _mdata.length(); i++) {
                 String bank_code = _mdata.getJSONObject(i).getString(WebParams.BANK_CODE);
                 String bank_name = _mdata.getJSONObject(i).getString(WebParams.BANK_NAME);
                 String product_code = _mdata.getJSONObject(i).getString(WebParams.PRODUCT_CODE);
@@ -284,13 +285,11 @@ public class ListCollectionPayment extends ListFragment {
                 String product_name = _mdata.getJSONObject(i).getString(WebParams.PRODUCT_NAME);
                 String product_type = _mdata.getJSONObject(i).getString(WebParams.PRODUCT_TYPE);
 
-                if(_mdata.getJSONObject(i).getString(WebParams.PRODUCT_TYPE).equalsIgnoreCase(DefineValue.BANKLIST_TYPE_IB)) {
+                if (_mdata.getJSONObject(i).getString(WebParams.PRODUCT_TYPE).equalsIgnoreCase(DefineValue.BANKLIST_TYPE_IB)) {
                     listBankIB.add(new TempObjectData(bank_code, bank_name, product_code, product_name, product_type, product_h2h));
-                }
-                else if(_mdata.getJSONObject(i).getString(WebParams.PRODUCT_TYPE).equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS)) {
+                } else if (_mdata.getJSONObject(i).getString(WebParams.PRODUCT_TYPE).equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS)) {
                     listBankSMS.add(new TempObjectData(bank_code, bank_name, product_code, product_name, product_type, product_h2h));
-                }
-                else if(_mdata.getJSONObject(i).getString(WebParams.PRODUCT_TYPE).equalsIgnoreCase(DefineValue.BANKLIST_TYPE_EMO)) {
+                } else if (_mdata.getJSONObject(i).getString(WebParams.PRODUCT_TYPE).equalsIgnoreCase(DefineValue.BANKLIST_TYPE_EMO)) {
                     listBankScash.add(new TempObjectData(bank_code, bank_name, product_code, product_name, product_type, product_h2h));
                 }
             }
@@ -298,91 +297,71 @@ public class ListCollectionPayment extends ListFragment {
             e.printStackTrace();
         }
 
-        for(int i=0 ; i<_listType.size() ; i++) {
-            if(_listType.get(i).equalsIgnoreCase(DefineValue.BANKLIST_TYPE_IB)) _listType.set(i, "Internet Banking");
-            else if(_listType.get(i).equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS)) _listType.set(i, "SMS Banking");
+        for (int i = 0; i < _listType.size(); i++) {
+            if (_listType.get(i).equalsIgnoreCase(DefineValue.BANKLIST_TYPE_IB))
+                _listType.set(i, "Internet Banking");
+            else if (_listType.get(i).equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS))
+                _listType.set(i, "SMS Banking");
             else _listType.set(i, "S-Cash");
 
         }
-        Timber.d("list type length:"+Integer.toString(_listType.size()));
+        Timber.d("list type length:" + Integer.toString(_listType.size()));
         adapter.notifyDataSetChanged();
     }
 
-    private void sentBankCollect(){
-        try{
+    private void sentBankCollect() {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-
-
-            RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_BANK_ACCOUNT_COLLECTION,
-                    userID,accessKey, commID);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BANK_ACCOUNT_COLLECTION, commID);
             params.put(WebParams.COMM_ID, commID);
             params.put(WebParams.TYPE, DefineValue.BANKLIST_TYPE_ALL);
             params.put(WebParams.USER_ID, userID);
 
             Timber.d("isi params bank collection:" + params.toString());
 
-            MyApiClient.sentBankAccountCollection(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        Timber.d("isi response bank collection:"+response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            JSONArray mData = new JSONArray(response.getString(WebParams.BANK_DATA));
-                            separateType(mData);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANK_ACCOUNT_COLLECTION, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            Gson gson = new Gson();
+                            BBSRetrieveBankModel model = gson.fromJson(object, BBSRetrieveBankModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                JSONArray mData = null;
+                                try {
+                                    mData = new JSONArray(gson.toJson(model.getBank_data()));
+
+                                    separateType(mData);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(), message);
+                            } else {
+                                code = model.getError_code() + ":" + model.getError_message();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                            }
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                        else {
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                        progdialog.dismiss();
+                    });
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi bank collect collectpayment:"+throwable.toString());
-                }
-            });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 

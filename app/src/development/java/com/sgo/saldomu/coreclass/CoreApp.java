@@ -1,11 +1,11 @@
 package com.sgo.saldomu.coreclass;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
@@ -22,6 +22,7 @@ import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;
@@ -35,7 +36,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 8/15/2014.
  */
-public class CoreApp extends Application {
+public class CoreApp extends MultiDexApplication {
 
     private Activity mCurrentActivity = null;
     private static CoreApp _instance;
@@ -99,12 +100,14 @@ public class CoreApp extends Application {
         if(MyApiClient.PROD_FLAG_ADDRESS){
             MyApiClient.COMM_ID = MyApiClient.COMM_ID_PROD;
             MyApiClient.COMM_ID_PULSA = MyApiClient.COMM_ID_PULSA_PROD;
+            MyApiClient.COMM_ID_TAGIH = MyApiClient.COMM_ID_TAGIH_PROD;
             MyApiClient.URL_FAQ = MyApiClient.URL_FAQ_PROD;
             MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_PROD;
         }
         else {
             MyApiClient.COMM_ID = MyApiClient.COMM_ID_DEV;
             MyApiClient.COMM_ID_PULSA = MyApiClient.COMM_ID_PULSA_DEV;
+            MyApiClient.COMM_ID_TAGIH = MyApiClient.COMM_ID_TAGIH_DEV;
             MyApiClient.URL_FAQ = MyApiClient.URL_FAQ_DEV;
             MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_DEV;
         }
@@ -219,7 +222,7 @@ public class CoreApp extends Application {
 	@Override
     public void onTerminate() {
         super.onTerminate();
-        MyApiClient.CancelRequestWS(this, true);
+        RetrofitService.dispose();
         ActiveAndroid.dispose();
     }
 

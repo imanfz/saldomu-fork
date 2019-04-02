@@ -18,8 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CashoutActivity;
 import com.sgo.saldomu.activities.InsertPIN;
@@ -31,20 +29,22 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.TransactionResult;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -185,88 +185,70 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
 
             extraSignature = txId+_token;
 
-            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_CASHOUT, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_CASHOUT, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
 
-            MyApiClient.sentConfCashout(getActivity(),params, new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_CASHOUT, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.d("isi response confirm cashout:"+response.toString());
+                                    showReportBillerDialog(name, DateTimeFormat.getCurrentDateTime(), userPhoneID, txId, bankName, accNo,
+                                            accName, ccyId + " " + CurrencyFormat.format(nominal),
+                                            ccyId + " " + CurrencyFormat.format(fee), ccyId + " " + CurrencyFormat.format(total),
+                                            response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response confirm cashout:"+response.toString());
-                            showReportBillerDialog(name, DateTimeFormat.getCurrentDateTime(), userPhoneID, txId, bankName, accNo,
-                                    accName, ccyId + " " + CurrencyFormat.format(nominal),
-                                    ccyId + " " + CurrencyFormat.format(fee), ccyId + " " + CurrencyFormat.format(total),
-                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                }
+                                else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    showDialogError(code);
+                                }else {
+                                    Timber.d("isi error confirm cashout:"+response.toString());
+                                    String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                                    if(isPIN && code.equals(ErrorDefinition.WRONG_PIN_CASHOUT)){
+                                        Intent i = new Intent(getActivity(), InsertPIN.class);
+                                        pin_attempt = pin_attempt - 1;
+                                        if(pin_attempt != -1 && pin_attempt < 2)
+                                            i.putExtra(DefineValue.ATTEMPT, pin_attempt);
 
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(), message);
-                        }
-                        else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            showDialogError(code);
-                        }else {
-                            Timber.d("isi error confirm cashout:"+response.toString());
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            if(isPIN && code.equals(ErrorDefinition.WRONG_PIN_CASHOUT)){
-                                Intent i = new Intent(getActivity(), InsertPIN.class);
-                                pin_attempt = pin_attempt - 1;
-                                if(pin_attempt != -1 && pin_attempt < 2)
-                                    i.putExtra(DefineValue.ATTEMPT, pin_attempt);
+                                        startActivityForResult(i, MainPage.REQUEST_FINISH);
+                                    }
+                                    else {
+                                        mListener.TransResult(false);
+                                    }
 
-                                startActivityForResult(i, MainPage.REQUEST_FINISH);
+                                    Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            else {
-                                mListener.TransResult(false);
-                            }
-
-                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
+                            if(MyApiClient.PROD_FAILURE_FLAG)
+                                Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi confirm cashout:"+throwable.toString());
-                }
-
-            });
+                        @Override
+                        public void onComplete() {
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -294,7 +276,7 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
+        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
     public boolean inputValidation(){

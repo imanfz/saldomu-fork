@@ -13,24 +13,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.HashMap;
 
 import io.realm.Realm;
 import timber.log.Timber;
@@ -89,27 +88,27 @@ public class BBSConfirmAcct extends BaseFragment {
         final Bundle bundle = getArguments();
         View v = inflater.inflate(R.layout.fragment_bbsconfirm_acct, container, false);
 
-        TextView tvComm = (TextView) v.findViewById(R.id.tv_comm_value);
+        TextView tvComm = v.findViewById(R.id.tv_comm_value);
         tvComm.setText(bundle.getString(DefineValue.COMMUNITY_NAME,""));
 
-        TextView tvBenefBank = (TextView) v.findViewById(R.id.tv_benef_bank_value);
+        TextView tvBenefBank = v.findViewById(R.id.tv_benef_bank_value);
         tvBenefBank.setText(bundle.getString(DefineValue.BANK_NAME));
 
-        TextView tvBenefAcctNo = (TextView) v.findViewById(R.id.tv_benef_acct_no_value);
+        TextView tvBenefAcctNo = v.findViewById(R.id.tv_benef_acct_no_value);
         tvBenefAcctNo.setText(bundle.getString(DefineValue.ACCT_NO));
 
-        TextView tvBenefAcctName = (TextView) v.findViewById(R.id.tv_benef_acct_name_value);
+        TextView tvBenefAcctName = v.findViewById(R.id.tv_benef_acct_name_value);
         tvBenefAcctName.setText(bundle.getString(DefineValue.ACCT_NAME));
 
         if(bundle.getString(DefineValue.ACCT_TYPE,"").equalsIgnoreCase(TYPE_ACCT)) {
             View layoutCity = v.findViewById(R.id.bbsregistacct_city_layout);
             layoutCity.setVisibility(View.VISIBLE);
-            TextView tvBenefAcctCity = (TextView) v.findViewById(R.id.tv_benef_acct_city_value);
+            TextView tvBenefAcctCity = v.findViewById(R.id.tv_benef_acct_city_value);
             tvBenefAcctCity.setText(bundle.getString(DefineValue.ACCT_CITY_NAME));
         }
 
-        etPassword = (EditText) v.findViewById(R.id.et_password_value);
-        Button btnSave = (Button) v.findViewById(R.id.btn_save);
+        etPassword = v.findViewById(R.id.et_password_value);
+        Button btnSave = v.findViewById(R.id.btn_save);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,7 +145,7 @@ public class BBSConfirmAcct extends BaseFragment {
     }
 
     @Override
-    public void onDetach() {
+    public void onDetach(){
         super.onDetach();
         actionListener = null;
     }
@@ -163,7 +162,7 @@ public class BBSConfirmAcct extends BaseFragment {
 
     @Override
     public void onDestroy() {
-        MyApiClient.CancelRequestWSByTag(TAG,true);
+        RetrofitService.dispose();
         RealmManager.closeRealm(realm);
         super.onDestroy();
     }
@@ -172,8 +171,8 @@ public class BBSConfirmAcct extends BaseFragment {
         try{
             extraSignature = txId+tokenId+commCode+memberCode;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_CONFIRM_ACCT,
-                    userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_BBS_CONFIRM_ACCT,
+                    extraSignature);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);
             params.put(WebParams.TX_ID, txId);
@@ -183,76 +182,57 @@ public class BBSConfirmAcct extends BaseFragment {
             Timber.d("isi params confirmAcct:" + params.toString());
 
             progdialog.show();
-            MyApiClient.sentBBSConfirmAcct(getActivity(),TAG, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("Isi response confirmAcct: "+response.toString());
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            String name = getArguments().getString(DefineValue.ACCT_NAME);
-                            String no = getArguments().getString(DefineValue.ACCT_NO);
-                            String title, msg;
-                            if (isUpdate) {
-                                title = getString(R.string.bbsconfirmacct_dialog_success_title_update);
-                                msg = getString(R.string.bbsconfirmacct_dialog_success_msg_update,name,no);
-                                updateDataToRealm();
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_CONFIRM_ACCT, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
+
+                            String code = model.getError_code();
+
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                String name = getArguments().getString(DefineValue.ACCT_NAME);
+                                String no = getArguments().getString(DefineValue.ACCT_NO);
+                                String title, msg;
+                                if (isUpdate) {
+                                    title = getString(R.string.bbsconfirmacct_dialog_success_title_update);
+                                    msg = getString(R.string.bbsconfirmacct_dialog_success_msg_update,name,no);
+                                    updateDataToRealm();
+                                }
+                                else {
+                                    title = getString(R.string.bbsconfirmacct_dialog_success_title);
+                                    msg = getString(R.string.bbsconfirmacct_dialog_success_msg,name,no);
+                                    insertDataToRealm();
+                                }
+
+                                Dialog dialog = DefinedDialog.MessageDialog(getContext(),
+                                        title, msg,
+                                        new DefinedDialog.DialogButtonListener() {
+                                            @Override
+                                            public void onClickButton(View v, boolean isLongClick) {
+                                                actionListener.onSuccess();
+                                            }
+                                        });
+                                dialog.show();
                             }
                             else {
-                                title = getString(R.string.bbsconfirmacct_dialog_success_title);
-                                msg = getString(R.string.bbsconfirmacct_dialog_success_msg,name,no);
-                                insertDataToRealm();
+                                code = model.getError_message();
+                                 Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
                             }
-
-                            Dialog dialog = DefinedDialog.MessageDialog(getContext(),
-                                    title, msg,
-                                    new DefinedDialog.DialogButtonListener() {
-                                        @Override
-                                        public void onClickButton(View v, boolean isLongClick) {
-                                            actionListener.onSuccess();
-                                        }
-                                    });
-                            dialog.show();
                         }
-                        else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                        progdialog.dismiss();
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        @Override
+                        public void onComplete() {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    Timber.w("Error Koneksi confirmAcct:"+throwable.toString());
-                  progdialog.dismiss();
-                }
-            });
+                            progdialog.dismiss();
+                        }
+                    } );
         }catch (Exception e){
             Timber.d("httpclient: "+e.getMessage());
         }

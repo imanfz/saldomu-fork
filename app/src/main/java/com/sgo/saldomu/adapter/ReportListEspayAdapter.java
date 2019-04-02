@@ -14,20 +14,31 @@ import com.sgo.saldomu.Beans.ReportListEspayModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.models.retrofit.GetReportDataModel;
+import com.sgo.saldomu.models.retrofit.ReportDataModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ReportListEspayAdapter extends ArrayAdapter<ReportListEspayModel>{
+public class ReportListEspayAdapter extends ArrayAdapter<ReportDataModel>{
 
     private Context context;
     private int layoutResourceId;
     private ArrayList<ReportListEspayModel> data = null;
+    List<ReportDataModel> reportListModel;
 
-    public ReportListEspayAdapter(Context context, int resource, ArrayList<ReportListEspayModel> objects) {
-        super(context, resource, objects);
+//    public ReportListEspayAdapter(Context context, int resource, ArrayList<ReportListEspayModel> objects) {
+//        super(context, resource, objects);
+//        this.layoutResourceId = resource;
+//        this.context = context;
+//        this.data = objects;
+//    }
+
+    public ReportListEspayAdapter(Context context, int resource, List<ReportDataModel> reportListModel) {
+        super(context, resource, reportListModel);
         this.layoutResourceId = resource;
         this.context = context;
-        this.data = objects;
+        this.reportListModel = reportListModel;
     }
 
     @NonNull
@@ -42,15 +53,15 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportListEspayModel>{
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new ListHolder();
-            holder.tv_date = (TextView)row.findViewById(R.id.text_tgl_trans);
-            holder.tv_buss_scheme_name = (TextView)row.findViewById(R.id.text_buss_scheme_name);
-            holder.tv_comm_name = (TextView)row.findViewById(R.id.text_comm_name);
-            holder.tv_ccy = (TextView)row.findViewById(R.id.text_ccyID);
-            holder.tv_amount = (TextView)row.findViewById(R.id.text_amount);
-            holder.tv_desc = (TextView)row.findViewById(R.id.text_description);
+            holder.tv_date = row.findViewById(R.id.text_tgl_trans);
+            holder.tv_buss_scheme_name = row.findViewById(R.id.text_buss_scheme_name);
+            holder.tv_comm_name = row.findViewById(R.id.text_comm_name);
+            holder.tv_ccy = row.findViewById(R.id.text_ccyID);
+            holder.tv_amount = row.findViewById(R.id.text_amount);
+            holder.tv_desc = row.findViewById(R.id.text_description);
 //            holder.tv_remark = (TextView)row.findViewById(R.id.text_remark);
-            holder.tv_tx_status = (TextView)row.findViewById(R.id.text_tx_status);
-            holder.tv_product_name = (TextView)row.findViewById(R.id.text_product_name);
+            holder.tv_tx_status = row.findViewById(R.id.text_tx_status);
+            holder.tv_product_name = row.findViewById(R.id.text_product_name);
 
             row.setTag(holder);
         }
@@ -59,9 +70,10 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportListEspayModel>{
             holder = (ListHolder)row.getTag();
         }
 
-        ReportListEspayModel itemnya = data.get(position);
+//        ReportListEspayModel itemnya = data.get(position);
+        ReportDataModel itemnya = reportListModel.get(position);
 
-        holder.tv_date.setText(DateTimeFormat.formatToID(itemnya.getDatetime()));
+        holder.tv_date.setText(DateTimeFormat.formatToID(itemnya.getCreated()));
         holder.tv_buss_scheme_name.setText(itemnya.getBuss_scheme_name());
         holder.tv_comm_name.setText(itemnya.getComm_name());
         holder.tv_ccy.setText(itemnya.getCcy_id());
@@ -72,7 +84,7 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportListEspayModel>{
         if(!itemnya.getDescription().equals(""))
         {
             holder.tv_desc.setVisibility(View.VISIBLE);
-            holder.tv_desc.setText(itemnya.getDescription());
+            holder.tv_desc.setText(itemnya.getTx_description());
         }
         else holder.tv_desc.setVisibility(View.GONE);
 //        if(!itemnya.getRemark().equals("")) holder.tv_remark.setText(itemnya.getRemark());

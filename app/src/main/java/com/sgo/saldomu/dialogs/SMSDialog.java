@@ -14,8 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -23,15 +23,15 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.InqSMSModel;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -52,10 +52,16 @@ public class SMSDialog extends Dialog {
     private String imeiDevice, ICCIDDevice;
     private SMSclass smsClass;
     private String message1;
-    private String timeStamp;
+    private String timeStamp, dateTime;
     private SMSclass.SMS_VERIFY_LISTENER smsVerifyListener;
     private Handler handler;
     private int idx_fail;
+
+    public Handler getHandler() {
+        if (handler == null)
+            handler = new Handler();
+        return handler;
+    }
 
 
     public interface DialogButtonListener {
@@ -147,7 +153,7 @@ public class SMSDialog extends Dialog {
                     img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_process));
                 }
                 cdTimer.cancel();
-                MyApiClient.CancelRequestWS(getContext(), true);
+                RetrofitService.dispose();
                 isStop = true;
                 dismiss();
                 if (deListener != null)
@@ -174,7 +180,7 @@ public class SMSDialog extends Dialog {
             @Override
             public void onFinish() {
                 isStop = true;
-                MyApiClient.CancelRequestWS(getContext(), true);
+                RetrofitService.dispose();
 
                 i = 0;
                 tvMessage.setText(getContext().getString(R.string.dialog_sms_msg3));
@@ -215,7 +221,7 @@ public class SMSDialog extends Dialog {
                     img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
                 }
                 cdTimer.cancel();
-                MyApiClient.CancelRequestWS(getContext(), true);
+                RetrofitService.dispose();
                 isStop = true;
             }
         };
@@ -225,6 +231,7 @@ public class SMSDialog extends Dialog {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
+        dateTime = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
         Timber.i("isi timestamp : " + timeStamp);
     }
 
@@ -256,18 +263,19 @@ public class SMSDialog extends Dialog {
             Timber.d("ICC ID: "+ICCIDDevice+ ", Network Code : "+ mobileNetworkCode + ", mobile Dest : " + mobileDestination);
             Timber.d("jalanin sentSMSVerify "+ICCIDDevice);
 
-            smsClass.sendSMSVerify(mobileDestination, imeiDevice, ICCIDDevice, timeStamp, smsVerifyListener);
+            smsClass.sendSMSVerify(mobileDestination, imeiDevice, ICCIDDevice, timeStamp, dateTime, smsVerifyListener);
         }
     }
 
     private void sentInquirySMS() {
         try {
             Timber.d("idx fail = " + String.valueOf(idx_fail));
+
             if (idx_fail <= max_fail_connect && InetHandler.isNetworkAvailable(getContext())) {
                 if (!isStop) {
                     String extraSignature = ICCIDDevice + imeiDevice;
-                    RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_LOGIN,
-                            BuildConfig.SECRET_KEY, extraSignature );
+
+                    HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_INQUIRY_SMS, extraSignature);
                     params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                     params.put(WebParams.IMEI, imeiDevice);
                     params.put(WebParams.ICCID, ICCIDDevice);
@@ -275,79 +283,62 @@ public class SMSDialog extends Dialog {
 
                     Timber.d("isi params inquiry sms:" + params.toString());
 
-                    MyApiClient.sentInquirySMS(getContext(), params, new JsonHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
-                            try {
-                                Timber.d("isi params response inquiry sms:" + response.toString());
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                if (handler == null)
-                                    handler = new Handler();
+                    RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INQUIRY_SMS, params
+                            , new ResponseListener() {
+                                @Override
+                                public void onResponses(JsonObject object) {
+                                    Gson gson = new Gson();
 
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    isStop = true;
-                                    tvMessage.setText(getContext().getString(R.string.dialog_sms_msg4));
-                                    progText.setVisibility(View.GONE);
-                                    progBar.setVisibility(View.GONE);
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                        img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon_success));
-                                    } else {
-                                        img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_success));
-                                    }
-                                    cdTimer.cancel();
+                                    final InqSMSModel model = gson.fromJson(object, InqSMSModel.class);
 
-                                    handler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            saveData(response);
+                                    String code = model.getError_code();
+
+                                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                        isStop = true;
+                                        tvMessage.setText(getContext().getString(R.string.dialog_sms_msg4));
+                                        progText.setVisibility(View.GONE);
+                                        progBar.setVisibility(View.GONE);
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon_success));
+                                        } else {
+                                            img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_success));
                                         }
-                                    }, 3000);
+                                        cdTimer.cancel();
 
-                                } else {
-                                    handler.postDelayed(new Runnable() {
+                                        getHandler().postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                saveData(model);
+                                            }
+                                        }, 3000);
+
+                                    } else {
+//                                            if ()
+//                                idx_fail++;
+                                        getHandler().postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                sentInquirySMS();
+                                            }
+                                        }, 3000);
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable throwable) {
+                                    getHandler().postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
                                             sentInquirySMS();
                                         }
                                     }, 3000);
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
 
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                            super.onFailure(statusCode, headers, responseString, throwable);
-                            ifFailure(throwable);
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                            super.onFailure(statusCode, headers, throwable, errorResponse);
-                            ifFailure(throwable);
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                            super.onFailure(statusCode, headers, throwable, errorResponse);
-                            ifFailure(throwable);
-                        }
-
-                        private void ifFailure(Throwable throwable) {
-                            Timber.w("Error Koneksi login:" + throwable.toString());
-                            if (handler == null)
-                                handler = new Handler();
-
-                            handler.postDelayed(new Runnable() {
                                 @Override
-                                public void run() {
-                                    idx_fail++;
-                                    sentInquirySMS();
+                                public void onComplete() {
+
                                 }
-                            }, 3000);
-                        }
-                    });
+                            } );
                 }
             } else {
                 tvMessage.setText(getContext().getString(R.string.dialog_sms_msg3));
@@ -360,7 +351,7 @@ public class SMSDialog extends Dialog {
                 } else {
                     img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
                 }
-                MyApiClient.CancelRequestWS(getContext(), true);
+                RetrofitService.dispose();
                 DestroyDialog();
                 idx_fail = 0;
             }
@@ -369,16 +360,14 @@ public class SMSDialog extends Dialog {
         }
     }
 
-    private void saveData(JSONObject mObj) {
+    private void saveData(InqSMSModel model) {
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         SecurePreferences.Editor edit = sp.edit();
-        edit.putString(DefineValue.SENDER_ID, mObj.optString(WebParams.SENDER_ID));
-        Bundle mbundler = new Bundle();
+        edit.putString(DefineValue.SENDER_ID, model.getSender_id());
 
         //check apakah user register dari ATM atau tidak
 
-
-        if (mObj.optInt(WebParams.IS_NEW_USER, 0) == 0) {
+        if (model.getIs_new_user() == 0) {
             edit.putString(DefineValue.DEIMEI, imeiDevice);
             edit.putString(DefineValue.DEICCID, ICCIDDevice);
             edit.commit();
@@ -388,7 +377,7 @@ public class SMSDialog extends Dialog {
             edit.commit();
             deListener.onSuccess(1);
         }
-        deListener.onSuccess(mObj.optString(WebParams.SENDER_ID, ""));
+        deListener.onSuccess(model.getSender_id());
     }
 
     @Override

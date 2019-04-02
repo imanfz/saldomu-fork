@@ -26,8 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -37,12 +35,13 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.OpenHourDays;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +49,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -128,21 +128,21 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
         viewLayout = inflater.inflate(R.layout.frag_waktu_beroperasi, container, false);
 
         sp                      = CustomSecurePref.getInstance().getmSecurePrefs();
-        chkBuka24Jam            = (CheckBox) viewLayout.findViewById(R.id.chkBuka24Jam);
-        chkSetiapHari           = (CheckBox) viewLayout.findViewById(R.id.chkSetiapHari);
-        tlLabelPilihHari        = (TableLayout) viewLayout.findViewById(R.id.tlLabelPilihHari);
-        tlLabelPilihSetiapHari  = (TableLayout) viewLayout.findViewById(R.id.tlLabelPilihSetiapHari);
-        tlLabelPilihJam         = (TableLayout) viewLayout.findViewById(R.id.tlLabelPilihJam);
-        tlTutupSetiapTanggal    = (TableLayout) viewLayout.findViewById(R.id.tlTutupSetiapTanggal);
-        swTutupToko             = (Switch) viewLayout.findViewById(R.id.swTutupToko);
-        btnTanggal              = (Button) viewLayout.findViewById(R.id.btnTanggal);
-        btnSubmit               = (Button) viewLayout.findViewById(R.id.btnSubmit);
+        chkBuka24Jam            = viewLayout.findViewById(R.id.chkBuka24Jam);
+        chkSetiapHari           = viewLayout.findViewById(R.id.chkSetiapHari);
+        tlLabelPilihHari        = viewLayout.findViewById(R.id.tlLabelPilihHari);
+        tlLabelPilihSetiapHari  = viewLayout.findViewById(R.id.tlLabelPilihSetiapHari);
+        tlLabelPilihJam         = viewLayout.findViewById(R.id.tlLabelPilihJam);
+        tlTutupSetiapTanggal    = viewLayout.findViewById(R.id.tlTutupSetiapTanggal);
+        swTutupToko             = viewLayout.findViewById(R.id.swTutupToko);
+        btnTanggal              = viewLayout.findViewById(R.id.btnTanggal);
+        btnSubmit               = viewLayout.findViewById(R.id.btnSubmit);
         btnTanggal.setVisibility(View.GONE);
 
-        tvSelectedDate          = (TextView) viewLayout.findViewById(R.id.tvSelectedDate);
-        trSelectedDate          = (TableRow) viewLayout.findViewById(R.id.trSelectedDate);
-        trSettingDate           = (TableRow) viewLayout.findViewById(R.id.trSettingDate);
-        llWaktuBeroperasi       = (LinearLayout) viewLayout.findViewById(R.id.llWaktuBeroperasi);
+        tvSelectedDate          = viewLayout.findViewById(R.id.tvSelectedDate);
+        trSelectedDate          = viewLayout.findViewById(R.id.trSelectedDate);
+        trSettingDate           = viewLayout.findViewById(R.id.trSettingDate);
+        llWaktuBeroperasi       = viewLayout.findViewById(R.id.llWaktuBeroperasi);
         llWaktuBeroperasi.setVisibility(View.GONE);
         btnSubmit.setVisibility(View.GONE);
         btnTanggal.setVisibility(View.GONE);
@@ -152,9 +152,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
         String extraSignature = DefineValue.STRING_NO;
-        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_MEMBER_SHOP_LIST,
-                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
-                extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_MEMBER_SHOP_LIST, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
@@ -163,61 +161,46 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
         params.put(WebParams.FLAG_APPROVE, DefineValue.STRING_NO);
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
-        MyApiClient.getMemberShopList(getContext(), params, false, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                progdialog.dismiss();
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_MEMBER_SHOP_LIST, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                try {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                llWaktuBeroperasi.setVisibility(View.VISIBLE);
+                                btnSubmit.setVisibility(View.VISIBLE);
 
-                        llWaktuBeroperasi.setVisibility(View.VISIBLE);
-                        btnSubmit.setVisibility(View.VISIBLE);
+                                JSONArray members = response.getJSONArray("member");
 
-                        JSONArray members = response.getJSONArray("member");
+                                if ( members.length() > 0 ) {
+                                    memberId = members.getJSONObject(0).getString("member_id");
+                                    shopId = members.getJSONObject(0).getString("shop_id");
+                                } else {
+                                    backToPreviousFragment();
+                                }
 
-                        if ( members.length() > 0 ) {
-                            memberId = members.getJSONObject(0).getString("member_id");
-                            shopId = members.getJSONObject(0).getString("shop_id");
-                        } else {
-                            backToPreviousFragment();
+                            } else {
+                                backToPreviousFragment();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
-                    } else {
-                        backToPreviousFragment();
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //if (MyApiClient.PROD_FAILURE_FLAG)
-                //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                //else
-                Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                progdialog.dismiss();
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
+                    @Override
+                    public void onComplete() {
+                        progdialog.dismiss();
+                    }
+                });
 
         /*etStartSenin            = (EditText) v.findViewById(R.id.etStartSenin);
         etEndSenin              = (EditText) v.findViewById(R.id.etEndSenin);
@@ -308,9 +291,9 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                         int intEndText      = getId("etEnd" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
                         int chkHari         = getId("chk"+setupOpenHours.get(pos).getNamaHari(), R.id.class);
 
-                        CheckBox checkBox   = (CheckBox) viewLayout.findViewById(chkHari);
-                        TextView txtStart   = (TextView) viewLayout.findViewById(intStartText);
-                        TextView txtEnd     = (TextView) viewLayout.findViewById(intEndText);
+                        CheckBox checkBox   = viewLayout.findViewById(chkHari);
+                        TextView txtStart   = viewLayout.findViewById(intStartText);
+                        TextView txtEnd     = viewLayout.findViewById(intEndText);
 
                         if ( checkBox.isChecked() ) {
                             if ( !txtStart.getText().equals("00:00") && !txtEnd.getText().equals("00:00") ) {
@@ -346,7 +329,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                         progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
                         progdialog2.show();
 
-                        RequestParams params = new RequestParams();
+                        HashMap<String, Object> params = new HashMap<>();
 
                         UUID rcUUID             = UUID.randomUUID();
                         String  dtime           = DateTimeFormat.getCurrentDateTime();
@@ -374,9 +357,9 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                                 int intEndText      = getId("etEnd" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
                                 int chkHari         = getId("chk"+setupOpenHours.get(pos).getNamaHari(), R.id.class);
 
-                                CheckBox checkBox   = (CheckBox) viewLayout.findViewById(chkHari);
-                                TextView txtStart   = (TextView) viewLayout.findViewById(intStartText);
-                                TextView txtEnd     = (TextView) viewLayout.findViewById(intEndText);
+                                CheckBox checkBox   = viewLayout.findViewById(chkHari);
+                                TextView txtStart   = viewLayout.findViewById(intStartText);
+                                TextView txtEnd     = viewLayout.findViewById(intEndText);
 
                                 if ( checkBox.isChecked() ) {
                                     if ( !txtStart.getText().equals("00:00") && !txtEnd.getText().equals("00:00") ) {
@@ -454,32 +437,33 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
                         Log.d("TEST", params.toString());
 
-                        MyApiClient.setupOpeningHour(getContext(), params, new JsonHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                progdialog2.dismiss();
-                                Timber.d("isi response sent insert open hour:" + response.toString());
+                        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SETUP_OPENING_HOUR, params,
+                                new ObjListeners() {
+                                    @Override
+                                    public void onResponses(JSONObject response) {
 
-                                try {
-                                    String code = response.getString(WebParams.ERROR_CODE);
-                                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                        Timber.d("isi response sent insert open hour:" + response.toString());
 
-                                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
-                                        alertDialog.setCanceledOnTouchOutside(false);
-                                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                                        alertDialog.setCancelable(false);
+                                        try {
+                                            String code = response.getString(WebParams.ERROR_CODE);
+                                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                        alertDialog.setMessage(getString(R.string.message_notif_update_24_hours_success));
+                                                android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                                                alertDialog.setCanceledOnTouchOutside(false);
+                                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                                alertDialog.setCancelable(false);
+
+                                                alertDialog.setMessage(getString(R.string.message_notif_update_24_hours_success));
 
 
 
-                                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    SecurePreferences.Editor mEditor = sp.edit();
-                                                    mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_YES);
-                                                    mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
-                                                    mEditor.apply();
+                                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                                        new DialogInterface.OnClickListener() {
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                SecurePreferences.Editor mEditor = sp.edit();
+                                                                mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_YES);
+                                                                mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
+                                                                mEditor.apply();
                                                     /*FragTutupManual fragTutupManual = new FragTutupManual();
                                                     FragmentManager fragmentManager = getFragmentManager();
                                                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -492,62 +476,45 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                                                         title_detoolbar.setText(getString(R.string.menu_item_title_tutup_manual));
                                                     }
                                                     fragmentTransaction.commit();*/
-                                                    //getActivity().onBackPressed();
-                                                    //getActivity().finish();
-                                                    Intent i = new Intent(getActivity().getApplicationContext(), MainPage.class);
-                                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                    startActivity(i);
-                                                    getActivity().finish();
+                                                                //getActivity().onBackPressed();
+                                                                //getActivity().finish();
+                                                                Intent i = new Intent(getActivity().getApplicationContext(), MainPage.class);
+                                                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                                startActivity(i);
+                                                                getActivity().finish();
 
-                                                }
-                                            });
+                                                            }
+                                                        });
 
-                                        alertDialog.show();
+                                                alertDialog.show();
+
+                                            }
+                                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                                //test.showDialoginActivity(getApplication(),message);
+                                            }
+                                            else {
+                                                code = response.getString(WebParams.ERROR_MESSAGE);
+                                                Toast.makeText(getContext(), code, Toast.LENGTH_LONG).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable throwable) {
 
                                     }
-                                    else if(code.equals(WebParams.LOGOUT_CODE)){
-                                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                        //test.showDialoginActivity(getApplication(),message);
+
+                                    @Override
+                                    public void onComplete() {
+                                        if (progdialog2.isShowing())
+                                            progdialog2.dismiss();
                                     }
-                                    else {
-                                        code = response.getString(WebParams.ERROR_MESSAGE);
-                                        Toast.makeText(getContext(), code, Toast.LENGTH_LONG).show();
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                                });
 
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                                super.onFailure(statusCode, headers, responseString, throwable);
-                                failure(throwable);
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                super.onFailure(statusCode, headers, throwable, errorResponse);
-                                failure(throwable);
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                                super.onFailure(statusCode, headers, throwable, errorResponse);
-                                failure(throwable);
-                            }
-
-                            private void failure(Throwable throwable){
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                                if (progdialog2.isShowing())
-                                    progdialog2.dismiss();
-
-                                Timber.w("Error Koneksi sent request setup open hour:"+throwable.toString());
-                            }
-                        });
                     }catch (Exception e){
                         Timber.d("httpclient:"+e.getMessage());
                     }
@@ -598,17 +565,17 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
             int etEnd   = getId("etEnd"+setupOpenHours.get(pos).getNamaHari(), R.id.class);
             int chkHari = getId("chk"+setupOpenHours.get(pos).getNamaHari(), R.id.class);
 
-            TextView etText = (TextView) viewLayout.findViewById(etStart);
+            TextView etText = viewLayout.findViewById(etStart);
             etText.setText(setupOpenHours.get(pos).getStartHour());
             etText.setEnabled(true);
             etText.setOnTouchListener(new myEditTextClickListener());
 
-            TextView etEndText = (TextView) viewLayout.findViewById(etEnd);
+            TextView etEndText = viewLayout.findViewById(etEnd);
             etEndText.setText(setupOpenHours.get(pos).getEndHour());
             etEndText.setEnabled(true);
             etEndText.setOnTouchListener(new myEditTextClickListener());
 
-            CheckBox chkBoxHari = (CheckBox) viewLayout.findViewById(chkHari);
+            CheckBox chkBoxHari = viewLayout.findViewById(chkHari);
             chkBoxHari.setOnCheckedChangeListener(null);
             /*if ( setupOpenHours.get(pos).getStartHour().equals("00:00") &&
                     setupOpenHours.get(pos).getEndHour().equals("00:00") ) {
@@ -642,19 +609,19 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
         setupOpenHours.get(position).setiEndMinute(0);
 
         int chkHari = getId("chk"+setupOpenHours.get(position).getNamaHari(), R.id.class);
-        CheckBox chkBoxHari = (CheckBox) viewLayout.findViewById(chkHari);
+        CheckBox chkBoxHari = viewLayout.findViewById(chkHari);
         chkBoxHari.setOnCheckedChangeListener(null);
         chkBoxHari.setChecked(false);
 
         int etStart = getId("etStart"+setupOpenHours.get(position).getNamaHari(), R.id.class);
         int etEnd   = getId("etEnd"+setupOpenHours.get(position).getNamaHari(), R.id.class);
 
-        TextView etText = (TextView) viewLayout.findViewById(etStart);
+        TextView etText = viewLayout.findViewById(etStart);
         etText.setText(setupOpenHours.get(position).getStartHour());
         etText.setEnabled(true);
         etText.setOnTouchListener(new myEditTextClickListener());
 
-        TextView etEndText = (TextView) viewLayout.findViewById(etEnd);
+        TextView etEndText = viewLayout.findViewById(etEnd);
         etEndText.setText(setupOpenHours.get(position).getEndHour());
         etEndText.setEnabled(true);
         etEndText.setOnTouchListener(new myEditTextClickListener());
@@ -695,7 +662,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
             for (int pos = 0; pos < setupOpenHours.size(); pos++) {
-                CheckBox chkBox = (CheckBox) viewLayout.findViewById(getId("chk" + setupOpenHours.get(pos).getNamaHari(), R.id.class));
+                CheckBox chkBox = viewLayout.findViewById(getId("chk" + setupOpenHours.get(pos).getNamaHari(), R.id.class));
                 chkBox.setOnCheckedChangeListener(null);
                 chkBox.setChecked(isChecked);
                 chkBox.setOnCheckedChangeListener(new myCheckBoxChangeClicker());
@@ -725,7 +692,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                 }
             }
 
-            CheckBox chkBox = (CheckBox) viewLayout.findViewById(getId("chk" + setupOpenHours.get(selectedPosition).getNamaHari(), R.id.class));
+            CheckBox chkBox = viewLayout.findViewById(getId("chk" + setupOpenHours.get(selectedPosition).getNamaHari(), R.id.class));
 
             if ( chkBox.isChecked() ) {
                 showTimeDialog(selectedPosition);
@@ -763,7 +730,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
             } else {
                 isSetiapHari = true;
                 for (int pos = 0; pos < setupOpenHours.size(); pos++) {
-                    CheckBox chkBox = (CheckBox) viewLayout.findViewById(getId("chk" + setupOpenHours.get(pos).getNamaHari(), R.id.class));
+                    CheckBox chkBox = viewLayout.findViewById(getId("chk" + setupOpenHours.get(pos).getNamaHari(), R.id.class));
                     if (!chkBox.isChecked()) {
                         isSetiapHari = false;
                     }
@@ -789,7 +756,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                 for (int pos = 0; pos < setupOpenHours.size(); pos++) {
                     int chkHariId = getId("chk" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
 
-                    CheckBox chkBox2 = (CheckBox) viewLayout.findViewById(chkHariId);
+                    CheckBox chkBox2 = viewLayout.findViewById(chkHariId);
                     if ( !chkBox2.isChecked() ) {
                         setupOpenHours.get(pos).setStartHour("00:00");
                         setupOpenHours.get(pos).setEndHour("00:00");
@@ -801,12 +768,12 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                         int etStart = getId("etStart"+setupOpenHours.get(pos).getNamaHari(), R.id.class);
                         int etEnd   = getId("etEnd"+setupOpenHours.get(pos).getNamaHari(), R.id.class);
 
-                        TextView etText = (TextView) viewLayout.findViewById(etStart);
+                        TextView etText = viewLayout.findViewById(etStart);
                         etText.setText(setupOpenHours.get(pos).getStartHour());
                         etText.setEnabled(true);
                         etText.setOnTouchListener(new myEditTextClickListener());
 
-                        TextView etEndText = (TextView) viewLayout.findViewById(etEnd);
+                        TextView etEndText = viewLayout.findViewById(etEnd);
                         etEndText.setText(setupOpenHours.get(pos).getEndHour());
                         etEndText.setEnabled(true);
                         etEndText.setOnTouchListener(new myEditTextClickListener());

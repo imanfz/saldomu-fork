@@ -21,26 +21,28 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.JsonObject;
 import com.sgo.saldomu.Beans.BBSCommBenef;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.BBSRegAcctModel;
+import com.sgo.saldomu.models.retrofit.BBSRetrieveBankModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -71,8 +73,10 @@ public class BBSRegisterAcct extends BaseFragment {
     private ArrayList<List_BBS_City> list_bbs_cities;
     public Boolean isUpdate = false;
     private TextView tvEgNo;
-    public interface ActionListener{
+
+    public interface ActionListener {
         void OnSuccessReqAcct(Bundle data);
+
         void OnEmptyCommunity();
     }
 
@@ -84,8 +88,7 @@ public class BBSRegisterAcct extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_information:
                 showTutorial();
                 return true;
@@ -100,11 +103,11 @@ public class BBSRegisterAcct extends BaseFragment {
         realm = Realm.getDefaultInstance();
 
         listDataBank = new ArrayList<>();
-        progdialog = DefinedDialog.CreateProgressDialog(getContext(),"");
+        progdialog = DefinedDialog.CreateProgressDialog(getContext(), "");
         progdialog.dismiss();
         Bundle bundle = getArguments();
-        if(bundle.containsKey(DefineValue.IS_UPDATE))
-            isUpdate = bundle.getBoolean(DefineValue.IS_UPDATE,false);
+        if (bundle.containsKey(DefineValue.IS_UPDATE))
+            isUpdate = bundle.getBoolean(DefineValue.IS_UPDATE, false);
 
         dataComm = new BBSCommModel();
         dataComm.setComm_code(bundle.getString(DefineValue.COMMUNITY_CODE));
@@ -112,7 +115,7 @@ public class BBSRegisterAcct extends BaseFragment {
         dataComm.setComm_name(bundle.getString(DefineValue.COMMUNITY_NAME));
         dataComm.setMember_code(bundle.getString(DefineValue.MEMBER_CODE));
 
-        if(isUpdate){
+        if (isUpdate) {
             BBSCommBenef bbsCommBenef = new BBSCommBenef();
             bbsCommBenef.setProduct_type(bundle.getString(DefineValue.PRODUCT_TYPE));
             bbsCommBenef.setProduct_name(bundle.getString(DefineValue.PRODUCT_NAME));
@@ -133,17 +136,17 @@ public class BBSRegisterAcct extends BaseFragment {
 //                retrieveComm();
 //            }
 //        });
-        spComm = (Spinner) v.findViewById(R.id.spinner_community);
+        spComm = v.findViewById(R.id.spinner_community);
 //        spComm.setEmptyView(emptySpin);
-        progBarComm = (ProgressBar) v.findViewById(R.id.loading_progres_comm);
-        spSourceAcct = (Spinner) v.findViewById(R.id.bbsregistacct_value_bank_benef);
-        progBarBank = (ProgressBar) v.findViewById(R.id.loading_progres_bank_benef);
-        etNoBenefAcct = (EditText) v.findViewById(R.id.bbsregistacct_value_no_acct_benef);
-        etNameBenefAcct = (EditText) v.findViewById(R.id.bbsregistacct_value_name_acct_benef);
+        progBarComm = v.findViewById(R.id.loading_progres_comm);
+        spSourceAcct = v.findViewById(R.id.bbsregistacct_value_bank_benef);
+        progBarBank = v.findViewById(R.id.loading_progres_bank_benef);
+        etNoBenefAcct = v.findViewById(R.id.bbsregistacct_value_no_acct_benef);
+        etNameBenefAcct = v.findViewById(R.id.bbsregistacct_value_name_acct_benef);
         cityLayout = v.findViewById(R.id.bbsregistacct_city_layout);
-        Button btnSave = (Button) v.findViewById(R.id.btn_save);
-        city_textview_autocomplete = (AutoCompleteTextView) v.findViewById(R.id.bbsregistacct_value_city_benef2);
-        tvEgNo = (TextView) v.findViewById(R.id.tv_eg_no);
+        Button btnSave = v.findViewById(R.id.btn_save);
+        city_textview_autocomplete = v.findViewById(R.id.bbsregistacct_value_city_benef2);
+        tvEgNo = v.findViewById(R.id.tv_eg_no);
 
         btnSave.setOnClickListener(saveListener);
 
@@ -169,15 +172,15 @@ public class BBSRegisterAcct extends BaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String productType = listDataBank.get(position).getProduct_type();
-                if(productType.equalsIgnoreCase(TYPE_ACCT)) {
+                if (productType.equalsIgnoreCase(TYPE_ACCT)) {
                     cityLayout.setVisibility(View.VISIBLE);
                     tvEgNo.setText(getString(R.string.eg_no_acct));
-                }
-                else {
+                } else {
                     cityLayout.setVisibility(View.GONE);
                     tvEgNo.setText(getString(R.string.eg_no_hp));
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -190,14 +193,14 @@ public class BBSRegisterAcct extends BaseFragment {
         results.addChangeListener(new RealmChangeListener<RealmResults<List_BBS_City>>() {
             @Override
             public void onChange(RealmResults<List_BBS_City> element) {
-                if(getActivity() != null && !getActivity().isFinishing()) {
+                if (getActivity() != null && !getActivity().isFinishing()) {
                     for (List_BBS_City bbsCity : element) {
                         list_bbs_cities.add(bbsCity);
                         list_name_bbs_cities.add(bbsCity.getCity_name());
                     }
 
                     ArrayAdapter<String> city_adapter = new ArrayAdapter<String>
-                            (getActivity(),android.R.layout.simple_selectable_list_item, list_name_bbs_cities);
+                            (getActivity(), android.R.layout.simple_selectable_list_item, list_name_bbs_cities);
 
                     city_textview_autocomplete.setText("KOTA JAKARTA");
 //                    city_textview_autocomplete.setThreshold(1);
@@ -210,20 +213,20 @@ public class BBSRegisterAcct extends BaseFragment {
             }
         });
 
-        if(isUpdate){
+        if (isUpdate) {
             etNoBenefAcct.setText(bundle.getString(DefineValue.NO_BENEF));
             etNameBenefAcct.setText(bundle.getString(DefineValue.NAME_BENEF));
             spSourceAcct.setEnabled(false);
             spComm.setEnabled(false);
 
             adapterDataBank.add(listDataBank.get(0).getProduct_name());
-        }
-        else {
+        } else {
             spComm.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 //                    retreiveBank(listDataComm.get(position).getCommCode());
                 }
+
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
 
@@ -234,21 +237,17 @@ public class BBSRegisterAcct extends BaseFragment {
         validasiTutorial();
     }
 
-    private void validasiTutorial()
-    {
-        if(sp.contains(DefineValue.TUTORIAL_TAMBAH_REKENING))
-        {
-            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_TAMBAH_REKENING,false);
-            if(is_first_time)
+    private void validasiTutorial() {
+        if (sp.contains(DefineValue.TUTORIAL_TAMBAH_REKENING)) {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_TAMBAH_REKENING, false);
+            if (is_first_time)
                 showTutorial();
-        }
-        else {
+        } else {
             showTutorial();
         }
     }
 
-    private void showTutorial()
-    {
+    private void showTutorial() {
         Intent intent = new Intent(getActivity(), TutorialActivity.class);
         intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_tambahRekening);
         startActivity(intent);
@@ -257,10 +256,10 @@ public class BBSRegisterAcct extends BaseFragment {
     Button.OnClickListener saveListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(inputValidation()) {
-                String benefAcctType =  listDataBank.get(spSourceAcct.getSelectedItemPosition()).getProduct_type();
-                String city_id = "" ;
-                if(benefAcctType.equalsIgnoreCase(TYPE_ACCT))
+            if (inputValidation()) {
+                String benefAcctType = listDataBank.get(spSourceAcct.getSelectedItemPosition()).getProduct_type();
+                String city_id = "";
+                if (benefAcctType.equalsIgnoreCase(TYPE_ACCT))
                     city_id = list_bbs_cities.get(CityAutocompletePos).getCity_id();
                 sentReqAcct(dataComm.getComm_code(),
                         dataComm.getMember_code(),
@@ -279,10 +278,9 @@ public class BBSRegisterAcct extends BaseFragment {
         if (getTargetFragment() instanceof ActionListener) {
             actionListener = (ActionListener) getTargetFragment();
         } else {
-            if(context instanceof ActionListener){
+            if (context instanceof ActionListener) {
                 actionListener = (ActionListener) context;
-            }
-            else {
+            } else {
                 throw new RuntimeException(context.toString()
                         + " must implement ActionListener RegisterAcct");
             }
@@ -296,81 +294,75 @@ public class BBSRegisterAcct extends BaseFragment {
     }
 
 
-    public boolean inputValidation(){
-        if(progBarBank.getVisibility() == View.VISIBLE)
+    public boolean inputValidation() {
+        if (progBarBank.getVisibility() == View.VISIBLE)
             return false;
 
-        if(listDataBank.size() == 0)
+        if (listDataBank.size() == 0)
             return false;
 
-        if(etNoBenefAcct.getText().toString().length()==0){
+        if (etNoBenefAcct.getText().toString().length() == 0) {
             etNoBenefAcct.requestFocus();
             etNoBenefAcct.setError(getString(R.string.bbsreg_et_error_rekbenef));
             return false;
         }
-        if(etNameBenefAcct.getText().toString().length()==0){
+        if (etNameBenefAcct.getText().toString().length() == 0) {
             etNameBenefAcct.requestFocus();
             etNameBenefAcct.setError(getString(R.string.bbsreg_et_error_namebenef));
             return false;
         }
 
-        if(cityLayout.getVisibility() == View.VISIBLE) {
+        if (cityLayout.getVisibility() == View.VISIBLE) {
             String autocomplete_text = city_textview_autocomplete.getText().toString();
 
-            if (autocomplete_text.equals("")){
+            if (autocomplete_text.equals("")) {
                 city_textview_autocomplete.requestFocus();
                 city_textview_autocomplete.setError("Kota tujuan harus diisi!");
                 return false;
-            }else if (!list_name_bbs_cities.contains(autocomplete_text)){
+            } else if (!list_name_bbs_cities.contains(autocomplete_text)) {
 
                 city_textview_autocomplete.requestFocus();
                 city_textview_autocomplete.setError("Nama kota tidak ditemukan!");
                 return false;
-            }else {
+            } else {
                 CityAutocompletePos = list_name_bbs_cities.indexOf(autocomplete_text);
                 city_textview_autocomplete.setError(null);
             }
         }
 
-        if(listDataBank.size() == 0)
-            return false;
-
-        return true;
+        return listDataBank.size() != 0;
     }
 
-    private void CommunityUIRefresh(){
-        if(dataComm == null) {
+    private void CommunityUIRefresh() {
+        if (dataComm == null) {
             Toast.makeText(getActivity(), R.string.joinagentbbs_toast_empty_comm, Toast.LENGTH_LONG).show();
             actionListener.OnEmptyCommunity();
-        }
-        else {
-            TextView tvCommName = (TextView) v.findViewById(R.id.tv_comm_value);
+        } else {
+            TextView tvCommName = v.findViewById(R.id.tv_comm_value);
             tvCommName.setText(dataComm.getComm_name());
             tvCommName.setVisibility(View.VISIBLE);
             spComm.setVisibility(View.INVISIBLE);
-            if(isUpdate)
+            if (isUpdate)
                 BankUIRefresh();
             else
                 retreiveBank(dataComm.getComm_code());
         }
     }
 
-    private void BankUIRefresh(){
-        if(listDataBank.size() == 1) {
-            TextView tvBankName = (TextView) v.findViewById(R.id.tv_bank_value);
+    private void BankUIRefresh() {
+        if (listDataBank.size() == 1) {
+            TextView tvBankName = v.findViewById(R.id.tv_bank_value);
             tvBankName.setText(listDataBank.get(0).getProduct_name());
             tvBankName.setVisibility(View.VISIBLE);
             spSourceAcct.setVisibility(View.INVISIBLE);
-        }
-        else {
+        } else {
             spSourceAcct.setVisibility(View.VISIBLE);
         }
     }
 
-    private void retreiveBank(String comm_code){
-        try{
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_BANK_REG_ACCT,
-                    userPhoneID,accessKey, comm_code);
+    private void retreiveBank(String comm_code) {
+        try {
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_BANK_REG_ACCT, comm_code);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -378,80 +370,65 @@ public class BBSRegisterAcct extends BaseFragment {
 
             spSourceAcct.setVisibility(View.GONE);
             progBarBank.setVisibility(View.VISIBLE);
-            MyApiClient.sentBBSBankRegAcct(getActivity(),TAG, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("Isi response retreive bank: "+response.toString());
-                        listDataBank.clear();
-                        adapterDataBank.clear();
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            JSONArray bank = response.optJSONArray(WebParams.BANK_DATA);
-                            if(bank != null && bank.length() > 0) {
-                                BBSCommBenef bbsCommBenef;
-                                for (int i = 0; i < bank.length(); i++) {
-                                    bbsCommBenef = new BBSCommBenef(bank.getJSONObject(i).optString(WebParams.PRODUCT_CODE),
-                                            bank.getJSONObject(i).optString(WebParams.PRODUCT_NAME),
-                                            bank.getJSONObject(i).optString(WebParams.PRODUCT_TYPE));
-                                    listDataBank.add(bbsCommBenef);
-                                    adapterDataBank.add(bbsCommBenef.getProduct_name());
+
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_BANK_REG_ACCT, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            try {
+
+                                BBSRetrieveBankModel model = getGson().fromJson(object, BBSRetrieveBankModel.class);
+
+                                String code = model.getError_code();
+                                listDataBank.clear();
+                                adapterDataBank.clear();
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    JSONArray bank = new JSONArray(getGson().toJson(model.getBank_data()));
+
+                                    if (bank != null && bank.length() > 0) {
+                                        BBSCommBenef bbsCommBenef;
+                                        for (int i = 0; i < bank.length(); i++) {
+                                            bbsCommBenef = new BBSCommBenef(bank.getJSONObject(i).optString(WebParams.PRODUCT_CODE),
+                                                    bank.getJSONObject(i).optString(WebParams.PRODUCT_NAME),
+                                                    bank.getJSONObject(i).optString(WebParams.PRODUCT_TYPE));
+                                            listDataBank.add(bbsCommBenef);
+                                            adapterDataBank.add(bbsCommBenef.getProduct_name());
+                                        }
+                                    }
+                                } else {
+                                    code = model.getError_message();
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
                                 }
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
-                        else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                        adapterDataBank.notifyDataSetChanged();
-                        spSourceAcct.setVisibility(View.VISIBLE);
-                        progBarBank.setVisibility(View.GONE);
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    Timber.w("Error Koneksi retreive bank:"+throwable.toString());
-                    spSourceAcct.setVisibility(View.VISIBLE);
-                    progBarBank.setVisibility(View.GONE);
-                }
-            });
-        }catch (Exception e){
-            Timber.d("httpclient: "+e.getMessage());
+                        @Override
+                        public void onComplete() {
+                            adapterDataBank.notifyDataSetChanged();
+                            spSourceAcct.setVisibility(View.VISIBLE);
+                            progBarBank.setVisibility(View.GONE);
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient: " + e.getMessage());
         }
     }
 
     private void sentReqAcct(final String commCode, final String memberCode, final String benefAcctType, final String benefBankCode,
-                             final String benefAcctNo, final String benefAcctCity, final String benefAcctName){
-        try{
-            extraSignature = commCode+memberCode+benefAcctType+benefBankCode+benefAcctNo;
+                             final String benefAcctNo, final String benefAcctCity, final String benefAcctName) {
+        try {
+            extraSignature = commCode + memberCode + benefAcctType + benefBankCode + benefAcctNo;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_REQ_ACCT,
-                    userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_REQ_ACCT, extraSignature);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);
             params.put(WebParams.BENEF_ACCT_TYPE, benefAcctType);
@@ -461,82 +438,61 @@ public class BBSRegisterAcct extends BaseFragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
 
-            if(benefAcctType.equalsIgnoreCase(TYPE_ACCT))
+            if (benefAcctType.equalsIgnoreCase(TYPE_ACCT))
                 params.put(WebParams.BENEF_ACCT_CITY, benefAcctCity);
             Timber.d("isi params sentReqAcct:" + params.toString());
 
             progdialog.show();
-            MyApiClient.sentBBSReqAcct(getActivity(),TAG, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("Isi response sentReqAcct: "+response.toString());
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Bundle bundle = new Bundle();
-                            bundle.putString(DefineValue.COMMUNITY_NAME,dataComm.getComm_name());
-                            bundle.putString(DefineValue.COMMUNITY_CODE,response.getString(WebParams.COMM_CODE));
-                            bundle.putString(DefineValue.COMMUNITY_ID,dataComm.getComm_id());
-                            bundle.putString(DefineValue.MEMBER_CODE,response.getString(WebParams.MEMBER_CODE));
-                            bundle.putString(DefineValue.ACCT_TYPE,response.getString(WebParams.BENEF_ACCT_TYPE));
-                            bundle.putString(DefineValue.BANK_CODE,response.getString(WebParams.BENEF_BANK_CODE));
-                            bundle.putString(DefineValue.BANK_NAME,response.getString(WebParams.BENEF_BANK_NAME));
-                            bundle.putString(DefineValue.ACCT_NO,response.getString(WebParams.BENEF_ACCT_NO));
-                            bundle.putString(DefineValue.ACCT_NAME,response.getString(WebParams.BENEF_ACCT_NAME));
-                            bundle.putString(DefineValue.ACCT_CITY_NAME,response.optString(WebParams.BENEF_CITY_NAME,""));
-                            bundle.putString(DefineValue.ACCT_CITY_CODE,response.optString(WebParams.BENEF_CITY_CODE,""));
-                            bundle.putString(DefineValue.ACCT_NO_CURRENT,getArguments().getString(DefineValue.NO_BENEF));
-                            bundle.putString(DefineValue.TX_ID,response.getString(WebParams.TX_ID));
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_REQ_ACCT, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            BBSRegAcctModel response = getGson().fromJson(object, BBSRegAcctModel.class);
 
-                            actionListener.OnSuccessReqAcct(bundle);
+                            String code = response.getError_code();
+
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString(DefineValue.COMMUNITY_NAME, dataComm.getComm_name());
+                                bundle.putString(DefineValue.COMMUNITY_CODE, response.getComm_code());
+                                bundle.putString(DefineValue.COMMUNITY_ID, dataComm.getComm_id());
+                                bundle.putString(DefineValue.MEMBER_CODE, response.getMember_code());
+                                bundle.putString(DefineValue.ACCT_TYPE, response.getBenef_acct_type());
+                                bundle.putString(DefineValue.BANK_CODE, response.getBenef_bank_code());
+                                bundle.putString(DefineValue.BANK_NAME, response.getBenef_bank_name());
+                                bundle.putString(DefineValue.ACCT_NO, response.getBenef_acct_no());
+                                bundle.putString(DefineValue.ACCT_NAME, response.getBenef_acct_name());
+                                bundle.putString(DefineValue.ACCT_CITY_NAME, response.getBenef_city_name());
+                                bundle.putString(DefineValue.ACCT_CITY_CODE, response.getBenef_city_code());
+                                bundle.putString(DefineValue.ACCT_NO_CURRENT, getArguments().getString(DefineValue.NO_BENEF));
+                                bundle.putString(DefineValue.TX_ID, response.getTx_id());
+
+                                actionListener.OnSuccessReqAcct(bundle);
+                            } else {
+                                code = response.getError_message();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                       progdialog.dismiss();
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    Timber.w("Error Koneksi sentReqAcct:"+throwable.toString());
-                   progdialog.dismiss();
-                }
-            });
-        }catch (Exception e){
-            Timber.d("httpclient: "+e.getMessage());
+                        @Override
+                        public void onComplete() {
+                            progdialog.dismiss();
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient: " + e.getMessage());
         }
     }
 
     @Override
     public void onDestroy() {
-        MyApiClient.CancelRequestWSByTag(TAG,true);
+        RetrofitService.dispose();
         RealmManager.closeRealm(realm);
         super.onDestroy();
     }

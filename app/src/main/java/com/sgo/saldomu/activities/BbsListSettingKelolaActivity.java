@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -16,19 +13,19 @@ import com.sgo.saldomu.adapter.ListSettingAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import timber.log.Timber;
+import java.util.HashMap;
 
 public class BbsListSettingKelolaActivity extends BaseActivity {
 
@@ -59,8 +56,7 @@ public class BbsListSettingKelolaActivity extends BaseActivity {
         flagApprove             = DefineValue.STRING_BOTH;
 
         String extraSignature = flagApprove;
-        RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_MEMBER_SHOP_LIST,
-                userPhoneID, accessKey, extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_MEMBER_SHOP_LIST, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
@@ -69,110 +65,97 @@ public class BbsListSettingKelolaActivity extends BaseActivity {
         params.put(WebParams.FLAG_APPROVE, flagApprove);
         params.put(WebParams.USER_ID, userPhoneID);
 
-        MyApiClient.getMemberShopList(BbsListSettingKelolaActivity.this, params, false, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                progdialog.dismiss();
 
-                try {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_MEMBER_SHOP_LIST, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                        JSONArray members = response.getJSONArray("member");
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                JSONArray members = response.getJSONArray("member");
 
-                        for (int i = 0; i < members.length(); i++) {
-                            JSONObject object = members.getJSONObject(i);
+                                for (int i = 0; i < members.length(); i++) {
+                                    JSONObject object = members.getJSONObject(i);
 
-                            ShopDetail shopDetail = new ShopDetail();
-                            shopDetail.setMemberId(object.getString("member_id"));
-                            shopDetail.setMemberCode(object.getString("member_code"));
-                            shopDetail.setMemberName(object.getString("member_name"));
-                            shopDetail.setMemberType(object.getString("member_type"));
-                            shopDetail.setCommName(object.getString("comm_name"));
-                            shopDetail.setCommCode(object.getString("comm_code"));
-                            shopDetail.setShopId(object.getString("shop_id"));
-                            shopDetail.setShopName(object.getString("shop_name"));
-                            shopDetail.setShopFirstAddress(object.getString("address1"));
-                            shopDetail.setShopDistrict(object.getString("district"));
-                            shopDetail.setShopProvince(object.getString("province"));
-                            shopDetail.setShopCountry(object.getString("country"));
-                            shopDetail.setStepApprove(object.getString("step_approve"));
+                                    ShopDetail shopDetail = new ShopDetail();
+                                    shopDetail.setMemberId(object.getString("member_id"));
+                                    shopDetail.setMemberCode(object.getString("member_code"));
+                                    shopDetail.setMemberName(object.getString("member_name"));
+                                    shopDetail.setMemberType(object.getString("member_type"));
+                                    shopDetail.setCommName(object.getString("comm_name"));
+                                    shopDetail.setCommCode(object.getString("comm_code"));
+                                    shopDetail.setShopId(object.getString("shop_id"));
+                                    shopDetail.setShopName(object.getString("shop_name"));
+                                    shopDetail.setShopFirstAddress(object.getString("address1"));
+                                    shopDetail.setShopDistrict(object.getString("district"));
+                                    shopDetail.setShopProvince(object.getString("province"));
+                                    shopDetail.setShopCountry(object.getString("country"));
+                                    shopDetail.setStepApprove(object.getString("step_approve"));
 
-                            agentName = object.getString("member_name");
-                            stepApprove = object.getString("step_approve");
-                            JSONArray categories = object.getJSONArray("category");
+                                    agentName = object.getString("member_name");
+                                    stepApprove = object.getString("step_approve");
+                                    JSONArray categories = object.getJSONArray("category");
 
-                            for (int j = 0; j < categories.length(); j++) {
-                                JSONObject object2 = categories.getJSONObject(j);
-                                shopDetail.setCategories(object2.getString("category_name"));
-                            }
+                                    for (int j = 0; j < categories.length(); j++) {
+                                        JSONObject object2 = categories.getJSONObject(j);
+                                        shopDetail.setCategories(object2.getString("category_name"));
+                                    }
 
-                            shopDetails.add(shopDetail);
-                            category = TextUtils.join(", ", shopDetail.getCategories());
+                                    shopDetails.add(shopDetail);
+                                    category = TextUtils.join(", ", shopDetail.getCategories());
 
-                        }
-
-
-                        for(int i =0; i <= (_data.length-1); i++) {
-                            String temp = _data[i];
-
-                            if ( i == 0 ) {
-                                temp += " : " + agentName;
-                            } else if ( i == 1 ) {
-                                temp += " : " + category;
-                            }
-
-                            if ( i == 2 ) {
-                                if (stepApprove.equals(DefineValue.STRING_NO)) {
-                                    menu.add(temp);
                                 }
-                            } else if ( i == 3 ) {
-                                if (stepApprove.equals(DefineValue.STRING_YES)) {
-                                    menu.add(temp);
+
+
+                                for(int i =0; i <= (_data.length-1); i++) {
+                                    String temp = _data[i];
+
+                                    if ( i == 0 ) {
+                                        temp += " : " + agentName;
+                                    } else if ( i == 1 ) {
+                                        temp += " : " + category;
+                                    }
+
+                                    if ( i == 2 ) {
+                                        if (stepApprove.equals(DefineValue.STRING_NO)) {
+                                            menu.add(temp);
+                                        }
+                                    } else if ( i == 3 ) {
+                                        if (stepApprove.equals(DefineValue.STRING_YES)) {
+                                            menu.add(temp);
+                                        }
+                                    } else {
+                                        menu.add(temp);
+                                    }
                                 }
+
+                                listSettingAdapter = new ListSettingAdapter(BbsListSettingKelolaActivity.this, menu, flagApprove, shopDetails);
+                                lvList.setAdapter(listSettingAdapter);
+
                             } else {
-                                menu.add(temp);
+
+
+
                             }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                    }
 
-                        listSettingAdapter = new ListSettingAdapter(BbsListSettingKelolaActivity.this, menu, flagApprove, shopDetails);
-                        lvList.setAdapter(listSettingAdapter);
-
-                    } else {
-
-
+                    @Override
+                    public void onError(Throwable throwable) {
 
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onComplete() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //if (MyApiClient.PROD_FAILURE_FLAG)
-                //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                //else
-                Toast.makeText(BbsListSettingKelolaActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                progdialog.dismiss();
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
+                        progdialog.dismiss();
+                    }
+                });
 
 
         memberId        = getIntent().getStringExtra("memberId");

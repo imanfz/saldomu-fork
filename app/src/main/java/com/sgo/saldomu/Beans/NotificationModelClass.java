@@ -22,11 +22,11 @@ public class NotificationModelClass {
     private String date_time;
     private String id_result;
 
-    public NotificationModelClass(){
+    public NotificationModelClass() {
 
     }
 
-    public NotificationModelClass(String _notif_id,int _image, String _title,String _to_id, String _from_name,
+    public NotificationModelClass(String _notif_id, int _image, String _title, String _to_id, String _from_name,
                                   String _from_id, String _detail, String _time, int _notif_type,
                                   Boolean _read, JSONObject _notif_detail, String _from_profile_picture,
                                   String _date_time, String _id_result) {
@@ -157,4 +157,5 @@ public class NotificationModelClass {
     private void setTo_id(String to_id) {
         this.to_id = to_id;
     }
+
 }

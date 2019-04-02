@@ -6,7 +6,6 @@ import com.sgo.saldomu.Beans.Account_Collection_Model;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.Denom_Data_Model;
-import com.sgo.saldomu.Beans.TagihCommunityModel;
 import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.Beans.bank_biller_model;
 import com.sgo.saldomu.BuildConfig;
@@ -19,6 +18,7 @@ import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
+import com.sgo.saldomu.models.TagihCommunityModel;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,11 +37,42 @@ import timber.log.Timber;
 
 public class RealmManager {
 
+    private static RealmManager singleton;
+
     public static RealmConfiguration BillerConfiguration;
     public static RealmConfiguration BBSConfiguration;
     public static RealmConfiguration BBSMemberBankConfiguration;
     public static RealmConfiguration TagihDataConfig;
 
+    private Realm realm;
+    private Realm bbsRealm;
+
+    //version
+    private static String REALM_TAGIH_NAME = "saldomudevtagih.realm";
+    private static int REALM_SCHEME_TAGIH_VERSION = 2;
+
+    public static RealmManager getInstance(){
+        if (singleton == null){
+            singleton = new RealmManager();
+        }
+        return singleton;
+    }
+
+    public Realm getRealm() {
+        return realm;
+    }
+
+    public void setRealm(Realm realm) {
+        this.realm = realm;
+    }
+
+    public Realm getBbsRealm() {
+        return bbsRealm;
+    }
+
+    public void setBbsRealm(Realm bbsRealm) {
+        this.bbsRealm = bbsRealm;
+    }
 
     @RealmModule(classes = { Account_Collection_Model.class, bank_biller_model.class,
             Biller_Data_Model.class, Biller_Type_Data_Model.class, Denom_Data_Model.class})
@@ -71,8 +102,8 @@ public class RealmManager {
         file = new File(mContext.getFilesDir(),BuildConfig.REALM_BBS_MEMBER_BANK_NAME);
         copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.bbsmemberbank),file);
 
-//        file = new File(mContext.getFilesDir(),BuildConfig.REALM_TAGIH_NAME);
-//        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomudevtagih),file);
+        file = new File(mContext.getFilesDir(),BuildConfig.REALM_TAGIH_NAME);
+        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomutagih),file);
 
         Realm.init(mContext);
         RealmConfiguration config = new RealmConfiguration.Builder()

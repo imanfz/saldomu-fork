@@ -9,24 +9,24 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.securities.RSA;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.venmo.android.pin.PinFragment;
 import com.venmo.android.pin.PinFragmentConfiguration;
 import com.venmo.android.pin.PinSaver;
 import com.venmo.android.pin.Validator;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -146,8 +146,7 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
 
             extraSignature = memberIDLogin+currentPin+newPin;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CHANGE_PIN,
-                    userPhoneID, accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CHANGE_PIN, extraSignature);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.OLD_PIN, RSA.opensslEncrypt(currentPin));
@@ -157,70 +156,46 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
 
             Timber.d("isi params change pin:" + params.toString());
 
-            MyApiClient.sentChangePin(this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params change pin:"+response.toString());
-                            Toast.makeText(ChangePIN.this, getString(R.string.changepin_toast_success), Toast.LENGTH_LONG).show();
-                            finishChild();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CHANGE_PIN, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.d("isi params change pin:"+response.toString());
+                                    Toast.makeText(ChangePIN.this, getString(R.string.changepin_toast_success), Toast.LENGTH_LONG).show();
+                                    finishChild();
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout", response.toString());
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(ChangePIN.this,message);
+                                }
+                                else {
+                                    Toast.makeText(ChangePIN.this, message, Toast.LENGTH_LONG).show();
+
+                                    tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
+                                    getFragmentManager().beginTransaction().remove(createPin).commit();
+                                    setFragmentInsertPin();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(ChangePIN.this,message);
-                        }
-                        else {
-                            Timber.d("isi error change pin:"+response.toString());
-                            Toast.makeText(ChangePIN.this, message, Toast.LENGTH_LONG).show();
 
-                            tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
-                            getFragmentManager().beginTransaction().remove(createPin).commit();
-                            setFragmentInsertPin();
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    finally {
-                        progdialog.dismiss();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(ChangePIN.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(ChangePIN.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    progdialog.dismiss();
-                    Timber.w("Error Koneksi Change PIN", throwable.toString());
-
-                    tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
-                    getFragmentManager().beginTransaction().remove(createPin).commit();
-                    setFragmentInsertPin();
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            progdialog.dismiss();
+                        }
+                    });
         }
         catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());

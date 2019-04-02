@@ -22,8 +22,6 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -36,16 +34,18 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopCategory;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,22 +96,22 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
         v = inflater.inflate(R.layout.frag_list_category_bbs, container, false);
 
         gridBbsCategoryAdapter = new GridBbsCategory(getActivity(), shopCategories);
-        gridCategory            = (GridView) v.findViewById(R.id.gridBbsCategory);
+        gridCategory            = v.findViewById(R.id.gridBbsCategory);
         gridCategory.setAdapter(gridBbsCategoryAdapter);
 
-        swMobilityAgent         = (Switch) v.findViewById(R.id.swMobilityAgent);
+        swMobilityAgent         = v.findViewById(R.id.swMobilityAgent);
         swMobilityAgent.setChecked(false);
 
-        llJumlah                = (LinearLayout) v.findViewById(R.id.llJumlah);
+        llJumlah                = v.findViewById(R.id.llJumlah);
         llJumlah.setVisibility(View.GONE);
 
-        etJumlah                = (EditText) v.findViewById(R.id.etJumlah);
+        etJumlah                = v.findViewById(R.id.etJumlah);
 
 
 
 
 
-        RequestParams params    = new RequestParams();
+        HashMap<String, Object> params = new HashMap<>();
         UUID rcUUID             = UUID.randomUUID();
         String dtime            = DateTimeFormat.getCurrentDateTime();
 
@@ -127,64 +127,47 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
 
         params.put(WebParams.SIGNATURE, signature);
 
-        MyApiClient.getCategoryList(getActivity().getApplicationContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CATEGORY_LIST, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                try {
-                    progdialog.dismiss();
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                categories = response.getJSONArray("category");
 
-                        categories = response.getJSONArray("category");
+                                for (int i = 0; i < categories.length(); i++) {
 
-                        for (int i = 0; i < categories.length(); i++) {
+                                    JSONObject object = categories.getJSONObject(i);
+                                    ShopCategory shopCategory = new ShopCategory();
+                                    shopCategory.setCategoryId(object.getString("category_id"));
+                                    shopCategory.setCategoryName(object.getString("category_name"));
+                                    shopCategories.add(shopCategory);
+                                }
 
-                            JSONObject object = categories.getJSONObject(i);
-                            ShopCategory shopCategory = new ShopCategory();
-                            shopCategory.setCategoryId(object.getString("category_id"));
-                            shopCategory.setCategoryName(object.getString("category_name"));
-                            shopCategories.add(shopCategory);
+                                gridBbsCategoryAdapter.notifyDataSetChanged();
+
+                            } else {
+                                Toast.makeText(getActivity().getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE)
+                                        , Toast.LENGTH_LONG).show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
-                        gridBbsCategoryAdapter.notifyDataSetChanged();
-
-                    } else {
-                        Toast.makeText(getActivity().getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                progdialog.dismiss();
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getActivity().getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity().getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
-
-
-
+                    @Override
+                    public void onComplete() {
+                        progdialog.dismiss();
+                    }
+                });
 
         return v;
     }

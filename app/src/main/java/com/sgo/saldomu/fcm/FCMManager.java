@@ -46,6 +46,7 @@ public class FCMManager {
     public final static int MEMBER_RATING_TRX                       = 1008;
     public final static int REJECT_UPGRADE_MEMBER                   = 2;
     public final static int REJECT_UPGRADE_AGENT                    = 202;
+    public final static int BLAST_INFO                              = 1009;
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
@@ -372,6 +373,9 @@ public class FCMManager {
                             Timber.d("JSONException: " + e.getMessage());
                         }
                     }
+                    break;
+                case FCMManager.BLAST_INFO:
+                    i = new Intent(mContext, MainPage.class);
                     break;
                 default:
                     i = new Intent(mContext, MainPage.class);

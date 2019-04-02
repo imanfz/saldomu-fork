@@ -104,6 +104,7 @@ public class CoreApp extends Application {
             MyApiClient.COMM_ID_PULSA = MyApiClient.COMM_ID_PULSA_PROD;
             MyApiClient.URL_FAQ = MyApiClient.URL_FAQ_PROD;
             MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_PROD;
+            MyApiClient.COMM_ID_TAGIH = MyApiClient.COMM_ID_TAGIH_PROD;
 
         }
         else {
@@ -111,6 +112,7 @@ public class CoreApp extends Application {
             MyApiClient.COMM_ID_PULSA = MyApiClient.COMM_ID_PULSA_DEV;
             MyApiClient.URL_FAQ = MyApiClient.URL_FAQ_PROD;
             MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_DEV;
+            MyApiClient.COMM_ID_TAGIH = MyApiClient.COMM_ID_TAGIH_DEV;
         }
 
         myApiClient.InitializeAddress();
@@ -230,7 +232,6 @@ public class CoreApp extends Application {
 	@Override
     public void onTerminate() {
         super.onTerminate();
-        MyApiClient.CancelRequestWS(this, true);
         ActiveAndroid.dispose();
     }
 

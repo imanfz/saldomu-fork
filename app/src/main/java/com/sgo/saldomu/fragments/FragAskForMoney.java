@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -33,8 +32,7 @@ import com.android.ex.chips.RecipientEditTextView;
 import com.android.ex.chips.recipientchip.DrawableRecipientChip;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -43,20 +41,23 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,7 +66,7 @@ import timber.log.Timber;
 /*
  * Created by thinkpad on 3/17/2015.
  */
-public class FragAskForMoney extends Fragment {
+public class FragAskForMoney extends BaseFragment {
 
     private View v;
     private ImageView imgProfile;
@@ -96,8 +97,8 @@ public class FragAskForMoney extends Fragment {
         v = inflater.inflate(R.layout.frag_ask_for_money, container, false);
         return v;
     }
-	
-	@Override
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.information, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -105,10 +106,9 @@ public class FragAskForMoney extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_information:
-                if(!dialogI.isAdded())
+                if (!dialogI.isAdded())
                     dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
             default:
@@ -122,7 +122,7 @@ public class FragAskForMoney extends Fragment {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS, 5);
-        memberLevel = sp.getInt(DefineValue.LEVEL_VALUE,0);
+        memberLevel = sp.getInt(DefineValue.LEVEL_VALUE, 0);
 
         imgProfile = v.findViewById(R.id.img_profile);
         imgRecipients = v.findViewById(R.id.img_recipients);
@@ -145,9 +145,9 @@ public class FragAskForMoney extends Fragment {
         RoundImageTransformation roundedImageRecipients = new RoundImageTransformation(bmRecipients);
         imgRecipients.setImageDrawable(roundedImageRecipients);
 
-        _memberId = sp.getString(DefineValue.MEMBER_ID,"");
-        _userid = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        _memberId = sp.getString(DefineValue.MEMBER_ID, "");
+        _userid = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         setImageProfPic();
 
         txtName.setText(sp.getString(DefineValue.USER_NAME, ""));
@@ -162,7 +162,7 @@ public class FragAskForMoney extends Fragment {
         etAmount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
+                if (hasFocus) {
                     setNumberRecipients();
                 }
             }
@@ -203,12 +203,12 @@ public class FragAskForMoney extends Fragment {
         });
 
         Bundle bundle = this.getArguments();
-        if(bundle != null) {
+        if (bundle != null) {
             final String name = bundle.getString("name");
             final String phone = bundle.getString("phone");
-			
+
             //phoneRetv.submitItem(name, phone);
-			phoneRetv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            phoneRetv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     phoneRetv.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -221,9 +221,8 @@ public class FragAskForMoney extends Fragment {
         }
 
         dialogI = InformationDialog.newInstance(6);
-        dialogI.setTargetFragment(this,0);
+        dialogI.setTargetFragment(this, 0);
     }
-
 
 
     private TextWatcher jumlahChangeListener = new TextWatcher() {
@@ -234,11 +233,11 @@ public class FragAskForMoney extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(s.toString().equals("0"))etAmount.setText("");
-            if(s.length() > 0 && s.charAt(0) == '0'){
+            if (s.toString().equals("0")) etAmount.setText("");
+            if (s.length() > 0 && s.charAt(0) == '0') {
                 int i = 0;
-                for (; i < s.length(); i++){
-                    if(s.charAt(i) != '0')break;
+                for (; i < s.length(); i++) {
+                    if (s.charAt(i) != '0') break;
                 }
                 etAmount.setText(s.toString().substring(i));
             }
@@ -250,30 +249,30 @@ public class FragAskForMoney extends Fragment {
         }
     };
 
-    private void setNumberRecipients(){
+    private void setNumberRecipients() {
         if (phoneRetv.getSortedRecipients().length == 0) {
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
         } else {
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        if(phoneRetv.length() == 0)
+        if (phoneRetv.length() == 0)
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
         else
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
 
-        Timber.d("isi length recipients:"+String.valueOf(phoneRetv.getRecipients().length));
+        Timber.d("isi length recipients:" + String.valueOf(phoneRetv.getRecipients().length));
     }
 
     private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            privacy = i+1;
-            if(phoneRetv.hasFocus())
+            privacy = i + 1;
+            if (phoneRetv.hasFocus())
                 phoneRetv.clearFocus();
             setNumberRecipients();
 
-            if(phoneRetv.length() == 0)
+            if (phoneRetv.length() == 0)
                 txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
             else
                 txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
@@ -281,25 +280,25 @@ public class FragAskForMoney extends Fragment {
 
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
-            if(phoneRetv.hasFocus())
+            if (phoneRetv.hasFocus())
                 phoneRetv.clearFocus();
             setNumberRecipients();
 
-            if(phoneRetv.length() == 0)
+            if (phoneRetv.length() == 0)
                 txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
             else
                 txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
         }
     };
 
-    private class TempObjectData{
+    private class TempObjectData {
 
         private String send_to;
         private String ccy_id;
         private String amount;
         private String recipient_name;
 
-        public TempObjectData(String _send_to, String _ccy_id, String _amount,String _recipient_name){
+        public TempObjectData(String _send_to, String _ccy_id, String _amount, String _recipient_name) {
             this.send_to = _send_to;
             this.ccy_id = _ccy_id;
             this.amount = _amount;
@@ -358,8 +357,8 @@ public class FragAskForMoney extends Fragment {
                     }
 
                 }
-            }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -370,115 +369,92 @@ public class FragAskForMoney extends Fragment {
     }
 
 
-    private void sentData(final String _message, final String _data){
-        try{
+    private void sentData(final String _message, final String _data) {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ASKFORMONEY_SUBMIT,
-                    _userid,accessKey);
-            params.put(WebParams.MEMBER_ID,_memberId);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_ASKFORMONEY_SUBMIT);
+            params.put(WebParams.MEMBER_ID, _memberId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-            params.put(WebParams.USER_ID,_userid);
-            params.put(WebParams.DESC,_message);
+            params.put(WebParams.USER_ID, _userid);
+            params.put(WebParams.DESC, _message);
             params.put(WebParams.DATA, _data);
             params.put(WebParams.PRIVACY, privacy);
             params.put(WebParams.MEMBER_LEVEL, memberLevel);
 
-            Timber.d("isi params sent ask for money:"+params.toString());
+            Timber.d("isi params sent ask for money:" + params.toString());
 
-            MyApiClient.sentSubmitAskForMoney(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
-                    Timber.d("isi params response ask for money:"+response.toString());
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ASKFORMONEY_SUBMIT, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
 
-                            JSONArray mArrayData;
-                            String messageDialog = null, recipient="",amount, recipient_name = "";
-                            try {
-                                mArrayData = new JSONArray(_data);
-                                for(int i=0;i<mArrayData.length();i++){
-                                    recipient = recipient+mArrayData.getJSONObject(i).getString(WebParams.SEND_TO);
-                                    recipient_name = recipient_name + mArrayData.getJSONObject(i).getString(WebParams.RECIPIENT_NAME);
-                                    if((i+1)<mArrayData.length()){
-                                        recipient= recipient+", ";
-                                        recipient_name =recipient_name+", ";
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                JSONArray mArrayData;
+                                String messageDialog = null, recipient = "", amount, recipient_name = "";
+                                try {
+                                    mArrayData = new JSONArray(_data);
+                                    for (int i = 0; i < mArrayData.length(); i++) {
+                                        recipient = recipient + mArrayData.getJSONObject(i).getString(WebParams.SEND_TO);
+                                        recipient_name = recipient_name + mArrayData.getJSONObject(i).getString(WebParams.RECIPIENT_NAME);
+                                        if ((i + 1) < mArrayData.length()) {
+                                            recipient = recipient + ", ";
+                                            recipient_name = recipient_name + ", ";
+                                        }
                                     }
+                                    amount = MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(mArrayData.getJSONObject(0).getString(WebParams.AMOUNT));
+                                    messageDialog = getString(R.string.askfriends_dialog_text_recipient) + " : " + recipient_name + "\n" +
+                                            getString(R.string.askfriends_dialog_text_amount) + " : " + amount + "\n" +
+                                            getString(R.string.askfriends_dialog_text_desc) + " : " + _message + "\n";
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                                amount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(mArrayData.getJSONObject(0).getString(WebParams.AMOUNT));
-                                messageDialog = getString(R.string.askfriends_dialog_text_recipient)+" : "+recipient_name+"\n"+
-                                        getString(R.string.askfriends_dialog_text_amount)+" : "+amount+"\n"+
-                                        getString(R.string.askfriends_dialog_text_desc)+" : "+_message+"\n";
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                showDialog(messageDialog);
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginMain(getActivity(), message);
+                            } else {
+                                if (code.equals("0998")) {
+                                    phoneRetv.requestFocus();
+                                    phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
+                                }
+                                code = model.getError_message();
+
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
                             }
-                            showDialog(messageDialog );
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(),message);
                         }
-                        else {
-                            if(code.equals("0998")){
-                                phoneRetv.requestFocus();
-                                phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
-                            }
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi sent proses ask4money:"+throwable.toString());
-                }
-            });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void preDialog(final String _message, final String _data){
-        String message = getString(R.string.askfriends_predialog_msg1)+" "+chips.length+" "+getString(R.string.askfriends_predialog_msg2);
+    private void preDialog(final String _message, final String _data) {
+        String message = getString(R.string.askfriends_predialog_msg1) + " " + chips.length + " " + getString(R.string.askfriends_predialog_msg2);
         new AlertDialog.Builder(getActivity())
                 .setTitle(getString(R.string.askfriends_predialog_title))
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        sentData(_message,_data);
+                        sentData(_message, _data);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -514,8 +490,6 @@ public class FragAskForMoney extends Fragment {
         txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
 
 
-
-
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.askfriends_dialog_title));
         Message.setText(getResources().getString(R.string.askfriends_dialog_msg));
@@ -533,25 +507,25 @@ public class FragAskForMoney extends Fragment {
         dialog.show();
     }
 
-    private boolean inputValidation(){
-        if(phoneRetv.getText().toString().length()==0){
+    private boolean inputValidation() {
+        if (phoneRetv.getText().toString().length() == 0) {
             phoneRetv.requestFocus();
             phoneRetv.setError(getString(R.string.payfriends_recipients_validation));
             return false;
         }
-        if(phoneRetv.isFocused()){
+        if (phoneRetv.isFocused()) {
             phoneRetv.clearFocus();
         }
-        if(phoneRetv.getText().toString().charAt(0) == ' '){
+        if (phoneRetv.getText().toString().charAt(0) == ' ') {
             phoneRetv.requestFocus();
             phoneRetv.setError(getString(R.string.payfriends_recipients_validation));
             return false;
         }
-        if(etAmount.getText().toString().length()==0){
+        if (etAmount.getText().toString().length() == 0) {
             etAmount.requestFocus();
             etAmount.setError(getString(R.string.payfriends_amount_validation));
             return false;
-        } else if(Long.parseLong(etAmount.getText().toString()) < 1){
+        } else if (Long.parseLong(etAmount.getText().toString()) < 1) {
             etAmount.requestFocus();
             etAmount.setError(getString(R.string.payfriends_amount_zero));
             return false;
@@ -559,15 +533,15 @@ public class FragAskForMoney extends Fragment {
         return true;
     }
 
-    private void setImageProfPic(){
+    private void setImageProfPic() {
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
-        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
-        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
+        if (density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
+        else if (density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
         else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
 
-        Timber.wtf("url prof pic:"+_url_profpic);
+        Timber.wtf("url prof pic:" + _url_profpic);
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
@@ -578,11 +552,10 @@ public class FragAskForMoney extends Fragment {
 //        else
 //            mPic= Picasso.with(getActivity());
 
-        if(_url_profpic != null && _url_profpic.isEmpty()){
+        if (_url_profpic != null && _url_profpic.isEmpty()) {
             GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, imgProfile);
 
-        }
-        else {
+        } else {
             GlideManager.sharedInstance().initializeGlide(getActivity(), _url_profpic, roundedImage, imgProfile);
 
         }

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -37,7 +38,8 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     private ProgressBar deprogressbar;
     protected SMSclass smsClass;
     protected boolean isActive;
-    private String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS,
+    public String[] perms = {Manifest.permission.READ_CONTACTS,
+//    private String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS,
             Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private IntentFilter fcmFilter = new IntentFilter();
     FcmReceiver fcmReceiver = new FcmReceiver();
@@ -47,6 +49,8 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     protected SecurePreferences sp;
     protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
     protected String extraSignature="";
+
+    protected Gson gson;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -213,6 +217,11 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
         }
     }
 
-
+    protected Gson getGson(){
+        if (gson == null){
+            gson = new Gson();
+        }
+        return gson;
+    }
 
 }

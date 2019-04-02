@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
@@ -51,7 +49,7 @@
 
         </LinearLayout>
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/listMenu"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -61,8 +59,8 @@
             android:dividerHeight="1dp"
             android:fadeScrollbars="true"
             android:fastScrollEnabled="true"
+            android:scrollbars="vertical"
             android:visibility="visible" />
-
 
         <TextView
             android:id="@+id/txtAlert"
@@ -91,23 +89,21 @@
             android:visibility="visible">
 
             <View
-                android:layout_width="fill_parent"
-                android:layout_height="3.0dip"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
                 android:background="@color/grey_400" />
 
             <TableRow
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                >
 
                 <TextView
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8.0dip"
-                    android:layout_marginLeft="8.0dip"
-                    android:layout_marginRight="8.0dip"
-                    android:layout_marginTop="12.0dip"
+                    android:padding="8dp"
                     android:text="@string/metode_pembayaran"
                     android:textColor="@color/black"
                     android:textSize="14.0sp" />
@@ -115,7 +111,7 @@
                 <View
                     style="@style/VerticalLine"
                     android:layout_width="1.0dip"
-                    android:layout_height="50.0dip"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="5dip"
                     android:layout_marginRight="5dip" />
 
@@ -140,10 +136,8 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8.0dip"
-                    android:layout_marginLeft="8.0dip"
-                    android:layout_marginRight="8.0dip"
-                    android:layout_marginTop="12.0dip"
+
+                    android:padding="8dp"
                     android:text="@string/payment_type"
                     android:textColor="@color/black"
                     android:textSize="14.0sp" />
@@ -151,7 +145,7 @@
                 <View
                     style="@style/VerticalLine"
                     android:layout_width="1.0dip"
-                    android:layout_height="50.0dip"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="5dip"
                     android:layout_marginRight="5dip" />
 
@@ -177,10 +171,8 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8.0dip"
-                    android:layout_marginLeft="8.0dip"
-                    android:layout_marginRight="8.0dip"
-                    android:layout_marginTop="12.0dip"
+
+                    android:padding="8dp"
                     android:text="@string/phone_number"
                     android:textColor="@color/black"
                     android:textSize="14.0sp" />
@@ -188,7 +180,7 @@
                 <View
                     style="@style/VerticalLine"
                     android:layout_width="1.0dip"
-                    android:layout_height="50.0dip"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="5dip"
                     android:layout_marginRight="5dip" />
 
@@ -213,16 +205,14 @@
                     style="@style/TextOnForm"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:paddingLeft="8.0dip"
-                    android:paddingRight="20.0dip"
+                    android:padding="8dp"
                     android:text="@string/total_bayar"
                     android:textColor="@color/black" />
 
                 <View
                     style="@style/VerticalLine"
                     android:layout_width="1.0dip"
-                    android:layout_height="50.0dip"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="5dip"
                     android:layout_marginRight="5dip" />
 
@@ -230,13 +220,10 @@
                     android:id="@+id/lbl_total_pay_amount"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8.0dip"
-                    android:layout_marginLeft="8.0dip"
-                    android:layout_marginRight="8.0dip"
-                    android:layout_marginTop="12.0dip"
-                    android:text=""
+                    android:text="0"
                     android:textColor="@color/black"
-                    android:textSize="14.0sp" />
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
             </TableRow>
 
             <View
@@ -262,7 +249,7 @@
                     android:text="@string/kembali" />
 
                 <Button
-                    android:id="@id/btnCancel"
+                    android:id="@+id/btnReset"
                     style="@style/ButtonYellow"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"

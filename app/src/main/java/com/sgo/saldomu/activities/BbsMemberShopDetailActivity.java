@@ -11,28 +11,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.UUID;
-
-import timber.log.Timber;
 
 public class BbsMemberShopDetailActivity extends BaseActivity {
 
@@ -54,12 +52,12 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        tvMemberName    = (TextView) findViewById(R.id.tvMemberName);
-        tvShopName      = (TextView) findViewById(R.id.tvShopName);
+        tvMemberName    = findViewById(R.id.tvMemberName);
+        tvShopName      = findViewById(R.id.tvShopName);
         //spPilihan       = (Spinner) findViewById(R.id.spPilihan);
-        ivLocation      = (ImageView) findViewById(R.id.ivLocation);
-        ivCategory      = (ImageView) findViewById(R.id.ivCategory);
-        ivCloseShop     = (ImageView) findViewById(R.id.ivCloseShop);
+        ivLocation      = findViewById(R.id.ivLocation);
+        ivCategory      = findViewById(R.id.ivCategory);
+        ivCloseShop     = findViewById(R.id.ivCloseShop);
 
         progdialog      = DefinedDialog.CreateProgressDialog(this, "");
         memberId        = getIntent().getStringExtra("memberId");
@@ -174,7 +172,7 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
         });
         */
 
-        RequestParams params    = new RequestParams();
+        HashMap<String, Object> params = new HashMap<>();
         UUID rcUUID             = UUID.randomUUID();
         String  dtime           = DateTimeFormat.getCurrentDateTime();
         String customerId       = sp.getString(DefineValue.USERID_PHONE, "");
@@ -192,89 +190,74 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
 
         params.put(WebParams.SIGNATURE, signature);
 
-        MyApiClient.getMemberShopDetail(getApplication(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                progdialog.dismiss();
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_MEMBER_SHOP_DETAIL, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                try {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                tvMemberName.setText(response.getString("member_name"));
+                                tvShopName.setText(response.getString("shop_name"));
+                                setupOpenHour = response.getString("setup_open_hour");
 
-                        tvMemberName.setText(response.getString("member_name"));
-                        tvShopName.setText(response.getString("shop_name"));
-                        setupOpenHour = response.getString("setup_open_hour");
+                                memberType  = response.getString("member_type");
+                                int defaultPosition = 0;
 
-                        memberType  = response.getString("member_type");
-                        int defaultPosition = 0;
+                                if ( response.getString("shop_closed").equals(DefineValue.STRING_YES) ) {
+                                    defaultPosition = 1;
+                                } else if ( response.getString("shop_closed").equals(DefineValue.STRING_NO) ) {
+                                    defaultPosition = 2;
+                                }
 
-                        if ( response.getString("shop_closed").equals(DefineValue.STRING_YES) ) {
-                            defaultPosition = 1;
-                        } else if ( response.getString("shop_closed").equals(DefineValue.STRING_NO) ) {
-                            defaultPosition = 2;
+                                if ( flagApprove.equals(DefineValue.STRING_NO)  ) {
+                                    if (response.getString("shop_latitude").equals("") && response.getString("shop_longitude").equals("")) {
+                                        ivLocation.setVisibility(View.VISIBLE);
+                                    } else {
+                                        ivLocation.setVisibility(View.GONE);
+                                    }
+
+                                    if (memberType.equals(DefineValue.SHOP_MERCHANT) ) {
+                                        ivCategory.setVisibility(View.VISIBLE);
+                                    } else {
+                                        ivCategory.setVisibility(View.GONE);
+                                    }
+                                    ivCloseShop.setVisibility(View.VISIBLE);
+                                } else {
+                                    if (memberType.equals(DefineValue.SHOP_MERCHANT) ) {
+                                        ivCategory.setVisibility(View.VISIBLE);
+                                    } else {
+                                        ivCategory.setVisibility(View.GONE);
+                                    }
+                                    ivLocation.setVisibility(View.GONE);
+                                    ivCloseShop.setVisibility(View.VISIBLE);
+                                }
+
+                                //spPilihan.setSelection(defaultPosition);
+
+                            } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
+
+                            } else {
+                                code = response.getString(WebParams.ERROR_MESSAGE);
+                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
-                        if ( flagApprove.equals(DefineValue.STRING_NO)  ) {
-                            if (response.getString("shop_latitude").equals("") && response.getString("shop_longitude").equals("")) {
-                                ivLocation.setVisibility(View.VISIBLE);
-                            } else {
-                                ivLocation.setVisibility(View.GONE);
-                            }
-
-                            if (memberType.equals(DefineValue.SHOP_MERCHANT) ) {
-                                ivCategory.setVisibility(View.VISIBLE);
-                            } else {
-                                ivCategory.setVisibility(View.GONE);
-                            }
-                            ivCloseShop.setVisibility(View.VISIBLE);
-                        } else {
-                            if (memberType.equals(DefineValue.SHOP_MERCHANT) ) {
-                                ivCategory.setVisibility(View.VISIBLE);
-                            } else {
-                                ivCategory.setVisibility(View.GONE);
-                            }
-                            ivLocation.setVisibility(View.GONE);
-                            ivCloseShop.setVisibility(View.VISIBLE);
-                        }
-
-                        //spPilihan.setSelection(defaultPosition);
-
-                    } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
-
-                    } else {
-                        code = response.getString(WebParams.ERROR_MESSAGE);
-                        Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+                    }
 
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                progdialog.dismiss();
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
+                    @Override
+                    public void onComplete() {
+                        progdialog.dismiss();
+                    }
+                });
 
         ivLocation.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

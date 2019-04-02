@@ -1,109 +1,146 @@
 package com.sgo.saldomu.models;
 
 public class InvoiceDGI {
+    String buss_scheme_code;
+    String doc_no;
+    String doc_id;
+    String amount;
+    String remain_amount;
+    String hold_amount;
+    String input_amount;
+    String ccy;
+    String doc_desc;
+    String due_date;
+    String datetime;
+    String app_id;
+    String active;
 
-        String docNo;
-        String docId;
-        String docDesc;
-        String amount;
-        String remainAmount;
-        String holdAmount;
-        String ccy;
-        String dueDate;
-        String inputAmount;
-        String sessionId;
 
-        public InvoiceDGI(String docNo, String docId, String docDesc, String amount, String remainAmount, String holdAmount, String ccy, String dueDate, String inputAmount, String sessionId) {
-            this.docNo = docNo;
-            this.docId = docId;
-            this.docDesc = docDesc;
-            this.amount = amount;
-            this.remainAmount = remainAmount;
-            this.holdAmount = holdAmount;
-            this.ccy = ccy;
-            this.dueDate = dueDate;
-            this.inputAmount = inputAmount;
-            this.sessionId = sessionId;
-        }
+//    public InvoiceDGI(String buss_scheme_code, String doc_no, String doc_id, String amount, String remain_amount, String hold_amount,
+//                      String ccy, String doc_desc, String due_date, String date_time, String app_id, String active) {
+//        this.buss_scheme_code = buss_scheme_code;
+//        this.doc_no = doc_no;
+//        this.doc_id = doc_id;
+//        this.amount = amount;
+//        this.remain_amount = remain_amount;
+//        this.hold_amount = hold_amount;
+//        this.ccy = ccy;
+//        this.doc_desc = doc_desc;
+//        this.due_date = due_date;
+//        this.date_time = date_time;
+//        this.app_id = app_id;
+//        this.active = active;
+//    }
 
-        public String getDocNo() {
-            return docNo;
-        }
 
-        public void setDocNo(String docNo) {
-            this.docNo = docNo;
-        }
+    public InvoiceDGI()
+    {
 
-        public String getDocId() {
-            return docId;
-        }
+    }
 
-        public void setDocId(String docId) {
-            this.docId = docId;
-        }
+    public String getBuss_scheme_code() {
+        return buss_scheme_code;
+    }
 
-        public String getDocDesc() {
-            return docDesc;
-        }
+    public String getDoc_no() {
+        return doc_no;
+    }
 
-        public void setDocDesc(String docDesc) {
-            this.docDesc = docDesc;
-        }
+    public String getDoc_id() {
+        return doc_id;
+    }
 
-        public String getAmount() {
-            return amount;
-        }
+    public String getAmount() {
+        return amount;
+    }
 
-        public void setAmount(String amount) {
-            this.amount = amount;
-        }
+    public String getRemain_amount() {
+        return remain_amount;
+    }
 
-        public String getRemainAmount() {
-            return remainAmount;
-        }
+    public String getHold_amount() {
+        return hold_amount;
+    }
 
-        public void setRemainAmount(String remainAmount) {
-            this.remainAmount = remainAmount;
-        }
+    public String getInput_amount() {
+        if (input_amount == null)
+            input_amount = "0";
+        return input_amount;
+    }
 
-        public String getHoldAmount() {
-            return holdAmount;
-        }
+    public String getCcy() {
+        return ccy;
+    }
 
-        public void setHoldAmount(String holdAmount) {
-            this.holdAmount = holdAmount;
-        }
+    public String getDoc_desc() {
+        return doc_desc;
+    }
 
-        public String getCcy() {
-            return ccy;
-        }
+    public String getDue_date() {
+        return due_date;
+    }
 
-        public void setCcy(String ccy) {
-            this.ccy = ccy;
-        }
+    public String getDatetime() {
+        return datetime;
+    }
 
-        public String getDueDate() {
-            return dueDate;
-        }
+    public String getApp_id() {
+        return app_id;
+    }
 
-        public void setDueDate(String dueDate) {
-            this.dueDate = dueDate;
-        }
+    public String getActive() {
+        return active;
+    }
 
-        public String getInputAmount() {
-            return inputAmount;
-        }
+    public void setBuss_scheme_code(String buss_scheme_code) {
+        this.buss_scheme_code = buss_scheme_code;
+    }
 
-        public void setInputAmount(String inputAmount) {
-            this.inputAmount = inputAmount;
-        }
+    public void setDoc_no(String doc_no) {
+        this.doc_no = doc_no;
+    }
 
-        public String getSessionId() {
-            return sessionId;
-        }
+    public void setDoc_id(String doc_id) {
+        this.doc_id = doc_id;
+    }
 
-        public void setSessionId(String sessionId) {
-            this.sessionId = sessionId;
-        }
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
 
+    public void setRemain_amount(String remain_amount) {
+        this.remain_amount = remain_amount;
+    }
+
+    public void setHold_amount(String hold_amount) {
+        this.hold_amount = hold_amount;
+    }
+
+    public void setInput_amount(String input_amount) {
+        this.input_amount = input_amount;
+    }
+
+    public void setCcy(String ccy) {
+        this.ccy = ccy;
+    }
+
+    public void setDoc_desc(String doc_desc) {
+        this.doc_desc = doc_desc;
+    }
+
+    public void setDue_date(String due_date) {
+        this.due_date = due_date;
+    }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
+
+    public void setApp_id(String app_id) {
+        this.app_id = app_id;
+    }
+
+    public void setActive(String active) {
+        this.active = active;
+    }
 }

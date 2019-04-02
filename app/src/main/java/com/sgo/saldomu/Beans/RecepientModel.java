@@ -2,6 +2,8 @@ package com.sgo.saldomu.Beans;/*
   Created by Administrator on 3/25/2015.
  */
 
+import com.sgo.saldomu.models.retrofit.PayfriendDataTrfModel;
+
 public class RecepientModel {
 
     private String tx_id;
@@ -18,6 +20,13 @@ public class RecepientModel {
         setIs_member_temp(_is_member_temp);
     }
 
+    public RecepientModel(String _tx_id, String _name, PayfriendDataTrfModel obj){
+        setTx_id(_tx_id);
+        setName(_name);
+        setNumber(obj.getMember_phone());
+        setStatus(obj.getMember_status());
+        setIs_member_temp(obj.getIs_member_temp());
+    }
 
     public String getStatus() {
         return status;

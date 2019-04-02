@@ -14,8 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CashoutActivity;
@@ -24,18 +25,21 @@ import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.BankCashoutModel;
+import com.sgo.saldomu.models.retrofit.ContactDataModel;
+import com.sgo.saldomu.models.retrofit.GetHelpModel;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -54,6 +58,7 @@ public class ListCashOut extends ListFragment {
     String contactCenter,listContactPhone = "", listAddress="";
     ProgressDialog progdialog;
     static boolean successUpgrade = false;
+    private Gson gson;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,7 +96,7 @@ public class ListCashOut extends ListFragment {
 
         adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _listType);
 
-        ListView listView1 = (ListView) v.findViewById(android.R.id.list);
+        ListView listView1 = v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
 
         dialogI = InformationDialog.newInstance(4);
@@ -111,79 +116,50 @@ public class ListCashOut extends ListFragment {
             if (isAdded() || isVisible()) {
                 final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-                RequestParams params =  MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_BANKCASHOUT,
-                        userID, accessKey, memberID);
+                HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BANKCASHOUT, memberID);
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                 params.put(WebParams.MEMBER_ID, memberID );
                 params.put(WebParams.USER_ID, userID);
 
                 Timber.d("isi params get Bank cashout:" + params.toString());
 
-                MyApiClient.getBankCashout(getActivity(), params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        try {
-                            String code = response.getString(WebParams.ERROR_CODE);
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-                                Timber.d("response Listbank cashout:" + response.toString());
-                                if (isAdded()) {
-                                    SecurePreferences.Editor mEditor = sp.edit();
-                                    mEditor.putString(DefineValue.BANK_CASHOUT, response.optString(WebParams.BANK_CASHOUT, ""));
-                                    mEditor.apply();
-                                    prodDialog.dismiss();
+                RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANKCASHOUT, params,
+                        new ResponseListener() {
+                            @Override
+                            public void onResponses(JsonObject object) {
+                                BankCashoutModel model = getGson().fromJson(object, BankCashoutModel.class);
+
+                                String code = model.getError_code();
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    if (isAdded()) {
+                                        SecurePreferences.Editor mEditor = sp.edit();
+                                        mEditor.putString(DefineValue.BANK_CASHOUT, model.getBank_cashout());
+                                        mEditor.apply();
+                                    }
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    if (is_full_activity)
+                                        test.showDialoginActivity(getActivity(), message);
+                                    else
+                                        test.showDialoginMain(getActivity(), message);
+                                } else {
+                                    code = model.getError_message();
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 }
-                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                Timber.d("isi response autologout:" + response.toString());
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                if (is_full_activity)
-                                    test.showDialoginActivity(getActivity(), message);
-                                else
-                                    test.showDialoginMain(getActivity(), message);
-                            } else {
-                                Timber.d("Error bank cashout:" + response.toString());
-                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                prodDialog.dismiss();
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                            @Override
+                            public void onError(Throwable throwable) {
 
-                    }
+                            }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                        failure(throwable);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        failure(throwable);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        failure(throwable);
-                    }
-
-                    private void failure(Throwable throwable) {
-                        if (getActivity() != null && !getActivity().isFinishing()) {
-                            if (MyApiClient.PROD_FAILURE_FLAG)
-                                Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                            if (prodDialog.isShowing())
-                                prodDialog.dismiss();
-                        }
-                        Timber.w("Error Koneksi bank list list topup:" + throwable.toString());
-                    }
-                });
+                            @Override
+                            public void onComplete() {
+                                if (prodDialog.isShowing())
+                                    prodDialog.dismiss();
+                            }
+                        });
             }
         }catch(Exception e){
             Timber.d("httpclient:"+e.getMessage());
@@ -287,16 +263,15 @@ public class ListCashOut extends ListFragment {
             getHelpList();
         }
         else {
-            try {
-                JSONArray arrayContact = new JSONArray(contactCenter);
-                for (int i = 0; i < arrayContact.length(); i++) {
-                    if (i == 0) {
-                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
-                    }
+
+            Type type = new TypeToken<List<ContactDataModel>>() {}.getType();
+            List<ContactDataModel> temp = getGson().fromJson(contactCenter, type);
+
+            for(int i=0 ; i<temp.size() ; i++) {
+                if(i == 0) {
+                    listContactPhone = temp.get(i).getContact_phone();
+                    listAddress = temp.get(i).getAddress();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
             showDialogLevelRegistered();
         }
@@ -309,92 +284,62 @@ public class ListCashOut extends ListFragment {
             String ownerId = sp.getString(DefineValue.USERID_PHONE,"");
             String accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    ownerId,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance()
+                    .getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             params.put(WebParams.USER_ID, ownerId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 
-            MyApiClient.getHelpList(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
+            RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_USER_CONTACT_INSERT,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            GetHelpModel model = gson.fromJson(object, GetHelpModel.class);
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params help list:"+response.toString());
+                            String code = model.getError_code();
+                            String message = model.getError_message();
 
-                            contactCenter = response.getString(WebParams.CONTACT_DATA);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+//                                Timber.d("isi params help list:"+response.toString());
 
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
-                            mEditor.apply();
+//                                contactCenter = model.getContact_data();
 
-                            try {
-                                JSONArray arrayContact = new JSONArray(contactCenter);
-                                for(int i=0 ; i<arrayContact.length() ; i++) {
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.LIST_CONTACT_CENTER, getGson().toJson(model.getContact_data()));
+                                mEditor.apply();
+
+                                for(int i=0 ; i<model.getContact_data().size() ; i++) {
                                     if(i == 0) {
-                                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+                                        listContactPhone = model.getContact_data().get(i).getContact_phone();
+                                        listAddress = model.getContact_data().get(i).getAddress();
                                     }
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+
                             }
-
-                            showDialogLevelRegistered();
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            if (is_full_activity)
-                                test.showDialoginActivity(getActivity(), message);
-                            else
-                                test.showDialoginMain(getActivity(), message);
-                        }
-                        else {
-                            Timber.d("isi error help list:"+response.toString());
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+//                                Timber.d("isi response autologout:"+response.toString());
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+//                                if(MyApiClient.PROD_FAILURE_FLAG)
+//                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                                else
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            }
                         }
 
-                        progdialog.dismiss();
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi help list help:"+throwable.toString());
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
         }
         catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
@@ -445,5 +390,11 @@ public class ListCashOut extends ListFragment {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public Gson getGson() {
+        if (gson == null)
+            gson = new Gson();
+        return gson;
     }
 }

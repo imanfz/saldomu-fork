@@ -28,8 +28,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -42,19 +40,19 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.services.AgentShopService;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import timber.log.Timber;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -141,23 +139,23 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
         lvSettingAdapter        = new EasyAdapter(getActivity(),R.layout.list_view_item_setting_with_arrow, menuItems);
 
-        lvSetting               = (ListView) v.findViewById(R.id.lvSetting);
+        lvSetting               = v.findViewById(R.id.lvSetting);
         lvSetting.setOverscrollFooter(new ColorDrawable(Color.TRANSPARENT));
         lvSetting.setVisibility(View.GONE);
 
         llMemberDetail          =  v.findViewById(R.id.llMemberDetail);
         llMemberDetail.setVisibility(View.GONE);
 
-        btnSettingLokasi        = (Button) v.findViewById(R.id.btnSettingLokasi);
+        btnSettingLokasi        = v.findViewById(R.id.btnSettingLokasi);
         btnSettingLokasi.setVisibility(View.GONE);
-        tvDetailMemberName      = (TextView) v.findViewById(R.id.tvDetailMemberName);
-        tvCategoryName          = (TextView) v.findViewById(R.id.tvCategoryName);
-        tvCommName              = (TextView) v.findViewById(R.id.tvCommName);
-        tvAddress               = (TextView) v.findViewById(R.id.tvAddress);
-        tvTutupSekarangLabel    = (TextView) v.findViewById(R.id.tvTutupSekarangLabel);
+        tvDetailMemberName      = v.findViewById(R.id.tvDetailMemberName);
+        tvCategoryName          = v.findViewById(R.id.tvCategoryName);
+        tvCommName              = v.findViewById(R.id.tvCommName);
+        tvAddress               = v.findViewById(R.id.tvAddress);
+        tvTutupSekarangLabel    = v.findViewById(R.id.tvTutupSekarangLabel);
         tvTutupSekarangLabel.setVisibility(View.GONE);
 
-        swTutupToko             = (Switch) v.findViewById(R.id.swTutupToko);
+        swTutupToko             = v.findViewById(R.id.swTutupToko);
 
         lvSetting.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -221,9 +219,8 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
         String extraSignature = flagApprove;
-        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_MEMBER_SHOP_LIST,
-                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
-                extraSignature);
+
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_MEMBER_SHOP_LIST, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
@@ -232,110 +229,109 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         params.put(WebParams.FLAG_APPROVE, flagApprove);
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
-        MyApiClient.getMemberShopList(getContext(), params, false, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                progdialog.dismiss();
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_MEMBER_SHOP_LIST, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                try {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                llMemberDetail.setVisibility(View.VISIBLE);
 
-                        llMemberDetail.setVisibility(View.VISIBLE);
+                                JSONArray members = response.getJSONArray("member");
 
-                        JSONArray members = response.getJSONArray("member");
+                                for (int i = 0; i < members.length(); i++) {
+                                    JSONObject object = members.getJSONObject(i);
 
-                        for (int i = 0; i < members.length(); i++) {
-                            JSONObject object = members.getJSONObject(i);
+                                    ShopDetail shopDetail = new ShopDetail();
+                                    shopDetail.setMemberId(object.getString("member_id"));
+                                    shopDetail.setMemberCode(object.getString("member_code"));
+                                    shopDetail.setMemberName(object.getString("member_name"));
+                                    shopDetail.setMemberType(object.getString("member_type"));
+                                    shopDetail.setCommName(object.getString("comm_name"));
+                                    shopDetail.setCommCode(object.getString("comm_code"));
+                                    shopDetail.setShopId(object.getString("shop_id"));
+                                    shopDetail.setShopName(object.getString("shop_name"));
+                                    shopDetail.setShopFirstAddress(object.getString("address1"));
+                                    shopDetail.setShopDistrict(object.getString("district"));
+                                    shopDetail.setShopProvince(object.getString("province"));
+                                    shopDetail.setShopCountry(object.getString("country"));
+                                    shopDetail.setStepApprove(object.getString("step_approve"));
+                                    shopDetail.setSetupOpenHour(object.getString("setup_open_hour"));
+                                    shopDetail.setIsMobility(object.getString("is_mobility"));
 
-                            ShopDetail shopDetail = new ShopDetail();
-                            shopDetail.setMemberId(object.getString("member_id"));
-                            shopDetail.setMemberCode(object.getString("member_code"));
-                            shopDetail.setMemberName(object.getString("member_name"));
-                            shopDetail.setMemberType(object.getString("member_type"));
-                            shopDetail.setCommName(object.getString("comm_name"));
-                            shopDetail.setCommCode(object.getString("comm_code"));
-                            shopDetail.setShopId(object.getString("shop_id"));
-                            shopDetail.setShopName(object.getString("shop_name"));
-                            shopDetail.setShopFirstAddress(object.getString("address1"));
-                            shopDetail.setShopDistrict(object.getString("district"));
-                            shopDetail.setShopProvince(object.getString("province"));
-                            shopDetail.setShopCountry(object.getString("country"));
-                            shopDetail.setStepApprove(object.getString("step_approve"));
-                            shopDetail.setSetupOpenHour(object.getString("setup_open_hour"));
-                            shopDetail.setIsMobility(object.getString("is_mobility"));
+                                    memberId    = shopDetail.getMemberId();
+                                    shopId      = shopDetail.getShopId();
+                                    shopName      = shopDetail.getShopName();
+                                    memberType      = shopDetail.getMemberType();
+                                    agentName = object.getString("member_name");
+                                    stepApprove = object.getString("step_approve");
+                                    commName      = shopDetail.getCommName();
+                                    province = shopDetail.getShopProvince();
+                                    district = shopDetail.getShopDistrict();
+                                    address = shopDetail.getShopFirstAddress();
+                                    isMobility  = object.getString("is_mobility");
 
-                            memberId    = shopDetail.getMemberId();
-                            shopId      = shopDetail.getShopId();
-                            shopName      = shopDetail.getShopName();
-                            memberType      = shopDetail.getMemberType();
-                            agentName = object.getString("member_name");
-                            stepApprove = object.getString("step_approve");
-                            commName      = shopDetail.getCommName();
-                            province = shopDetail.getShopProvince();
-                            district = shopDetail.getShopDistrict();
-                            address = shopDetail.getShopFirstAddress();
-                            isMobility  = object.getString("is_mobility");
+                                    if ( !object.getString("category").equals("") ) {
+                                        JSONArray categories = object.getJSONArray("category");
 
-                            if ( !object.getString("category").equals("") ) {
-                                JSONArray categories = object.getJSONArray("category");
+                                        for (int j = 0; j < categories.length(); j++) {
+                                            JSONObject object2 = categories.getJSONObject(j);
+                                            shopDetail.setCategories(object2.getString("category_name"));
+                                        }
+                                        category = TextUtils.join(", ", shopDetail.getCategories());
+                                    } else {
+                                        category = "";
+                                    }
 
-                                for (int j = 0; j < categories.length(); j++) {
-                                    JSONObject object2 = categories.getJSONObject(j);
-                                    shopDetail.setCategories(object2.getString("category_name"));
+                                    shopDetails.add(shopDetail);
+
+                                    shopClosed = object.getString("shop_closed");
+                                    tvDetailMemberName.setText(object.getString("member_name"));
+                                    tvCategoryName.setText(category);
+                                    tvCommName.setText(object.getString("shop_name"));
+                                    tvAddress.setText(object.getString("address1"));
+
+                                    if ( isMobility.equals(DefineValue.STRING_NO) && shopDetail.getStepApprove().equals(DefineValue.STRING_YES) && shopDetail.getSetupOpenHour().equals(DefineValue.STRING_NO) ) {
+
+                                        FragWaktuBeroperasi fragWaktuBeroperasi = new FragWaktuBeroperasi();
+                                        FragmentManager fragmentManager = getFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                        fragmentTransaction.replace(R.id.bbs_content, fragWaktuBeroperasi, null);
+
+                                        if ( getActivity() != null ) {
+                                            BBSActivity bbc = (BBSActivity) getActivity();
+
+                                            TextView title_detoolbar = getActivity().findViewById(R.id.main_toolbar_title);
+                                            title_detoolbar.setText(getString(R.string.menu_item_title_waktu_beroperasi));
+                                        }
+                                        fragmentTransaction.commit();
+                                    }
+
                                 }
-                                category = TextUtils.join(", ", shopDetail.getCategories());
-                            } else {
-                                category = "";
-                            }
 
-                            shopDetails.add(shopDetail);
+                                if ( stepApprove.equals(DefineValue.STRING_NO) ) {
+                                    btnSettingLokasi.setVisibility(View.VISIBLE);
+                                    tvTutupSekarangLabel.setVisibility(View.GONE);
+                                    swTutupToko.setVisibility(View.GONE);
+                                    lvSetting.setVisibility(View.GONE);
+                                } else {
+                                    btnSettingLokasi.setVisibility(View.GONE);
+                                    tvTutupSekarangLabel.setVisibility(View.VISIBLE);
+                                    lvSetting.setVisibility(View.VISIBLE);
+                                    lvSetting.setAdapter(lvSettingAdapter);
 
-                            shopClosed = object.getString("shop_closed");
-                            tvDetailMemberName.setText(object.getString("member_name"));
-                            tvCategoryName.setText(category);
-                            tvCommName.setText(object.getString("shop_name"));
-                            tvAddress.setText(object.getString("address1"));
+                                    if ( shopClosed.equals(DefineValue.STRING_YES) ) {
+                                        swTutupToko.setChecked(false);
+                                    } else {
+                                        swTutupToko.setChecked(true);
+                                    }
 
-                            if ( isMobility.equals(DefineValue.STRING_NO) && shopDetail.getStepApprove().equals(DefineValue.STRING_YES) && shopDetail.getSetupOpenHour().equals(DefineValue.STRING_NO) ) {
-
-                                FragWaktuBeroperasi fragWaktuBeroperasi = new FragWaktuBeroperasi();
-                                FragmentManager fragmentManager = getFragmentManager();
-                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.bbs_content, fragWaktuBeroperasi, null);
-
-                                if ( getActivity() != null ) {
-                                    BBSActivity bbc = (BBSActivity) getActivity();
-
-                                    TextView title_detoolbar = (TextView) getActivity().findViewById(R.id.main_toolbar_title);
-                                    title_detoolbar.setText(getString(R.string.menu_item_title_waktu_beroperasi));
+                                    swTutupToko.setOnCheckedChangeListener(switchListener);
+                                    swTutupToko.setVisibility(View.VISIBLE);
                                 }
-                                fragmentTransaction.commit();
-                            }
-
-                        }
-
-                        if ( stepApprove.equals(DefineValue.STRING_NO) ) {
-                            btnSettingLokasi.setVisibility(View.VISIBLE);
-                            tvTutupSekarangLabel.setVisibility(View.GONE);
-                            swTutupToko.setVisibility(View.GONE);
-                            lvSetting.setVisibility(View.GONE);
-                        } else {
-                            btnSettingLokasi.setVisibility(View.GONE);
-                            tvTutupSekarangLabel.setVisibility(View.VISIBLE);
-                            lvSetting.setVisibility(View.VISIBLE);
-                            lvSetting.setAdapter(lvSettingAdapter);
-
-                            if ( shopClosed.equals(DefineValue.STRING_YES) ) {
-                                swTutupToko.setChecked(false);
-                            } else {
-                                swTutupToko.setChecked(true);
-                            }
-
-                            swTutupToko.setOnCheckedChangeListener(switchListener);
-                            swTutupToko.setVisibility(View.VISIBLE);
-                        }
 
                         /*for(int i =0; i <= (_data.length-1); i++) {
                             String temp = _data[i];
@@ -359,69 +355,55 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             }
                         }
 */
-                        //listSettingAdapter = new ListSettingAdapter(BbsListSettingKelolaActivity.this, menu, flagApprove, shopDetails);
-                        //lvList.setAdapter(listSettingAdapter);
+                                //listSettingAdapter = new ListSettingAdapter(BbsListSettingKelolaActivity.this, menu, flagApprove, shopDetails);
+                                //lvList.setAdapter(listSettingAdapter);
 
-                    } else {
+                            } else {
 
-                        //redirect back to fragment - BBSActivity;
-                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                        alertDialog.setCancelable(false);
+                                //redirect back to fragment - BBSActivity;
+                                android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                                alertDialog.setCanceledOnTouchOutside(false);
+                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                alertDialog.setCancelable(false);
 
-                        alertDialog.setMessage(getString(R.string.message_notif_not_registered_agent));
+                                alertDialog.setMessage(getString(R.string.message_notif_not_registered_agent));
 
 
 
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
 
-                                    getActivity().finish();
+                                                getActivity().finish();
                                     /*FragmentManager fm = getFragmentManager();
                                     if (fm.getBackStackEntryCount() > 0) {
                                         fm.popBackStack();
                                     } else {
 
                                     }*/
-                                }
-                            });
+                                            }
+                                        });
 
-                        alertDialog.show();
+                                alertDialog.show();
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
 
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onComplete() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //if (MyApiClient.PROD_FAILURE_FLAG)
-                //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                //else
-                Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                progdialog.dismiss();
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
-
+                        progdialog.dismiss();
+                    }
+                });
 
 //        memberId        = getIntent().getStringExtra("memberId");
 //        shopId          = getIntent().getStringExtra("shopId");
@@ -440,7 +422,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
     protected void setActionBarTitle(String _title) {
 
-        TextView title_detoolbar = (TextView) getActivity().findViewById(R.id.main_toolbar_title);
+        TextView title_detoolbar = getActivity().findViewById(R.id.main_toolbar_title);
         title_detoolbar.setText(_title);
     }
 
@@ -575,9 +557,8 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
             }
 
             String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
-            RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
-                    sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
 
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, extraSignature);
 
             if ( !GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN) ) {
                 showAlertEnabledGPS();
@@ -595,61 +576,50 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                     params.put(WebParams.SHOP_STATUS, shopStatus);
                     params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
-                    MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
-                            progdialog2.dismiss();
+                    RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, params,
+                            new ObjListeners() {
+                                @Override
+                                public void onResponses(JSONObject response) {
+                                    try {
 
-                            try {
+                                        String code = response.getString(WebParams.ERROR_CODE);
+                                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                                            SecurePreferences.Editor mEditor = sp.edit();
+                                            if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                                                Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+                                            } else {
+                                                Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                            }
 
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    SecurePreferences.Editor mEditor = sp.edit();
-                                    if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
-                                        Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
-                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
-                                    } else {
-                                        Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
-                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                            mEditor.apply();
+
+                                            getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+
+                                            Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+
+                                        } else {
+
+                                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-
-                                    mEditor.apply();
-
-                                    getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-
-                                    Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
-
-                                } else {
-
-                                    Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                                 }
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                                @Override
+                                public void onError(Throwable throwable) {
 
-                        @Override
-                        public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
-                            super.onFailure(statusCode, headers, responseString, throwable);
-                            ifFailure(throwable);
-                        }
+                                }
 
-                        @Override
-                        public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                            super.onFailure(statusCode, headers, throwable, errorResponse);
-                            ifFailure(throwable);
-                        }
-
-                        private void ifFailure(Throwable throwable) {
-                            Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                            progdialog2.dismiss();
-                            Timber.w("Error Koneksi login:" + throwable.toString());
-
-                        }
-                    });
+                                @Override
+                                public void onComplete() {
+                                    progdialog2.dismiss();
+                                }
+                            });
                 }
             }
         }

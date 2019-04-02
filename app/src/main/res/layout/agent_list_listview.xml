@@ -215,10 +215,10 @@
             android:layout_marginTop="30dp" >
 
             <TextView
+                style="@style/DistanceLabelAgentProfileBbs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/distance_agent_profile_bbs_label"
-                style="@style/DistanceLabelAgentProfileBbs"/>
+                android:text="@string/distance_agent_profile_bbs_label" />
 
             <TextView
                 android:layout_width="wrap_content"

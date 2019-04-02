@@ -217,6 +217,7 @@ public class DefineValue {
     public static String ACCESS_SECRET = "accessSecret";
     public static String NEW_PASSWORD = "newPassword";
     public static String CONFIRM_PASSWORD = "confirmPassword";
+    public static String CONFIRM_PAYFRIEND = "confirmPayfriend";
     public static String REGISTRATION = "registration";
     public static String CONTACT_ALIAS = "contactAlias";
     public static String CONF_PIN = "confPin";
@@ -226,6 +227,7 @@ public class DefineValue {
     public static String STATUS = "status";
     public static String REASON = "reason";
 	public static String BALANCE_AMOUNT = "balanceAmount";
+	public static String BALANCE_COLLECTOR_AMOUNT = "balanceCollectorAmount";
     public static String BALANCE_MAX_TOPUP = "balanceMaxTopup";
     public static String BALANCE_CCYID = "balaceCcyid";
     public static String BALANCE_REMAIN_LIMIT = "balanceRemainLimit";
@@ -544,8 +546,24 @@ public class DefineValue {
     public static String QR_TYPE_FROM_DEFAULT_ACCOUNT = "QR_TYPE_FROM_DEFAULT_ACCOUNT";
     public static String QR_OBJ = "QR_OBJ";
     public static String DGI = "DGI";
+    public static String DGI_MEMBER_NAME= "dgi_member_name";
+    public static String DGI_ANCHOR_NAME= "dgi_anchor_name";
+    public static String DGI_COMM_NAME= "dgi_comm_name";
     public static String MOBILE_PHONE = "mobile_phone";
     public static String RESPONSE = "mobile_phone";
+    public static String COMM_CODE_DGI = "comm_code_dgi";
+    public static String PARAMS = "params";
+    public static String PAYMENT_TYPE = "payment_type";
+    public static String AGENT_TYPE = "agent_type";
+    public static String PAYMENT_TYPE_DESC= "payment_type_desc";
+    public static String INVOICE = "invoice";
+    public static String SCHEME_CODE = "scheme_code";
+    public static String AGENT_SCHEME_CODES= "agent_scheme_codes";
+    public static String IS_MEMBER_SHOP_DGI= "is_member_shop_dgi";
+    public static String IS_SEARCH_DGI= "is_search_dgi";
+    public static String DEVICE_NAME= "device_name";
+    public static String IS_MANUAL= "is_manual";
+    public static String IS_DORMANT= "is_dormant";
 
 }
 

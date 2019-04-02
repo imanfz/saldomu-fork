@@ -19,8 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.CountryModel;
 import com.sgo.saldomu.R;
@@ -28,12 +26,14 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-import org.apache.http.Header;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import timber.log.Timber;
@@ -131,17 +132,17 @@ private EditText et_email;
             }
         }
 
-        et_socialid = (EditText) v.findViewById(R.id.level_value_social_id);
-        et_address = (EditText) v.findViewById(R.id.level_value_address);
-        et_pob = (EditText) v.findViewById(R.id.level_value_pob);
-        tv_dob = (TextView) v.findViewById(R.id.level_value_bod);
+        et_socialid = v.findViewById(R.id.level_value_social_id);
+        et_address = v.findViewById(R.id.level_value_address);
+        et_pob = v.findViewById(R.id.level_value_pob);
+        tv_dob = v.findViewById(R.id.level_value_bod);
         tv_dob.setEnabled(false);
-        et_name = (EditText) v.findViewById(R.id.level_value_name);
+        et_name = v.findViewById(R.id.level_value_name);
 //        et_bom = (EditText) v.findViewById(R.id.level_value_birth_mother);
-        et_email = (EditText) v.findViewById(R.id.level_value_email);
+        et_email = v.findViewById(R.id.level_value_email);
 
-        Button btnproses = (Button) v.findViewById(R.id.btn_submit_level_register);
-        Button btncancel = (Button) v.findViewById(R.id.btn_cancel_level_register);
+        Button btnproses = v.findViewById(R.id.btn_submit_level_register);
+        Button btncancel = v.findViewById(R.id.btn_cancel_level_register);
 
 
         btnproses.setOnClickListener(prosesListener);
@@ -168,15 +169,15 @@ private EditText et_email;
         });
 
 
-        sp_socialid = (Spinner) v.findViewById(R.id.level_spinner_socialid_type);
+        sp_socialid = v.findViewById(R.id.level_spinner_socialid_type);
 
-        sp_gender = (Spinner) v.findViewById(R.id.level_spinner_gender);
+        sp_gender = v.findViewById(R.id.level_spinner_gender);
         ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.gender_type, android.R.layout.simple_spinner_item);
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_gender.setAdapter(genderAdapter);
 
-        sp_country = (Spinner) v.findViewById(R.id.level_spinner_country);
+        sp_country = v.findViewById(R.id.level_spinner_country);
 
 
         Thread deproses = new Thread(){
@@ -316,8 +317,7 @@ private EditText et_email;
             else
                 progdialog.show();
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_EXEC_CUST,
-                    userPhoneID, accessKey, memberIDLogin);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_EXEC_CUST, memberIDLogin);
             params.put(WebParams.CUST_ID, custID);
             params.put(WebParams.CUST_NAME, et_name.getText().toString());
             params.put(WebParams.CUST_ID_TYPE, sp_socialid.getSelectedItem().toString());
@@ -342,112 +342,92 @@ private EditText et_email;
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params execute customer:" + params.toString());
-
-            MyApiClient.sentExecCust(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("response execute customer:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            SecurePreferences.Editor mEdit = sp.edit();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_EXEC_CUST, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("response execute customer:"+response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    SecurePreferences.Editor mEdit = sp.edit();
 //                            int member_level = sp.getInt(DefineValue.LEVEL_VALUE,1);
-                            mEdit.putBoolean(DefineValue.IS_REGISTERED_LEVEL,true);
-                            mEdit.putString(DefineValue.PROFILE_DOB, dob);
-                            mEdit.putString(DefineValue.PROFILE_ADDRESS,et_address.getText().toString());
-                            mEdit.putString(DefineValue.PROFILE_COUNTRY,sp_country.getSelectedItem().toString());
-                            mEdit.putString(DefineValue.PROFILE_SOCIAL_ID,et_socialid.getText().toString());
-                            mEdit.putString(DefineValue.PROFILE_FULL_NAME,et_name.getText().toString());
-                            mEdit.putString(DefineValue.CUST_NAME,et_name.getText().toString());
-                            mEdit.putString(DefineValue.USER_NAME,et_name.getText().toString());
-                            mEdit.putString(DefineValue.MEMBER_NAME, et_name.getText().toString());
-                            mEdit.putString(DefineValue.PROFILE_POB, et_pob.getText().toString());
-                            mEdit.putInt(DefineValue.LEVEL_VALUE, response.optInt(WebParams.MEMBER_LEVEL, 1));
-                            if (response.optString(WebParams.ALLOW_MEMBER_LEVEL, DefineValue.STRING_NO).equals(DefineValue.STRING_YES))
-                                mEdit.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true );
-                            else
-                                mEdit.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false );
+                                    mEdit.putBoolean(DefineValue.IS_REGISTERED_LEVEL,true);
+                                    mEdit.putString(DefineValue.PROFILE_DOB, dob);
+                                    mEdit.putString(DefineValue.PROFILE_ADDRESS,et_address.getText().toString());
+                                    mEdit.putString(DefineValue.PROFILE_COUNTRY,sp_country.getSelectedItem().toString());
+                                    mEdit.putString(DefineValue.PROFILE_SOCIAL_ID,et_socialid.getText().toString());
+                                    mEdit.putString(DefineValue.PROFILE_FULL_NAME,et_name.getText().toString());
+                                    mEdit.putString(DefineValue.CUST_NAME,et_name.getText().toString());
+                                    mEdit.putString(DefineValue.USER_NAME,et_name.getText().toString());
+                                    mEdit.putString(DefineValue.MEMBER_NAME, et_name.getText().toString());
+                                    mEdit.putString(DefineValue.PROFILE_POB, et_pob.getText().toString());
+                                    mEdit.putInt(DefineValue.LEVEL_VALUE, response.optInt(WebParams.MEMBER_LEVEL, 1));
+                                    if (response.optString(WebParams.ALLOW_MEMBER_LEVEL, DefineValue.STRING_NO).equals(DefineValue.STRING_YES))
+                                        mEdit.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true );
+                                    else
+                                        mEdit.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false );
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
-                            mEdit.putString(DefineValue.PROFILE_GENDER, gender);
-                            mEdit.putString(DefineValue.PROFILE_ID_TYPE,sp_socialid.getSelectedItem().toString());
+                                    mEdit.putString(DefineValue.PROFILE_GENDER, gender);
+                                    mEdit.putString(DefineValue.PROFILE_ID_TYPE,sp_socialid.getSelectedItem().toString());
 
-                            mEdit.apply();
+                                    mEdit.apply();
 
 
-                            if(response.optInt(WebParams.MEMBER_LEVEL, 1) == 2){
-                                Toast.makeText(getActivity(),getString(R.string.level_dialog_finish_message_auto),Toast.LENGTH_LONG).show();
-                                FragFriendsViewDetail.successUpgrade = true;
-                                getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-                                getActivity().finish();
+                                    if(response.optInt(WebParams.MEMBER_LEVEL, 1) == 2){
+                                        Toast.makeText(getActivity(),getString(R.string.level_dialog_finish_message_auto),Toast.LENGTH_LONG).show();
+                                        FragFriendsViewDetail.successUpgrade = true;
+                                        getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+                                        getActivity().finish();
+                                    }
+                                    else {
+                                        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.level_dialog_finish_title),
+                                                getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
+                                                        getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                                                new DefinedDialog.DialogButtonListener() {
+                                                    @Override
+                                                    public void onClickButton(View v, boolean isLongClick) {
+                                                        FragFriendsViewDetail.successUpgrade = true;
+                                                        getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+                                                        getActivity().finish();
+                                                    }
+                                                }
+                                        );
+
+                                        dialognya.show();
+                                    }
+
+
+
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else {
+
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    getFragmentManager().popBackStack();
+
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            else {
-                                Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.level_dialog_finish_title),
-                                        getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-                                                getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
-                                        new DefinedDialog.DialogButtonListener() {
-                                            @Override
-                                            public void onClickButton(View v, boolean isLongClick) {
-                                                FragFriendsViewDetail.successUpgrade = true;
-                                                getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-                                                getActivity().finish();
-                                            }
-                                        }
-                                );
+                        }
 
-                                dialognya.show();
-                            }
-
-
-
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(), message);
-                        } else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            getFragmentManager().popBackStack();
+                        @Override
+                        public void onError(Throwable e) {
 
                         }
-                        if (progdialog.isShowing())
-                            progdialog.dismiss();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi exec customer level req:"+throwable.toString());
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -489,7 +469,7 @@ private EditText et_email;
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date_empty))
-                    .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -525,88 +505,69 @@ private EditText et_email;
             progdialog = DefinedDialog.CreateProgressDialog(act, "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    userPhoneID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 
-            MyApiClient.getHelpList(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params help list:"+response.toString());
-
-                            contactCenter = response.getString(WebParams.CONTACT_DATA);
-
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
-                            mEditor.apply();
-
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_USER_CONTACT_INSERT, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
                             try {
-                                JSONArray arrayContact = new JSONArray(contactCenter);
-                                for(int i=0 ; i<arrayContact.length() ; i++) {
-                                    if(i == 0) {
-                                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.d("isi params help list:"+response.toString());
+
+                                    contactCenter = response.getString(WebParams.CONTACT_DATA);
+
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
+                                    mEditor.apply();
+
+                                    try {
+                                        JSONArray arrayContact = new JSONArray(contactCenter);
+                                        for(int i=0 ; i<arrayContact.length() ; i++) {
+                                            if(i == 0) {
+                                                listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
+                                                listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
+
                                 }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(act,message);
+                                }
+                                else {
+                                    Toast.makeText(act, message, Toast.LENGTH_LONG).show();
+                                }
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(act,message);
-                        }
-                        else {
-                            Timber.d("isi error help list:"+response.toString());
-                            Toast.makeText(act, message, Toast.LENGTH_LONG).show();
                         }
 
-                        progdialog.dismiss();
+                        @Override
+                        public void onError(Throwable e) {
+                            if(MyApiClient.PROD_FAILURE_FLAG)
+                                Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(act, e.toString(), Toast.LENGTH_LONG).show();
+                        }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi help list help:"+throwable.toString());
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
         }
         catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());

@@ -64,7 +64,8 @@ public class BankProductSelectionBottomSheet extends BottomSheetDialogFragment {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 
-                if (!listDataHeader2.get(groupPosition).getProduct_type().equals("ATM")) {
+                if (!listDataHeader2.get(groupPosition).getProduct_type().equals("ATM") &&
+                        !listDataHeader2.get(groupPosition).getProduct_type().equals("MANDIRI_ATM")) {
                     listener.onClick(listDataHeader2.get(groupPosition));
                     dismiss();
                 }
@@ -91,6 +92,8 @@ public class BankProductSelectionBottomSheet extends BottomSheetDialogFragment {
             for (listBankModel obj: listDataHeader2) {
                 if (obj.getProduct_type().equals("ATM")){
                     listDataChild2.put(obj.getProduct_code(), obj);
+                    if (obj.getProduct_name().equalsIgnoreCase("MANDIRI ATM"))
+                        listDataChild2.put("MANDIRI_ONLINE", new listBankModel(obj.getBank_name(), "MANDIRI ONLINE", obj.getNoVA()));
                 }
             }
 

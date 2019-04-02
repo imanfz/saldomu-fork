@@ -47,8 +47,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -57,19 +55,20 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.utils.BbsUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,6 +80,7 @@ import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static com.activeandroid.Cache.getContext;
@@ -112,7 +112,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     List<String> currentShops;
     List<String> latestShops;
     List<String> differentShops;
-    HashMap<String,Marker> hashMapMarkers;
+    HashMap<String, Marker> hashMapMarkers;
     EditText etNote;
     AutoCompleteTextView etJumlah;
     String amount, completeAddress, provinceName, districtName, countryName, bbsProductName;
@@ -124,7 +124,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private SimpleAdapter adapterAccounts;
     private List<BBSBankModel> listbankSource, listbankBenef;
 
-    private List<HashMap<String,String>> aListMember;
+    private List<HashMap<String, String>> aListMember;
     // Keys used in Hashmap
     private String[] from = {"flag", "txt"};
 
@@ -150,62 +150,61 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        realm           = Realm.getDefaultInstance();
-        realmBBSMemberBank        = RealmManager.getRealmBBSMemberBank();
+        realm = Realm.getDefaultInstance();
+        realmBBSMemberBank = RealmManager.getRealmBBSMemberBank();
 
-        sp              = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         isZoomedAlready = false;
 
         progDialog = DefinedDialog.CreateProgressDialog(this);
         progDialog.dismiss();
 
-        isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
-        aListMember     = new ArrayList<>();
+        aListMember = new ArrayList<>();
 
 
         adapterAccounts = new SimpleAdapter(this, aListMember, R.layout.bbs_autocomplete_layout, from, to);
 
 
-        intentData      = getIntent();
-        currentShops    = new ArrayList<String>();
-        latestShops     = new ArrayList<String>();
-        differentShops  = new ArrayList<String>();
-        hashMapMarkers  = new HashMap<>();
-        denom           = getResources().getStringArray(R.array.list_denom_amount);
+        intentData = getIntent();
+        currentShops = new ArrayList<String>();
+        latestShops = new ArrayList<String>();
+        differentShops = new ArrayList<String>();
+        hashMapMarkers = new HashMap<>();
+        denom = getResources().getStringArray(R.array.list_denom_amount);
 
-        categoryId          = intentData.getStringExtra(DefineValue.CATEGORY_ID);
-        categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
-        bbsSchemeCode       = intentData.getStringExtra(DefineValue.BBS_SCHEME_CODE);
+        categoryId = intentData.getStringExtra(DefineValue.CATEGORY_ID);
+        categoryName = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
+        bbsSchemeCode = intentData.getStringExtra(DefineValue.BBS_SCHEME_CODE);
         initializeToolbar(getString(R.string.search_agent) + " " + categoryName);
 
         initializeDataBBS(bbsSchemeCode);
 
-        acMemberAcct = (CustomAutoCompleteTextViewWithIcon) findViewById(R.id.acMemberAcct);
-        if ( bbsSchemeCode.equals(CTA) ) {
+        acMemberAcct = findViewById(R.id.acMemberAcct);
+        if (bbsSchemeCode.equals(CTA)) {
             acMemberAcct.setHint(getString(R.string.bbs_setor_ke) + " " + getString(R.string.label_bank_pelangggan));
         } else {
             acMemberAcct.setHint(getString(R.string.bbs_tarik_dari) + " " + getString(R.string.label_bank_pelangggan));
         }
         acMemberAcct.setAdapter(adapterAccounts);
 
-        etNote          = (EditText) findViewById(R.id.etNote);
+        etNote = findViewById(R.id.etNote);
         etNote.setVisibility(View.GONE);
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.agentMap);
         mapFrag.getMapAsync(this);
 
         if (isHasAppPermission()) {
-            if ( !GlobalSetting.isLocationEnabled(this) ) {
+            if (!GlobalSetting.isLocationEnabled(this)) {
                 showAlertEnabledGPS();
             } else {
                 runningApp();
             }
         } else {
-            // Do not have permissions, request them now
-            //EasyPermissions.requestPermissions(this, getString(R.string.rationale_location), BaseActivity.RC_LOCATION_PERM, perms);
+//             Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location), BaseActivity.RC_LOCATION_PERM, perms);
         }
-
 
 
     }
@@ -245,7 +244,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         }
 
 
-        searchLocationEditText = (CustomAutoCompleteTextViewWithRadioButton) findViewById(R.id.searchLocationEditText);
+        searchLocationEditText = findViewById(R.id.searchLocationEditText);
         googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getContext(), R.layout.google_places_auto_complete_listview);
         searchLocationEditText.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
         searchLocationEditText.setOnItemClickListener(this);
@@ -254,7 +253,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         searchLocationEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if ( hasFocus ) {
+                if (hasFocus) {
                     v.setSelected(true);
                 } else {
                     v.setSelected(false);
@@ -270,11 +269,11 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
         searchLocationEditText.setSelectAllOnFocus(true);
 
-        etJumlah                = (AutoCompleteTextView) findViewById(R.id.etJumlah);
+        etJumlah = findViewById(R.id.etJumlah);
         etJumlah.requestFocus();
         etJumlah.addTextChangedListener(jumlahChangeListener);
 
-        ArrayAdapter adapterDenom = new ArrayAdapter(this,android.R.layout.simple_list_item_1,denom);
+        ArrayAdapter adapterDenom = new ArrayAdapter(this, android.R.layout.simple_list_item_1, denom);
 
         etJumlah.setAdapter(adapterDenom);
         etJumlah.setThreshold(1);
@@ -286,13 +285,13 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 final int DRAWABLE_RIGHT = 2;
 
 
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    int width       = etJumlah.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
-                    int maxWidth    = width + 20;
-                    if(event.getRawX() >= (etJumlah.getRight() - maxWidth)) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    int width = etJumlah.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
+                    int maxWidth = width + 20;
+                    if (event.getRawX() >= (etJumlah.getRight() - maxWidth)) {
                         //Toast.makeText(BbsNewSearchAgentActivity.this, "TESTING", Toast.LENGTH_SHORT).show();
 
-                        if ( !showHideLayoutNote ) {
+                        if (!showHideLayoutNote) {
                             showHideLayoutNote = true;
                             etNote.setVisibility(View.VISIBLE);
                         } else {
@@ -312,7 +311,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
             }
         });
 
-        btnProses               = (Button) findViewById(R.id.btnProses);
+        btnProses = findViewById(R.id.btnProses);
         btnProses.setEnabled(false);
 
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -322,20 +321,19 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         btnProses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Boolean hasError    = false;
+                Boolean hasError = false;
 
-                if(etJumlah.getText().toString().length()==0){
+                if (etJumlah.getText().toString().length() == 0) {
                     etJumlah.requestFocus();
                     etJumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus), null);
                     hasError = true;
-                }
-                else if(Long.parseLong(etJumlah.getText().toString()) < 1){
+                } else if (Long.parseLong(etJumlah.getText().toString()) < 1) {
                     etJumlah.requestFocus();
                     etJumlah.setError(getString(R.string.payfriends_amount_zero), null);
                     hasError = true;
                 }
 
-                if ( !hasError ) {
+                if (!hasError) {
                     int idxValid = -1;
                     String nameAcct = acMemberAcct.getText().toString();
                     for (int i = 0; i < aListMember.size(); i++) {
@@ -364,7 +362,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     }
                 }
 
-                if ( !hasError ) {
+                if (!hasError) {
                     amount = etJumlah.getText().toString();
                     bbsProductName = acMemberAcct.getText().toString();
 
@@ -414,7 +412,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         try {
-            if ( mGoogleApiClient != null) {
+            if (mGoogleApiClient != null) {
 
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
@@ -500,14 +498,14 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
             Timber.d("GPS TEST OnChanged : Latitude : " + String.valueOf(latitude) + ", Longitude : " + String.valueOf(longitude));
 
-            if (globalMap != null ) {
+            if (globalMap != null) {
 
-                if ( latitude != null && longitude != null ) {
+                if (latitude != null && longitude != null) {
                     LatLng latLng = new LatLng(latitude, longitude);
                     globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
                     isZoomedAlready = false;
-                    if ( !isZoomedAlready ) {
+                    if (!isZoomedAlready) {
 
                         //add camera position and configuration
                         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -529,7 +527,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                         });
                     }
 
-                    if ( markerCurrent != null ) markerCurrent.remove();
+                    if (markerCurrent != null) markerCurrent.remove();
 
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(latLng)
@@ -542,18 +540,18 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
             //mGoogleApiClient.disconnect();
             btnProses.setEnabled(true);
-            if ( shopDetails.size() == 0 ) {
+            if (shopDetails.size() == 0) {
                 //this.getAddressByLatLng();
                 searchAgent();
             }
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
      * Creating google api client object
-     * */
+     */
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -563,11 +561,11 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
     /**
      * Creating location request object
-     * */
+     */
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(2*8000);
-        mLocationRequest.setFastestInterval(1*8000);
+        mLocationRequest.setInterval(2 * 8000);
+        mLocationRequest.setFastestInterval(1 * 8000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         //mLocationRequest.setSmallestDisplacement(DefineValue.AGENT_DISPLACEMENT);
 
@@ -575,14 +573,14 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
     /**
      * Method to verify google play services on the device
-     * */
+     */
     private boolean checkPlayServices() {
 
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
-        Timber.d("GPS Test checkPlayServices : "+ String.valueOf(result));
-        if(result != ConnectionResult.SUCCESS) {
-            if(googleAPI.isUserResolvableError(result)) {
+        Timber.d("GPS Test checkPlayServices : " + String.valueOf(result));
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
                 Toast.makeText(this, "GOOGLE API LOCATION CONNECTION FAILED", Toast.LENGTH_SHORT).show();
             }
 
@@ -596,8 +594,9 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         Double tempLatitude = latitude;
         Double tempLongitude = longitude;
         String extraSignature = categoryId;
-        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_NEW_SEARCH_AGENT,
-                userPhoneID, accessKey, extraSignature);
+//        + tempLatitude + tempLongitude;
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_NEW_SEARCH_AGENT,
+                extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -607,165 +606,140 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         params.put(WebParams.LONGITUDE, tempLongitude);
         params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
         params.put(WebParams.USER_ID, userPhoneID);
-        Timber.d("Params new search agent :" +params);
+        Timber.d("Params new search agent :" + params);
 
         //Start
         handlerSearchAgent.removeCallbacks(runnableSearchAgent);
 
-        MyApiClient.NewSearchAgent(getApplicationContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_NEW_SEARCH_AGENT, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                Timber.d("Response New Search Agent:" + response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                //if ( progdialog.isShowing())
-                    //progdialog.dismiss();
+                                //Start
+                                handlerSearchAgent.postDelayed(runnableSearchAgent, timeDelayed);
 
-                try {
+                                JSONArray shops = response.getJSONArray("shop");
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                shopDetails.clear();
 
-                        //Start
-                        handlerSearchAgent.postDelayed(runnableSearchAgent, timeDelayed);
+                                if (shops.length() > 0) {
 
-                        JSONArray shops = response.getJSONArray("shop");
-
-                        shopDetails.clear();
-
-                        if (shops.length() > 0) {
-
-                            Boolean firstLoad = false;
-                            if ( currentShops.size() == 0 ) {
-                                firstLoad = true;
-                            }
-
-                            latestShops = new ArrayList<String>();
-
-                            for (int j = 0; j < shops.length(); j++) {
-                                JSONObject object = shops.getJSONObject(j);
-                                ShopDetail shopDetail = new ShopDetail();
-
-                                shopDetail.setShopId(object.getString("shop_id"));
-                                shopDetail.setMemberCust(object.getString("member_cust"));
-                                shopDetail.setMemberId(object.getString("member_id"));
-                                shopDetail.setShopLatitude(object.getDouble("shop_latitude"));
-                                shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
-                                shopDetail.setMemberName(object.getString("member_name"));
-                                shopDetail.setShopAddress(object.getString("shop_address"));
-                                shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
-                                shopDetail.setLastActivity(object.getString("shop_lastactivity"));
-                                shopDetail.setShopMobility(object.getString("shop_mobility"));
-                                shopDetails.add(shopDetail);
-
-                                latestShops.add(shopDetail.getShopId());
-
-                                if ( firstLoad ) {
-                                    currentShops.add(shopDetail.getShopId());
-                                }
-                            }
-
-                            if ( !firstLoad ) {
-                                differentShops = new ArrayList<String>(currentShops);
-                                differentShops.removeAll(latestShops);
-
-                                currentShops = new ArrayList<String>(latestShops);
-                            }
-
-                            if ( differentShops.size() > 0 ) {
-                                for (String tempShopId : differentShops) {
-                                    if (hashMapMarkers.containsKey(tempShopId)) {
-                                        Marker marker = hashMapMarkers.get(tempShopId);
-                                        marker.remove();
-
-                                        hashMapMarkers.remove(tempShopId);
+                                    Boolean firstLoad = false;
+                                    if (currentShops.size() == 0) {
+                                        firstLoad = true;
                                     }
-                                }
-                            }
 
-                            for(int i = 0; i < shopDetails.size(); i++){
+                                    latestShops = new ArrayList<String>();
 
-                                if ( shopDetails.get(i).getShopLatitude() != null && shopDetails.get(i).getShopLongitude() != null ) {
-                                    LatLng latLng = new LatLng(shopDetails.get(i).getShopLatitude(), shopDetails.get(i).getShopLongitude());
+                                    for (int j = 0; j < shops.length(); j++) {
+                                        JSONObject object = shops.getJSONObject(j);
+                                        ShopDetail shopDetail = new ShopDetail();
 
-                                    if (hashMapMarkers.containsKey(shopDetails.get(i).getShopId())) {
-                                        Marker marker = hashMapMarkers.get(shopDetails.get(i).getShopId());
+                                        shopDetail.setShopId(object.getString("shop_id"));
+                                        shopDetail.setMemberCust(object.getString("member_cust"));
+                                        shopDetail.setMemberId(object.getString("member_id"));
+                                        shopDetail.setShopLatitude(object.getDouble("shop_latitude"));
+                                        shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
+                                        shopDetail.setMemberName(object.getString("member_name"));
+                                        shopDetail.setShopAddress(object.getString("shop_address"));
+                                        shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
+                                        shopDetail.setLastActivity(object.getString("shop_lastactivity"));
+                                        shopDetail.setShopMobility(object.getString("shop_mobility"));
+                                        shopDetails.add(shopDetail);
 
-                                        marker.setPosition(latLng);
-                                        hashMapMarkers.remove(shopDetails.get(i).getShopId());
-                                        hashMapMarkers.put(shopDetails.get(i).getShopId(), marker);
-                                    } else {
+                                        latestShops.add(shopDetail.getShopId());
 
-                                        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
-                                        if (shopDetails.get(i).getShopMobility().equals(DefineValue.STRING_YES)) {
-                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
-                                        } else {
-                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_home, 90, 90)));
+                                        if (firstLoad) {
+                                            currentShops.add(shopDetail.getShopId());
                                         }
-
-                                        hashMapMarkers.put(shopDetails.get(i).getShopId(), globalMap.addMarker(markerOptions));
-
                                     }
+
+                                    if (!firstLoad) {
+                                        differentShops = new ArrayList<String>(currentShops);
+                                        differentShops.removeAll(latestShops);
+
+                                        currentShops = new ArrayList<String>(latestShops);
+                                    }
+
+                                    if (differentShops.size() > 0) {
+                                        for (String tempShopId : differentShops) {
+                                            if (hashMapMarkers.containsKey(tempShopId)) {
+                                                Marker marker = hashMapMarkers.get(tempShopId);
+                                                marker.remove();
+
+                                                hashMapMarkers.remove(tempShopId);
+                                            }
+                                        }
+                                    }
+
+                                    for (int i = 0; i < shopDetails.size(); i++) {
+
+                                        if (shopDetails.get(i).getShopLatitude() != null && shopDetails.get(i).getShopLongitude() != null) {
+                                            LatLng latLng = new LatLng(shopDetails.get(i).getShopLatitude(), shopDetails.get(i).getShopLongitude());
+
+                                            if (hashMapMarkers.containsKey(shopDetails.get(i).getShopId())) {
+                                                Marker marker = hashMapMarkers.get(shopDetails.get(i).getShopId());
+
+                                                marker.setPosition(latLng);
+                                                hashMapMarkers.remove(shopDetails.get(i).getShopId());
+                                                hashMapMarkers.put(shopDetails.get(i).getShopId(), marker);
+                                            } else {
+
+                                                MarkerOptions markerOptions = new MarkerOptions().position(latLng);
+                                                if (shopDetails.get(i).getShopMobility().equals(DefineValue.STRING_YES)) {
+                                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
+                                                } else {
+                                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_home, 90, 90)));
+                                                }
+
+                                                hashMapMarkers.put(shopDetails.get(i).getShopId(), globalMap.addMarker(markerOptions));
+
+                                            }
+                                        }
+                                    }
+
+                                    Timber.d("diffShops: " + differentShops.toString());
                                 }
+
+
+                            } else {
+                                shopDetails.clear();
+
                             }
 
-                            Timber.d("diffShops: " + differentShops.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                    }
 
-
-                    } else {
-                        shopDetails.clear();
+                    @Override
+                    public void onError(Throwable throwable) {
 
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onComplete() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error Koneksi Search Agent:" + throwable.toString());
-
-                //if ( progdialog.isShowing())
-                    //progdialog.dismiss();
-
-            }
-
-        });
-
+                    }
+                });
     }
 
-    public void initializeToolbar(String title)
-    {
+    public void initializeToolbar(String title) {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(title);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         //listener ketika button back di action bar diklik
-        if(id == android.R.id.home)
-        {
+        if (id == android.R.id.home) {
             //kembali ke activity sebelumnya
             onBackPressed();
         }
@@ -783,18 +757,16 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String searchLocationString = searchLocationEditText.getText().toString().trim();
-        try
-        {
+        try {
             Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
 
             List<Address> multiAddress = geocoder.getFromLocationName(searchLocationString, 1);
 
-            if ( mGoogleApiClient.isConnected() ) {
+            if (mGoogleApiClient.isConnected()) {
                 mGoogleApiClient.disconnect();
             }
 
-            if(multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0)
-            {
+            if (multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0) {
 
                 Address singleAddress = multiAddress.get(0);
                 ArrayList<String> addressArray = new ArrayList<String>();
@@ -803,9 +775,9 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     addressArray.add(singleAddress.getAddressLine(i));
                 }
 
-                String fullAddress  = TextUtils.join(System.getProperty("line.separator"), addressArray);
-                latitude            = singleAddress.getLatitude();
-                longitude           = singleAddress.getLongitude();
+                String fullAddress = TextUtils.join(System.getProperty("line.separator"), addressArray);
+                latitude = singleAddress.getLatitude();
+                longitude = singleAddress.getLongitude();
 
                 mGoogleApiClient.disconnect();
                 this.getAddressByLatLng();
@@ -816,7 +788,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
-                if ( globalMap != null ) {
+                if (globalMap != null) {
                     LatLng latLng = new LatLng(latitude, longitude);
                     globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
@@ -829,20 +801,14 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
                 }
 
-            }
-            else
-            {
+            } else {
 
             }
-        }
-        catch(IOException ioException)
-        {
+        } catch (IOException ioException) {
             // Catch network or other I/O problems.
             //errorMessage = "Catch : Network or other I/O problems - No geocoder available";
             Log.d("onIOException ", "Catch : Network or other I/O problems - No geocoder available");
-        }
-        catch(IllegalArgumentException illegalArgumentException)
-        {
+        } catch (IllegalArgumentException illegalArgumentException) {
             // Catch invalid latitude or longitude values.
             //errorMessage = "Catch : Invalid latitude or longitude values";
             //Log.d("IllegalArgumentException ", "Catch : Invalid latitude or longitude values");
@@ -859,7 +825,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     public void onMapReady(GoogleMap googleMap) {
         globalMap = googleMap;
 
-        if (globalMap != null ) {
+        if (globalMap != null) {
 
             //disable map gesture untuk sementara sampai camera position selesai
             globalMap.getUiSettings().setAllGesturesEnabled(true);
@@ -867,7 +833,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
             globalMap.setIndoorEnabled(false);
 //            globalMap.setMyLocationEnabled(false);
 
-            if ( latitude != null && longitude != null ) {
+            if (latitude != null && longitude != null) {
                 LatLng latLng = new LatLng(latitude, longitude);
                 globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
@@ -902,8 +868,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     }
 
     //for resize icon
-    public Bitmap resizeMapIcons(int image, int width, int height)
-    {
+    public Bitmap resizeMapIcons(int image, int width, int height) {
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), image);
         return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
     }
@@ -922,11 +887,11 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(s.toString().equals("0"))etJumlah.setText("");
-            if(s.length() > 0 && s.charAt(0) == '0'){
+            if (s.toString().equals("0")) etJumlah.setText("");
+            if (s.length() > 0 && s.charAt(0) == '0') {
                 int i = 0;
-                for (; i < s.length(); i++){
-                    if(s.charAt(i) != '0')break;
+                for (; i < s.length(); i++) {
+                    if (s.charAt(i) != '0') break;
                 }
                 etJumlah.setText(s.toString().substring(i));
             }
@@ -940,93 +905,116 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
     private void getAddressByLatLng() {
         btnProses.setEnabled(false);
-        MyApiClient.getGoogleAPIAddressByLatLng(this, latitude, longitude, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+        HashMap<String, Object> query = MyApiClient.getInstance().googleQuery();
+        query.put("latlng", latitude + "," + longitude);
+//        query.put("address", districtName + ", " + provinceName);
+
+        RetrofitService.getInstance().QueryRequestSSL(
+                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, query,
+//                        + "&latlng=" + latitude + "," + longitude,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+
+                            String status = response.getString(WebParams.GMAP_API_STATUS);
+                            Timber.w("JSON Response: " + response.toString());
+
+                            btnProses.setEnabled(true);
+
+                            if (status.equals(DefineValue.GMAP_STRING_OK)) {
+                                ArrayList<HashMap<String, String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
+
+                                for (HashMap<String, String> hashMapObject : gData) {
+                                    for (String key : hashMapObject.keySet()) {
+                                        switch (key) {
+                                            case "formattedAddress":
+                                                completeAddress = hashMapObject.get(key);
+                                                break;
+                                            case "province":
+                                                provinceName = hashMapObject.get(key);
+                                                break;
+                                            case "district":
+                                                districtName = hashMapObject.get(key);
+                                                break;
+                                            case "subdistrict":
+                                                break;
+                                            case "country":
+                                                countryName = hashMapObject.get(key);
+                                                break;
+                                        }
 
 
-                try {
+                                    }
+                                }
 
-                    String status = response.getString(WebParams.GMAP_API_STATUS);
-                    Timber.w("JSON Response: "+response.toString());
-
-                    btnProses.setEnabled(true);
-
-                    if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
-                        ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
-
-                        for (HashMap<String, String> hashMapObject : gData) {
-                            for (String key : hashMapObject.keySet()) {
-                                switch(key) {
-                                    case "formattedAddress":
-                                        completeAddress = hashMapObject.get(key);
-                                        break;
-                                    case "province":
-                                        provinceName = hashMapObject.get(key);
-                                        break;
-                                    case "district":
-                                        districtName = hashMapObject.get(key);
-                                        break;
-                                    case "subdistrict":
-                                        break;
-                                    case "country":
-                                        countryName = hashMapObject.get(key);
-                                        break;
+                                if (completeAddress.equals("")) {
+                                    completeAddress += districtName + ", ";
+                                    completeAddress += provinceName;
                                 }
 
 
                             }
-                        }
 
-                        if ( completeAddress.equals("") ) {
-                            completeAddress += districtName + ", ";
-                            completeAddress += provinceName;
-                        }
 
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
 
                     }
 
+                    @Override
+                    public void onComplete() {
 
+                    }
+                });
 
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error Koneksi: " + throwable.toString());
-
-            }
-        });
+//        MyApiClient.getGoogleAPIAddressByLatLng(this, latitude, longitude, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//
+//
+//
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                super.onFailure(statusCode, headers, responseString, throwable);
+//                ifFailure(throwable);
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                super.onFailure(statusCode, headers, throwable, errorResponse);
+//                ifFailure(throwable);
+//            }
+//
+//            private void ifFailure(Throwable throwable) {
+//                if (MyApiClient.PROD_FAILURE_FLAG)
+//                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+//
+//                Timber.w("Error Koneksi: " + throwable.toString());
+//
+//            }
+//        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ( requestCode == RC_GPS_REQUEST ) {
+        if (requestCode == RC_GPS_REQUEST) {
             //if ( requestCode == Activity.RESULT_OK ) {
-                if ( GlobalSetting.isLocationEnabled(this) ) {
-                    runningApp();
-                }
+            if (GlobalSetting.isLocationEnabled(this)) {
+                runningApp();
+            }
             //}
         }
     }
@@ -1087,19 +1075,18 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     }
 
 
-    private void initializeDataBBS(String schemeCode){
+    private void initializeDataBBS(String schemeCode) {
 
-        if(schemeCode.equalsIgnoreCase(DefineValue.CTA)){
+        if (schemeCode.equalsIgnoreCase(DefineValue.CTA)) {
             listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
                     .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
                     .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
             setMember(listbankBenef);
-        }
-        else {
+        } else {
             listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
-                    .equalTo(WebParams.SCHEME_CODE,DefineValue.ATC)
-                    .equalTo(WebParams.COMM_TYPE,DefineValue.SOURCE).findAll();
-            if(listbankSource == null){
+                    .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
+                    .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE).findAll();
+            if (listbankSource == null) {
                 Toast.makeText(this, getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
             }
             setMember(listbankSource);
@@ -1107,13 +1094,12 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         }
 
 
-
     }
 
     private void setMember(List<BBSBankModel> bankMember) {
         aListMember.clear();
 
-        aListMember.addAll( BbsUtil.mappingProductCodeIcons(bankMember));
+        aListMember.addAll(BbsUtil.mappingProductCodeIcons(bankMember));
 
         adapterAccounts.notifyDataSetChanged();
 
@@ -1124,7 +1110,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         super.onAccessFineLocationGranted();
 
         Timber.d("BbsNewSearchAgent masuk AccessFineLocation");
-        if ( !GlobalSetting.isLocationEnabled(this) ) {
+        if (!GlobalSetting.isLocationEnabled(this)) {
             showAlertEnabledGPS();
         } else {
             runningApp();

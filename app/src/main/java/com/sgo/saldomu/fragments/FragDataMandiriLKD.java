@@ -21,8 +21,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.BBSCommBenef;
 import com.sgo.saldomu.R;
@@ -30,16 +28,16 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -158,8 +157,8 @@ public class FragDataMandiriLKD extends BaseFragment {
             remark = bundle.getString(DefineValue.REMARK);
             max_resend = bundle.getString(DefineValue.MAX_RESEND);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
-            TCASHValidation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION);
-            MandiriLKDValidation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION);
+            TCASHValidation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION, false);
+            MandiriLKDValidation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION, false);
             code_success = bundle.getBoolean(DefineValue.CODE_SUCCESS);
             benef_product_type = bundle.getString(DefineValue.TYPE_BENEF, "");
             isOwner = bundle.getBoolean(DefineValue.IS_OWNER, false);
@@ -167,17 +166,17 @@ public class FragDataMandiriLKD extends BaseFragment {
 
         RealmResults<List_BBS_Birth_Place> results = realm.where(List_BBS_Birth_Place.class).findAll();
 
-        Timber.d("REALM RESULTS:"+results.toString());
+        Timber.d("REALM RESULTS:" + results.toString());
 
         list_bbs_birth_place = new ArrayList<>();
         list_name_bbs_birth_place = new ArrayList<>();
         list_bbs_birth_place = realm.copyFromRealm(results);
 
-        for(int i=0; i < results.size(); i++){
+        for (int i = 0; i < results.size(); i++) {
 
-            if(results.get(i).getBirthPlace_city() == null || results.get(i).getBirthPlace_city().equalsIgnoreCase("")){
+            if (results.get(i).getBirthPlace_city() == null || results.get(i).getBirthPlace_city().equalsIgnoreCase("")) {
 //                list_name_bbs_birth_place.add("Unknown");
-            }else{
+            } else {
                 list_name_bbs_birth_place.add(results.get(i).getBirthPlace_city());
             }
         }
@@ -188,7 +187,7 @@ public class FragDataMandiriLKD extends BaseFragment {
 //
 //        }
 
-        Timber.d("Size of List name Birth place:"+list_name_bbs_birth_place.size());
+        Timber.d("Size of List name Birth place:" + list_name_bbs_birth_place.size());
         ArrayAdapter<String> city_adapter = new ArrayAdapter<String>
                 (getActivity(), android.R.layout.simple_selectable_list_item, list_name_bbs_birth_place);
         city_textview_autocomplete.setThreshold(1);
@@ -256,7 +255,7 @@ public class FragDataMandiriLKD extends BaseFragment {
             sumberdana = sp_sumberdana.getItemAtPosition(i).toString();
             if (sumberdana.equalsIgnoreCase("LAINNYA")) {
                 et_sumberdana.setVisibility(View.VISIBLE);
-            }else et_sumberdana.setVisibility(View.GONE);
+            } else et_sumberdana.setVisibility(View.GONE);
         }
 
         @Override
@@ -280,9 +279,7 @@ public class FragDataMandiriLKD extends BaseFragment {
         progressDialog.show();
         try {
             extraSignature = tx_id + sp.getString(DefineValue.MEMBER_ID, "") + custIDtypes;
-
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_SEND_DATA_LKD,
-                    userPhoneID, accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_SEND_DATA_LKD, extraSignature);
 
             if (isOwner) {
                 params.put(WebParams.TRANSFER_TO, "S");
@@ -304,71 +301,52 @@ public class FragDataMandiriLKD extends BaseFragment {
                 params.put(WebParams.SOURCE_OF_FUND, et_sumberdana.getText().toString());
             } else params.put(WebParams.SOURCE_OF_FUND, sumberdana);
 
-            Timber.d("params bbs send data lkd : "+ params.toString());
-            MyApiClient.getBBSSendDataLKD(getActivity(), params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
-                    progressDialog.dismiss();
+            Timber.d("params bbs send data : ", params.toString());
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("response bbs send data lkd : "+ response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            changeToBBSCashInConfirm();
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(), message);
-                        } else {
-                            Timber.d("isi error bbs send data lkd:" + response.toString());
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_SEND_DATA_LKD, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("response bbs send data : ", response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    changeToBBSCashInConfirm(response.getString(WebParams.ADMIN_FEE), response.getString(WebParams.AMOUNT), response.getString(WebParams.TOTAL_AMOUNT));
+
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else {
+                                    Timber.d("isi error bbs send data:" + response.toString());
+                                    String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
+                            btn_submit.setEnabled(true);
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    btn_submit.setEnabled(true);
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if (progressDialog.isShowing())
-                        progressDialog.dismiss();
-
-                    Timber.w("Error Koneksi sent bbs send data lkd:" + throwable.toString());
-                }
-
-            });
+                        @Override
+                        public void onComplete() {
+                            btn_submit.setEnabled(true);
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                        }
+                    });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
 
     }
 
-    private void changeToBBSCashInConfirm() {
+    private void changeToBBSCashInConfirm(String fee, String amount, String total_amount) {
 
         Bundle mArgs = new Bundle();
         if (benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
@@ -459,18 +437,16 @@ public class FragDataMandiriLKD extends BaseFragment {
             et_address.setError("Alamat dibutuhkan!");
             return false;
         } else if (layout_pob.getVisibility() == View.VISIBLE && layout_dob.getVisibility() == View.VISIBLE) {
-            if ( city_textview_autocomplete.getText().toString().trim().length() == 0)
-            {
+            if (city_textview_autocomplete.getText().toString().trim().length() == 0) {
                 city_textview_autocomplete.requestFocus();
                 city_textview_autocomplete.setError("Tempat Lahir dibutuhkan!");
                 return false;
-            }else if (!list_name_bbs_birth_place.contains(city_textview_autocomplete.getText().toString())){
+            } else if (!list_name_bbs_birth_place.contains(city_textview_autocomplete.getText().toString())) {
 
                 city_textview_autocomplete.requestFocus();
                 city_textview_autocomplete.setError("Nama kota tidak ditemukan!");
                 return false;
-            }
-            else if (compare == 100 || tv_dob.getText().toString().equalsIgnoreCase(getString(R.string.myprofile_text_date_click))) {
+            } else if (compare == 100 || tv_dob.getText().toString().equalsIgnoreCase(getString(R.string.myprofile_text_date_click))) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Alert")
                         .setMessage(getString(R.string.myprofile_validation_date_empty))

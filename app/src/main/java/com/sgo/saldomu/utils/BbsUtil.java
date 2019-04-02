@@ -39,14 +39,20 @@ public class BbsUtil {
                 hm.put("flag", Integer.toString(R.drawable.logo_bank_nobu));
             else if(bankMember.get(i).getProduct_name().toLowerCase().contains("saldomu"))
                 hm.put("flag", Integer.toString(R.drawable.logo_small));
-            else if(bankMember.get(i).getProduct_name().toLowerCase().contains("telkomsel"))
-                hm.put("flag", Integer.toString(R.drawable.tcash_small));
+            else if(bankMember.get(i).getProduct_name().toLowerCase().contains("linkaja"))
+                hm.put("flag", Integer.toString(R.drawable.linkaja));
             else if(bankMember.get(i).getProduct_name().toLowerCase().contains("akardaya"))
                 hm.put("flag", Integer.toString(R.drawable.mad_small));
             else if(bankMember.get(i).getProduct_code().toLowerCase().contains("emoedikk"))
                 hm.put("flag", Integer.toString(R.drawable.dana_small));
             else if(bankMember.get(i).getProduct_code().toLowerCase().contains("009"))
                 hm.put("flag", Integer.toString(R.drawable.logo_bank_bni_small));
+            else if(bankMember.get(i).getProduct_name().toLowerCase().contains("maybank"))
+                hm.put("flag", Integer.toString(R.drawable.logo_maybank));
+            else if(bankMember.get(i).getProduct_name().toLowerCase().contains("danamon"))
+                hm.put("flag", Integer.toString(R.drawable.danamon_small));
+            else if(bankMember.get(i).getProduct_name().toLowerCase().contains("cimb"))
+                hm.put("flag", Integer.toString(R.drawable.cimb_small));
             else
                 hm.put("flag", Integer.toString(R.drawable.ic_square_gate_one));
             mapIcons.add(hm);

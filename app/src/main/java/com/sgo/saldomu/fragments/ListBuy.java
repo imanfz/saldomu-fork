@@ -57,7 +57,9 @@ public class ListBuy extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        v = inflater.inflate(R.layout.frag_list_buy, container, false);
+//        v = inflater.inflate(R.layout.frag_list_buy, container, false);
+        v = inflater.inflate(R.layout.activity_list_buy, container, false);
+
         return v;
     }
 
@@ -87,12 +89,12 @@ public class ListBuy extends Fragment {
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
 
-        tabs = (TabPageIndicator)v.findViewById(R.id.buy_tabs);
-        pager = (ViewPager) v.findViewById(R.id.buy_pager);
+        tabs = v.findViewById(R.id.buy_tabs);
+        pager = v.findViewById(R.id.buy_pager);
         layout_empty = v.findViewById(R.id.empty_layout);
 
         layout_empty.setVisibility(View.GONE);
-        Button btn_refresh = (Button) layout_empty.findViewById(R.id.btnRefresh);
+        Button btn_refresh = layout_empty.findViewById(R.id.btnRefresh);
         btn_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

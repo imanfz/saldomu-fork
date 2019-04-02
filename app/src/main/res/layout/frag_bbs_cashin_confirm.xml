@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
@@ -146,7 +147,7 @@
                 app:circlestep_current_outer_circle_color="@color/colorPrimaryDark"
                 app:circlestep_circle_color="@color/grey_500"
                 app:circlestep_circle_text_size="14sp"
-                app:circlestep_text_below_circle_size="14sp"
+                app:circlestep_text_below_circle_size="12sp"
                 app:circlestep_text_below_circle_color="@color/grey_800"/>
 
             <View

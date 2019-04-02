@@ -70,6 +70,8 @@
 -keep class com.sgo.saldomu.fragments.FragPayFriends$TempObjectData { *; }
 -keep class com.sgo.saldomu.fragments.FragPayFriendsConfirm$TempTxID { *; }
 -keep class com.sgo.saldomu.fragments.ListBillerMerchant$ListObject{ *; }
+-keep class com.sgo.saldomu.activities.AskForMoneyActivity$TempObjectData{ *; }
+-keep class com.synnapps.carouselview.** { *; }
 
 -keep class com.sgo.saldomu.services.BalanceService { *; }
 -keep class io.codetail.animation.arcanimator.** { *; }
@@ -112,8 +114,15 @@
 -dontwarn okio.**
 -dontwarn org.joda.time.**
 -dontwarn com.google.android.gms.**
--dontnote com.google.android.gms.**
 
 # RxAndroid
 -dontwarn rx.internal.util.unsafe.**
 -dontwarn com.zj.command.**
+
+# okhttp
+-dontwarn okhttp3.internal.platform.*
+-dontwarn okio.**
+-dontwarn retrofit2.Platform$Java8
+-dontwarn com.squareup.okhttp.**
+-dontwarn com.squareup.okhttp3.**
+-dontwarn javax.annotation.**

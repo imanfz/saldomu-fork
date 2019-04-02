@@ -26,28 +26,27 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.ListAccountBBSAdapter;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -275,7 +274,7 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
 
     @Override
     public void onDestroy() {
-        MyApiClient.CancelRequestWSByTag(TAG,true);
+        RetrofitService.dispose();
         RealmManager.closeRealm(realm);
         super.onDestroy();
     }
@@ -322,8 +321,7 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
             extraSignature = dataComm.getComm_code()+dataComm.getMember_code()+
                     listDataAccount.get(position).getProduct_type()+ listDataAccount.get(position).getProduct_code()
                     + listDataAccount.get(position).getAccount_no();
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_BANK_ACCOUNT_DELETE,
-                    userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_BANK_ACCOUNT_DELETE, extraSignature);
 
             params.put(WebParams.COMM_CODE, dataComm.getComm_code());
             params.put(WebParams.MEMBER_CODE, dataComm.getMember_code());
@@ -335,56 +333,40 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
             params.put(WebParams.USER_ID, userPhoneID);
             Timber.d("isi params deleteAccountList:" + params.toString());
 
-            MyApiClient.sentBBSBankAccountDelete(getActivity(), params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("Isi response deleteAccountList: "+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            realm.beginTransaction();
-                            listAccountBBSAdapter.deleteItem(position);
-                            realm.commitTransaction();
-                        } else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_BANK_ACCOUNT_DELETE, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("Isi response deleteAccountList: "+response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    realm.beginTransaction();
+                                    listAccountBBSAdapter.deleteItem(position);
+                                    realm.commitTransaction();
+                                } else {
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            finally {
+
+                                listAccountBBSAdapter.notifyDataSetChanged();
+                            }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    finally {
-                        progressDialog.dismiss();
-                        listAccountBBSAdapter.notifyDataSetChanged();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                    Timber.w("Error Koneksi deleteAccountList:"+throwable.toString());
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            progressDialog.dismiss();
+                        }
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

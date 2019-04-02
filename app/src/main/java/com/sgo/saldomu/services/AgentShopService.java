@@ -6,19 +6,20 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.interfaces.ObjListeners;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -54,9 +55,8 @@ public class AgentShopService extends IntentService {
             String flagApprove             = DefineValue.STRING_NO;
 
             String extraSignature = flagApprove;
-            RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_MEMBER_SHOP_LIST,
-                    sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
-                    extraSignature);
+
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_MEMBER_SHOP_LIST, extraSignature);
 
             params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
@@ -65,65 +65,54 @@ public class AgentShopService extends IntentService {
             params.put(WebParams.FLAG_APPROVE, flagApprove);
             params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
-            MyApiClient.getMemberShopList(this,params, true, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("Isi response get Agent Shop: "+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_MEMBER_SHOP_LIST, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("Isi response get Agent Shop: "+response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            JSONArray members = response.getJSONArray("member");
+                                    JSONArray members = response.getJSONArray("member");
 
-                            for (int i = 0; i < members.length(); i++) {
-                                JSONObject object = members.getJSONObject(i);
+                                    for (int i = 0; i < members.length(); i++) {
+                                        JSONObject object = members.getJSONObject(i);
 
-                                SecurePreferences.Editor mEditor = sp.edit();
-                                mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_YES);
-                                mEditor.putString(DefineValue.AGENT_NAME, object.getString("shop_name"));
-                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, object.getString("shop_closed"));
-                                mEditor.putString(DefineValue.BBS_MEMBER_ID, object.getString("member_id"));
-                                mEditor.putString(DefineValue.BBS_SHOP_ID, object.getString("shop_id"));
-                                mEditor.apply();
-                                break;
+                                        SecurePreferences.Editor mEditor = sp.edit();
+                                        mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_YES);
+                                        mEditor.putString(DefineValue.AGENT_NAME, object.getString("shop_name"));
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, object.getString("shop_closed"));
+                                        mEditor.putString(DefineValue.BBS_MEMBER_ID, object.getString("member_id"));
+                                        mEditor.putString(DefineValue.BBS_SHOP_ID, object.getString("shop_id"));
+                                        mEditor.apply();
+                                        break;
+                                    }
+
+                                } else {
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_NO);
+                                    mEditor.apply();
+                                }
+
+                                Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                                LocalBroadcastManager.getInstance(AgentShopService.this).sendBroadcast(i);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                        } else {
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_NO);
-                            mEditor.apply();
                         }
 
-                        Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-                        LocalBroadcastManager.getInstance(AgentShopService.this).sendBroadcast(i);
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onComplete() {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    Timber.w("Error Koneksi get Agent Shop:" + throwable.toString());
-                }
-            });
+                        }
+                    });
         }catch (Exception e){
             Log.d("httpclient:",e.getMessage());
         }

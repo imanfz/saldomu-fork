@@ -6,6 +6,7 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.activeandroid.util.SQLiteUtils;
+import com.sgo.saldomu.models.retrofit.CommentDataModel;
 
 import java.util.List;
 
@@ -63,6 +64,20 @@ public class commentModel extends Model{
         this.setTo_profile_picture(_to_profile_picture);
         this.setReply(_reply);
         this.setDatetime(_datetime);
+    }
+
+    public commentModel(CommentDataModel model) {
+        super();
+        this.setComment_id(Integer.valueOf(model.getId()));
+        this.setPost_id(model.getPost_id());
+        this.setFrom_id(model.getFrom());
+        this.setFrom_name(model.getFrom_name());
+        this.setFrom_profile_picture(model.getFrom_profile_picture());
+        this.setTo_id(model.getTo());
+        this.setTo_name(model.getTo_name());
+        this.setTo_profile_picture(model.getTo_profile_picture());
+        this.setReply(model.getReply());
+        this.setDatetime(model.getDatetime());
     }
 
     public static List<commentModel> getAll() {

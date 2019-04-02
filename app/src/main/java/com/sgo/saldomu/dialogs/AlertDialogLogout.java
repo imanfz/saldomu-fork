@@ -5,7 +5,10 @@ package com.sgo.saldomu.dialogs;/*
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.Introduction;
 import com.sgo.saldomu.activities.MainPage;
 
 import timber.log.Timber;
@@ -25,6 +28,7 @@ public class AlertDialogLogout {
   }
 
 
+
     public void showDialoginActivity(final Activity mContext, String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)
@@ -32,8 +36,11 @@ public class AlertDialogLogout {
                 .setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mContext.setResult(MainPage.RESULT_LOGOUT);
-                        mContext.finish();
+//                        mContext.setResult(MainPage.RESULT_LOGOUT);
+//                        mContext.finish();
+                        Intent intent = new Intent(mContext, Introduction.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        mContext.startActivity(intent);
                     }
                 });
         if(getAdInstance() == null ) {
