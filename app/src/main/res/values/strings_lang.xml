@@ -1338,4 +1338,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="good_evening">Selamat Sore, </string>
     <string name="good_night">Selamat Malam, </string>
     <string name="topup">TAMBAH SALDO</string>
+    <string name="privay_policy">Syarat dan Ketentuan</string>
 </resources>

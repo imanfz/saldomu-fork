@@ -114,6 +114,10 @@ public class ActivityListSettings extends BaseActivity {
                         i.putExtra(DefineValue.INDEX, BBSActivity.BBSKELOLA);
                         startActivity(i);
                         break;
+                    case "Syarat dan Ketentuan" :
+                        i = new Intent(ActivityListSettings.this, PrivacyPolicyActivity.class);
+                        startActivity(i);
+                        break;
 //                    case "Bahasa":
 //                        PickLanguageDialog dialog = PickLanguageDialog.Companion.initDialog(() -> {
 //
