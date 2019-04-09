@@ -564,6 +564,7 @@ public class DefineValue {
     public static String DEVICE_NAME= "device_name";
     public static String IS_MANUAL= "is_manual";
     public static String IS_DORMANT= "is_dormant";
+    public static String ADDITIONAL_FEE= "additionalFee";
 
 }
 

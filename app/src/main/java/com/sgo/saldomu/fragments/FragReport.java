@@ -1058,6 +1058,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER);
         args.putString(DefineValue.PRODUCT_NAME, response.getProduct_name());
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
+        args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdditional_fee()));
 //        args.putString(DefineValue.DESTINATION_REMARK, userId);
 //        args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
 
@@ -1080,8 +1081,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
 
 
-        double totalAmount = Double.parseDouble(response.getTx_amount()) + Double.parseDouble(response.getAdmin_fee());
-        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
+//        double totalAmount = Double.parseDouble(response.getTx_amount()) + Double.parseDouble(response.getAdmin_fee());
+        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_amount()));
+//        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
 
 
         args.putString(DefineValue.DETAILS_BILLER, response.getDetail());

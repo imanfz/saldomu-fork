@@ -73,7 +73,8 @@ public class BillerInput extends Fragment {
             "RMH",  //Perumahan  16
             "BPJS", //BILLER_TYPE_BPJS 17
             "GAME", // Game 18
-            "OVO"}; // saldo ovo 19
+            "OVO", // saldo ovo 19
+            "VCHR"}; // voucher 20
     private View v;
     private View layout_denom;
     private View layout_month;
@@ -295,13 +296,13 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_RMH));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
-        } else if (biller_type_code.equals(billerType[18])) {
+        } else if (biller_type_code.equals(billerType[18]) || biller_type_code.equals(billerType[20])) {
             buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
-            tv_payment_remark.setVisibility(View.GONE);
-            et_payment_remark.setVisibility(View.GONE);
+            tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
+            et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
+            et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else {
-
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);

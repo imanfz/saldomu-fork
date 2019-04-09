@@ -33,12 +33,15 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BluetoothPrinter.zj.BluetoothService;
 import com.sgo.saldomu.BluetoothPrinter.zj.DevicesList;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JsonSorting;
+import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.ViewToBitmap;
 
@@ -72,6 +75,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private ImageView printStruk;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
+
+    private LevelClass levelClass;
+    private Boolean isAgent;
+    SecurePreferences sp;
 
     Bundle args;
 
@@ -180,6 +187,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_report_biller, container);
         ViewStub stub = view.findViewById(R.id.stub);
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        levelClass = new LevelClass(getActivity(), sp);
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         args = getArguments();
         Timber.d("isi args report:" + args.toString());
@@ -414,6 +425,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_payment_options_text = inflated.findViewById(R.id.dialog_reportbiller_payment_options_value);
                 TextView tv_fee_text = inflated.findViewById(R.id.dialog_reportbiller_fee_value);
                 TextView tv_total_amount_text = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
+                TextView tv_additionalFee = inflated.findViewById(R.id.tv_additionalFee);
+                TextView tv_additionalFeeValue = inflated.findViewById(R.id.dialog_reportbiller_additionalfee_value);
+                View viewAdditional = inflated.findViewById(R.id.view_additionalFee);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
@@ -427,6 +441,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_fee_text.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_text.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+
+                if (isAgent)
+                {
+                    viewAdditional.setVisibility(View.VISIBLE);
+                    tv_additionalFee.setVisibility(View.VISIBLE);
+                    tv_additionalFeeValue.setVisibility(View.VISIBLE);
+                    tv_additionalFeeValue.setText(args.getString(DefineValue.ADDITIONAL_FEE));
+                }
 
                 createTableDesc(args.getString(DefineValue.BILLER_DETAIL, ""), mTableLayout, type);
 

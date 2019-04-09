@@ -98,7 +98,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     private String ATC = "ATC";
     private String SOURCE = "SOURCE";
     private String BENEF = "BENEF";
-    private EditText etNoHp, etRemark, etOTP;
+    private EditText etNoHp, etRemark, etOTP, etAdditionalFee;
     private Button btnNext, btnBack;
     private SMSclass smSclass;
     private SMSDialog smsDialog;
@@ -254,6 +254,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 actv_rekening_cta = cashin_layout.findViewById(R.id.rekening_agen_value);
                 etNoHp = cashin_layout.findViewById(R.id.no_hp_pengirim_value);
                 etRemark = cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
+                etAdditionalFee = cashin_layout.findViewById(R.id.et_additionalfee);
 
                 if (!key_code.equals("")) {
                     etNoHp.setText(key_code);
@@ -285,7 +286,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 sp_rekening_act = cashout_layout.findViewById(R.id.rekening_agen_value);
                 etRemark = cashout_layout.findViewById(R.id.message_value);
                 etOTP = cashout_layout.findViewById(R.id.no_OTP_cashout);
-
+                etAdditionalFee = cashout_layout.findViewById(R.id.et_additionalfee);
 
                 String[] from = {"flag", "txt"};
                 // Ids of views in listview_layout
@@ -575,6 +576,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             params.put(WebParams.PAYMENT_REMARK, etRemark.getText().toString());
             params.put(WebParams.MEMBER_SHOP_PHONE, etNoHp.getText().toString());
             params.put(WebParams.USER_COMM_CODE, BuildConfig.COMM_CODE_BBS_ATC);
+            params.put(WebParams.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
 
             String aodTxId = sp.getString(DefineValue.AOD_TX_ID, "");
             if (!aodTxId.equals("")) {
@@ -869,6 +871,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
             params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.PAYMENT_REMARK, etRemark.getText().toString());
+            params.put(WebParams.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
 
             String aodTxId = sp.getString(DefineValue.AOD_TX_ID, "");
             if (!aodTxId.equals("")) {
@@ -1145,6 +1148,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
         mArgs.putBoolean(DefineValue.IS_OWNER, isOwner);
+        mArgs.putString(DefineValue.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
         if (TCASHValidation != null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
 //        if (MandiriLKDValidation != null)
@@ -1213,6 +1217,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         mArgs.putString(DefineValue.FEE, model.getAdmin_fee());
         mArgs.putString(DefineValue.TOTAL_AMOUNT, model.getTotal_amount());
+        mArgs.putString(DefineValue.ADDITIONAL_FEE, model.getAdditional_fee());
         btnNext.setEnabled(true);
         cashOutHistory();
 

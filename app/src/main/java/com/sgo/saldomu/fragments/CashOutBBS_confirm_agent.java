@@ -54,8 +54,9 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
     private String userID, accessKey, comm_code, tx_product_code, source_product_type,
             source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             tx_id, amount, share_type, comm_id, benef_product_name,
-            userId_source, remark, source_product_name, transaksi, fee, totalAmount;
+            userId_source, remark, source_product_name, transaksi, fee, totalAmount, additionalFee;
     private Boolean retryToken = false;
+    private TextView tv_additionalFee;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,6 +90,7 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
         btnSubmit = v.findViewById(R.id.btn_submit);
         layout_OTP = v.findViewById(R.id.layout_OTP);
         tokenValue = v.findViewById(R.id.bbscashout_value_token);
+        tv_additionalFee = v.findViewById(R.id.bbscashout_additional_fee);
         Button btnBack = v.findViewById(R.id.btn_back);
 
         Bundle bundle = getArguments();
@@ -113,6 +115,7 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
             userId_source = bundle.getString(DefineValue.USER_ID);
             remark = bundle.getString(DefineValue.REMARK);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
+            additionalFee = bundle.getString(DefineValue.ADDITIONAL_FEE,"0");
 
             if (source_product_h2h.equalsIgnoreCase("Y") && !tx_product_code.equalsIgnoreCase("MANDIRILKD")) {
                 tvUserIdTitle.setText(getString(R.string.no_member));
@@ -127,6 +130,7 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
             tv_amount.setText(CurrencyFormat.format(amount));
             tvFee.setText(CurrencyFormat.format(fee));
             tvTotal.setText(CurrencyFormat.format(totalAmount));
+            tv_additionalFee.setText(CurrencyFormat.format(additionalFee));
             tvBankBenef.setText(benef_product_name);
             tvUserIdSource.setText(userId_source);
             tvRemark.setText(remark);

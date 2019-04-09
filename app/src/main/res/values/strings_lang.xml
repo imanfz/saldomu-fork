@@ -937,6 +937,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="number_hp_member">No. Handphone Pelanggan</string>
     <string name="number_hp_destination_hint">Nomor Handphone tujuan</string>
     <string name="remark_hint">Pesan (opsional)</string>
+    <string name="additionalFee_hint">Biaya Tambahan (opsional)</string>
     <string name="cash_in">Setor Tunai</string>
     <string name="cash_out">Tarik Tunai</string>
     <string name="title_cash_out_member">Konfirmasi Tarik Tunai</string>
@@ -1333,10 +1334,13 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="message_dialog_dormant_">User ID Anda dalam status Dormant. Silahkan melakukan Tambah Saldo untuk mengaktifkan kembali User ID Anda.</string>
     <string name="newhome_ovo">Voucher GRAB-OVO</string>
     <string name="newhome_emoney">E-Money</string>
+    <string name="newhome_game">Voucher Game</string>
+    <string name="newhome_voucher">Voucher</string>
     <string name="good_morning">Selamat Pagi, </string>
     <string name="good_afternoon">Selamat Siang, </string>
     <string name="good_evening">Selamat Sore, </string>
     <string name="good_night">Selamat Malam, </string>
     <string name="topup">TAMBAH SALDO</string>
     <string name="privay_policy">Syarat dan Ketentuan</string>
+    <string name="additional_fee">Biaya Tambahan</string>
 </resources>
