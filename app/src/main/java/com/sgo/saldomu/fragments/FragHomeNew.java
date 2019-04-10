@@ -803,12 +803,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         if (mBillerTypeDataGame != null) {
             menuStrings.add(getResources().getString(R.string.newhome_game));
-            menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
+            menuDrawables.add(getResources().getDrawable(R.drawable.game));
         }
 
         if (mBillerTypeDataVoucher != null) {
             menuStrings.add(getResources().getString(R.string.newhome_voucher));
-            menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
+            menuDrawables.add(getResources().getDrawable(R.drawable.voucher));
         }
 
         menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));

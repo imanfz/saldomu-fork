@@ -259,16 +259,14 @@
             android:layout_height="1dp"
             android:layout_margin="8dp"
             android:background="@color/grey_300"
-            android:id="@+id/view_additionalFee"
-            android:visibility="gone"/>
+            android:id="@+id/view_additionalFee"/>
 
         <TableRow>
             <TextView
                 android:text="@string/additional_fee"
                 android:layout_weight="1"
                 android:padding="3dip"
-                android:id="@+id/tv_additionalFee"
-                android:visibility="gone"/>
+                android:id="@+id/tv_additionalFee"/>
             <TextView
                 android:id="@+id/dialog_reportbiller_additionalfee_value"
                 android:text="Rp. 200000"

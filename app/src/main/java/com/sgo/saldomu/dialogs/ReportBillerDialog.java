@@ -251,6 +251,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_fee_value = inflated.findViewById(R.id.dialog_reportbbs_fee_value);
                     TextView tv_total_amount_value = inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
                     TextView tv_produk_agent = inflated.findViewById(R.id.tv_produk_agen);
+                    TextView tv_additionalFee = inflated.findViewById(R.id.dialog_reportbbs_additionalFee);
                     View v_produk_agent = inflated.findViewById(R.id.view_produkAgen);
 
                     if (args.getBoolean(DefineValue.IS_MEMBER_CTA) == true) {
@@ -269,6 +270,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_benef_bank_name_value.setText(args.getString(DefineValue.BANK_BENEF));
                     tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
                     tv_fee_value.setText(args.getString(DefineValue.FEE));
+                    tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
             } else if (buss_scheme_code.equalsIgnoreCase("ATC")) {
@@ -344,6 +346,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_benef_bank_name_value = inflated.findViewById(R.id.dialog_reportbbs_benef_bank_value);
                     TextView tv_amount_value = inflated.findViewById(R.id.dialog_reportbbs_amount_value);
                     TextView tv_fee_value = inflated.findViewById(R.id.dialog_reportbbs_fee_value);
+                    TextView tv_additionalFee = inflated.findViewById(R.id.dialog_reportbbs_additionalFee_value);
                     TextView tv_total_amount_value = inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
 
                     tv_transaction_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
@@ -358,6 +361,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                     tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
                     tv_fee_value.setText(args.getString(DefineValue.FEE));
+                    tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
             } else if (buss_scheme_code.equalsIgnoreCase("EMO") || buss_scheme_code.equalsIgnoreCase("TOP")) {
