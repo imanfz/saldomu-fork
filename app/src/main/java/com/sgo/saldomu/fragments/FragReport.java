@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -705,6 +707,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 showReportBDKDialog(response);
             }else if (_object.getBuss_scheme_code().equals("DGI")) {
                 showReportCollectorDialog(response);
+            }else if (_object.getBuss_scheme_code().equals("SG3")) {
+                showReportSOFDialog(response);
             }
         }
     }
@@ -760,6 +764,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.BANK_PRODUCT, response.getProduct_name());
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
+        args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdditional_fee()));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_amount()));
 
         Boolean txStat = false;
@@ -1231,6 +1236,55 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
     }
 
+    private void showReportSOFDialog(GetTrxStatusReportModel resp) {
+        try {
+            JSONObject response = new JSONObject(getGson().toJson(resp));
+
+            String txStatus = response.optString(WebParams.TX_STATUS);
+
+            Bundle args = new Bundle();
+            ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
+            args.putString(DefineValue.TX_ID, response.optString(WebParams.TX_ID));
+            args.putString(DefineValue.REPORT_TYPE, DefineValue.SG3);
+            args.putString(DefineValue.DATE_TIME, response.optString(WebParams.CREATED));
+            args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.TX_AMOUNT)));
+            args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.ADMIN_FEE)));
+            args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.TOTAL_AMOUNT)));
+
+            Boolean txStat = false;
+            if (txStatus.equals(DefineValue.SUCCESS)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+            } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+            } else if (txStatus.equals(DefineValue.SUSPECT)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+            } else if (!txStatus.equals(DefineValue.FAILED)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+            } else {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+            }
+            args.putBoolean(DefineValue.TRX_STATUS, txStat);
+            if (!txStat)
+                args.putString(DefineValue.TRX_REMARK, response.optString(WebParams.TX_REMARK));
+
+
+            args.putString(DefineValue.BUSS_SCHEME_CODE, response.optString(WebParams.BUSS_SCHEME_CODE));
+            args.putString(DefineValue.BUSS_SCHEME_NAME, response.optString(WebParams.BUSS_SCHEME_NAME));
+            args.putString(DefineValue.COMMUNITY_NAME, response.optString(WebParams.COMM_NAME));
+            args.putString(DefineValue.REMARK, response.optString(WebParams.PAYMENT_REMARK));
+
+            dialog.setArguments(args);
+//        dialog.show(getFragmentManager(), "report biller dialog");
+//        dialog.setTargetFragment(this, 0);
+            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            ft.add(dialog, ReportBillerDialog.TAG);
+            ft.commitAllowingStateLoss();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void setLoadMore(boolean isLoading) {
         if (isLoading) {

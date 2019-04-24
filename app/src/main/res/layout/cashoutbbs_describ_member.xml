@@ -205,6 +205,33 @@
                     android:textStyle="bold"
                     android:textSize="@dimen/text_size_medium_material"
                     android:textColor="@color/colorPrimaryDark"
+                    android:text="@string/additional_fee"
+                    />
+
+                <TextView
+                    android:id="@+id/bbscashoutmember_additionalfee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textColor="@color/colorPrimaryDark"
                     android:text="@string/cashoutmember_total"
                     />
 

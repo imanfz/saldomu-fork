@@ -5,54 +5,51 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.fragments.FragNotification;
+import com.sgo.saldomu.fragments.FragSourceOfFund;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
 
-/*
-  Created by Administrator on 5/6/2015.
- */
-public class NotificationActivity extends BaseActivity {
+public class SourceOfFundActivity extends BaseActivity
+{
 
-    public final static int TYPE_LIKE = 2;
-    public final static int TYPE_COMMENT = 3;
-    public final static int TYPE_TRANSFER = 6;
-    public final static int TYPE_PAID = 7;
-    public final static int TYPE_DECLINE = 8;
-    public final static int TYPE_NON_MEMBER= 10;
-    public final static int CLAIM_NON_MEMBER= 11;
-    public final static int REJECTED_KTP= 13;
-    public final static int REJECTED_SIUP_NPWP= 14;
-    public final static int BLAST_INFO= 15;
-    public final static int SOURCE_OF_FUND= 16;
+    private String txId;
 
-    public final static int P2PSTAT_PENDING = 1;
-    public final static int P2PSTAT_PAID = 2;
-    public final static int P2PSTAT_FAILED = 3;
-    public final static int P2PSTAT_SUSPECT = 4;
-    public final static int P2PSTAT_CANCELLED = 5;
-
-    public final static int UNREAD = 0;
-
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_sof;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InitializeToolbar();
 
-        if (findViewById(R.id.notification_content) != null) {
+        if (findViewById(R.id.sofactivity_content) != null) {
             if (savedInstanceState != null) {
                 return;
             }
-            Fragment newFragment = new FragNotification();
+
+            Intent intent = getIntent();
+            if (intent.hasExtra(DefineValue.TX_ID)) {
+                txId = intent.getStringExtra(DefineValue.TX_ID);
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putString(DefineValue.TX_ID, txId);
+
+            Fragment newFragment = new FragSourceOfFund();
+            newFragment.setArguments(bundle);
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.notification_content, newFragment,"notification");
+            fragmentTransaction.add(R.id.sofactivity_content, newFragment,"sourceOfFund");
             fragmentTransaction.commit();
         }
     }
@@ -63,7 +60,7 @@ public class NotificationActivity extends BaseActivity {
             Timber.d("backstack");
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.notification_content, mFragment, fragName)
+                    .replace(R.id.sofactivity_content, mFragment, fragName)
                     .addToBackStack(null)
                     .commit();
         }
@@ -71,7 +68,7 @@ public class NotificationActivity extends BaseActivity {
             Timber.d("bukan backstack");
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.notification_content, mFragment, fragName)
+                    .replace(R.id.sofactivity_content, mFragment, fragName)
                     .commit();
 
         }
@@ -91,7 +88,7 @@ public class NotificationActivity extends BaseActivity {
 
     private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.notifications_ab_title));
+        setActionBarTitle(getString(R.string.payment_confirm));
     }
 
 
@@ -108,7 +105,17 @@ public class NotificationActivity extends BaseActivity {
     }
 
     @Override
-    protected int getLayoutResource() {
-        return R.layout.activity_notification;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void setResultActivity(int result){
+        setResult(MainPage.RESULT_BALANCE);
     }
 }

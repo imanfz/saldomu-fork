@@ -124,7 +124,7 @@ public class BillerDesciption extends BaseFragment {
     private List<bank_biller_model> mListBankBiller;
     private Realm realm;
     Boolean isPLN = false;
-    String fee = "0", deAmount;
+    String fee = "0", deAmount, enabledAdditionalFee;
     private Boolean isAgent=false;
     private LinearLayout layout_additionalFee;
     private EditText et_additionalFee;
@@ -235,7 +235,7 @@ public class BillerDesciption extends BaseFragment {
             }
         }
 
-        if (isAgent)
+        if (isAgent && enabledAdditionalFee.equals("Y"))
         {
             layout_additionalFee.setVisibility(View.VISIBLE);
         }
@@ -508,6 +508,7 @@ public class BillerDesciption extends BaseFragment {
                                 description = getGson().toJson(model.getDescription());
 //                            if(isPLN ) {
                                 fee = model.getAdmin_fee();
+                                enabledAdditionalFee = model.getEnabled_additional_fee();
 //                            }
 
                                 if (isAdded())

@@ -31,6 +31,7 @@ public class BBSBankModel extends RealmObject {
     private String bank_gateway;
     private String last_update;
     private String product_display;
+    private String enabled_additional_fee;
 
     public String getComm_id() {
         return comm_id;
@@ -110,5 +111,13 @@ public class BBSBankModel extends RealmObject {
 
     public void setProduct_display(String product_display) {
         this.product_display = product_display;
+    }
+
+    public String getEnabled_additional_fee() {
+        return enabled_additional_fee;
+    }
+
+    public void setEnabled_additional_fee(String enabled_additional_fee) {
+        this.enabled_additional_fee = enabled_additional_fee;
     }
 }

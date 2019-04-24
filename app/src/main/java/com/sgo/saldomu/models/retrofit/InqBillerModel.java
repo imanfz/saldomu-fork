@@ -45,6 +45,10 @@ public class InqBillerModel extends jsonModel {
     @Expose
     private
     String auth_type;
+    @SerializedName("enabled_additional_fee")
+    @Expose
+    private
+    String enabled_additional_fee;
 
     public String getBiller_input_amount() {
         return biller_input_amount;
@@ -84,5 +88,9 @@ public class InqBillerModel extends jsonModel {
 
     public String getAuth_type() {
         return auth_type;
+    }
+
+    public String getEnabled_additional_fee() {
+        return enabled_additional_fee;
     }
 }

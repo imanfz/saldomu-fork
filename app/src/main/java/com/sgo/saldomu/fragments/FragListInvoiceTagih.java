@@ -259,6 +259,7 @@ public class FragListInvoiceTagih extends BaseFragment {
                 if (Integer.valueOf(obj.getInput_amount()) != 0) {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("doc_id", obj.getDoc_id());
+                    jsonObject.put("doc_no", obj.getDoc_no());
                     jsonObject.put("amount", obj.getInput_amount());
                     jsonArray.put(jsonObject);
                     temp.add(obj);

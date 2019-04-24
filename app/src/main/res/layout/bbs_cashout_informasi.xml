@@ -51,21 +51,31 @@
         android:maxLength="10"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp" />
-    <TextView
+    <LinearLayout
+        android:id="@+id/additionalFeecashin_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/additional_fee"/>
-
-    <EditText
-        android:id="@+id/et_additionalfee"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:hint="@string/additionalFee_hint"
-        android:inputType="number"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="16dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/additional_fee" />
+
+        <EditText
+            android:id="@+id/et_additionalfee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:hint="@string/additionalFee_hint"
+            android:inputType="number" />
+    </LinearLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

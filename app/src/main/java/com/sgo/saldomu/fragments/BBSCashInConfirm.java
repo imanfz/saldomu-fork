@@ -776,7 +776,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         // Include dialog.xml file
         dialog.setContentView(R.layout.dialog_notification);
 
-        // set values for custom dialog components - text, image and button
+        // set values for custom dialog coxmponents - text, image and button
         Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
         TextView Title = dialog.findViewById(R.id.title_dialog);
         TextView Message = dialog.findViewById(R.id.message_dialog);
