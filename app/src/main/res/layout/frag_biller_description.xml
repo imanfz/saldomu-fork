@@ -249,6 +249,36 @@
                     android:maxLines="1" />
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                android:id="@+id/layout_additional_fee"
+                android:visibility="gone">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textColor="@color/colorPrimary"
+                    android:text="@string/additional_fee"
+                    android:paddingTop="10dp"
+                    />
+                <EditText
+                    android:id="@+id/et_additionalfee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                    android:layout_margin="4dp"
+                    android:inputType="number"
+                    />
+
+            </LinearLayout>
 
             <LinearLayout
                     android:layout_width="match_parent"

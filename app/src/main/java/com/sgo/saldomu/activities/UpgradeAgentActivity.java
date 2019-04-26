@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -75,10 +76,11 @@ public class UpgradeAgentActivity extends BaseActivity {
     private int RESULT;
     private Integer proses;
     private Integer set_result_photo;
-    RelativeLayout layout_siup , layout_npwp;
+    RelativeLayout layout_siup, layout_npwp;
     private String contactCenter;
     private String listContactPhone = "";
     private String listAddress = "";
+    private EditText et_mothersName;
     String reject_siup, reject_npwp, remark_siup, remark_npwp;
     CheckBox cb_termsncond;
 
@@ -93,12 +95,12 @@ public class UpgradeAgentActivity extends BaseActivity {
         pickAndCameraUtil = new PickAndCameraUtil(this);
 
         is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-        reject_siup = sp.getString(DefineValue.REJECT_SIUP,"N");
-        reject_npwp = sp.getString(DefineValue.REJECT_NPWP,"N");
-        remark_siup = sp.getString(DefineValue.REMARK_SIUP,"");
-        remark_npwp = sp.getString(DefineValue.REMARK_NPWP,"");
+        reject_siup = sp.getString(DefineValue.REJECT_SIUP, "N");
+        reject_npwp = sp.getString(DefineValue.REJECT_NPWP, "N");
+        remark_siup = sp.getString(DefineValue.REMARK_SIUP, "");
+        remark_npwp = sp.getString(DefineValue.REMARK_NPWP, "");
 
-        contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER,"");
+        contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
 
         View v = this.findViewById(android.R.id.content);
         pbSIUP = v.findViewById(R.id.pb1_upgradeAgent);
@@ -107,6 +109,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         cameraNPWP = v.findViewById(R.id.camera_npwp);
         btn_proses = v.findViewById(R.id.button_proses);
         btn_proses.setEnabled(false);
+        btn_proses.setBackground(getResources().getDrawable(R.color.grey_300));
         tv_pb_siup = v.findViewById(R.id.tv_pb1_upgradeAgent);
         tv_pb_npwp = v.findViewById(R.id.tv_pb2_upgradeAgent);
         tv_reject_siup = v.findViewById(R.id.tv_respon_reject_siup);
@@ -114,18 +117,18 @@ public class UpgradeAgentActivity extends BaseActivity {
         layout_siup = v.findViewById(R.id.layout_foto_siup);
         layout_npwp = v.findViewById(R.id.layout_npwp);
         cb_termsncond = v.findViewById(R.id.cb_termnsncond);
+        et_mothersName = v.findViewById(R.id.et_mothersname);
         cameraSIUP.setOnClickListener(setImageCameraSIUP);
         cameraNPWP.setOnClickListener(setImageCameraNPWP);
         btn_proses.setOnClickListener(prosesListener);
 
-        if(contactCenter.equals("")) {
+        if (contactCenter.equals("")) {
             getHelpList();
-        }
-        else {
+        } else {
             try {
                 JSONArray arrayContact = new JSONArray(contactCenter);
-                for(int i=0 ; i<arrayContact.length() ; i++) {
-                    if(i == 0) {
+                for (int i = 0; i < arrayContact.length(); i++) {
+                    if (i == 0) {
                         listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
                         listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
                     }
@@ -140,37 +143,35 @@ public class UpgradeAgentActivity extends BaseActivity {
         cb_termsncond.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
+                if (isChecked) {
                     btn_proses.setEnabled(true);
-                else
+                    btn_proses.setBackground(getResources().getDrawable(R.color.colorPrimaryDark));
+                }else{
                     btn_proses.setEnabled(false);
+                    btn_proses.setBackground(getResources().getDrawable(R.color.grey_300));
+                }
             }
         });
 
-        if (reject_siup.equalsIgnoreCase("Y") || reject_npwp.equalsIgnoreCase("Y"))
-        {
-            if (reject_siup.equalsIgnoreCase("Y"))
-            {
+        if (reject_siup.equalsIgnoreCase("Y") || reject_npwp.equalsIgnoreCase("Y")) {
+            if (reject_siup.equalsIgnoreCase("Y")) {
                 cameraSIUP.setEnabled(true);
-                tv_reject_siup.setText("Alasan : " +remark_siup);
-            }else layout_siup.setVisibility(View.GONE);
+                tv_reject_siup.setText("Alasan : " + remark_siup);
+            } else layout_siup.setVisibility(View.GONE);
 
-            if (reject_npwp.equalsIgnoreCase("Y"))
-            {
+            if (reject_npwp.equalsIgnoreCase("Y")) {
                 cameraNPWP.setEnabled(true);
-                tv_reject_npwp.setText("Alasan : " +remark_npwp);
-            }else layout_npwp.setVisibility(View.GONE);
+                tv_reject_npwp.setText("Alasan : " + remark_npwp);
+            } else layout_npwp.setVisibility(View.GONE);
         }
 
-        if (is_agent && reject_npwp.equalsIgnoreCase(""))
-        {
+        if (is_agent && reject_npwp.equalsIgnoreCase("")) {
             layout_siup.setVisibility(View.GONE);
             layout_npwp.setVisibility(View.VISIBLE);
         }
     }
 
-    private ImageButton.OnClickListener setImageCameraSIUP= new ImageButton.OnClickListener ()
-    {
+    private ImageButton.OnClickListener setImageCameraSIUP = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View v) {
             Timber.d("Masuk ke setImageCameraSIUP");
@@ -179,8 +180,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         }
     };
 
-    private ImageButton.OnClickListener setImageCameraNPWP= new ImageButton.OnClickListener ()
-    {
+    private ImageButton.OnClickListener setImageCameraNPWP = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View v) {
             Timber.d("Masuk ke setImageCameraSIUP");
@@ -189,12 +189,10 @@ public class UpgradeAgentActivity extends BaseActivity {
         }
     };
 
-    private Button.OnClickListener prosesListener= new ImageButton.OnClickListener ()
-    {
+    private Button.OnClickListener prosesListener = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (validationPhoto())
-            {
+            if (validationPhoto()) {
                 sentExecAgent();
             }
         }
@@ -220,7 +218,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi params help list:"+response.toString());
+                                    Timber.d("isi params help list:" + response.toString());
 
                                     contactCenter = response.getString(WebParams.CONTACT_DATA);
 
@@ -230,8 +228,8 @@ public class UpgradeAgentActivity extends BaseActivity {
 
                                     try {
                                         JSONArray arrayContact = new JSONArray(contactCenter);
-                                        for(int i=0 ; i<arrayContact.length() ; i++) {
-                                            if(i == 0) {
+                                        for (int i = 0; i < arrayContact.length(); i++) {
+                                            if (i == 0) {
                                                 listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
                                                 listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
                                             }
@@ -240,14 +238,12 @@ public class UpgradeAgentActivity extends BaseActivity {
                                         e.printStackTrace();
                                     }
 
-                                }
-                                else if(code.equals(WebParams.LOGOUT_CODE)){
-                                    Timber.d("isi response autologout:"+response.toString());
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(UpgradeAgentActivity.this,message);
-                                }
-                                else {
-                                    Timber.d("isi error help list:"+response.toString());
+                                    test.showDialoginActivity(UpgradeAgentActivity.this, message);
+                                } else {
+                                    Timber.d("isi error help list:" + response.toString());
                                     Toast.makeText(UpgradeAgentActivity.this, message, Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
@@ -263,28 +259,27 @@ public class UpgradeAgentActivity extends BaseActivity {
 
                         @Override
                         public void onComplete() {
-                            if(progdialog.isShowing())
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
                     });
-        }
-        catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    public Boolean validationPhoto(){
-        if (layout_siup.getVisibility()==View.VISIBLE || reject_siup.equalsIgnoreCase("Y"))
-        {
-            if ( siup == null)
-            {
+    public Boolean validationPhoto() {
+        if (et_mothersName.getText().toString().length() == 0) {
+            et_mothersName.requestFocus();
+            et_mothersName.setError(this.getString(R.string.validation_text_birth_mother));
+            return false;
+        } else if (layout_siup.getVisibility() == View.VISIBLE || reject_siup.equalsIgnoreCase("Y")) {
+            if (siup == null) {
                 DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto SIUP/Surat Keterangan RT/RW tidak boleh kosong!");
                 return false;
             }
-        }else if (reject_npwp.equalsIgnoreCase("Y"))
-        {
-            if (npwp==null)
-            {
+        } else if (reject_npwp.equalsIgnoreCase("Y")) {
+            if (npwp == null) {
                 DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto NPWP tidak boleh kosong!");
                 return false;
             }
@@ -294,10 +289,9 @@ public class UpgradeAgentActivity extends BaseActivity {
     }
 
     @AfterPermissionGranted(RC_CAMERA_STORAGE)
-    public void camera_dialog()
-    {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
-        if (EasyPermissions.hasPermissions(this,perms)) {
+    public void camera_dialog() {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+        if (EasyPermissions.hasPermissions(this, perms)) {
             final String[] items = {"Choose from Gallery", "Take a Photo"};
 
             android.app.AlertDialog.Builder a = new android.app.AlertDialog.Builder(UpgradeAgentActivity.this);
@@ -322,9 +316,9 @@ public class UpgradeAgentActivity extends BaseActivity {
             );
             a.create();
             a.show();
-        }else {
-            EasyPermissions.requestPermissions(this,getString(R.string.rationale_camera_and_storage),
-                    RC_CAMERA_STORAGE,perms);
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
+                    RC_CAMERA_STORAGE, perms);
         }
     }
 
@@ -332,20 +326,20 @@ public class UpgradeAgentActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
     @Override
     public void onBackPressed() {
-            RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
-            closethis();
+        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
+        closethis();
     }
 
     private class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
         private int type;
 
 
-        ImageCompressionAsyncTask(int type){
+        ImageCompressionAsyncTask(int type) {
             this.type = type;
         }
 
@@ -356,15 +350,15 @@ public class UpgradeAgentActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(File file) {
-            switch (type){
-                case SIUP_TYPE :
-                    GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file,cameraSIUP);
+            switch (type) {
+                case SIUP_TYPE:
+                    GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file, cameraSIUP);
                     siup = file;
                     uploadFileToServer(type, siup, SIUP_TYPE);
                     pbSIUP.setProgress(0);
                     break;
-                case NPWP_TYPE :
-                    GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file,cameraNPWP);
+                case NPWP_TYPE:
+                    GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file, cameraNPWP);
                     npwp = file;
                     uploadFileToServer(type, npwp, NPWP_TYPE);
                     pbNPWP.setProgress(0);
@@ -392,11 +386,11 @@ public class UpgradeAgentActivity extends BaseActivity {
                 new ProgressRequestBody.UploadCallbacks() {
                     @Override
                     public void onProgressUpdate(int percentage) {
-                        switch (_type){
-                            case SIUP_TYPE :
+                        switch (_type) {
+                            case SIUP_TYPE:
                                 pbSIUP.setProgress(percentage);
                                 break;
-                            case NPWP_TYPE :
+                            case NPWP_TYPE:
                                 pbNPWP.setProgress(percentage);
                                 break;
                         }
@@ -432,12 +426,12 @@ public class UpgradeAgentActivity extends BaseActivity {
                         String error_code = model.getError_code();
                         String error_message = model.getError_message();
                         if (error_code.equalsIgnoreCase("0000")) {
-                            switch (_type){
-                                case SIUP_TYPE :
+                            switch (_type) {
+                                case SIUP_TYPE:
                                     pbSIUP.setProgress(100);
                                     BlinkingEffectClass.blink(layout_siup);
                                     break;
-                                case NPWP_TYPE :
+                                case NPWP_TYPE:
                                     pbNPWP.setProgress(100);
                                     BlinkingEffectClass.blink(layout_npwp);
                                     break;
@@ -446,7 +440,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                         } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(UpgradeAgentActivity.this, error_message);
-                        }else {
+                        } else {
 
                             Timber.d("Masuk failure");
                             if (MyApiClient.PROD_FAILURE_FLAG) {
@@ -472,19 +466,20 @@ public class UpgradeAgentActivity extends BaseActivity {
 
     }
 
-    private void sentExecAgent(){
-        try{
+    private void sentExecAgent() {
+        try {
 
-            if(progdialog == null)
+            if (progdialog == null)
                 progdialog = DefinedDialog.CreateProgressDialog(UpgradeAgentActivity.this, "");
             else
                 progdialog.show();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_EXEC_AGENT, memberIDLogin);
-            params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
+            params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.MOTHER_NAME, et_mothersName.getText().toString());
 
             Timber.d("isi params execute agent:" + params.toString());
 
@@ -494,10 +489,10 @@ public class UpgradeAgentActivity extends BaseActivity {
                         public void onResponses(JSONObject response) {
                             try {
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("response execute agent:"+response.toString());
+                                Timber.d("response execute agent:" + response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     SecurePreferences.Editor mEdit = sp.edit();
-                                    mEdit.putBoolean(DefineValue.IS_UPGRADE_AGENT,true);
+                                    mEdit.putBoolean(DefineValue.IS_UPGRADE_AGENT, true);
                                     mEdit.remove(DefineValue.REJECT_SIUP);
                                     mEdit.remove(DefineValue.REJECT_NPWP);
                                     mEdit.remove(DefineValue.REMARK_SIUP);
@@ -507,7 +502,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                                     mEdit.apply();
                                     DialogSuccessUploadPhoto();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:"+response.toString());
+                                    Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(UpgradeAgentActivity.this, message);
@@ -534,17 +529,16 @@ public class UpgradeAgentActivity extends BaseActivity {
                                 progdialog.dismiss();
                         }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void DialogSuccessUploadPhoto()
-    {
+    private void DialogSuccessUploadPhoto() {
         Dialog dialognya = DefinedDialog.MessageDialog(UpgradeAgentActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
                 this.getString(R.string.level_dialog_finish_message) + listAddress + "\n" +
                         this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
-                        new DefinedDialog.DialogButtonListener() {
+                new DefinedDialog.DialogButtonListener() {
                     @Override
                     public void onClickButton(View v, boolean isLongClick) {
                         finish();
@@ -561,42 +555,38 @@ public class UpgradeAgentActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
+        switch (requestCode) {
             case RESULT_GALLERY_SIUP:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
                 }
                 break;
             case RESULT_CAMERA_SIUP:
-                if(resultCode == RESULT_OK){
-                    if( pickAndCameraUtil.getCaptureImageUri()!=null){
-                        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                if (resultCode == RESULT_OK) {
+                    if (pickAndCameraUtil.getCaptureImageUri() != null) {
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                             new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
-                        }
-                        else {
+                        } else {
                             new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
                         }
-                    }
-                    else{
+                    } else {
                         Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
             case RESULT_GALLERY_NPWP:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     new UpgradeAgentActivity.ImageCompressionAsyncTask(NPWP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
                 }
                 break;
-            case RESULT_CAMERA_NPWP :
-                if(resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri()!=null){
-                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            case RESULT_CAMERA_NPWP:
+                if (resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri() != null) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                         new UpgradeAgentActivity.ImageCompressionAsyncTask(NPWP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
-                    }
-                    else {
+                    } else {
                         new UpgradeAgentActivity.ImageCompressionAsyncTask(NPWP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
                     }
-                }
-                else{
+                } else {
                     Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -605,12 +595,12 @@ public class UpgradeAgentActivity extends BaseActivity {
         }
     }
 
-    private void closethis(){
+    private void closethis() {
         setResult(RESULT);
         this.finish();
     }
 
-    private void InitializeToolbar(){
+    private void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.upgrade_agent));
     }
@@ -623,8 +613,7 @@ public class UpgradeAgentActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;

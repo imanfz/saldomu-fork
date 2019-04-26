@@ -69,7 +69,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
     String authType, amount, fee, total, ccyId, txId, comm_code,
             product_name, product_code, bank_code, bank_name, callback_url, api_key, comm_id, otp_member;
     private String product_h2h;
-    TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvAlert, tvBankProduct;
+    TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvAlert, tvBankProduct, tvAdditionalFee;
     LinearLayout layoutOTP, layoutNoEmpty, layoutButton;
     RelativeLayout layoutEmpty;
     EditText tokenValue;
@@ -127,6 +127,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         tvAgent = v.findViewById(R.id.bbscashoutmember_agent_value);
         tvAmount = v.findViewById(R.id.bbscashoutmember_amount_value);
         tvFee = v.findViewById(R.id.bbscashoutmember_fee_value);
+        tvAdditionalFee = v.findViewById(R.id.bbscashoutmember_additionalfee);
         tvTotal = v.findViewById(R.id.bbscashoutmember_total_value);
         tvCode = v.findViewById(R.id.bbscashoutmember_code);
         tvBankProduct = v.findViewById(R.id.bbscashoutmember_bank_product_value);
@@ -310,6 +311,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                     tvAmount.setText(ccyId + ". " + CurrencyFormat.format(response.optString(WebParams.TX_AMOUNT, "0")));
                                     tvFee.setText(ccyId + ". " + CurrencyFormat.format(response.optString(WebParams.FEE_AMOUNT, "0")));
                                     tvTotal.setText(ccyId + ". " + CurrencyFormat.format(response.optString(WebParams.TOTAL_AMOUNT, "0")));
+                                    tvAdditionalFee.setText(ccyId + ". " + CurrencyFormat.format(response.optString(WebParams.ADDITIONAL_FEE, "0")));
                                     amount = response.optString(WebParams.TX_AMOUNT, "0");
                                     fee = response.optString(WebParams.FEE_AMOUNT, "0");
                                     total = response.optString(WebParams.TOTAL_AMOUNT, "0");
@@ -420,6 +422,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
 //                            layoutButton.setVisibility(View.GONE);
 //                            tvCode.setText(response.getString(WebParams.OTP_MEMBER));
                                 otp_member = model.getOtp_member();
+//                                additonalFee = model.getAdditional_fee();
                                 getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), txId, userPhoneID);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -596,7 +599,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                             response.optString(WebParams.BENEF_BANK_NAME, ""), response.optString(WebParams.BENEF_ACCT_NO, ""),
                                             response.optString(WebParams.BENEF_ACCT_NAME, ""), response.optString(WebParams.MEMBER_SHOP_PHONE, ""),
                                             response.optString(WebParams.MEMBER_SHOP_NAME, ""), otp_member, response.optString(WebParams.BUSS_SCHEME_CODE),
-                                            response.optString(WebParams.BUSS_SCHEME_NAME), response.optString((WebParams.MEMBER_PHONE), ""));
+                                            response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.MEMBER_PHONE, ""), response.optString(WebParams.ADDITIONAL_FEE, "0"));
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -642,7 +645,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                         String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
                                         String source_bank_name, String member_shop_no, String source_acct_name,
                                         String benef_bank_name, String benef_acct_no, String benef_acct_name, String member_shop_phone,
-                                        String member_shop_name, String otp_member, String buss_scheme_code, String buss_scheme_name, String member_phone) {
+                                        String member_shop_name, String otp_member, String buss_scheme_code, String buss_scheme_name, String member_phone,
+                                        String additional_fee) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
@@ -655,6 +659,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
+        args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(additional_fee));
 
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)) {

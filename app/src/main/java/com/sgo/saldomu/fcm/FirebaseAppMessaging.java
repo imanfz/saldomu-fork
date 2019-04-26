@@ -24,6 +24,7 @@ import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -587,6 +588,31 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                         PendingIntent.FLAG_UPDATE_CURRENT
                                 );
                     }
+                case FCMManager.SOURCE_OF_FUND:
+
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            String txId = jsonOptions.getJSONObject(0).getString("tx_id");
+                            bundle.putString(DefineValue.TX_ID,txId);
+                            intent = new Intent(this, SourceOfFundActivity.class);
+                            intent.putExtras(bundle);
+                            stackBuilder.addParentStack(SourceOfFundActivity.class);
+                            stackBuilder.addNextIntent(intent);
+
+                            contentIntent =
+                                    stackBuilder.getPendingIntent(
+                                            1,
+                                            PendingIntent.FLAG_UPDATE_CURRENT
+                                    );
+
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
+                        }
+
+
+                    }
+                    break;
                 default:
 
 

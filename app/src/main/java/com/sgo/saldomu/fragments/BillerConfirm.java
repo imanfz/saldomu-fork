@@ -40,9 +40,11 @@ import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.SgoPlusWeb;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -117,6 +119,11 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private ProgressDialog progdialog;
     private ImageView mIconArrow;
     private TableLayout mTableLayout;
+    private LinearLayout ly_additionalFee;
+    private TextView tv_additionalFee;
+    private String additionalFee;
+    private LevelClass levelClass;
+    private Boolean isAgent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -134,6 +141,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         tv_payment_name = v.findViewById(R.id.billertoken_item_payment_value);
         tv_amount_value = v.findViewById(R.id.billertoken_amount_value);
         tv_fee_value = v.findViewById(R.id.billertoken_fee_value);
+        ly_additionalFee = v.findViewById(R.id.layout_additionalFee);
+        tv_additionalFee = v.findViewById(R.id.tv_additionalFee);
         tv_total_amount_value = v.findViewById(R.id.billertoken_total_amount_value);
         btn_submit = v.findViewById(R.id.billertoken_btn_verification);
         btn_cancel = v.findViewById(R.id.billertoken_btn_cancel);
@@ -145,6 +154,10 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     }
 
     private void initializeLayout() {
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        levelClass = new LevelClass(getActivity(), sp);
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         Bundle args = getArguments();
         cust_id = args.getString(DefineValue.CUST_ID, "");
@@ -167,6 +180,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         attempt = args.getInt(DefineValue.ATTEMPT, -1);
         isShowDescription = args.getBoolean(DefineValue.IS_SHOW_DESCRIPTION, false);
         biller_type_code = args.getString(DefineValue.BILLER_TYPE);
+        additionalFee = args.getString(DefineValue.ADDITIONAL_FEE);
         Timber.d("isi args:" + args.toString());
 
         if (biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS) ||
@@ -309,6 +323,12 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             TextView tv_desired_amount = amount_desire_layout.findViewById(R.id.billertoken_desired_amount_value);
             amount_desire = args.getString(DefineValue.AMOUNT_DESIRED, "");
             tv_desired_amount.setText(ccy_id + ". " + CurrencyFormat.format(amount_desire));
+        }
+
+        if (isAgent)
+        {
+            ly_additionalFee.setVisibility(View.VISIBLE);
+            tv_additionalFee.setText(ccy_id + ". " + CurrencyFormat.format(additionalFee));
         }
 
     }
@@ -723,11 +743,13 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         args.putString(DefineValue.TX_ID, txId);
         args.putString(DefineValue.USERID_PHONE, userId);
         args.putString(DefineValue.DENOM_DATA, itemName);
-        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_amount));
+        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER);
         args.putInt(DefineValue.BUY_TYPE, buy_code);
         args.putString(DefineValue.PAYMENT_NAME, payment_name);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
+        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
+        args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(additionalFee));
         args.putString(DefineValue.DESTINATION_REMARK, cust_id);
         args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
 
@@ -749,8 +771,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         if (!txStat) args.putString(DefineValue.TRX_REMARK, model.getTx_remark());
 
 
-        double totalAmount = Double.parseDouble(_amount) + Double.parseDouble(fee);
-        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
+//        double totalAmount = Double.parseDouble(_amount) + Double.parseDouble(fee);
+//        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
 
         String _isi_amount_desired = "";
         if (is_input_amount)

@@ -117,6 +117,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Biller_Type_Data_Model mBillerTypeDataBPJS;
     private Biller_Type_Data_Model mBillerTypeDataTKN;
     private Biller_Type_Data_Model mBillerTypeDataEMoney;
+    private Biller_Type_Data_Model mBillerTypeDataGame;
+    private Biller_Type_Data_Model mBillerTypeDataVoucher;
     private Realm realm;
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
@@ -212,6 +214,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         mBillerTypeDataEMoney = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "OVO")
+                .findFirst();
+
+        mBillerTypeDataGame = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "GAME")
+                .findFirst();
+
+        mBillerTypeDataVoucher = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "VCHR")
                 .findFirst();
 
         if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
@@ -467,7 +477,26 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_bpjs));
                         startActivity(intent);
                     }
-                } else {
+                }else if (menuItemName.equals(getString(R.string.newhome_game))) {
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Intent intent = new Intent(getActivity(), BillerActivity.class);
+                        intent.putExtra(DefineValue.BILLER_TYPE, "GAME");
+                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_game));
+                        startActivity(intent);
+                    }
+                } else if (menuItemName.equals(getString(R.string.newhome_voucher))) {
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Intent intent = new Intent(getActivity(), BillerActivity.class);
+                        intent.putExtra(DefineValue.BILLER_TYPE, "VCHR");
+                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_voucher));
+                        startActivity(intent);
+                    }
+                }
+                else {
                     for (int x = 0; x < shopCategories.size(); x++) {
                         String categoryName = shopCategories.get(x).getCategoryName();
                         String categoryNameModified = "Panggil Agen " + categoryName;
@@ -770,6 +799,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (mBillerTypeDataEMoney != null) {
             menuStrings.add(getResources().getString(R.string.newhome_emoney));
             menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
+        }
+
+        if (mBillerTypeDataGame != null) {
+            menuStrings.add(getResources().getString(R.string.newhome_game));
+            menuDrawables.add(getResources().getDrawable(R.drawable.game));
+        }
+
+        if (mBillerTypeDataVoucher != null) {
+            menuStrings.add(getResources().getString(R.string.newhome_voucher));
+            menuDrawables.add(getResources().getDrawable(R.drawable.voucher));
         }
 
         menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));

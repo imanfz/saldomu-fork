@@ -260,6 +260,9 @@ public class MyApiClient {
 
     public static String LINK_GET_OTP;
     public static String LINK_CONFIRM_OTP;
+    public static String LINK_INQUIRY_SOF;
+    public static String LINK_CANCEL_PAYMENT_SOF;
+    public static String LINK_PAY_SOF;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -438,8 +441,15 @@ public class MyApiClient {
         LINK_CANCEL_SEARCH_DGI      = headaddressfinal + "invoice/Payment/Reject";
         LINK_SALDO_COLLECTOR        = headaddressfinal + "Balancecollector/Retrieve";
         LINK_SET_MEMBER_LOC         = headaddressfinal + "invoice/Setmemberlocation/Invoke";
+
+        //OTP
         LINK_GET_OTP                = headaddressfinal + "VerifySIMCardByOTP/Retrieve";
         LINK_CONFIRM_OTP            = headaddressfinal + "VerifySIMCardConfirmOTP/Retrieve";
+
+        //SOF
+        LINK_INQUIRY_SOF            = headaddressfinal + "InquiryPayment/Invoke";
+        LINK_CANCEL_PAYMENT_SOF     = headaddressfinal + "CancelPayment/Invoke";
+        LINK_PAY_SOF                = headaddressfinal + "InquiryMerchant/Invoke";
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)

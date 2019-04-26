@@ -33,12 +33,15 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BluetoothPrinter.zj.BluetoothService;
 import com.sgo.saldomu.BluetoothPrinter.zj.DevicesList;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JsonSorting;
+import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.ViewToBitmap;
 
@@ -72,6 +75,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private ImageView printStruk;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
+
+    private LevelClass levelClass;
+    private Boolean isAgent;
+    SecurePreferences sp;
 
     Bundle args;
 
@@ -181,6 +188,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         View view = inflater.inflate(R.layout.dialog_report_biller, container);
         ViewStub stub = view.findViewById(R.id.stub);
 
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        levelClass = new LevelClass(getActivity(), sp);
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+
         args = getArguments();
         Timber.d("isi args report:" + args.toString());
 
@@ -240,6 +251,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_fee_value = inflated.findViewById(R.id.dialog_reportbbs_fee_value);
                     TextView tv_total_amount_value = inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
                     TextView tv_produk_agent = inflated.findViewById(R.id.tv_produk_agen);
+                    TextView tv_additionalFee = inflated.findViewById(R.id.dialog_reportbbs_additionalFee);
                     View v_produk_agent = inflated.findViewById(R.id.view_produkAgen);
 
                     if (args.getBoolean(DefineValue.IS_MEMBER_CTA) == true) {
@@ -258,6 +270,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_benef_bank_name_value.setText(args.getString(DefineValue.BANK_BENEF));
                     tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
                     tv_fee_value.setText(args.getString(DefineValue.FEE));
+                    tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
             } else if (buss_scheme_code.equalsIgnoreCase("ATC")) {
@@ -277,6 +290,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_source_acc_name_value = inflated.findViewById(R.id.dialog_reportbs_bank_source_acc_name_value);
                     TextView tv_amount_value = inflated.findViewById(R.id.dialog_reportbbs_amount_value);
                     TextView tv_fee_value = inflated.findViewById(R.id.dialog_reportbbs_fee_value);
+                    TextView tv_additionalfee_value = inflated.findViewById(R.id.dialog_reportbbs_additionalfee_value);
                     TextView tv_total_amount_value = inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
                     TextView tv_member_shop_phone = inflated.findViewById(R.id.dialog_reportbbs_member_shop_phone);
                     Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
@@ -305,6 +319,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_source_acc_name_value.setText(args.getString(DefineValue.SOURCE_ACCT_NAME));
                     tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
                     tv_fee_value.setText(args.getString(DefineValue.FEE));
+                    tv_additionalfee_value.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                     tv_member_shop_phone.setText(args.getString(DefineValue.MEMBER_SHOP_PHONE));
 
@@ -333,6 +348,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_benef_bank_name_value = inflated.findViewById(R.id.dialog_reportbbs_benef_bank_value);
                     TextView tv_amount_value = inflated.findViewById(R.id.dialog_reportbbs_amount_value);
                     TextView tv_fee_value = inflated.findViewById(R.id.dialog_reportbbs_fee_value);
+                    TextView tv_additionalFee = inflated.findViewById(R.id.dialog_reportbbs_additionalFee_value);
                     TextView tv_total_amount_value = inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
 
                     tv_transaction_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
@@ -347,6 +363,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                     tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
                     tv_fee_value.setText(args.getString(DefineValue.FEE));
+                    tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
             } else if (buss_scheme_code.equalsIgnoreCase("EMO") || buss_scheme_code.equalsIgnoreCase("TOP")) {
@@ -414,6 +431,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_payment_options_text = inflated.findViewById(R.id.dialog_reportbiller_payment_options_value);
                 TextView tv_fee_text = inflated.findViewById(R.id.dialog_reportbiller_fee_value);
                 TextView tv_total_amount_text = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
+                TextView tv_additionalFee = inflated.findViewById(R.id.tv_additionalFee);
+                TextView tv_additionalFeeValue = inflated.findViewById(R.id.dialog_reportbiller_additionalfee_value);
+                View viewAdditional = inflated.findViewById(R.id.view_additionalFee);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
@@ -427,6 +447,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_fee_text.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_text.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+
+                if (isAgent)
+                {
+                    viewAdditional.setVisibility(View.VISIBLE);
+                    tv_additionalFee.setVisibility(View.VISIBLE);
+                    tv_additionalFeeValue.setVisibility(View.VISIBLE);
+                    tv_additionalFeeValue.setText(args.getString(DefineValue.ADDITIONAL_FEE));
+                }
 
                 createTableDesc(args.getString(DefineValue.BILLER_DETAIL, ""), mTableLayout, type);
 
@@ -706,6 +734,33 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 mTableLayout.setVisibility(View.VISIBLE);
 
                 createTableDGI(args.getString(DefineValue.INVOICE, ""), mTableLayout);
+
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                if (!isSuccess) {
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
+            }else if(buss_scheme_code.equalsIgnoreCase("SG3"))
+            {
+                stub.setLayoutResource(R.layout.layout_dialog_report_sof);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
+
+                TextView tv_report_type = inflated.findViewById(R.id.dialog_reportbiller_buss_scheme_name);
+                TextView tv_comm_name = inflated.findViewById(R.id.dialog_report_merchant_name_value);
+                TextView tv_payment_remark = inflated.findViewById(R.id.dialog_reportbiller_paymentremark_value);
+                TextView tv_amount = inflated.findViewById(R.id.dialog_reportbiller_amount_value);
+                TextView tv_fee = inflated.findViewById(R.id.dialog_reportbiller_fee_value);
+                TextView tv_total_amount = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
+
+                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME,""));
+                tv_comm_name.setText(args.getString(DefineValue.COMMUNITY_NAME,""));
+                tv_payment_remark.setText(args.getString(DefineValue.REMARK,""));
+                tv_amount.setText(args.getString(DefineValue.AMOUNT));
+                tv_fee.setText(args.getString(DefineValue.FEE));
+                tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
 
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
                 tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
@@ -1059,7 +1114,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 layout_table_row.setLayoutParams(tableParams);
                 layout_table_row.addView(detail_field);
                 layout_table_row.addView(detail_value);
-                detail_field.setText(model.getString("doc_id"));
+                detail_field.setText(model.getString("doc_no"));
                 detail_value.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(model.getString("amount")));
                 mTableLayout.addView(layout_table_row);
                 mTableLayout.addView(line);

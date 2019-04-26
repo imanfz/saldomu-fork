@@ -1186,6 +1186,11 @@ public class MainPage extends BaseActivity {
                             Intent a = new Intent(this, UpgradeAgentActivity.class);
                             switchActivity(a, ACTIVITY_RESULT);
                             break;
+                        case NotificationActivity.SOURCE_OF_FUND:
+                            Intent s = new Intent(this, SourceOfFundActivity.class);
+                            s.putExtras(data);
+                            switchActivity(s, ACTIVITY_RESULT);
+                            break;
                     }
                 }
             }
