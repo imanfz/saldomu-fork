@@ -385,6 +385,7 @@ public class FCMManager {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
                             String txId = jsonOptions.getJSONObject(0).getString("tx_id");
                             bundleNextLogin.putString(DefineValue.TX_ID,txId);
+                            bundleNextLogin.putString(DefineValue.IS_INAPP,"Y");
 
                             i = new Intent(mContext, SourceOfFundActivity.class);
                             i.putExtras(bundleNextLogin);

@@ -306,6 +306,7 @@ public class FragNotification extends BaseFragment {
                     Intent s = new Intent(getActivity(), SourceOfFundActivity.class);
                     s.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
                     s.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.SOURCE_OF_FUND);
+                    s.putExtra(DefineValue.IS_INAPP, "N");
                     s.putExtras(s);
                     startActivity(s);
                     break;

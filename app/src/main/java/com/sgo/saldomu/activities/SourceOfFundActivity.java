@@ -16,10 +16,9 @@ import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
 
-public class SourceOfFundActivity extends BaseActivity
-{
+public class SourceOfFundActivity extends BaseActivity {
 
-    private String txId;
+    private String txId, isInAPP;
 
     @Override
     protected int getLayoutResource() {
@@ -37,34 +36,35 @@ public class SourceOfFundActivity extends BaseActivity
             }
 
             Intent intent = getIntent();
-            if (intent.hasExtra(DefineValue.TX_ID)) {
+            if (intent != null) {
                 txId = intent.getStringExtra(DefineValue.TX_ID);
+                isInAPP = intent.getStringExtra(DefineValue.IS_INAPP);
             }
 
             Bundle bundle = new Bundle();
             bundle.putString(DefineValue.TX_ID, txId);
+            bundle.putString(DefineValue.IS_INAPP, isInAPP);
 
             Fragment newFragment = new FragSourceOfFund();
             newFragment.setArguments(bundle);
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.sofactivity_content, newFragment,"sourceOfFund");
+            fragmentTransaction.add(R.id.sofactivity_content, newFragment, "sourceOfFund");
             fragmentTransaction.commit();
         }
     }
 
-    public void switchContent(Fragment mFragment,String fragName,Boolean isBackstack) {
+    public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
 
-        if(isBackstack){
+        if (isBackstack) {
             Timber.d("backstack");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.sofactivity_content, mFragment, fragName)
                     .addToBackStack(null)
                     .commit();
-        }
-        else {
+        } else {
             Timber.d("bukan backstack");
             getSupportFragmentManager()
                     .beginTransaction()
@@ -76,17 +76,17 @@ public class SourceOfFundActivity extends BaseActivity
     }
 
     public void switchActivity(Intent mIntent, int j) {
-        switch (j){
+        switch (j) {
             case MainPage.ACTIVITY_RESULT:
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
+                startActivityForResult(mIntent, MainPage.REQUEST_FINISH);
                 break;
             case 2:
                 break;
         }
     }
 
-    private void InitializeToolbar(){
+    private void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.payment_confirm));
     }
@@ -115,7 +115,7 @@ public class SourceOfFundActivity extends BaseActivity
         }
     }
 
-    public void setResultActivity(int result){
+    public void setResultActivity(int result) {
         setResult(MainPage.RESULT_BALANCE);
     }
 }
