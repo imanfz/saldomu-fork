@@ -595,6 +595,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
                             String txId = jsonOptions.getJSONObject(0).getString("tx_id");
                             bundle.putString(DefineValue.TX_ID,txId);
+                            bundle.putString(DefineValue.IS_INAPP,"Y");
                             intent = new Intent(this, SourceOfFundActivity.class);
                             intent.putExtras(bundle);
                             stackBuilder.addParentStack(SourceOfFundActivity.class);

@@ -60,7 +60,7 @@ public class FragSourceOfFund extends BaseFragment implements ReportBillerDialog
 {
     private SecurePreferences sp;
     private String memberId, userid, txId, comm_name, payment_remark, amount, admin_fee, total_amount, orderNo,
-            merchantCode, commCode, productCode, commId;
+            merchantCode, commCode, productCode, commId, isInAPP;
     private TextView tv_commName, tv_txId, tv_paymentRemark, tv_amount, tv_fee, tv_total;
     private Button btnProses, btnCancel;
     private int attempt = 0, failed = 0;
@@ -92,16 +92,21 @@ public class FragSourceOfFund extends BaseFragment implements ReportBillerDialog
         Bundle bundle = getArguments();
         if (bundle != null) {
             txId = bundle.getString(DefineValue.TX_ID, "");
+            isInAPP = bundle.getString(DefineValue.IS_INAPP, "N");
 
-            Handler handler = new Handler();
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
+            if (isInAPP.equals("Y")){
+                Handler handler = new Handler();
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
 
-                    sentInquirySOF();
-                }
-            };
-            handler.postDelayed(runnable, 2000);
+                        sentInquirySOF();
+                    }
+                };
+                handler.postDelayed(runnable, 2000);
+            }else
+                sentInquirySOF();
+
         }
 
         btnCancel.setOnClickListener(new View.OnClickListener() {

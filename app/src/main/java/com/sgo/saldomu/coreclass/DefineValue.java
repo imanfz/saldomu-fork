@@ -567,6 +567,7 @@ public class DefineValue {
     public static String ADDITIONAL_FEE= "additionalFee";
     public static String ENABLED_ADDITIONAL_FEE= "enabledAdditionalFee";
     public static String SG3= "sg3";
+    public static String IS_INAPP= "is_inapp";
 
 }
 

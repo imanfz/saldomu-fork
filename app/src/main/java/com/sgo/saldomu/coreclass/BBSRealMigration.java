@@ -19,5 +19,10 @@ public class BBSRealMigration implements RealmMigration {
             bbs_bank_model.addField("product_display", String.class);
             oldVersion++;
         }
+        else if (oldVersion == 1) {
+            RealmObjectSchema bbs_bank_model = schema.get("BBSBankModel");
+            bbs_bank_model.addField("enabled_additional_fee", String.class);
+            oldVersion++;
+        }
     }
 }
