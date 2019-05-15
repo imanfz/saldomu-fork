@@ -7,23 +7,34 @@ import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.paolorotolo.appintro.AppIntro;
+import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
 import com.sgo.saldomu.fragments.IntroPage;
+import com.sgo.saldomu.fragments.Regist1;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.LoginModel;
+import com.sgo.saldomu.securities.RSA;
 
 import java.util.List;
 
@@ -96,9 +107,9 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         donebtn.setOnClickListener(POSlistener);
         skipbtn.setOnClickListener(VerifyOTPListener);
 
-        perms = new String[]{Manifest.permission.READ_CONTACTS,
-                Manifest.permission.ACCESS_FINE_LOCATION};
-
+//        perms = new String[]{Manifest.permission.READ_CONTACTS,
+//                Manifest.permission.ACCESS_FINE_LOCATION};
+//
 //        if (EasyPermissions.hasPermissions(this, perms)) {
 //            InitializeSmsClass();
 //        } else {
@@ -112,16 +123,17 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     private Button.OnClickListener VerifyOTPListener = new Button.OnClickListener(){
         @Override
         public void onClick(View view) {
-            if(!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").isEmpty())
-            {
-                Intent i = new Intent(Introduction.this,LoginActivity.class);
-                i.putExtra(DefineValue.USER_IS_NEW,-2);
-                i.putExtra(DefineValue.IS_POS, "N");
-                startActivity(i);
-            }else {
-                Intent i = new Intent(Introduction.this, OTPVerificationActivity.class);
-                startActivity(i);
-            }
+//            if(!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").isEmpty())
+//            {
+//                Intent i = new Intent(Introduction.this,LoginActivity.class);
+//                i.putExtra(DefineValue.USER_IS_NEW,-2);
+//                i.putExtra(DefineValue.IS_POS, "N");
+//                startActivity(i);
+//            }else {
+//                Intent i = new Intent(Introduction.this, OTPVerificationActivity.class);
+//                startActivity(i);
+//            }
+            sentRegisterFCM();
         }
     };
 
@@ -189,8 +201,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     @Override
     protected void onResume() {
         super.onResume();
-        if (EasyPermissions.hasPermissions(this, perms))
-            checkIsSimExist();
+//        if (EasyPermissions.hasPermissions(this, perms))
+//            checkIsSimExist();
 //        else {
 //            EasyPermissions.requestPermissions(this,
 //                    getString(R.string.rational_readphonestate_readcontacts),
@@ -287,5 +299,10 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //                smsDialog.reset();
 //                break;
 //        }
+    }
+
+    public void sentRegisterFCM()
+    {
+
     }
 }
