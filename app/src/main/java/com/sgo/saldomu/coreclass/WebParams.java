@@ -563,5 +563,9 @@ public class WebParams {
     public static String OTP = "otp";
     public static String IS_MANUAL = "is_manual";
     public static String ADDITIONAL_FEE = "additional_fee";
+    public static String MEMBER_CODE_PG = "member_code_pg";
+    public static String COMM_CODE_PG = "comm_code_pg";
+    public static String COMM_NAME_PG = "comm_name_pg";
+    public static String ANCHOR_NAME_PG = "anchor_name_pg";
 
 }

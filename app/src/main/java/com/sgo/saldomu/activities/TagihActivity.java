@@ -20,6 +20,7 @@ public class TagihActivity extends BaseActivity {
     FragmentManager fragmentManager;
     Fragment mContent;
     Fragment newFragment = null;
+    private String memberCode,commCode,commName,anchorName;
 
     @Override
     protected int getLayoutResource() {
@@ -31,8 +32,13 @@ public class TagihActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        Boolean is_search = intent.getBooleanExtra(DefineValue.IS_SEARCH_DGI,false);
-
+        Boolean is_search = intent.getBooleanExtra(DefineValue.IS_SEARCH_DGI, false);
+        if (intent.hasExtra(DefineValue.MEMBER_CODE_PG)) {
+            memberCode = intent.getStringExtra(DefineValue.MEMBER_CODE_PG);
+            commCode = intent.getStringExtra(DefineValue.COMM_CODE_PG);
+            commName = intent.getStringExtra(DefineValue.COMM_NAME_PG);
+            anchorName = intent.getStringExtra(DefineValue.ANCHOR_NAME_PG);
+        }
         InitializeToolbar();
 
         if (findViewById(R.id.layout_tagih) != null) {
@@ -42,7 +48,13 @@ public class TagihActivity extends BaseActivity {
 
             newFragment = new FragTagihInput();
             Bundle bundle = new Bundle();
-            bundle.putBoolean(DefineValue.IS_SEARCH_DGI,is_search);
+            bundle.putBoolean(DefineValue.IS_SEARCH_DGI, is_search);
+            if (memberCode != null || commCode != null || commName!=null || anchorName!=null) {
+                bundle.putString(DefineValue.MEMBER_CODE_PG, memberCode);
+                bundle.putString(DefineValue.COMM_CODE_DGI, commCode);
+                bundle.putString(DefineValue.COMM_NAME_PG, commName);
+                bundle.putString(DefineValue.ANCHOR_NAME_PG, anchorName);
+            }
             newFragment.setArguments(bundle);
         }
 
@@ -56,19 +68,18 @@ public class TagihActivity extends BaseActivity {
 
     }
 
-    public void InitializeToolbar(){
+    public void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_tagih_agent));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
-                if (getSupportFragmentManager().getBackStackEntryCount() > 0){
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     getSupportFragmentManager().popBackStack();
-                }else finish();
+                } else finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -82,15 +93,14 @@ public class TagihActivity extends BaseActivity {
 
     public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
         ToggleKeyboard.hide_keyboard(this);
-        if(isBackstack){
+        if (isBackstack) {
             Timber.d("backstack");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.layout_tagih, mFragment, fragName)
                     .addToBackStack(null)
                     .commitAllowingStateLoss();
-        }
-        else {
+        } else {
             Timber.d("bukan backstack");
             getSupportFragmentManager()
                     .beginTransaction()
@@ -101,7 +111,7 @@ public class TagihActivity extends BaseActivity {
         setActionBarTitle(fragName);
     }
 
-    public void setResultActivity(int result){
+    public void setResultActivity(int result) {
         setResult(MainPage.RESULT_BALANCE);
     }
 

@@ -568,6 +568,10 @@ public class DefineValue {
     public static String ENABLED_ADDITIONAL_FEE= "enabledAdditionalFee";
     public static String SG3= "sg3";
     public static String IS_INAPP= "is_inapp";
+    public static String MEMBER_CODE_PG= "memberCodePG";
+    public static String COMM_CODE_PG= "commCodePG";
+    public static String COMM_NAME_PG= "commNamePG";
+    public static String ANCHOR_NAME_PG= "anchorNamePG";
 
 }
 

@@ -56,7 +56,7 @@ public class FragTagihInput extends BaseFragment {
     private ArrayList<TagihModel> mitraNameData = new ArrayList<>();
     private ArrayAdapter<String> communityAdapter;
     private ArrayList<String> communityNameArrayList = new ArrayList<>();
-    String commCodeTagih, balanceCollector;
+    String commCodeTagih, balanceCollector, commNamePG, commCodePG, anchorNamePG, memberCode;
     ProgressDialog progdialog;
 
     @Nullable
@@ -74,13 +74,20 @@ public class FragTagihInput extends BaseFragment {
         if (bundle!=null)
         {
             is_search = bundle.getBoolean(DefineValue.IS_SEARCH_DGI,false);
+            if (bundle.containsKey(DefineValue.ANCHOR_NAME_PG))
+            {
+                commCodePG = bundle.getString(DefineValue.COMM_CODE_PG,"");
+                commNamePG = bundle.getString(DefineValue.COMM_NAME_PG,"");
+                anchorNamePG = bundle.getString(DefineValue.ANCHOR_NAME_PG,"");
+                memberCode = bundle.getString(DefineValue.MEMBER_CODE_PG,"");
+            }
         }
 
         sp = CustomSecurePref.getInstance().getSecurePrefsInstance();
 
         getBalanceCollector();
 
-        initiatizeView();
+        initializeView();
 
         InitializeData();
 
@@ -139,7 +146,7 @@ public class FragTagihInput extends BaseFragment {
     };
 
 
-    private void initiatizeView() {
+    private void initializeView() {
         sp_mitra = v.findViewById(R.id.sp_mitra);
         sp_communtiy = v.findViewById(R.id.sp_community);
         et_memberCode = v.findViewById(R.id.et_memberCode);
@@ -151,6 +158,7 @@ public class FragTagihInput extends BaseFragment {
         if (is_search)
         {
             btn_cancel.setVisibility(View.VISIBLE);
+            et_memberCode.setText(memberCode);
         }
 
         mitraNameArrayList.clear();
@@ -172,10 +180,16 @@ public class FragTagihInput extends BaseFragment {
         communityAdapter = new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, communityNameArrayList);
         sp_communtiy.setAdapter(communityAdapter);
 
+        if (anchorNamePG!=null) {
+            int spinnerPosition = mitraAdapter.getPosition(anchorNamePG);
+            sp_mitra.setSelection(spinnerPosition);
+        }
+
         sp_mitra.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 initializeCommunity(position);
+
             }
 
             @Override
@@ -207,6 +221,11 @@ public class FragTagihInput extends BaseFragment {
         }else
             commCodeTagih ="";
 
+        if (commNamePG!=null) {
+            int spinnerPosition = communityAdapter.getPosition(commNamePG);
+            sp_communtiy.setSelection(spinnerPosition);
+        }
+
 
         sp_communtiy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -220,10 +239,8 @@ public class FragTagihInput extends BaseFragment {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+
         });
-
-
-
     }
 
     public Boolean inputValidation() {
