@@ -61,7 +61,7 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-public class BbsMapNagivationActivity extends BaseActivity implements OnMapReadyCallback,
+public class BbsMapNavigationActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
@@ -94,7 +94,7 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
         mapFrag.getMapAsync(this);
         mapFrag.getView().setVisibility(View.GONE);
 
-        textToSpeech = new TextToSpeech(BbsMapNagivationActivity.this, BbsMapNagivationActivity.this);
+        textToSpeech = new TextToSpeech(BbsMapNavigationActivity.this, BbsMapNavigationActivity.this);
         textToSpeech.setLanguage(Locale.getDefault());
 
         lines                   = new ArrayList<>();
@@ -578,7 +578,7 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
                 if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
                     new AppSettingsDialog.Builder(this).build().show();
                 } else {
-                    AlertDialog alertDialog = new AlertDialog.Builder(BbsMapNagivationActivity.this).create();
+                    AlertDialog alertDialog = new AlertDialog.Builder(BbsMapNavigationActivity.this).create();
                     alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.setCancelable(false);
                     alertDialog.setTitle(getString(R.string.alertbox_title_warning));

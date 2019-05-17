@@ -1338,6 +1338,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="newhome_emoney">E-Money</string>
     <string name="newhome_game">Voucher Game</string>
     <string name="newhome_voucher">Voucher</string>
+    <string name="newhome_pam">AIR PDAM</string>
+    <string name="pam">PAM</string>
     <string name="good_morning">Selamat Pagi, </string>
     <string name="good_afternoon">Selamat Siang, </string>
     <string name="good_evening">Selamat Sore, </string>

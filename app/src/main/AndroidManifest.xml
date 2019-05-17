@@ -269,7 +269,7 @@
         <activity android:name=".activities.BbsMemberShopDetailActivity" />
         <activity android:name=".activities.BbsSetupOpenHourActivity" />
         <activity android:name=".activities.BbsSetupShopClosedActivity" />
-        <activity android:name=".activities.BbsMapNagivationActivity" />
+        <activity android:name=".activities.BbsMapNavigationActivity" />
         <activity
             android:name=".activities.BBSActivity"
             android:configChanges="orientation"
