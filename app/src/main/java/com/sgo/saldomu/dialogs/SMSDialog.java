@@ -76,6 +76,7 @@ public class SMSDialog extends DialogFragment {
     private Handler handler;
     private int idx_fail;
     boolean flag;
+    SecurePreferences sp;
     View v;
 
     public SMSDialog() {
@@ -132,6 +133,8 @@ public class SMSDialog extends DialogFragment {
 
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         getDialog().setCanceledOnTouchOutside(false);
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         if (BuildConfig.FLAVOR.equals(DefineValue.DEVELOPMENT))
             lenghtTimer = 150000;
@@ -337,11 +340,12 @@ public class SMSDialog extends DialogFragment {
             Timber.d("jalanin sentSMSVerify "+ICCIDDevice);
             String mobileNetworkCode = NoHPFormat.getMNC(ICCIDDevice);
             String mobileDestination    = NoHPFormat.getSMSVerifyDestination(mobileNetworkCode);
+            String fcmEncrypted    = sp.getString(DefineValue.FCM_ENCRYPTED,"");
             Timber.d("ICC ID: "+ICCIDDevice+ ", Network Code : "+ mobileNetworkCode + ", mobile Dest : " + mobileDestination);
 
 
 //            smsClass.sendSMSVerify(mobileDestination, imeiDevice, ICCIDDevice, timeStamp, dateTime, smsVerifyListener);
-            String msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime;
+            String msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime + "_" +fcmEncrypted ;
             Uri uri=Uri.parse("smsto:"+mobileDestination);
             Intent intent=new Intent(Intent.ACTION_SENDTO,uri);
             intent.putExtra("sms_body",msg);

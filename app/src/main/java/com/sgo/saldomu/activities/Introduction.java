@@ -230,11 +230,13 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     private void sendFCM() {
         showProgLoading("",true);
         String fcm_id=CustomSecurePref.getInstance().getmSecurePrefs().getString(DefineValue.FCM_SERVER_UUID,"");
+        String fcmId_encrypted = Md5.hashMd5(fcm_id);
+        sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
         try {
             HashMap<String,Object> params= RetrofitService
                     .getInstance().getSignatureSecretKey(MyApiClient.LINK_FCM,"");
             params.put(WebParams.FCM_ID,fcm_id);
-            params.put(WebParams.REFERENCE_ID, Md5.hashMd5(fcm_id));
+            params.put(WebParams.REFERENCE_ID, fcmId_encrypted);
             Timber.d("isi params fcm:" + params.toString());
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_FCM, params, new ResponseListener() {
                 @Override
