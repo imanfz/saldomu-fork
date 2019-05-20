@@ -1,6 +1,7 @@
 package com.sgo.saldomu.coreclass;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
@@ -42,16 +43,17 @@ public class SMSclass {
     private BroadcastReceiver receiverSent;
     private BroadcastReceiver receiverDelivered;
 
-    private static final String SMS_VERIFY      = "REG EMO "+MyApiClient.COMM_ID;
-    String[] perms                              = {Manifest.permission.READ_PHONE_STATE};
+    private static final String SMS_VERIFY = "REG EMO " + MyApiClient.COMM_ID;
+    String[] perms = {Manifest.permission.READ_PHONE_STATE};
 
-    public interface SMS_SIM_STATE{
+    public interface SMS_SIM_STATE {
         void sim_state(Boolean isExist, String msg);
 
     }
 
-    public interface SMS_VERIFY_LISTENER{
+    public interface SMS_VERIFY_LISTENER {
         void success();
+
         void failed();
 
     }
@@ -61,14 +63,14 @@ public class SMSclass {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equalsIgnoreCase("android.intent.action.SIM_STATE_CHANGED")) {
-                if(intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")){
-                   if(getmContext() instanceof Activity) {
-                       Timber.d("sim is Absent");
-                       if(!isSimExists()) {
-                           ((Activity) getmContext()).finish();
-                           Toast.makeText(getmContext(), R.string.sim_not_found, Toast.LENGTH_SHORT).show();
-                       }
-                   }
+                if (intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")) {
+                    if (getmContext() instanceof Activity) {
+                        Timber.d("sim is Absent");
+                        if (!isSimExists()) {
+                            ((Activity) getmContext()).finish();
+                            Toast.makeText(getmContext(), R.string.sim_not_found, Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
 
             }
@@ -77,26 +79,25 @@ public class SMSclass {
 
     public static IntentFilter simStateIntentFilter = new IntentFilter("android.intent.action.SIM_STATE_CHANGED");
 
-    public SMSclass(Context _context){
-        this(_context,null);
+    public SMSclass(Context _context) {
+        this(_context, null);
     }
 
-    public SMSclass(Context _context, BroadcastReceiver simListener){
+    public SMSclass(Context _context, BroadcastReceiver simListener) {
         this.setmContext(_context);
         telephonyManager = (TelephonyManager) getmContext().getSystemService(Context.TELEPHONY_SERVICE);
-        if(simListener != null)
+        if (simListener != null)
             simStateReceiver = simListener;
     }
 
-    public void sendSMSVerify(String phoneNo,String imei, String iccid,String TimeStamp,String DateTime, SMS_VERIFY_LISTENER listener){
+    public void sendSMSVerify(String phoneNo, String imei, String iccid, String TimeStamp, String DateTime, SMS_VERIFY_LISTENER listener) {
 
-        String msg = SMS_VERIFY + " "+imei+"_"+iccid+"_"+TimeStamp+"_"+ MyApiClient.APP_ID+"_"+DateTime;
-        sendSMS(phoneNo,msg,listener);
+        String msg = SMS_VERIFY + " " + imei + "_" + iccid + "_" + TimeStamp + "_" + MyApiClient.APP_ID + "_" + DateTime;
+        sendSMS(phoneNo, msg, listener);
 
     }
 
-    private void sendSMS(final String phoneNumber, final String message, final SMS_VERIFY_LISTENER listener)
-    {
+    private void sendSMS(final String phoneNumber, final String message, final SMS_VERIFY_LISTENER listener) {
         String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
 
@@ -108,11 +109,10 @@ public class SMSclass {
 
         //---when the SMS has been sent---
 
-        receiverSent = new BroadcastReceiver(){
+        receiverSent = new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode())
-                {
+                switch (getResultCode()) {
                     case Activity.RESULT_OK:
 
                         break;
@@ -120,19 +120,18 @@ public class SMSclass {
                         listener.failed();
                         Toast.makeText(getmContext(), getmContext().getString(R.string.toast_msg_fail_smsclass),
                                 Toast.LENGTH_SHORT).show();
-                        deleteSMS(message,phoneNumber);
+                        deleteSMS(message, phoneNumber);
                         break;
 
                 }
             }
         };
 
-        receiverDelivered = new BroadcastReceiver(){
+        receiverDelivered = new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
-                deleteSMS(message,phoneNumber);
-                switch (getResultCode())
-                {
+                deleteSMS(message, phoneNumber);
+                switch (getResultCode()) {
                     case Activity.RESULT_OK:
                         listener.success();
                         Timber.d("Sukses send Message SMS");
@@ -156,34 +155,36 @@ public class SMSclass {
         SmsManager sms = SmsManager.getDefault();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager subscriptionManager = SubscriptionManager.from(mContext);
-            List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
-            Timber.d("subscriptionId slot 1 = "+ subscriptionInfoList.get(0).getSubscriptionId());
-            if( SmsManager.getSmsManagerForSubscriptionId( subscriptionInfoList.get(0).getSubscriptionId()) != null)
-                SmsManager.getSmsManagerForSubscriptionId( subscriptionInfoList.get(0).getSubscriptionId()).sendTextMessage(phoneNumber, null, message,sentPI,deliveredPI);
-            else
-                sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
-        }
-        else {
-            if(sendSMS(mContext, getIndexActiveSIMSlot(), phoneNumber, null, message, sentPI, deliveredPI))
+            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
+                List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
+                Timber.d("subscriptionId slot 1 = " + subscriptionInfoList.get(0).getSubscriptionId());
+                if (SmsManager.getSmsManagerForSubscriptionId(subscriptionInfoList.get(0).getSubscriptionId()) != null)
+                    SmsManager.getSmsManagerForSubscriptionId(subscriptionInfoList.get(0).getSubscriptionId()).sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+                else
+                    sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+            }
+        } else {
+            if (sendSMS(mContext, getIndexActiveSIMSlot(), phoneNumber, null, message, sentPI, deliveredPI))
                 Timber.d("Sukses jalanin sendSMS dibawah Lollipop");
         }
-        Timber.d("Send message sms : "+ message);
+        Timber.d("Send message sms : " + message);
+
     }
 
-    public void Close(){
-        if(receiverSent != null)
+    public void Close() {
+        if (receiverSent != null)
             getmContext().unregisterReceiver(receiverSent);
-        if(receiverDelivered != null)
+        if (receiverDelivered != null)
             getmContext().unregisterReceiver(receiverDelivered);
     }
 
-    private static  boolean getSIMStateBySlot(Context context, String predictedMethodName, int slotID) throws GeminiMethodNotFoundException {
+    private static boolean getSIMStateBySlot(Context context, String predictedMethodName, int slotID) throws GeminiMethodNotFoundException {
 
         boolean isReady = false;
 
         TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-        try{
+        try {
 
             Class<?> telephonyClass = Class.forName(telephony.getClass().getName());
 
@@ -195,9 +196,9 @@ public class SMSclass {
             obParameter[0] = slotID;
             Object ob_phone = getSimStateGemini.invoke(telephony, obParameter);
 
-            if(ob_phone != null){
+            if (ob_phone != null) {
                 int simState = Integer.parseInt(ob_phone.toString());
-                if(simState == TelephonyManager.SIM_STATE_READY){
+                if (simState == TelephonyManager.SIM_STATE_READY) {
                     isReady = true;
                 }
             }
@@ -219,32 +220,33 @@ public class SMSclass {
     }
 
 
-    public boolean isSimExists(){
-       return isSimExists(null);
+    public boolean isSimExists() {
+        return isSimExists(null);
     }
 
-    public boolean isSimExists(SMS_SIM_STATE listener)
-    {
-        if ( !EasyPermissions.hasPermissions(getmContext(), perms) ) {
+    public boolean isSimExists(SMS_SIM_STATE listener) {
+        if (!EasyPermissions.hasPermissions(getmContext(), perms)) {
             return false;
         } else {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 && EasyPermissions.hasPermissions(getmContext(), perms) ) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 && EasyPermissions.hasPermissions(getmContext(), perms)) {
                 SubscriptionManager subscriptionManager = SubscriptionManager.from(mContext);
-                List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
-                if (subscriptionInfoList != null && subscriptionInfoList.size() > 0) {
-                    if (SmsManager.getSmsManagerForSubscriptionId(subscriptionInfoList.get(0).getSubscriptionId()) != null) {
-                        if (listener != null)
-                            listener.sim_state(true, "Ada isinya");
-                        return true;
+                if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
+                    if (subscriptionInfoList != null && subscriptionInfoList.size() > 0) {
+                        if (SmsManager.getSmsManagerForSubscriptionId(subscriptionInfoList.get(0).getSubscriptionId()) != null) {
+                            if (listener != null)
+                                listener.sim_state(true, "Ada isinya");
+                            return true;
+                        } else {
+                            if (listener != null)
+                                listener.sim_state(false, getmContext().getString(R.string.sim_not_found));
+                            return false;
+                        }
                     } else {
                         if (listener != null)
                             listener.sim_state(false, getmContext().getString(R.string.sim_not_found));
                         return false;
                     }
-                } else {
-                    if (listener != null)
-                        listener.sim_state(false, getmContext().getString(R.string.sim_not_found));
-                    return false;
                 }
             } else {
 
@@ -279,6 +281,7 @@ public class SMSclass {
                 }
             }
         }
+        return true;
     }
 
 
@@ -306,9 +309,8 @@ public class SMSclass {
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(mContext);
-            List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
-
             if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED ) {
+                List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
                 imei = telephonyManager.getDeviceId(sis.get(0).getSimSlotIndex());
             }
         } else {
@@ -347,12 +349,14 @@ public class SMSclass {
      * @return iccid di simcard slot 1
      */
     public String getDeviceICCID(){
-        String iccId;
+        String iccId="";
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(mContext);
-            List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
-            SubscriptionInfo si = sis.get(0);
-            iccId = si.getIccId();
+            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
+                List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
+                SubscriptionInfo si = sis.get(0);
+                iccId = si.getIccId();
+            }
         }
         else {
             if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED  && telephonyManager.getSimSerialNumber() == null)
@@ -532,6 +536,7 @@ public class SMSclass {
         return setMode(context, OP_WRITE_SMS, uid, mode);
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private static Object checkOp(Context context, int code, int uid) {
         AppOpsManager appOpsManager =
                 (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
@@ -565,6 +570,7 @@ public class SMSclass {
         return null;
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private static boolean setMode(Context context, int code,
                                    int uid, int mode) {
         AppOpsManager appOpsManager =
