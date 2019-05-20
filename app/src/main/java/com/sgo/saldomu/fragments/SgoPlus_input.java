@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -29,11 +30,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.SMSclass;
@@ -48,10 +51,18 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.DataReqModel;
 import com.sgo.saldomu.models.retrofit.TopupValidModel;
 import com.sgo.saldomu.widgets.BaseFragment;
+import android.support.v4.app.FragmentManager;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -69,6 +80,9 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
     private List<listBankModel> listDB;
     private ArrayList<String> BankProduct;
     private InformationDialog dialogI;
+    private SMSclass smsclass;
+    private SMSDialog smsDialog;
+    private SentObject sentObject;
 
     View v;
     Button btn_subSGO;
@@ -81,10 +95,11 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
     ImageView spinWheelBankName, spinWheelBankProduct;
     Animation frameAnimation;
     Spinner sp_privacy;
+    Calendar calendar;
+    Long timeDate;
     int privacy;
     boolean isSMSBanking = false, isTagihan = false, isFacebook = false;
-    private SMSDialog smsDialog;
-    private SentObject sentObject;
+
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
@@ -170,6 +185,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
         setHasOptionsMenu(true);
 
         Bundle args = getArguments();
+        smsDialog=new SMSDialog();
 
         if (sentObject == null)
             sentObject = new SentObject();
@@ -202,7 +218,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
             dialogI = InformationDialog.newInstance(this, 3);
 
             initializeSmsClass();
-            smsDialog = new SMSDialog(getActivity(), new SMSDialog.DialogButtonListener() {
+            smsDialog = SMSDialog.newDialog(timeDate,checkFailedVerify(), new SMSDialog.DialogButtonListener() {
                 @Override
                 public void onClickOkButton(View v, boolean isLongClick) {
                     if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.CAMERA)) {
@@ -385,6 +401,8 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_privacy.setAdapter(spinAdapter);
         sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
+        calendar = Calendar.getInstance();
+        timeDate = calendar.getTimeInMillis();
 
     }
 
@@ -523,6 +541,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
 
             Timber.d("isi params sgoplusinput:" + params.toString());
 
+
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_VALID_TOPUP, params,
                     new ResponseListener() {
                         @Override
@@ -544,7 +563,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
                                     sentObject.product_name = product_name;
                                     sentObject.ccy_id = MyApiClient.CCY_VALUE;
                                     Timber.d("Valid topup " + sentObject.getData());
-                                    smsDialog.show();
+                                    smsDialog.show(getFragmentManager(),"aa");
                                 } else {
                                     changeTopUpSgoPlus(model.getTx_id(), model.getProduct_code(), bank_kode
                                             , product_name, model.getComm_code(), model.getFee(),
@@ -884,5 +903,50 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
             if (this.isVisible())
                 smsDialog.dismiss();
         }
+    }
+    SecurePreferences getSP(){
+        if (sp == null)
+            sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        return sp;
+    }
+    boolean checkFailedVerify(){
+        String temp_iccid = getSP().getString(DefineValue.TEMP_ICCID, "");
+        String temp_imei = getSP().getString(DefineValue.TEMP_IMEI, "");
+        boolean temp_is_sent = getSP().getBoolean(DefineValue.TEMP_IS_SENT, false);
+
+        if(!temp_iccid.equals("") && !temp_imei.equals("")){
+            String diccid = smsclass.getDeviceICCID();
+            String dimei = smsclass.getDeviceIMEI();
+            boolean biccid = diccid.equalsIgnoreCase(temp_iccid);
+            boolean bimei = dimei.equalsIgnoreCase(temp_imei);
+
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("ID","INDONESIA"));
+            Calendar cal = Calendar.getInstance();
+//            cal.add(Calendar.SECOND, 10);
+
+
+            boolean ddate = false;
+            try {
+                Date savedDate, currDate = Calendar.getInstance().getTime();
+                savedDate = df.parse(getSP().getString(DefineValue.LAST_SMS_SENT, ""));
+//                currDate = df.parse(getSP().getString(DefineValue.LAST_SMS_SENT, ""));
+
+                currDate.setTime(cal.getTimeInMillis());
+
+                Long a = currDate.getTime(), b = savedDate.getTime();
+                Long calc = a - b;
+
+//                ddate = currDate.compareTo(savedDate) > 0;
+                Long sec = TimeUnit.MILLISECONDS.toMinutes(calc);
+                ddate = sec < 30;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+            return biccid && bimei && temp_is_sent && ddate;
+        }else return false;
     }
 }

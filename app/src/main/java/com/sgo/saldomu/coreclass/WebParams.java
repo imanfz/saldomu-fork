@@ -568,4 +568,7 @@ public class WebParams {
     public static String COMM_NAME_PG = "comm_name_pg";
     public static String ANCHOR_NAME_PG = "anchor_name_pg";
 
+    public static String FCM_ID = "fcm_id";
+    public static String REFERENCE_ID = "reference_id";
+
 }
