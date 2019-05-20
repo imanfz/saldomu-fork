@@ -637,7 +637,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
                                     if (isSMSBanking) {
                                         if (smsDialog == null) {
-                                            smsDialog = new SMSDialog(getActivity(), null);
+                                            smsDialog = new SMSDialog();
                                         }
 
                                         smsDialog.setListener(new SMSDialog.DialogButtonListener() {
@@ -673,7 +673,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
 
                                         if (isSimExist)
-                                            smsDialog.show();
+                                            smsDialog.show(getFragmentManager(),"");
                                     } else if (source_product_h2h.equalsIgnoreCase("Y") && source_product_type.equalsIgnoreCase(DefineValue.EMO)) {
                                         if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("tcash")
                                                 && !source_product_code.equalsIgnoreCase("MANDIRILKD")) {
@@ -1351,7 +1351,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             String action = intent.getAction();
             if (action.equalsIgnoreCase("android.intent.action.SIM_STATE_CHANGED")) {
                 if (intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")) {
-                    if (smsDialog != null && smsDialog.isShowing()) {
+                    if (smsDialog != null) {
+//                    if (smsDialog != null && smsDialog.isShowing()) {
                         Toast.makeText(getActivity(), R.string.smsclass_simcard_listener_absent_toast, Toast.LENGTH_LONG).show();
                         smsDialog.dismiss();
                         smsDialog.reset();

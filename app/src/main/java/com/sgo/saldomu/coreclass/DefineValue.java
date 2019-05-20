@@ -573,5 +573,11 @@ public class DefineValue {
     public static String COMM_NAME_PG= "commNamePG";
     public static String ANCHOR_NAME_PG= "anchorNamePG";
 
+    public static String TEMP_ICCID = "temp_iccid";
+    public static String TEMP_IMEI = "temp_imei";
+    public static String TEMP_IS_SENT = "temp_is_sent";
+    public static String LAST_SMS_SENT = "last_sms_sent";
+    public static String LAST_SMS_SENT_MILLIS = "last_sms_sent_millis";
+
 }
 
