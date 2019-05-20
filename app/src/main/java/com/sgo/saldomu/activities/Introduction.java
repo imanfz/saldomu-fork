@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +19,9 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
@@ -27,6 +30,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
 import com.sgo.saldomu.fragments.IntroPage;
+
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.Md5;
@@ -37,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -208,8 +213,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     @Override
     protected void onResume() {
         super.onResume();
-        if (EasyPermissions.hasPermissions(this, perms))
-            checkIsSimExist();
+//        if (EasyPermissions.hasPermissions(this, perms))
+//            checkIsSimExist();
 //        else {
 //            EasyPermissions.requestPermissions(this,
 //                    getString(R.string.rational_readphonestate_readcontacts),
@@ -415,4 +420,5 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             return biccid && bimei && temp_is_sent && ddate;
         }else return false;
     }
+
 }

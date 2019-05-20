@@ -510,6 +510,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
                         String arrJson = toJson(commModel.getAgent_scheme_codes()).toString();
                         mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
+                        mEditor.putString(DefineValue.IS_AGENT_TRX_REQ, commModel.getIs_agent_trx_request());
                         Timber.w("isi comm id yg bener:" + commModel.getCommId());
 
                         break;
