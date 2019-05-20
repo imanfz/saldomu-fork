@@ -274,5 +274,8 @@ dependencies {
     //banner
     implementation 'com.synnapps:carouselview:0.1.4'
     implementation 'io.realm:android-adapters:2.0.0'
+
+    //map direction
+    implementation 'com.akexorcist:googledirectionlibrary:1.1.1'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -119,6 +119,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Biller_Type_Data_Model mBillerTypeDataEMoney;
     private Biller_Type_Data_Model mBillerTypeDataGame;
     private Biller_Type_Data_Model mBillerTypeDataVoucher;
+    private Biller_Type_Data_Model mBillerTypeDataPDAM;
     private Realm realm;
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
@@ -222,6 +223,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         mBillerTypeDataVoucher = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "VCHR")
+                .findFirst();
+
+        mBillerTypeDataPDAM = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "AIR")
                 .findFirst();
 
         if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
@@ -495,7 +500,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_voucher));
                         startActivity(intent);
                     }
-                } else {
+                } else if (menuItemName.equals(getString(R.string.newhome_pam))) {
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Intent intent = new Intent(getActivity(), BillerActivity.class);
+                        intent.putExtra(DefineValue.BILLER_TYPE, "AIR");
+                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.pam));
+                        startActivity(intent);
+                    }
+                }else {
                     for (int x = 0; x < shopCategories.size(); x++) {
                         String categoryName = shopCategories.get(x).getCategoryName();
                         String categoryNameModified = "Panggil Agen " + categoryName;
@@ -811,6 +825,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 menuDrawables.add(getResources().getDrawable(R.drawable.voucher));
             }
 
+            if (mBillerTypeDataPDAM != null) {
+                menuStrings.add(getResources().getString(R.string.newhome_pam));
+                menuDrawables.add(getResources().getDrawable(R.drawable.ic_pdam));
+            }
+
         }
 
         menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));
@@ -875,6 +894,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         if (mBillerTypeDataVoucher != null) {
                             menuStrings.add(getResources().getString(R.string.newhome_voucher));
                             menuDrawables.add(getResources().getDrawable(R.drawable.voucher));
+                        }
+
+                        if (mBillerTypeDataPDAM != null) {
+                            menuStrings.add(getResources().getString(R.string.newhome_pam));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_pdam));
                         }
                         break;
                 }
