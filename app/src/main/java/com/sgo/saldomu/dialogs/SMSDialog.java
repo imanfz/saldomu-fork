@@ -71,7 +71,7 @@ public class SMSDialog extends DialogFragment {
     private SMSclass smsClass;
     private String message1;
     private static final String SMS_VERIFY = "REG EMO " + MyApiClient.COMM_ID;
-    private long timeStamp, dateTime;
+    private String timeStamp, dateTime;
     private SMSclass.SMS_VERIFY_LISTENER smsVerifyListener;
     private Handler handler;
     private int idx_fail;
@@ -106,7 +106,7 @@ public class SMSDialog extends DialogFragment {
 
     public DialogButtonListener deListener;
 
-    public static SMSDialog newDialog(Long date, boolean flag, DialogButtonListener _listener){
+    public static SMSDialog newDialog(String date, boolean flag, DialogButtonListener _listener){
         SMSDialog dialog=new SMSDialog();
         dialog.dateTime = date;
         dialog.deListener = _listener;
@@ -142,7 +142,7 @@ public class SMSDialog extends DialogFragment {
             lenghtTimer = 300000;
         progBar.setMax(100);
 
-        message1 = getActivity().getString(R.string.appname) + " " + getActivity().getString(R.string.dialog_sms_msg);
+        message1 = getActivity().getString(R.string.dialog_sms_msg);
 
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -268,7 +268,11 @@ public class SMSDialog extends DialogFragment {
     public void onResume() {
         super.onResume();
         Calendar calendar = Calendar.getInstance();
-        dateTime = calendar.getTimeInMillis();
+//        dateTime = DateTimeFormat.getCurrentDateTimeMillis();
+
+        timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
+        dateTime = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
+
 
 //        timeStamp = String.valueOf(date);
         Timber.i("isi timestamp : "+timeStamp);

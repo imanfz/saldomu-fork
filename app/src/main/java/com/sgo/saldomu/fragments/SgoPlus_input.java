@@ -37,6 +37,7 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.SMSclass;
@@ -96,7 +97,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
     Animation frameAnimation;
     Spinner sp_privacy;
     Calendar calendar;
-    Long timeDate;
+    String timeDate;
     int privacy;
     boolean isSMSBanking = false, isTagihan = false, isFacebook = false;
 
@@ -402,7 +403,8 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
         sp_privacy.setAdapter(spinAdapter);
         sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
         calendar = Calendar.getInstance();
-        timeDate = calendar.getTimeInMillis();
+        timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
+
 
     }
 
