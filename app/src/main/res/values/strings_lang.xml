@@ -1351,5 +1351,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="transaction_id">ID Transaksi</string>
     <string name="payment_remark">Pesan</string>
     <string name="success_cancel_sof">Transaksi sudah dibatalkan!</string>
+    <string name="transfer">Transfer</string>
+    <string name="profil">Profil</string>
+    <string name="get_direction">Buka Petunjuk Arah</string>
 
 </resources>

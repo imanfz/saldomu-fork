@@ -12,6 +12,8 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Point;
+import android.net.Uri;
+import android.net.http.RequestQueue;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -32,6 +34,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.JsonObject;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.securepreferences.SecurePreferences;
@@ -67,6 +71,7 @@ import com.sgo.saldomu.fragments.FragTagihInput;
 import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.fragments.RightSideDrawMenu;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
@@ -172,12 +177,16 @@ public class MainPage extends BaseActivity {
                 Fragment newFragment = new FragMainPage();
                 switchContent(newFragment, getString(R.string.appname).toUpperCase());
                 return true;
-            case R.id.menu_b2b:
+            case R.id.menu_transfer:
                 if (isDormant.equalsIgnoreCase("Y")) {
                     dialogDormant();
                 } else {
-                    i = new Intent(MainPage.this, ActivitySCADM.class);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                    if (levelClass.isLevel1QAC()) {
+                        levelClass.showDialogLevel();
+                    } else {
+                        i = new Intent(MainPage.this, PayFriendsActivity.class);
+                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                    }
                 }
                 return true;
             case R.id.menu_help:
@@ -1324,24 +1333,23 @@ public class MainPage extends BaseActivity {
 //            mDrawerLayout.openDrawer(mRightDrawerRelativeLayout);
 //            return true;
 //        }
-        else if (item.getItemId() == R.id.menu_item_home) {
-            invalidateOptionsMenu();
-            Fragment newFragment = new FragMainPage();
-            switchContent(newFragment, getString(R.string.appname).toUpperCase());
-            mNavDrawer.setPositionNull();
-            invalidateOptionsMenu();
-
-//            Realm _realm = RealmManager.getRealmTagih();
-//
-//            RealmResults<TagihModel> list = _realm.where(TagihModel.class).findAll();
-//
-//            Log.d("mainpage", "id : " + list.get(0).getId());
+        else if (item.getItemId() == R.id.menu_location) {
+            setDirection();
         }else if(item.getItemId()==R.id.settings){
             Intent i=new Intent(this,ActivityListSettings.class);
             switchActivity(i, ACTIVITY_RESULT);
         }
         invalidateOptionsMenu();
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setDirection() {
+        LatLng agentlatLng = new LatLng(-6.2274757,106.6586167);
+        LatLng clientlatLng = new LatLng(-6.2411137,106.6284969);
+        Intent intent=new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr="+clientlatLng.latitude+","+clientlatLng.longitude));
+        Timber.d("http://maps.google.com/maps?daddr="+clientlatLng.latitude+","+clientlatLng.longitude);
+        startActivity(intent);
     }
 
     @Override

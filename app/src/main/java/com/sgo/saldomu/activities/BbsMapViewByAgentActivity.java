@@ -95,7 +95,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     String htmlDirections = "";
     //TextToSpeech textToSpeech;
     Boolean isTTSActive = true;
-    Button btnTibaDiLokasi, btnCancel;
+    Button btnTibaDiLokasi, btnCancel, btnGetDirection;
     private int timeDelayed = 30000;
     Intent intentData;
 
@@ -153,6 +153,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         btnTibaDiLokasi = findViewById(R.id.btnTibaLokasi);
         btnCancel = findViewById(R.id.btnCancelDGI);
+        btnGetDirection=findViewById(R.id.btn_get_direction);
         tvAcctLabel = findViewById(R.id.tvAcctLabel);
         tvAcctName = findViewById(R.id.tvAcctName);
 
@@ -194,6 +195,12 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         TextView t = findViewById(R.id.name);
         t.setText(Html.fromHtml(getString(R.string.bbs_trx_detail_agent)));
 
+        btnGetDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         btnTibaDiLokasi.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {

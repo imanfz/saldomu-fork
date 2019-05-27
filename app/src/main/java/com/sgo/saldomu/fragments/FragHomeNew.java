@@ -832,8 +832,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         }
 
-        menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));
-        menuDrawables.add(getResources().getDrawable(R.drawable.ic_transfer_saldo));
+//        menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));
+//        menuDrawables.add(getResources().getDrawable(R.drawable.ic_transfer_saldo));
 
         menuStrings.add(getResources().getString(R.string.menu_item_title_ask_for_money));
         menuDrawables.add(getResources().getDrawable(R.drawable.ic_minta_saldo));

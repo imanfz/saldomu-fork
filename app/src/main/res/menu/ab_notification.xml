@@ -4,18 +4,10 @@
 
 
         <item
-            android:id="@+id/menu_item_home"
+            android:id="@+id/menu_location"
             android:orderInCategory="1"
             android:title="@string/appname"
-            android:icon="@drawable/ic_home_white"
-            someNamespace:showAsAction="always"
-            android:visible="false"
-            />
-        <item
-            android:id="@+id/history"
-            android:orderInCategory="1"
-            android:title="@string/notifications"
-            android:icon="@drawable/ic_cashout_white"
+            android:icon="@drawable/ic_location_on_black"
             someNamespace:showAsAction="always"
             />
         <item
@@ -24,13 +16,12 @@
             android:title="@string/notifications"
             android:icon="@drawable/ic_notifications"
             someNamespace:showAsAction="always"
-            android:visible="false"
             />
         <item
             android:id="@+id/settings"
             android:orderInCategory="3"
             android:title="@string/menu_item_title_setting"
-            android:icon="@drawable/ic_settings_agent"
+            android:icon="@drawable/ic_setting"
             someNamespace:showAsAction="always"
             />
 
