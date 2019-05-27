@@ -32,6 +32,7 @@ import com.sgo.saldomu.dialogs.SMSDialog;
 import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fragments.IntroPage;
 
+import com.sgo.saldomu.fragments.Regist1;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.Md5;
@@ -62,9 +63,9 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     private String[] perms;
     private ProgressDialog progdialog;
 
-    String timeDate, timeStamp;
-    SecurePreferences sp;
-    Calendar calendar;
+    private String timeDate, timeStamp, fcm_id, fcmId_encrypted;
+    private SecurePreferences sp;
+    private Fragment mFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
@@ -84,6 +85,10 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         sp.edit().remove(DefineValue.SENDER_ID).commit();
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
         timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
+
+        fcm_id = FCMManager.getTokenFCM();
+        fcmId_encrypted = Md5.hashMd5(fcm_id);
+        sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
 
         setFlowAnimation();
         Button skipbtn = (Button) skipButton;
@@ -150,7 +155,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 openLogin(-2);
             } else
-                sendFCM();
+//                sendFCM();
+                InitializeSmsDialog();
         }
     };
 
@@ -235,9 +241,6 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
     private void sendFCM() {
         showProgLoading("", true);
-        String fcm_id = FCMManager.getTokenFCM();
-        String fcmId_encrypted = Md5.hashMd5(fcm_id);
-        sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
         try {
             HashMap<String, Object> params = RetrofitService
                     .getInstance().getSignatureSecretKey(MyApiClient.LINK_FCM, "");
@@ -280,11 +283,17 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
             @Override
             public void onSuccess(int user_is_new) {
-
+                if (user_is_new == 1) {
+                    openLogin(1);
+                } else {
+                    openLogin(-2);
+                }
             }
 
             @Override
             public void onSuccess(String product_value) {
+
+
 
             }
         });
@@ -428,5 +437,4 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             return biccid && bimei && temp_is_sent && ddate;
         } else return false;
     }
-
 }

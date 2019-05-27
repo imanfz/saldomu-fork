@@ -136,6 +136,9 @@ public class SMSDialog extends DialogFragment {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
+        timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
+        dateTime = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
+
         if (BuildConfig.FLAVOR.equals(DefineValue.DEVELOPMENT))
             lenghtTimer = 150000;
         else
@@ -269,9 +272,6 @@ public class SMSDialog extends DialogFragment {
         super.onResume();
         Calendar calendar = Calendar.getInstance();
 //        dateTime = DateTimeFormat.getCurrentDateTimeMillis();
-
-        timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
-        dateTime = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
 
 
 //        timeStamp = String.valueOf(date);
@@ -476,6 +476,8 @@ public class SMSDialog extends DialogFragment {
             deListener.onSuccess(1);
         }
         deListener.onSuccess(model.getSender_id());
+
+        dismiss();
     }
 
 
