@@ -93,6 +93,8 @@ android {
             buildConfigField 'String', "URL_MNOTIF", "\"https://mnotif-dev.saldomu.com/\""
             buildConfigField 'String', "SMS_CENTER_XL", "\"+6282333800085\""
             buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282333800085\""
+            buildConfigField 'String', "SMS_CENTER_IND", "\"+6282333800085\""
+            buildConfigField 'String', "SMS_CENTER_3", "\"+6282333800085\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
             buildConfigField 'String', "SECRET_KEY", "\"add647f3d560bcb65fc0cb15d7b66615\""
@@ -125,15 +127,17 @@ android {
             buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile.saldomu.com/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
             buildConfigField 'String', "URL_MNOTIF", "\"https://mnotif.saldomu.com/\""
-            buildConfigField 'String', "SMS_CENTER_XL", "\"+6287856894892\""
+            buildConfigField 'String', "SMS_CENTER_XL", "\"+6287850097188\""
             buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282257800888\""
+            buildConfigField 'String', "SMS_CENTER_IND", "\"+6285784575700\""
+            buildConfigField 'String', "SMS_CENTER_3", "\"+6287850097188\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 47
-            versionName "3.3"
+            versionCode = 48
+            versionName "3.4"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
     }

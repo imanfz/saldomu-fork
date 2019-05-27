@@ -18,7 +18,11 @@ public class NoHPFormat {
                 break;
             case "10":  //TELKOMSEL
             case "89":  //TRI
+                mobileDestination = BuildConfig.SMS_CENTER_XL;
+                break;
             case "01":  //INDOSAT
+                mobileDestination = BuildConfig.SMS_CENTER_IND;
+                break;
             default:
                 mobileDestination = BuildConfig.SMS_CENTER_TSEL;
                 break;

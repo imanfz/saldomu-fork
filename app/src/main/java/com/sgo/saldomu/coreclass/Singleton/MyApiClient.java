@@ -498,7 +498,7 @@ public class MyApiClient {
 
     public static String URL_HELP_DEV = "https://mobile-dev.saldomu.com/static/pages/help/";
     public static String URL_FAQ;
-    public static String URL_FAQ_PROD = "https://mobile.saldomu.com/static/pages/help/pin_faq_saldo mu.html";
+    public static String URL_FAQ_PROD = "https://mobile.saldomu.com/static/pages/help/pin_faq_saldomu.html";
     public static String URL_FAQ_DEV = URL_HELP_DEV +"pin_faq_saldomu.html";
 
     public static String URL_TERMS;

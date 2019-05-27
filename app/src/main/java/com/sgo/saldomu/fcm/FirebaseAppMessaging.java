@@ -22,6 +22,7 @@ import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
+import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.SourceOfFundActivity;
@@ -45,6 +46,7 @@ import timber.log.Timber;
 
 import static com.sgo.saldomu.fcm.FCMManager.MEMBER_RATING_TRX;
 import static com.sgo.saldomu.fcm.FCMManager.SYNC_BBS_DATA;
+import static com.sgo.saldomu.fcm.FCMManager.VERIFY_ACC;
 
 /**
  * Created by yuddistirakiki on 8/16/17.
@@ -105,6 +107,25 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
                         broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
                         sendBroadcast(broadcast);
+                    }
+                }if (modelNotif == VERIFY_ACC)
+                {
+
+                    sp = CustomSecurePref.getInstance().getmSecurePrefs();
+                    try {
+                        JSONArray jsonObj = new JSONArray(jsonOptions);
+                        JSONObject jsonObj2 = jsonObj.getJSONObject(0);
+                        jsonObj2.put("model_notif", modelNotif);
+
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.SENDER_ID, jsonObj2.getString(WebParams.USER_ID));
+                        mEditor.apply();
+
+                        Intent i = new Intent(this, LoginActivity.class);
+                        startActivity(i);
+
+                    } catch (JSONException e) {
+                        Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
                     }
                 }
             }
@@ -614,9 +635,9 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                     }
                     break;
+                case FCMManager.VERIFY_ACC:
+                    break;
                 default:
-
-
                     break;
             }
 
