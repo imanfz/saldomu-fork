@@ -868,7 +868,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         menuStrings.add(getResources().getString(R.string.menu_item_title_buy));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
 
-
                         if (mBillerTypeDataPLS != null) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));

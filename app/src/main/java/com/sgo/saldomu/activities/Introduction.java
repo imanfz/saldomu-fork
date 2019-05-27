@@ -21,7 +21,6 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
@@ -32,7 +31,6 @@ import com.sgo.saldomu.dialogs.SMSDialog;
 import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fragments.IntroPage;
 
-import com.sgo.saldomu.fragments.Regist1;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.Md5;
@@ -124,7 +122,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         }
 
         donebtn.setOnClickListener(POSlistener);
-        skipbtn.setOnClickListener(VerifyOTPListener);
+        skipbtn.setOnClickListener(VerifyListener);
 
         perms = new String[]{Manifest.permission.READ_CONTACTS,
                 Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE};
@@ -139,7 +137,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
     }
 
-    private Button.OnClickListener VerifyOTPListener = new Button.OnClickListener() {
+    private Button.OnClickListener VerifyListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
 //            if(!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").isEmpty())
@@ -155,8 +153,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 openLogin(-2);
             } else
-//                sendFCM();
-                InitializeSmsDialog();
+                sendFCM();
         }
     };
 
