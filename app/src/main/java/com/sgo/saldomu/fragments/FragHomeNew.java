@@ -794,6 +794,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             menuStrings.add(getResources().getString(R.string.title_cash_out_member));
             menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
 
+            menuStrings.add(getResources().getString(R.string.menu_item_title_buy));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
 
             if (mBillerTypeDataPLS != null) {
                 menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
@@ -838,9 +840,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         menuStrings.add(getResources().getString(R.string.menu_item_title_ask_for_money));
         menuDrawables.add(getResources().getDrawable(R.drawable.ic_minta_saldo));
 
-        menuStrings.add(getResources().getString(R.string.menu_item_title_buy));
-        menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
-
         menuStrings.add(getResources().getString(R.string.menu_item_title_report));
         menuDrawables.add(getResources().getDrawable(R.drawable.ic_laporan));
     }
@@ -866,6 +865,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         menuDrawables.add(getResources().getDrawable(R.drawable.tagih_id));
                         break;
                     case "BIL":
+                        menuStrings.add(getResources().getString(R.string.menu_item_title_buy));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
+
+
                         if (mBillerTypeDataPLS != null) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));

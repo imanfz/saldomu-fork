@@ -71,11 +71,12 @@ public class SMSDialog extends DialogFragment {
     private SMSclass smsClass;
     private String message1;
     private static final String SMS_VERIFY = "REG EMO " + MyApiClient.COMM_ID;
-    private long timeStamp, dateTime;
+    private String timeStamp, dateTime;
     private SMSclass.SMS_VERIFY_LISTENER smsVerifyListener;
     private Handler handler;
     private int idx_fail;
     boolean flag;
+    SecurePreferences sp;
     View v;
 
     public SMSDialog() {
@@ -105,7 +106,7 @@ public class SMSDialog extends DialogFragment {
 
     public DialogButtonListener deListener;
 
-    public static SMSDialog newDialog(Long date, boolean flag, DialogButtonListener _listener){
+    public static SMSDialog newDialog(String date, boolean flag, DialogButtonListener _listener){
         SMSDialog dialog=new SMSDialog();
         dialog.dateTime = date;
         dialog.deListener = _listener;
@@ -133,13 +134,18 @@ public class SMSDialog extends DialogFragment {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         getDialog().setCanceledOnTouchOutside(false);
 
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
+        dateTime = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
+
         if (BuildConfig.FLAVOR.equals(DefineValue.DEVELOPMENT))
             lenghtTimer = 150000;
         else
             lenghtTimer = 300000;
         progBar.setMax(100);
 
-        message1 = getActivity().getString(R.string.appname) + " " + getActivity().getString(R.string.dialog_sms_msg);
+        message1 = getActivity().getString(R.string.dialog_sms_msg);
 
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,7 +271,8 @@ public class SMSDialog extends DialogFragment {
     public void onResume() {
         super.onResume();
         Calendar calendar = Calendar.getInstance();
-        dateTime = calendar.getTimeInMillis();
+//        dateTime = DateTimeFormat.getCurrentDateTimeMillis();
+
 
 //        timeStamp = String.valueOf(date);
         Timber.i("isi timestamp : "+timeStamp);
@@ -337,11 +344,12 @@ public class SMSDialog extends DialogFragment {
             Timber.d("jalanin sentSMSVerify "+ICCIDDevice);
             String mobileNetworkCode = NoHPFormat.getMNC(ICCIDDevice);
             String mobileDestination    = NoHPFormat.getSMSVerifyDestination(mobileNetworkCode);
+            String fcmEncrypted    = sp.getString(DefineValue.FCM_ENCRYPTED,"");
             Timber.d("ICC ID: "+ICCIDDevice+ ", Network Code : "+ mobileNetworkCode + ", mobile Dest : " + mobileDestination);
 
 
 //            smsClass.sendSMSVerify(mobileDestination, imeiDevice, ICCIDDevice, timeStamp, dateTime, smsVerifyListener);
-            String msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime;
+            String msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime + "_" +fcmEncrypted ;
             Uri uri=Uri.parse("smsto:"+mobileDestination);
             Intent intent=new Intent(Intent.ACTION_SENDTO,uri);
             intent.putExtra("sms_body",msg);
@@ -468,6 +476,8 @@ public class SMSDialog extends DialogFragment {
             deListener.onSuccess(1);
         }
         deListener.onSuccess(model.getSender_id());
+
+        dismiss();
     }
 
 
