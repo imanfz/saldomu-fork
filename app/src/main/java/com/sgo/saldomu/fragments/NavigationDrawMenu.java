@@ -90,6 +90,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -477,7 +478,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 //        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));
         models.add(new navdrawmainmenuModel(R.drawable.ic_report, R.drawable.ic_report, getString(R.string.menu_item_title_scadm), MSCADM));              //6
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_report, R.drawable.ic_report, getString(R.string.menu_item_title_report), MREPORT));              //6
-        models.add(new navdrawmainmenuModel(R.drawable.ic_user, R.drawable.ic_user, getString(R.string.menu_item_title_help1), MHELP));                          //12
+        models.add(new navdrawmainmenuModel(R.drawable.ic_user, R.drawable.ic_user, getString(R.string.menu_item_title_help), MHELP));                          //12
         models.add(new navdrawmainmenuModel(R.drawable.ic_belanja, R.drawable.ic_belanja, getString(R.string.menu_item_title_info_harga), MINFO)); //28                         //15
         models.add(new navdrawmainmenuModel(R.drawable.ic_setting, R.drawable.ic_setting, getString(R.string.menu_item_title_setting), MSETTINGS));                    //11
 //        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_logout)));                                        //13
@@ -621,17 +622,9 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 AlertDialog.Builder alertbox = new AlertDialog.Builder(getActivity());
                 alertbox.setTitle(getString(R.string.warning));
                 alertbox.setMessage(getString(R.string.exit_message));
-                alertbox.setPositiveButton(getString(R.string.ok), new
-                        DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                switchLogout();
-                            }
-                        });
-                alertbox.setNegativeButton(getString(R.string.cancel), new
-                        DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface arg0, int arg1) {
-                            }
-                        });
+                alertbox.setPositiveButton(getString(R.string.ok), (arg0, arg1) -> switchLogout());
+                alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
+                });
                 alertbox.show();
                 break;
             case MREGISTERLOCATION:

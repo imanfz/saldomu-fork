@@ -154,6 +154,10 @@
         <item>@string/menu_setting_about</item>
 
     </string-array>
+    <string-array name="settings_list_info">
+        <item>@string/menu_item_title_info_harga</item>
+        <item>@string/logout</item>
+    </string-array>
 
     <string-array name="social_id_type">
         <item>KTP</item>

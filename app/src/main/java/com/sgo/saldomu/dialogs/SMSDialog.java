@@ -267,7 +267,7 @@ public class SMSDialog extends DialogFragment {
         Calendar calendar = Calendar.getInstance();
         dateTime = calendar.getTimeInMillis();
 
-//        timeStamp = String.valueOf(date);
+        timeStamp = DateTimeFormat.getCurrentDateTimeMillis();
         Timber.i("isi timestamp : "+timeStamp);
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,

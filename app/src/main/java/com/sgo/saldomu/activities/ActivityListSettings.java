@@ -1,11 +1,13 @@
 package com.sgo.saldomu.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
@@ -67,6 +69,8 @@ public class ActivityListSettings extends BaseActivity {
         list.addAll(Arrays.asList(_data));
         }
 
+        _data = getResources().getStringArray(R.array.settings_list_info);
+        list.addAll(Arrays.asList(_data));
         EasyAdapter adapter = new EasyAdapter(this, R.layout.list_view_item_with_arrow, list);
 
         ListView listView1 = findViewById(R.id.list_setting);
@@ -119,6 +123,19 @@ public class ActivityListSettings extends BaseActivity {
 //                        });
 //                        dialog.show(getFragmentManager(), "asd");
 //                        break;
+                    case "Info Harga":
+                        i=new Intent(ActivityListSettings.this,InfoHargaWebActivity.class);
+                        startActivity(i);
+                        break;
+                    case "Keluar":
+                        AlertDialog.Builder alertbox = new AlertDialog.Builder(ActivityListSettings.this);
+                        alertbox.setTitle(getString(R.string.warning));
+                        alertbox.setMessage(getString(R.string.exit_message));
+                        alertbox.setPositiveButton(getString(R.string.ok), (arg0, arg1) -> switchLogout());
+                        alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
+                        });
+                        alertbox.show();
+                        break;
                 }
             }
         });
@@ -149,5 +166,9 @@ public class ActivityListSettings extends BaseActivity {
     public void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_setting));
+    }
+    private void switchLogout() {
+        setResult(MainPage.RESULT_LOGOUT);
+        finish();
     }
 }

@@ -556,8 +556,7 @@
 
     <string name="menu_group_title_supports">Bantuan</string>
     <string name="menu_item_title_setting">Pengaturan</string>
-    <string name="menu_item_title_help">Kontak Kami &amp; FAQ</string>
-    <string name="menu_item_title_help1">Hubungi Kami</string>
+    <string name="menu_item_title_help">Kontak</string>
     <string name="menu_item_title_info_harga">Info Harga</string>
     <string name="menu_item_title_about">Tentang Aplikasi</string>
 

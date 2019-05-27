@@ -1,6 +1,7 @@
 package com.sgo.saldomu.activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -14,6 +15,8 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
@@ -24,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -87,6 +91,8 @@ import java.util.Map;
 import io.realm.Realm;
 import timber.log.Timber;
 
+import static java.security.AccessController.getContext;
+
 /**
  * Created by Administrator on 7/11/2014.
  */
@@ -127,7 +133,7 @@ public class MainPage extends BaseActivity {
     private DrawerLayout mDrawerLayout;
     public ActionBarDrawerToggle mDrawerToggle;
     private ProgressDialog progdialog;
-    private RelativeLayout mOuterRelativeContent;
+    private LinearLayout mOuterRelativeContent;
     private FrameLayout mLeftDrawerRelativeLayout;
     private FrameLayout mRightDrawerRelativeLayout;
     private float lastTranslate = 0.0f;
@@ -141,6 +147,7 @@ public class MainPage extends BaseActivity {
     private Bundle savedInstanceState;
     private SMSclass smSclass;
     private String isDormant;
+    private BottomNavigationView bottomNavigationView;
 
     private LevelClass levelClass;
 
@@ -149,9 +156,52 @@ public class MainPage extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         this.savedInstanceState = savedInstanceState;
+        bottomNavigationView=findViewById(R.id.home_bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.menu_home);
+        bottomNavigationView.setOnNavigationItemSelectedListener(drawerListener);
+
+        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
 
         if (isHasAppPermission())
             InitializeApp();
+    }
+    BottomNavigationView.OnNavigationItemSelectedListener drawerListener= item -> {
+        Intent i;
+        switch (item.getItemId()){
+            case R.id.menu_home:
+                Fragment newFragment = new FragMainPage();
+                switchContent(newFragment, getString(R.string.appname).toUpperCase());
+                return true;
+            case R.id.menu_b2b:
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else {
+                    i = new Intent(MainPage.this, ActivitySCADM.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                }
+                return true;
+            case R.id.menu_help:
+                i = new Intent(MainPage.this, ContactActivity.class);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                return true;
+            case R.id.menu_profile:
+                i = new Intent(MainPage.this, ActivityProfileQr.class);
+                startActivity(i);
+                return true;
+        }
+        return false;
+    };
+    private void dialogDormant() {
+        Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.title_dialog_dormant),
+                getString(R.string.message_dialog_dormant_),
+                (v, isLongClick) -> {
+                    Intent i = new Intent(MainPage.this, TopUpActivity.class);
+                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                }
+        );
+
+        dialognya.show();
     }
 
     private void InitializeApp() {
@@ -632,8 +682,9 @@ public class MainPage extends BaseActivity {
 //        mRightDrawerRelativeLayout = findViewById(R.id.right_drawer);
         mDrawerLayout.setScrimColor(getResources().getColor(R.color.transparent));
         mOuterRelativeContent = findViewById(R.id.outer_layout_content);
-        findViewById(R.id.layout_include_fab).setVisibility(View.VISIBLE);
-
+//        findViewById(R.id.layout_include_fab).setVisibility(View.VISIBLE);
+        //buat lock gesture slide
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -642,6 +693,7 @@ public class MainPage extends BaseActivity {
 
 //        mRightDrawerRelativeLayout.getLayoutParams().width = width;
 //        mRightDrawerRelativeLayout.getLayoutParams().height = height;
+
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, getToolbar(), R.string.drawer_open, R.string.drawer_close) {
             @Override
@@ -706,6 +758,9 @@ public class MainPage extends BaseActivity {
             }
         };
         mDrawerToggle.syncState();
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
+        mDrawerLayout.setActivated(false);
+        disableHomeIcon();
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         getDataListMember();
@@ -1223,17 +1278,9 @@ public class MainPage extends BaseActivity {
         AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
         alertbox.setTitle("Warning");
         alertbox.setMessage("Exit Application?");
-        alertbox.setPositiveButton("OK", new
-                DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        switchLogout();
-                    }
-                });
-        alertbox.setNegativeButton(getString(R.string.cancel), new
-                DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
+        alertbox.setPositiveButton("OK", (arg0, arg1) -> switchLogout());
+        alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
+        });
         alertbox.show();
     }
 //---------------------------------------------------------------------------------------------------------
@@ -1289,6 +1336,9 @@ public class MainPage extends BaseActivity {
 //            RealmResults<TagihModel> list = _realm.where(TagihModel.class).findAll();
 //
 //            Log.d("mainpage", "id : " + list.get(0).getId());
+        }else if(item.getItemId()==R.id.settings){
+            Intent i=new Intent(this,ActivityListSettings.class);
+            switchActivity(i, ACTIVITY_RESULT);
         }
         invalidateOptionsMenu();
         return super.onOptionsItemSelected(item);
@@ -1374,6 +1424,7 @@ public class MainPage extends BaseActivity {
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
         }
+        bottomNavigationView.setSelectedItemId(R.id.menu_home);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(btnReceiver, new IntentFilter(MainPage.RESULT_HOME_BALANCE));
 

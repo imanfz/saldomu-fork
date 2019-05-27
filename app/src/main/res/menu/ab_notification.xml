@@ -9,24 +9,38 @@
             android:title="@string/appname"
             android:icon="@drawable/ic_home_white"
             someNamespace:showAsAction="always"
+            android:visible="false"
             />
-
-
+        <item
+            android:id="@+id/history"
+            android:orderInCategory="1"
+            android:title="@string/notifications"
+            android:icon="@drawable/ic_cashout_white"
+            someNamespace:showAsAction="always"
+            />
         <item
             android:id="@+id/notifications"
             android:orderInCategory="2"
             android:title="@string/notifications"
             android:icon="@drawable/ic_notifications"
             someNamespace:showAsAction="always"
+            android:visible="false"
+            />
+        <item
+            android:id="@+id/settings"
+            android:orderInCategory="3"
+            android:title="@string/menu_item_title_setting"
+            android:icon="@drawable/ic_settings_agent"
+            someNamespace:showAsAction="always"
             />
 
-    <item
+        <item
             android:id="@+id/right_drawer_menu"
             android:orderInCategory="99"
             android:title="@string/social_promo"
             android:icon="@drawable/ic_menu_promo"
             someNamespace:showAsAction="ifRoom"
-        android:visible="false"
+            android:visible="false"
             />
 
 </menu>
