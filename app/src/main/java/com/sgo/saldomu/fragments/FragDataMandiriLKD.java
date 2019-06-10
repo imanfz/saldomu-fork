@@ -429,13 +429,27 @@ public class FragDataMandiriLKD extends BaseFragment {
             et_noID.requestFocus();
             et_noID.setError("NIK dibutuhkan!");
             return false;
-        } else if (layout_sender.getVisibility() == View.VISIBLE && et_name.getText().toString().length() == 0) {
-            et_name.requestFocus();
-            et_name.setError("Nama dibutuhkan!");
+        } else if (et_noID.getText().toString().length() < 16) {
+            et_noID.requestFocus();
+            et_noID.setError("NIK Anda kurang lengkap!");
             return false;
+        }else if (layout_sender.getVisibility() == View.VISIBLE) {
+            if (et_name.getText().toString().length() == 0) {
+                et_name.requestFocus();
+                et_name.setError("Nama dibutuhkan!");
+                return false;
+            } else if (et_name.getText().toString().length() < 3) {
+                et_name.requestFocus();
+                et_name.setError("Nama minimal 3 karakter!");
+                return false;
+            }
         } else if (et_address.getText().toString().length() == 0) {
             et_address.requestFocus();
             et_address.setError("Alamat dibutuhkan!");
+            return false;
+        } else if (et_address.getText().toString().length() < 10) {
+            et_address.requestFocus();
+            et_address.setError("Alamat Anda kurang lengkap!");
             return false;
         } else if (layout_pob.getVisibility() == View.VISIBLE && layout_dob.getVisibility() == View.VISIBLE) {
             if (city_textview_autocomplete.getText().toString().trim().length() == 0) {
@@ -480,7 +494,11 @@ public class FragDataMandiriLKD extends BaseFragment {
             et_noHp.requestFocus();
             et_noHp.setError("No. Handphone dibutuhkan!");
             return false;
-        } else if (et_sumberdana.getVisibility() == View.VISIBLE && et_sumberdana.getText().toString().length() == 0) {
+        } else if (et_noHp.getText().toString().length() < 10) {
+            et_noHp.requestFocus();
+            et_noHp.setError("No. Handphone minimal 10 karakter!");
+            return false;
+        }else if (et_sumberdana.getVisibility() == View.VISIBLE && et_sumberdana.getText().toString().length() == 0) {
             et_sumberdana.requestFocus();
             et_sumberdana.setError("Sumber Dana dibutuhkan!");
             return false;
