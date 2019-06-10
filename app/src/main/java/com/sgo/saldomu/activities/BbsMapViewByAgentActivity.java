@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -198,7 +199,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         btnGetDirection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                getDirection();
             }
         });
         btnTibaDiLokasi.setOnClickListener(
@@ -210,6 +211,13 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     }
                 }
         );
+    }
+    private void getDirection() {
+        LatLng clientlatLng = new LatLng(benefLatitude,benefLongitude);
+        Intent intent=new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr="+clientlatLng.latitude+","+clientlatLng.longitude));
+        Timber.d("http://maps.google.com/maps?daddr="+clientlatLng.latitude+","+clientlatLng.longitude);
+        startActivity(intent);
     }
 
     @Override

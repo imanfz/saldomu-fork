@@ -60,7 +60,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
     private TextView btnPrivacyPolicy;
     private EditText userIDValue;
     private EditText passLoginValue;
-    private ImageView image_spinner, toogleViewPass;
+    private ImageView image_spinner, toogleViewPass, logo;
     private Button btnLogin;
     private Animation frameAnimation;
     //    private MaterialRippleLayout btnLayout;
@@ -80,6 +80,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         btnPrivacyPolicy = v.findViewById(R.id.tv_privacypolicy);
         btnRegister = v.findViewById(R.id.btn_register);
         image_spinner = v.findViewById(R.id.image_spinning_wheel);
+        logo=v.findViewById(R.id.logo);
 
         return v;
     }
@@ -136,6 +137,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             if (m.containsKey(DefineValue.IS_POS)) {
                 if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y")) {
                     is_pos = m.getString(DefineValue.IS_POS, "");
+                    logo.setImageDrawable(getResources().getDrawable(R.drawable.logo_pos));
                     getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
                     userIDValue.setEnabled(true);
                     userIDValue.setHint("No HP POS yang sudah terdaftar");

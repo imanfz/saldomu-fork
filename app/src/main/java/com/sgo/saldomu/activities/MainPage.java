@@ -1074,7 +1074,7 @@ public class MainPage extends BaseActivity {
     public void switchContent(Fragment mFragment, String fragName) {
         mContent = mFragment;
 
-        materialSheetFab.showFab();
+//        materialSheetFab.showFab();
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -1333,23 +1333,12 @@ public class MainPage extends BaseActivity {
 //            mDrawerLayout.openDrawer(mRightDrawerRelativeLayout);
 //            return true;
 //        }
-        else if (item.getItemId() == R.id.menu_location) {
-            setDirection();
-        }else if(item.getItemId()==R.id.settings){
+        else if(item.getItemId()==R.id.settings){
             Intent i=new Intent(this,ActivityListSettings.class);
             switchActivity(i, ACTIVITY_RESULT);
         }
         invalidateOptionsMenu();
         return super.onOptionsItemSelected(item);
-    }
-
-    private void setDirection() {
-        LatLng agentlatLng = new LatLng(-6.2274757,106.6586167);
-        LatLng clientlatLng = new LatLng(-6.2411137,106.6284969);
-        Intent intent=new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?daddr="+clientlatLng.latitude+","+clientlatLng.longitude));
-        Timber.d("http://maps.google.com/maps?daddr="+clientlatLng.latitude+","+clientlatLng.longitude);
-        startActivity(intent);
     }
 
     @Override

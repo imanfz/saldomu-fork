@@ -4,21 +4,27 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.ScanQRUtils;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -51,13 +57,15 @@ public class ActivityProfileQr extends BaseActivity {
     private boolean is_agent = false;//saat antri untuk diverifikasi
     private boolean isUpgradeAgent =false; //saat antri untuk diverifikasi upgrade agent
     private boolean isRegisteredLevel = false;
+    private ImageView custImage;
 
     // UI LAYOUT
-    TextView tv_name, tv_phone_no, tv_lvl_member_value;
+    TextView tv_name, tv_phone_no, tv_lvl_member_value, currencyLimit, limitValue;
     CardView btn_upgrade;
     ImageView imageQR;
     ProgressDialog progdialog;
     RelativeLayout lytUpgrade,lytDetail;
+    LinearLayout llBalanceDetail;
 
 
 
@@ -154,14 +162,26 @@ public class ActivityProfileQr extends BaseActivity {
         imageQR = findViewById(R.id.iv_qr);
         lytUpgrade = findViewById(R.id.lyt_upgrade_detail);
         lytDetail = findViewById(R.id.lyt_detail);
+        custImage = findViewById(R.id.cust_image);
+        llBalanceDetail = findViewById(R.id.llBalanceDetail);
+        currencyLimit = findViewById(R.id.currency_limit_value);
+        limitValue = findViewById(R.id.limit_value);
 
 
         tv_name.setText(sourceAcctName);
         tv_phone_no.setText(sourceAcct);
         tv_lvl_member_value.setText(getLvl());
+        currencyLimit.setText(sp.getString(DefineValue.BALANCE_CCYID, ""));
+        limitValue.setText(CurrencyFormat.format(sp.getString(DefineValue.BALANCE_REMAIN_LIMIT, "")));
+        setImageProfPic();
 
 
         viewOnProggressUpgrade();
+        if (!sp.getBoolean(DefineValue.IS_AGENT, false)){
+            llBalanceDetail.setVisibility(View.VISIBLE);
+        }else {
+            llBalanceDetail.setVisibility(View.GONE);
+        }
 
 
         btn_upgrade.setOnClickListener(new View.OnClickListener() {
@@ -461,6 +481,22 @@ public class ActivityProfileQr extends BaseActivity {
                 progdialog.dismiss();
             Timber.d("httpclient:"+e.getMessage());
         }
+    }
+    private void setImageProfPic() {
+        String _url_profpic;
+        _url_profpic = sp.getString(DefineValue.IMG_URL, null);
+
+        Timber.wtf("url prof pic:" + _url_profpic);
+
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
+        RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
+
+        if (_url_profpic != null && _url_profpic.isEmpty()) {
+            GlideManager.sharedInstance().initializeGlide(ActivityProfileQr.this, R.drawable.user_unknown_menu, roundedImage, custImage);
+        } else {
+            GlideManager.sharedInstance().initializeGlide(ActivityProfileQr.this, _url_profpic, roundedImage, custImage);
+        }
+
     }
 
 

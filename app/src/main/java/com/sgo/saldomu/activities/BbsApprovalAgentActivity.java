@@ -246,6 +246,8 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
                                 tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
                                 tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
+                                if ( progdialog.isShowing())
+                                    progdialog.dismiss();
 
                         /*
                         RequestParams params2    = new RequestParams();
@@ -388,7 +390,8 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        if ( progdialog.isShowing())
+                            progdialog.dismiss();
                     }
 
                     @Override

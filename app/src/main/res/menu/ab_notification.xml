@@ -4,13 +4,6 @@
 
 
         <item
-            android:id="@+id/menu_location"
-            android:orderInCategory="1"
-            android:title="@string/appname"
-            android:icon="@drawable/ic_location_on_black"
-            someNamespace:showAsAction="always"
-            />
-        <item
             android:id="@+id/notifications"
             android:orderInCategory="2"
             android:title="@string/notifications"
