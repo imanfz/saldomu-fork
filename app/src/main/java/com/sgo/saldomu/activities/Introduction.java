@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -60,6 +61,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     protected String extraSignature = "";
     private String[] perms;
     private ProgressDialog progdialog;
+    private Handler handler;
 
     private String timeDate, timeStamp, fcm_id, fcmId_encrypted;
     private SecurePreferences sp;
@@ -152,8 +154,14 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //            }
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 openLogin(-2);
-            } else
-                sendFCM();
+            } else {
+                handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                        sendFCM();
+                }
+            }, 3000);
+            }
         }
     };
 
@@ -289,7 +297,6 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
             @Override
             public void onSuccess(String product_value) {
-
 
 
             }
