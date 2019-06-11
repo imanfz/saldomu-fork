@@ -20,6 +20,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -90,6 +91,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -151,7 +154,7 @@ public class MainPage extends BaseActivity {
     AlertDialog devRootedDeviceAlertDialog;
     private Bundle savedInstanceState;
     private SMSclass smSclass;
-    private String isDormant;
+    private String isDormant, userNameLogin;
     private BottomNavigationView bottomNavigationView;
 
     private LevelClass levelClass;
@@ -166,7 +169,7 @@ public class MainPage extends BaseActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(drawerListener);
 
         isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
-
+        userNameLogin = sp.getString(DefineValue.USER_NAME, "");
         if (isHasAppPermission())
             InitializeApp();
     }
@@ -175,7 +178,8 @@ public class MainPage extends BaseActivity {
         switch (item.getItemId()){
             case R.id.menu_home:
                 Fragment newFragment = new FragMainPage();
-                switchContent(newFragment, getString(R.string.appname).toUpperCase());
+//                switchContent(newFragment, getString(R.string.appname).toUpperCase());
+                switchContent(newFragment, setGreetings());
                 return true;
             case R.id.menu_transfer:
                 if (isDormant.equalsIgnoreCase("Y")) {
@@ -200,6 +204,25 @@ public class MainPage extends BaseActivity {
         }
         return false;
     };
+
+    public String setGreetings() {
+        Date date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        String greeting="";
+        if (hour > 10 && hour <= 14) {
+            greeting=getString(R.string.good_afternoon) + " " + userNameLogin;
+        } else if (hour > 14 && hour <= 18.30) {
+            greeting=getString(R.string.good_evening) + " " + userNameLogin;
+        } else if (hour > 18.30 || hour < 4) {
+            greeting=getString(R.string.good_night) + " " + userNameLogin;
+        } else {
+            greeting=getString(R.string.good_morning) + " " + userNameLogin;
+        }
+        return greeting;
+    }
+
     private void dialogDormant() {
         Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.title_dialog_dormant),
                 getString(R.string.message_dialog_dormant_),

@@ -27,19 +27,22 @@ public class DefinedDialog {
     }
 
     public static ProgressDialog CreateProgressDialog(Context context, String message) {
-        ProgressDialog dialog = new ProgressDialog(context);
-        try {
+        if (context!=null){
+            ProgressDialog dialog = new ProgressDialog(context);
+            try {
                 dialog.show();
-        } catch (WindowManager.BadTokenException e) {
-            Timber.w("define dialog error:" + e.getMessage());
+            } catch (WindowManager.BadTokenException e) {
+                Timber.w("define dialog error:" + e.getMessage());
+            }
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setContentView(R.layout.dialog_progress);
+            TextView text1 = dialog.findViewById(R.id.progressText1);
+            text1.setText(message);
+            return dialog;
         }
-        dialog.setIndeterminate(true);
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.dialog_progress);
-        TextView text1 = dialog.findViewById(R.id.progressText1);
-        text1.setText(message);
-        return dialog;
+        return null;
     }
 
     public static void showErrorDialog(Context context, String message) {

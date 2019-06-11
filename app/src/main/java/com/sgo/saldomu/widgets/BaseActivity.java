@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -35,6 +38,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
 
     private Toolbar detoolbar;
     private TextView title_detoolbar;
+    private ImageView img_detoolbar;
     private ProgressBar deprogressbar;
     protected SMSclass smsClass;
     protected boolean isActive;
@@ -68,6 +72,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
         deprogressbar = findViewById(R.id.main_toolbar_progress_spinner);
 
         title_detoolbar = findViewById(R.id.main_toolbar_title);
+        img_detoolbar = findViewById(R.id.main_toolbar_img);
         if (detoolbar != null) {
             setSupportActionBar(detoolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -146,6 +151,17 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
 
     protected void setActionBarTitle(String _title) {
         title_detoolbar.setText(_title);
+        if (_title.contains(",")||_title.contains("Selamat")){
+            img_detoolbar.setVisibility(View.VISIBLE);
+            if (_title.contains("Pagi"))
+            img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.sun));
+            if (_title.contains("Siang"))
+                img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.sun));
+            if (_title.contains("Sore"))
+                img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.moon));
+            if (_title.contains("Malam"))
+                img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.moon));
+        }
     }
 
     protected String getActionBarTitle() {

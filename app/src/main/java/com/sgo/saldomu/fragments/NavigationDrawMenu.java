@@ -92,6 +92,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import okhttp3.MediaType;
@@ -176,7 +178,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     private String isRegisteredLevel; //saat antri untuk diverifikasi
     String categoryIdcta;
     ArrayList<ShopCategory> shopCategories = new ArrayList<>();
-    private String isDormant;
+    private String isDormant, userNameLogin;
 
     Intent i;
 
@@ -210,6 +212,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
         isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL, "0");
         categoryIdcta = sp.getString(DefineValue.CATEGORY_ID_CTA, "");
+        userNameLogin = sp.getString(DefineValue.USER_NAME, "");
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
         ListView mListView = v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
@@ -414,7 +417,8 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     public void initializeNavDrawer() {
         if (!getActivity().isFinishing()) {
             Fragment newFragment = new FragMainPage();
-            switchFragment(newFragment, getString(R.string.appname).toUpperCase());
+            MainPage mainPage=(MainPage) getActivity();
+            switchFragment(newFragment, mainPage.setGreetings());
             refreshDataNavDrawer();
         }
     }

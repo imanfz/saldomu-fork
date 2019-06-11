@@ -25,6 +25,7 @@
     <color name="color_black">#000000</color>
     <color name="color_white">#FFFFFF</color>
     <color name="color_gray">#808080</color>
+    <color name="color_header_bg">#FCE2CC</color>
 
     <color name="red_50">#fde0dc</color>
     <color name="red_100">#f9bdbb</color>
