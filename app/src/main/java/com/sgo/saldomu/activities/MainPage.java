@@ -279,8 +279,6 @@ public class MainPage extends BaseActivity {
             fcmId_encrypted = Md5.hashMd5(fcm_id);
             sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
             sp.edit().putString(DefineValue.FCM_ID, fcm_id).apply();
-        }else {
-            initializeFCM();
         }
     }
 
