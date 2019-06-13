@@ -23,6 +23,7 @@ import com.sgo.saldomu.Beans.NotificationModelClass;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.NotificationActivity;
+import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.adapter.NotificationListAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -112,7 +113,7 @@ public class FragNotification extends BaseFragment {
         mPtr.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                sentRetrieveNotif(false);
+//                sentRetrieveNotif(false);
             }
 
             @Override
@@ -166,7 +167,7 @@ public class FragNotification extends BaseFragment {
                         if (recyclerView.getChildAt(i).getVisibility() == View.VISIBLE) {
                             if (!tempMData.isRead()) {
                                 Timber.d("on item visible idx position");
-                                sentReadNotif(tempMData.getNotif_id(), i);
+//                                sentReadNotif(tempMData.getNotif_id(), i);
                             }
                         }
 
@@ -263,6 +264,7 @@ public class FragNotification extends BaseFragment {
                     break;
 
                 case NotificationActivity.REJECTED_KTP:
+//                    sentReadNotif(mData.get(position).getNotif_id(), position);
                     SecurePreferences.Editor editor = sp.edit();
                     editor.putString(DefineValue.REJECT_KTP, mObjDetail.optString(WebParams.REJECT_KTP, "N"));
                     editor.putString(DefineValue.REJECT_FOTO, mObjDetail.optString(WebParams.REJECT_FOTO, "N"));
@@ -278,6 +280,7 @@ public class FragNotification extends BaseFragment {
                     getActivity().finish();
                     break;
                 case NotificationActivity.REJECTED_SIUP_NPWP:
+//                    sentReadNotif(mData.get(position).getNotif_id(), position);
                     SecurePreferences.Editor editor1 = sp.edit();
                     editor1.putString(DefineValue.REJECT_SIUP, mObjDetail.optString(WebParams.REJECT_SIUP, "N"));
                     editor1.putString(DefineValue.REJECT_NPWP, mObjDetail.optString(WebParams.REJECT_NPWP, "N"));
@@ -293,14 +296,28 @@ public class FragNotification extends BaseFragment {
                 case NotificationActivity.BLAST_INFO:
                     getActivity().finish();
                     break;
+                case NotificationActivity.SOURCE_OF_FUND:
+//                    sentReadNotif(mData.get(position).getNotif_id(), position);
+//                    Intent dataSourceOfFund = new Intent();
+//                    dataSourceOfFund.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
+//                    dataSourceOfFund.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.SOURCE_OF_FUND);
+//                    getActivity().setResult(MainPage.RESULT_NOTIF, dataSourceOfFund);
+
+                    Intent s = new Intent(getActivity(), SourceOfFundActivity.class);
+                    s.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
+                    s.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.SOURCE_OF_FUND);
+                    s.putExtra(DefineValue.IS_INAPP, "N");
+                    s.putExtras(s);
+                    startActivity(s);
+                    break;
             }
 
 
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {
-            if (!mObj.isRead())
-                sentReadNotif(mObj.getNotif_id(), position);
+//            if (!mObj.isRead())
+//                sentReadNotif(mObj.getNotif_id(), position);
         }
     }
 
@@ -378,7 +395,7 @@ public class FragNotification extends BaseFragment {
                 if (mContext instanceof MainPage) {
                     MainPage mMainPage = (MainPage) mContext;
                     NotificationHandler mNoHand = new NotificationHandler(mMainPage, sp);
-                    mNoHand.sentRetrieveNotif();
+//                    mNoHand.sentRetrieveNotif();
                 }
             }
         };
@@ -388,6 +405,7 @@ public class FragNotification extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        RetrofitService.dispose();
         getActivity().setResult(MainPage.RESULT_NOTIF);
     }
 
@@ -512,6 +530,11 @@ public class FragNotification extends BaseFragment {
                                                         title = notif_detail.getString(WebParams.SUBJECT);
                                                         detail = notif_detail.getString(WebParams.DESC);
                                                         break;
+                                                    case NotificationActivity.SOURCE_OF_FUND:
+                                                        image = R.drawable.ic_cash_out;
+                                                        title = notif_detail.getString(WebParams.SUBJECT);
+                                                        detail = notif_detail.getString(WebParams.DESC);
+                                                        break;
                                                 }
 
                                                 if (notif_type == NotificationActivity.TYPE_LIKE ||
@@ -522,7 +545,8 @@ public class FragNotification extends BaseFragment {
                                                         notif_type == NotificationActivity.TYPE_NON_MEMBER ||
                                                         notif_type == NotificationActivity.CLAIM_NON_MEMBER ||
                                                         notif_type == NotificationActivity.REJECTED_KTP ||
-                                                        notif_type == NotificationActivity.BLAST_INFO
+                                                        notif_type == NotificationActivity.BLAST_INFO ||
+                                                        notif_type == NotificationActivity.SOURCE_OF_FUND
                                                 ) {
                                                     mDataNotifDetail.add(notif_detail);
 
@@ -643,7 +667,7 @@ public class FragNotification extends BaseFragment {
                                     test.showDialoginActivity(getActivity(), message);
                                 }
 
-                                sentRetrieveNotif(true);
+//                                sentRetrieveNotif(true);
                             } else {
                                 Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_SHORT).show();
 
@@ -685,6 +709,6 @@ public class FragNotification extends BaseFragment {
     }
 
     public void refreshAdapter() {
-        sentRetrieveNotif(true);
+//        sentRetrieveNotif(true);
     }
 }

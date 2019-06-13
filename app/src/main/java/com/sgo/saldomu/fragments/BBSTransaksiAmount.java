@@ -65,7 +65,7 @@ public class BBSTransaksiAmount extends Fragment {
     private TextView tvTitle;
     private AutoCompleteTextView etAmount;
     private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim,
-            benef_product_code, source_product_code,defaultProductCode, noHpMemberLocation = "";
+            benef_product_code, source_product_code,defaultProductCode, noHpMemberLocation = "", enabledAdditionalFee;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -410,6 +410,7 @@ public class BBSTransaksiAmount extends Fragment {
                     if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                         benef_product_type = listbankBenef.get(position).getProduct_type();
                         benef_product_code = listbankBenef.get(position).getProduct_code();
+                        enabledAdditionalFee = listbankBenef.get(position).getEnabled_additional_fee();
                         if (benef_product_type.equalsIgnoreCase(DefineValue.EMO) && !benef_product_code.equalsIgnoreCase("MANDIRILKD") ) {
 //                            cityLayout.setVisibility(View.GONE);
                             etNoAcct.setHint(R.string.number_hp_destination_hint);
@@ -440,6 +441,7 @@ public class BBSTransaksiAmount extends Fragment {
                     } else {
                         if(listbankSource.get(position).getBank_gateway() != null) {
                             source_product_code = listbankSource.get(position).getProduct_code();
+                            enabledAdditionalFee = listbankSource.get(position).getEnabled_additional_fee();
 //                            if (listbankSource.get(position).getProduct_type().equalsIgnoreCase(DefineValue.ACCT) || source_product_code.equalsIgnoreCase("MANDIRILKD"))
                                 if (source_product_code.equalsIgnoreCase("MANDIRILKD"))
                                 {
@@ -498,6 +500,7 @@ public class BBSTransaksiAmount extends Fragment {
                         args.putString(DefineValue.BENEF_PRODUCT_CODE, listbankBenef.get(position).getProduct_code());
                         args.putString(DefineValue.BENEF_PRODUCT_TYPE, listbankBenef.get(position).getProduct_type());
                         args.putString(DefineValue.BENEF_PRODUCT_NAME, listbankBenef.get(position).getProduct_name());
+                        args.putString(DefineValue.ENABLED_ADDITIONAL_FEE, listbankBenef.get(position).getEnabled_additional_fee());
                         args.putString(DefineValue.NO_BENEF, etNoAcct.getText().toString());
                         if (nameLayout.getVisibility() == View.VISIBLE) {
                             args.putString(DefineValue.NAME_BENEF, etNameAcct.getText().toString());
@@ -525,6 +528,7 @@ public class BBSTransaksiAmount extends Fragment {
                         args.putString(DefineValue.SOURCE_PRODUCT_TYPE, listbankSource.get(position).getProduct_type());
                         args.putString(DefineValue.SOURCE_PRODUCT_NAME, listbankSource.get(position).getProduct_name());
                         args.putString(DefineValue.SOURCE_PRODUCT_H2H, listbankSource.get(position).getProduct_h2h());
+                        args.putString(DefineValue.ENABLED_ADDITIONAL_FEE, listbankSource.get(position).getEnabled_additional_fee());
                         args.putString(DefineValue.SOURCE_ACCT_NO, etNoAcct.getText().toString());
                         args.putString(DefineValue.NO_HP_MEMBER_LOCATION, noHpMemberLocation);
                     }

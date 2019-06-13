@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -269,7 +269,7 @@
         <activity android:name=".activities.BbsMemberShopDetailActivity" />
         <activity android:name=".activities.BbsSetupOpenHourActivity" />
         <activity android:name=".activities.BbsSetupShopClosedActivity" />
-        <activity android:name=".activities.BbsMapNagivationActivity" />
+        <activity android:name=".activities.BbsMapNavigationActivity" />
         <activity
             android:name=".activities.BBSActivity"
             android:configChanges="orientation"
@@ -437,6 +437,16 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.OTPVerificationActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.PrivacyPolicyActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SourceOfFundActivity"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait" />

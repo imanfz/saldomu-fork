@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -43,6 +44,7 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
@@ -122,8 +124,12 @@ public class BillerDesciption extends BaseFragment {
     private List<bank_biller_model> mListBankBiller;
     private Realm realm;
     Boolean isPLN = false;
-    String fee = "0", deAmount;
-
+    String fee = "0", deAmount, enabledAdditionalFee;
+    private Boolean isAgent=false;
+    private LinearLayout layout_additionalFee;
+    private EditText et_additionalFee;
+    LevelClass levelClass;
+    SentPaymentBillerModel sentPaymentBillerModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -137,6 +143,8 @@ public class BillerDesciption extends BaseFragment {
         layout_biller_name = v.findViewById(R.id.billertoken_layout_biller_name);
         tv_id_cust = v.findViewById(R.id.billertoken_biller_id_value);
         spin_payment_options = v.findViewById(R.id.spinner_billerinput_payment_options);
+        layout_additionalFee = v.findViewById(R.id.layout_additional_fee);
+        et_additionalFee = v.findViewById(R.id.et_additionalfee);
 
         return v;
     }
@@ -161,6 +169,10 @@ public class BillerDesciption extends BaseFragment {
     private void initializeData() {
         Bundle args = getArguments();
         Timber.d("isi args biller description:" + args.toString());
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        levelClass = new LevelClass(getActivity(), sp);
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         biller_comm_id = args.getString(DefineValue.COMMUNITY_ID);
         biller_name = args.getString(DefineValue.COMMUNITY_NAME, "");
@@ -221,6 +233,11 @@ public class BillerDesciption extends BaseFragment {
                 et_desired_amount = v.findViewById(R.id.billertoken_amount_desired_value);
                 et_desired_amount.addTextChangedListener(jumlahChangeListener);
             }
+        }
+
+        if (isAgent && enabledAdditionalFee.equals("Y"))
+        {
+            layout_additionalFee.setVisibility(View.VISIBLE);
         }
 
 //        if(isPLN){
@@ -491,6 +508,7 @@ public class BillerDesciption extends BaseFragment {
                                 description = getGson().toJson(model.getDescription());
 //                            if(isPLN ) {
                                 fee = model.getAdmin_fee();
+                                enabledAdditionalFee = model.getEnabled_additional_fee();
 //                            }
 
                                 if (isAdded())
@@ -555,6 +573,14 @@ public class BillerDesciption extends BaseFragment {
             params.put(WebParams.PRODUCT_H2H, mTempBank.getProduct_h2h());
             params.put(WebParams.PRODUCT_TYPE, mTempBank.getProduct_type());
             params.put(WebParams.USER_ID, userPhoneID);
+            if (isAgent)
+            {
+                if (!et_additionalFee.getText().toString().equals(""))
+                {
+                    params.put(WebParams.ADDITIONAL_FEE, et_additionalFee.getText().toString());
+                }else
+                    params.put(WebParams.ADDITIONAL_FEE, "0");
+            }
 
             Timber.d("isi params sent payment biller:" + params.toString());
 
@@ -562,29 +588,29 @@ public class BillerDesciption extends BaseFragment {
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            SentPaymentBillerModel model = getGson().fromJson(object, SentPaymentBillerModel.class);
+                            sentPaymentBillerModel = getGson().fromJson(object, SentPaymentBillerModel.class);
 
-                            String code = model.getError_code();
+                            String code = sentPaymentBillerModel.getError_code();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)) {
-                                    changeToConfirmBiller(fee, model.getMerchant_type(),
+                                    changeToConfirmBiller(sentPaymentBillerModel.getFee(), sentPaymentBillerModel.getMerchant_type(),
                                             bank_code, product_code, -1);
                                 } else {
-                                    int attempt = model.getFailed_attempt();
+                                    int attempt = sentPaymentBillerModel.getFailed_attempt();
                                     if (attempt != -1)
-                                        attempt = model.getMax_failed() - attempt;
+                                        attempt = sentPaymentBillerModel.getMax_failed() - attempt;
 
-                                    sentDataReqToken(tx_id, product_code, biller_comm_code, fee,
-                                            model.getMerchant_type(), bank_code, attempt);
+                                    sentDataReqToken(tx_id, product_code, biller_comm_code, sentPaymentBillerModel.getFee(),
+                                            sentPaymentBillerModel.getMerchant_type(), bank_code, attempt);
                                 }
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
+                                String message = sentPaymentBillerModel.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
                             } else {
-                                code = model.getError_code() + " : " + model.getError_message();
+                                code = sentPaymentBillerModel.getError_code() + " : " + sentPaymentBillerModel.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
 
                                 getFragmentManager().popBackStack();
@@ -801,7 +827,7 @@ public class BillerDesciption extends BaseFragment {
         mArgs.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
         mArgs.putString(DefineValue.TX_ID, tx_id);
         mArgs.putString(DefineValue.CCY_ID, ccy_id);
-        mArgs.putString(DefineValue.AMOUNT, deAmount);
+        mArgs.putString(DefineValue.AMOUNT, sentPaymentBillerModel.getAmount());
         mArgs.putString(DefineValue.ITEM_NAME, item_name);
         mArgs.putString(DefineValue.BILLER_COMM_ID, biller_comm_id);
         mArgs.putString(DefineValue.BILLER_NAME, biller_name);
@@ -813,9 +839,9 @@ public class BillerDesciption extends BaseFragment {
         mArgs.putString(DefineValue.BILLER_API_KEY, biller_api_key);
         mArgs.putString(DefineValue.CALLBACK_URL, callback_url);
         mArgs.putString(DefineValue.ITEM_ID, item_id);
-        mArgs.putString(DefineValue.FEE, fee);
+        mArgs.putString(DefineValue.FEE, sentPaymentBillerModel.getFee());
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(fee);
-        mArgs.putString(DefineValue.TOTAL_AMOUNT, amount);
+        mArgs.putString(DefineValue.TOTAL_AMOUNT, sentPaymentBillerModel.getTotal_amount());
         mArgs.putString(DefineValue.PRODUCT_PAYMENT_TYPE, mTempBank.getProduct_type());
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
 
@@ -829,6 +855,7 @@ public class BillerDesciption extends BaseFragment {
         mArgs.putBoolean(DefineValue.IS_SGO_PLUS, mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB));
         mArgs.putString(DefineValue.AUTHENTICATION_TYPE, merchant_type);
         mArgs.putInt(DefineValue.ATTEMPT, attempt);
+        mArgs.putString(DefineValue.ADDITIONAL_FEE, sentPaymentBillerModel.getAdditional_fee());
 
         if (is_display_amount)
             mArgs.putString(DefineValue.DESCRIPTION, description);
@@ -839,12 +866,12 @@ public class BillerDesciption extends BaseFragment {
             mArgs.putString(DefineValue.AMOUNT_DESIRED, desired_amount);
             mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(totalAmount));
         }
-        if (isPLN) {
-            double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
-            String deAmount = String.valueOf(mAmount);
-            mArgs.putString(DefineValue.AMOUNT, deAmount);
-            mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(amount));
-        }
+//        if (isPLN) {
+//            double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
+//            String deAmount = String.valueOf(mAmount);
+//            mArgs.putString(DefineValue.AMOUNT, deAmount);
+//            mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(amount));
+//        }
 
         Fragment newFrag = new BillerConfirm();
         newFrag.setArguments(mArgs);

@@ -24,8 +24,10 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.PrivacyPolicyActivity;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -55,6 +57,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
     private String userIDfinale = null, is_pos;
     private Button btnforgetPass;
     private Button btnRegister;
+    private TextView btnPrivacyPolicy;
     private EditText userIDValue;
     private EditText passLoginValue;
     private ImageView image_spinner, toogleViewPass;
@@ -74,6 +77,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         passLoginValue = v.findViewById(R.id.passLogin_value);
         btnLogin = v.findViewById(R.id.btn_login);
         btnforgetPass = v.findViewById(R.id.btn_forgetPass);
+        btnPrivacyPolicy = v.findViewById(R.id.tv_privacypolicy);
         btnRegister = v.findViewById(R.id.btn_register);
         image_spinner = v.findViewById(R.id.image_spinning_wheel);
 
@@ -157,6 +161,15 @@ public class Login extends BaseFragment implements View.OnClickListener {
             }
         });
 
+
+        btnPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), PrivacyPolicyActivity.class);
+                startActivity(i);
+            }
+        });
+
 //        String mcAddress = new DeviceUtils(getActivity()).getWifiMcAddress();
 //        String deviceModel = new DeviceUtils(getActivity()).getDeviceModelID();
 //        String androidId = new DeviceUtils(getActivity()).getAndroidID();
@@ -206,6 +219,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 //                });
 //                break;
         }
+
     }
 
     boolean checkIsPOS() {
@@ -496,6 +510,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
                         String arrJson = toJson(commModel.getAgent_scheme_codes()).toString();
                         mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
+                        mEditor.putString(DefineValue.IS_AGENT_TRX_REQ, commModel.getIs_agent_trx_request());
                         Timber.w("isi comm id yg bener:" + commModel.getCommId());
 
                         break;

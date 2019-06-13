@@ -15,6 +15,7 @@ import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -47,6 +48,8 @@ public class FCMManager {
     public final static int REJECT_UPGRADE_MEMBER                   = 2;
     public final static int REJECT_UPGRADE_AGENT                    = 202;
     public final static int BLAST_INFO                              = 1009;
+    public final static int SOURCE_OF_FUND                          = 1010;
+    public final static int VERIFY_ACC                              = 1011;
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
@@ -376,6 +379,23 @@ public class FCMManager {
                     break;
                 case FCMManager.BLAST_INFO:
                     i = new Intent(mContext, MainPage.class);
+                    break;
+                case FCMManager.SOURCE_OF_FUND:
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            String txId = jsonOptions.getJSONObject(0).getString("tx_id");
+                            bundleNextLogin.putString(DefineValue.TX_ID,txId);
+                            bundleNextLogin.putString(DefineValue.IS_INAPP,"Y");
+
+                            i = new Intent(mContext, SourceOfFundActivity.class);
+                            i.putExtras(bundleNextLogin);
+                        }
+                        catch (JSONException e)
+                        {
+                            Timber.d("JSONException: " + e.getMessage());
+                        }
+                    }
                     break;
                 default:
                     i = new Intent(mContext, MainPage.class);

@@ -68,14 +68,14 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     private TextView tvTitle;
     private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
     private TextView tvSourceAcct, tvBankBenef, tvBenefCity, tvAmount, tvNoBenefAcct,
-            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor, tvOTP;
+            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor, tvOTP, tvAdditionalFee;
     private TableRow tbNameBenef;
     private EditText tokenValue, noHpTCASH;
     private Button btnSubmit, btnResend, btnBack;
     private String comm_code, tx_product_code, source_product_type,
             benef_city, source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             fee, tx_id, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
-            no_hp_benef, remark, source_product_name, total_amount, transaksi, benef_product_code, tx_status;
+            no_hp_benef, remark, source_product_name, total_amount, transaksi, benef_product_code, tx_status, addditionalFee;
     private int max_token_resend = MAX_TOKEN_RESENT;
     private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation = false, isTCASH = false, validasiNomor = false,
             isMandiriLKD = false, MandiriLKD_validation = false, code_success = false;
@@ -151,6 +151,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         tbNameBenef = v.findViewById(R.id.tb_name_benef);
         tvNomor = v.findViewById(R.id.tv_no_tcash);
         tvOTP = v.findViewById(R.id.tv_otp);
+        tvAdditionalFee = v.findViewById(R.id.bbscashin_confirm_additionalFee);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -183,6 +184,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             TCASH_hp_validation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION);
             MandiriLKD_validation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION);
             code_success = bundle.getBoolean(DefineValue.CODE_SUCCESS);
+            addditionalFee = bundle.getString(DefineValue.ADDITIONAL_FEE, "0");
             String benef_product_type = bundle.getString(DefineValue.TYPE_BENEF, "");
 
             if (!bundle.containsKey(DefineValue.MAX_RESEND))
@@ -192,6 +194,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             tvAmount.setText(CurrencyFormat.format(amount));
             tvFee.setText(CurrencyFormat.format(fee));
             tvTotal.setText(CurrencyFormat.format(total_amount));
+            tvAdditionalFee.setText(CurrencyFormat.format(addditionalFee));
             tvBankBenef.setText(benef_product_name);
             tvBenefCity.setText(benef_city);
 
@@ -773,7 +776,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         // Include dialog.xml file
         dialog.setContentView(R.layout.dialog_notification);
 
-        // set values for custom dialog components - text, image and button
+        // set values for custom dialog coxmponents - text, image and button
         Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
         TextView Title = dialog.findViewById(R.id.title_dialog);
         TextView Message = dialog.findViewById(R.id.message_dialog);
@@ -811,6 +814,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         args.putString(DefineValue.BANK_PRODUCT, response.getProduct_name());
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
+        args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdditional_fee()));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_amount()));
 
         Boolean txStat = false;

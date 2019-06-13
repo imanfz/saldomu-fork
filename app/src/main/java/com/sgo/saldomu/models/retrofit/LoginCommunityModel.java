@@ -86,6 +86,10 @@ public class LoginCommunityModel {
     @Expose
     private String agent_type;
 
+    @SerializedName("is_agent_trx_request")
+    @Expose
+    private String is_agent_trx_request;
+
     public String getCommId() {
         return commId;
     }
@@ -270,5 +274,9 @@ public class LoginCommunityModel {
         if (agent_type == null)
             agent_type = "";
         return agent_type;
+    }
+
+    public String getIs_agent_trx_request() {
+        return is_agent_trx_request;
     }
 }

@@ -1081,6 +1081,7 @@ public class MainPage extends BaseActivity {
         mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, "");
         mEditor.putString(DefineValue.IS_POS, "");
         mEditor.remove(DefineValue.IS_DORMANT);
+        mEditor.remove(DefineValue.IS_REGISTERED_LEVEL);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -1185,6 +1186,11 @@ public class MainPage extends BaseActivity {
                         case NotificationActivity.REJECTED_SIUP_NPWP:
                             Intent a = new Intent(this, UpgradeAgentActivity.class);
                             switchActivity(a, ACTIVITY_RESULT);
+                            break;
+                        case NotificationActivity.SOURCE_OF_FUND:
+                            Intent s = new Intent(this, SourceOfFundActivity.class);
+                            s.putExtras(data);
+                            switchActivity(s, ACTIVITY_RESULT);
                             break;
                     }
                 }

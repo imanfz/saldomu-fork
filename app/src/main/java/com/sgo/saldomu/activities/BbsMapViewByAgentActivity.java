@@ -902,6 +902,12 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                         if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
                                             Intent intent = new Intent(getApplicationContext(), TagihActivity.class);
                                             intent.putExtra(DefineValue.IS_SEARCH_DGI, true);
+                                            if (response.getString(WebParams.COMM_CODE_PG) != null || response.getString(WebParams.MEMBER_CODE_PG) != null) {
+                                                intent.putExtra(DefineValue.MEMBER_CODE_PG, response.getString(WebParams.MEMBER_CODE_PG));
+                                                intent.putExtra(DefineValue.COMM_CODE_PG, response.getString(WebParams.COMM_CODE_PG));
+                                                intent.putExtra(DefineValue.COMM_NAME_PG, response.getString(WebParams.COMM_NAME_PG));
+                                                intent.putExtra(DefineValue.ANCHOR_NAME_PG, response.getString(WebParams.ANCHOR_NAME_PG));
+                                            }
                                             startActivity(intent);
                                             finish();
 
@@ -909,7 +915,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                             Intent intent = new Intent(getApplicationContext(), MainPage.class);
                                             startActivity(intent);
                                             finish();
-                                        }else {
+                                        } else {
 
                                             bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
                                             bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
@@ -935,7 +941,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                                 }
                                 handler.removeCallbacks(runnable2);
-                            }else {
+                            } else {
 //                                Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
 
                                 InterfaceManager.showConfirmDialog(BbsMapViewByAgentActivity.this,

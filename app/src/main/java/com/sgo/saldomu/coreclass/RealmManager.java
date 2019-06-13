@@ -127,6 +127,7 @@ public class RealmManager {
                 .schemaVersion(BuildConfig.REALM_SCHEME_BBS_VERSION)
                 .modules(new BBSModule())
                 .migration(new BBSRealMigration())
+                .deleteRealmIfMigrationNeeded()
                 .build();
 
         BBSMemberBankConfiguration = new RealmConfiguration.Builder()

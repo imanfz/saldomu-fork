@@ -76,9 +76,8 @@ public class UtilsLoader {
                 params.put(WebParams.MEMBER_ID, member_id);
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-                if (sp.getString(DefineValue.IS_MANUAL,"N").equalsIgnoreCase("Y"))
-                {
-                    params.put(WebParams.IS_MANUAL,"Y");
+                if (sp.getString(DefineValue.IS_MANUAL, "N").equalsIgnoreCase("Y")) {
+                    params.put(WebParams.IS_MANUAL, "Y");
                 }
                 String isAuto = (is_auto) ? DefineValue.STRING_YES : DefineValue.STRING_NO;
                 params.put(WebParams.IS_AUTO, isAuto);
@@ -127,7 +126,8 @@ public class UtilsLoader {
                                         if (getmActivity().isFinishing()) {
                                             String message = model.getError_message();
                                             AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                            test.showDialoginMain(getmActivity(), message);
+                                            if (getmActivity() != null)
+                                                test.showDialoginMain(getmActivity(), message);
                                         }
                                     } else {
                                         code = model.getError_message();
@@ -176,7 +176,7 @@ public class UtilsLoader {
         getFailedPIN(params, mListener);
     }
 
-    void getFailedPIN(HashMap<String, Object> params, final OnLoadDataListener mListener){
+    void getFailedPIN(HashMap<String, Object> params, final OnLoadDataListener mListener) {
         try {
 
             Timber.d("isi params get FailedPin Loader:" + params.toString());
@@ -197,7 +197,8 @@ public class UtilsLoader {
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginMain(getmActivity(), message);
+                                if (getmActivity() != null)
+                                    test.showDialoginMain(getmActivity(), message);
                             } else {
                                 code = model.getError_message();
                                 Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
@@ -267,7 +268,8 @@ public class UtilsLoader {
                                         AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.maintenance),
                                                 message, android.R.drawable.ic_dialog_alert, false,
                                                 getmActivity().getString(R.string.ok), okListener);
-                                        alertDialog.show();
+                                        if (getmActivity() != null)
+                                            alertDialog.show();
                                     } else {
                                         String package_version = appModel.getPackageVersion();
                                         final String package_name = appModel.getPackageName();
@@ -299,7 +301,8 @@ public class UtilsLoader {
                                             AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.update),
                                                     getmActivity().getString(R.string.update_msg), android.R.drawable.ic_dialog_alert, false,
                                                     getmActivity().getString(R.string.ok), okListener);
-                                            alertDialog.show();
+                                            if (getmActivity() != null)
+                                                alertDialog.show();
                                         }
                                     }
                                 } else if (code.equals("0381")) {
@@ -316,7 +319,8 @@ public class UtilsLoader {
                                     AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.maintenance),
                                             message, android.R.drawable.ic_dialog_alert, false,
                                             getmActivity().getString(R.string.ok), okListener);
-                                    alertDialog.show();
+                                    if (getmActivity() != null)
+                                        alertDialog.show();
                                 } else {
                                     code = model.getError_message();
                                     Toast.makeText(CoreApp.getAppContext(), code, Toast.LENGTH_LONG).show();

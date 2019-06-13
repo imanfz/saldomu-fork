@@ -564,6 +564,22 @@ public class DefineValue {
     public static String DEVICE_NAME= "device_name";
     public static String IS_MANUAL= "is_manual";
     public static String IS_DORMANT= "is_dormant";
+    public static String ADDITIONAL_FEE= "additionalFee";
+    public static String ENABLED_ADDITIONAL_FEE= "enabledAdditionalFee";
+    public static String SG3= "sg3";
+    public static String IS_INAPP= "is_inapp";
+    public static String MEMBER_CODE_PG= "memberCodePG";
+    public static String COMM_CODE_PG= "commCodePG";
+    public static String COMM_NAME_PG= "commNamePG";
+    public static String ANCHOR_NAME_PG= "anchorNamePG";
+    public static String IS_AGENT_TRX_REQ= "isAgentTrxReq";
+
+    public static String TEMP_ICCID = "temp_iccid";
+    public static String TEMP_IMEI = "temp_imei";
+    public static String TEMP_IS_SENT = "temp_is_sent";
+    public static String LAST_SMS_SENT = "last_sms_sent";
+    public static String LAST_SMS_SENT_MILLIS = "last_sms_sent_millis";
+    public static String FCM_ENCRYPTED = "fcmEncrypted";
 
 }
 

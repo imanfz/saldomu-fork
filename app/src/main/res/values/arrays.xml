@@ -129,6 +129,7 @@
     <string-array name="settings_list_pin">
         <item>@string/menu_setting_profile</item>
         <item>@string/menu_setting_info</item>
+        <item>@string/privay_policy</item>
         <!--<item>FAQ</item>-->
 
     </string-array>

@@ -28,6 +28,7 @@ public class NotificationActivity extends BaseActivity {
     public final static int REJECTED_KTP= 13;
     public final static int REJECTED_SIUP_NPWP= 14;
     public final static int BLAST_INFO= 15;
+    public final static int SOURCE_OF_FUND= 16;
 
     public final static int P2PSTAT_PENDING = 1;
     public final static int P2PSTAT_PAID = 2;

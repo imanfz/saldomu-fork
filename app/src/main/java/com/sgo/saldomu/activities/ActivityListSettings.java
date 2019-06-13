@@ -28,7 +28,6 @@ public class ActivityListSettings extends BaseActivity {
     private InformationDialog dialogI;
     private Boolean isLevel1, isAgent;
     private LevelClass levelClass;
-    ListView list_setting;
 
     ArrayList<String> list = new ArrayList<>();
 
@@ -58,10 +57,6 @@ public class ActivityListSettings extends BaseActivity {
         _data = getResources().getStringArray(R.array.settings_list_pin);
         list.addAll(Arrays.asList(_data));
 
-//        if (!isLevel1) {
-//            _data = getResources().getStringArray(R.array.settings_isnot_lvl1);
-//            list.addAll(Arrays.asList(_data));
-//        }
         if (isAgent)
         {
             _data = getResources().getStringArray(R.array.settings_is_agent);
@@ -112,6 +107,10 @@ public class ActivityListSettings extends BaseActivity {
                     case "Pengaturan Agen":
                         i = new Intent(ActivityListSettings.this, BBSActivity.class);
                         i.putExtra(DefineValue.INDEX, BBSActivity.BBSKELOLA);
+                        startActivity(i);
+                        break;
+                    case "Syarat dan Ketentuan" :
+                        i = new Intent(ActivityListSettings.this, PrivacyPolicyActivity.class);
                         startActivity(i);
                         break;
 //                    case "Bahasa":

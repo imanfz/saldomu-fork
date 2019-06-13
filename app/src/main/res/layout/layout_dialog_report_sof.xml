@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/padding_small"
+    android:layout_marginTop="@dimen/text_size_medium_material"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1">
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:padding="3dip"
+                android:text="@string/report_transaction_type" />
+
+            <TextView
+                android:id="@+id/dialog_reportbiller_buss_scheme_name"
+                android:layout_width="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="2"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300" />
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:padding="3dip"
+                android:text="@string/merchant_name" />
+
+            <TextView
+                android:id="@+id/dialog_report_merchant_name_value"
+                android:layout_width="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="2"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300" />
+
+        <TableRow>
+
+            <TextView
+                android:layout_weight="1"
+                android:padding="3dip"
+                android:text="@string/payment_remark" />
+
+            <TextView
+                android:id="@+id/dialog_reportbiller_paymentremark_value"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:maxLines="1"
+                android:padding="3dip" />
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300" />
+
+        <TableRow>
+
+            <TextView
+                android:layout_weight="1"
+                android:padding="3dip"
+                android:text="@string/sgoplus_text_amount" />
+
+            <TextView
+                android:id="@+id/dialog_reportbiller_amount_value"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:maxLines="1"
+                android:padding="3dip"
+                android:text="Rp. 200000" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/dialog_reportbiller_amount_desired_layout"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="2"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_margin="8dp"
+                    android:background="@color/grey_300" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:padding="3dip"
+                        android:text="@string/reportbiller_text_amount_to_be_paid" />
+
+                    <TextView
+                        android:id="@+id/dialog_reportbiller_amount_desired_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="right"
+                        android:maxLines="1"
+                        android:padding="3dip"
+                        android:text="Toufan" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300" />
+
+        <TableRow>
+
+            <TextView
+                android:layout_weight="1"
+                android:padding="3dip"
+                android:text="@string/topup_token_fee" />
+
+            <TextView
+                android:id="@+id/dialog_reportbiller_fee_value"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:maxLines="1"
+                android:padding="3dip"
+                android:text="Rp. 200000" />
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300" />
+
+        <TableRow>
+
+            <TextView
+                android:layout_weight="1"
+                android:padding="3dip"
+                android:text="@string/topup_token_total_amount" />
+
+            <TextView
+                android:id="@+id/dialog_reportbiller_total_amount_value"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:maxLines="1"
+                android:padding="3dip"
+                android:text="Rp. 200000" />
+        </TableRow>
+
+    </TableLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_reportbiller_layout_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/billertoken_layout_deskripsi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="left"
+                android:text="@string/description"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_size_medium_material"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/billertoken_arrow_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:clickable="true"
+                android:src="@drawable/ic_circle_arrow_down" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -73,7 +73,8 @@ public class BillerInput extends Fragment {
             "RMH",  //Perumahan  16
             "BPJS", //BILLER_TYPE_BPJS 17
             "GAME", // Game 18
-            "OVO"}; // saldo ovo 19
+            "OVO", // saldo ovo 19
+            "VCHR"}; // voucher 20
     private View v;
     private View layout_denom;
     private View layout_month;
@@ -106,7 +107,7 @@ public class BillerInput extends Fragment {
     private RealmChangeListener realmListener;
     private Boolean isToken;
     Boolean isHaveItemID;
-//    private Spinner sp_privacy;
+    //    private Spinner sp_privacy;
     private int privacy;
     private String digitsListener = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private Realm realm;
@@ -268,8 +269,7 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PAM));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (biller_type_code.equals(billerType[7]) || biller_type_code.equals(billerType[19])) {
-            if (biller_type_code.equals(billerType[19]))
-            {
+            if (biller_type_code.equals(billerType[19])) {
                 tv_ovo.setVisibility(View.VISIBLE);
                 tv_ovo.setText(R.string.newhome_ovo);
             }
@@ -295,13 +295,13 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_RMH));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
-        } else if (biller_type_code.equals(billerType[18])) {
+        } else if (biller_type_code.equals(billerType[18]) || biller_type_code.equals(billerType[20])) {
             buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
-            tv_payment_remark.setVisibility(View.GONE);
-            et_payment_remark.setVisibility(View.GONE);
+            tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
+            et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
+            et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else {
-
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -400,9 +400,10 @@ public class BillerInput extends Fragment {
                 if (inputValidation()) {
                     if (biller_type_code.equals(billerType[0]))
                         final_payment_remark = NoHPFormat.formatTo62(String.valueOf(et_payment_remark.getText()));
-                    else if (biller_type_code.equals(billerType[18])) {
-                        final_payment_remark = sp.getString(DefineValue.USERID_PHONE, "");
-                    } else
+//                    else if (biller_type_code.equals(billerType[18])) {
+//                        final_payment_remark = sp.getString(DefineValue.USERID_PHONE, "");
+//                    }
+                    else
                         final_payment_remark = String.valueOf(et_payment_remark.getText());
                     showDialog(final_payment_remark);
                 }

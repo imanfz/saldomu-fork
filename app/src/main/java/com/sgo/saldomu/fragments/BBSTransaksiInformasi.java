@@ -24,6 +24,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -98,7 +99,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     private String ATC = "ATC";
     private String SOURCE = "SOURCE";
     private String BENEF = "BENEF";
-    private EditText etNoHp, etRemark, etOTP;
+    private EditText etNoHp, etRemark, etOTP, etAdditionalFee;
     private Button btnNext, btnBack;
     private SMSclass smSclass;
     private SMSDialog smsDialog;
@@ -110,11 +111,12 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue = "", comm_id, city_id, amount,
             transaksi, no_benef, name_benef, city_name, no_source, benef_product_value_token, source_product_value_token, key_code,
-            noHPMemberLocation = "", message, lkd_product_code;
+            noHPMemberLocation = "", message, lkd_product_code, enabledAdditionalFee;
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
     private Boolean TCASHValidation = false, MandiriLKDValidation = false, code_success = false;
+    private LinearLayout additionalFee_layout;
 
     public interface ActionListener {
         void ChangeActivityFromCashInput(Intent data);
@@ -186,6 +188,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             member_code = bundle.getString(DefineValue.MEMBER_CODE);
             callback_url = bundle.getString(DefineValue.CALLBACK_URL);
             api_key = bundle.getString(DefineValue.API_KEY);
+            enabledAdditionalFee = bundle.getString(DefineValue.ENABLED_ADDITIONAL_FEE);
 
             if (bundle.containsKey(DefineValue.NO_HP_MEMBER_LOCATION)) {
                 noHPMemberLocation = bundle.getString(DefineValue.NO_HP_MEMBER_LOCATION, "");
@@ -254,6 +257,14 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 actv_rekening_cta = cashin_layout.findViewById(R.id.rekening_agen_value);
                 etNoHp = cashin_layout.findViewById(R.id.no_hp_pengirim_value);
                 etRemark = cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
+                etAdditionalFee = cashin_layout.findViewById(R.id.et_additionalfee);
+                additionalFee_layout = cashin_layout.findViewById(R.id.additionalFeecashin_layout);
+
+                if (enabledAdditionalFee.equals("Y"))
+                {
+                    additionalFee_layout.setVisibility(View.VISIBLE);
+                }else
+                    additionalFee_layout.setVisibility(View.GONE);
 
                 if (!key_code.equals("")) {
                     etNoHp.setText(key_code);
@@ -285,7 +296,14 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 sp_rekening_act = cashout_layout.findViewById(R.id.rekening_agen_value);
                 etRemark = cashout_layout.findViewById(R.id.message_value);
                 etOTP = cashout_layout.findViewById(R.id.no_OTP_cashout);
+                etAdditionalFee = cashout_layout.findViewById(R.id.et_additionalfee);
+                additionalFee_layout = cashout_layout.findViewById(R.id.additionalFeecashin_layout);
 
+                if (enabledAdditionalFee.equals("Y"))
+                {
+                    additionalFee_layout.setVisibility(View.VISIBLE);
+                }else
+                    additionalFee_layout.setVisibility(View.GONE);
 
                 String[] from = {"flag", "txt"};
                 // Ids of views in listview_layout
@@ -333,6 +351,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             source_product_name = "";
             source_product_type = "";
             source_product_h2h = "";
+            enabledAdditionalFee = "";
             int position;
             String nameAcct = actv_rekening_cta.getText().toString();
             for (int i = 0; i < aListAgent.size(); i++) {
@@ -341,6 +360,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                     source_product_code = listbankSource.get(position).getProduct_code();
                     source_product_type = listbankSource.get(position).getProduct_type();
                     source_product_h2h = listbankSource.get(position).getProduct_h2h();
+                    source_product_name = listbankSource.get(position).getProduct_name();
                     source_product_name = listbankSource.get(position).getProduct_name();
                     break;
                 }
@@ -575,7 +595,9 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             params.put(WebParams.PAYMENT_REMARK, etRemark.getText().toString());
             params.put(WebParams.MEMBER_SHOP_PHONE, etNoHp.getText().toString());
             params.put(WebParams.USER_COMM_CODE, BuildConfig.COMM_CODE_BBS_ATC);
-
+            if (additionalFee_layout.getVisibility()==View.VISIBLE) {
+                params.put(WebParams.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
+            }
             String aodTxId = sp.getString(DefineValue.AOD_TX_ID, "");
             if (!aodTxId.equals("")) {
                 params.put(WebParams.TX_ID, aodTxId);
@@ -615,7 +637,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
                                     if (isSMSBanking) {
                                         if (smsDialog == null) {
-                                            smsDialog = new SMSDialog(getActivity(), null);
+                                            smsDialog = new SMSDialog();
                                         }
 
                                         smsDialog.setListener(new SMSDialog.DialogButtonListener() {
@@ -651,7 +673,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
 
                                         if (isSimExist)
-                                            smsDialog.show();
+                                            smsDialog.show(getFragmentManager(),"");
                                     } else if (source_product_h2h.equalsIgnoreCase("Y") && source_product_type.equalsIgnoreCase(DefineValue.EMO)) {
                                         if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("tcash")
                                                 && !source_product_code.equalsIgnoreCase("MANDIRILKD")) {
@@ -869,6 +891,9 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
             params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.PAYMENT_REMARK, etRemark.getText().toString());
+            if (additionalFee_layout.getVisibility()==View.VISIBLE) {
+                params.put(WebParams.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
+            }
 
             String aodTxId = sp.getString(DefineValue.AOD_TX_ID, "");
             if (!aodTxId.equals("")) {
@@ -1145,6 +1170,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
         mArgs.putBoolean(DefineValue.IS_OWNER, isOwner);
+        mArgs.putString(DefineValue.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
         if (TCASHValidation != null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
 //        if (MandiriLKDValidation != null)
@@ -1213,6 +1239,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         mArgs.putString(DefineValue.FEE, model.getAdmin_fee());
         mArgs.putString(DefineValue.TOTAL_AMOUNT, model.getTotal_amount());
+        mArgs.putString(DefineValue.ADDITIONAL_FEE, model.getAdditional_fee());
         btnNext.setEnabled(true);
         cashOutHistory();
 
@@ -1324,7 +1351,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             String action = intent.getAction();
             if (action.equalsIgnoreCase("android.intent.action.SIM_STATE_CHANGED")) {
                 if (intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")) {
-                    if (smsDialog != null && smsDialog.isShowing()) {
+                    if (smsDialog != null) {
+//                    if (smsDialog != null && smsDialog.isShowing()) {
                         Toast.makeText(getActivity(), R.string.smsclass_simcard_listener_absent_toast, Toast.LENGTH_LONG).show();
                         smsDialog.dismiss();
                         smsDialog.reset();

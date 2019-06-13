@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:text="@string/currency"
-            android:textSize="@dimen/text_size_large_material" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_saldo"
@@ -95,12 +95,12 @@
             android:layout_height="wrap_content"
             android:text="123.000"
             android:textColor="@color/colorPrimary"
-            android:textSize="26sp" />
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/btn_refresh_balance"
-            android:layout_width="15dp"
-            android:layout_height="19dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
             android:src="@drawable/ic_refresh_balance" />
@@ -291,7 +291,7 @@
                 app:fillColor="#FFFFFFFF"
                 app:pageColor="#00000000"
                 app:radius="3dp"
-                app:slideInterval="3000"
+                app:slideInterval="7000"
                 app:strokeColor="#979797"
                 app:strokeWidth="1dp" />
 
