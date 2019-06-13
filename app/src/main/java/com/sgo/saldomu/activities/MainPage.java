@@ -79,6 +79,7 @@ import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.GetMemberModel;
 import com.sgo.saldomu.models.retrofit.MemberDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
@@ -154,7 +155,7 @@ public class MainPage extends BaseActivity {
     AlertDialog devRootedDeviceAlertDialog;
     private Bundle savedInstanceState;
     private SMSclass smSclass;
-    private String isDormant, userNameLogin;
+    private String isDormant, userNameLogin, fcm_id, fcmId_encrypted;
     private BottomNavigationView bottomNavigationView;
 
     private LevelClass levelClass;
@@ -264,10 +265,22 @@ public class MainPage extends BaseActivity {
 //                    initializeDashboard();
                 }
             } else {
+                initializeFCM();
                 initializeDashboard();
             }
         } else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
+        }
+    }
+
+    private void initializeFCM() {
+        if (sp.getString(DefineValue.FCM_ENCRYPTED,null)==null){
+            fcm_id = FCMManager.getTokenFCM();
+            fcmId_encrypted = Md5.hashMd5(fcm_id);
+            sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
+            sp.edit().putString(DefineValue.FCM_ID, fcm_id).apply();
+        }else {
+            initializeFCM();
         }
     }
 

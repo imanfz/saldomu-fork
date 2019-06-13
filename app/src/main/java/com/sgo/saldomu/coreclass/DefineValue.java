@@ -580,6 +580,7 @@ public class DefineValue {
     public static String LAST_SMS_SENT = "last_sms_sent";
     public static String LAST_SMS_SENT_MILLIS = "last_sms_sent_millis";
     public static String FCM_ENCRYPTED = "fcmEncrypted";
+    public static String FCM_ID = "fcmId";
 
 }
 
