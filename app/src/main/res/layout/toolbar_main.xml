@@ -3,16 +3,21 @@
     android:id="@+id/main_toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/color_header_bg"
     android:fitsSystemWindows="true">
 
+    <ImageView
+        android:id="@+id/main_toolbar_img"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:visibility="gone"/>
     <TextView
         android:id="@+id/main_toolbar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/grey_1000w"
-        android:textSize="@dimen/abc_text_size_menu_material"
-        android:textStyle="bold|italic" />
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <ProgressBar
         android:id="@+id/main_toolbar_progress_spinner"

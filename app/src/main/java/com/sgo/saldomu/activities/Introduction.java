@@ -84,9 +84,12 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
         timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
 
-        fcm_id = FCMManager.getTokenFCM();
-        fcmId_encrypted = Md5.hashMd5(fcm_id);
-        sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
+//        fcm_id = FCMManager.getTokenFCM();
+//        fcmId_encrypted = Md5.hashMd5(fcm_id);
+//        sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
+
+        fcm_id=sp.getString(DefineValue.FCM_ID,"");
+        fcmId_encrypted=sp.getString(DefineValue.FCM_ENCRYPTED,"");
 
         setFlowAnimation();
         Button skipbtn = (Button) skipButton;

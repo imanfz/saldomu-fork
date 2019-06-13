@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.Resource;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
@@ -166,8 +167,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         llAgentDetail = v.findViewById(R.id.llAgentDetail);
         gridview_progbar = v.findViewById(R.id.gridview_progbar);
         refreshBtn = v.findViewById(R.id.btn_refresh_balance);
-        img_greetings = v.findViewById(R.id.img_greeting);
-        tv_greetings = v.findViewById(R.id.tv_greetings);
         btn_topup = v.findViewById(R.id.btn_topup);
         progBanner = v.findViewById(R.id.progressBarBanner);
         carouselView = v.findViewById(R.id.carouselView1);
@@ -239,7 +238,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         }
 
-        setGreeting();
 
         if (isAgent) {
             setupIconAndTitle();
@@ -777,71 +775,72 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private void setupIconAndTitle() {
-        if (isAgent) {
-            checkSchemeCodeAgent();
-            if (sp.getString(DefineValue.IS_AGENT_TRX_REQ,"").equalsIgnoreCase("Y")) {
-                menuStrings.add(getResources().getString(R.string.menu_item_title_trx_agent));
+        if (getActivity()!=null&&isAdded()){
+            if (isAgent) {
+                checkSchemeCodeAgent();
+                if (sp.getString(DefineValue.IS_AGENT_TRX_REQ,"").equalsIgnoreCase("Y")) {
+                    menuStrings.add(getResources().getString(R.string.menu_item_title_trx_agent));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
+                }
+                menuStrings.add(getResources().getString(R.string.title_bbs_list_account_bbs));
+                menuDrawables.add(getResources().getDrawable(R.drawable.ic_rekening_saya));
+
+                menuStrings.add(getResources().getString(R.string.menu_item_title_onprogress_agent));
+                menuDrawables.add(getResources().getDrawable(R.drawable.ic_dalam_proses));
+            } else {
+                checkSchemeCodeMember();
+
+                menuStrings.add(getResources().getString(R.string.title_cash_out_member));
                 menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
+
+                menuStrings.add(getResources().getString(R.string.menu_item_title_buy));
+                menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
+
+                if (mBillerTypeDataPLS != null) {
+                    menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
+                }
+
+                if (mBillerTypeDataBPJS != null) {
+                    menuStrings.add(getResources().getString(R.string.newhome_bpjs));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_bpjs));
+                }
+
+                if (mBillerTypeDataTKN != null) {
+                    menuStrings.add(getResources().getString(R.string.newhome_listrik_pln));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
+                }
+
+                if (mBillerTypeDataEMoney != null) {
+                    menuStrings.add(getResources().getString(R.string.newhome_emoney));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
+                }
+
+                if (mBillerTypeDataGame != null) {
+                    menuStrings.add(getResources().getString(R.string.newhome_game));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.game));
+                }
+
+                if (mBillerTypeDataVoucher != null) {
+                    menuStrings.add(getResources().getString(R.string.newhome_voucher));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.voucher));
+                }
+
+                if (mBillerTypeDataPDAM != null) {
+                    menuStrings.add(getResources().getString(R.string.newhome_pam));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_pdam));
+                }
+
             }
-            menuStrings.add(getResources().getString(R.string.title_bbs_list_account_bbs));
-            menuDrawables.add(getResources().getDrawable(R.drawable.ic_rekening_saya));
+            menuStrings.add(getResources().getString(R.string.menu_item_title_ask_for_money));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_minta_saldo));
 
-            menuStrings.add(getResources().getString(R.string.menu_item_title_onprogress_agent));
-            menuDrawables.add(getResources().getDrawable(R.drawable.ic_dalam_proses));
-        } else {
-            checkSchemeCodeMember();
-
-            menuStrings.add(getResources().getString(R.string.title_cash_out_member));
-            menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
-
-            menuStrings.add(getResources().getString(R.string.menu_item_title_buy));
-            menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
-
-            if (mBillerTypeDataPLS != null) {
-                menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
-            }
-
-            if (mBillerTypeDataBPJS != null) {
-                menuStrings.add(getResources().getString(R.string.newhome_bpjs));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_bpjs));
-            }
-
-            if (mBillerTypeDataTKN != null) {
-                menuStrings.add(getResources().getString(R.string.newhome_listrik_pln));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
-            }
-
-            if (mBillerTypeDataEMoney != null) {
-                menuStrings.add(getResources().getString(R.string.newhome_emoney));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
-            }
-
-            if (mBillerTypeDataGame != null) {
-                menuStrings.add(getResources().getString(R.string.newhome_game));
-                menuDrawables.add(getResources().getDrawable(R.drawable.game));
-            }
-
-            if (mBillerTypeDataVoucher != null) {
-                menuStrings.add(getResources().getString(R.string.newhome_voucher));
-                menuDrawables.add(getResources().getDrawable(R.drawable.voucher));
-            }
-
-            if (mBillerTypeDataPDAM != null) {
-                menuStrings.add(getResources().getString(R.string.newhome_pam));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_pdam));
-            }
-
+            menuStrings.add(getResources().getString(R.string.menu_item_title_report));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_laporan));
         }
 
 //        menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));
 //        menuDrawables.add(getResources().getDrawable(R.drawable.ic_transfer_saldo));
-
-        menuStrings.add(getResources().getString(R.string.menu_item_title_ask_for_money));
-        menuDrawables.add(getResources().getDrawable(R.drawable.ic_minta_saldo));
-
-        menuStrings.add(getResources().getString(R.string.menu_item_title_report));
-        menuDrawables.add(getResources().getDrawable(R.drawable.ic_laporan));
     }
 
     void checkSchemeCodeAgent() {
@@ -1016,29 +1015,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         }
     };
-
-    private void setGreeting() {
-        //Get the time of day
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        int hour = cal.get(Calendar.HOUR_OF_DAY);
-
-
-        if (hour > 10 && hour <= 14) {
-            tv_greetings.setText(getString(R.string.good_afternoon) + " " + userNameLogin);
-            img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.sun));
-        } else if (hour > 14 && hour <= 18.30) {
-            tv_greetings.setText(getString(R.string.good_evening) + " " + userNameLogin);
-            img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.moon));
-        } else if (hour > 18.30 || hour < 4) {
-            tv_greetings.setText(getString(R.string.good_night) + " " + userNameLogin);
-            img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.moon));
-        } else {
-            tv_greetings.setText(getString(R.string.good_morning) + " " + userNameLogin);
-            img_greetings.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.sun));
-        }
-    }
 
     private BroadcastReceiver refBtnReciever = new BroadcastReceiver() {
 
