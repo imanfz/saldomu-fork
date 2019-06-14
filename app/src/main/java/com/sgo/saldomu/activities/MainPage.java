@@ -1183,6 +1183,7 @@ public class MainPage extends BaseActivity {
         mEditor.putString(DefineValue.IS_POS, "");
         mEditor.remove(DefineValue.IS_DORMANT);
         mEditor.remove(DefineValue.IS_REGISTERED_LEVEL);
+        mEditor.remove(DefineValue.CATEGORY);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
