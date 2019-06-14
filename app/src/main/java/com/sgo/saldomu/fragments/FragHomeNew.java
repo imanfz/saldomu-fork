@@ -124,7 +124,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Realm realm;
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
-    String shopStatus, isMemberShopDGI, isDormant, string;
+    String shopStatus, isMemberShopDGI, isDormant, agentSchemeCode, memberSchemeCode;
     Boolean isAgent;
     ProgressBar gridview_progbar;
     ProgressBar progBanner;
@@ -196,7 +196,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
 
-        string = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
+        agentSchemeCode = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
 
         realm = RealmManager.getRealmBiller();
 
@@ -244,7 +244,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
             GridView.setAdapter(adapter);
         } else {
-            if (sp.getString(DefineValue.CATEGORY_ID_CTA,null)==null){
+            if (sp.getString(DefineValue.CATEGORY,null)==null){
                 HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
                 params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                 params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -264,21 +264,23 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 String code = model.getError_code();
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    SecurePreferences.Editor mEditor = sp.edit();
                                     for (int i = 0; i < model.getCategories().size(); i++) {
 
                                         CategoriesModel obj = model.getCategories().get(i);
+
+
+                                        String arrJson = toJson(model.getCategories()).toString();
+                                        mEditor.putString(DefineValue.CATEGORY,arrJson);
 
                                         ShopCategory shopCategory = new ShopCategory();
                                         shopCategory.setCategoryId(obj.getCategory_id());
                                         if (shopCategory.getCategoryId().contains("SETOR")) {
                                             String categoryIDcta = shopCategory.getCategoryId().toString();
-                                            SecurePreferences.Editor mEditor = sp.edit();
                                             mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
-                                            mEditor.apply();
                                         }
                                         shopCategory.setSchemeCode(obj.getScheme_code());
                                         String tempCategory = obj.getCategory_name().toLowerCase();
-
                                         String[] strArray = tempCategory.split(" ");
                                         StringBuilder builder = new StringBuilder();
                                         for (String s : strArray) {
@@ -288,8 +290,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                                         shopCategory.setCategoryName(builder.toString());
                                         shopCategories.add(shopCategory);
-                                    }
 
+                                    }
+                                    mEditor.apply();
                                 } else {
                                     Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                                 }
@@ -852,7 +855,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
     void checkSchemeCodeAgent() {
         try {
-            JSONArray arr = new JSONArray(string);
+            JSONArray arr = new JSONArray(agentSchemeCode);
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
                 String objs = obj.optString(WebParams.SCHEME_CODE, "");
@@ -917,19 +920,26 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     void checkSchemeCodeMember() {
-        for (int i = 0; i < shopCategories.size(); i++) {
-            String objs = shopCategories.get(i).getSchemeCode();
-
-            switch (objs) {
-                case "ATC":
-                    menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + getResources().getString(R.string.cash_out));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_tarik_tunai));
-                    break;
-                case "CTA":
-                    menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + getResources().getString(R.string.cash_in));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_setor_tunai));
-                    break;
+        memberSchemeCode=sp.getString(DefineValue.CATEGORY,"");
+        try{
+            JSONArray arr = new JSONArray(memberSchemeCode);
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject obj = arr.getJSONObject(i);
+                String objs = obj.optString(WebParams.SCHEME_CODE, "");
+                switch (objs) {
+                    case "ATC":
+                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + getResources().getString(R.string.cash_out));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_tarik_tunai));
+                        break;
+                    case "CTA":
+                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + getResources().getString(R.string.cash_in));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_setor_tunai));
+                        break;
+                    case "BIL" : break;
+                }
             }
+        }catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
