@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.activities.BBSActivity;
+import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -64,6 +65,23 @@ public class FcmReceiver extends BroadcastReceiver {
                         context.startActivity(tempIntent);
                     } catch (JSONException e) {
                         Timber.d("JSONException FCM Receiver OptionData: " + e.getMessage());
+                    }
+
+                }
+
+                else if ( modelNotif == FCMManager.VERIFY_ACC ) {
+
+                    Bundle tempBundle = new Bundle();
+                    try {
+                        JSONArray jsonOptions = new JSONArray(jsonOptionData);
+
+                        tempBundle.putString(DefineValue.USER_ID, jsonOptions.getJSONObject(0).getString(WebParams.USER_ID));
+
+                        Intent tempIntent = new Intent(context, LoginActivity.class);
+                        tempIntent.putExtras(tempBundle);
+                        context.startActivity(tempIntent);
+                    } catch (JSONException e) {
+                        Timber.d("JSONException FCM Receiver OptionData Verifiy Acc: " + e.getMessage());
                     }
 
                 }

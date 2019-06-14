@@ -57,6 +57,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
     NotificationManager mNotificationManager;
     private SecurePreferences sp;
     private BundleToJSON bundleToJSON = new BundleToJSON();
+    private String flagLogin;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -85,7 +86,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                 if (modelNotif == MEMBER_RATING_TRX) {
                     sp = CustomSecurePref.getInstance().getmSecurePrefs();
-                    String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+                    flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
                     if (flagLogin == null)
                         flagLogin = DefineValue.STRING_NO;
 
@@ -108,8 +109,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
                         sendBroadcast(broadcast);
                     }
-                }if (modelNotif == VERIFY_ACC)
-                {
+                }
+                if (modelNotif == VERIFY_ACC) {
 
                     sp = CustomSecurePref.getInstance().getmSecurePrefs();
                     try {
@@ -121,8 +122,20 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         mEditor.putString(DefineValue.SENDER_ID, jsonObj2.getString(WebParams.USER_ID));
                         mEditor.apply();
 
-                        Intent i = new Intent(this, LoginActivity.class);
-                        startActivity(i);
+                        if (flagLogin == null)
+                            flagLogin = DefineValue.STRING_NO;
+
+                        if (flagLogin.equals(DefineValue.STRING_YES)) {
+
+                        } else {
+//                            Intent i = new Intent(this, LoginActivity.class);
+//                            startActivity(i);
+                            Intent broadcast = new Intent();
+                            broadcast.setAction(DefineValue.INTENT_ACTION_FCM_DATA);
+                            broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
+                            broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
+                            sendBroadcast(broadcast);
+                        }
 
                     } catch (JSONException e) {
                         Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
@@ -615,8 +628,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         try {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
                             String txId = jsonOptions.getJSONObject(0).getString("tx_id");
-                            bundle.putString(DefineValue.TX_ID,txId);
-                            bundle.putString(DefineValue.IS_INAPP,"Y");
+                            bundle.putString(DefineValue.TX_ID, txId);
+                            bundle.putString(DefineValue.IS_INAPP, "Y");
                             intent = new Intent(this, SourceOfFundActivity.class);
                             intent.putExtras(bundle);
                             stackBuilder.addParentStack(SourceOfFundActivity.class);
