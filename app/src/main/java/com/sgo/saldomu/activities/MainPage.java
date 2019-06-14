@@ -275,7 +275,10 @@ public class MainPage extends BaseActivity {
 
     private void initializeFCM() {
         if (sp.getString(DefineValue.FCM_ENCRYPTED,null)==null){
-            fcm_id = FCMManager.getTokenFCM();
+            while (fcm_id==null){
+                fcm_id = FCMManager.getTokenFCM();
+                Timber.w("FCM still null");
+            }
             fcmId_encrypted = Md5.hashMd5(fcm_id);
             sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
             sp.edit().putString(DefineValue.FCM_ID, fcm_id).apply();
