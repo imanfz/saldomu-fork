@@ -244,72 +244,79 @@ public class FragHomeNew extends BaseFragmentMainPage {
             GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
             GridView.setAdapter(adapter);
         } else {
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
-            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-            params.put(WebParams.SHOP_ID, "");
-            params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
-            Timber.d("isi params shop category:" + params.toString());
+            if (sp.getString(DefineValue.CATEGORY_ID_CTA,null)==null){
+                HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
+                params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                params.put(WebParams.SHOP_ID, "");
+                params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+                Timber.d("isi params shop category:" + params.toString());
 
-            showView(gridview_progbar);
+                showView(gridview_progbar);
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CATEGORY_LIST, params,
-                    new ResponseListener() {
-                        @Override
-                        public void onResponses(JsonObject object) {
-                            CategoryListModel model = getGson().fromJson(object, CategoryListModel.class);
+                RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CATEGORY_LIST, params,
+                        new ResponseListener() {
+                            @Override
+                            public void onResponses(JsonObject object) {
+                                CategoryListModel model = getGson().fromJson(object, CategoryListModel.class);
 
-                            String code = model.getError_code();
+                                String code = model.getError_code();
 
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-                                for (int i = 0; i < model.getCategories().size(); i++) {
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    for (int i = 0; i < model.getCategories().size(); i++) {
 
-                                    CategoriesModel obj = model.getCategories().get(i);
+                                        CategoriesModel obj = model.getCategories().get(i);
 
-                                    ShopCategory shopCategory = new ShopCategory();
-                                    shopCategory.setCategoryId(obj.getCategory_id());
-                                    if (shopCategory.getCategoryId().contains("SETOR")) {
-                                        String categoryIDcta = shopCategory.getCategoryId().toString();
-                                        SecurePreferences.Editor mEditor = sp.edit();
-                                        mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
-                                        mEditor.apply();
+                                        ShopCategory shopCategory = new ShopCategory();
+                                        shopCategory.setCategoryId(obj.getCategory_id());
+                                        if (shopCategory.getCategoryId().contains("SETOR")) {
+                                            String categoryIDcta = shopCategory.getCategoryId().toString();
+                                            SecurePreferences.Editor mEditor = sp.edit();
+                                            mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
+                                            mEditor.apply();
+                                        }
+                                        shopCategory.setSchemeCode(obj.getScheme_code());
+                                        String tempCategory = obj.getCategory_name().toLowerCase();
+
+                                        String[] strArray = tempCategory.split(" ");
+                                        StringBuilder builder = new StringBuilder();
+                                        for (String s : strArray) {
+                                            String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
+                                            builder.append(cap + " ");
+                                        }
+
+                                        shopCategory.setCategoryName(builder.toString());
+                                        shopCategories.add(shopCategory);
                                     }
-                                    shopCategory.setSchemeCode(obj.getScheme_code());
-                                    String tempCategory = obj.getCategory_name().toLowerCase();
 
-                                    String[] strArray = tempCategory.split(" ");
-                                    StringBuilder builder = new StringBuilder();
-                                    for (String s : strArray) {
-                                        String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                                        builder.append(cap + " ");
-                                    }
-
-                                    shopCategory.setCategoryName(builder.toString());
-                                    shopCategories.add(shopCategory);
+                                } else {
+                                    Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                                 }
 
-                            } else {
-                                Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
+                                setupIconAndTitle();
+                                GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
+                                GridView.setAdapter(adapter);
                             }
 
-                            setupIconAndTitle();
-                            GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
-                            GridView.setAdapter(adapter);
-                        }
+                            @Override
+                            public void onError(Throwable throwable) {
 
-                        @Override
-                        public void onError(Throwable throwable) {
+                            }
 
-                        }
+                            @Override
+                            public void onComplete() {
+                                dismissProgressDialog();
+                                hideView(gridview_progbar);
+                                Timber.d("hide view");
+                            }
+                        });
+            }else{
+                setupIconAndTitle();
+                GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
+                GridView.setAdapter(adapter);
+            }
 
-                        @Override
-                        public void onComplete() {
-                            dismissProgressDialog();
-                            hideView(gridview_progbar);
-                            Timber.d("hide view");
-                        }
-                    });
         }
 
 
