@@ -518,26 +518,52 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         startActivity(intent);
                     }
                 }else {
-                    for (int x = 0; x < shopCategories.size(); x++) {
-                        String categoryName = shopCategories.get(x).getCategoryName();
-                        String categoryNameModified = "Panggil Agen " + categoryName;
-                        String menuItemNameModified = menuItemName + " ";
-                        if (menuItemNameModified.equals(categoryNameModified)) {
-                            if (isDormant.equalsIgnoreCase("Y")) {
-                                dialogDormant();
-                            } else {
-                                Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
-                                i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
-                                sp.edit().putString(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
-                                i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
-                                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                                i.putExtra(DefineValue.AMOUNT, "");
-                                i.putExtra(DefineValue.BBS_SCHEME_CODE, shopCategories.get(x).getSchemeCode());
-                                switchActivity(i, MainPage.ACTIVITY_RESULT);
-                                break;
+//                    for (int x = 0; x < shopCategories.size(); x++) {
+//                        String categoryName = shopCategories.get(x).getCategoryName();
+//                        String categoryNameModified = "Panggil Agen " + categoryName;
+//                        String menuItemNameModified = menuItemName + " ";
+//                        if (menuItemNameModified.equals(categoryNameModified)) {
+//                            if (isDormant.equalsIgnoreCase("Y")) {
+//                                dialogDormant();
+//                            } else {
+//                                Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
+//                                i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
+//                                sp.edit().putString(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
+//                                i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
+//                                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+//                                i.putExtra(DefineValue.AMOUNT, "");
+//                                i.putExtra(DefineValue.BBS_SCHEME_CODE, shopCategories.get(x).getSchemeCode());
+//                                switchActivity(i, MainPage.ACTIVITY_RESULT);
+//                                break;
+//                            }
+//                        }
+//                    }
+                    try {
+                        JSONArray jsonArray=new JSONArray(memberSchemeCode);
+                        for (int index=0;index<jsonArray.length();index++){
+                            JSONObject jsonObject= jsonArray.getJSONObject(index);
+                            String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
+                            String categoryNameModified = "Panggil Agen " + objs;
+                            if (menuItemName.equalsIgnoreCase(categoryNameModified)){
+                                if (isDormant.equalsIgnoreCase("Y")) {
+                                    dialogDormant();
+                                } else {
+                                    Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
+                                    i.putExtra(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
+                                    sp.edit().putString(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
+                                    i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
+                                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                                    i.putExtra(DefineValue.AMOUNT, "");
+                                    i.putExtra(DefineValue.BBS_SCHEME_CODE, jsonObject.optString(WebParams.SCHEME_CODE));
+                                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                                    break;
+                                }
                             }
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
                 }
 
                 if (isAgent) {
