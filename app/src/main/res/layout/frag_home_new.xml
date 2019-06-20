@@ -3,127 +3,159 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/colorPrimaryDark"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/llAgentDetail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/grey_400"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="4dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="@string/set_online"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_menu_material" />
-
-        <Switch
-            android:id="@+id/swSettingOnline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:layout_weight="1"
-            android:textOff="@string/no"
-            android:textOn="@string/yes" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:background="@drawable/rectangle_home"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:text="@string/balance"
-            android:textSize="12sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:text="@string/currency"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/tv_saldo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="123.000"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp" />
-
-        <ImageView
-            android:id="@+id/btn_refresh_balance"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_refresh_balance" />
-
-        <Button
-            android:id="@+id/btn_topup"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/rounded_background_orange"
-            android:singleLine="false"
-            android:text="@string/topup"
-            android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
 
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2">
-
-            <GridView
-                android:id="@+id/grid"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:columnWidth="100dp"
-                android:gravity="center"
-                android:horizontalSpacing="2dp"
-                android:numColumns="4"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="2dp" />
-
-            <ProgressBar
-                android:id="@+id/gridview_progbar"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="invisible" />
-        </RelativeLayout>
+                android:layout_marginLeft="15dp"
+                android:text="@string/balance"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="@string/currency"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_saldo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="123.000"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/btn_refresh_balance"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/ic_refresh_balance" />
+
+            <Button
+                android:id="@+id/btn_topup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/rounded_background_orange"
+                android:singleLine="false"
+                android:text="@string/topup"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llAgentDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/grey_400"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="@string/set_online"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_menu_material" />
+
+            <Switch
+                android:id="@+id/swSettingOnline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"
+                android:textOff="@string/no"
+                android:textOn="@string/yes" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2">
+
+                <GridView
+                    android:id="@+id/grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:columnWidth="100dp"
+                    android:gravity="center"
+                    android:horizontalSpacing="2dp"
+                    android:numColumns="4"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="2dp" />
+
+                <ProgressBar
+                    android:id="@+id/gridview_progbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp">
+
+                <ProgressBar
+                    android:id="@+id/progressBarBanner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+
+                <com.synnapps.carouselview.CarouselView
+                    android:id="@+id/carouselView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="135dp"
+                    app:fillColor="#FFFFFFFF"
+                    app:pageColor="#00000000"
+                    app:radius="3dp"
+                    app:slideInterval="7000"
+                    app:strokeColor="#979797"
+                    app:strokeWidth="1dp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
 
         <!--<LinearLayout-->
         <!--android:layout_width="match_parent"-->
@@ -245,31 +277,6 @@
         <!--android:layout_margin="10dp"/>-->
         <!--</LinearLayout>-->
         <!--</LinearLayout>-->
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
-
-            <ProgressBar
-                android:id="@+id/progressBarBanner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
-
-            <com.synnapps.carouselview.CarouselView
-                android:id="@+id/carouselView1"
-                android:layout_width="match_parent"
-                android:layout_height="135dp"
-                app:fillColor="#FFFFFFFF"
-                app:pageColor="#00000000"
-                app:radius="3dp"
-                app:slideInterval="7000"
-                app:strokeColor="#979797"
-                app:strokeWidth="1dp" />
-
-        </RelativeLayout>
 
     </LinearLayout>
 
