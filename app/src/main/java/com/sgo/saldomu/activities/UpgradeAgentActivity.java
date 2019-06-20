@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.CameraViewActivity;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
@@ -61,6 +62,7 @@ public class UpgradeAgentActivity extends BaseActivity {
     private final int NPWP_TYPE = 4;
     final int RC_CAMERA_STORAGE = 14;
     final int RC_GALLERY = 15;
+    final int RC_CAMERA = 16;
     private final int RESULT_GALLERY_SIUP = 104;
     private final int RESULT_GALLERY_NPWP = 105;
     private final int RESULT_CAMERA_SIUP = 204;
@@ -308,7 +310,9 @@ public class UpgradeAgentActivity extends BaseActivity {
                                     pickAndCameraUtil.chooseGallery(RESULT_GALLERY_NPWP);
                                 }
                             } else if (which == 1) {
-                                pickAndCameraUtil.runCamera(set_result_photo);
+//                                pickAndCameraUtil.runCamera(set_result_photo);
+                                Intent intent=new Intent(getApplicationContext(),CameraViewActivity.class);
+                                startActivityForResult(intent,set_result_photo);
                             }
 
                         }

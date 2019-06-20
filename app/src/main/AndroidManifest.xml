@@ -22,19 +22,20 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-    <!--<uses-permission android:name="android.permission.RECEIVE_SMS" />-->
-    <!--<uses-permission android:name="android.permission.SEND_SMS" />-->
-    <!--<uses-permission android:name="android.permission.READ_SMS" />-->
-    <!--<uses-permission android:name="android.permission.WRITE_SMS" />-->
-    <!--<uses-permission android:name="android.permission.CALL_PHONE" />-->
-
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" /> <!-- <uses-permission android:name="android.permission.RECEIVE_SMS" /> -->
+    <!-- <uses-permission android:name="android.permission.SEND_SMS" /> -->
+    <!-- <uses-permission android:name="android.permission.READ_SMS" /> -->
+    <!-- <uses-permission android:name="android.permission.WRITE_SMS" /> -->
+    <!-- <uses-permission android:name="android.permission.CALL_PHONE" /> -->
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <application
         android:name=".coreclass.CoreApp"
         android:allowBackup="false"
@@ -46,7 +47,12 @@
         android:noHistory="true"
         android:theme="@style/Theme.MyTheme"
         tools:replace="android:label,allowBackup">
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <activity android:name=".CameraViewActivity"></activity>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
@@ -58,14 +64,14 @@
             android:value="@string/google_maps_key" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="3008e040f2a9245138d166b24881009c273cfb8d"
-            />
+            android:value="3008e040f2a9245138d166b24881009c273cfb8d" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher_pin_only" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
+
         <activity
             android:name=".activities.MainPage"
             android:configChanges="screenSize|keyboardHidden|orientation"
@@ -74,7 +80,7 @@
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -84,7 +90,6 @@
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".activities.ListATM"
             android:configChanges="screenSize|keyboardHidden|orientation"
@@ -248,7 +253,6 @@
             android:name=".activities.BbsMerchantSetupHourActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-
         <activity android:name=".activities.BbsRegisterOpenClosedShopActivity" />
         <activity
             android:name=".activities.BbsSearchAgentActivity"
@@ -321,7 +325,6 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".activities.ActivityProfileQr"
             android:configChanges="orientation"
@@ -330,10 +333,8 @@
             android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
+                android:value=".activities.MainPage" />
         </activity>
-
         <activity
             android:name=".activities.MyProfileNewActivity"
             android:configChanges="orientation"
@@ -342,19 +343,14 @@
             android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
+                android:value=".activities.MainPage" />
         </activity>
-
-        <activity android:name=".BluetoothPrinter.zj.DevicesList"/>
-
-
+        <activity android:name=".BluetoothPrinter.zj.DevicesList" />
         <activity
             android:name=".activities.ScanQRActivity"
             android:enabled="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
 
-        </activity>
         <service
             android:name=".services.AgentShopService"
             android:exported="false" />
@@ -364,93 +360,92 @@
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".activities.JoinCommunitySCADMActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.TopUpSCADMActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.AskForMoneyActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.DenomSCADMActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.UpgradeAgentActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.InfoHargaWebActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.TagihActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.PayFriendsActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.ListBuyActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.ReportActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.ContactActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.ActivityListSettings"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.ActivitySCADM"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.ChangeEmail"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.OTPVerificationActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.PrivacyPolicyActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.SourceOfFundActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
         <service
             android:name=".services.BalanceService"
             android:exported="false" />
@@ -468,8 +463,7 @@
             android:exported="false" />
         <service
             android:name=".services.UpdateBBSData"
-            android:exported="false" />
-        <!--Job Dispatcher Service-->
+            android:exported="false" /> <!-- Job Dispatcher Service -->
         <service
             android:name=".services.jobs.JobUpdateBBSData"
             android:exported="false">
@@ -501,27 +495,32 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <receiver android:name=".receivers.FcmReceiver">
-        </receiver>
+
+        <receiver android:name=".receivers.FcmReceiver"></receiver>
         <receiver
             android:name=".receivers.LocationProviderChangedReceiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.location.PROVIDERS_CHANGED" />
                 <action android:name="com.sgo.saldomu.INTENT_ACTION_LOCATION_DATA" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
         <receiver
             android:name=".receivers.SimStateChangedReceiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter android:priority="100">
-                <action android:name="android.intent.action.SIM_STATE_CHANGED" android:enabled="true" />
+                <action
+                    android:name="android.intent.action.SIM_STATE_CHANGED"
+                    android:enabled="true" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
         <activity
             android:name=".activities.BbsNewSearchAgentActivity"
             android:configChanges="orientation"
@@ -542,9 +541,8 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
-        <!--android:authorities="${applicationId}.provider"-->
     </application>
 
 </manifest>
