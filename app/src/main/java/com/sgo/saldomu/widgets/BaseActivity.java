@@ -37,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     protected static final int RC_LOCATION_PERM    = 2121;
 
     private Toolbar detoolbar;
-    private TextView title_detoolbar;
+    private TextView title_detoolbar, name_detoolbar;
     private ImageView img_detoolbar;
     private ProgressBar deprogressbar;
     protected SMSclass smsClass;
@@ -51,7 +51,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     protected PermissionResult permissionResultInterface = this;
 
     protected SecurePreferences sp;
-    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
+    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey, userName;
     protected String extraSignature="";
 
     protected Gson gson;
@@ -67,11 +67,13 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
         commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+        userName = sp.getString(DefineValue.USER_NAME, "");
 
         detoolbar = findViewById(R.id.main_toolbar);
         deprogressbar = findViewById(R.id.main_toolbar_progress_spinner);
 
         title_detoolbar = findViewById(R.id.main_toolbar_title);
+        name_detoolbar = findViewById(R.id.main_toolbar_title_username);
         img_detoolbar = findViewById(R.id.main_toolbar_img);
         if (detoolbar != null) {
             setSupportActionBar(detoolbar);
@@ -153,6 +155,8 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
         title_detoolbar.setText(_title);
         if (_title.contains(",")||_title.contains("Selamat")){
             img_detoolbar.setVisibility(View.VISIBLE);
+            name_detoolbar.setVisibility(View.VISIBLE);
+            name_detoolbar.setText(userName);
             if (_title.contains("Pagi"))
             img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.sun));
             if (_title.contains("Siang"))

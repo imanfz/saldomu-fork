@@ -213,13 +213,13 @@ public class MainPage extends BaseActivity {
         int hour = cal.get(Calendar.HOUR_OF_DAY);
         String greeting="";
         if (hour > 10 && hour <= 14) {
-            greeting=getString(R.string.good_afternoon) + " " + userNameLogin;
+            greeting=getString(R.string.good_afternoon);
         } else if (hour > 14 && hour <= 18.30) {
-            greeting=getString(R.string.good_evening) + " " + userNameLogin;
+            greeting=getString(R.string.good_evening);
         } else if (hour > 18.30 || hour < 4) {
-            greeting=getString(R.string.good_night) + " " + userNameLogin;
+            greeting=getString(R.string.good_night);
         } else {
-            greeting=getString(R.string.good_morning) + " " + userNameLogin;
+            greeting=getString(R.string.good_morning);
         }
         return greeting;
     }
