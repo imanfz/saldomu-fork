@@ -16,20 +16,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="16dp"
                 android:text="@string/balance"
                 android:textSize="12sp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="16dp"
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:text="@string/currency"
-                android:textSize="18sp" />
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/tv_saldo"
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:text="123.000"
                 android:textColor="@color/colorPrimary"
-                android:textSize="20sp" />
+                android:textSize="14sp"/>
 
             <ImageView
                 android:id="@+id/btn_refresh_balance"
@@ -57,19 +57,20 @@
                 android:layout_height="12dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_refresh_balance" />
+                android:src="@drawable/ic_refresh_balance"/>
 
             <Button
                 android:id="@+id/btn_topup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
+                android:layout_width="128dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="87dp"
                 android:layout_marginRight="15dp"
                 android:background="@drawable/rounded_background_orange"
                 android:singleLine="false"
                 android:text="@string/topup"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="9sp"
+                />
 
         </LinearLayout>
 
