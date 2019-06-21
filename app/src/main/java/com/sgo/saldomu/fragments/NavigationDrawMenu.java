@@ -418,7 +418,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         if (!getActivity().isFinishing()) {
             Fragment newFragment = new FragMainPage();
             MainPage mainPage=(MainPage) getActivity();
-            switchFragment(newFragment, mainPage.setGreetings());
+            switchFragment(newFragment, userNameLogin);
             refreshDataNavDrawer();
         }
     }

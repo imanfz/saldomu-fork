@@ -257,6 +257,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
             params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
+            params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
             if (checkIsPOS())
                 params.put(WebParams.IS_POS, is_pos);
 

@@ -26,5 +26,5 @@
         android:layout_weight="1"
         android:text="Menu"
         android:gravity="center"
-        android:textSize="10sp" />
+        android:textSize="11sp" />
 </LinearLayout>
