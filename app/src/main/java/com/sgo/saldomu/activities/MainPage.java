@@ -180,7 +180,8 @@ public class MainPage extends BaseActivity {
             case R.id.menu_home:
                 Fragment newFragment = new FragMainPage();
 //                switchContent(newFragment, getString(R.string.appname).toUpperCase());
-                switchContent(newFragment, setGreetings());
+//                switchContent(newFragment, setGreetings());
+                switchContent(newFragment, userNameLogin);
                 return true;
             case R.id.menu_transfer:
                 if (isDormant.equalsIgnoreCase("Y")) {
@@ -205,24 +206,6 @@ public class MainPage extends BaseActivity {
         }
         return false;
     };
-
-    public String setGreetings() {
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        int hour = cal.get(Calendar.HOUR_OF_DAY);
-        String greeting="";
-        if (hour > 10 && hour <= 14) {
-            greeting=getString(R.string.good_afternoon);
-        } else if (hour > 14 && hour <= 18.30) {
-            greeting=getString(R.string.good_evening);
-        } else if (hour > 18.30 || hour < 4) {
-            greeting=getString(R.string.good_night);
-        } else {
-            greeting=getString(R.string.good_morning);
-        }
-        return greeting;
-    }
 
     private void dialogDormant() {
         Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.title_dialog_dormant),
