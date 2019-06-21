@@ -570,5 +570,6 @@ public class WebParams {
 
     public static String FCM_ID = "fcm_id";
     public static String REFERENCE_ID = "reference_id";
+    public static String CLIENT_APP = "client_app";
 
 }

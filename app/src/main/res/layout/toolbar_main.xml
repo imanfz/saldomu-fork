@@ -27,7 +27,6 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="12sp"
-                android:textStyle="bold"
                 android:visibility="gone"/>
             <TextView
                 android:id="@+id/main_toolbar_title"
