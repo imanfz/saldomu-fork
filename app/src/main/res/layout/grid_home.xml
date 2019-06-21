@@ -15,16 +15,16 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:id="@+id/grid_image"
         android:src="@drawable/ic_tambahsaldo"/>
 
     <TextView
         android:id="@+id/grid_text"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="25dp"
         android:layout_weight="1"
         android:text="Menu"
         android:gravity="center"
-        android:textSize="12sp" />
+        android:textSize="10sp" />
 </LinearLayout>
