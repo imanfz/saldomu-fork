@@ -1458,6 +1458,8 @@ public class MainPage extends BaseActivity {
                 serviceAppInfoReference.StopCallAppInfo();
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(btnReceiver);
+        if (progdialog!=null)
+            progdialog.dismiss();
     }
 
     @Override
