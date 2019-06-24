@@ -80,7 +80,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         btnPrivacyPolicy = v.findViewById(R.id.tv_privacypolicy);
         btnRegister = v.findViewById(R.id.btn_register);
         image_spinner = v.findViewById(R.id.image_spinning_wheel);
-        logo=v.findViewById(R.id.logo);
+        logo = v.findViewById(R.id.logo);
 
         return v;
     }
@@ -260,6 +260,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
             if (checkIsPOS())
                 params.put(WebParams.IS_POS, is_pos);
+            params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
 
             Timber.d("isi params login:" + params.toString());
 
