@@ -702,7 +702,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_PROMO_LIST);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.PAGE, Integer.toString(0));
-            params.put(WebParams.COUNT, "5");
+            params.put(WebParams.COUNT, "10");
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params get promo list:" + params.toString());
