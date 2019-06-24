@@ -180,8 +180,6 @@ public class SMSDialog extends DialogFragment {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 tvMessage.setText(message1);
                 progText.setVisibility(View.GONE);
                 progBar.setVisibility(View.GONE);
@@ -341,6 +339,7 @@ public class SMSDialog extends DialogFragment {
 
     public void sentSms() {
         if (!isStop) {
+            String msg;
             Timber.d("jalanin sentSMSVerify "+ICCIDDevice);
             String mobileNetworkCode = NoHPFormat.getMNC(ICCIDDevice);
             String mobileDestination    = NoHPFormat.getSMSVerifyDestination(mobileNetworkCode);
@@ -349,8 +348,11 @@ public class SMSDialog extends DialogFragment {
 
 
 //            smsClass.sendSMSVerify(mobileDestination, imeiDevice, ICCIDDevice, timeStamp, dateTime, smsVerifyListener);
-            String msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime + "_" +fcmEncrypted ;
-            Uri uri=Uri.parse("smsto:"+mobileDestination);
+            if (!sp.getString(DefineValue.FCM_ID,"").isEmpty()) {
+                msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime + "_" + fcmEncrypted;
+            }else {
+                msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime;
+            }Uri uri=Uri.parse("smsto:"+mobileDestination);
             Intent intent=new Intent(Intent.ACTION_SENDTO,uri);
             intent.putExtra("sms_body",msg);
             startActivityForResult(intent,REQUEST_SMS);

@@ -68,6 +68,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
+
     }
 
     @Override
@@ -84,8 +85,9 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
         timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
 
-        fcm_id=sp.getString(DefineValue.FCM_ID,"");
-        fcmId_encrypted=sp.getString(DefineValue.FCM_ENCRYPTED,"");
+
+        fcm_id = sp.getString(DefineValue.FCM_ID, "");
+        fcmId_encrypted = sp.getString(DefineValue.FCM_ENCRYPTED, "");
 
         setFlowAnimation();
         Button skipbtn = (Button) skipButton;
@@ -151,8 +153,10 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //            }
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 openLogin(-2);
-            } else
+            } else if (fcm_id!=null) {
                 sendFCM();
+            } else
+                InitializeSmsDialog();
         }
     };
 
@@ -288,7 +292,6 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
             @Override
             public void onSuccess(String product_value) {
-
 
 
             }

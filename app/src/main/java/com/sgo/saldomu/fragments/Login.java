@@ -260,7 +260,8 @@ public class Login extends BaseFragment implements View.OnClickListener {
             params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
             if (checkIsPOS())
                 params.put(WebParams.IS_POS, is_pos);
-            params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
+            if (sp.getString(DefineValue.FCM_ID, "") != null)
+                params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
 
             Timber.d("isi params login:" + params.toString());
 
