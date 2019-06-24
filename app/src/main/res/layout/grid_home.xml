@@ -22,9 +22,10 @@
     <TextView
         android:id="@+id/grid_text"
         android:layout_width="match_parent"
-        android:layout_height="25dp"
+        android:layout_height="27dp"
         android:layout_weight="1"
         android:text="Menu"
-        android:gravity="center"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
         android:textSize="11sp" />
 </LinearLayout>
