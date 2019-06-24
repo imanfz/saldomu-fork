@@ -100,11 +100,13 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void showProgressDialog() {
+        if (getProgDialog()!=null)
         if (!getProgDialog().isShowing())
             getProgDialog().show();
     }
 
     protected void dismissProgressDialog() {
+        if (getProgDialog()!=null)
         if (getProgDialog().isShowing())
             getProgDialog().dismiss();
     }
