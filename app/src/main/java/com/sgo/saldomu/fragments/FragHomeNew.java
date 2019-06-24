@@ -244,7 +244,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
             GridView.setAdapter(adapter);
         } else {
-            if (sp.getString(DefineValue.CATEGORY,null)==null){
+            if (sp.getString(DefineValue.CATEGORY, null) == null) {
                 HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
                 params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                 params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -271,7 +271,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
 
                                         String arrJson = toJson(model.getCategories()).toString();
-                                        mEditor.putString(DefineValue.CATEGORY,arrJson);
+                                        mEditor.putString(DefineValue.CATEGORY, arrJson);
 
                                         ShopCategory shopCategory = new ShopCategory();
                                         shopCategory.setCategoryId(obj.getCategory_id());
@@ -314,7 +314,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 Timber.d("hide view");
                             }
                         });
-            }else{
+            } else {
                 setupIconAndTitle();
                 GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
                 GridView.setAdapter(adapter);
@@ -627,12 +627,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     else {
 //                        posIdx = -1;
                         try {
-                            JSONArray jsonArray=new JSONArray(memberSchemeCode);
-                            for (int index=0;index<jsonArray.length();index++){
-                                JSONObject jsonObject= jsonArray.getJSONObject(index);
+                            JSONArray jsonArray = new JSONArray(memberSchemeCode);
+                            for (int index = 0; index < jsonArray.length(); index++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(index);
                                 String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
                                 String categoryNameModified = "Panggil Agen " + objs;
-                                if (menuItemName.equalsIgnoreCase(categoryNameModified)){
+                                if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
                                     if (isDormant.equalsIgnoreCase("Y")) {
                                         dialogDormant();
                                     } else {
@@ -813,10 +813,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private void setupIconAndTitle() {
-        if (getActivity()!=null&&isAdded()){
+        if (getActivity() != null && isAdded()) {
             if (isAgent) {
                 checkSchemeCodeAgent();
-                if (sp.getString(DefineValue.IS_AGENT_TRX_REQ,"").equalsIgnoreCase("Y")) {
+                if (sp.getString(DefineValue.IS_AGENT_TRX_REQ, "").equalsIgnoreCase("Y")) {
                     menuStrings.add(getResources().getString(R.string.menu_item_title_trx_agent));
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
                 }
@@ -948,8 +948,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     void checkSchemeCodeMember() {
-        memberSchemeCode=sp.getString(DefineValue.CATEGORY,"");
-        try{
+        memberSchemeCode = sp.getString(DefineValue.CATEGORY, "");
+        try {
             JSONArray arr = new JSONArray(memberSchemeCode);
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
@@ -963,10 +963,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + obj.optString(WebParams.CATEGORY_NAME));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_setor_tunai));
                         break;
-                    case "BIL" : break;
+                    case "BIL":
+                        break;
                 }
             }
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
