@@ -165,7 +165,7 @@ public class MainPage extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         this.savedInstanceState = savedInstanceState;
-        bottomNavigationView=findViewById(R.id.home_bottom_navigation);
+        bottomNavigationView = findViewById(R.id.home_bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
         bottomNavigationView.setOnNavigationItemSelectedListener(drawerListener);
 
@@ -174,9 +174,10 @@ public class MainPage extends BaseActivity {
         if (isHasAppPermission())
             InitializeApp();
     }
-    BottomNavigationView.OnNavigationItemSelectedListener drawerListener= item -> {
+
+    BottomNavigationView.OnNavigationItemSelectedListener drawerListener = item -> {
         Intent i;
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menu_home:
                 Fragment newFragment = new FragMainPage();
 //                switchContent(newFragment, getString(R.string.appname).toUpperCase());
@@ -257,15 +258,16 @@ public class MainPage extends BaseActivity {
     }
 
     private void initializeFCM() {
-        if (sp.getString(DefineValue.FCM_ENCRYPTED,null)==null){
-            while (fcm_id==null){
-                fcm_id = FCMManager.getTokenFCM();
-                Timber.w("FCM still null");
-            }
+//        if (fcm_id == null) {
+//            while (fcm_id==null){
+            fcm_id = FCMManager.getTokenFCM();
+//        }
+        if (fcm_id!=null){
             fcmId_encrypted = Md5.hashMd5(fcm_id);
             sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
             sp.edit().putString(DefineValue.FCM_ID, fcm_id).apply();
-        }
+        }else
+                Timber.w("FCM still null");
     }
 
     private void startLocationService() {
@@ -1354,8 +1356,8 @@ public class MainPage extends BaseActivity {
 //            mDrawerLayout.openDrawer(mRightDrawerRelativeLayout);
 //            return true;
 //        }
-        else if(item.getItemId()==R.id.settings){
-            Intent i=new Intent(this,ActivityListSettings.class);
+        else if (item.getItemId() == R.id.settings) {
+            Intent i = new Intent(this, ActivityListSettings.class);
             switchActivity(i, ACTIVITY_RESULT);
         }
         invalidateOptionsMenu();
@@ -1458,7 +1460,7 @@ public class MainPage extends BaseActivity {
                 serviceAppInfoReference.StopCallAppInfo();
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(btnReceiver);
-        if (progdialog!=null)
+        if (progdialog != null)
             progdialog.dismiss();
     }
 

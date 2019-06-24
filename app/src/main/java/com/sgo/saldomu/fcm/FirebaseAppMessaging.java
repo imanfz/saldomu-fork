@@ -134,6 +134,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
                             broadcast.putExtra(DefineValue.USER_ID, sp.getString(DefineValue.SENDER_ID,""));
                             broadcast.putExtra(DefineValue.USER_IS_NEW, Integer.parseInt(jsonObj2.getString(WebParams.IS_NEW_USER)));
+                            broadcast.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(broadcast);
                         }
 
