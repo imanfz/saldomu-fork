@@ -244,7 +244,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
             GridView.setAdapter(adapter);
         } else {
-            if (sp.getString(DefineValue.CATEGORY,null)==null){
+            if (sp.getString(DefineValue.CATEGORY, null) == null) {
                 HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
                 params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                 params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -271,7 +271,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
 
                                         String arrJson = toJson(model.getCategories()).toString();
-                                        mEditor.putString(DefineValue.CATEGORY,arrJson);
+                                        mEditor.putString(DefineValue.CATEGORY, arrJson);
 
                                         ShopCategory shopCategory = new ShopCategory();
                                         shopCategory.setCategoryId(obj.getCategory_id());
@@ -314,7 +314,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 Timber.d("hide view");
                             }
                         });
-            }else{
+            } else {
                 setupIconAndTitle();
                 GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
                 GridView.setAdapter(adapter);
@@ -517,7 +517,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.pam));
                         startActivity(intent);
                     }
-                }else {
+                }
+//                else {
 //                    for (int x = 0; x < shopCategories.size(); x++) {
 //                        String categoryName = shopCategories.get(x).getCategoryName();
 //                        String categoryNameModified = "Panggil Agen " + categoryName;
@@ -538,33 +539,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //                            }
 //                        }
 //                    }
-                    try {
-                        JSONArray jsonArray=new JSONArray(memberSchemeCode);
-                        for (int index=0;index<jsonArray.length();index++){
-                            JSONObject jsonObject= jsonArray.getJSONObject(index);
-                            String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
-                            String categoryNameModified = "Panggil Agen " + objs;
-                            if (menuItemName.equalsIgnoreCase(categoryNameModified)){
-                                if (isDormant.equalsIgnoreCase("Y")) {
-                                    dialogDormant();
-                                } else {
-                                    Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
-                                    i.putExtra(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
-                                    sp.edit().putString(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
-                                    i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
-                                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                                    i.putExtra(DefineValue.AMOUNT, "");
-                                    i.putExtra(DefineValue.BBS_SCHEME_CODE, jsonObject.optString(WebParams.SCHEME_CODE));
-                                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                                    break;
-                                }
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
 
-                }
+
+//                }
 
                 if (isAgent) {
                     if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
@@ -648,7 +625,32 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         } else
                             posIdx = BBSActivity.BBSMYORDERS;
                     else {
-                        posIdx = -1;
+//                        posIdx = -1;
+                        try {
+                            JSONArray jsonArray = new JSONArray(memberSchemeCode);
+                            for (int index = 0; index < jsonArray.length(); index++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(index);
+                                String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
+                                String categoryNameModified = "Panggil Agen " + objs;
+                                if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
+                                    if (isDormant.equalsIgnoreCase("Y")) {
+                                        dialogDormant();
+                                    } else {
+                                        Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
+                                        i.putExtra(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
+                                        sp.edit().putString(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
+                                        i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
+                                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                                        i.putExtra(DefineValue.AMOUNT, "");
+                                        i.putExtra(DefineValue.BBS_SCHEME_CODE, jsonObject.optString(WebParams.SCHEME_CODE));
+                                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                                        break;
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 if (posIdx != -1) {
@@ -700,7 +702,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_PROMO_LIST);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.PAGE, Integer.toString(0));
-            params.put(WebParams.COUNT, "5");
+            params.put(WebParams.COUNT, "10");
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params get promo list:" + params.toString());
@@ -811,10 +813,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private void setupIconAndTitle() {
-        if (getActivity()!=null&&isAdded()){
+        if (getActivity() != null && isAdded()) {
             if (isAgent) {
                 checkSchemeCodeAgent();
-                if (sp.getString(DefineValue.IS_AGENT_TRX_REQ,"").equalsIgnoreCase("Y")) {
+                if (sp.getString(DefineValue.IS_AGENT_TRX_REQ, "").equalsIgnoreCase("Y")) {
                     menuStrings.add(getResources().getString(R.string.menu_item_title_trx_agent));
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
                 }
@@ -946,25 +948,26 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     void checkSchemeCodeMember() {
-        memberSchemeCode=sp.getString(DefineValue.CATEGORY,"");
-        try{
+        memberSchemeCode = sp.getString(DefineValue.CATEGORY, "");
+        try {
             JSONArray arr = new JSONArray(memberSchemeCode);
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
                 String objs = obj.optString(WebParams.SCHEME_CODE, "");
                 switch (objs) {
                     case "ATC":
-                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + getResources().getString(R.string.cash_out));
+                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + obj.optString(WebParams.CATEGORY_NAME));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_tarik_tunai));
                         break;
                     case "CTA":
-                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + getResources().getString(R.string.cash_in));
+                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + obj.optString(WebParams.CATEGORY_NAME));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_setor_tunai));
                         break;
-                    case "BIL" : break;
+                    case "BIL":
+                        break;
                 }
             }
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }

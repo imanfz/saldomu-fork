@@ -356,7 +356,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_name_value.setText(args.getString(DefineValue.USER_NAME));
                     tv_benef_bank_name_value.setText(args.getString(DefineValue.BANK_BENEF));
                     tv_member_shop_phone.setText(args.getString(DefineValue.MEMBER_SHOP_PHONE));
-                    tv_source_bank_name_value.setText(args.getString(DefineValue.PRODUCT_NAME));
+                    tv_source_bank_name_value.setText(args.getString(DefineValue.SOURCE_ACCT));
 
                     tv_source_acc_no_value.setText(args.getString(DefineValue.MEMBER_SHOP_NO));
                     tv_source_acc_name_value.setText(args.getString(DefineValue.MEMBER_SHOP_NAME));

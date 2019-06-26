@@ -583,6 +583,7 @@ public class DefineValue {
     public static String FCM_ENCRYPTED = "fcmEncrypted";
     public static String FCM_ID = "fcmId";
     public static String CATEGORY = "category";
+    public static String ANDROID = "ANDR";
 
 }
 

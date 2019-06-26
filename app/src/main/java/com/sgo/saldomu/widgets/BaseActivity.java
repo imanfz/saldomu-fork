@@ -24,6 +24,8 @@ import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.interfaces.PermissionResult;
 import com.sgo.saldomu.receivers.FcmReceiver;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
@@ -37,7 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     protected static final int RC_LOCATION_PERM    = 2121;
 
     private Toolbar detoolbar;
-    private TextView title_detoolbar;
+    private TextView title_detoolbar, greeting_detoolbar;
     private ImageView img_detoolbar;
     private ProgressBar deprogressbar;
     protected SMSclass smsClass;
@@ -51,7 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     protected PermissionResult permissionResultInterface = this;
 
     protected SecurePreferences sp;
-    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
+    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey, userName;
     protected String extraSignature="";
 
     protected Gson gson;
@@ -67,11 +69,13 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
         commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+        userName = sp.getString(DefineValue.USER_NAME, "");
 
         detoolbar = findViewById(R.id.main_toolbar);
         deprogressbar = findViewById(R.id.main_toolbar_progress_spinner);
 
         title_detoolbar = findViewById(R.id.main_toolbar_title);
+        greeting_detoolbar = findViewById(R.id.main_toolbar_title_greeting);
         img_detoolbar = findViewById(R.id.main_toolbar_img);
         if (detoolbar != null) {
             setSupportActionBar(detoolbar);
@@ -151,16 +155,11 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
 
     protected void setActionBarTitle(String _title) {
         title_detoolbar.setText(_title);
-        if (_title.contains(",")||_title.contains("Selamat")){
+        if (_title.equalsIgnoreCase(userName)){
             img_detoolbar.setVisibility(View.VISIBLE);
-            if (_title.contains("Pagi"))
-            img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.sun));
-            if (_title.contains("Siang"))
-                img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.sun));
-            if (_title.contains("Sore"))
-                img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.moon));
-            if (_title.contains("Malam"))
-                img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.moon));
+            title_detoolbar.setAllCaps(true);
+            greeting_detoolbar.setVisibility(View.VISIBLE);
+            greeting_detoolbar.setText(setGreetings());
         }
     }
 
@@ -238,6 +237,27 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
             gson = new Gson();
         }
         return gson;
+    }
+    public String setGreetings() {
+        Date date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        String greeting="";
+        if (hour > 10 && hour <= 14) {
+            greeting=getString(R.string.good_afternoon);
+            img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.sun));
+        } else if (hour > 14 && hour <= 18.30) {
+            greeting=getString(R.string.good_evening);
+            img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.moon));
+        } else if (hour > 18.30 || hour < 4) {
+            greeting=getString(R.string.good_night);
+            img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.moon));
+        } else {
+            greeting=getString(R.string.good_morning);
+            img_detoolbar.setBackground(ContextCompat.getDrawable(this,R.drawable.sun));
+        }
+        return greeting;
     }
 
 }

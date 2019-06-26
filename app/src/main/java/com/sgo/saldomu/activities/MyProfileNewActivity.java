@@ -1206,13 +1206,11 @@ public class MyProfileNewActivity extends BaseActivity {
                     break;
                 case SELFIE_TYPE:
                     GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, file, selfieKTP);
-//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(selfieKTP);
                     selfie = file;
                     uploadFileToServer(selfie, SELFIE_TYPE);
                     break;
                 case TTD_TYPE:
                     GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, file, cameraTTD);
-//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraTTD);
                     ttd = file;
                     uploadFileToServer(ttd, TTD_TYPE);
                     break;

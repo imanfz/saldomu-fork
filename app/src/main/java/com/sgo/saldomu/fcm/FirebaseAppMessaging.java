@@ -128,13 +128,14 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         if (flagLogin.equals(DefineValue.STRING_YES)) {
 
                         } else {
-//                            Intent i = new Intent(this, LoginActivity.class);
-//                            startActivity(i);
-                            Intent broadcast = new Intent();
+                            Intent broadcast = new Intent(this, LoginActivity.class);
                             broadcast.setAction(DefineValue.INTENT_ACTION_FCM_DATA);
                             broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
                             broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
-                            sendBroadcast(broadcast);
+                            broadcast.putExtra(DefineValue.USER_ID, sp.getString(DefineValue.SENDER_ID,""));
+                            broadcast.putExtra(DefineValue.USER_IS_NEW, Integer.parseInt(jsonObj2.getString(WebParams.IS_NEW_USER)));
+                            broadcast.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(broadcast);
                         }
 
                     } catch (JSONException e) {
