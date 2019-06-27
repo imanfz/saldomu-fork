@@ -153,7 +153,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //            }
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 openLogin(-2);
-            } else if (fcm_id!=null) {
+            } else if (!sp.getString(DefineValue.FCM_ID,"").equals("") || !sp.getString(DefineValue.FCM_ID,"").isEmpty()) {
                 sendFCM();
             } else
                 InitializeSmsDialog();

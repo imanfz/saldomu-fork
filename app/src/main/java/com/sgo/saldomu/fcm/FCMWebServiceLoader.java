@@ -16,6 +16,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.FcmModel;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import timber.log.Timber;
@@ -29,6 +30,7 @@ public class FCMWebServiceLoader {
     private Context mContext;
     private LoaderListener loaderListener;
     private SecurePreferences sp;
+    private String token;
 
     public interface LoaderListener{
         void onSuccessLoader();
@@ -51,7 +53,12 @@ public class FCMWebServiceLoader {
 
     private HashMap<String, Object> setupSignatureParams(){
         String deviceID = DeviceUtils.getAndroidID();
-        String token = FCMManager.getTokenFCM();
+        try {
+            token = FCMManager.getTokenFCM();
+        }catch (IOException e)
+        {
+
+        }
         HashMap<String, Object> requestParams = RetrofitService.getInstance().getSignatureWithParamsFCM(token,
                 deviceID, BuildConfig.APP_ID);
         requestParams.put(WebParams.DEVICE_ID, DeviceUtils.getAndroidID());

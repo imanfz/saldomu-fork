@@ -3,6 +3,8 @@ package com.sgo.saldomu.fcm;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
+import java.io.IOException;
+
 import timber.log.Timber;
 
 /**
@@ -13,8 +15,12 @@ public class FireBaseInstanceIDService extends FirebaseInstanceIdService {
 
     @Override
     public void onTokenRefresh() {
-        Timber.d("Refreshed token: ");
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        String refreshedToken = null;
+        try {
+            refreshedToken = FirebaseInstanceId.getInstance().getToken("451695092641","FCM");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Timber.d("Refreshed token: " + refreshedToken);
         sentTokenToServer();
     }

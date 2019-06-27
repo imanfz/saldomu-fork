@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.activeandroid.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -29,6 +30,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -63,6 +65,7 @@ public class FCMManager {
     private Context mContext;
     private SecurePreferences sp;
     private BundleToJSON bundleToJSON = new BundleToJSON();
+    final String token="";
 
     public FCMManager(Context context){
         this.mContext = context;
@@ -73,8 +76,24 @@ public class FCMManager {
     }
 
     public static String getTokenFCM(){
-        return FirebaseInstanceId.getInstance().getToken();
+//        return FirebaseInstanceId.getInstance().getToken("451695092641","FCM");
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("asd", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        token = task.getResult().getToken();
+                    }
+                });
+        return getTokenFCM();
     }
+
+
 
     public static void subscribeAgent(){
         FirebaseMessaging.getInstance().subscribeToTopic(AGENT_TOPIC);

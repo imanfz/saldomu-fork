@@ -91,6 +91,7 @@ import com.sgo.saldomu.widgets.BaseActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;
@@ -260,8 +261,14 @@ public class MainPage extends BaseActivity {
     private void initializeFCM() {
 //        if (fcm_id == null) {
 //            while (fcm_id==null){
+        try {
             fcm_id = FCMManager.getTokenFCM();
+        }catch (IOException e)
+        {
+
+        }
 //        }
+
         if (fcm_id!=null){
             fcmId_encrypted = Md5.hashMd5(fcm_id);
             sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
