@@ -53,12 +53,8 @@ public class FCMWebServiceLoader {
 
     private HashMap<String, Object> setupSignatureParams(){
         String deviceID = DeviceUtils.getAndroidID();
-        try {
             token = FCMManager.getTokenFCM();
-        }catch (IOException e)
-        {
 
-        }
         HashMap<String, Object> requestParams = RetrofitService.getInstance().getSignatureWithParamsFCM(token,
                 deviceID, BuildConfig.APP_ID);
         requestParams.put(WebParams.DEVICE_ID, DeviceUtils.getAndroidID());

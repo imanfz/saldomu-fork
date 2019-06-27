@@ -35,8 +35,12 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.securepreferences.SecurePreferences;
@@ -259,22 +263,23 @@ public class MainPage extends BaseActivity {
     }
 
     private void initializeFCM() {
-//        if (fcm_id == null) {
-//            while (fcm_id==null){
-        try {
-            fcm_id = FCMManager.getTokenFCM();
-        }catch (IOException e)
-        {
+//            fcm_id = FCMManager.getTokenFCM();
 
-        }
-//        }
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( MainPage.this,  new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                fcm_id = instanceIdResult.getToken();
+                Log.e("newToken",fcm_id);
+                if (fcm_id!=null){
+                    fcmId_encrypted = Md5.hashMd5(fcm_id);
+                    sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
+                    sp.edit().putString(DefineValue.FCM_ID, fcm_id).apply();
+                }else
+                    Timber.w("FCM still null");
+            }
+        });
 
-        if (fcm_id!=null){
-            fcmId_encrypted = Md5.hashMd5(fcm_id);
-            sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
-            sp.edit().putString(DefineValue.FCM_ID, fcm_id).apply();
-        }else
-                Timber.w("FCM still null");
+
     }
 
     private void startLocationService() {

@@ -76,21 +76,24 @@ public class FCMManager {
     }
 
     public static String getTokenFCM(){
-//        return FirebaseInstanceId.getInstance().getToken("451695092641","FCM");
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("asd", "getInstanceId failed", task.getException());
-                            return;
-                        }
+        return FirebaseInstanceId.getInstance().getToken();
+//        FirebaseInstanceId.getInstance().getInstanceId()
+//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+//                        if (!task.isSuccessful()) {
+//                            Log.w("asd", "getInstanceId failed", task.getException());
+//                            return;
+//                        }
+//
+//                        // Get new Instance ID token
+//                        token = task.getResult().getToken();
+//                    }
+//                });
+//        return getTokenFCM();
 
-                        // Get new Instance ID token
-                        token = task.getResult().getToken();
-                    }
-                });
-        return getTokenFCM();
+
+
     }
 
 
