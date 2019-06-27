@@ -46,8 +46,12 @@
         android:launchMode="singleInstance"
         android:noHistory="true"
         android:theme="@style/Theme.MyTheme"
-        tools:replace="android:label,allowBackup">
-        <activity android:name=".CameraViewActivity"></activity>
+        tools:replace="android:label,allowBackup,theme">
+        <activity
+            android:name=".CameraViewActivity"
+            android:screenOrientation="portrait"
+            ></activity>
+        <activity android:name="com.desmond.squarecamera.CameraActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"

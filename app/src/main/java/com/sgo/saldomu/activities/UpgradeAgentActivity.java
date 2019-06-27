@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.desmond.squarecamera.CameraActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
@@ -310,9 +311,10 @@ public class UpgradeAgentActivity extends BaseActivity {
                                     pickAndCameraUtil.chooseGallery(RESULT_GALLERY_NPWP);
                                 }
                             } else if (which == 1) {
-//                                pickAndCameraUtil.runCamera(set_result_photo);
-                                Intent intent=new Intent(getApplicationContext(),CameraViewActivity.class);
-                                startActivityForResult(intent,set_result_photo);
+                                pickAndCameraUtil.runCamera(set_result_photo);
+//                                Intent intent=new Intent(getApplicationContext(),CameraViewActivity.class);
+//                                startActivityForResult(intent,set_result_photo);
+
                             }
 
                         }
@@ -332,6 +334,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
+
 
     @Override
     public void onBackPressed() {

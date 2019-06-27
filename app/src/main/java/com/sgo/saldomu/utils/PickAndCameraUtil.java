@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 
+import com.desmond.squarecamera.CameraActivity;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.GeneralizeImage;
@@ -97,7 +98,8 @@ public class PickAndCameraUtil {
 
 
     public void runCamera(int reqCode){
-        Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//        Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent takePictureIntent = new Intent(mActivity,CameraActivity.class);
 
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
