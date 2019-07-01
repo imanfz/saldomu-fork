@@ -24,6 +24,7 @@ import com.sgo.saldomu.securities.Md5;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.prefs.Preferences;
 
 import timber.log.Timber;
 
@@ -38,29 +39,30 @@ public class FCMWebServiceLoader {
     private SecurePreferences sp;
     private String token, tokenEncrypted;
 
-    public interface LoaderListener{
+    public interface LoaderListener {
         void onSuccessLoader();
+
         void onFailedLoader();
     }
 
-    public FCMWebServiceLoader(Context _context, LoaderListener listener){
+    public FCMWebServiceLoader(Context _context, LoaderListener listener) {
         this.mContext = _context;
         this.loaderListener = listener;
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
     }
 
-    public static FCMWebServiceLoader getInstance(Context _context){
-        return new FCMWebServiceLoader(_context,null);
+    public static FCMWebServiceLoader getInstance(Context _context) {
+        return new FCMWebServiceLoader(_context, null);
     }
 
-    public static FCMWebServiceLoader getInstance(Context _context, LoaderListener listener){
-        return new FCMWebServiceLoader(_context,listener);
+    public static FCMWebServiceLoader getInstance(Context _context, LoaderListener listener) {
+        return new FCMWebServiceLoader(_context, listener);
     }
 
-    private HashMap<String, Object> setupSignatureParams(){
+    private HashMap<String, Object> setupSignatureParams() {
         String deviceID = DeviceUtils.getAndroidID();
 
-        token = FCMManager.getTokenFCM();
+        token = sp.getString(DefineValue.FCM_ID, "");
         HashMap<String, Object> requestParams = RetrofitService.getInstance().getSignatureWithParamsFCM(token,
                 deviceID, BuildConfig.APP_ID);
         requestParams.put(WebParams.DEVICE_ID, DeviceUtils.getAndroidID());
@@ -77,22 +79,22 @@ public class FCMWebServiceLoader {
     }
 
     //Register Ulang fcm hanya isi userId dan email
-    public void sentTokenAtLogin(Boolean isSync, String userID, String email){
+    public void sentTokenAtLogin(Boolean isSync, String userID, String email) {
         HashMap<String, Object> requestParams = setupSignatureParams();
-        requestParams.put(WebParams.USER_ID,userID);
-        requestParams.put(WebParams.EMAIL,email);
-        sentTokenToServer(isSync,requestParams);
+        requestParams.put(WebParams.USER_ID, userID);
+        requestParams.put(WebParams.EMAIL, email);
+        sentTokenToServer(isSync, requestParams);
     }
 
     //Register fcm permulaan buka aplikasi
-    public void sentTokenToServer(Boolean isSync){
+    public void sentTokenToServer(Boolean isSync) {
         HashMap<String, Object> requestParams = setupSignatureParams();
-        sentTokenToServer(isSync,requestParams);
+        sentTokenToServer(isSync, requestParams);
     }
 
-    private void sentTokenToServer(Boolean isSync, HashMap<String, Object> requestParams){
+    private void sentTokenToServer(Boolean isSync, HashMap<String, Object> requestParams) {
 
-        Timber.d("isi params reg token fcm to server : "+requestParams );
+        Timber.d("isi params reg token fcm to server : " + requestParams);
 
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REG_TOKEN_FCM, requestParams,
                 new ResponseListener() {
@@ -105,19 +107,19 @@ public class FCMWebServiceLoader {
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 CustomSecurePref.getInstance().insertString(DefineValue.FCM_SERVER_UUID,
                                         model.getUid());
-                                if(loaderListener != null)
+                                if (loaderListener != null)
                                     loaderListener.onSuccessLoader();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            if(loaderListener != null)
+                            if (loaderListener != null)
                                 loaderListener.onFailedLoader();
                         }
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
-                        if(loaderListener != null)
+                        if (loaderListener != null)
                             loaderListener.onSuccessLoader();
                     }
 
