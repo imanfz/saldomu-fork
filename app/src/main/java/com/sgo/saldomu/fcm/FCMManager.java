@@ -65,7 +65,7 @@ public class FCMManager {
     private Context mContext;
     private SecurePreferences sp;
     private BundleToJSON bundleToJSON = new BundleToJSON();
-    final String token="";
+//    final private static String token="";
 
     public FCMManager(Context context){
         this.mContext = context;
@@ -76,24 +76,21 @@ public class FCMManager {
     }
 
     public static String getTokenFCM(){
-        return FirebaseInstanceId.getInstance().getToken();
-//        FirebaseInstanceId.getInstance().getInstanceId()
-//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-//                        if (!task.isSuccessful()) {
-//                            Log.w("asd", "getInstanceId failed", task.getException());
-//                            return;
-//                        }
-//
-//                        // Get new Instance ID token
-//                        token = task.getResult().getToken();
-//                    }
-//                });
-//        return getTokenFCM();
+//        return FirebaseInstanceId.getInstance().getToken();
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("asd", "getInstanceId failed", task.getException());
+                            return;
+                        }
 
-
-
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                    }
+                });
+        return getTokenFCM();
     }
 
 

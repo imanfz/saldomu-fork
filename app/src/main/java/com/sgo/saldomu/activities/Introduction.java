@@ -13,7 +13,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.activeandroid.util.Log;
 import com.github.paolorotolo.appintro.AppIntro;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
@@ -136,6 +140,21 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                     RC_READPHONESTATE_GETACCOUNT_PERM, perms);
         }
 
+        if (fcm_id.equalsIgnoreCase("")) {
+            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Introduction.this, new OnSuccessListener<InstanceIdResult>() {
+                @Override
+                public void onSuccess(InstanceIdResult instanceIdResult) {
+                    fcm_id = instanceIdResult.getToken();
+                    Log.e("newToken", fcm_id);
+                    if (fcm_id != null) {
+                        fcmId_encrypted = Md5.hashMd5(fcm_id);
+                        sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
+                        sp.edit().putString(DefineValue.FCM_ID, fcm_id).apply();
+                    } else
+                        Timber.w("FCM still null");
+                }
+            });
+        }
     }
 
     private Button.OnClickListener VerifyListener = new Button.OnClickListener() {
@@ -153,7 +172,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //            }
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 openLogin(-2);
-            } else if (!sp.getString(DefineValue.FCM_ID,"").equals("") || !sp.getString(DefineValue.FCM_ID,"").isEmpty()) {
+            } else if (!sp.getString(DefineValue.FCM_ID, "").equals("") || !sp.getString(DefineValue.FCM_ID, "").isEmpty()) {
                 sendFCM();
             } else
                 InitializeSmsDialog();

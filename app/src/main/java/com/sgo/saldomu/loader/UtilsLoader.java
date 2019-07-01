@@ -76,6 +76,7 @@ public class UtilsLoader {
                 params.put(WebParams.MEMBER_ID, member_id);
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
                 if (sp.getString(DefineValue.IS_MANUAL,"N").equalsIgnoreCase("Y"))
                 {
                     params.put(WebParams.IS_MANUAL,"Y");
