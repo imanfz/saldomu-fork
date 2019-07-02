@@ -76,12 +76,14 @@ public class UtilsLoader {
                 params.put(WebParams.MEMBER_ID, member_id);
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
                 if (sp.getString(DefineValue.IS_MANUAL,"N").equalsIgnoreCase("Y"))
                 {
                     params.put(WebParams.IS_MANUAL,"Y");
                 }
                 String isAuto = (is_auto) ? DefineValue.STRING_YES : DefineValue.STRING_NO;
                 params.put(WebParams.IS_AUTO, isAuto);
+                params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY,""));
 
                 Timber.d("isi params get Balance Loader:" + params.toString());
                 if (!member_id.isEmpty()) {

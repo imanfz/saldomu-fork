@@ -35,8 +35,14 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.securepreferences.SecurePreferences;
@@ -165,6 +171,23 @@ public class MainPage extends BaseActivity {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.FCM_ID, token);
+                        mEditor.putString(DefineValue.FCM_ENCRYPTED, Md5.hashMd5(token));
+                        mEditor.apply();
+                    }
+                });
+
         this.savedInstanceState = savedInstanceState;
         bottomNavigationView = findViewById(R.id.home_bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
@@ -250,31 +273,11 @@ public class MainPage extends BaseActivity {
 //                    initializeDashboard();
                 }
             } else {
-                initializeFCM();
                 initializeDashboard();
             }
         } else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
         }
-    }
-
-    private void initializeFCM() {
-//        if (fcm_id == null) {
-//            while (fcm_id==null){
-        try {
-            fcm_id = FCMManager.getTokenFCM();
-        }catch (IOException e)
-        {
-
-        }
-//        }
-
-        if (fcm_id!=null){
-            fcmId_encrypted = Md5.hashMd5(fcm_id);
-            sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
-            sp.edit().putString(DefineValue.FCM_ID, fcm_id).apply();
-        }else
-                Timber.w("FCM still null");
     }
 
     private void startLocationService() {
@@ -847,6 +850,7 @@ public class MainPage extends BaseActivity {
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
+            params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY,""));
 
             Timber.d("isi params listmember mainpage:" + params.toString());
 
