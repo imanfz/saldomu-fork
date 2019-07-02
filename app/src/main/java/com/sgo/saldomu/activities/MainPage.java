@@ -850,6 +850,7 @@ public class MainPage extends BaseActivity {
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
+            params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY,""));
 
             Timber.d("isi params listmember mainpage:" + params.toString());
 

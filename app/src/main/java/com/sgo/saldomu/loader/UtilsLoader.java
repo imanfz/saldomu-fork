@@ -83,6 +83,7 @@ public class UtilsLoader {
                 }
                 String isAuto = (is_auto) ? DefineValue.STRING_YES : DefineValue.STRING_NO;
                 params.put(WebParams.IS_AUTO, isAuto);
+                params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY,""));
 
                 Timber.d("isi params get Balance Loader:" + params.toString());
                 if (!member_id.isEmpty()) {

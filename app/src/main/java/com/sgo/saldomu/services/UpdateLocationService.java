@@ -198,6 +198,7 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         params.put(WebParams.LONGITUDE, longitude );
         params.put(WebParams.LATITUDE, latitude );
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, "") );
+        params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, "") );
         Timber.d("params location update: "+params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_LOCATION, params,

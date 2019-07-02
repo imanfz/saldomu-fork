@@ -704,6 +704,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             params.put(WebParams.PAGE, Integer.toString(0));
             params.put(WebParams.COUNT, "10");
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY,""));
 
             Timber.d("isi params get promo list:" + params.toString());
 
