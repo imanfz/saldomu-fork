@@ -22,7 +22,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_CONTACTS" /> <!-- <uses-permission android:name="android.permission.RECEIVE_SMS" /> -->
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <!-- <uses-permission android:name="android.permission.RECEIVE_SMS" /> -->
     <!-- <uses-permission android:name="android.permission.SEND_SMS" /> -->
     <!-- <uses-permission android:name="android.permission.READ_SMS" /> -->
     <!-- <uses-permission android:name="android.permission.WRITE_SMS" /> -->
@@ -49,8 +51,7 @@
         tools:replace="android:label,allowBackup,theme">
         <activity
             android:name=".CameraViewActivity"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait" />
         <activity android:name="com.desmond.squarecamera.CameraActivity" />
 
         <uses-library
@@ -353,7 +354,7 @@
         <activity
             android:name=".activities.ScanQRActivity"
             android:enabled="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <service
             android:name=".services.AgentShopService"
@@ -500,7 +501,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".receivers.FcmReceiver"></receiver>
+        <receiver android:name=".receivers.FcmReceiver" />
         <receiver
             android:name=".receivers.LocationProviderChangedReceiver"
             android:enabled="true"

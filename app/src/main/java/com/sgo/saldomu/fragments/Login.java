@@ -39,6 +39,7 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.dialogs.FingerprintDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
 import com.sgo.saldomu.models.retrofit.LoginModel;
@@ -67,6 +68,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
     private View v;
     private Bundle argsBundleNextLogin = new Bundle();
     private Boolean isTexted = false;
+    private FingerprintDialog fingerprintDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -133,6 +135,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
+            fingerprintDialog.show(getFragmentManager(),"");
         } else if (m != null) {
             if (m.containsKey(DefineValue.IS_POS)) {
                 if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y")) {

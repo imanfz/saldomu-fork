@@ -23,11 +23,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.desmond.squarecamera.CameraActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.CameraViewActivity;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
@@ -68,6 +66,7 @@ public class UpgradeAgentActivity extends BaseActivity {
     private final int RESULT_GALLERY_NPWP = 105;
     private final int RESULT_CAMERA_SIUP = 204;
     private final int RESULT_CAMERA_NPWP = 205;
+    private final int RESULT_CROP = 301;
     private ProgressBar pbSIUP, pbNPWP;
     private ImageButton cameraSIUP, cameraNPWP;
     File siup, npwp;
@@ -575,6 +574,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                             new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
                         } else {
                             new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
+//                            new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
                         }
                     } else {
                         Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();

@@ -14,11 +14,16 @@ import android.support.v4.content.FileProvider;
 
 import com.desmond.squarecamera.CameraActivity;
 import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.CameraViewActivity;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.GeneralizeImage;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -98,8 +103,9 @@ public class PickAndCameraUtil {
 
 
     public void runCamera(int reqCode){
-//        Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        Intent takePictureIntent = new Intent(mActivity,CameraActivity.class);
+        Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//        Intent takePictureIntent = new Intent(mActivity,CameraActivity.class);
+//        Intent takePictureIntent = new Intent(mActivity, CameraViewActivity.class);
 
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
@@ -133,8 +139,11 @@ public class PickAndCameraUtil {
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = DateTimeFormat.getCurrentDateTime();
+//        String timeStamp = DateTimeFormat.getCurrentDateTime();
+        DateFormat df = new SimpleDateFormat("yyyMMdd_HHmmss", new Locale("ID","INDONESIA"));
+        String timeStamp = df.format(Calendar.getInstance().getTime());
         String imageFileName = "JPEG_" + timeStamp + "_" + BuildConfig.APP_ID;
+//        String imageFileName = "IMG_" + timeStamp;
         File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
@@ -144,6 +153,7 @@ public class PickAndCameraUtil {
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
+//        mCurrentPhotoPath =image.toString();
         return image;
     }
 

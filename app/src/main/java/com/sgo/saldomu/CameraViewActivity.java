@@ -39,7 +39,6 @@ public class CameraViewActivity extends AppCompatActivity {
         buttonSnap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                preview.mCamera.takePicture(shutterCallback, rawCallback, jpegCallback);
                 camera.takePicture(null,null,mPicture);
             }
         });
@@ -109,5 +108,12 @@ public class CameraViewActivity extends AppCompatActivity {
         }
 
         return mediaFile;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        camera.release();
+        camera = null;
     }
 }
