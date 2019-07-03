@@ -63,7 +63,9 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.ShopCategory;
 import com.sgo.saldomu.models.retrofit.Banner;
 import com.sgo.saldomu.models.retrofit.CategoriesModel;
@@ -687,13 +689,45 @@ public class FragHomeNew extends BaseFragmentMainPage {
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                animateRefrestBtn(true);
-                sp.edit().putString(DefineValue.IS_MANUAL, "Y").commit();
-                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(MainPage.RESULT_HOME_BALANCE));
+//                animateRefrestBtn(true);
+//                sp.edit().putString(DefineValue.IS_MANUAL, "Y").commit();
+//                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(MainPage.RESULT_HOME_BALANCE));
+
+                getBalance(true);
             }
         });
 
         getPromoList();
+    }
+
+    public void getBalance(Boolean isAuto) {
+
+
+        animateRefrestBtn(true);
+
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(MainPage.HOME_BALANCE_ANIMATE));
+
+        new UtilsLoader(getActivity(), sp).getDataBalance(isAuto, new OnLoadDataListener() {
+            @Override
+            public void onSuccess(Object deData) {
+//                setBalanceToUI();
+                RefreshSaldo();
+                refreshBtn.setEnabled(true);
+                refreshBtn.clearAnimation();
+            }
+
+            @Override
+            public void onFail(Bundle message) {
+                refreshBtn.setEnabled(true);
+                refreshBtn.clearAnimation();
+            }
+
+            @Override
+            public void onFailure(String message) {
+                refreshBtn.setEnabled(true);
+                refreshBtn.clearAnimation();
+            }
+        });
     }
 
     private void getPromoList() {
@@ -704,6 +738,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             params.put(WebParams.PAGE, Integer.toString(0));
             params.put(WebParams.COUNT, "10");
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY,""));
 
             Timber.d("isi params get promo list:" + params.toString());
 

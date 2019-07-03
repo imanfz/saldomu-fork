@@ -1172,43 +1172,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
     }
 
-//    private void showReportEspayDialog(String user_name, String date, String user_id, String txId, String payment_name,
-//                                       String txStatus, String txRemark, String txAmount, String biller_detail,
-//                                       String buss_scheme_code, String buss_scheme_name, String ccy_id){
-//        Bundle args = new Bundle();
-//        args.putString(DefineValue.DATE_TIME,DateTimeFormat.formatToID(date));
-//        args.putString(DefineValue.TX_ID,txId);
-//        args.putString(DefineValue.BUSS_SCHEME_NAME,buss_scheme_name);
-////        args.putString(DefineValue.COMMUNITY_NAME,comm_name);
-//        args.putString(DefineValue.AMOUNT,ccy_id+" "+CurrencyFormat.format(txAmount));
-//        args.putString(DefineValue.FEE,ccy_id+" "+CurrencyFormat.format(fee));
-//
-//        Double total_amount = Double.parseDouble(amount) + Double.parseDouble(fee);
-//        args.putString(DefineValue.TOTAL_AMOUNT,ccy_id+" "+CurrencyFormat.format(total_amount));
-//
-//        args.putString(DefineValue.DESCRIPTION, description);
-//        args.putString(DefineValue.REMARK, remark);
-//        args.putString(DefineValue.REPORT_TYPE, DefineValue.TRANSACTION_ESPAY);
-//        args.putString(DefineValue.BANK_NAME, bankName);
-//        args.putString(DefineValue.PRODUCT_NAME, productName);
-//
-//        if(type_desc.equals(ITEM_DESC_PLN)||type_desc.equals(ITEM_DESC_BPJS)){
-//            args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_PLN);
-//            if(type_desc.equals(ITEM_DESC_BPJS))
-//                args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_BPJS);
-//            try {
-//                args.putString(DefineValue.DETAILS_BILLER,response.getString(WebParams.DETAIL));
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        args.putString(DefineValue.BUSS_SCHEME_CODE,buss_scheme_code);
-//
-//        showBillerDialog(args, txStatus, txRemark);
-//
-//    }
-
     private void showBillerDialog(Bundle args, String txStatus, String txRemark) {
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
 

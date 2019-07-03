@@ -9,11 +9,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.paolorotolo.appintro.AppIntro;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
@@ -85,10 +89,6 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
         timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
 
-
-        fcm_id = sp.getString(DefineValue.FCM_ID, "");
-        fcmId_encrypted = sp.getString(DefineValue.FCM_ENCRYPTED, "");
-
         setFlowAnimation();
         Button skipbtn = (Button) skipButton;
         Button donebtn = (Button) doneButton;
@@ -153,7 +153,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //            }
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 openLogin(-2);
-            } else if (fcm_id!=null) {
+            } else if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
                 sendFCM();
             } else
                 InitializeSmsDialog();
@@ -240,6 +240,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     }
 
     private void sendFCM() {
+        fcm_id = sp.getString(DefineValue.FCM_ID, "");
+        fcmId_encrypted = sp.getString(DefineValue.FCM_ENCRYPTED, "");
         showProgLoading("", true);
         try {
             HashMap<String, Object> params = RetrofitService
