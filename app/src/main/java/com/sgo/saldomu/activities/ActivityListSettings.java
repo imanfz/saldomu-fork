@@ -127,6 +127,10 @@ public class ActivityListSettings extends BaseActivity {
                         i=new Intent(ActivityListSettings.this,InfoHargaWebActivity.class);
                         startActivity(i);
                         break;
+                    case "Starter Kit":
+                        i=new Intent(ActivityListSettings.this,StarterKitActivity.class);
+                        startActivity(i);
+                        break;
                     case "Keluar":
                         AlertDialog.Builder alertbox = new AlertDialog.Builder(ActivityListSettings.this);
                         alertbox.setTitle(getString(R.string.warning));

@@ -910,6 +910,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             menuStrings.add(getResources().getString(R.string.menu_item_title_report));
             menuDrawables.add(getResources().getDrawable(R.drawable.ic_laporan));
+
+            menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_laporan));
         }
 
 //        menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));
