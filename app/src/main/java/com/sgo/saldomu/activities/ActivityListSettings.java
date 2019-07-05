@@ -128,7 +128,7 @@ public class ActivityListSettings extends BaseActivity {
                         startActivity(i);
                         break;
                     case "Starter Kit":
-                        i=new Intent(ActivityListSettings.this,InfoHargaWebActivity.class);
+                        i=new Intent(ActivityListSettings.this,StarterKitActivity.class);
                         startActivity(i);
                         break;
                     case "Keluar":
