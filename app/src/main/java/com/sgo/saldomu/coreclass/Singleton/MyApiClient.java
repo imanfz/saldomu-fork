@@ -269,6 +269,8 @@ public class MyApiClient {
     public static String LINK_FCM;
     public static String LINK_LIST_FILE;
 
+    public static String LINK_HISTORY;
+
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
         LINK_REG_STEP1           = headaddressfinal + "RegStep1/Invoke";
@@ -458,6 +460,7 @@ public class MyApiClient {
         LINK_FCM                    = headaddressfinal + "RegFcmRef/Invoke";
 
         LINK_LIST_FILE              = headaddressfinal + "DownloadList/Retrieve";
+        LINK_HISTORY                = headaddressfinal + "History/Retrieve";
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)

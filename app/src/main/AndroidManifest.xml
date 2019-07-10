@@ -452,6 +452,11 @@
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activities.HistoryActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activities.StarterKitActivityKotlin"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
