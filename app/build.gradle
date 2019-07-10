@@ -281,5 +281,7 @@ dependencies {
 
     //map direction
     implementation 'com.akexorcist:googledirectionlibrary:1.1.1'
+
+    implementation 'org.jetbrains.anko:anko-common:0.9'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -202,7 +202,7 @@
     <string name="menu_item_add_by_nfc">Tambah dari NFC</string>
     <string name="menu_item_contact_list">Daftar Kontak</string>
     <string name="menu_item_timeline_detail">LINI WAKTU</string>
-    <string name="menu_item_history_detail">RIWAYAT</string>
+    <string name="menu_item_history_detail">Riwayat</string>
     <string name="menu_item_group_detail">GRUP</string>
     <string name="menu_item_share">Bagikan</string>
     <string name="menu_item_bbs_register_location">Registrasi Toko Member</string>
