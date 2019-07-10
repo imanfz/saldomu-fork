@@ -572,4 +572,8 @@ public class WebParams {
     public static String REFERENCE_ID = "reference_id";
     public static String CLIENT_APP = "client_app";
 
+    public static String STARTER_KITS = "starter_kit";
+    public static String STARTER_ID = "STARTER_ID";
+    public static String FILE_TITLE = "FILE_TITLE";
+
 }
