@@ -268,6 +268,8 @@ public class MyApiClient {
     public static String LINK_PAY_SOF;
     public static String LINK_FCM;
 
+    public static String LINK_HISTORY;
+
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
         LINK_REG_STEP1           = headaddressfinal + "RegStep1/Invoke";
@@ -455,6 +457,8 @@ public class MyApiClient {
         LINK_CANCEL_PAYMENT_SOF     = headaddressfinal + "CancelPayment/Invoke";
         LINK_PAY_SOF                = headaddressfinal + "InquiryMerchant/Invoke";
         LINK_FCM                    = headaddressfinal + "RegFcmRef/Invoke";
+
+        LINK_HISTORY                = headaddressfinal + "History/Retrieve";
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
