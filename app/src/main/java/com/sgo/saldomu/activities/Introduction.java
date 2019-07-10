@@ -67,7 +67,6 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
     private String timeDate, timeStamp, fcm_id, fcmId_encrypted;
     private SecurePreferences sp;
-    private Fragment mFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
