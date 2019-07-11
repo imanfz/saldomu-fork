@@ -202,7 +202,7 @@
     <string name="menu_item_add_by_nfc">Tambah dari NFC</string>
     <string name="menu_item_contact_list">Daftar Kontak</string>
     <string name="menu_item_timeline_detail">LINI WAKTU</string>
-    <string name="menu_item_history_detail">RIWAYAT</string>
+    <string name="menu_item_history_detail">Riwayat</string>
     <string name="menu_item_group_detail">GRUP</string>
     <string name="menu_item_share">Bagikan</string>
     <string name="menu_item_bbs_register_location">Registrasi Toko Member</string>
@@ -558,6 +558,7 @@
     <string name="menu_item_title_setting">Pengaturan</string>
     <string name="menu_item_title_help">Kontak</string>
     <string name="menu_item_title_info_harga">Info Harga</string>
+    <string name="menu_item_title_starterkit">Starter Kit</string>
     <string name="menu_item_title_about">Tentang Aplikasi</string>
 
     <string name="title_about_app">Tentang Aplikasi</string>
@@ -1362,5 +1363,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="fingerprint_success">Fingerprint recognized</string>
     <string name="fingerprint_failed">Fingerprint not recognized. Try again.</string>
     <string name="fingerprint_attempt">Fingerprint authentication failed</string>
+    <string name="dialog_download_title">File Starter Kit</string>
 
 </resources>

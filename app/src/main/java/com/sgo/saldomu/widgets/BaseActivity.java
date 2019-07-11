@@ -1,6 +1,7 @@
 package com.sgo.saldomu.widgets;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.PermissionResult;
 import com.sgo.saldomu.receivers.FcmReceiver;
 
@@ -57,6 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     protected String extraSignature="";
 
     protected Gson gson;
+    protected ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -259,5 +262,24 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
         }
         return greeting;
     }
+
+    ProgressDialog getProgDialog() {
+        if (progressDialog == null)
+            progressDialog = DefinedDialog.CreateProgressDialog(this);
+        return progressDialog;
+    }
+
+    protected void showProgressDialog() {
+        if (getProgDialog()!=null)
+            if (!getProgDialog().isShowing())
+                getProgDialog().show();
+    }
+
+    protected void dismissProgressDialog() {
+        if (getProgDialog()!=null)
+            if (getProgDialog().isShowing())
+                getProgDialog().dismiss();
+    }
+
 
 }

@@ -204,8 +204,6 @@ public class FragListInvoiceTagih extends BaseFragment {
         listMenu.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listMenu.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.row_divider),
                 false, false));
-
-
     }
 
     void showInputDialog(InvoiceDGI model) {
