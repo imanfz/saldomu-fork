@@ -61,10 +61,12 @@ public class UpgradeAgentActivity extends BaseActivity {
     private final int NPWP_TYPE = 4;
     final int RC_CAMERA_STORAGE = 14;
     final int RC_GALLERY = 15;
+    final int RC_CAMERA = 16;
     private final int RESULT_GALLERY_SIUP = 104;
     private final int RESULT_GALLERY_NPWP = 105;
     private final int RESULT_CAMERA_SIUP = 204;
     private final int RESULT_CAMERA_NPWP = 205;
+    private final int RESULT_CROP = 301;
     private ProgressBar pbSIUP, pbNPWP;
     private ImageButton cameraSIUP, cameraNPWP;
     File siup, npwp;
@@ -309,6 +311,9 @@ public class UpgradeAgentActivity extends BaseActivity {
                                 }
                             } else if (which == 1) {
                                 pickAndCameraUtil.runCamera(set_result_photo);
+//                                Intent intent=new Intent(getApplicationContext(),CameraViewActivity.class);
+//                                startActivityForResult(intent,set_result_photo);
+
                             }
 
                         }
@@ -328,6 +333,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -568,6 +574,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                             new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
                         } else {
                             new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
+//                            new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
                         }
                     } else {
                         Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();

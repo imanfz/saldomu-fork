@@ -215,6 +215,7 @@ public class DefineValue {
     public static String IS_ACTIVE = "isActive";
     public static String IS_ACTIVITY_FULL = "isActivityFull";
     public static String ACCESS_SECRET = "accessSecret";
+    public static String USER_PASSWORD = "userPassword";
     public static String NEW_PASSWORD = "newPassword";
     public static String CONFIRM_PASSWORD = "confirmPassword";
     public static String CONFIRM_PAYFRIEND = "confirmPayfriend";
@@ -584,6 +585,7 @@ public class DefineValue {
     public static String FCM_ID = "fcmId";
     public static String CATEGORY = "category";
     public static String ANDROID = "ANDR";
+    public static String EXTRA_SIGNATURE = "extra_signature";
 
 }
 

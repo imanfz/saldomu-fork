@@ -125,6 +125,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Biller_Type_Data_Model mBillerTypeDataGame;
     private Biller_Type_Data_Model mBillerTypeDataVoucher;
     private Biller_Type_Data_Model mBillerTypeDataPDAM;
+    private Biller_Type_Data_Model mBillerTypeDataDATA;
     private Realm realm;
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
@@ -230,6 +231,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         mBillerTypeDataPDAM = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "AIR")
+                .findFirst();
+
+        mBillerTypeDataDATA = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "DATA")
                 .findFirst();
 
         if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
@@ -465,6 +470,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
                         intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
                         intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
+                        startActivity(intent);
+                    }
+                } else if (menuItemName.equals(getString(R.string.newhome_data))) {
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Intent intent = new Intent(getActivity(), BillerActivity.class);
+                        intent.putExtra(DefineValue.BILLER_TYPE, "DATA");
+                        intent.putExtra(DefineValue.BILLER_NAME, "Paket Data Handphone");
                         startActivity(intent);
                     }
                 } else if (menuItemName.equals(getString(R.string.newhome_listrik_pln))) {
@@ -951,6 +965,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         if (mBillerTypeDataPLS != null) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
+                        }
+
+                        if (mBillerTypeDataDATA != null){
+                            menuStrings.add(getResources().getString(R.string.newhome_data));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_paket_data));
                         }
 
                         if (mBillerTypeDataBPJS != null) {

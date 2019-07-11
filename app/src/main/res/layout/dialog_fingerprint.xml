@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:padding="@dimen/margin_10dp"
+    android:gravity="center|top">
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:src="@drawable/logo"
+        android:tint="@color/white"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/confirm_fingerprint"
+        android:textSize="@dimen/text_size_body_1_material"
+        android:textColor="@color/white"/>
+    <ImageView
+        android:id="@+id/iv_finger"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:background="@drawable/round_fingerprint_grey" />
+    <TextView
+        android:id="@+id/tv_error_finger"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:autoSizeTextType="uniform"
+        />
+</LinearLayout>
