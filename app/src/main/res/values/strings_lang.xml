@@ -1355,5 +1355,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="transfer">Transfer</string>
     <string name="profil">Profil</string>
     <string name="get_direction">Buka Petunjuk Arah</string>
+    <string name="dialog_download_title">File Starter Kit</string>
 
 </resources>

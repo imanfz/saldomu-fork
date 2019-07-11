@@ -128,7 +128,7 @@ public class ActivityListSettings extends BaseActivity {
                         startActivity(i);
                         break;
                     case "Starter Kit":
-                        i=new Intent(ActivityListSettings.this,StarterKitActivity.class);
+                        i=new Intent(ActivityListSettings.this,StarterKitActivityKotlin.class);
                         startActivity(i);
                         break;
                     case "Keluar":
