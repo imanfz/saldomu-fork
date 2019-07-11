@@ -1338,6 +1338,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="newhome_game">Voucher Game</string>
     <string name="newhome_voucher">Voucher</string>
     <string name="newhome_pam">AIR PDAM</string>
+    <string name="newhome_data">Paket Data</string>
     <string name="pam">PAM</string>
     <string name="good_morning">Selamat Pagi, </string>
     <string name="good_afternoon">Selamat Siang, </string>
@@ -1360,5 +1361,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="enable_lockscreen_security_text">Please enable lockscreen security in your device\'\s Settings</string>
     <string name="fingerprint_success">Fingerprint recognized</string>
     <string name="fingerprint_failed">Fingerprint not recognized. Try again.</string>
+    <string name="fingerprint_attempt">Fingerprint authentication failed</string>
 
 </resources>

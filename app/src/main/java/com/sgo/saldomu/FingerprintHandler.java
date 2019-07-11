@@ -42,20 +42,20 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
         //I’m going to display the results of fingerprint authentication as a series of toasts.
         //Here, I’m creating the message that’ll be displayed if an error occurs//
         if (!mSelfCancelled)
-            view.setStatusFailed(errString.toString());
+            view.setStatusError(errString.toString());
     }
 
     @Override
     //onAuthenticationFailed is called when the fingerprint doesn’t match with any of the fingerprints registered on the device//
     public void onAuthenticationFailed() {
-        view.setStatusFailed(context.getString(R.string.fingerprint_failed));
+        view.setStatusFailed();
     }
 
     @Override
     //onAuthenticationHelp is called when a non-fatal error has occurred. This method provides additional information about the error,
     //so to provide the user with as much feedback as possible I’m incorporating this information into my toast//
     public void onAuthenticationHelp(int helpMsgId, CharSequence helpString) {
-        view.setStatusFailed(helpString.toString());
+        view.setStatusHelp(helpString.toString());
     }
 
     @Override

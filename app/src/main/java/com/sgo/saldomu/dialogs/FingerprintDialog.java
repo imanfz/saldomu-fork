@@ -58,7 +58,8 @@ public class FingerprintDialog extends DialogFragment {
     private TextView tv_status;
     private ImageView iv_finger;
     private static final String KEY_NAME = "saldomuFingerprint";
-    private Context context;
+    private int attempt;
+    private FingerprintDialogListener listener;
 
     public interface FingerprintDialogListener{
         void onFinishFingerprintDialog(boolean result);
@@ -76,6 +77,7 @@ public class FingerprintDialog extends DialogFragment {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         tv_status=v.findViewById(R.id.tv_error_finger);
         iv_finger=v.findViewById(R.id.iv_finger);
+        listener=(FingerprintDialogListener)getTargetFragment();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //Get an instance of KeyguardManager and FingerprintManager//
@@ -220,7 +222,6 @@ public class FingerprintDialog extends DialogFragment {
             public void run() {
                 if(getDialog().isShowing())
                     getDialog().dismiss();
-                FingerprintDialogListener listener=(FingerprintDialogListener)getTargetFragment();
                 listener.onFinishFingerprintDialog(true);
 //                ActivityLogin activityLogin = (ActivityLogin) getActivity();
 //                activityLogin.showDashboard();
@@ -229,8 +230,40 @@ public class FingerprintDialog extends DialogFragment {
         handler.postDelayed(runnable, 1000);
     }
 
-    public void setStatusFailed(String message){
+    public void setStatusFailed(){
 //        iv_finger.setImageDrawable(getDrawable(getActivity(),R.drawable.ic_priority_high));
+        attempt++;
+        iv_finger.setImageResource(R.drawable.round_warning_orange);
+        if (attempt==1)
+            tv_status.setText(getString(R.string.fingerprint_attempt)+" ("+attempt+")");
+        if (attempt==2)
+            tv_status.setText(getString(R.string.fingerprint_attempt)+" ("+attempt+")");
+        if (attempt==3)
+            tv_status.setText(getString(R.string.fingerprint_attempt)+" ("+attempt+")");
+        if (attempt==4)
+            tv_status.setText(getString(R.string.fingerprint_attempt)+" ("+attempt+")");
+        if (attempt==5){
+            final Handler handler  = new Handler();
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if(getDialog().isShowing())
+                        getDialog().dismiss();
+                    listener.onFinishFingerprintDialog(false);
+//                ActivityLogin activityLogin = (ActivityLogin) getActivity();
+//                activityLogin.showDashboard();
+                }
+            };
+            handler.postDelayed(runnable, 1000);
+        }
+    }
+
+    public void setStatusError(String message){
+        iv_finger.setImageResource(R.drawable.round_warning_orange);
+        tv_status.setText(message);
+    }
+
+    public void setStatusHelp(String message){
         iv_finger.setImageResource(R.drawable.round_warning_orange);
         tv_status.setText(message);
     }

@@ -46,6 +46,7 @@ import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.FingerprintDialog;
@@ -266,10 +267,13 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
     @Override
     public void onFinishFingerprintDialog(boolean result) {
         isFingerprint=result;
-        sentDatas();
+        if (isFingerprint)
+            sentDatas();
     }
 
     private void sentDatas() {
+        ToggleKeyboard toggleKeyboard=new ToggleKeyboard();
+        toggleKeyboard.hide_keyboard(getActivity());
         try {
             String comm_id = MyApiClient.COMM_ID;
 //            String encrypted_password = RSA.opensslEncrypt(passLoginValue.getText().toString()
