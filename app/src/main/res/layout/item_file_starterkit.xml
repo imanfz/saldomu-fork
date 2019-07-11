@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
-<ScrollView
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
     <TextView
+        android:id="@+id/tv_fileName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_fileName"
-        android:layout_weight="1"/>
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:padding="@dimen/margin_10dp"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <ImageButton
+        android:id="@+id/img_download"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/img_download"
-        android:layout_weight="3"
-        android:background="@drawable/ic_download"/>
-</ScrollView>
-
-
+        android:layout_margin="@dimen/margin_10dp"
+        android:layout_marginRight="20dp"
+        android:layout_weight="7"
+        android:background="@drawable/download"
+        android:padding="@dimen/margin_10dp" />
 </LinearLayout>

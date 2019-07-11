@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.sgo.saldomu.R
+import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.DateTimeFormat
 import com.sgo.saldomu.models.retrofit.HistoryModel
 
@@ -40,10 +41,10 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
 
         val model = itemList.elementAt(position)
         if (model.history_detail_type == "Top Up" || model.history_detail_type == "Receive Transfer") {
-            holder.amountText.text = "+ Rp. " + model.amount
+            holder.amountText.text = "+ Rp. " + CurrencyFormat.format(model.amount)
             holder.amountText.setTextColor(ContextCompat.getColor(context, R.color.green_A700))
         } else {
-            holder.amountText.text = "- Rp. " + model.amount
+            holder.amountText.text = "- Rp. " + CurrencyFormat.format(model.amount)
             holder.amountText.setTextColor(ContextCompat.getColor(context, R.color.red))
         }
 

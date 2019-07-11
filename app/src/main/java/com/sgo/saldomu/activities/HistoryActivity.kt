@@ -28,7 +28,6 @@ import com.sgo.saldomu.models.retrofit.HistoryModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.utils.PaginationScrollListener
 import com.sgo.saldomu.widgets.BaseActivity
-import org.jetbrains.anko.toast
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -194,7 +193,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                             }
                             else -> {
                                 val msg = model.error_message
-                                toast(msg)
+                                Toast.makeText(this@HistoryActivity, msg, Toast.LENGTH_SHORT).show()
                             }
                         }
                     }

@@ -2,41 +2,51 @@ package com.sgo.saldomu.activities
 
 import android.app.PendingIntent.getActivity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
+import android.view.View
 import android.widget.Toast
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import com.sgo.saldomu.Beans.SCADMCommunityModel
 import com.sgo.saldomu.R
+import com.sgo.saldomu.adapter.HistoryAdapter
 import com.sgo.saldomu.adapter.ListJoinSCADMAdapter
 import com.sgo.saldomu.adapter.StarterKitListFileAdapter
-import com.sgo.saldomu.coreclass.CustomSecurePref
-import com.sgo.saldomu.coreclass.DefineValue
-import com.sgo.saldomu.coreclass.LevelClass
+import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
-import com.sgo.saldomu.coreclass.WebParams
+import com.sgo.saldomu.dialogs.AlertDialogLogout
+import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.StarterKitFileModel
+import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel
+import com.sgo.saldomu.models.retrofit.HistoryModel
+import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseActivity
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
+import java.net.URLDecoder
+import java.net.URLEncoder
 import java.util.ArrayList
 
-class StarterKitActivityKotlin : BaseActivity() {
+class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.StarterKitListener {
     private lateinit var levelClass: LevelClass
     private var isLevel1: Boolean? = false
     private var isAgent: Boolean? = false
     internal lateinit var progdialog: ProgressDialog
     private lateinit var levelMember: String
     private lateinit var levelAgent: String
-    private val starterKitFileArrayList = ArrayList<StarterKitFileModel>()
     private var recyclerView: RecyclerView? = null
     private var starterKitListFileAdapter: StarterKitListFileAdapter? = null
-
+    private lateinit var message:String
 
     override fun getLayoutResource(): Int {
         return R.layout.starterkit_activity
@@ -50,6 +60,8 @@ class StarterKitActivityKotlin : BaseActivity() {
 
         recyclerView = findViewById(R.id.listFile)
 
+        starterKitListFileAdapter?.clearData()
+
         initData()
 
         initializeAdapter()
@@ -59,10 +71,14 @@ class StarterKitActivityKotlin : BaseActivity() {
     }
 
     private fun initializeAdapter() {
-        starterKitListFileAdapter = StarterKitListFileAdapter()
+        starterKitListFileAdapter = StarterKitListFileAdapter(this)
         recyclerView!!.adapter = starterKitListFileAdapter
 
         recyclerView!!.setLayoutManager(LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false))
+
+        val itemDecoration = DividerItemDecoration(this, null)
+        recyclerView!!.addItemDecoration(itemDecoration)
+
     }
 
     fun initData() {
@@ -93,51 +109,106 @@ class StarterKitActivityKotlin : BaseActivity() {
         params.put(WebParams.USER_ID, userPhoneID)
         Timber.d("params list file : " + params.toString())
 
-        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_LIST_FILE, params,
-                object : ObjListeners {
-                    override fun onResponses(response: JSONObject) {
-                        try {
 
-                            Timber.d("response list file : $response")
-                            val code = response.getString(WebParams.ERROR_CODE)
-                            val error_message = response.getString(WebParams.ERROR_MESSAGE)
-                            if (code == WebParams.SUCCESS_CODE) {
-                                dismissProgressDialog()
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LIST_FILE, params, object : ResponseListener {
+            override fun onResponses(response: JsonObject) {
+                val model = getGson().fromJson(response, jsonModel::class.java)
+                val code = model.error_code
+                val message = model.error_message
 
-                                val mArrayStarterKits = JSONArray(response.getString(WebParams.STARTER_KITS))
+                if (code == WebParams.SUCCESS_CODE) {
 
-                                for (i in 0 until mArrayStarterKits.length()) {
-                                    val starterId = mArrayStarterKits.getJSONObject(i).getString(WebParams.STARTER_ID)
-                                    val fileTitle = mArrayStarterKits.getJSONObject(i).getString(WebParams.FILE_TITLE)
+                    val type = object : TypeToken<List<StarterKitFileModel>>() {
+                    }.type
+                    val list = gson.fromJson<List<StarterKitFileModel>>(response.get(WebParams.STARTER_KITS), type)
 
-                                    val starterKitFileModel = StarterKitFileModel()
-                                    starterKitFileModel.STARTER_ID = starterId
-                                    starterKitFileModel.FILE_TITLE = fileTitle
+                    starterKitListFileAdapter?.updateData(list)
+                    dismissProgressDialog()
+                } else if (code == WebParams.LOGOUT_CODE) {
+                    switchLogout()
+                } else {
+                    Toast.makeText(this@StarterKitActivityKotlin, message, Toast.LENGTH_SHORT).show()
+                }
+            }
 
-                                    starterKitFileArrayList.add(starterKitFileModel)
-                                }
-//
-//                                listJoinSCADMAdapter.updateData(scadmCommunityModelArrayList)
+            override fun onError(throwable: Throwable) {
+            }
 
-                            } else {
-                                Toast.makeText(this@StarterKitActivityKotlin, error_message, Toast.LENGTH_LONG).show()
+            override fun onComplete() {
+            }
+        })
+    }
+
+    override fun onClick(model: StarterKitFileModel) {
+        Log.e(StarterKitActivityKotlin.TAG, "onClick: ")
+        getDownloadFile(model)
+    }
+
+    fun getDownloadFile(starterKitFileModel: StarterKitFileModel) {
+        showProgressDialog()
+
+        extraSignature = memberIDLogin + levelMember + levelAgent
+        val params = RetrofitService.getInstance()
+                .getSignature(MyApiClient.LINK_DOWNLOAD_FILE, extraSignature)
+
+        params[WebParams.USER_ID] = userPhoneID
+        params[WebParams.MEMBER_ID] = memberIDLogin
+        params[WebParams.MEMBER_NAME] = sp.getString(DefineValue.CUST_NAME, "")
+        params[WebParams.MEMBER_EMAIL] = URLDecoder.decode(sp.getString(DefineValue.PROFILE_EMAIL, ""))
+        params[WebParams.MEMBER_LEVEL] = levelMember
+        params[WebParams.IS_AGENT] = levelAgent
+        params[WebParams.STARTER_ID] = starterKitFileModel.starter_id
+
+        Timber.d("isi params download file:$params")
+
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_DOWNLOAD_FILE, params,
+                object : ResponseListener {
+                    override fun onResponses(response: JsonObject) {
+                        dismissProgressDialog()
+                        Log.e(StarterKitActivityKotlin.TAG, "getDownloadFile : $response")
+
+                        val model = getGson().fromJson(response, jsonModel::class.java)
+
+                        when (model.error_code) {
+                            WebParams.SUCCESS_CODE -> {
+                                message = response.get(WebParams.MESSAGE).toString()
+                                dialogSuccess(message)
                             }
-
-
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
+                            WebParams.LOGOUT_CODE -> {
+                                val message = model.error_message
+                                val test = AlertDialogLogout.getInstance()
+                                test.showDialoginMain(this@StarterKitActivityKotlin, message)
+                            }
+                            else -> {
+                                val msg = model.error_message
+                                Toast.makeText(this@StarterKitActivityKotlin, msg, Toast.LENGTH_SHORT).show()
+                            }
                         }
-
                     }
 
                     override fun onError(throwable: Throwable) {
-
+                        dismissProgressDialog()
+                        Log.d("onErrorDownloadFile", "onErrorDownloadFile")
                     }
 
                     override fun onComplete() {
-
+                        dismissProgressDialog()
                     }
                 })
+    }
+
+    private fun dialogSuccess(msg : String) {
+        var dialognya = DefinedDialog.MessageDialog(this, this!!.getString(R.string.dialog_download_title),
+                msg
+        ) { v, isLongClick ->
+
+        }
+
+        dialognya.show()
+    }
+
+    companion object {
+        private const val TAG = "StarterKitActivity"
     }
 
     fun InitializeToolbar() {
