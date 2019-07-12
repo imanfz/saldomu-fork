@@ -44,6 +44,7 @@ import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
+import com.sgo.saldomu.activities.CashoutActivity;
 import com.sgo.saldomu.activities.HistoryActivity;
 import com.sgo.saldomu.activities.HistoryDetailActivity;
 import com.sgo.saldomu.activities.ListBuyActivity;
@@ -538,6 +539,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
                     Intent intent = new Intent(getActivity(), HistoryActivity.class);
                     startActivity(intent);
+                }else if (menuItemName.equals(getString(R.string.title_cashout_bank))) {
+                    Intent intent = new Intent(getActivity(), CashoutActivity.class);
+                    startActivity(intent);
                 }
 //                else {
 //                    for (int x = 0; x < shopCategories.size(); x++) {
@@ -931,6 +935,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
             menuDrawables.add(getResources().getDrawable(R.drawable.ic_laporan));
 
             menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
+            menuDrawables.add(getResources().getDrawable(R.drawable.group));
+
+            menuStrings.add(getResources().getString(R.string.title_cashout_bank));
             menuDrawables.add(getResources().getDrawable(R.drawable.group));
         }
 
