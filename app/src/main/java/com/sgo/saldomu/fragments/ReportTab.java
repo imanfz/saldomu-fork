@@ -55,8 +55,8 @@ public class ReportTab extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        agentType = sp.getString(DefineValue.AGENT_TYPE,"");
-        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+        agentType = sp.getString(DefineValue.AGENT_TYPE, "");
+        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         ToggleFAB(false);
 
@@ -66,18 +66,21 @@ public class ReportTab extends Fragment {
             ReportTabAdapter adapternya;
             TabPageIndicator tabs;
             ViewPager pager;
-            if (isAgent ){
+            if (isAgent) {
                 titles = getActivity().getResources().getStringArray(R.array.report_list_agen);
-            }else
+            } else
                 titles = getActivity().getResources().getStringArray(R.array.report_list);
 
             dialogI = InformationDialog.newInstance(10);
-            dialogI.setTargetFragment(this,0);
+            dialogI.setTargetFragment(this, 0);
             List<ListFragment> mList = new ArrayList<>();
             mList.add(FragReport.newInstance(FragReport.REPORT_ESPAY));
-            mList.add(FragReport.newInstance(FragReport.REPORT_SCASH));
-            mList.add(FragReport.newInstance(FragReport.REPORT_ASK));
-            mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
+            if (isAgent) {
+
+                mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
+            }
+//            mList.add(FragReport.newInstance(FragReport.REPORT_SCASH));
+//            mList.add(FragReport.newInstance(FragReport.REPORT_ASK));
 
 //            tabs = getCurrentView().findViewById(R.id.report_tabs);
 //            pager = getCurrentView().findViewById(R.id.report_pager);
@@ -93,13 +96,13 @@ public class ReportTab extends Fragment {
         }
     }
 
-    private void ToggleFAB(Boolean isShow){
+    private void ToggleFAB(Boolean isShow) {
         if (getActivity() == null)
             return;
 
-        if(getActivity() instanceof MainPage) {
+        if (getActivity() instanceof MainPage) {
             MainPage fca = (MainPage) getActivity();
-            if(fca.materialSheetFab != null) {
+            if (fca.materialSheetFab != null) {
                 if (isShow)
                     fca.materialSheetFab.showFab();
                 else
@@ -126,10 +129,9 @@ public class ReportTab extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_information:
-                if(!dialogI.isAdded())
+                if (!dialogI.isAdded())
                     dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
             default:
