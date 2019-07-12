@@ -282,6 +282,7 @@ dependencies {
     //map direction
     implementation 'com.akexorcist:googledirectionlibrary:1.1.1'
 
-    implementation 'org.jetbrains.anko:anko-common:0.9'
+    //custom camera
+    implementation 'com.github.boxme:squarecamera:1.1.0'
 }
 apply plugin: 'com.google.gms.google-services'

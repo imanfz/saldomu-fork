@@ -54,7 +54,8 @@ public class BillerInput extends Fragment {
 
     public final static String TAG = "BILLER_INPUT";
 
-    private String[] billerType = {"PLS",  //pulsa  0
+    private String[] billerType = {
+            "PLS",  //pulsa  0
             "TKN",  //voucher listrik  1
             "CC",   //Kartu Kredit   2
             "CCL",  //Cicilan  3
@@ -74,7 +75,10 @@ public class BillerInput extends Fragment {
             "BPJS", //BILLER_TYPE_BPJS 17
             "GAME", // Game 18
             "OVO", // saldo ovo 19
-            "VCHR"}; // voucher 20
+            "VCHR",// voucher 20
+            "DATA" // data 21
+
+    };
     private View v;
     private View layout_denom;
     private View layout_month;
@@ -246,7 +250,7 @@ public class BillerInput extends Fragment {
             layout_month.setVisibility(View.GONE);
         }
 
-        if (biller_type_code.equals(billerType[0])) {
+        if (biller_type_code.equals(billerType[0])||biller_type_code.equals(billerType[21])) {
             buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));

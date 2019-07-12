@@ -1339,6 +1339,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="newhome_game">Voucher Game</string>
     <string name="newhome_voucher">Voucher</string>
     <string name="newhome_pam">AIR PDAM</string>
+    <string name="newhome_data">Paket Data</string>
     <string name="pam">PAM</string>
     <string name="good_morning">Selamat Pagi, </string>
     <string name="good_afternoon">Selamat Siang, </string>
@@ -1355,5 +1356,13 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="transfer">Transfer</string>
     <string name="profil">Profil</string>
     <string name="get_direction">Buka Petunjuk Arah</string>
+    <string name="confirm_fingerprint">Confirm fingerprint to continue</string>
+    <string name="enable_fingerprint_permission_text">Please enable the fingerprint permission</string>
+    <string name="register_fingerprint_text">No fingerprint configured. Please register at least one fingerprint in your device\'s Settings</string>
+    <string name="enable_lockscreen_security_text">Please enable lockscreen security in your device\'\s Settings</string>
+    <string name="fingerprint_success">Fingerprint recognized</string>
+    <string name="fingerprint_failed">Fingerprint not recognized. Try again.</string>
+    <string name="fingerprint_attempt">Fingerprint authentication failed</string>
+    <string name="dialog_download_title">File Starter Kit</string>
 
 </resources>
