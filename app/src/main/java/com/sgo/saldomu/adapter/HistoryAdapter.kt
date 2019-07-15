@@ -19,6 +19,7 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
 
     interface HistoryListener {
         fun onClick(model: HistoryModel)
+        fun showErrorMessage(message : String)
     }
 
     fun updateAdapter(itemList: List<HistoryModel>) {
@@ -39,6 +40,10 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as Holder
 
+        if (position == itemList.size - 1) {
+            holder.dividerView.visibility = View.GONE
+        }
+
         val model = itemList.elementAt(position)
         if (model.history_detail_type == "Top Up" || model.history_detail_type == "Receive Transfer") {
             holder.amountText.text = "+ Rp. " + CurrencyFormat.format(model.amount)
@@ -52,13 +57,13 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
         holder.dateText.text = DateTimeFormat.changeFormatDate(model.history_datetime)
         holder.txEmoText.text = model.tx_id_emo
 
-        if (model.tx_id == null || model.tx_id == "") {
-            holder.itemLinearLayout.isEnabled = false
-        } else {
-            holder.itemLinearLayout.isEnabled = true
+        holder.itemLinearLayout.setOnClickListener {
+            if (model.tx_id == null || model.tx_id == "") {
+                listener.showErrorMessage("Detail Tidak Tersedia")
+            } else {
+                listener.onClick(model)
+            }
         }
-
-        holder.itemLinearLayout.setOnClickListener { view -> listener.onClick(model) }
     }
 
     override fun getItemCount(): Int {
@@ -71,6 +76,7 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
         var detailTypeText: TextView = itemView.findViewById(R.id.detail_type_text)
         var txEmoText: TextView = itemView.findViewById(R.id.tx_emo_text)
         var itemLinearLayout: RelativeLayout = itemView.findViewById(R.id.item_linear_layout)
+        var dividerView: View = itemView.findViewById(R.id.divider_view)
 
     }
 
