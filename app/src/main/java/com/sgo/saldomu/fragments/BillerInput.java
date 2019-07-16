@@ -86,6 +86,7 @@ public class BillerInput extends Fragment {
     private TextView tv_payment_remark;
     private TextView tv_month;
     private TextView tv_ovo;
+    private TextView tv_notes;
     private EditText et_payment_remark;
     private Spinner spin_denom;
     private Spinner spin_month;
@@ -98,6 +99,7 @@ public class BillerInput extends Fragment {
     private String biller_comm_id;
     private String biller_comm_name;
     private String denom_item_id;
+    private String biller_info;
     String biller_api_key;
     private String biller_item_id;
     private String final_payment_remark;
@@ -157,6 +159,7 @@ public class BillerInput extends Fragment {
         spinWheelMonth = v.findViewById(R.id.spinning_wheel_billerinput_month);
         layout_month = v.findViewById(R.id.billerinput_layout_month);
         layout_warn_pln = v.findViewById(R.id.layout_warn_pln);
+        tv_notes = v.findViewById(R.id.biller_notes);
         if (args.containsKey(DefineValue.BILLER_ID_NUMBER)) {
             et_payment_remark.setText(args.getString(DefineValue.BILLER_ID_NUMBER));
         }
@@ -215,6 +218,7 @@ public class BillerInput extends Fragment {
             biller_comm_id = mBillerTypeData.getBiller_data_models().get(0).getComm_id();
             biller_comm_name = mBillerTypeData.getBiller_data_models().get(0).getComm_name();
             biller_item_id = mBillerTypeData.getBiller_data_models().get(0).getItem_id();
+            biller_info = mBillerTypeData.getBiller_data_models().get(0).getBiller_info();
         }
 
         mBillerData = new Biller_Data_Model();
@@ -222,7 +226,10 @@ public class BillerInput extends Fragment {
                 equalTo(WebParams.COMM_ID, biller_comm_id).
                 equalTo(WebParams.COMM_NAME, biller_comm_name).
                 equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
+                equalTo(WebParams.BILLER_INFO, biller_info).
                 findFirst();
+
+        tv_notes.setText(mBillerData.getBiller_info().toString());
 
 
         if (mBillerData == null || mBillerData.getItem_id().isEmpty() && mBillerData.getDenom_data_models().size() == 0) {

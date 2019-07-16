@@ -576,5 +576,6 @@ public class WebParams {
     public static String STARTER_ID = "starter_id";
     public static String FILE_TITLE = "file_title";
     public static String MEMBER_EMAIL = "member_email";
+    public static String BILLER_INFO = "biller_info";
 
 }

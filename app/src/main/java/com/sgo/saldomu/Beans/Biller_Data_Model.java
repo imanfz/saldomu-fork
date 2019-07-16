@@ -32,6 +32,8 @@ public class Biller_Data_Model extends RealmObject {
 
     private String last_update;
 
+    private String biller_info;
+
     public String getComm_id() {
         return comm_id;
     }
@@ -119,5 +121,13 @@ public class Biller_Data_Model extends RealmObject {
 
     public void setManual_advice(String manual_advice) {
         this.manual_advice = manual_advice;
+    }
+
+    public String getBiller_info() {
+        return biller_info;
+    }
+
+    public void setBiller_info(String biller_info) {
+        this.biller_info = biller_info;
     }
 }
