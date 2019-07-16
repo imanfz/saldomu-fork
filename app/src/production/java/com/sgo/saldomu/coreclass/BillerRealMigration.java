@@ -25,7 +25,7 @@ public class BillerRealMigration implements RealmMigration {
 
             RealmObjectSchema billerDataModel = schema.get("Biller_Data_Model");
             billerDataModel.addField("manual_advice",String.class, FieldAttribute.REQUIRED);
-            billerDataModel.addField("biller_info",String.class);
+//            billerDataModel.addField("biller_info",String.class);
         }
     }
 }
