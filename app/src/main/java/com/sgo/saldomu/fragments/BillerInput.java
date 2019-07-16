@@ -226,11 +226,12 @@ public class BillerInput extends Fragment {
                 equalTo(WebParams.COMM_ID, biller_comm_id).
                 equalTo(WebParams.COMM_NAME, biller_comm_name).
                 equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
-                equalTo(WebParams.BILLER_INFO, biller_info).
                 findFirst();
 
-        tv_notes.setText(mBillerData.getBiller_info().toString());
-
+        if (mBillerData.getBiller_info()!=null) {
+            tv_notes.setVisibility(View.VISIBLE);
+            tv_notes.setText(mBillerData.getBiller_info().toString());
+        }
 
         if (mBillerData == null || mBillerData.getItem_id().isEmpty() && mBillerData.getDenom_data_models().size() == 0) {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
