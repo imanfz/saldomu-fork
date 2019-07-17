@@ -9,8 +9,6 @@ public class jsonModel {
     private String error_message;
     @SerializedName("on_error")
     private boolean on_error;
-    @SerializedName("next")
-    private String next;
 
     public String getError_code() {
         if (error_code == null)
@@ -22,10 +20,6 @@ public class jsonModel {
         if (error_message == null)
             error_message = "";
         return error_message;
-    }
-
-    public String getNext() {
-        return next;
     }
 
     public boolean getOn_error() {

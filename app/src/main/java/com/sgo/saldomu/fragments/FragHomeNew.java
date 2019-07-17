@@ -177,18 +177,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         progBanner = v.findViewById(R.id.progressBarBanner);
         carouselView = v.findViewById(R.id.carouselView1);
 
-//        btn_beli = v.findViewById(R.id.btn_beli);
-//        input = v.findViewById(R.id.input);
-//        tv_pulsa = v.findViewById(R.id.tv_pulsa);
-//        tv_bpjs = v.findViewById(R.id.tv_bpjs);
-//        tv_listrikPLN = v.findViewById(R.id.tv_listrikPLN);
-//        view_pulsa = v.findViewById(R.id.view_pulsa);
-//        view_bpjs = v.findViewById(R.id.view_bpjs);
-//        view_listrikPLN = v.findViewById(R.id.view_listrikPLN);
-//        BPJS = v.findViewById(R.id.BPJS);
-//        PLS = v.findViewById(R.id.PLS);
-//        TKN = v.findViewById(R.id.TKN);
-
         return v;
 
     }
@@ -206,37 +194,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         realm = RealmManager.getRealmBiller();
 
-        mBillerTypeDataPLS = realm.where(Biller_Type_Data_Model.class)
-                .equalTo(WebParams.BILLER_TYPE_CODE, "PLS")
-                .findFirst();
-
-        mBillerTypeDataBPJS = realm.where(Biller_Type_Data_Model.class)
-                .equalTo(WebParams.BILLER_TYPE_CODE, "BPJS")
-                .findFirst();
-
-        mBillerTypeDataTKN = realm.where(Biller_Type_Data_Model.class)
-                .equalTo(WebParams.BILLER_TYPE_CODE, "TKN")
-                .findFirst();
-
-        mBillerTypeDataEMoney = realm.where(Biller_Type_Data_Model.class)
-                .equalTo(WebParams.BILLER_TYPE_CODE, "OVO")
-                .findFirst();
-
-        mBillerTypeDataGame = realm.where(Biller_Type_Data_Model.class)
-                .equalTo(WebParams.BILLER_TYPE_CODE, "GAME")
-                .findFirst();
-
-        mBillerTypeDataVoucher = realm.where(Biller_Type_Data_Model.class)
-                .equalTo(WebParams.BILLER_TYPE_CODE, "VCHR")
-                .findFirst();
-
-        mBillerTypeDataPDAM = realm.where(Biller_Type_Data_Model.class)
-                .equalTo(WebParams.BILLER_TYPE_CODE, "AIR")
-                .findFirst();
-
-        mBillerTypeDataDATA = realm.where(Biller_Type_Data_Model.class)
-                .equalTo(WebParams.BILLER_TYPE_CODE, "DATA")
-                .findFirst();
+        getRealmData();
 
         if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
             llAgentDetail.setVisibility(View.GONE);
@@ -405,6 +363,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //            }
 //        });
 
+
         GridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -543,30 +502,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent intent = new Intent(getActivity(), CashoutActivity.class);
                     startActivity(intent);
                 }
-//                else {
-//                    for (int x = 0; x < shopCategories.size(); x++) {
-//                        String categoryName = shopCategories.get(x).getCategoryName();
-//                        String categoryNameModified = "Panggil Agen " + categoryName;
-//                        String menuItemNameModified = menuItemName + " ";
-//                        if (menuItemNameModified.equals(categoryNameModified)) {
-//                            if (isDormant.equalsIgnoreCase("Y")) {
-//                                dialogDormant();
-//                            } else {
-//                                Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
-//                                i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
-//                                sp.edit().putString(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
-//                                i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
-//                                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-//                                i.putExtra(DefineValue.AMOUNT, "");
-//                                i.putExtra(DefineValue.BBS_SCHEME_CODE, shopCategories.get(x).getSchemeCode());
-//                                switchActivity(i, MainPage.ACTIVITY_RESULT);
-//                                break;
-//                            }
-//                        }
-//                    }
-
-
-//                }
 
                 if (isAgent) {
                     if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
@@ -721,6 +656,42 @@ public class FragHomeNew extends BaseFragmentMainPage {
         });
 
         getPromoList();
+    }
+
+    private void getRealmData()
+    {
+        mBillerTypeDataPLS = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "PLS")
+                .findFirst();
+
+        mBillerTypeDataBPJS = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "BPJS")
+                .findFirst();
+
+        mBillerTypeDataTKN = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "TKN")
+                .findFirst();
+
+        mBillerTypeDataEMoney = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "OVO")
+                .findFirst();
+
+        mBillerTypeDataGame = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "GAME")
+                .findFirst();
+
+        mBillerTypeDataVoucher = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "VCHR")
+                .findFirst();
+
+        mBillerTypeDataPDAM = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "AIR")
+                .findFirst();
+
+        mBillerTypeDataDATA = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "DATA")
+                .findFirst();
+
     }
 
     public void getBalance(Boolean isAuto) {
