@@ -25,6 +25,7 @@ import com.sgo.saldomu.dialogs.ReportBillerDialog
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel
 import com.sgo.saldomu.models.retrofit.HistoryModel
+import com.sgo.saldomu.models.retrofit.ReportDataModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.utils.PaginationScrollListener
 import com.sgo.saldomu.widgets.BaseActivity
@@ -64,8 +65,8 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
 
         extraSignature = sp.getString(DefineValue.MEMBER_ID, "")
         params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HISTORY, extraSignature)
-        params[WebParams.USER_ID] = sp.getString(DefineValue.USERID_PHONE, "")
-        params[WebParams.MEMBER_ID] = sp.getString(DefineValue.MEMBER_ID, "")
+        params[WebParams.USER_ID] = userPhoneID
+        params[WebParams.MEMBER_ID] = memberIDLogin
         params[WebParams.PAGE] = currentPage
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_HISTORY, params, object : ResponseListener {
             override fun onResponses(`object`: JsonObject) {
@@ -238,7 +239,50 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             showReportCollectorDialog(response)
         } else if (_object.buss_scheme_code == "SG3") {
             showReportSOFDialog(response)
+        } else if (_object.buss_scheme_code == "OR" || _object.buss_scheme_code == "ORP") run {
+            showReportBillerDialog(response)
         }
+    }
+
+    private fun showReportBillerDialog(response: GetTrxStatusReportModel) {
+        val args = Bundle()
+        val dialog = ReportBillerDialog.newInstance(this)
+        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response.created!!))
+        args.putString(DefineValue.TX_ID, response.tx_id)
+        args.putString(DefineValue.DETAIL, response.detail)
+        args.putString(DefineValue.REMARK, response.payment_remark)
+        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tx_amount))
+        args.putString(DefineValue.REPORT_TYPE, DefineValue.TRANSACTION)
+        args.putString(DefineValue.BUSS_SCHEME_CODE, response.buss_scheme_code)
+        args.putString(DefineValue.BUSS_SCHEME_NAME, response.buss_scheme_name)
+        args.putString(DefineValue.MEMBER_PHONE, response.member_phone)
+        args.putString(DefineValue.MEMBER_NAME, response.member_name)
+        args.putString(DefineValue.PAYMENT_PHONE, response.payment_phone)
+        args.putString(DefineValue.PAYMENT_NAME, response.payment_name)
+        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.admin_fee))
+        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.total_amount))
+        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tx_amount))
+        var txStat: Boolean? = false
+        val txStatus = response.tx_status
+        if (txStatus == SUCCESS) {
+            txStat = true
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+        } else if (txStatus == DefineValue.ONRECONCILED) {
+            txStat = true
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
+        } else if (txStatus == DefineValue.SUSPECT) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+        } else if (txStatus != DefineValue.FAILED) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+        } else {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+        }
+        args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
+        if (!txStat) args.putString(DefineValue.TRX_REMARK, response.tx_remark)
+        dialog.arguments = args
+        val ft = this.supportFragmentManager.beginTransaction()
+        ft.add(dialog, ReportBillerDialog.TAG)
+        ft.commitAllowingStateLoss()
     }
 
     private fun showReportEspayBillerDialog(name: String?, response: GetTrxStatusReportModel) {

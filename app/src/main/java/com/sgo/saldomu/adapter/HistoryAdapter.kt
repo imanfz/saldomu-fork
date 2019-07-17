@@ -40,7 +40,7 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
         val holder = viewHolder as Holder
 
         val model = itemList.elementAt(position)
-        if (model.history_detail_type == "Top Up" || model.history_detail_type == "Receive Transfer") {
+        if (model.history_type=="I") {
             holder.amountText.text = "+ Rp. " + CurrencyFormat.format(model.amount)
             holder.amountText.setTextColor(ContextCompat.getColor(context, R.color.green_A700))
         } else {
