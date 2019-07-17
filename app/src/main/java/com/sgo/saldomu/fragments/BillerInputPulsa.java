@@ -222,6 +222,7 @@ public class BillerInputPulsa extends BaseFragment {
         buy_type = "PLS";
         buy_code = BillerActivity.PURCHASE_TYPE;
         tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
+        tv_denom.setText("Nominal Pulsa");
         et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
         et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         layout_month.setVisibility(View.GONE);
