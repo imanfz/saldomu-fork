@@ -137,6 +137,22 @@
             </RelativeLayout>
         </LinearLayout>
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="20dp"
+            android:visibility="visible">
+            <TextView
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/biller_notes"/>
+        </ScrollView>
+
+
+
         <!--<LinearLayout-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
