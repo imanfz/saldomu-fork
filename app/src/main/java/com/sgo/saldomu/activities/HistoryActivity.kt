@@ -239,7 +239,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             showReportCollectorDialog(response)
         } else if (_object.buss_scheme_code == "SG3") {
             showReportSOFDialog(response)
-        } else if (_object.buss_scheme_code == "OR" || _object.buss_scheme_code == "ORP") run {
+        } else if (_object.buss_scheme_code == "OR" || _object.buss_scheme_code == "ORP" || _object.buss_scheme_code=="IR") run {
             showReportBillerDialog(response)
         }
     }
