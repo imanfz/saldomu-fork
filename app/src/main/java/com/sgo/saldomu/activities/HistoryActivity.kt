@@ -45,6 +45,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
     internal lateinit var dialog: AlertDialog
     private var isMemberCTA: Boolean? = false
     private var isReport: Boolean? = false
+    private var next: String = "0"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +71,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             override fun onResponses(`object`: JsonObject) {
                 Log.e(TAG, "onResponses: $`object`")
                 val model = getGson().fromJson(`object`, jsonModel::class.java)
+                next = `object`.get("next").toString()
                 val code = model.error_code
                 val message = model.error_message
 
@@ -78,7 +80,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                     }.type
                     val list = gson.fromJson<List<HistoryModel>>(`object`.get("report_data"), type)
 
-                    if (model.next == "" || model.next == "0") {
+                    if (next == "" || next == "0") {
                         isLastPage = true
                     }
 
