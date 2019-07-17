@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -368,6 +369,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Timber.d("masuk gridhomeonitemclicklistener");
+                Fragment newFragment;
 
                 isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
 
@@ -499,8 +501,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent intent = new Intent(getActivity(), HistoryActivity.class);
                     startActivity(intent);
                 }else if (menuItemName.equals(getString(R.string.title_cashout_bank))) {
-                    Intent intent = new Intent(getActivity(), CashoutActivity.class);
-                    startActivity(intent);
+                    newFragment = new ListCashOut();
+                    switchFragment(newFragment, getString(R.string.title_cashout_bank));
                 }
 
                 if (isAgent) {
@@ -1270,5 +1272,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
         );
 
         dialognya.show();
+    }
+
+    private void switchFragment(Fragment i, String name) {
+        if (getActivity() == null)
+            return;
+
+        MainPage fca = (MainPage) getActivity();
+        fca.switchContent(i, name);
     }
 }
