@@ -179,7 +179,7 @@ public class BillerActivity extends BaseActivity {
         Fragment mLBM;
         String tag;
 
-        if (isOneBiller) {
+        if (isOneBiller&&!_biller_type_code.equalsIgnoreCase("DATA")) {
             mLBM = new BillerInput();
             mArgs.putString(DefineValue.COMMUNITY_ID, mListBillerData.get(0).getComm_id());
             mArgs.putString(DefineValue.COMMUNITY_NAME, mListBillerData.get(0).getComm_name());
