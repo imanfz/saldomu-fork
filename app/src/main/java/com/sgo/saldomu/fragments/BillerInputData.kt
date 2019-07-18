@@ -349,7 +349,6 @@ class BillerInputData : BaseFragment() {
     }
 
     private fun countTotal(){
-        fee=10000.00
         var total=item_price+additional_fee
         total-=fee
         billerinput_detail_total.text=getString(R.string.rp_)+" "+CurrencyFormat.format(total)
@@ -394,7 +393,7 @@ class BillerInputData : BaseFragment() {
                                 billerinput_layout_detail.visibility=View.VISIBLE
                                 billerinput_detail_text_name.text=item_name
                                 billerinput_detail_price.text=getString(R.string.rp_)+" "+CurrencyFormat.format(item_price)
-                                billerinput_detail_admin_fee.text=getString(R.string.rp_)+" "+CurrencyFormat.format(10000)
+                                billerinput_detail_admin_fee.text=getString(R.string.rp_)+" "+CurrencyFormat.format(fee)
                             }else if (code == WebParams.LOGOUT_CODE){
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
