@@ -501,8 +501,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent intent = new Intent(getActivity(), HistoryActivity.class);
                     startActivity(intent);
                 }else if (menuItemName.equals(getString(R.string.title_cashout_bank))) {
-                    newFragment = new ListCashOut();
-                    switchFragment(newFragment, getString(R.string.title_cashout_bank));
+                    Intent intent = new Intent(getActivity(), CashoutActivity.class);
+                    startActivity(intent);
+//                    newFragment = new ListCashOut();
+//                    switchFragment(newFragment, getString(R.string.title_cashout_bank));
                 }
 
                 if (isAgent) {

@@ -43,24 +43,24 @@ public class CashoutActivity extends BaseActivityOTP implements TransactionResul
                 return;
             }
 
-            Intent intent    = getIntent();
-            Bundle args = new Bundle();
-            args.putString(DefineValue.TX_ID, intent.getStringExtra(DefineValue.TX_ID));
-            args.putString(DefineValue.BANK_NAME, intent.getStringExtra(DefineValue.BANK_NAME));
-            args.putString(DefineValue.ACCOUNT_NUMBER, intent.getStringExtra(DefineValue.ACCOUNT_NUMBER));
-            args.putString(DefineValue.CCY_ID, intent.getStringExtra(DefineValue.CCY_ID));
-            args.putString(DefineValue.NOMINAL, intent.getStringExtra(DefineValue.NOMINAL));
-            args.putString(DefineValue.ACCT_NAME, intent.getStringExtra(DefineValue.ACCT_NAME));
-            args.putString(DefineValue.FEE, intent.getStringExtra(DefineValue.FEE));
-            args.putString(DefineValue.TOTAL_AMOUNT, intent.getStringExtra(DefineValue.TOTAL_AMOUNT));
+//            Intent intent    = getIntent();
+//            Bundle args = new Bundle();
+//            args.putString(DefineValue.TX_ID, intent.getStringExtra(DefineValue.TX_ID));
+//            args.putString(DefineValue.BANK_NAME, intent.getStringExtra(DefineValue.BANK_NAME));
+//            args.putString(DefineValue.ACCOUNT_NUMBER, intent.getStringExtra(DefineValue.ACCOUNT_NUMBER));
+//            args.putString(DefineValue.CCY_ID, intent.getStringExtra(DefineValue.CCY_ID));
+//            args.putString(DefineValue.NOMINAL, intent.getStringExtra(DefineValue.NOMINAL));
+//            args.putString(DefineValue.ACCT_NAME, intent.getStringExtra(DefineValue.ACCT_NAME));
+//            args.putString(DefineValue.FEE, intent.getStringExtra(DefineValue.FEE));
+//            args.putString(DefineValue.TOTAL_AMOUNT, intent.getStringExtra(DefineValue.TOTAL_AMOUNT));
 
-            Fragment newFragment = null;
-            if(intent.getIntExtra(DefineValue.CASHOUT_TYPE,0) == DefineValue.CASHOUT_AGEN)
-                newFragment = new FragCashOutAgen();
-            else if(intent.getIntExtra(DefineValue.CASHOUT_TYPE,0) == DefineValue.CASHOUT_BANK)
+            Fragment newFragment;
+//            if(intent.getIntExtra(DefineValue.CASHOUT_TYPE,0) == DefineValue.CASHOUT_AGEN)
+//                newFragment = new FragCashOutAgen();
+//            else if(intent.getIntExtra(DefineValue.CASHOUT_TYPE,0) == DefineValue.CASHOUT_BANK)
                 newFragment = new FragCashOut();
-            else if(intent.getIntExtra(DefineValue.CASHOUT_TYPE,0) == DefineValue.CASHOUT_LKD)
-                newFragment = new FragCashoutMember();
+//            else if(intent.getIntExtra(DefineValue.CASHOUT_TYPE,0) == DefineValue.CASHOUT_LKD)
+//                newFragment = new FragCashoutMember();
 
             fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
