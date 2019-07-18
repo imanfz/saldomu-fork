@@ -131,11 +131,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         mRecyclerView.adapter = adapter
         mRecyclerView.layoutManager = mLayoutManager
         mRecyclerView.setHasFixedSize(true)
-        val itemDecoration = DividerItemDecoration(this, null)
-        mRecyclerView.addItemDecoration(itemDecoration)
-        mRecyclerView.itemAnimator = DefaultItemAnimator()
         mRecyclerView.run {
-            addItemDecoration(itemDecoration)
             mRecyclerView.itemAnimator = DefaultItemAnimator()
             mLayoutManager?.let {
                 addOnScrollListener(object : PaginationScrollListener(it) {
@@ -161,8 +157,11 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         return R.layout.activity_history
     }
 
+    override fun showErrorMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     override fun onClick(model: HistoryModel) {
-        Log.e(TAG, "onClick: ")
         getTrxStatus(model)
     }
 
@@ -196,7 +195,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                             }
                             else -> {
                                 val msg = model.error_message
-                                Toast.makeText(this@HistoryActivity, msg, Toast.LENGTH_SHORT).show()
+                                showErrorMessage(msg)
                             }
                         }
                     }
