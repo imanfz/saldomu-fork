@@ -127,26 +127,26 @@ public class ListCashOut extends ListFragment {
                         new ResponseListener() {
                             @Override
                             public void onResponses(JsonObject object) {
-                                BankCashoutModel model = getGson().fromJson(object, BankCashoutModel.class);
-
-                                String code = model.getError_code();
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    if (isAdded()) {
-                                        SecurePreferences.Editor mEditor = sp.edit();
-                                        mEditor.putString(DefineValue.BANK_CASHOUT, model.getBank_cashout());
-                                        mEditor.apply();
-                                    }
-                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = model.getError_message();
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    if (is_full_activity)
-                                        test.showDialoginActivity(getActivity(), message);
-                                    else
-                                        test.showDialoginMain(getActivity(), message);
-                                } else {
-                                    code = model.getError_message();
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                                }
+//                                BankCashoutModel model = getGson().fromJson(object, BankCashoutModel.class);
+//
+//                                String code = model.getError_code();
+//                                if (code.equals(WebParams.SUCCESS_CODE)) {
+//                                    if (isAdded()) {
+//                                        SecurePreferences.Editor mEditor = sp.edit();
+//                                        mEditor.putString(DefineValue.BANK_CASHOUT, model.getBank_cashout());
+//                                        mEditor.apply();
+//                                    }
+//                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+//                                    String message = model.getError_message();
+//                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+//                                    if (is_full_activity)
+//                                        test.showDialoginActivity(getActivity(), message);
+//                                    else
+//                                        test.showDialoginMain(getActivity(), message);
+//                                } else {
+//                                    code = model.getError_message();
+//                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+//                                }
                             }
 
                             @Override
