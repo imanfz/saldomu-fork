@@ -45,6 +45,7 @@ import javax.crypto.SecretKey;
 
 import static android.content.Context.FINGERPRINT_SERVICE;
 import static android.content.Context.KEYGUARD_SERVICE;
+import static android.support.v4.content.ContextCompat.getDrawable;
 
 public class FingerprintDialog extends DialogFragment {
     View v;
@@ -211,7 +212,7 @@ public class FingerprintDialog extends DialogFragment {
     }
     public void setStatusSuccess(){
 //        iv_finger.setImageDrawable(getDrawable(getActivity(), R.drawable.ic_check));
-        iv_finger.setImageResource(R.drawable.round_check_green);
+        iv_finger.setBackground(getDrawable(getActivity(),R.drawable.ic_fingerprint_success));
         tv_status.setText(getString(R.string.fingerprint_success));
 
 
@@ -233,7 +234,7 @@ public class FingerprintDialog extends DialogFragment {
     public void setStatusFailed(){
 //        iv_finger.setImageDrawable(getDrawable(getActivity(),R.drawable.ic_priority_high));
         attempt++;
-        iv_finger.setImageResource(R.drawable.round_warning_orange);
+        iv_finger.setBackground(getDrawable(getActivity(),R.drawable.ic_fingerprint_failed));
         if (attempt==1)
             tv_status.setText(getString(R.string.fingerprint_attempt)+" ("+attempt+")");
         if (attempt==2)
@@ -259,12 +260,12 @@ public class FingerprintDialog extends DialogFragment {
     }
 
     public void setStatusError(String message){
-        iv_finger.setImageResource(R.drawable.round_warning_orange);
+        iv_finger.setBackground(getDrawable(getActivity(),R.drawable.ic_fingerprint_failed));
         tv_status.setText(message);
     }
 
     public void setStatusHelp(String message){
-        iv_finger.setImageResource(R.drawable.round_warning_orange);
+        iv_finger.setBackground(getDrawable(getActivity(),R.drawable.ic_fingerprint_failed));
         tv_status.setText(message);
     }
 }

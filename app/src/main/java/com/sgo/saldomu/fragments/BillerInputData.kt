@@ -418,13 +418,13 @@ class BillerInputData : BaseFragment() {
                                 fee = model.admin_fee.toDouble()
                                 enabledAdditionalFee = model.enabled_additional_fee
 
-                                if (isAgent!!) {
+                                if (isAgent!!&&enabledAdditionalFee.equals(DefineValue.Y)) {
                                     billerinput_layout_add_fee.visibility = View.VISIBLE
                                     billerinput_detail_layout_add_fee.visibility = View.VISIBLE
                                 }
 
                                 billerinput_layout_detail.visibility = View.VISIBLE
-                                isShowDescription = true
+                                isShowDescription = false
                                 billerinput_detail_text_name.text = item_name
                                 billerinput_detail_price.text = getString(R.string.rp_) + " " + CurrencyFormat.format(item_price)
                                 billerinput_detail_admin_fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(fee)
@@ -578,7 +578,7 @@ class BillerInputData : BaseFragment() {
 
         val newFrag = BillerConfirm()
         newFrag.arguments = mArgs
-        switchFragment(newFrag, BillerActivity.FRAG_BIL_DESCRIPTION, null, true, BillerConfirm.TAG)
+        switchFragment(newFrag, BillerActivity.FRAG_BIL_INPUT, null, true, BillerConfirm.TAG)
 
     }
 
