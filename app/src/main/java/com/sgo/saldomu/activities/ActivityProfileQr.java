@@ -38,7 +38,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -58,9 +62,11 @@ public class ActivityProfileQr extends BaseActivity {
     private boolean isUpgradeAgent =false; //saat antri untuk diverifikasi upgrade agent
     private boolean isRegisteredLevel = false;
     private ImageView custImage;
+    private DateFormat fromFormat;
+    private DateFormat dobFormat;
 
     // UI LAYOUT
-    TextView tv_name, tv_phone_no, tv_lvl_member_value, currencyLimit, limitValue;
+    TextView tv_name, tv_phone_no, tv_lvl_member_value, currencyLimit, limitValue, tv_email, tv_dob;
     CardView btn_upgrade;
     ImageView imageQR;
     ProgressDialog progdialog;
@@ -95,6 +101,8 @@ public class ActivityProfileQr extends BaseActivity {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         levelClass = new LevelClass(this,sp);
+        fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID", "INDONESIA"));
+        dobFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID", "INDONESIA"));
 
 
 
@@ -158,6 +166,8 @@ public class ActivityProfileQr extends BaseActivity {
         tv_name = findViewById(R.id.tv_name);
         tv_phone_no = findViewById(R.id.tv_phone_no);
         tv_lvl_member_value = findViewById(R.id.tv_lvl_member_value);
+        tv_email=findViewById(R.id.tv_current_email);
+        tv_dob=findViewById(R.id.tv_dob);
         btn_upgrade = findViewById(R.id.btn_upgrade);
         imageQR = findViewById(R.id.iv_qr);
         lytUpgrade = findViewById(R.id.lyt_upgrade_detail);
@@ -170,6 +180,12 @@ public class ActivityProfileQr extends BaseActivity {
 
         tv_name.setText(sourceAcctName);
         tv_phone_no.setText(sourceAcct);
+        tv_email.setText(sp.getString(DefineValue.PROFILE_EMAIL, ""));
+        try {
+            tv_dob.setText(dobFormat.format(fromFormat.parse(sp.getString(DefineValue.PROFILE_DOB, ""))));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         tv_lvl_member_value.setText(getLvl());
         currencyLimit.setText(sp.getString(DefineValue.BALANCE_CCYID, ""));
         limitValue.setText(CurrencyFormat.format(sp.getString(DefineValue.BALANCE_REMAIN_LIMIT, "")));
