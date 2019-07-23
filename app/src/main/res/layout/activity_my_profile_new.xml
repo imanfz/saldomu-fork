@@ -31,7 +31,7 @@
                     android:layout_gravity="start|center_vertical"
                     android:layout_weight="2.81"
                     android:maxLines="1"
-                    android:text="@string/data_member_basic"
+                    android:text="@string/lbl_profil_saya"
                     android:textColor="@color/black"
                     android:textSize="16dp"
                     android:textStyle="bold" />
@@ -184,7 +184,7 @@
                         android:layout_gravity="start|center_vertical"
                         android:layout_weight="2.81"
                         android:maxLines="1"
-                        android:text="@string/data_verified_member"
+                        android:text="@string/upload_doc"
                         android:textColor="@color/black"
                         android:textSize="16dp"
                         android:textStyle="bold" />

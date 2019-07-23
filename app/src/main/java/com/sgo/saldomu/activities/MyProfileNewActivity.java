@@ -397,7 +397,7 @@ public class MyProfileNewActivity extends BaseActivity {
         else {
             setActionBarIcon(R.drawable.ic_arrow_left);
         }
-        setActionBarTitle(getString(R.string.lbl_profil_saya));
+        setActionBarTitle(getString(R.string.upgrade_member));
     }
 
     @Override
