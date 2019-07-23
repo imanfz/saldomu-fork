@@ -108,14 +108,14 @@ public class ListSettings extends ListFragment {
                 i = new Intent(getActivity(), MyProfileNewActivity.class);
                 switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
-            case "Informasi":
+            case "FAQ":
                 dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 break;
             case "Registrasi SMS Banking":
                 i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
                 switchActivity(i);
                 break;
-            case "Ganti Password":
+            case "Ganti Kata Sandi":
                 i = new Intent(getActivity(), ChangePassword.class);
                 switchActivity(i);
                 break;
@@ -123,7 +123,7 @@ public class ListSettings extends ListFragment {
                 i = new Intent(getActivity(), ChangePIN.class);
                 switchActivity(i);
                 break;
-            case "Tentang App":
+            case "Tentang Aplikasi":
                 i = new Intent(getActivity(), AboutAppsActivity.class);
                 switchActivity(i);
                 break;

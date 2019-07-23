@@ -85,14 +85,14 @@ public class ActivityListSettings extends BaseActivity {
                         i = new Intent(ActivityListSettings.this, MyProfileNewActivity.class);
                         startActivity(i);
                         break;
-                    case "Informasi":
+                    case "FAQ":
                         dialogI.show(ActivityListSettings.this.getSupportFragmentManager(), InformationDialog.TAG);
                         break;
                     case "Registrasi SMS Banking":
                         i = new Intent(ActivityListSettings.this, RegisterSMSBankingActivity.class);
                         startActivity(i);
                         break;
-                    case "Ganti Password":
+                    case "Ganti Kata Sandi":
                         i = new Intent(ActivityListSettings.this, ChangePassword.class);
                         startActivity(i);
                         break;
@@ -104,7 +104,7 @@ public class ActivityListSettings extends BaseActivity {
                         i = new Intent(ActivityListSettings.this, ChangeEmail.class);
                         startActivity(i);
                         break;
-                    case "Tentang App":
+                    case "Tentang Aplikasi":
                         i = new Intent(ActivityListSettings.this, AboutAppsActivity.class);
                         startActivity(i);
                         break;
