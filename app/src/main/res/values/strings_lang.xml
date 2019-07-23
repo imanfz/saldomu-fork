@@ -488,7 +488,7 @@
     <string name="report_dialog_token">Kode Tarik Tunai</string>
     <string name="report_dialog_text_type">Tipe</string>
     <string name="report_dialog_text_remark">Pesan</string>
-    <string name="report_dialog_text_userid">Nomor handphone</string>
+    <string name="report_dialog_text_userid">Nomor Handphone</string>
     <string name="report_dialog_text_userid_agen">No. Handphone Agen</string>
     <string name="report_dialog_text_hp_member">No. Handphone Member</string>
     <string name="report_dialog_text_adminid">ID Admin</string>
