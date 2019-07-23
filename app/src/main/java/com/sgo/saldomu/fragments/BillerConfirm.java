@@ -45,6 +45,7 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.LevelClass;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -750,7 +751,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
         args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(additionalFee));
-        args.putString(DefineValue.DESTINATION_REMARK, cust_id);
+        args.putString(DefineValue.DESTINATION_REMARK, NoHPFormat.formatTo62(cust_id));
         args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
 
         Boolean txStat = false;
