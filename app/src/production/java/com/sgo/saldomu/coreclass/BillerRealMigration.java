@@ -33,6 +33,7 @@ public class BillerRealMigration implements RealmMigration {
         {
             billerDataModel = schema.get("Biller_Data_Model");
             billerDataModel.addField("biller_info",String.class);
+            oldVersion++;
         }
     }
 }
