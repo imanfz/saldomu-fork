@@ -353,7 +353,6 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                             String message = model.getError_message();
 
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                sp.edit().putString(DefineValue.USER_PASSWORD, RSA.opensslEncrypt(pass)).commit();
                                 memberID = model.getMember_id();
                                 if (model.getFlag_change_pwd() != null) {
                                     flag_change_pwd = "N";
