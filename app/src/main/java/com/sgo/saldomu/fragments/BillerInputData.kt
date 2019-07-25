@@ -35,7 +35,11 @@ import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_history_detail.*
 import kotlinx.android.synthetic.main.dialog_notification.*
+import kotlinx.android.synthetic.main.frag_biller_input.*
 import kotlinx.android.synthetic.main.frag_biller_input_new.*
+import kotlinx.android.synthetic.main.frag_biller_input_new.billerinput_text_denom
+import kotlinx.android.synthetic.main.frag_biller_input_new.btn_submit_billerinput
+import kotlinx.android.synthetic.main.frag_biller_input_new.img_operator
 import kotlinx.android.synthetic.main.no_data.*
 import timber.log.Timber
 import java.util.*
@@ -60,7 +64,6 @@ class BillerInputData : BaseFragment() {
     private var biller_comm_code: String? = null
     private var biller_api_key: String? = null
     private var callback_url: String? = null
-    private var first: Boolean? = true
     private var is_input_amount: Boolean? = null
     private var is_display_amount: Boolean = false
     private var isAgent: Boolean? = null
@@ -114,16 +117,17 @@ class BillerInputData : BaseFragment() {
     }
 
     private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-            item_id = mListDenomData?.get(i)?.item_id
-            item_name = mListDenomData?.get(i)?.item_name
-
-            if (!first!!) {
+        override fun onItemSelected(adapterView: AdapterView<*>, view: View, position: Int, l: Long) {
+            if (position!=0){
+                item_id = mListDenomData?.get(position)?.item_id
+                item_name = mListDenomData?.get(position)?.item_name
                 if (cust_id!!.length >= 10) {
                     sentInquryBiller()
                 }
+            }else{
+                item_id = null
+                item_name = null
             }
-            first = false
         }
 
         override fun onNothingSelected(adapterView: AdapterView<*>) {
@@ -155,7 +159,7 @@ class BillerInputData : BaseFragment() {
 
     }
 
-    private fun checkOperator(string : String?){
+    private fun checkOperator(string: String?) {
         val billerIdNumber = PrefixOperatorValidator.validation(activity, string)
 
         if (billerIdNumber != null) {
@@ -258,6 +262,7 @@ class BillerInputData : BaseFragment() {
             val deproses = object : Thread() {
                 override fun run() {
                     denomData?.clear()
+                    denomData?.add(getString(R.string.billerinput_text_spinner_default_data))
                     for (i in mListDenomData!!.indices) {
                         denomData?.add(mListDenomData?.get(i)?.item_name!!)
                     }
@@ -326,10 +331,15 @@ class BillerInputData : BaseFragment() {
     }
 
     private fun inputValidation(): Boolean {
-        if (billerinput_et_nomor_hp.text.length < 6 ||
-                billerinput_et_nomor_hp.text.length > 13) {
+        if (billerinput_et_nomor_hp.text.length < 10 ||
+                billerinput_et_nomor_hp.text.length > 14) {
             billerinput_et_nomor_hp.requestFocus()
             billerinput_et_nomor_hp.error = getString(R.string.regist1_validation_nohp)
+            return false
+        }
+        if (item_name == null){
+            billerinput_spinner_denom.requestFocus()
+            Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_data), Toast.LENGTH_LONG).show()
             return false
         }
         return true
@@ -418,7 +428,7 @@ class BillerInputData : BaseFragment() {
                                 fee = model.admin_fee.toDouble()
                                 enabledAdditionalFee = model.enabled_additional_fee
 
-                                if (isAgent!!&&enabledAdditionalFee.equals(DefineValue.Y)) {
+                                if (isAgent!! && enabledAdditionalFee.equals(DefineValue.Y)) {
                                     billerinput_layout_add_fee.visibility = View.VISIBLE
                                     billerinput_detail_layout_add_fee.visibility = View.VISIBLE
                                 }
@@ -571,7 +581,7 @@ class BillerInputData : BaseFragment() {
 
         if (is_display_amount)
             mArgs.putString(DefineValue.DESCRIPTION, description)
-        
+
         if (getIs_input_amount()!!)
             mArgs.putString(DefineValue.TOTAL_AMOUNT, total.toString())
 
@@ -683,10 +693,10 @@ class BillerInputData : BaseFragment() {
     }
 
     private fun switchActivity(intent: Intent) {
-        if (activity==null)
+        if (activity == null)
             return
         val fca = activity as BillerActivity?
-        fca?.switchActivity(intent,MainPage.ACTIVITY_RESULT)
+        fca?.switchActivity(intent, MainPage.ACTIVITY_RESULT)
     }
 
     private fun showDialogError(code: String?) {
@@ -706,7 +716,7 @@ class BillerInputData : BaseFragment() {
         message_dialog.text = getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
 
         btn_dialog_notification_ok.setOnClickListener(View.OnClickListener {
-            changeToConfirmBiller(fee,merchantType,bankCode,productCode,-1)
+            changeToConfirmBiller(fee, merchantType, bankCode, productCode, -1)
             dialog.dismiss()
         })
         dialog.show()
