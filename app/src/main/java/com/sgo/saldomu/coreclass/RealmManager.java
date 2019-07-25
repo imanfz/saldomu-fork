@@ -120,6 +120,7 @@ public class RealmManager {
                 .schemaVersion(BuildConfig.REALM_SCHEME_BILLER_VERSION)
                 .modules(new BillerModule())
                 .migration(new BillerRealMigration())
+//                .deleteRealmIfMigrationNeeded()
                 .build();
 
         BBSConfiguration = new RealmConfiguration.Builder()

@@ -143,6 +143,8 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
+        sp.edit().remove(DefineValue.USER_PASSWORD).apply();
+
 
         if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
             Bundle m = getArguments();
@@ -353,7 +355,6 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                             String message = model.getError_message();
 
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                sp.edit().putString(DefineValue.USER_PASSWORD, RSA.opensslEncrypt(pass)).commit();
                                 memberID = model.getMember_id();
                                 if (model.getFlag_change_pwd() != null) {
                                     flag_change_pwd = "N";
@@ -457,6 +458,9 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             SaveIMEIICCID();
             Fragment test = new Login();
+            Bundle mBun = new Bundle();
+            mBun.putString(DefineValue.IS_POS, "N");
+            test.setArguments(mBun);
             switchFragment(test, "Login", false);
         } else {
             DefineValue.NOBACK = true; //fragment selanjutnya tidak bisa menekan tombol BACK
