@@ -91,7 +91,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     private void InitializeToolbar() {
         if (is_first_time) disableHomeIcon();
         else setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.changepass_ab_changepass));
+        setActionBarTitle(getString(R.string.menu_setting_change_pass));
     }
 
     @Override
