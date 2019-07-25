@@ -8,7 +8,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +17,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +53,11 @@ public class BillerInputPulsa extends BaseFragment {
     private EditText et_payment_remark;
     private Spinner spin_denom;
     private Button btn_submit;
-    private View layout_month;
+    private RadioGroup radioGroup;
+    private LinearLayout layout_add_fee;
+    private LinearLayout layout_detail;
+    private LinearLayout layout_denom;
+    private LinearLayout layout_payment_method;
 
     private SecurePreferences sp;
     private String biller_type_code;
@@ -75,7 +81,7 @@ public class BillerInputPulsa extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.frag_biller_input, container, false);
+        v = inflater.inflate(R.layout.frag_biller_input_new, container, false);
         return v;
     }
 
@@ -89,12 +95,17 @@ public class BillerInputPulsa extends BaseFragment {
         spin_denom = v.findViewById(R.id.spinner_billerinput_denom);
         tv_denom = v.findViewById(R.id.billerinput_text_denom);
         img_operator = v.findViewById(R.id.img_operator);
-        tv_payment_remark = v.findViewById(R.id.billerinput_text_payment_remark);
-        et_payment_remark = v.findViewById(R.id.payment_remark_billerinput_value);
+        tv_payment_remark = v.findViewById(R.id.billerinput_text_nomor_hp);
+        et_payment_remark = v.findViewById(R.id.billerinput_et_nomor_hp);
         btn_submit = v.findViewById(R.id.btn_submit_billerinput);
-        layout_month = v.findViewById(R.id.billerinput_layout_month);
+        radioGroup = v.findViewById(R.id.billerinput_radio);
+        layout_add_fee = v.findViewById(R.id.billerinput_layout_add_fee);
+        layout_detail = v.findViewById(R.id.billerinput_layout_detail);
+        layout_denom = v.findViewById(R.id.billerinput_layout_denom);
+        layout_payment_method = v.findViewById(R.id.billerinput_layout_payment_method);
 
         btn_submit.setOnClickListener(submitInputListener);
+        radioGroup.setOnCheckedChangeListener(radioListener);
 
         initLayout();
         initPrefixListener();
@@ -131,7 +142,7 @@ public class BillerInputPulsa extends BaseFragment {
                             img_operator.setBackground(getResources().getDrawable(R.drawable.three));
                         } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("smart")) {
                             img_operator.setBackground(getResources().getDrawable(R.drawable.smartfren));
-                        }else
+                        } else
                             img_operator.setVisibility(View.GONE);
 
                         for (int i = 0; i < _data.size(); i++) {
@@ -225,8 +236,25 @@ public class BillerInputPulsa extends BaseFragment {
         tv_denom.setText("Nominal Pulsa");
         et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
         et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
-        layout_month.setVisibility(View.GONE);
+        radioGroup.setVisibility(View.VISIBLE);
+        layout_payment_method.setVisibility(View.GONE);
+        layout_add_fee.setVisibility(View.GONE);
+        layout_detail.setVisibility(View.GONE);
     }
+
+    private RadioGroup.OnCheckedChangeListener radioListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            switch (checkedId){
+                case R.id.radioPrabayar:
+                    layout_denom.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.radioPascabayar:
+                    layout_denom.setVisibility(View.GONE);
+                    break;
+            }
+        }
+    };
 
     private Button.OnClickListener submitInputListener = new Button.OnClickListener() {
         @Override
@@ -301,7 +329,7 @@ public class BillerInputPulsa extends BaseFragment {
 
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
+    private void switchFragment(Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
         if (getActivity() == null)
             return;
 
