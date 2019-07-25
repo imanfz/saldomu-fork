@@ -433,7 +433,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_total_amount_text = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
                 TextView tv_additionalFee = inflated.findViewById(R.id.tv_additionalFee);
                 TextView tv_additionalFeeValue = inflated.findViewById(R.id.dialog_reportbiller_additionalfee_value);
+                TextView tv_destinationValue = inflated.findViewById(R.id.dialog_reportbiller_destination_value);
                 View viewAdditional = inflated.findViewById(R.id.view_additionalFee);
+                TableLayout tableLayoutDestination=inflated.findViewById(R.id.billertoken_layout_destination);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
@@ -447,6 +449,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_fee_text.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_text.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+
+                if (args.getString(DefineValue.BUSS_SCHEME_NAME).equalsIgnoreCase("Pembelian Paket Data")){
+                    tableLayoutDestination.setVisibility(View.VISIBLE);
+                    tv_destinationValue.setText(args.getString(DefineValue.DESTINATION_REMARK));
+                }
 
                 if (isAgent)
                 {

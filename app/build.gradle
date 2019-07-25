@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'realm-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
 android {
@@ -113,7 +113,7 @@ android {
             buildConfigField "String", "REALM_APP_NAME", "\"com.sgo.saldomu.realm\""
             buildConfigField "long", "REALM_SCHEME_APP_VERSION", "0"
             buildConfigField "String", "REALM_BILLER_NAME", "\"saldomurealm.realm\""
-            buildConfigField "long", "REALM_SCHEME_BILLER_VERSION", "1"
+            buildConfigField "long", "REALM_SCHEME_BILLER_VERSION", "2"
             buildConfigField "String", "REALM_BBS_NAME", "\"saldomubbs.realm\""
             buildConfigField "long", "REALM_SCHEME_BBS_VERSION", "2"
             buildConfigField "String", "REALM_BBS_MEMBER_BANK_NAME", "\"bbsmemberbank.realm\""
@@ -136,8 +136,8 @@ android {
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 50
-            versionName "3.5"
+            versionCode = 51
+            versionName "3.6"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
     }
@@ -268,10 +268,6 @@ dependencies {
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
-
-    implementation 'com.scottyab:aes-crypto:0.0.4'
-    implementation 'com.jakewharton:butterknife:8.5.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     implementation 'com.chaos.view:pinview:1.4.2'
 

@@ -872,6 +872,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
                 }
 
+                if (mBillerTypeDataDATA != null){
+                    menuStrings.add(getResources().getString(R.string.newhome_data));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_paket_data));
+                }
+
                 if (mBillerTypeDataBPJS != null) {
                     menuStrings.add(getResources().getString(R.string.newhome_bpjs));
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_bpjs));

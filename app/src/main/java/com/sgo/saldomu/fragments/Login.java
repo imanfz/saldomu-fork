@@ -139,6 +139,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
 //            userIDValue.setEnabled(true);
 //        }
 
+
         if (sp.contains(DefineValue.SENDER_ID) && !sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
             userIDValue.setText(userIDfinale);
@@ -147,23 +148,25 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                fingerprintManager =
-                        (FingerprintManager) getActivity().getSystemService(FINGERPRINT_SERVICE);
+            if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    fingerprintManager =
+                            (FingerprintManager) getActivity().getSystemService(FINGERPRINT_SERVICE);
 
-                //Check whether the device has a fingerprint sensor//
-                if (!fingerprintManager.isHardwareDetected() ||
-                        (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED)
-                        || !fingerprintManager.hasEnrolledFingerprints()) {
-                    // If a fingerprint sensor isn’t available, then inform the user that they’ll be unable to use your app’s fingerprint functionality//
+                    //Check whether the device has a fingerprint sensor//
+                    if (!fingerprintManager.isHardwareDetected() ||
+                            (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED)
+                            || !fingerprintManager.hasEnrolledFingerprints()) {
+                        // If a fingerprint sensor isn’t available, then inform the user that they’ll be unable to use your app’s fingerprint functionality//
 
-                } else if (sp.getString(DefineValue.USER_PASSWORD,"")!=""){
-                    // Create and show the dialog.
-                    isFingerprint=false;
-                    FingerprintDialog fingerprintDialog = new FingerprintDialog();
-                    fingerprintDialog.setTargetFragment(Login.this,300);
-                    fingerprintDialog.setCancelable(true);
-                    fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
+                    } else if (sp.getString(DefineValue.USER_PASSWORD, "") != "") {
+                        // Create and show the dialog.
+                        isFingerprint = false;
+                        FingerprintDialog fingerprintDialog = new FingerprintDialog();
+                        fingerprintDialog.setTargetFragment(Login.this, 300);
+                        fingerprintDialog.setCancelable(true);
+                        fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
+                    }
                 }
             }
 
@@ -266,13 +269,13 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
 
     @Override
     public void onFinishFingerprintDialog(boolean result) {
-        isFingerprint=result;
+        isFingerprint = result;
         if (isFingerprint)
             sentDatas();
     }
 
     private void sentDatas() {
-        ToggleKeyboard toggleKeyboard=new ToggleKeyboard();
+        ToggleKeyboard toggleKeyboard = new ToggleKeyboard();
         toggleKeyboard.hide_keyboard(getActivity());
         try {
             String comm_id = MyApiClient.COMM_ID;
@@ -287,18 +290,18 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
             btnLogin.setVisibility(View.INVISIBLE);
             image_spinner.setVisibility(View.VISIBLE);
             image_spinner.startAnimation(frameAnimation);
-            if (isFingerprint){
-                extraSignature = sp.getString(DefineValue.EXTRA_SIGNATURE,"");
-            }else {
+            if (isFingerprint) {
+                extraSignature = sp.getString(DefineValue.EXTRA_SIGNATURE, "");
+            } else {
                 extraSignature = userIDfinale + passLoginValue.getText().toString();
             }
             params = RetrofitService.getInstance()
                     .getSignatureSecretKey(MyApiClient.LINK_LOGIN, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userIDfinale);
-            if (isFingerprint){
-                params.put(WebParams.PASSWORD_LOGIN, sp.getString(DefineValue.USER_PASSWORD,""));
-            }else{
+            if (isFingerprint) {
+                params.put(WebParams.PASSWORD_LOGIN, sp.getString(DefineValue.USER_PASSWORD, ""));
+            } else {
                 params.put(WebParams.PASSWORD_LOGIN, RSA.opensslEncrypt(passLoginValue.getText().toString()));
             }
 //            params.put(WebParams.PASSWORD_LOGIN, encrypted_password);
@@ -335,7 +338,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                         sp.edit().putString(DefineValue.IS_POS, is_pos).commit();
                         sp.edit().putString(DefineValue.EXTRA_SIGNATURE, extraSignature).commit();
                         if (!isFingerprint)
-                        sp.edit().putString(DefineValue.USER_PASSWORD, RSA.opensslEncrypt(passLoginValue.getText().toString())).commit();
+                            sp.edit().putString(DefineValue.USER_PASSWORD, RSA.opensslEncrypt(passLoginValue.getText().toString())).commit();
                         if (checkCommunity(loginModel.getCommunity())) {
                             if (unregist_member.equals("N")) {
                                 Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
