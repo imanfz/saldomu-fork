@@ -285,6 +285,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="8dp"
+            android:visibility="gone"
             android:background="@color/grey_300"
             android:id="@+id/view_additionalFee"/>
 
@@ -292,6 +293,7 @@
             <TextView
                 android:text="@string/additional_fee"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:padding="3dip"
                 android:id="@+id/tv_additionalFee"/>
             <TextView
