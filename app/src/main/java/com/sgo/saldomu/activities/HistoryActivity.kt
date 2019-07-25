@@ -113,7 +113,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
     }
 
     private fun initialize() {
-        currentPage = 0
+        currentPage = 1
         mLayoutManager = LinearLayoutManager(this)
         adapter = HistoryAdapter(this)
         swipeRefresh.setOnRefreshListener(this)
