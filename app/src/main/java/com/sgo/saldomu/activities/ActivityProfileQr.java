@@ -199,6 +199,12 @@ public class ActivityProfileQr extends BaseActivity {
             llBalanceDetail.setVisibility(View.GONE);
         }
 
+        if (!levelClass.isLevel1QAC())
+        {
+            lytUpgrade.setVisibility(View.GONE);
+            btn_upgrade.setVisibility(View.GONE);
+        }
+
 
         btn_upgrade.setOnClickListener(new View.OnClickListener() {
             @Override
