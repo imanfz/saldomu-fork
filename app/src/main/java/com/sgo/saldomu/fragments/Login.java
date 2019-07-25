@@ -139,6 +139,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
 //            userIDValue.setEnabled(true);
 //        }
 
+
         if (sp.contains(DefineValue.SENDER_ID) && !sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
             userIDValue.setText(userIDfinale);
