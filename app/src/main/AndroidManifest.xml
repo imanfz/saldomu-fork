@@ -49,6 +49,7 @@
         android:launchMode="singleInstance"
         android:noHistory="true"
         android:theme="@style/Theme.MyTheme"
+        android:usesCleartextTraffic="true"
         tools:replace="android:label,allowBackup,theme">
         <activity
             android:name=".CameraViewActivity"

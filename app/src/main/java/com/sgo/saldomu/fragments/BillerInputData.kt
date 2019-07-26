@@ -119,8 +119,8 @@ class BillerInputData : BaseFragment() {
     private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(adapterView: AdapterView<*>, view: View, position: Int, l: Long) {
             if (position!=0){
-                item_id = mListDenomData?.get(position)?.item_id
-                item_name = mListDenomData?.get(position)?.item_name
+                item_id = mListDenomData?.get(position-1)?.item_id
+                item_name = mListDenomData?.get(position-1)?.item_name
                 if (cust_id!!.length >= 10) {
                     sentInquryBiller()
                 }
@@ -448,6 +448,7 @@ class BillerInputData : BaseFragment() {
                                     Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
                                     fragManager.popBackStack()
                                 }
+                                billerinput_layout_detail.visibility= View.GONE
                             }
                         }
 
