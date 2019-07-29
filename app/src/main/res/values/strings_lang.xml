@@ -124,15 +124,15 @@
     <string name="login_edithint_id">No HP Anda yang sudah terdaftar</string>
     <string name="edittext_hint_id">Masukkan No. HP</string>
     <string name="userid_hint_otp">Masukkan No. HP Anda</string>
-    <string name="login_text_pass">Password</string>
-    <string name="login_edithint_pass">Password</string>
+    <string name="login_text_pass">Kata Sandi</string>
+    <string name="login_edithint_pass">Kata Sandi</string>
     <string name="login_button_login">Masuk</string>
     <string name="login_text_forgetpin">Lupa PIN, silahkan menghubungi\ncall center di 0813–3335–5541</string>
-    <string name="login_text_forgetpass">Lupa Password</string>
-    <string name="login_text_forgetpass_hide">Lupa Password, silahkan kirim email ke\n supportmandiri@sgo.co.id</string>
+    <string name="login_text_forgetpass">Lupa Kata Sandi</string>
+    <string name="login_text_forgetpass_hide">Lupa Kata Sandi, silahkan kirim email ke\n supportmandiri@sgo.co.id</string>
     <string name="login_toast_loginsukses">Masuk Berhasil</string>
     <string name="login_validation_userID">Nomor handphone dibutuhkan !</string>
-    <string name="login_validation_pass">Password dibutuhkan!</string>
+    <string name="login_validation_pass">Kata Sandi dibutuhkan!</string>
     <string name="login_validation_comm">Maaf Anda belum terdaftar sebagai member.</string>
 
     <string name="inethandler_dialog_message">Tidak ada koneksi internet atau koneksi internet bermasalah.</string>
@@ -268,24 +268,24 @@
     </string>
 
     <string name="changepass_ab_changepass">Ganti Password</string>
-    <string name="changepass_text_currentpass">Password Lama</string>
-    <string name="changepass_text_newpass">Password Baru</string>
-    <string name="changepass_text_retypenewpass">Ketik Ulang Password Baru</string>
-    <string name="password_clue">*Password harus terdiri dari 8-20 karakter! Password merupakan kombinasi dari huruf kapital, huruf kecil dan angka.</string>
-    <string name="changepass_edit_error_currentpass">Password dibutuhkan!</string>
-    <string name="changepass_edit_error_newpass">Password Baru dibutuhkan!</string>
-    <string name="changepass_edit_error_retypenewpass">Ketik Ulang Password dibutuhkan!</string>
-    <string name="changepass_edit_error_newpasslength">Password harus terdiri dari 8-20 karakter!</string>
-    <string name="changepass_edit_error_retypenewpass_confirm">Password tidak cocok!</string>
-    <string name="changepass_checkbox_showpass">Tampilkan Password</string>
-    <string name="changepass_toast_success">Ganti Password Berhasil</string>
-    <string name="changepass_text_firsttime_msg">Sebelum menggunakan aplikasi, harap mengganti password anda untuk alasan keamanan.</string>
+    <string name="changepass_text_currentpass">Kata Sandi Lama</string>
+    <string name="changepass_text_newpass">Kata Sandi Baru</string>
+    <string name="changepass_text_retypenewpass">Ketik Ulang Kata Sandi Baru</string>
+    <string name="password_clue">*Kata Sandi harus terdiri dari 8-20 karakter! Kata Sandi merupakan kombinasi dari huruf kapital, huruf kecil dan angka.</string>
+    <string name="changepass_edit_error_currentpass">Kata Sandi dibutuhkan!</string>
+    <string name="changepass_edit_error_newpass">Kata Sandi Baru dibutuhkan!</string>
+    <string name="changepass_edit_error_retypenewpass">Ketik Ulang Kata Sandi dibutuhkan!</string>
+    <string name="changepass_edit_error_newpasslength">Kata Sandi harus terdiri dari 8-20 karakter!</string>
+    <string name="changepass_edit_error_retypenewpass_confirm">Kata Sandi tidak cocok!</string>
+    <string name="changepass_checkbox_showpass">Tampilkan Kata Sandi</string>
+    <string name="changepass_toast_success">Ganti Kata Sandi Berhasil</string>
+    <string name="changepass_text_firsttime_msg">Sebelum menggunakan aplikasi, harap mengganti Kata Sandi anda untuk alasan keamanan.</string>
 
-    <string name="forgotpass_text_title">Lupa Password</string>
-    <string name="forgotpass_text_instruction">%1$s akan mengirimkan prosedur Lupa Password. Pilih tipe notifikasi Lupa Password yang akan diproses.</string>
-    <string name="forgotpass_text_instruction3">Isi dengan nomor handphone anda yang terhubung dengan akun anda dan password yang baru.</string>
+    <string name="forgotpass_text_title">Lupa Kata Sandi</string>
+    <string name="forgotpass_text_instruction">%1$s akan mengirimkan prosedur Lupa Kata Sandi. Pilih tipe notifikasi Lupa Kata Sandi yang akan diproses.</string>
+    <string name="forgotpass_text_instruction3">Isi dengan nomor handphone anda yang terhubung dengan akun anda dan kata sandi yang baru.</string>
     <!--<string name="forgotpass_text_message_success">Ganti password berhasil. Silahkan cek email atau sms anda sesuai pilihan tipe notifikasi yang anda pilih.</string>-->
-    <string name="forgotpass_text_message_success">Ganti password berhasil. Silahkan cek sms anda, sesuai pilihan tipe notifikasi yang anda pilih.</string>
+    <string name="forgotpass_text_message_success">Ganti Kata Sandi berhasil. Silahkan cek sms anda, sesuai pilihan tipe notifikasi yang anda pilih.</string>
     <string name="validation_minimal">Minimal</string>
     <string name="validation_character">karakter!</string>
 
@@ -597,7 +597,7 @@
 
     <string name="login_failed_attempt_title">Gagal Masuk</string>
     <string name="login_failed_attempt_1">Anda punya %1$d kesempatan sebelum diblokir.</string>
-    <string name="login_failed_attempt_3">ID Anda sudah terblokir karena salah password melebihi batas toleransi, silahkan gunakan fitur "Lupa Password" untuk melepas blokir.</string>
+    <string name="login_failed_attempt_3">ID Anda sudah terblokir karena salah kata sandi melebihi batas toleransi, silahkan gunakan fitur "Lupa Kata Sandi" untuk melepas blokir.</string>
     <string name="login_failed_inactive">ID Anda tidak aktif</string>
     <string name="login_failed_dormant">ID Anda dormant</string>
     <string name="login_failed_wrong_pass">Password Salah</string>

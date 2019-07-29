@@ -65,7 +65,8 @@ import static android.content.Context.FINGERPRINT_SERVICE;
 /**
  * Created by Administrator on 7/10/2014.
  */
-public class Login extends BaseFragment implements View.OnClickListener, FingerprintDialog.FingerprintDialogListener {
+public class Login extends BaseFragment implements View.OnClickListener {
+//public class Login extends BaseFragment implements View.OnClickListener, FingerprintDialog.FingerprintDialogListener {
 
     private String userIDfinale = null, is_pos;
     private Button btnforgetPass;
@@ -80,7 +81,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
     private View v;
     private Bundle argsBundleNextLogin = new Bundle();
     private Boolean isTexted = false;
-    private Boolean isFingerprint = false;
+//    private Boolean isFingerprint = false;
     private FingerprintManager fingerprintManager;
 
     @Override
@@ -148,27 +149,27 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
-            if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    fingerprintManager =
-                            (FingerprintManager) getActivity().getSystemService(FINGERPRINT_SERVICE);
-
-                    //Check whether the device has a fingerprint sensor//
-                    if (!fingerprintManager.isHardwareDetected() ||
-                            (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED)
-                            || !fingerprintManager.hasEnrolledFingerprints()) {
-                        // If a fingerprint sensor isn’t available, then inform the user that they’ll be unable to use your app’s fingerprint functionality//
-
-                    } else if (sp.getString(DefineValue.USER_PASSWORD, "") != "") {
-                        // Create and show the dialog.
-                        isFingerprint = false;
-                        FingerprintDialog fingerprintDialog = new FingerprintDialog();
-                        fingerprintDialog.setTargetFragment(Login.this, 300);
-                        fingerprintDialog.setCancelable(true);
-                        fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
-                    }
-                }
-            }
+//            if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    fingerprintManager =
+//                            (FingerprintManager) getActivity().getSystemService(FINGERPRINT_SERVICE);
+//
+//                    //Check whether the device has a fingerprint sensor//
+//                    if (!fingerprintManager.isHardwareDetected() ||
+//                            (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED)
+//                            || !fingerprintManager.hasEnrolledFingerprints()) {
+//                        // If a fingerprint sensor isn’t available, then inform the user that they’ll be unable to use your app’s fingerprint functionality//
+//
+//                    } else if (sp.getString(DefineValue.USER_PASSWORD, "") != "") {
+//                        // Create and show the dialog.
+//                        isFingerprint = false;
+//                        FingerprintDialog fingerprintDialog = new FingerprintDialog();
+//                        fingerprintDialog.setTargetFragment(Login.this, 300);
+//                        fingerprintDialog.setCancelable(true);
+//                        fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
+//                    }
+//                }
+//            }
 
         } else if (m != null) {
             if (m.containsKey(DefineValue.IS_POS)) {
@@ -267,12 +268,12 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
         return false;
     }
 
-    @Override
-    public void onFinishFingerprintDialog(boolean result) {
-        isFingerprint = result;
-        if (isFingerprint)
-            sentDatas();
-    }
+//    @Override
+//    public void onFinishFingerprintDialog(boolean result) {
+//        isFingerprint = result;
+//        if (isFingerprint)
+//            sentDatas();
+//    }
 
     private void sentDatas() {
         ToggleKeyboard toggleKeyboard = new ToggleKeyboard();
@@ -290,20 +291,20 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
             btnLogin.setVisibility(View.INVISIBLE);
             image_spinner.setVisibility(View.VISIBLE);
             image_spinner.startAnimation(frameAnimation);
-            if (isFingerprint) {
-                extraSignature = sp.getString(DefineValue.EXTRA_SIGNATURE, "");
-            } else {
+//            if (isFingerprint) {
+//                extraSignature = sp.getString(DefineValue.EXTRA_SIGNATURE, "");
+//            } else {
                 extraSignature = userIDfinale + passLoginValue.getText().toString();
-            }
+//            }
             params = RetrofitService.getInstance()
                     .getSignatureSecretKey(MyApiClient.LINK_LOGIN, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userIDfinale);
-            if (isFingerprint) {
-                params.put(WebParams.PASSWORD_LOGIN, sp.getString(DefineValue.USER_PASSWORD, ""));
-            } else {
+//            if (isFingerprint) {
+//                params.put(WebParams.PASSWORD_LOGIN, sp.getString(DefineValue.USER_PASSWORD, ""));
+//            } else {
                 params.put(WebParams.PASSWORD_LOGIN, RSA.opensslEncrypt(passLoginValue.getText().toString()));
-            }
+//            }
 //            params.put(WebParams.PASSWORD_LOGIN, encrypted_password);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
@@ -337,8 +338,8 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                         String unregist_member = loginModel.getCommunity().get(0).getUnregisterMember();
                         sp.edit().putString(DefineValue.IS_POS, is_pos).commit();
                         sp.edit().putString(DefineValue.EXTRA_SIGNATURE, extraSignature).commit();
-                        if (!isFingerprint)
-                            sp.edit().putString(DefineValue.USER_PASSWORD, RSA.opensslEncrypt(passLoginValue.getText().toString())).commit();
+//                        if (!isFingerprint)
+//                            sp.edit().putString(DefineValue.USER_PASSWORD, RSA.opensslEncrypt(passLoginValue.getText().toString())).commit();
                         if (checkCommunity(loginModel.getCommunity())) {
                             if (unregist_member.equals("N")) {
                                 Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
