@@ -32,9 +32,9 @@
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-feature android:name="android.hardware.fingerprint" android:required="false"/>
+    <!--<uses-feature android:name="android.hardware.camera" />-->
+    <!--<uses-feature android:name="android.hardware.camera.autofocus" />-->
+    <!--<uses-feature android:name="android.hardware.fingerprint" android:required="false"/>-->
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -49,11 +49,12 @@
         android:launchMode="singleInstance"
         android:noHistory="true"
         android:theme="@style/Theme.MyTheme"
+        android:usesCleartextTraffic="true"
         tools:replace="android:label,allowBackup,theme">
         <activity
             android:name=".CameraViewActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.desmond.squarecamera.CameraActivity" />
+        <!--<activity android:name="com.desmond.squarecamera.CameraActivity" />-->
 
         <uses-library
             android:name="org.apache.http.legacy"
