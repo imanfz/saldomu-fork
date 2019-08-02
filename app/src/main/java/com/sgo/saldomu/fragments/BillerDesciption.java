@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
+import com.sgo.saldomu.Beans.Denom_Data_Model;
 import com.sgo.saldomu.Beans.bank_biller_model;
 import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
@@ -100,7 +101,6 @@ public class BillerDesciption extends BaseFragment {
     private String shareType;
     private String callback_url;
     private String biller_type_code;
-    private String value_item_data;
     private TextView tv_biller_name_value;
     private TextView tv_item_name_value;
     private TextView tv_amount_value, tv_total_value;
@@ -111,9 +111,7 @@ public class BillerDesciption extends BaseFragment {
     private int buy_type;
     private Boolean is_input_amount;
     private Boolean is_display_amount;
-    Boolean isFacebook = false;
     private Boolean isShowDescription = false;
-    private ProgressDialog progdialog;
     private ImageView mIconArrow;
     private TableLayout mTableLayout;
     private listBankModel mTempBank;
@@ -122,10 +120,11 @@ public class BillerDesciption extends BaseFragment {
     private ArrayAdapter<String> adapterPaymentOptions;
     private Biller_Data_Model mBillerData;
     private List<bank_biller_model> mListBankBiller;
+    private List<Denom_Data_Model> mListDenomData;
     private Realm realm;
     Boolean isPLN = false;
     String fee = "0", deAmount, enabledAdditionalFee;
-    private Boolean isAgent=false;
+    private Boolean isAgent = false;
     private LinearLayout layout_additionalFee;
     private EditText et_additionalFee;
     LevelClass levelClass;
@@ -176,21 +175,20 @@ public class BillerDesciption extends BaseFragment {
 
         biller_comm_id = args.getString(DefineValue.COMMUNITY_ID);
         biller_name = args.getString(DefineValue.COMMUNITY_NAME, "");
-        shareType = args.getString(DefineValue.SHARE_TYPE, "");
-        item_id = args.getString(DefineValue.ITEM_ID, "");
-        cust_id = args.getString(DefineValue.CUST_ID, "");
-        buy_type = args.getInt(DefineValue.BUY_TYPE, 0);
-        biller_type_code = args.getString(DefineValue.BILLER_TYPE);
-        if (args.containsKey(DefineValue.VALUE_ITEM_DATA))
-            value_item_data = args.getString(DefineValue.VALUE_ITEM_DATA);
-
-
         mBillerData = realm.where(Biller_Data_Model.class).
                 equalTo(WebParams.COMM_ID, biller_comm_id).
                 equalTo(WebParams.COMM_NAME, biller_name).
                 findFirst();
 
         mListBankBiller = realm.copyFromRealm(mBillerData.getBank_biller_models());
+        mListDenomData = realm.copyFromRealm(mBillerData.getDenom_data_models());
+        shareType = args.getString(DefineValue.SHARE_TYPE, "");
+        item_id = args.getString(DefineValue.ITEM_ID, "");
+        if (item_id.equals(""))
+            item_id = mListDenomData.get(0).getItem_id();
+        cust_id = args.getString(DefineValue.CUST_ID, "");
+        buy_type = args.getInt(DefineValue.BUY_TYPE, 0);
+        biller_type_code = args.getString(DefineValue.BILLER_TYPE);
 
         biller_comm_code = mBillerData.getComm_code();
         biller_api_key = mBillerData.getApi_key();
@@ -214,7 +212,6 @@ public class BillerDesciption extends BaseFragment {
         if (is_display_amount) {
             amount_layout.setVisibility(View.VISIBLE);
         }
-        int buy_type2 = buy_type;
         if (buy_type == BillerActivity.PURCHASE_TYPE) {
             tv_biller_name_value = v.findViewById(R.id.billertoken_biller_name_value);
             tv_biller_name_value.setText(biller_name);
@@ -235,8 +232,7 @@ public class BillerDesciption extends BaseFragment {
             }
         }
 
-        if (isAgent && enabledAdditionalFee.equals("Y"))
-        {
+        if (isAgent && enabledAdditionalFee.equals("Y")) {
             layout_additionalFee.setVisibility(View.VISIBLE);
         }
 
@@ -401,14 +397,9 @@ public class BillerDesciption extends BaseFragment {
     };
 
 
-    private View.OnClickListener descriptionClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            animateDescLayout();
-        }
-    };
+    private View.OnClickListener descriptionClickListener = v -> animateDescLayout();
 
-    void animateDescLayout(){
+    void animateDescLayout() {
         Animation mRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_arrow);
         mRotate.setInterpolator(new LinearInterpolator());
         mRotate.setAnimationListener(new Animation.AnimationListener() {
@@ -573,12 +564,10 @@ public class BillerDesciption extends BaseFragment {
             params.put(WebParams.PRODUCT_H2H, mTempBank.getProduct_h2h());
             params.put(WebParams.PRODUCT_TYPE, mTempBank.getProduct_type());
             params.put(WebParams.USER_ID, userPhoneID);
-            if (isAgent)
-            {
-                if (!et_additionalFee.getText().toString().equals(""))
-                {
+            if (isAgent) {
+                if (!et_additionalFee.getText().toString().equals("")) {
                     params.put(WebParams.ADDITIONAL_FEE, et_additionalFee.getText().toString());
-                }else
+                } else
                     params.put(WebParams.ADDITIONAL_FEE, "0");
             }
 
@@ -806,13 +795,10 @@ public class BillerDesciption extends BaseFragment {
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
         Message.setText(getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms));
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeToConfirmBiller(fee, merchant_type, bank_code, product_code, -1);
+        btnDialogOTP.setOnClickListener(view -> {
+            changeToConfirmBiller(fee, merchant_type, bank_code, product_code, -1);
 
-                dialog.dismiss();
-            }
+            dialog.dismiss();
         });
 
 
