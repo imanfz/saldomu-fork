@@ -215,7 +215,7 @@ public class MainPage extends BaseActivity {
                     if (levelClass.isLevel1QAC()) {
                         levelClass.showDialogLevel();
                     } else {
-                        i = new Intent(MainPage.this, PayFriendsActivity.class);
+                        i = new Intent(MainPage.this, ActivityListTransfer.class);
                         switchActivity(i, MainPage.ACTIVITY_RESULT);
                     }
                 }

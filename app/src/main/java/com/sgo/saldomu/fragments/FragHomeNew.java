@@ -391,7 +391,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         if (getLvlClass().isLevel1QAC()) {
                             getLvlClass().showDialogLevel();
                         } else {
-                            Intent i = new Intent(getActivity(), PayFriendsActivity.class);
+                            Intent i = new Intent(getActivity(), ActivityListTransfer.class);
                             switchActivity(i, MainPage.ACTIVITY_RESULT);
                         }
                     }
