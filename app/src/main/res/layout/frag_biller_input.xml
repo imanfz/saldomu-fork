@@ -21,33 +21,6 @@
             android:text="asd"
             android:visibility="gone"
             android:id="@+id/tv_ovo"/>
-        <RadioGroup
-            android:id="@+id/billerinput_radio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="10dp"
-            android:orientation="horizontal">
-            <RadioButton
-                android:id="@+id/radioPrabayar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/prepaid"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:checked="true"/>
-            <RadioButton
-                android:id="@+id/radioPascabayar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/postpaid"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/abc_text_size_medium_material" />
-        </RadioGroup>
 
         <RelativeLayout
             android:layout_width="match_parent"
