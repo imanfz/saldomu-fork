@@ -24,8 +24,6 @@ import timber.log.Timber;
   Created by Administrator on 12/10/2014.
  */
 public class PayFriendsActivity extends BaseActivity {
-    private SecurePreferences sp;
-    private InformationDialog dialogI;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +35,6 @@ public class PayFriendsActivity extends BaseActivity {
             if (savedInstanceState != null) {
                 return;
             }
-            String _memberID = sp.getString(DefineValue.MEMBER_ID, "");
 
             Intent intent    = getIntent();
             Bundle bundle = intent.getBundleExtra("data");

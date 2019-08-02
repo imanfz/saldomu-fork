@@ -47,9 +47,6 @@ import java.util.Locale;
 import timber.log.Timber;
 
 public class ActivityProfileQr extends BaseActivity {
-
-
-
     // DATA
     String sourceAcct = "", sourceAcctName ="" , lvlMember = "";
     private LevelClass levelClass;
@@ -73,8 +70,6 @@ public class ActivityProfileQr extends BaseActivity {
     RelativeLayout lytUpgrade,lytDetail;
     LinearLayout llBalanceDetail;
 
-
-
     // Listener
     RelativeLayout.OnClickListener detailOnClick = new RelativeLayout.OnClickListener() {
         @Override
@@ -87,13 +82,10 @@ public class ActivityProfileQr extends BaseActivity {
         }
     };
 
-
-
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_profile_qr;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

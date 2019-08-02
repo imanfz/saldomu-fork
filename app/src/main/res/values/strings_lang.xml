@@ -1372,5 +1372,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="prepaid">Prabayar</string>
     <string name="postpaid">Pascabayar</string>
     <string name="upload_doc">Lengkapi dokumen anda dibawah ini :</string>
+    <string name="p2p_transfer">Ke Sesama Saldomu</string>
+    <string name="bank_transfer">Ke Rekening Bank</string>
 
 </resources>

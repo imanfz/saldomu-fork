@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">@color/orange_600</color>
-    <color name="colorPrimaryDark">@color/orange_800</color>
+    <!--<color name="colorPrimary">@color/orange_600</color>-->
+    <color name="colorPrimary">#5EC8DA</color>
+    <!--<color name="colorPrimaryDark">@color/orange_800</color>-->
+    <color name="colorPrimaryDark">#3F6DB5</color>
 
     <color name="colorSecondaryWhiteFixed">#e5e5e5</color>
     <color name="colorSecondaryFixed">#cccccc</color>
