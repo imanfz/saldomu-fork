@@ -215,7 +215,7 @@ public class MainPage extends BaseActivity {
                     if (levelClass.isLevel1QAC()) {
                         levelClass.showDialogLevel();
                     } else {
-                        i = new Intent(MainPage.this, PayFriendsActivity.class);
+                        i = new Intent(MainPage.this, ActivityListTransfer.class);
                         switchActivity(i, MainPage.ACTIVITY_RESULT);
                     }
                 }
@@ -1180,6 +1180,9 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.IS_DORMANT);
         mEditor.remove(DefineValue.IS_REGISTERED_LEVEL);
         mEditor.remove(DefineValue.CATEGORY);
+        mEditor.remove(DefineValue.SAME_BANNER);
+        mEditor.remove(DefineValue.DATA_BANNER
+        );
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();

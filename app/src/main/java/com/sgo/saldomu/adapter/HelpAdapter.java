@@ -81,11 +81,12 @@ public class HelpAdapter extends BaseAdapter {
 
             view.setTag(holder);
 
-//            holder.phone.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
-//                    callIntent.setData(Uri.parse("tel:"+ holder.phone.getText().toString()));
+            holder.phone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:"+ holder.phone.getText().toString()));
+                    context.startActivity(callIntent);
 //                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
 //                        // TODO: Consider calling
 //                        //    ActivityCompat#requestPermissions
@@ -99,9 +100,9 @@ public class HelpAdapter extends BaseAdapter {
 //                    else {
 //                        context.startActivity(callIntent);
 //                       }
-//
-//                }
-//            });
+
+                }
+            });
 
             holder.tvCopy.setOnClickListener(new View.OnClickListener() {
                 @Override

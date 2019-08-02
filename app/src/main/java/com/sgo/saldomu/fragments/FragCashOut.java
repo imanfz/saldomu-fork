@@ -200,19 +200,19 @@ public class FragCashOut extends BaseFragment {
         public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
 
             BankCashoutModel model = listBankCashOut.get(i);
-            if (model.getBank_gateway().equalsIgnoreCase("Y")) {
-                layout_acc_name.setVisibility(View.GONE);
-            } else {
-                layout_acc_name.setVisibility(View.VISIBLE);
-            }
+//            if (model.getBank_gateway().equalsIgnoreCase("Y")) {
+//                layout_acc_name.setVisibility(View.GONE);
+//            } else {
+//                layout_acc_name.setVisibility(View.VISIBLE);
+//            }
 
 
 //            Object item = adapterView.getItemAtPosition(i);
-//            bankCode = arrBankCode.get(i);
-//            bankName = item.toString();
+            bankCode = model.getBank_code();
+            bankName = model.getBank_name().toString();
 //            if(!arrBankGateway.isEmpty()) bankGateway = arrBankGateway.get(i);
-//            Timber.d("isi bank name cashout:"+item.toString() + bankCode + bankGateway);
-//
+            Timber.d("isi bank name cashout:"+model.toString() + bankCode + bankGateway);
+
 //            if(isBankGateway) {
 //                if (bankGateway.equalsIgnoreCase("Y")) {
 //                    layout_acc_name.setVisibility(View.GONE);
@@ -426,10 +426,6 @@ public class FragCashOut extends BaseFragment {
                                 Type type = new TypeToken<List<BankCashoutModel>>() {}.getType();
                                 Gson gson2 = new Gson();
                                 listBankCashOut = gson2.fromJson(object.get("bank_cashout"), type);
-
-
-
-
 
                                 Log.e("getBankCashout", listBankCashOut.toString());
 

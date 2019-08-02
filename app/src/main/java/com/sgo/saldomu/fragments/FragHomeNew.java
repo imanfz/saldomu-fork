@@ -41,6 +41,7 @@ import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.PromoObject;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.ActivityListTransfer;
 import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
@@ -388,7 +389,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         if (getLvlClass().isLevel1QAC()) {
                             getLvlClass().showDialogLevel();
                         } else {
-                            Intent i = new Intent(getActivity(), PayFriendsActivity.class);
+                            Intent i = new Intent(getActivity(), ActivityListTransfer.class);
                             switchActivity(i, MainPage.ACTIVITY_RESULT);
                         }
                     }
@@ -500,7 +501,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
                     Intent intent = new Intent(getActivity(), HistoryActivity.class);
                     startActivity(intent);
-                }else if (menuItemName.equals(getString(R.string.title_cashout_bank))) {
+                } else if (menuItemName.equals(getString(R.string.title_cashout_bank))) {
                     Intent intent = new Intent(getActivity(), CashoutActivity.class);
                     startActivity(intent);
 //                    newFragment = new ListCashOut();
@@ -659,11 +660,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         });
 
-        getPromoList();
+        if (sp.getBoolean(DefineValue.SAME_BANNER, false) == false)
+//        if (sp.getString(DefineValue.DATA_BANNER, "") == null)
+            getPromoList();
+        else
+            populateBanner();
     }
 
-    private void getRealmData()
-    {
+    private void getRealmData() {
         mBillerTypeDataPLS = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "PLS")
                 .findFirst();
@@ -734,9 +738,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_PROMO_LIST);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.PAGE, Integer.toString(0));
-            params.put(WebParams.COUNT, "10");
+            params.put(WebParams.COUNT, "5");
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY,""));
+            params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
 
             Timber.d("isi params get promo list:" + params.toString());
 
@@ -758,13 +762,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                             boolean flagSame = false;
 
                                             // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
-                                            if (listPromo.size() > 0) {
-                                                for (int index = 0; index < listPromo.size(); index++) {
-                                                    if (listPromo.get(index).getId().equals(id)) {
+                                            if (mArrayPromo.length() > 0) {
+                                                for (int index = 0; index < mArrayPromo.length(); index++) {
+                                                    if (mArrayPromo.getJSONObject(i).getString(WebParams.ID).equals(id)) {
                                                         flagSame = true;
+                                                        sp.edit().putBoolean(DefineValue.SAME_BANNER, true).commit();
+                                                        sp.edit().putString(DefineValue.DATA_BANNER, response.getString(WebParams.PROMO_DATA)).commit();
                                                         break;
                                                     } else {
                                                         flagSame = false;
+                                                        sp.edit().putBoolean(DefineValue.SAME_BANNER, false).commit();
                                                     }
                                                 }
                                             }
@@ -817,12 +824,42 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private void populateBanner() {
+
+        if (sp.getBoolean(DefineValue.SAME_BANNER,false)==true) {
+            try {
+                JSONArray mArrayPromo_ = new JSONArray(sp.getString(DefineValue.DATA_BANNER,""));
+                for (int i = 0; i < mArrayPromo_.length(); i++) {
+                    try {
+                        String id = mArrayPromo_.getJSONObject(i).getString(WebParams.ID);
+                        String name = mArrayPromo_.getJSONObject(i).getString(WebParams.NAME);
+                        String description = mArrayPromo_.getJSONObject(i).getString(WebParams.DESCRIPTION);
+                        String banner_pic = mArrayPromo_.getJSONObject(i).getString(WebParams.BANNER_PIC);
+                        String target_url = mArrayPromo_.getJSONObject(i).getString(WebParams.TARGET_URL);
+                        String type = mArrayPromo_.getJSONObject(i).getString(WebParams.TYPE);
+
+                        PromoObject promoObject = new PromoObject();
+                        promoObject.setId(id);
+                        promoObject.setName(name);
+                        promoObject.setDesc(description);
+                        promoObject.setImage(banner_pic);
+                        promoObject.setUrl(target_url);
+                        promoObject.setType(type);
+
+                        listPromo.add(promoObject);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         carouselView.setImageListener(new ImageListener() {
             @Override
             public void setImageForPosition(int position, ImageView imageView) {
                 Glide.with(getActivity())
                         .load(listPromo.get(position).getImage())
-//                        .load(R.drawable.tagih_id)
                         .into(imageView);
             }
         });
@@ -872,7 +909,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
                 }
 
-                if (mBillerTypeDataDATA != null){
+                if (mBillerTypeDataDATA != null) {
                     menuStrings.add(getResources().getString(R.string.newhome_data));
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_paket_data));
                 }
@@ -954,7 +991,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
                         }
 
-                        if (mBillerTypeDataDATA != null){
+                        if (mBillerTypeDataDATA != null) {
                             menuStrings.add(getResources().getString(R.string.newhome_data));
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_paket_data));
                         }
