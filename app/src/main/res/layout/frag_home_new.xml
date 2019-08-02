@@ -51,7 +51,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="2dp"
                 android:text="123.000"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="14sp"/>
 
             <ImageView

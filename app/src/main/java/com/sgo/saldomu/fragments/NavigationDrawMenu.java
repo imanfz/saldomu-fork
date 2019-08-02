@@ -677,6 +677,10 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
             case MINFO:
                 startActivity(new Intent(getActivity(), InfoHargaWebActivity.class));
                 break;
+            case MCASHOUT:
+                newFragment = new FragListCategoryBbs();
+                switchFragment(newFragment, getString(R.string.title_cashout_bank));
+                break;
         }
     }
 
