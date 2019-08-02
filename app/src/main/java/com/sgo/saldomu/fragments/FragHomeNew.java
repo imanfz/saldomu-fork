@@ -50,8 +50,10 @@ import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.activities.ReportActivity;
+import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
+import com.sgo.saldomu.activities.UpgradeMemberActivity;
 import com.sgo.saldomu.adapter.GridHome;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -399,6 +401,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
                             switchActivity(i, MainPage.ACTIVITY_RESULT);
                         }
+                    }
+                }
+                // upgrade Member AGENT
+                 else if (menuItemName.equals(getString(R.string.menu_item_title_upgrade_member))) {
+                    if (isDormant.equalsIgnoreCase("Y")) {
+                        dialogDormant();
+                    } else {
+                        Intent i = new Intent(getActivity(), SearchMemberToVerifyActivity.class);
+                        switchActivity(i, MainPage.ACTIVITY_RESULT);
                     }
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_buy))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
@@ -850,6 +861,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                 menuStrings.add(getResources().getString(R.string.menu_item_title_onprogress_agent));
                 menuDrawables.add(getResources().getDrawable(R.drawable.ic_dalam_proses));
+
+
+                menuStrings.add(getResources().getString(R.string.menu_item_title_upgrade_member));
+                menuDrawables.add(getResources().getDrawable(R.drawable.ic_dalam_proses));
+
+
             } else {
                 checkSchemeCodeMember();
 

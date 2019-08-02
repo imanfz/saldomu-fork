@@ -213,7 +213,7 @@ public class ActivityProfileQr extends BaseActivity {
 //                Toast.makeText(ActivityProfileQr.this,"We're sorry this feature currently unavailable",Toast.LENGTH_SHORT).show();
                 checkIsLv1();
 
-                checkIsLv2();
+//                checkIsLv2();
 
 
             }
@@ -262,8 +262,7 @@ public class ActivityProfileQr extends BaseActivity {
     }
 
     private void switchViewUpgradeVerified(){
-        finish();
-        Intent i = new Intent(this,MyProfileNewActivity.class);
+        Intent i = new Intent(this,UpgradeMemberActivity.class);
         startActivity(i);
     }
 
