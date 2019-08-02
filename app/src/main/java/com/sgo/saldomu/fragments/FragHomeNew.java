@@ -661,7 +661,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         });
 
         if (sp.getBoolean(DefineValue.SAME_BANNER, false) == false)
-//        if (sp.getString(DefineValue.DATA_BANNER, "") == null)
             getPromoList();
         else
             populateBanner();
