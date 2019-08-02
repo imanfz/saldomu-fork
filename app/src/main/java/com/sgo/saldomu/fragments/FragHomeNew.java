@@ -391,7 +391,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         if (getLvlClass().isLevel1QAC()) {
                             getLvlClass().showDialogLevel();
                         } else {
-                            Intent i = new Intent(getActivity(), ActivityListTransfer.class);
+                            Intent i = new Intent(getActivity(), PayFriendsActivity.class);
                             switchActivity(i, MainPage.ACTIVITY_RESULT);
                         }
                     }
@@ -672,7 +672,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         });
 
         if (sp.getBoolean(DefineValue.SAME_BANNER, false) == false)
-//        if (sp.getString(DefineValue.DATA_BANNER, "") == null)
             getPromoList();
         else
             populateBanner();

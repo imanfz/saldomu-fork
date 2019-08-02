@@ -17,7 +17,7 @@
         android:layout_height="60dp"
         android:layout_weight="2"
         android:id="@+id/grid_image"
-        android:src="@drawable/ic_tambahsaldo"/>
+        android:src="@drawable/ic_setor_tunai"/>
 
     <TextView
         android:id="@+id/grid_text"

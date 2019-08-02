@@ -31,6 +31,7 @@ public class DefineValue {
     public static String CASHOUT_TUNAI_TYPE = "7";
     public static String YES = "1";
     public static String Y = "Y";
+    public static String N = "N";
     public static String NO = "0";
     public static String SUCCESS = "S";
     public static String ONRECONCILED = "OR";

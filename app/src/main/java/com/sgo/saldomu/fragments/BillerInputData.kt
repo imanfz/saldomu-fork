@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.inputmethodservice.Keyboard
 import android.os.Bundle
 import android.os.Message
 import android.text.Editable
@@ -396,6 +397,7 @@ class BillerInputData : BaseFragment() {
     private fun sentInquryBiller() {
         try {
             showProgressDialog()
+            ToggleKeyboard.hide_keyboard(activity!!)
 
             cust_id = NoHPFormat.formatTo62(billerinput_et_nomor_hp.text.toString())
 
@@ -458,6 +460,7 @@ class BillerInputData : BaseFragment() {
 
                         override fun onComplete() {
                             dismissProgressDialog()
+
                             countTotal()
                         }
 
