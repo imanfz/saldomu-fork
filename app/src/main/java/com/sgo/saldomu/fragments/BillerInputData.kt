@@ -209,7 +209,7 @@ class BillerInputData : BaseFragment() {
         billerinput_et_nomor_hp.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
                 val string = editable.toString()
-                if (string.length == 4) {
+                if (string.length > 3) {
                     checkOperator(string)
                 } else
                     cust_id = NoHPFormat.formatTo62(billerinput_et_nomor_hp.text.toString())
@@ -333,7 +333,7 @@ class BillerInputData : BaseFragment() {
 
     private fun inputValidation(): Boolean {
         if (billerinput_et_nomor_hp.text.length < 10 ||
-                billerinput_et_nomor_hp.text.length > 14) {
+                billerinput_et_nomor_hp.text.length > 15) {
             billerinput_et_nomor_hp.requestFocus()
             billerinput_et_nomor_hp.error = getString(R.string.regist1_validation_nohp)
             return false
