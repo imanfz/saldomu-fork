@@ -4,6 +4,6 @@
     <item android:id="@+id/action_information"
           android:orderInCategory="99"
           android:title="@string/menuitem_title_information"
-          android:icon="@drawable/ic_info_orange"
+          android:icon="@drawable/information"
           someNamespace:showAsAction="ifRoom" />
 </menu>
