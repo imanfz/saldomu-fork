@@ -32,7 +32,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
     private fun initialize() {
         actionBarTitle = getString(R.string.menu_item_title_upgrade_member)
 
-        upload_ktp_button.setOnClickListener {
+        upload_ktp_image_button.setOnClickListener {
             if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
                 openCamera(RESULT_CAMERA)
             } else {
@@ -41,7 +41,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             }
         }
 
-        upload_customer_button.setOnClickListener {
+        upload_customer_image_button.setOnClickListener {
             if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
                 openCamera(RESULT_CAMERA)
             } else {
@@ -50,7 +50,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             }
         }
 
-        upload_ktp_and_customer_button.setOnClickListener {
+        upload_ktp_and_customer_image_button.setOnClickListener {
             if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
                 openCamera(RESULT_CAMERA)
             } else {
