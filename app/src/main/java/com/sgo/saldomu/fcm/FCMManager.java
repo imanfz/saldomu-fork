@@ -57,6 +57,7 @@ public class FCMManager {
     public final static int BLAST_INFO                              = 1009;
     public final static int SOURCE_OF_FUND                          = 1010;
     public final static int VERIFY_ACC                              = 1011;
+    public final static int CONFIRM_ATC                             = 1012;
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
@@ -400,6 +401,20 @@ public class FCMManager {
                             Timber.d("JSONException: " + e.getMessage());
                         }
                     }
+                    break;
+                case FCMManager.CONFIRM_ATC:
+
+
+                    bundleNextLogin.putInt(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
+
+                    i = new Intent(mContext, BBSActivity.class);
+                    i.putExtras(bundleNextLogin);
+
+                    bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                    mEditor = sp.edit();
+                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                    mEditor.apply();
+
                     break;
                 default:
                     i = new Intent(mContext, MainPage.class);
