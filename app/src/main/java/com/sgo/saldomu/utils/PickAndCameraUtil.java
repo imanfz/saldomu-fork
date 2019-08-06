@@ -104,13 +104,12 @@ public class PickAndCameraUtil {
 
     public void runCamera(int reqCode){
         Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-//        Intent takePictureIntent = new Intent(mActivity,CameraActivity.class);
-//        Intent takePictureIntent = new Intent(mActivity, CameraViewActivity.class);
 
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
                 String timeStamp = DateTimeFormat.getCurrentDateTime();
                 String imageFileName = "JPEG_" + timeStamp + "_" + BuildConfig.APP_ID;
+//                String imageFileName = "IMG_" + timeStamp;
 
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.TITLE, imageFileName);
@@ -139,9 +138,7 @@ public class PickAndCameraUtil {
 
     private File createImageFile() throws IOException {
         // Create an image file name
-//        String timeStamp = DateTimeFormat.getCurrentDateTime();
-        DateFormat df = new SimpleDateFormat("yyyMMdd_HHmmss", new Locale("ID","INDONESIA"));
-        String timeStamp = df.format(Calendar.getInstance().getTime());
+        String timeStamp = DateTimeFormat.getCurrentDateTime();
         String imageFileName = "JPEG_" + timeStamp + "_" + BuildConfig.APP_ID;
 //        String imageFileName = "IMG_" + timeStamp;
         File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -152,8 +149,7 @@ public class PickAndCameraUtil {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-//        mCurrentPhotoPath =image.toString();
+        mCurrentPhotoPath =image.toString();
         return image;
     }
 
