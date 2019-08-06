@@ -81,7 +81,7 @@
                         android:layout_height="32dp"
                         android:layout_margin="20dp"
                         android:gravity="center_horizontal"
-                        android:src="@drawable/icon_arrow"
+                        android:src="@drawable/arrow"
                         />
 
                 <RelativeLayout
@@ -209,7 +209,7 @@
                             android:scaleType = "center"
                             android:background="@color/grey_100"
                             android:id="@+id/btnScanQr"
-                            android:src="@drawable/barcode_2"
+                            android:src="@drawable/barcode"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
 

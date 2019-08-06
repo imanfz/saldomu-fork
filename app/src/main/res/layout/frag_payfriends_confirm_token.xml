@@ -144,7 +144,7 @@
                         android:layout_height="32dp"
                         android:layout_margin="20dp"
                         android:gravity="center_horizontal"
-                        android:src="@drawable/icon_arrow"
+                        android:src="@drawable/arrow"
                         />
 
                 <RelativeLayout
