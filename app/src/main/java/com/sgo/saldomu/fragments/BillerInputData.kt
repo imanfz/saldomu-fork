@@ -119,13 +119,13 @@ class BillerInputData : BaseFragment() {
 
     private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(adapterView: AdapterView<*>, view: View, position: Int, l: Long) {
-            if (position!=0){
-                item_id = mListDenomData?.get(position-1)?.item_id
-                item_name = mListDenomData?.get(position-1)?.item_name
+            if (position != 0) {
+                item_id = mListDenomData?.get(position - 1)?.item_id
+                item_name = mListDenomData?.get(position - 1)?.item_name
                 if (cust_id!!.length >= 10) {
                     sentInquryBiller()
                 }
-            }else{
+            } else {
                 item_id = null
                 item_name = null
             }
@@ -210,6 +210,7 @@ class BillerInputData : BaseFragment() {
             override fun afterTextChanged(editable: Editable?) {
                 val string = editable.toString()
                 if (string.length > 3) {
+                    cust_id = string
                     checkOperator(string)
                 } else
                     cust_id = NoHPFormat.formatTo62(billerinput_et_nomor_hp.text.toString())
@@ -338,7 +339,7 @@ class BillerInputData : BaseFragment() {
             billerinput_et_nomor_hp.error = getString(R.string.regist1_validation_nohp)
             return false
         }
-        if (item_name == null){
+        if (item_name == null) {
             billerinput_spinner_denom.requestFocus()
             Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_data), Toast.LENGTH_LONG).show()
             return false
@@ -450,7 +451,7 @@ class BillerInputData : BaseFragment() {
                                     Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
                                     fragManager.popBackStack()
                                 }
-                                billerinput_layout_detail.visibility= View.GONE
+                                billerinput_layout_detail.visibility = View.GONE
                             }
                         }
 
