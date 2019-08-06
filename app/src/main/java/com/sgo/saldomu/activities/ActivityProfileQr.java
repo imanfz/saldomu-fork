@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -39,8 +38,6 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.fragments.NavigationDrawMenu;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.UploadPPModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
@@ -640,7 +637,6 @@ public class ActivityProfileQr extends BaseActivity implements ProgressRequestBo
 
         RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_UPLOAD_PROFILE_PIC, params2, filePart,
                 object -> {
-
                     UploadPPModel model = gson.fromJson(object, UploadPPModel.class);
 
                     String error_code = model.getError_code();
