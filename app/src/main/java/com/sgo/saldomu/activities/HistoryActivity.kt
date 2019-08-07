@@ -117,7 +117,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         mLayoutManager = LinearLayoutManager(this)
         adapter = HistoryAdapter(this)
         swipeRefresh.setOnRefreshListener(this)
-        swipeRefresh.setColorSchemeResources(R.color.orange_600)
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
         setActionBarIcon(R.drawable.ic_arrow_left)
         actionBarTitle = getString(R.string.menu_item_history_detail)
 
