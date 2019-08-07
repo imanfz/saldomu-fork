@@ -173,7 +173,14 @@ public class BillerInputPulsa extends BaseFragment {
                             }
                         } else if (buy_type_detail.equalsIgnoreCase("PASCABAYAR")) {
                             for (int i = 0; i < mListBillerData.size(); i++) {
+                                Timber.d(mListBillerData.get(i).getComm_name());
                                 if (mListBillerData.get(i).getComm_name().contains(BillerIdNumber.prefix_name)) {
+                                    biller_comm_id = mListBillerData.get(i).getComm_id();
+                                    biller_comm_name = mListBillerData.get(i).getComm_name();
+                                    biller_item_id = mListBillerData.get(i).getItem_id();
+                                    break;
+                                }
+                                if (mListBillerData.get(i).getComm_name().contains("Excelcomindo Xplor")){
                                     biller_comm_id = mListBillerData.get(i).getComm_id();
                                     biller_comm_name = mListBillerData.get(i).getComm_name();
                                     biller_item_id = mListBillerData.get(i).getItem_id();
