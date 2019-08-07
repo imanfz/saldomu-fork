@@ -52,19 +52,19 @@ public class TutorialActivity extends AppIntro {
             skipbtn.setText(getString(R.string.start_now));
             donebtn.setText(getString(R.string.done));
         }
-        else if (intType==tutorial_cash_out)
-        {
-            addSlide(Tutorial_page.newInstance(R.drawable.atc_1));
-            addSlide(Tutorial_page.newInstance(R.drawable.atc_2));
-            addSlide(Tutorial_page.newInstance(R.drawable.atc_3));
-            addSlide(Tutorial_page.newInstance(R.drawable.atc_4));
-
-            setFlowAnimation();
-            Button skipbtn = (Button)skipButton;
-            Button donebtn = (Button)doneButton;
-            skipbtn.setText(getString(R.string.start_now));
-            donebtn.setText(getString(R.string.done));
-        }
+//        else if (intType==tutorial_cash_out)
+//        {
+//            addSlide(Tutorial_page.newInstance(R.drawable.atc_1));
+//            addSlide(Tutorial_page.newInstance(R.drawable.atc_2));
+//            addSlide(Tutorial_page.newInstance(R.drawable.atc_3));
+//            addSlide(Tutorial_page.newInstance(R.drawable.atc_4));
+//
+//            setFlowAnimation();
+//            Button skipbtn = (Button)skipButton;
+//            Button donebtn = (Button)doneButton;
+//            skipbtn.setText(getString(R.string.start_now));
+//            donebtn.setText(getString(R.string.done));
+//        }
         else if (intType==tutorial_registerAgen)
         {
             addSlide(Tutorial_page.newInstance(R.drawable.rekening_tujuan_saldomu));
