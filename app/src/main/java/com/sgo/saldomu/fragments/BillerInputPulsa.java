@@ -274,13 +274,11 @@ public class BillerInputPulsa extends BaseFragment {
                     layout_denom.setVisibility(View.VISIBLE);
                     buy_type_detail = "PRABAYAR";
                     biller_type_code = "PLS";
-                    buy_code = BillerActivity.PURCHASE_TYPE;
                     break;
                 case R.id.radioPascabayar:
                     layout_denom.setVisibility(View.GONE);
                     buy_type_detail = "PASCABAYAR";
                     biller_type_code = "HP";
-                    buy_code = BillerActivity.PAYMENT_TYPE;
                     break;
             }
             initRealm();
@@ -356,11 +354,12 @@ public class BillerInputPulsa extends BaseFragment {
         if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
             mArgs.putString(DefineValue.CUST_ID, _payment_remark);
             mArgs.putString(DefineValue.ITEM_ID, denom_item_id);
+            mArgs.putInt(DefineValue.BUY_TYPE, BillerActivity.PURCHASE_TYPE);
         } else{
             mArgs.putString(DefineValue.CUST_ID, et_payment_remark.getText().toString());
             mArgs.putString(DefineValue.ITEM_ID, biller_item_id);
+            mArgs.putInt(DefineValue.BUY_TYPE, BillerActivity.PAYMENT_TYPE);
         }
-        mArgs.putInt(DefineValue.BUY_TYPE, buy_code);
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
         mArgs.putString(DefineValue.COMMUNITY_ID, biller_comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, biller_comm_name);
