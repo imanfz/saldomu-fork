@@ -723,6 +723,6 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
     }
 
     companion object {
-        private const val TAG = "HistoryActivity"
+        internal const val TAG = "HistoryActivity"
     }
 }

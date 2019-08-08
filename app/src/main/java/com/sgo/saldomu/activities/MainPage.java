@@ -1355,7 +1355,10 @@ public class MainPage extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         invalidateOptionsMenu();
-        if (item.getItemId() == R.id.notifications) {
+        if (item.getItemId() == R.id.favorite) {
+            Intent i = new Intent(this, NotificationActivity.class);
+            switchActivity(i, ACTIVITY_RESULT);
+        } else if (item.getItemId() == R.id.notifications) {
             if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
                 //NotificationActionView.setCountDelta(this, 3);
                 //FragNotification fragNotification = new FragNotification();

@@ -316,7 +316,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginBottom="20dp"
                 android:layout_marginRight="20dp"
-                android:background="@color/colorPrimary"
+                android:background="@color/colorPrimaryDark"
                 android:text="@string/submit"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/white"
