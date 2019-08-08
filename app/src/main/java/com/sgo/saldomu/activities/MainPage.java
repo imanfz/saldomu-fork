@@ -850,7 +850,7 @@ public class MainPage extends BaseActivity {
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
-            params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY,""));
+            params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
 
             Timber.d("isi params listmember mainpage:" + params.toString());
 
@@ -1163,7 +1163,10 @@ public class MainPage extends BaseActivity {
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
+        if (sp.getString(DefineValue.IS_POS, "N").equals(DefineValue.N)) {
+            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
+        }else
+            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
         mEditor.putString(DefineValue.PREVIOUS_BALANCE, balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, contact_first_time);
 
@@ -1181,8 +1184,8 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.IS_REGISTERED_LEVEL);
         mEditor.remove(DefineValue.CATEGORY);
         mEditor.remove(DefineValue.SAME_BANNER);
-        mEditor.remove(DefineValue.DATA_BANNER
-        );
+        mEditor.remove(DefineValue.DATA_BANNER);
+        mEditor.remove(DefineValue.IS_POS);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();

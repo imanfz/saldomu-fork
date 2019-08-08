@@ -150,6 +150,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //                Intent i = new Intent(Introduction.this, OTPVerificationActivity.class);
 //                startActivity(i);
 //            }
+            sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 openLogin(-2);
             } else if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
@@ -165,6 +166,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             Intent i = new Intent(Introduction.this, LoginActivity.class);
             i.putExtra(DefineValue.USER_IS_NEW, -2);
             i.putExtra(DefineValue.IS_POS, "Y");
+            sp.edit().putString(DefineValue.IS_POS,DefineValue.Y).commit();
             startActivity(i);
         }
     };
