@@ -512,11 +512,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
                     Intent intent = new Intent(getActivity(), HistoryActivity.class);
                     startActivity(intent);
-                } else if (menuItemName.equals(getString(R.string.title_cashout_bank))) {
-                    Intent intent = new Intent(getActivity(), CashoutActivity.class);
-                    startActivity(intent);
-//                    newFragment = new ListCashOut();
-//                    switchFragment(newFragment, getString(R.string.title_cashout_bank));
                 }
 
                 if (isAgent) {
@@ -968,9 +963,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             menuDrawables.add(getResources().getDrawable(R.drawable.ic_laporan));
 
             menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
-            menuDrawables.add(getResources().getDrawable(R.drawable.group));
-
-            menuStrings.add(getResources().getString(R.string.title_cashout_bank));
             menuDrawables.add(getResources().getDrawable(R.drawable.group));
         }
 

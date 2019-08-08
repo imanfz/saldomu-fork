@@ -115,7 +115,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:background="@color/orange_800"
+        android:background="@color/colorPrimaryDark"
         android:padding="@dimen/fab_elevation"
         android:text="TextView"
         android:textColor="@color/white"
