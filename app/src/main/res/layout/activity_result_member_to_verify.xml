@@ -22,11 +22,13 @@
 
     <Button
         android:id="@+id/next_button"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="154dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="18dp"
-        android:layout_marginEnd="155dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimaryDark"
         android:text="Lanjutkan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
