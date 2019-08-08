@@ -181,6 +181,8 @@
     <string name="menu_item_title_pay_friends">Transfer Saldo</string>
     <string name="menu_item_title_ask_for_money">Minta Saldo</string>
     <string name="menu_item_title_purchase_pulsa">Pembelian E-Voucher HP</string>
+    <string name="menu_item_title_upgrade_member">Upgrade Member</string>
+    <string name="menu_item_title_upgrade_via_agent">Upgrade via Agent</string>
     <string name="menu_item_title_buy">Biller</string>
     <string name="menu_item_title_beli">Beli</string>
     <string name="menu_item_title_cash_out">Transfer ke Bank via Setor Tunai</string>

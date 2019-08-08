@@ -200,7 +200,7 @@ public class MainPage extends BaseActivity {
                     if (levelClass.isLevel1QAC()) {
                         levelClass.showDialogLevel();
                     } else {
-                        i = new Intent(MainPage.this, PayFriendsActivity.class);
+                        i = new Intent(MainPage.this, ActivityListTransfer.class);
                         switchActivity(i, MainPage.ACTIVITY_RESULT);
                     }
                 }
@@ -1340,7 +1340,10 @@ public class MainPage extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         invalidateOptionsMenu();
-        if (item.getItemId() == R.id.notifications) {
+        if (item.getItemId() == R.id.favorite) {
+            Intent i = new Intent(this, NotificationActivity.class);
+            switchActivity(i, ACTIVITY_RESULT);
+        } else if (item.getItemId() == R.id.notifications) {
             if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
                 //NotificationActionView.setCountDelta(this, 3);
                 //FragNotification fragNotification = new FragNotification();

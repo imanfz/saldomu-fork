@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <include
+        android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main" />
+
+    <RelativeLayout
+        android:id="@+id/upload_ktp_relative_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/upload_customer_relative_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_toolbar">
+
+        <ImageButton
+            android:id="@+id/upload_ktp_image_button"
+            android:layout_width="60dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            android:layout_height="60dp"
+            android:layout_below="@+id/tv_ttd"
+            android:onClick="camera_ttd_dialog"
+            android:src="@drawable/ic_photo_camera" />
+
+        <TextView
+            android:id="@+id/tv_ttd_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_ttd"
+            android:layout_margin="8dp"
+            android:layout_toRightOf="@+id/upload_ktp_image_button"
+            android:text="1. Pastikan Foto KTP jelas dan tidak buram."
+            android:textColor="@color/grey_1000b" />
+
+        <TextView
+            android:id="@+id/tv_ttd_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_ttd_1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@+id/upload_ktp_image_button"
+            android:text="2. Pastikan foto tanda tangan Anda terlihat jelas."
+            android:textColor="@color/grey_1000b" />
+
+        <TextView
+            android:id="@+id/tv_pb2_myprofileactivity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_ttd_2"
+            android:textColor="@color/grey_1000b"
+            android:gravity="right"/>
+        <ProgressBar
+            android:id="@+id/pb2_myprofileactivity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_pb2_myprofileactivity"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:minWidth="200dp"
+            android:progress="1"
+            android:max="100"
+            />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/upload_customer_relative_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/upload_ktp_and_customer_relative_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upload_ktp_relative_layout">
+
+        <ImageButton
+            android:id="@+id/upload_customer_image_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tv_ttd"
+            android:onClick="camera_ttd_dialog"
+            android:src="@drawable/ic_photo_camera" />
+
+        <TextView
+            android:id="@+id/upload_customer_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_ttd"
+            android:layout_margin="8dp"
+            android:layout_toRightOf="@+id/upload_customer_image_button"
+            android:text="1. Pastikan Foto Nasabah jelas dan tidak buram."
+            android:textColor="@color/grey_1000b" />
+
+        <TextView
+            android:id="@+id/upload_customer_text_view_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/upload_customer_text_view"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@+id/upload_customer_image_button"
+            android:text="2. Pastikan foto tanda tangan Anda terlihat jelas."
+            android:textColor="@color/grey_1000b" />
+
+        <TextView
+            android:id="@+id/upload_customer_text_view_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/upload_customer_text_view_2"
+            android:textColor="@color/grey_1000b"
+            android:gravity="right"/>
+
+        <ProgressBar
+            android:id="@+id/upload_customer_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/upload_customer_text_view_3"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:minWidth="200dp"
+            android:progress="1"
+            android:max="100"
+            />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/upload_ktp_and_customer_relative_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/submit_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upload_customer_relative_layout">
+
+        <ImageButton
+            android:id="@+id/upload_ktp_and_customer_image_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tv_ttd"
+            android:onClick="camera_ttd_dialog"
+            android:src="@drawable/ic_photo_camera" />
+
+        <TextView
+            android:id="@+id/upload_ktp_and_customer_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_ttd"
+            android:layout_margin="8dp"
+            android:layout_toRightOf="@+id/upload_ktp_and_customer_image_button"
+            android:text="1. Pastikan Foto KTP dan Nasabah jelas dan tidak buram."
+            android:textColor="@color/grey_1000b" />
+
+        <TextView
+            android:id="@+id/upload_ktp_and_customer_text_view_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/upload_ktp_and_customer_text_view"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@+id/upload_ktp_and_customer_image_button"
+            android:text="2. Pastikan foto tanda tangan Anda terlihat jelas."
+            android:textColor="@color/grey_1000b" />
+
+
+        <TextView
+            android:id="@+id/upload_ktp_and_customer_text_view_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/upload_ktp_and_customer_text_view_2"
+            android:textColor="@color/grey_1000b"
+            android:gravity="right"/>
+
+        <ProgressBar
+            android:id="@+id/upload_ktp_and_customer_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/upload_ktp_and_customer_text_view_4"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:minWidth="200dp"
+            android:progress="1"
+            android:max="100"
+            />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/colorPrimaryDark"
+        android:text="Submit"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upload_ktp_and_customer_relative_layout" />
+
+</android.support.constraint.ConstraintLayout>

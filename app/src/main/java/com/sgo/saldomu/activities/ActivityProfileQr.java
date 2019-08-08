@@ -295,8 +295,7 @@ public class ActivityProfileQr extends BaseActivity implements ProgressRequestBo
     }
 
     private void switchViewUpgradeVerified(){
-        finish();
-        Intent i = new Intent(this,MyProfileNewActivity.class);
+        Intent i = new Intent(this,UpgradeMemberActivity.class);
         startActivity(i);
     }
 
