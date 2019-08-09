@@ -67,6 +67,8 @@ import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.fcm.GooglePlayUtils;
 import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.FragTagihInput;
+import com.sgo.saldomu.fragments.FragmentProfileQr;
+import com.sgo.saldomu.fragments.FragHelp;
 import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
@@ -83,6 +85,7 @@ import com.sgo.saldomu.services.UpdateBBSBirthPlace;
 import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
 import com.sgo.saldomu.widgets.BaseActivity;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -149,6 +152,8 @@ public class MainPage extends BaseActivity {
     private SMSclass smSclass;
     private String isDormant, userNameLogin, fcm_id, fcmId_encrypted;
     private BottomNavigationView bottomNavigationView;
+    private MenuItem itemData;
+    private NotificationActionView actionView;
 
     private LevelClass levelClass;
 
@@ -188,10 +193,10 @@ public class MainPage extends BaseActivity {
         Intent i;
         switch (item.getItemId()) {
             case R.id.menu_home:
-                Fragment newFragment = new FragMainPage();
+                Fragment fragmentHome = new FragMainPage();
 //                switchContent(newFragment, getString(R.string.appname).toUpperCase());
 //                switchContent(newFragment, setGreetings());
-                switchContent(newFragment, userNameLogin);
+                switchContent(fragmentHome, userNameLogin);
                 return true;
             case R.id.menu_transfer:
                 if (isDormant.equalsIgnoreCase("Y")) {
@@ -206,12 +211,16 @@ public class MainPage extends BaseActivity {
                 }
                 return true;
             case R.id.menu_help:
-                i = new Intent(MainPage.this, ContactActivity.class);
-                switchActivity(i, MainPage.ACTIVITY_RESULT);
+//                i = new Intent(MainPage.this, ContactActivity.class);
+//                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                BaseFragment fragmentHelp=new FragHelp();
+                switchContent(fragmentHelp,getString(R.string.help_center));
                 return true;
             case R.id.menu_profile:
-                i = new Intent(MainPage.this, ActivityProfileQr.class);
-                startActivity(i);
+//                i = new Intent(MainPage.this, ActivityProfileQr.class);
+//                startActivity(i);
+                BaseFragment fragmentProfile=new FragmentProfileQr();
+                switchContent(fragmentProfile,getString(R.string.myprofilelist_ab_title));
                 return true;
         }
         return false;
@@ -1327,10 +1336,10 @@ public class MainPage extends BaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem itemData = menu.findItem(R.id.notifications);
+        itemData = menu.findItem(R.id.notifications);
 
         itemData.setActionView(R.layout.ab_notification);
-        NotificationActionView actionView = (NotificationActionView) itemData.getActionView();
+        actionView = (NotificationActionView) itemData.getActionView();
         actionView.setItemData(menu, itemData);
         actionView.setCount(AmountNotif); // initial value
         if (AmountNotif == 0) actionView.hideView();
@@ -1387,7 +1396,7 @@ public class MainPage extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Timber.w("get Back Stack Entry Count:" + String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
+        Timber.w("get Back Stack Entry Count:" + getSupportFragmentManager().getBackStackEntryCount());
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             showLogoutDialog();
         } else super.onBackPressed();

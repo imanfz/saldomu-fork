@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 
 import com.sgo.saldomu.fragments.FragFAQ;
-import com.sgo.saldomu.fragments.HelpFragment;
+import com.sgo.saldomu.fragments.FragHelp;
 
 /**
  * Created by thinkpad on 1/14/2016.
@@ -29,7 +29,7 @@ public class ContactTabAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         Log.v("POSITION", "position: " + position);
         if(position == 0) {
-            return HelpFragment.newInstance();
+            return FragHelp.newInstance();
         }
         if(position == 1) {
             return FragFAQ.newInstance();

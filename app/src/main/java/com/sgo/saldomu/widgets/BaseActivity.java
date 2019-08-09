@@ -164,6 +164,10 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
             title_detoolbar.setAllCaps(true);
             greeting_detoolbar.setVisibility(View.VISIBLE);
             greeting_detoolbar.setText(setGreetings());
+        } else {
+            title_detoolbar.setAllCaps(false);
+            img_detoolbar.setVisibility(View.GONE);
+            greeting_detoolbar.setVisibility(View.GONE);
         }
     }
 

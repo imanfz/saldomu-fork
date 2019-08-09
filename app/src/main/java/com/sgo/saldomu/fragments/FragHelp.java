@@ -33,7 +33,7 @@ import timber.log.Timber;
 /*
  Created by thinkpad on 6/9/2015.
  */
-public class HelpFragment extends BaseFragment {
+public class FragHelp extends BaseFragment {
 
     private View v;
     private Activity act;
@@ -43,14 +43,14 @@ public class HelpFragment extends BaseFragment {
     private HelpAdapter mAdapter;
     private ProgressDialog progdialog;
 
-    public static HelpFragment newInstance() {
-        return new HelpFragment();
+    public static FragHelp newInstance() {
+        return new FragHelp();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.activity_help_center, container, false);
+        v = inflater.inflate(R.layout.frag_help, container, false);
         return v;
     }
 
