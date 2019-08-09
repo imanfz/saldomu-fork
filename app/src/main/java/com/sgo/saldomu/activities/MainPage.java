@@ -208,8 +208,8 @@ public class MainPage extends BaseActivity {
                     } else {
 //                        i = new Intent(MainPage.this, ActivityListTransfer.class);
 //                        switchActivity(i, MainPage.ACTIVITY_RESULT);
-                        Fragment newFragment1 = new ListTransfer();
-                        switchContent(newFragment1, getString(R.string.transfer));
+                        Fragment fragmentTransfer = new ListTransfer();
+                        switchContent(fragmentTransfer, getString(R.string.transfer));
                         return true;
                     }
                 }
