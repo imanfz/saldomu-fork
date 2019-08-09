@@ -75,6 +75,7 @@ import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.fcm.GooglePlayUtils;
 import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.FragTagihInput;
+import com.sgo.saldomu.fragments.ListTransfer;
 import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.fragments.RightSideDrawMenu;
@@ -215,8 +216,9 @@ public class MainPage extends BaseActivity {
                     if (levelClass.isLevel1QAC()) {
                         levelClass.showDialogLevel();
                     } else {
-                        i = new Intent(MainPage.this, PayFriendsActivity.class);
-                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                        Fragment newFragment1 = new ListTransfer();
+                        switchContent(newFragment1, userNameLogin);
+                        return true;
                     }
                 }
                 return true;
@@ -1186,6 +1188,7 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.SAME_BANNER);
         mEditor.remove(DefineValue.DATA_BANNER);
         mEditor.remove(DefineValue.IS_POS);
+        mEditor.remove(DefineValue.COMM_UPGRADE_MEMBER);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
