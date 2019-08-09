@@ -372,17 +372,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent i = new Intent(getActivity(), TopUpActivity.class);
                     i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_pay_friends))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        if (getLvlClass().isLevel1QAC()) {
-                            getLvlClass().showDialogLevel();
-                        } else {
-                            Intent i = new Intent(getActivity(), ActivityListTransfer.class);
-                            switchActivity(i, MainPage.ACTIVITY_RESULT);
-                        }
-                    }
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_ask_for_money))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();

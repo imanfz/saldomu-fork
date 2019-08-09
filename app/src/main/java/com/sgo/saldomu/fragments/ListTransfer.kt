@@ -28,33 +28,17 @@ class ListTransfer : BaseFragment() {
         return v
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.information, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: android.view.MenuItem?): Boolean {
-        when (item!!.itemId) {
-            R.id.action_information -> {
-                if (!dialogI!!.isAdded())
-                    dialogI!!.show(activity!!.supportFragmentManager, InformationDialog.TAG)
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
         levelClass = LevelClass(activity, sp)
         levelClass!!.refreshData()
-        isLevel1 = levelClass!!.isLevel1QAC()
+        isLevel1 = levelClass!!.isLevel1QAC
         dialogI = InformationDialog.newInstance(11)
         dialogI!!.setTargetFragment(this, 0)
 
-        card_view1.setOnClickListener{
+        card_view1.setOnClickListener {
             val i: Intent
             i = Intent(activity, PayFriendsActivity::class.java)
             switchActivity(i)
@@ -65,6 +49,7 @@ class ListTransfer : BaseFragment() {
             switchActivity(i)
         }
     }
+
     private fun switchActivity(mIntent: Intent) {
         if (activity == null)
             return

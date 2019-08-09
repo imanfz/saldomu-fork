@@ -209,7 +209,7 @@ public class MainPage extends BaseActivity {
 //                        i = new Intent(MainPage.this, ActivityListTransfer.class);
 //                        switchActivity(i, MainPage.ACTIVITY_RESULT);
                         Fragment newFragment1 = new ListTransfer();
-                        switchContent(newFragment1, userNameLogin);
+                        switchContent(newFragment1, getString(R.string.transfer));
                         return true;
                     }
                 }
