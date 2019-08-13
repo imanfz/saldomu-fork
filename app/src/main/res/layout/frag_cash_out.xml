@@ -1,245 +1,275 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:descendantFocusability="beforeDescendants"
-              android:focusableInTouchMode="true"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackgroundColor"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
-    <LinearLayout android:id="@+id/cashout_bottom_layout"
-                  android:background="@color/windowBackgroundColor"
-                  android:layout_alignParentBottom="true"
-                  android:gravity="center"
-                  android:padding="8dp"
-                  android:orientation="vertical"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/cashout_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="8dp">
 
         <com.balysv.materialripple.MaterialRippleLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/card_bk"
-                app:mrl_rippleOverlay="true"
-                app:mrl_rippleColor="@color/colorPrimary"
-                app:mrl_rippleAlpha="0.2"
-                app:mrl_rippleDelayClick="false"
-                app:mrl_rippleHover="true"
-                >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleColor="@color/colorPrimary"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            app:mrl_rippleOverlay="true">
+
             <Button
-                    android:id="@+id/cashout_btn_process"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:gravity="center"
-                    android:text="@string/next"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/button_transparant"
-                    />
+                android:id="@+id/cashout_btn_process"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_transparant"
+                android:gravity="center"
+                android:text="@string/next"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/white" />
 
         </com.balysv.materialripple.MaterialRippleLayout>
 
     </LinearLayout>
 
-    <ScrollView android:layout_below="@id/main_toolbar"
-                android:layout_above="@id/cashout_bottom_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbarStyle="insideOverlay"
-            >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/cashout_bottom_layout"
+        android:layout_below="@id/main_toolbar"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarStyle="insideOverlay">
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@color/grey_1000w"
-                android:layout_margin="6dp"
-                >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:orientation="vertical">
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/rounded_background_white"
+                android:orientation="vertical">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="6dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    >
-                <TextView
+                    android:orientation="vertical">
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/sgoplus_text_bank"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/abc_text_size_medium_material"
-                        android:textStyle="bold"
-                        android:text="@string/sgoplus_text_bank"
-                        android:paddingTop="10dp"
-                        />
-                <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                        >
-                    <ImageView
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
                             android:id="@+id/spinning_wheel_bank_name"
-                            android:visibility="invisible"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/default_spinner"
                             android:layout_centerInParent="true"
-                            />
-                    <Spinner
+                            android:src="@drawable/default_spinner"
+                            android:visibility="invisible" />
+
+                        <Spinner
                             android:id="@+id/cashout_spinner_nameBank"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="visible"
+                            android:layout_gravity="center_horizontal"
                             android:spinnerMode="dropdown"
                             android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
-                            android:layout_gravity="center_horizontal"/>
-                </RelativeLayout>
-            </LinearLayout>
+                            android:visibility="visible" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#8a000000" />
+                </LinearLayout>
 
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="vertical"
-                          android:layout_marginBottom="6dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_marginRight="16dp"
-                    >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:orientation="vertical">
 
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/cashout_bank_acc_no_text"
-                          android:textColor="@color/colorPrimary"
-                          android:textSize="@dimen/abc_text_size_medium_material"
-                          android:textStyle="bold"
-                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cashout_bank_acc_no_text"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold" />
 
-                <EditText
+                    <EditText
                         android:id="@+id/cashout_value_bank_acc_no"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:hint="@string/cashout_bank_acc_no_hint"
                         android:inputType="number"
                         android:maxLength="13"
-                        android:hint="@string/cashout_bank_acc_no_hint"
                         android:paddingLeft="10dp"
-                        />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/cashout_lkd_warning_1"
-                    android:textColor="@color/red"
-                    android:textStyle="italic"
-                    android:textSize="12sp"
-                    android:paddingBottom="10sp"/>
+                        android:textSize="@dimen/abc_text_size_medium_material" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="10sp"
+                        android:text="@string/cashout_lkd_warning_1"
+                        android:textColor="@color/red"
+                        android:textSize="12sp"
+                        android:textStyle="italic" />
+                </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/cashout_balance"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:background="@drawable/background_orange_transparant"
-                android:textColor="@color/white"
-                android:gravity="center"
-                android:textSize="@dimen/abc_text_size_large_material"/>
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/rounded_background_white"
+                android:orientation="horizontal">
 
-            <LinearLayout android:id="@+id/layout_bankcashout_acc_name"
+                <ImageView
+                    android:layout_width="41dp"
+                    android:layout_height="41dp"
+                    android:layout_gravity="left|center"
+                    android:src="@drawable/ic_wallet" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/balance" />
+
+                    <TextView
+                        android:id="@+id/cashout_balance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:gravity="center|left"
+                        android:text="10000"
+                        android:textSize="@dimen/abc_text_size_title_material" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:orientation="vertical"
-                android:layout_marginBottom="6dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:visibility="gone"
-                >
+                android:background="@drawable/rounded_background_white">
 
-                <TextView android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/cashout_bank_acc_name_text"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size_medium_material"
-                    android:textStyle="bold"
-                    />
-
-                <EditText
-                    android:id="@+id/cashout_value_bank_acc_name"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
-                    android:inputType="text"
-                    android:maxLength="50"
-                    android:hint="@string/cashout_bank_acc_name_hint"
-                    android:paddingLeft="10dp"
-                    />
-                <TextView
+                <LinearLayout
+                    android:id="@+id/layout_bankcashout_acc_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/cashout_lkd_warning_2"
-                    android:textColor="@color/red"
-                    android:textStyle="italic"
-                    android:textSize="12sp"
-                    android:paddingBottom="10sp"/>
-            </LinearLayout>
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="vertical"
-                          android:layout_marginBottom="6dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_marginRight="16dp"
-                    >
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/cashout_nominal_text"
-                          android:textColor="@color/colorPrimary"
-                          android:textSize="@dimen/abc_text_size_medium_material"
-                          android:textStyle="bold"
-                        />
-                <EditText
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cashout_bank_acc_name_text"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/text_size_medium_material"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/cashout_value_bank_acc_name"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/cashout_bank_acc_name_hint"
+                        android:inputType="text"
+                        android:maxLength="50"
+                        android:paddingLeft="10dp"
+                        android:textSize="@dimen/abc_text_size_medium_material" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="10sp"
+                        android:text="@string/cashout_lkd_warning_2"
+                        android:textColor="@color/red"
+                        android:textSize="12sp"
+                        android:textStyle="italic" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cashout_nominal_text"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold" />
+
+                    <EditText
                         android:id="@+id/cashout_value_nominal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/abc_text_size_medium_material"
-                        android:maxLength="17"
-                        android:inputType="number"
                         android:hint="@string/cashout_nominal_hint"
-                    android:paddingLeft="10dp"
-                    android:maxLines="1" />
+                        android:inputType="number"
+                        android:maxLength="17"
+                        android:maxLines="1"
+                        android:paddingLeft="10dp"
+                        android:textSize="@dimen/abc_text_size_medium_material" />
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <LinearLayout android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal"
-                          android:gravity="right"
-                          android:visibility="gone"
-                          android:layout_gravity="right"
-                          android:layout_marginBottom="6dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_marginRight="16dp"
-                    >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:gravity="right"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
-                <TextView
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="right"
                         android:layout_gravity="center_vertical"
-                        android:textStyle="bold"
+                        android:gravity="right"
+                        android:text="@string/share_options"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/abc_text_size_caption_material"
-                        android:text="@string/share_options"/>
+                        android:textStyle="bold" />
 
-                <Spinner
+                    <Spinner
+                        android:id="@+id/cashout_privacy_spinner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/cashout_privacy_spinner"
-                        android:gravity="right"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        android:gravity="right" />
 
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
