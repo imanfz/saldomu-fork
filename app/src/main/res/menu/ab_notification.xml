@@ -6,7 +6,7 @@
             android:id="@+id/favorite"
             android:orderInCategory="2"
             android:title="@string/notifications"
-            android:icon="@drawable/ic_notification"
+            android:icon="@drawable/ic_favorite"
             someNamespace:showAsAction="always"
             />
 

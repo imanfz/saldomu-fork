@@ -39,13 +39,11 @@ class ListTransfer : BaseFragment() {
         dialogI!!.setTargetFragment(this, 0)
 
         card_view1.setOnClickListener {
-            val i: Intent
-            i = Intent(activity, PayFriendsActivity::class.java)
+            val i = Intent(activity, PayFriendsActivity::class.java)
             switchActivity(i)
         }
         card_view2.setOnClickListener {
-            val i: Intent
-            i = Intent(activity, CashoutActivity::class.java)
+            val i = Intent(activity, CashoutActivity::class.java)
             switchActivity(i)
         }
     }
