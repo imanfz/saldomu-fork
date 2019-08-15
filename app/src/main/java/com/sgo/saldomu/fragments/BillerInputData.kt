@@ -3,9 +3,7 @@ package com.sgo.saldomu.fragments
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.inputmethodservice.Keyboard
 import android.os.Bundle
-import android.os.Message
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
@@ -27,21 +25,14 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.dialogs.AlertDialogFrag
 import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.DefinedDialog
-import com.sgo.saldomu.dialogs.PickLanguageDialog
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.InqBillerModel
 import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
-import kotlinx.android.synthetic.main.activity_history_detail.*
 import kotlinx.android.synthetic.main.dialog_notification.*
-import kotlinx.android.synthetic.main.frag_biller_input.*
 import kotlinx.android.synthetic.main.frag_biller_input_new.*
-import kotlinx.android.synthetic.main.frag_biller_input_new.billerinput_text_denom
-import kotlinx.android.synthetic.main.frag_biller_input_new.btn_submit_billerinput
-import kotlinx.android.synthetic.main.frag_biller_input_new.img_operator
-import kotlinx.android.synthetic.main.no_data.*
 import timber.log.Timber
 import java.util.*
 
@@ -105,10 +96,6 @@ class BillerInputData : BaseFragment() {
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
         levelClass = LevelClass(activity, sp)
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false)
-
-
-//        billerinput_text_payment_remark.text="test"
-//        billerinput_text_denom.text=billerinput_text_payment_remark.text
 
         btn_submit_billerinput.setOnClickListener { submitInputListener() }
 
@@ -201,6 +188,7 @@ class BillerInputData : BaseFragment() {
         billerinput_et_nomor_hp.inputType = InputType.TYPE_CLASS_NUMBER
         billerinput_et_add_fee.inputType = InputType.TYPE_CLASS_NUMBER
         billerinput_detail_layout_add_fee.visibility = View.GONE
+        billerinput_layout_denom.visibility = View.VISIBLE
         billerinput_layout_add_fee.visibility = View.GONE
         billerinput_layout_detail.visibility = View.GONE
     }
@@ -390,8 +378,7 @@ class BillerInputData : BaseFragment() {
     }
 
     private fun countTotal() {
-        total = item_price + additional_fee
-        total -= fee
+        total = item_price + additional_fee + fee
         billerinput_detail_total.text = getString(R.string.rp_) + " " + CurrencyFormat.format(total)
     }
 

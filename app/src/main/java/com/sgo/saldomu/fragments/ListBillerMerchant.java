@@ -73,6 +73,9 @@ public class ListBillerMerchant extends ListFragment {
         ListView listView1 = v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
 
+        if (mBillerType!=null)
+            setActionBarTitle(getString(R.string.biller_ab_title) + "-" + mBillerType.getBiller_type_name());
+
 //        if(!realm.isInTransaction())
 //            initializeData();
 

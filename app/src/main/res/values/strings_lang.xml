@@ -348,7 +348,9 @@
     <string name="billerinput_text_spinner_default_payment">Pilih metode pembayaran Anda</string>
     <string name="billerinput_validation_spinner_default_payment">Silahkan pilih metode pembayaran!</string>
     <string name="billerinput_text_spinner_default_data">Pilih Paket Data</string>
+    <string name="billerinput_text_spinner_default_pulsa">Pilih Nominal Pulsa</string>
     <string name="billerinput_validation_spinner_default_data">Silahkan pilih paket data</string>
+    <string name="billerinput_validation_spinner_default_pulsa">Silahkan pilih nominal pulsa</string>
 
     <string name="billertoken_text_biller_id">ID Pelanggan</string>
     <string name="billertoken_text_biller_name">Nama Biller</string>
