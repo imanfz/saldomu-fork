@@ -578,4 +578,7 @@ public class WebParams {
     public static String MEMBER_EMAIL = "member_email";
     public static String BILLER_INFO = "biller_info";
 
+    public static String TX_FAVORITE_TYPE = "tx_favorite_type";
+    public static String NOTES = "notes";
+
 }

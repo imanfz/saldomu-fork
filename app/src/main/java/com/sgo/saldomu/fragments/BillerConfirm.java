@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.telephony.SmsMessage;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -52,6 +54,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
@@ -68,6 +71,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -126,6 +130,12 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private LevelClass levelClass;
     private Boolean isAgent;
 
+    private Switch favoriteSwitch;
+    private EditText notesEditText;
+    private String productType = "";
+    String value_pin ="";
+    String _amount = "";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.frag_biller_token_confirm, container, false);
@@ -147,6 +157,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         tv_total_amount_value = v.findViewById(R.id.billertoken_total_amount_value);
         btn_submit = v.findViewById(R.id.billertoken_btn_verification);
         btn_cancel = v.findViewById(R.id.billertoken_btn_cancel);
+        favoriteSwitch = v.findViewById(R.id.favorite_switch);
+        notesEditText = v.findViewById(R.id.notes_edit_text);
 
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);
@@ -182,6 +194,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         isShowDescription = args.getBoolean(DefineValue.IS_SHOW_DESCRIPTION, false);
         biller_type_code = args.getString(DefineValue.BILLER_TYPE);
         additionalFee = args.getString(DefineValue.ADDITIONAL_FEE);
+        productType = ((BillerActivity) Objects.requireNonNull(getActivity()))._biller_type_code;
         Timber.d("isi args:" + args.toString());
 
         if (biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS) ||
@@ -326,11 +339,15 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             tv_desired_amount.setText(ccy_id + ". " + CurrencyFormat.format(amount_desire));
         }
 
-        if (isAgent)
-        {
+        if (isAgent) {
             ly_additionalFee.setVisibility(View.VISIBLE);
             tv_additionalFee.setText(ccy_id + ". " + CurrencyFormat.format(additionalFee));
         }
+
+
+        favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            notesEditText.setEnabled(isChecked);
+        });
 
     }
 
@@ -379,6 +396,12 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         @Override
         public void onClick(View view) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
+
+                if (notesEditText.getText().toString().length() == 0) {
+                    notesEditText.requestFocus();
+                    notesEditText.setError(getString(R.string.payfriends_notes_zero));
+                    return;
+                }
 
                 Timber.d("hit button submit");
                 btn_submit.setEnabled(false);
@@ -436,14 +459,18 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         if (requestCode == MainPage.REQUEST_FINISH) {
             //  Log.d("onActivity result", "Biller Fragment masuk request exit");
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
-                String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
-                String _amount;
+                value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
                 if (is_input_amount)
                     _amount = amount_desire;
                 else
                     _amount = amount;
                 //    Log.d("onActivity result", "Biller Fragment result pin value");
-                sentInsertTransTopup(value_pin, _amount);
+
+                if (favoriteSwitch.isChecked()) {
+                    onSaveToFavorite();
+                } else {
+                    sentInsertTransTopup(value_pin, _amount);
+                }
             }
         }
     }
@@ -975,5 +1002,53 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     public void onOkButton() {
         assert getFragmentManager() != null;
         getFragmentManager().popBackStackImmediate(BillerActivity.FRAG_BIL_INPUT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    private void onSaveToFavorite() {
+        final Bundle args = getArguments();
+
+        extraSignature = cust_id + productType + "BIL";
+        Log.e("extraSignature params ", extraSignature);
+        String url = MyApiClient.LINK_TRX_FAVORITE_SAVE;
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(url, extraSignature);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.PRODUCT_TYPE, productType);
+        params.put(WebParams.CUSTOMER_ID, cust_id);
+        params.put(WebParams.TX_FAVORITE_TYPE, "BIL");
+//        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+        params.put(WebParams.COMM_ID, args.getString(DefineValue.BILLER_COMM_ID));
+        params.put(WebParams.NOTES, notesEditText.getText().toString());
+
+        Log.e("params ", params.toString());
+
+        RetrofitService.getInstance().PostJsonObjRequest(url, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            Log.e("onResponses ", response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                            } else {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.e("onResponses ", throwable.getLocalizedMessage());
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        sentInsertTransTopup(value_pin, _amount);
+                    }
+                });
     }
 }

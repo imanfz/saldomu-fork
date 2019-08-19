@@ -50,7 +50,7 @@ public class BillerActivity extends BaseActivity {
     private String _biller_merchant_name;
     private String userID;
     private String accessKey;
-    private String _biller_type_code;
+    public String _biller_type_code;
     private Boolean isOneBiller;
     private Boolean isEmptyBiller;
     private Biller_Type_Data_Model mBillerTypeData;

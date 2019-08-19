@@ -273,6 +273,7 @@ public class MyApiClient {
 
     public static String LINK_TRX_FAVORITE_LIST;
     public static String LINK_TRX_FAVORITE_SAVE;
+    public static String LINK_TRX_FAVORITE_SAVE_TRF;
     public static String LINK_TRX_FAVORITE_DELETE;
 
     public void InitializeAddress(){
@@ -469,6 +470,7 @@ public class MyApiClient {
 
         LINK_TRX_FAVORITE_LIST      = headaddressfinal + "TrxFavorite/List";
         LINK_TRX_FAVORITE_SAVE      = headaddressfinal + "TrxFavorite/Save";
+        LINK_TRX_FAVORITE_SAVE_TRF  = headaddressfinal + "TrxFavorite/SaveTrf";
         LINK_TRX_FAVORITE_DELETE    = headaddressfinal + "TrxFavorite/Delete";
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);

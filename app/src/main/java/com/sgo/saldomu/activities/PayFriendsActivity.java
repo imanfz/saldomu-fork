@@ -41,6 +41,7 @@ public class PayFriendsActivity extends BaseActivity {
             Fragment newFragment;
             if (intent.getBooleanExtra(DefineValue.CONFIRM_PAYFRIEND,false)) {
                 Bundle args = new Bundle();
+                args.putString(WebParams.CUSTOMER_ID, intent.getStringExtra(WebParams.CUSTOMER_ID));
                 args.putString(WebParams.DATA_TRANSFER, intent.getStringExtra(WebParams.DATA_TRANSFER));
                 args.putString(WebParams.DATA, intent.getStringExtra(WebParams.DATA));
                 args.putString(WebParams.MESSAGE, intent.getStringExtra(WebParams.MESSAGE));
