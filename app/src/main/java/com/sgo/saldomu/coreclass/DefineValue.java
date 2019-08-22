@@ -590,6 +590,21 @@ public class DefineValue {
     public static String SAME_BANNER = "sameBanner";
     public static String DATA_BANNER = "dataBanner";
     public static String COMM_UPGRADE_MEMBER = "commUpgradeMember";
+    public static String MEMBER_ID_CUST = "memberIdCust";
+    public static String NIK = "nik";
+    public static String MEMBER_CUST_NAME = "memberCustName";
+    public static String MEMBER_POB = "memberPOB";
+    public static String MEMBER_DOB = "memberDOB";
+    public static String MEMBER_ADDRESS = "memberAddress";
+    public static String MEMBER_RT = "memberRT";
+    public static String MEMBER_RW = "memberRW";
+    public static String MEMBER_KELURAHAN = "memberKelurahan";
+    public static String MEMBER_KECAMATAN = "memberKecamatan";
+    public static String MEMBER_RELIGION = "memberReligion";
+    public static String MEMBER_STATUS = "memberStatus";
+    public static String MEMBER_OCUPATION= "memberOcupation";
+    public static String MEMBER_NATIONALITY = "memberNationality";
+    public static String CUST_ID_MEMBER = "custIdMember";
 
 }
 

@@ -82,7 +82,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginBottom="8dp"
-                    android:src="@drawable/ic_groups_icon_color"
+                    android:src="@drawable/ic_agent"
                     android:tint="#5ec8da" />
 
                 <TextView

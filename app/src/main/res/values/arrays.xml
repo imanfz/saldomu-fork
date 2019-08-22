@@ -342,4 +342,24 @@
         <item>@string/newhome_listrik_pln</item>
     </string-array>
 
+    <string-array name="list_religion">
+        <item>-Pilih Agama-</item>
+        <item>ISLAM</item>
+        <item>KRISTEN PROTESTAN</item>
+        <item>KRISTEN KATOLIK</item>
+        <item>HINDU</item>
+        <item>BUDDHA</item>
+        <item>KHONGHUCU</item>
+    </string-array>
+
+    <string-array name="list_marital_status">
+        <item>BELUM KAWIN</item>
+        <item>KAWIN</item>
+    </string-array>
+
+    <string-array name="list_nationality">
+        <item>WNI</item>
+        <item>WNA</item>
+    </string-array>
+
 </resources>

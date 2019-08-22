@@ -383,12 +383,6 @@ public class MyProfileNewActivity extends BaseActivity {
 
         initializeData();
 
-
-//        if(et_noHp!=null && et_nama!=null && et_email!=null && tv_dob!=null && !isRegisteredLevel)
-//        {
-//            dialogUpgradeMember();
-//        }
-
     }
 
 

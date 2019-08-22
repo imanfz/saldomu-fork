@@ -274,6 +274,8 @@ public class MyApiClient {
     public static String LINK_TRX_FAVORITE_LIST;
     public static String LINK_TRX_FAVORITE_SAVE;
     public static String LINK_TRX_FAVORITE_DELETE;
+    public static String LINK_SEARCH_MEMBER;
+    public static String LINK_EXEC_UPGRADE_MEMBER;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -470,6 +472,9 @@ public class MyApiClient {
         LINK_TRX_FAVORITE_LIST      = headaddressfinal + "TrxFavorite/List";
         LINK_TRX_FAVORITE_SAVE      = headaddressfinal + "TrxFavorite/Save";
         LINK_TRX_FAVORITE_DELETE    = headaddressfinal + "TrxFavorite/Delete";
+
+        LINK_SEARCH_MEMBER          = headaddressfinal + "CheckMemberID/Retrieve";
+        LINK_EXEC_UPGRADE_MEMBER    = headaddressfinal + "ExecUpgradeMember/Invoke";
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)

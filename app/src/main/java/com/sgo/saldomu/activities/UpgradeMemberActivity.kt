@@ -7,6 +7,7 @@ import com.securepreferences.SecurePreferences
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
+import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.widgets.BaseActivity
 import kotlinx.android.synthetic.main.activity_upgrade_member.*
 
@@ -40,8 +41,19 @@ class UpgradeMemberActivity : BaseActivity() {
         }
 
         upgrade_via_agent_button.setOnClickListener {
-            startActivity(Intent(this, UpgradeMemberViaAgentActivity::class.java))
+//            startActivity(Intent(this, UpgradeMemberViaAgentActivity::class.java))
+        dialogSuccess()
         }
+    }
+
+    private fun dialogSuccess() {
+        var dialognya = DefinedDialog.MessageDialog(this, this!!.getString(R.string.menu_item_title_upgrade_via_agent),
+                "Silahkan datang ke Agent terdekat."
+        ) { v, isLongClick ->
+
+        }
+
+        dialognya.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
