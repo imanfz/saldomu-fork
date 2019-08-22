@@ -334,7 +334,7 @@
                     <!--android:id="@+id/layout_btn_resend"-->
                     <!--android:layout_width="wrap_content"-->
                     <!--android:layout_height="wrap_content"-->
-                    <!--android:background="@drawable/card_bk_orange"-->
+                    <!--android:background="@drawable/card_bk_blue"-->
                     <!--android:layout_gravity="center"-->
                     <!--android:visibility="gone"-->
                     <!--android:layout_marginRight="8dp"-->
@@ -362,7 +362,7 @@
             <!--<com.balysv.materialripple.MaterialRippleLayout-->
                     <!--android:layout_width="0dp"-->
                     <!--android:layout_height="wrap_content"-->
-                    <!--android:background="@drawable/card_bk_orange"-->
+                    <!--android:background="@drawable/card_bk_blue"-->
                     <!--android:layout_gravity="center"-->
                     <!--android:layout_weight="1"-->
                     <!--app:mrl_rippleOverlay="true"-->
@@ -453,7 +453,7 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/card_bk_orange"
+                android:background="@drawable/card_bk_blue"
                 app:mrl_rippleAlpha="0.2"
                 app:mrl_rippleColor="@color/white"
                 app:mrl_rippleDelayClick="false"
@@ -477,7 +477,7 @@
             android:id="@+id/layout_btn_resend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_bk_orange"
+            android:background="@drawable/card_bk_blue"
             android:layout_gravity="center"
             android:layout_marginTop="12dp"
             android:layout_marginRight="20dp"
