@@ -52,7 +52,7 @@
             <com.balysv.materialripple.MaterialRippleLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/card_bk_orange"
+                android:background="@drawable/card_bk_blue"
                 android:layout_weight="1"
                 app:mrl_rippleOverlay="true"
                 app:mrl_rippleColor="@color/colorPrimaryDark"
@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/card_bk_orange"
+            android:background="@drawable/card_bk_blue"
             android:layout_marginTop="8dp"
             app:mrl_rippleOverlay="true"
             app:mrl_rippleColor="@color/colorPrimaryDark"

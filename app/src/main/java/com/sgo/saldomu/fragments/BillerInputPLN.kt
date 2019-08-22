@@ -1,13 +1,16 @@
 package com.sgo.saldomu.fragments
 
 import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
+import android.text.method.DigitsKeyListener
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -34,20 +37,25 @@ import io.realm.Realm
 import kotlinx.android.synthetic.main.dialog_notification.*
 import kotlinx.android.synthetic.main.frag_biller_input_new.*
 import timber.log.Timber
-import java.util.*
+import java.util.ArrayList
+import io.realm.RealmChangeListener as RealmChangeListener
 
-class BillerInputData : BaseFragment() {
+class BillerInputPLN : BaseFragment() {
 
     private lateinit var viewLayout: View
 
+    private var biller_type_code: String? = null
+    private val digitsListener = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    private var buyCode: Int? = null
+    private var isAgent: Boolean? = null
     val REQUEST_BillerInqReq = 22
-    private var billerTypeCode: String? = null
     private var tx_id: String? = null
     private var item_id: String? = null
     private var item_name: String? = null
     private var biller_comm_id: String? = null
     private var biller_comm_name: String? = null
     private var biller_item_id: String? = null
+    private var biller_info: String? = null
     private var cust_id: String? = "0"
     private var payment_name: String? = null
     private var ccy_id: String? = null
@@ -56,9 +64,9 @@ class BillerInputData : BaseFragment() {
     private var biller_comm_code: String? = null
     private var biller_api_key: String? = null
     private var callback_url: String? = null
+    private var buy_type_detail = "PRABAYAR"
     private var is_input_amount: Boolean? = null
     private var is_display_amount: Boolean = false
-    private var isAgent: Boolean? = null
     private var isShowDescription: Boolean? = false
     private var fee = 0.0
     private var item_price = 0.0
@@ -74,146 +82,106 @@ class BillerInputData : BaseFragment() {
     private val _data = ArrayList<String>()
     private var denomData: ArrayList<String>? = null
     private var adapterDenom: ArrayAdapter<String>? = null
-    private var mBillerType: Biller_Type_Data_Model? = null
     private var paymentData: MutableList<String>? = null
     private var adapterPaymentOptions: ArrayAdapter<String>? = null
     private var mListBankBiller: List<bank_biller_model>? = null
     private var mTempBank: listBankModel? = null
-    private lateinit var levelClass: LevelClass
+    private var mBillerType: Biller_Type_Data_Model? = null
+    private var progdialog: ProgressDialog? = null
+    private var realmListener: RealmChangeListener<Realm>? = null
+    private var _denomData: ArrayList<String>? = null
     private lateinit var sentPaymentBillerModel: SentPaymentBillerModel
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewLayout = inflater.inflate(R.layout.frag_biller_input_new, container, false)
         return viewLayout
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            android.R.id.home -> {
+                if (fragmentManager!!.backStackEntryCount > 0)
+                    fragmentManager!!.popBackStack()
+                else
+                    activity!!.finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-//        var args:Bundle? = getArguments()
-        billerTypeCode = arguments!!.getString(DefineValue.BILLER_TYPE, "")
+        biller_type_code = arguments!!.getString(DefineValue.BILLER_TYPE, "")
+        biller_comm_id = arguments!!.getString(DefineValue.COMMUNITY_ID, "")
+        biller_comm_name = arguments!!.getString(DefineValue.COMMUNITY_NAME, "")
+        biller_item_id = arguments!!.getString(DefineValue.BILLER_ITEM_ID, "")
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
-        levelClass = LevelClass(activity, sp)
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false)
-
+        realm = Realm.getInstance(RealmManager.BillerConfiguration)
+        setActionBarTitle(getString(R.string.biller_ab_title) + " - " + getString(R.string.newhome_listrik_pln))
+        radioPrabayar.text = getString(R.string.token_listrik)
+        radioPascabayar.text = getString(R.string.tagihan_listrik)
+        billerinput_text_denom.text = getString(R.string.cashout_nominal_text)
         btn_submit_billerinput.setOnClickListener { submitInputListener() }
 
         initLayout()
-        initEditTextListener()
         initRealm()
-    }
 
-    private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(adapterView: AdapterView<*>, view: View, position: Int, l: Long) {
-            if (position != 0) {
-                item_id = mListDenomData?.get(position - 1)?.item_id
-                item_name = mListDenomData?.get(position - 1)?.item_name
-                if (cust_id!!.length >= 10) {
-                    sentInquryBiller()
-                }
-            } else {
-                item_id = null
-                item_name = null
-            }
-        }
+        realmListener = RealmChangeListener {
+            if (isVisible) {
 
-        override fun onNothingSelected(adapterView: AdapterView<*>) {
+                initLayout()
+                initSpinnerDenom()
 
-        }
-    }
-
-    private val spinnerPaymentListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            val item = adapterView?.getItemAtPosition(position)
-            payment_name = item.toString()
-            var i = 0
-            while (i < mListBankBiller!!.size) {
-                if (payment_name == mListBankBiller?.get(i)?.product_name) {
-                    mTempBank = listBankModel(mListBankBiller?.get(i)?.bank_code,
-                            mListBankBiller?.get(i)?.bank_name,
-                            mListBankBiller?.get(i)?.product_code,
-                            mListBankBiller?.get(i)?.product_name,
-                            mListBankBiller?.get(i)?.product_type,
-                            mListBankBiller?.get(i)?.product_h2h)
-                }
-                i++
-            }
-        }
-
-        override fun onNothingSelected(parent: AdapterView<*>?) {
-
-        }
-
-    }
-
-    private fun checkOperator(string: String?) {
-        val billerIdNumber = PrefixOperatorValidator.validation(activity, string)
-
-        if (billerIdNumber != null) {
-
-            if (billerIdNumber.prefix_name.toLowerCase().equals("telkomsel", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.telkomsel)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("xl", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.xl)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("indosat", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.indosat)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("three", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.three)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("smart", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.smartfren)
-            } else
-                img_operator.visibility = View.GONE
-
-            for (i in _data.indices) {
-                Timber.d("_data" + _data[i])
-                if (_data != null) {
-                    if (_data.get(i).toLowerCase().contains(billerIdNumber.prefix_name.toLowerCase())) {
-                        biller_comm_id = mListBillerData?.get(i)?.comm_id
-                        biller_comm_name = mListBillerData?.get(i)?.comm_name
-                        biller_item_id = mListBillerData?.get(i)?.item_id
-
-                        initializeSpinnerDenom()
+                if (_denomData != null) {
+                    Timber.d("Masuk realm listener denomdata isi")
+                    _denomData?.clear()
+                    for (i in mListDenomData!!.indices) {
+                        _denomData?.add(mListDenomData?.get(i)?.item_name.toString())
                     }
+
+                    billerinput_layout_denom.visibility = View.VISIBLE
+                    billerinput_spinner_denom.visibility = View.VISIBLE
+                    adapterDenom?.notifyDataSetChanged()
                 }
 
+                if (progdialog != null && progdialog!!.isShowing) {
+                    progdialog?.dismiss()
+                }
             }
         }
-    }
+        realm?.addChangeListener(realmListener)
 
-    private fun initLayout() {
-        buy_type = BillerActivity.PURCHASE_TYPE
-        billerinput_text_denom.text = getString(R.string.billerinput_text_spinner_data)
-        billerinput_et_id_remark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(13))
-        billerinput_et_id_remark.inputType = InputType.TYPE_CLASS_NUMBER
-        billerinput_et_add_fee.inputType = InputType.TYPE_CLASS_NUMBER
-        billerinput_detail_layout_add_fee.visibility = View.GONE
-        billerinput_layout_denom.visibility = View.VISIBLE
-        billerinput_layout_add_fee.visibility = View.GONE
-        billerinput_layout_detail.visibility = View.GONE
-    }
-
-    private fun initEditTextListener() {
-        billerinput_et_id_remark.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable?) {
-                val string = editable.toString()
-                if (string.length > 3) {
-                    cust_id = string
-                    checkOperator(string)
-                } else
-                    cust_id = NoHPFormat.formatTo62(billerinput_et_id_remark.text.toString())
+        billerinput_radio.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.radioPrabayar -> {
+                    billerinput_layout_denom.visibility = View.VISIBLE
+                    billerinput_layout_payment_method.visibility = View.VISIBLE
+                    buy_type_detail = "PRABAYAR"
+                    biller_type_code = "TKN"
+                    buyCode = BillerActivity.PURCHASE_TYPE
+                    billerinput_text_id_remark.text = getString(R.string.billerinput_text_payment_remark_Listrik)
+                }
+                R.id.radioPascabayar -> {
+                    billerinput_layout_denom.visibility = View.GONE
+                    billerinput_layout_payment_method.visibility = View.GONE
+                    billerinput_layout_detail.visibility = View.GONE
+                    buy_type_detail = "PASCABAYAR"
+                    biller_type_code = "PLN"
+                    buyCode = BillerActivity.PAYMENT_TYPE
+                    billerinput_text_id_remark.text = getString(R.string.billerinput_text_payment_remark)
+                }
             }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-        })
-
+            realm?.refresh()
+            initRealm()
+        }
         billerinput_et_add_fee.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val string = s.toString()
@@ -237,7 +205,59 @@ class BillerInputData : BaseFragment() {
         })
     }
 
-    private fun initializeSpinnerDenom() {
+    private fun initLayout() {
+        billerinput_radio.visibility = View.VISIBLE
+        layout_warn_pln.visibility = View.VISIBLE
+        billerinput_text_id_remark.text = getString(R.string.billerinput_text_payment_remark_Listrik)
+        billerinput_et_id_remark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(13))
+        billerinput_et_id_remark.inputType = InputType.TYPE_CLASS_NUMBER
+        billerinput_et_id_remark.keyListener = DigitsKeyListener.getInstance(digitsListener)
+        billerinput_et_add_fee.inputType = InputType.TYPE_CLASS_NUMBER
+        billerinput_detail_layout_add_fee.visibility = View.GONE
+        billerinput_layout_denom.visibility = View.VISIBLE
+        billerinput_layout_add_fee.visibility = View.GONE
+        billerinput_layout_detail.visibility = View.GONE
+    }
+
+    private fun initRealm() {
+        mBillerType = Biller_Type_Data_Model()
+        mBillerType = realm?.where(Biller_Type_Data_Model::class.java)?.equalTo(WebParams.BILLER_TYPE_CODE, biller_type_code)?.findFirst()
+
+        if (mBillerType!!.biller_data_models.size == 1) {
+            biller_comm_id = mBillerType?.biller_data_models?.get(0)!!.comm_id
+            biller_comm_name = mBillerType?.biller_data_models?.get(0)!!.comm_name
+            biller_item_id = mBillerType?.biller_data_models?.get(0)!!.item_id
+            biller_info = mBillerType?.biller_data_models?.get(0)!!.biller_info
+        }
+
+        mBillerData = Biller_Data_Model()
+        mBillerData = realm?.where(Biller_Data_Model::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.equalTo(WebParams.DENOM_ITEM_ID, biller_item_id)?.findFirst()
+
+        if (mBillerData!!.biller_info != null) {
+            biller_notes.visibility = View.VISIBLE
+            biller_notes.text = mBillerData?.biller_info.toString()
+        }
+
+        if (mBillerData == null || mBillerData?.item_id!!.isEmpty() && mBillerData?.denom_data_models!!.size == 0) {
+            progdialog = DefinedDialog.CreateProgressDialog(activity, "")
+        }
+
+        if (mBillerType != null) {
+            mListDenomData = realm?.copyFromRealm(mBillerData?.denom_data_models)
+            mListBillerData = mBillerType!!.biller_data_models
+            _data.clear()
+            for (i in mListBillerData!!.indices) {
+                _data.add(mListBillerData?.get(i)?.comm_name!!)
+            }
+        } else {
+            mListBillerData = ArrayList()
+        }
+
+        if (biller_type_code.equals("TKN"))
+            initSpinnerDenom()
+    }
+
+    private fun initSpinnerDenom() {
         mDenomData = Biller_Data_Model()
         mDenomData = realm?.where(Biller_Data_Model::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.equalTo(WebParams.DENOM_ITEM_ID, biller_item_id)?.findFirst()
         mListDenomData = realm?.copyFromRealm(mDenomData?.denom_data_models)
@@ -252,7 +272,7 @@ class BillerInputData : BaseFragment() {
             val deproses = object : Thread() {
                 override fun run() {
                     denomData?.clear()
-                    denomData?.add(getString(R.string.billerinput_text_spinner_default_data))
+                    denomData?.add(getString(R.string.billerinput_text_spinner_default_listrik))
                     for (i in mListDenomData!!.indices) {
                         denomData?.add(mListDenomData?.get(i)?.item_name!!)
                     }
@@ -283,7 +303,7 @@ class BillerInputData : BaseFragment() {
             adapterPaymentOptions?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             billerinput_spinner_payment_options.adapter = adapterPaymentOptions
             billerinput_spinner_payment_options.onItemSelectedListener = spinnerPaymentListener
-            if (isVisible) {
+//            if (isVisible) {
                 val tempDataPaymentName = ArrayList<String>()
                 paymentData?.add(getString(R.string.billerinput_text_spinner_default_payment))
 
@@ -302,18 +322,17 @@ class BillerInputData : BaseFragment() {
                 adapterPaymentOptions?.notifyDataSetChanged()
 
                 billerinput_spinner_payment_options.setSelection(1) //set metode pembayaran jadi saldomu
-            }
+//            }
         } else {
             biller_item_id = mBillerData?.item_id
         }
     }
 
-
     private fun submitInputListener() {
         if (InetHandler.isNetworkAvailable(activity)) {
             if (inputValidation()) {
                 btn_submit_billerinput.isEnabled = false
-                sentPaymentBiller()
+                showDialog()
             }
         } else {
             DefinedDialog.showErrorDialog(activity, getString(R.string.inethandler_dialog_message))
@@ -324,62 +343,34 @@ class BillerInputData : BaseFragment() {
         if (billerinput_et_id_remark.text.length < 10 ||
                 billerinput_et_id_remark.text.length > 15) {
             billerinput_et_id_remark.requestFocus()
-            billerinput_et_id_remark.error = getString(R.string.regist1_validation_nohp)
+            billerinput_et_id_remark.error = getString(R.string.billerinput_validation_payment_remark)
             return false
         }
         if (item_name == null) {
             billerinput_spinner_denom.requestFocus()
-            Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_data), Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_listrik), Toast.LENGTH_LONG).show()
             return false
         }
         return true
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-            android.R.id.home -> {
-                if (fragmentManager!!.backStackEntryCount > 0)
-                    fragmentManager!!.popBackStack()
-                else
-                    activity!!.finish()
-                return true
+    private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(adapterView: AdapterView<*>, view: View, position: Int, l: Long) {
+            if (position != 0) {
+                item_id = mListDenomData?.get(position - 1)?.item_id
+                item_name = mListDenomData?.get(position - 1)?.item_name
+                if (inputValidation()){
+                    sentInquryBiller()
+                }
+            } else {
+                item_id = null
+                item_name = null
             }
         }
-        return super.onOptionsItemSelected(item)
-    }
 
-    private fun initRealm() {
-        realm = Realm.getInstance(RealmManager.BillerConfiguration)
-        mBillerType = realm?.where(Biller_Type_Data_Model::class.java)?.equalTo(WebParams.BILLER_TYPE_CODE, "DATA")?.findFirst()
-        if (mBillerType != null) {
-            mListBillerData = mBillerType!!.biller_data_models
-            _data.clear()
-            for (i in mListBillerData!!.indices) {
-                _data.add(mListBillerData?.get(i)?.comm_name!!)
-            }
-        } else {
-            mListBillerData = ArrayList()
+        override fun onNothingSelected(adapterView: AdapterView<*>) {
+
         }
-    }
-
-    private fun switchFragment(mFrag: BillerConfirm, name: String, next_name: String?, isBackstack: Boolean, tag: String) {
-        if (activity == null)
-            return
-
-        val fca = activity as BillerActivity?
-        fca?.switchContent(mFrag, name, next_name, isBackstack, tag)
-        billerinput_et_id_remark.text.clear()
-        billerinput_spinner_denom.setSelection(0)
-    }
-
-    private fun countTotal() {
-        total = item_price + additional_fee + fee
-        billerinput_detail_total.text = getString(R.string.rp_) + " " + CurrencyFormat.format(total)
     }
 
     private fun sentInquryBiller() {
@@ -387,7 +378,7 @@ class BillerInputData : BaseFragment() {
             showProgressDialog()
             ToggleKeyboard.hide_keyboard(activity!!)
 
-            cust_id = NoHPFormat.formatTo62(billerinput_et_id_remark.text.toString())
+            cust_id = billerinput_et_id_remark.text.toString()
 
             extraSignature = biller_comm_id + item_id + cust_id
 
@@ -458,12 +449,27 @@ class BillerInputData : BaseFragment() {
         }
     }
 
-    fun getIs_input_amount(): Boolean? {
-        return is_input_amount
-    }
-
-    fun setIs_input_amount(is_input_amount: Boolean?) {
-        this.is_input_amount = is_input_amount
+    private fun showDialog() {
+        val mArgs = Bundle()
+        if (buy_type_detail.equals("PRABAYAR", ignoreCase = true)) {
+            mArgs.putString(DefineValue.CUST_ID, cust_id)
+            mArgs.putString(DefineValue.ITEM_ID, item_id)
+            mArgs.putInt(DefineValue.BUY_TYPE, BillerActivity.PURCHASE_TYPE)
+        } else if (buy_type_detail.equals("PASCABAYAR", ignoreCase = true)) {
+            mArgs.putString(DefineValue.CUST_ID, billerinput_et_id_remark.text.toString())
+            mArgs.putString(DefineValue.ITEM_ID, biller_item_id)
+            mArgs.putInt(DefineValue.BUY_TYPE, BillerActivity.PAYMENT_TYPE)
+        }
+        mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code)
+        mArgs.putString(DefineValue.COMMUNITY_ID, biller_comm_id)
+        mArgs.putString(DefineValue.COMMUNITY_NAME, biller_comm_name)
+        if (buy_type_detail.equals("PRABAYAR", ignoreCase = true)) {
+            sentPaymentBiller()
+        } else if (buy_type_detail.equals("PASCABAYAR", ignoreCase = true)) {
+            val mFrag = BillerDesciption()
+            mFrag.arguments = mArgs
+            switchFragment(mFrag, BillerActivity.FRAG_BIL_INPUT, null, true, BillerDesciption.TAG)
+        }
     }
 
     private fun sentPaymentBiller() {
@@ -551,19 +557,19 @@ class BillerInputData : BaseFragment() {
         mArgs.putString(DefineValue.BILLER_COMM_ID, biller_comm_id)
         mArgs.putString(DefineValue.BILLER_NAME, biller_comm_name)
         mArgs.putString(DefineValue.BILLER_ITEM_ID, item_id)
-        mArgs.putString(DefineValue.BILLER_COMM_CODE, biller_comm_code)
-        mArgs.putString(DefineValue.BILLER_API_KEY, biller_api_key)
         mArgs.putString(DefineValue.PAYMENT_NAME, payment_name)
         mArgs.putString(DefineValue.CUST_ID, cust_id)
-        mArgs.putInt(DefineValue.BUY_TYPE, buy_type)
+        mArgs.putInt(DefineValue.BUY_TYPE, BillerActivity.PURCHASE_TYPE)
+        mArgs.putString(DefineValue.BILLER_COMM_CODE, biller_comm_code)
+        mArgs.putString(DefineValue.BILLER_API_KEY, biller_api_key)
         mArgs.putString(DefineValue.CALLBACK_URL, callback_url)
         mArgs.putString(DefineValue.FEE, sentPaymentBillerModel.fee)
         mArgs.putString(DefineValue.TOTAL_AMOUNT, sentPaymentBillerModel.total_amount)
         mArgs.putString(DefineValue.PRODUCT_PAYMENT_TYPE, mTempBank?.product_type)
-        mArgs.putString(DefineValue.BILLER_TYPE, billerTypeCode)
+        mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code)
         mArgs.putString(DefineValue.BANK_CODE, bank_code)
         mArgs.putString(DefineValue.PRODUCT_CODE, product_code)
-        mArgs.putBoolean(DefineValue.IS_DISPLAY, is_display_amount!!)
+        mArgs.putBoolean(DefineValue.IS_DISPLAY, is_display_amount)
         mArgs.putBoolean(DefineValue.IS_INPUT, getIs_input_amount()!!)
         mArgs.putString(DefineValue.SHARE_TYPE, "")
         mArgs.putBoolean(DefineValue.IS_SGO_PLUS, mTempBank?.product_type == DefineValue.BANKLIST_TYPE_IB)
@@ -577,11 +583,9 @@ class BillerInputData : BaseFragment() {
         if (getIs_input_amount()!!)
             mArgs.putString(DefineValue.TOTAL_AMOUNT, total.toString())
 
-
-        val newFrag = BillerConfirm()
-        newFrag.arguments = mArgs
-        switchFragment(newFrag, BillerActivity.FRAG_BIL_INPUT, null, true, BillerConfirm.TAG)
-
+        val fragment = BillerConfirm()
+        fragment.arguments = mArgs
+        switchFragment(fragment, BillerActivity.FRAG_BIL_INPUT, null, true, BillerConfirm.TAG)
     }
 
     private fun sentDataReqToken(tx_id: String?, product_code: String?, biller_comm_code: String?, fee: String, merchant_type: String, bank_code: String?, attempt: Int) {
@@ -632,7 +636,7 @@ class BillerInputData : BaseFragment() {
                                         dialogFrag.cancelListener = DialogInterface.OnClickListener { dialog, which ->
                                             sentInquryBiller()
                                         }
-                                        dialogFrag.setTargetFragment(this@BillerInputData, 0)
+                                        dialogFrag.setTargetFragment(this@BillerInputPLN, 0)
                                         dialogFrag.show(activity?.supportFragmentManager, AlertDialogFrag.TAG)
                                     }
                                     else -> {
@@ -720,5 +724,59 @@ class BillerInputData : BaseFragment() {
             sentInquryBiller()
     }
 
-}
+    private fun countTotal() {
+        total = item_price + additional_fee + fee
+        billerinput_detail_total.text = getString(R.string.rp_) + " " + CurrencyFormat.format(total)
+    }
 
+    private val spinnerPaymentListener = object : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            val item = adapterView?.getItemAtPosition(position)
+            payment_name = item.toString()
+            var i = 0
+            while (i < mListBankBiller!!.size) {
+                if (payment_name == mListBankBiller?.get(i)?.product_name) {
+                    mTempBank = listBankModel(mListBankBiller?.get(i)?.bank_code,
+                            mListBankBiller?.get(i)?.bank_name,
+                            mListBankBiller?.get(i)?.product_code,
+                            mListBankBiller?.get(i)?.product_name,
+                            mListBankBiller?.get(i)?.product_type,
+                            mListBankBiller?.get(i)?.product_h2h)
+                }
+                i++
+            }
+        }
+
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+
+        }
+
+    }
+
+    private fun setActionBarTitle(_title: String) {
+        if (activity == null)
+            return
+
+        val fca = activity as BillerActivity?
+        fca!!.setToolbarTitle(_title)
+    }
+
+    private fun getIs_input_amount(): Boolean? {
+        return is_input_amount
+    }
+
+    private fun setIs_input_amount(is_input_amount: Boolean?) {
+        this.is_input_amount = is_input_amount
+    }
+
+    private fun switchFragment(i: Fragment, name: String, next_name: String?, isBackstack: Boolean?, tag: String) {
+        if (activity == null)
+            return
+
+        val fca = activity as BillerActivity?
+        fca!!.switchContent(i, name, next_name, isBackstack, tag)
+        billerinput_et_id_remark.text.clear()
+        if (buy_type_detail.equals("PRABAYAR", ignoreCase = true))
+            billerinput_spinner_denom.setSelection(0)
+    }
+}

@@ -11,7 +11,7 @@
         android:icon="@drawable/ic_transaction" />
     <item
         android:id="@+id/menu_help"
-        android:title="@string/menu_item_title_help"
+        android:title="@string/menu_group_title_supports"
         android:icon="@drawable/ic_call"/>
     <item
         android:id="@+id/menu_profile"
