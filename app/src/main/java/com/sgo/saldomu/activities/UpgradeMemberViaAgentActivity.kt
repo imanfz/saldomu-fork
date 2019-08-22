@@ -28,11 +28,9 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
     internal lateinit var locLists: MutableList<String>
     internal lateinit var adapter: CustomAutoCompleteAdapter
     internal lateinit var adapters: ArrayAdapter<String>
-    lateinit var memberIdCust: String
     var memberDOB: String = ""
     private lateinit var fromFormat: DateFormat
-    private lateinit var toFormat2: DateFormat
-
+    
     override fun getLayoutResource(): Int {
         return R.layout.activity_upgrade_member_via_agent
     }
@@ -186,19 +184,12 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
 
         val datePickerDialog =
                 DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                    var date: Date = Date()
                     var calendar : Calendar = Calendar.getInstance()
-//                    calendar.set(Calendar.YEAR, year)
-//                    calendar.set(Calendar.MONTH, monthOfYear)
-//                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                     calendar.set(year, monthOfYear, dayOfMonth )
 
                     birthday_text_view.text = "$dayOfMonth - $monthOfYear - $year"
                     fromFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ID", "INDONESIA"))
-                    toFormat2 = SimpleDateFormat("dd-MM-yyyy", Locale("ID", "INDONESIA"))
                     memberDOB = fromFormat.format(calendar.time)
-//                    memberDOB = toFormat2.format(fromFormat.parse(calendar.time.toString()))
-//                    memberDOB = fromFormat.format(toFormat2.parse(memberDOBtemp))
                 }, year, month, day)
         datePickerDialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
         datePickerDialog.show()
