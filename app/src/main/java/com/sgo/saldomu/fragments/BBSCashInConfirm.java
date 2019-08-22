@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +44,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
@@ -50,6 +53,9 @@ import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,6 +91,9 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     private ActionListener actionListener;
     private Boolean finishTransaction = false, retryToken = false;
     ArrayList<String> name = new ArrayList<String>();
+    private Switch favoriteSwitch;
+    private EditText notesEditText;
+    private String value_pin;
 
     public interface ActionListener {
         void ChangeActivityFromCashInConfirm(Intent data);
@@ -152,6 +161,8 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         tvNomor = v.findViewById(R.id.tv_no_tcash);
         tvOTP = v.findViewById(R.id.tv_otp);
         tvAdditionalFee = v.findViewById(R.id.bbscashin_confirm_additionalFee);
+        favoriteSwitch = v.findViewById(R.id.favorite_switch);
+        notesEditText = v.findViewById(R.id.notes_edit_text);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -311,6 +322,10 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         } else {
             getFragmentManager().popBackStack();
         }
+
+        favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            notesEditText.setEnabled(isChecked);
+        });
     }
 
     private void initializeSmsClass() {
@@ -374,6 +389,13 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         public void onClick(View view) {
 //            DialogSignature dialogSignature;
             if (InetHandler.isNetworkAvailable(getActivity())) {
+                if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
+                    notesEditText.requestFocus();
+                    notesEditText.setError(getString(R.string.payfriends_notes_zero));
+                    return;
+                }
+
+
                 btnSubmit.setEnabled(false);
                 if (isSMS) {
                     if (inputValidation())
@@ -448,8 +470,12 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MainPage.REQUEST_FINISH) {
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
-                String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
-                sentInsertTransTopup(value_pin);
+                value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
+                if (favoriteSwitch.isChecked()) {
+                    onSaveToFavorite();
+                } else {
+                    sentInsertTransTopup(value_pin);
+                }
             }
         }
     }
@@ -1035,5 +1061,50 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         getFragmentManager().beginTransaction()
                 .replace(R.id.bbsTransaksiFragmentContent, mFrag, BBSTransaksiAmount.TAG)
                 .addToBackStack(TAG).commit();
+    }
+
+    private void onSaveToFavorite() {
+        extraSignature = no_benef + source_product_type + "BBS";
+        Log.e("extraSignature params ", extraSignature);
+        String url = MyApiClient.LINK_TRX_FAVORITE_SAVE;
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(url, extraSignature);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.PRODUCT_TYPE, source_product_type);
+        params.put(WebParams.CUSTOMER_ID, no_benef);
+        params.put(WebParams.TX_FAVORITE_TYPE, "BBS");
+        params.put(WebParams.COMM_ID, comm_id);
+        params.put(WebParams.NOTES, notesEditText.getText().toString());
+
+        Log.e("params ", params.toString());
+
+        RetrofitService.getInstance().PostJsonObjRequest(url, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            Log.e("onResponses ", response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                            } else {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.e("onResponses ", throwable.getLocalizedMessage());
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        sentInsertTransTopup(value_pin);
+                    }
+                });
     }
 }

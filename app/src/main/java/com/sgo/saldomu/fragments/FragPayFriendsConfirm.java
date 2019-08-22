@@ -1,4 +1,4 @@
- package com.sgo.saldomu.fragments;
+package com.sgo.saldomu.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,20 +19,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.sgo.saldomu.Beans.RecepientModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.ChangePIN;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsActivity;
@@ -51,6 +56,7 @@ import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
@@ -60,6 +66,9 @@ import com.sgo.saldomu.models.retrofit.PayfriendDataTrfModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,7 +99,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     private TextView txtName;
     private TextView txtMessage;
     private TextView txtNumberRecipients;
-    private EditText etOTP;
+    private EditText etOTP, notesEditText;
     private Button btnSubmit;
     private Button btnCancel;
     private Button btnResend;
@@ -103,8 +112,11 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     private List<RecepientModel> listObjectRecipient;
     private List<TempTxID> mTempTxID;
     private List<RecepientModel> list_non_member;
+    private String phoneNumber;
 
     private String authType;
+    Switch favoriteSwitch;
+    String value_pin;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -151,6 +163,8 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         TextView tv_amount = v.findViewById(R.id.payfriends_confirm_value_amount);
         TextView tv_fee = v.findViewById(R.id.payfriends_confirm_value_fee);
         TextView tv_total_amount = v.findViewById(R.id.payfriends_confirm_value_total_amount);
+        favoriteSwitch = v.findViewById(R.id.favorite_switch);
+        notesEditText = v.findViewById(R.id.notes_edit_text);
 
         if (authType.equalsIgnoreCase("PIN")) {
             layoutOTP.setVisibility(View.GONE);
@@ -193,6 +207,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
             dataName = bundle.getString(WebParams.DATA);
             message = bundle.getString(WebParams.MESSAGE);
             dataMapper = bundle.getString(WebParams.DATA_MAPPER);
+            phoneNumber = bundle.getString(WebParams.CUSTOMER_ID);
 
             mTempTxID = new ArrayList<>();
             listObjectRecipient = new ArrayList<>();
@@ -311,6 +326,10 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                 dialog_color_help.show();
             }
         });
+
+        favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            notesEditText.setEnabled(isChecked);
+        });
     }
 
     @Override
@@ -322,6 +341,12 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
+            if (favoriteSwitch.isChecked() &&  notesEditText.getText().toString().length() == 0) {
+                notesEditText.requestFocus();
+                notesEditText.setError(getString(R.string.payfriends_notes_zero));
+                return;
+            }
+
 
             if (InetHandler.isNetworkAvailable(getActivity())) {
                 if (mDialogNonMember != null)
@@ -423,9 +448,13 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         if (requestCode == MainPage.REQUEST_FINISH) {
             Timber.d("onActivity result", "Biller Fragment masuk request exit");
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
-                String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
+                value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
                 Timber.d("onActivity result", "Biller Fragment result pin value");
-                sentDataConfirm(txID, value_pin);
+                if (favoriteSwitch.isChecked()) {
+                    onSaveToFavorite();
+                }else {
+                    sentDataConfirm(txID, value_pin);
+                }
             }
         }
     }
@@ -476,7 +505,8 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                                     _message = message;
                                     JsonParser jsonParser = new JsonParser();
                                     List<PayfriendDataModel> temp = getGson().fromJson(toJson(model.getData()),
-                                            new TypeToken<List<PayfriendDataModel>>() {}.getType());
+                                            new TypeToken<List<PayfriendDataModel>>() {
+                                            }.getType());
 
 //                        if (!model.getData().equals("")){
 //                            Type type = new TypeToken<List<PayfriendDataModel>>() {}.getType();
@@ -571,11 +601,60 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                         public void onComplete() {
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
+
                         }
                     });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
+    }
+
+    private void onSaveToFavorite() {
+        extraSignature = phoneNumber + DefineValue.P2P + "TRF";
+        Log.e("extraSignature params ",extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_FAVORITE_SAVE_TRF, extraSignature);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.PRODUCT_TYPE, DefineValue.P2P);
+        params.put(WebParams.CUSTOMER_ID, phoneNumber);
+        params.put(WebParams.TX_FAVORITE_TYPE, "TRF");
+        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+        params.put(WebParams.NOTES, notesEditText.getText().toString());
+
+        Log.e("params ", params.toString());
+
+        String url = MyApiClient.LINK_TRX_FAVORITE_SAVE_TRF;
+
+        RetrofitService.getInstance().PostJsonObjRequest(url, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            Log.e("onResponses ", response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                            } else {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.e("onResponses ", throwable.getLocalizedMessage());
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        sentDataConfirm(txID, value_pin);
+                    }
+                });
+
+
     }
 
     private void showDialogClaim(String message) {
@@ -653,7 +732,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
-                    } );
+                    });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }

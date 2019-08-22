@@ -72,6 +72,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Realm;
 import timber.log.Timber;
@@ -921,11 +922,18 @@ public class BillerDesciption extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (Objects.requireNonNull(getActivity()).getIntent().getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID) != null) {
+            getActivity().finish();
+            return true;
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 getFragmentManager().popBackStack();
                 return true;
         }
+
+
         return super.onOptionsItemSelected(item);
     }
 
