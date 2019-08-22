@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 
 import com.android.ex.chips.BaseRecipientAdapter;
 import com.android.ex.chips.RecipientEditTextView;
+import com.android.ex.chips.RecipientEntry;
 import com.android.ex.chips.recipientchip.DrawableRecipientChip;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -257,6 +259,13 @@ public class FragPayFriends extends BaseFragment {
                 phone = bundle.getString("phone");
 
             }
+
+            if (bundle.containsKey(DefineValue.FAVORITE_CUSTOMER_ID) && bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, null) != null){
+                phoneRetv.setText(bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID));
+                phoneRetv.requestFocus();
+            }
+
+
 
             phoneRetv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override

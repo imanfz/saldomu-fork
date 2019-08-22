@@ -6,5 +6,7 @@ class FavoriteModel(
         val comm_id : String,
         val tx_favorite_type: String,
         val product_type: String,
-        val notes: String
+        val notes: String,
+        val item_id: String,
+        val item_name: String
 ): jsonModel()

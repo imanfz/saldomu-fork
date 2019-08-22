@@ -71,6 +71,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Realm;
 import timber.log.Timber;
@@ -125,7 +126,7 @@ public class BillerDesciption extends BaseFragment {
     private Realm realm;
     Boolean isPLN = false;
     String fee = "0", deAmount, enabledAdditionalFee;
-    private Boolean isAgent=false;
+    private Boolean isAgent = false;
     private LinearLayout layout_additionalFee;
     private EditText et_additionalFee;
     LevelClass levelClass;
@@ -235,8 +236,7 @@ public class BillerDesciption extends BaseFragment {
             }
         }
 
-        if (isAgent && enabledAdditionalFee.equals("Y"))
-        {
+        if (isAgent && enabledAdditionalFee.equals("Y")) {
             layout_additionalFee.setVisibility(View.VISIBLE);
         }
 
@@ -408,7 +408,7 @@ public class BillerDesciption extends BaseFragment {
         }
     };
 
-    void animateDescLayout(){
+    void animateDescLayout() {
         Animation mRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_arrow);
         mRotate.setInterpolator(new LinearInterpolator());
         mRotate.setAnimationListener(new Animation.AnimationListener() {
@@ -573,12 +573,10 @@ public class BillerDesciption extends BaseFragment {
             params.put(WebParams.PRODUCT_H2H, mTempBank.getProduct_h2h());
             params.put(WebParams.PRODUCT_TYPE, mTempBank.getProduct_type());
             params.put(WebParams.USER_ID, userPhoneID);
-            if (isAgent)
-            {
-                if (!et_additionalFee.getText().toString().equals(""))
-                {
+            if (isAgent) {
+                if (!et_additionalFee.getText().toString().equals("")) {
                     params.put(WebParams.ADDITIONAL_FEE, et_additionalFee.getText().toString());
-                }else
+                } else
                     params.put(WebParams.ADDITIONAL_FEE, "0");
             }
 
@@ -935,11 +933,18 @@ public class BillerDesciption extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (Objects.requireNonNull(getActivity()).getIntent().getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID) != null) {
+            getActivity().finish();
+            return true;
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 getFragmentManager().popBackStack();
                 return true;
         }
+
+
         return super.onOptionsItemSelected(item);
     }
 

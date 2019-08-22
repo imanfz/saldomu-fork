@@ -2,6 +2,7 @@ package com.sgo.saldomu.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,12 +18,23 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
     internal var itemList: MutableList<FavoriteModel> = arrayListOf()
 
     interface FavoriteListener {
-        fun onClick(model: HistoryModel)
-        fun onShowTransferActivity()
+        fun onShowBillerActivity(model: FavoriteModel)
+        fun onShowTransferActivity(model: FavoriteModel)
+        fun onDeleteFavorite(model: FavoriteModel)
     }
 
     fun updateAdapter(itemList: List<FavoriteModel>) {
         this.itemList.addAll(itemList)
+        notifyDataSetChanged()
+    }
+
+    fun clearAdapter() {
+        this.itemList.clear()
+        notifyDataSetChanged()
+    }
+
+    fun removeItem(model: FavoriteModel) {
+        this.itemList.remove(model)
         notifyDataSetChanged()
     }
 
@@ -42,11 +54,22 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
 
         holder.customerIdText.text = model.customer_id
         holder.messageText.text = model.notes
+        Log.e("model.product_type : " , model.product_type)
 
         holder.itemLinearLayout.setOnClickListener {
-            if (model.product_type == DefineValue.P2P) {
-                listener.onShowTransferActivity()
+            if (model.tx_favorite_type == "TRF") {
+                listener.onShowTransferActivity(model)
+            } else if (model.tx_favorite_type == "BIL") {
+                listener.onShowBillerActivity(model)
+            } else if (model.tx_favorite_type == "BBS") {
+
             }
+        }
+
+        holder.itemLinearLayout.setOnLongClickListener {
+            Log.e("model.product_type : " , "s")
+            listener.onDeleteFavorite(model)
+            return@setOnLongClickListener true
         }
 
     }

@@ -62,6 +62,11 @@ public class PayFriendsActivity extends BaseActivity {
                     args.putString(DefineValue.TRX, bundle.getString(DefineValue.TRX));
                     args.putString(DefineValue.REQUEST_ID, bundle.getString(DefineValue.REQUEST_ID));
                 }
+
+                if (getIntent()!= null) {
+                    args.putString(DefineValue.FAVORITE_CUSTOMER_ID, getIntent().getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+                }
+
                 newFragment = new FragPayFriends();
                 newFragment.setArguments(args);
             }

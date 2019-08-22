@@ -341,6 +341,12 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
+            if (favoriteSwitch.isChecked() &&  notesEditText.getText().toString().length() == 0) {
+                notesEditText.requestFocus();
+                notesEditText.setError(getString(R.string.payfriends_notes_zero));
+                return;
+            }
+
 
             if (InetHandler.isNetworkAvailable(getActivity())) {
                 if (mDialogNonMember != null)
@@ -604,12 +610,6 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     }
 
     private void onSaveToFavorite() {
-        if (notesEditText.getText().toString().length() == 0) {
-            notesEditText.requestFocus();
-            notesEditText.setError(getString(R.string.payfriends_notes_zero));
-            return;
-        }
-
         extraSignature = phoneNumber + DefineValue.P2P + "TRF";
         Log.e("extraSignature params ",extraSignature);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_FAVORITE_SAVE_TRF, extraSignature);

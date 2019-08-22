@@ -589,6 +589,7 @@ public class DefineValue {
     public static String SAME_BANNER = "sameBanner";
     public static String DATA_BANNER = "dataBanner";
     public static String P2P = "P2P";
+    public static String FAVORITE_CUSTOMER_ID = "FAVORITE_CUSTOMER_ID";
 
 }
 

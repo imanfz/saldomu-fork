@@ -57,7 +57,7 @@ public class BillerActivity extends BaseActivity {
     private List<Biller_Data_Model> mListBillerData;
     private Realm realm;
     private RealmChangeListener realmListener;
-    BillerActivityRF mWorkFragment;
+//    BillerActivityRF mWorkFragment;
     ProgressDialog progdialog;
     String IdNumber = null;
 
@@ -73,8 +73,39 @@ public class BillerActivity extends BaseActivity {
             return;
         }
 
-        realm = Realm.getInstance(RealmManager.BillerConfiguration);
         Intent intent = getIntent();
+        if (intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID) != null) {
+            setActionBarIcon(R.drawable.ic_arrow_left);
+            setToolbarTitle(intent.getStringExtra(DefineValue.BILLER_TYPE) + " - " + intent.getStringExtra(DefineValue.COMMUNITY_NAME));
+
+            Bundle mArgs = new Bundle();
+            mArgs.putString(DefineValue.COMMUNITY_ID, intent.getStringExtra(DefineValue.COMMUNITY_ID));
+            mArgs.putString(DefineValue.COMMUNITY_NAME, intent.getStringExtra(DefineValue.COMMUNITY_NAME));
+            mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+            mArgs.putString(DefineValue.ITEM_ID, intent.getStringExtra(DefineValue.ITEM_ID));
+            if (intent.getStringExtra(DefineValue.BILLER_TYPE).equals("GAME") || intent.getStringExtra(DefineValue.BILLER_TYPE).equals("VCHR")){
+                mArgs.putInt(DefineValue.BUY_TYPE, PURCHASE_TYPE);
+            } else {
+                mArgs.putInt(DefineValue.BUY_TYPE, PAYMENT_TYPE);
+            }
+
+            mArgs.putString(DefineValue.SHARE_TYPE, "ss");
+            mArgs.putString(DefineValue.BILLER_TYPE, intent.getStringExtra(DefineValue.BILLER_TYPE));
+
+            _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
+
+            Fragment mFrag = new BillerDesciption();
+            mFrag.setArguments(mArgs);
+
+            fragmentManager = getSupportFragmentManager();
+            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.biller_content, mFrag, BillerDesciption.TAG);
+            fragmentTransaction.commitAllowingStateLoss();
+            setResult(MainPage.RESULT_NORMAL);
+            return ;
+        }
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+
         _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
         Timber.d("isi biller type code " + _biller_type_code);
         _biller_merchant_name = intent.getStringExtra(DefineValue.BILLER_NAME);

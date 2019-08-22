@@ -133,6 +133,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private Switch favoriteSwitch;
     private EditText notesEditText;
     private String productType = "";
+    private String item_id="";
     String value_pin ="";
     String _amount = "";
 
@@ -194,6 +195,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         isShowDescription = args.getBoolean(DefineValue.IS_SHOW_DESCRIPTION, false);
         biller_type_code = args.getString(DefineValue.BILLER_TYPE);
         additionalFee = args.getString(DefineValue.ADDITIONAL_FEE);
+        item_id = args.getString(DefineValue.BILLER_ITEM_ID);
         productType = ((BillerActivity) Objects.requireNonNull(getActivity()))._biller_type_code;
         Timber.d("isi args:" + args.toString());
 
@@ -397,7 +399,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         public void onClick(View view) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
 
-                if (notesEditText.getText().toString().length() == 0) {
+                if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
                     notesEditText.requestFocus();
                     notesEditText.setError(getString(R.string.payfriends_notes_zero));
                     return;
@@ -1018,6 +1020,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 //        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
         params.put(WebParams.COMM_ID, args.getString(DefineValue.BILLER_COMM_ID));
         params.put(WebParams.NOTES, notesEditText.getText().toString());
+        //DefineValue.BILLER_ITEM_ID
+        params.put(WebParams.DENOM_ITEM_ID, item_id);
 
         Log.e("params ", params.toString());
 

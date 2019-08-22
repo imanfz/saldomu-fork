@@ -1,23 +1,44 @@
 package com.sgo.saldomu.activities
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v7.app.AlertDialog
 import android.view.MenuItem
 import com.sgo.saldomu.R
-import com.sgo.saldomu.adapter.FavoriteAdapter
+import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.fragments.FavoriteFragment
+import com.sgo.saldomu.models.retrofit.FavoriteModel
 import com.sgo.saldomu.widgets.BaseActivity
 import kotlinx.android.synthetic.main.activity_favorite.*
-import java.util.*
 
 private const val TAG = "FavoriteActivity"
 
 class FavoriteActivity : BaseActivity() {
+    fun startBillerActivity(model: FavoriteModel) {
+        var intent = Intent(this, BillerActivity::class.java)
+        intent.putExtra(DefineValue.BILLER_TYPE, model.product_type)
+        intent.putExtra(DefineValue.BILLER_NAME, model.item_name)
+        intent.putExtra(DefineValue.COMMUNITY_ID, model.comm_id)
+        intent.putExtra(DefineValue.ITEM_ID, model.item_id)
+        intent.putExtra(DefineValue.COMMUNITY_NAME, model.item_name)
+
+        intent.putExtra(DefineValue.BILLER_TYPE, model.product_type)
+        intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
+//        intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
+
+        startActivity(intent)
+    }
+
+    fun startTransferActivity (model: FavoriteModel) {
+        var intent = Intent(this, PayFriendsActivity::class.java)
+        intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
+        startActivity(intent)
+    }
+
     internal lateinit var dialog: AlertDialog
     internal lateinit var adapter: FavoritePagerAdapter
 
@@ -38,10 +59,7 @@ class FavoriteActivity : BaseActivity() {
         builder.setView(R.layout.progress)
         dialog = builder.create()
 
-
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
         adapter = FavoritePagerAdapter(supportFragmentManager, this)
-//        viewPager.setPageMargin(dpToPx(10))
         viewPager.adapter = adapter
 
         // Give the TabLayout the ViewPager
