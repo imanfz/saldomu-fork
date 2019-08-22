@@ -299,7 +299,7 @@
                         android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_bk_orange"
+                        android:background="@drawable/card_bk_blue"
                         android:layout_marginRight="8dp"
                         app:mrl_rippleOverlay="true"
                         app:mrl_rippleColor="@color/colorPrimaryDark"
@@ -326,7 +326,7 @@
                     <com.balysv.materialripple.MaterialRippleLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_bk_orange"
+                        android:background="@drawable/card_bk_blue"
                         android:layout_weight="1"
                         app:mrl_rippleOverlay="true"
                         app:mrl_rippleColor="@color/colorPrimaryDark"

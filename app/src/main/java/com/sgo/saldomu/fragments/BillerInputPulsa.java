@@ -124,8 +124,8 @@ public class BillerInputPulsa extends BaseFragment {
     private String description;
     private String enabledAdditionalFee;
     private Double total = 0.0;
-    private Double item_price;
-    private Double fee;
+    private Double item_price = 0.0;
+    private Double fee = 0.0;
     private boolean isAgent;
     private boolean isShowDescription;
     private String biller_comm_code;
@@ -160,9 +160,9 @@ public class BillerInputPulsa extends BaseFragment {
         spin_denom = v.findViewById(R.id.billerinput_spinner_denom);
         tv_denom = v.findViewById(R.id.billerinput_text_denom);
         img_operator = v.findViewById(R.id.img_operator);
-        tv_payment_remark = v.findViewById(R.id.billerinput_text_nomor_hp);
+        tv_payment_remark = v.findViewById(R.id.billerinput_text_id_remark);
         tv_add_fee = v.findViewById(R.id.billerinput_detail_admin_add_fee);
-        et_payment_remark = v.findViewById(R.id.billerinput_et_nomor_hp);
+        et_payment_remark = v.findViewById(R.id.billerinput_et_id_remark);
         et_add_fee = v.findViewById(R.id.billerinput_et_add_fee);
         btn_submit = v.findViewById(R.id.btn_submit_billerinput);
         radioGroup = v.findViewById(R.id.billerinput_radio);
@@ -220,7 +220,7 @@ public class BillerInputPulsa extends BaseFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 String s1 = s.toString();
-                if (!s1.isEmpty()){
+                if (!s1.isEmpty()) {
                     if (s1 == "0" || s1 == "") {
                         et_add_fee.setText("");
                     } else {
@@ -499,7 +499,7 @@ public class BillerInputPulsa extends BaseFragment {
 
     public void initLayout() {
         tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
-        tv_denom.setText("Nominal Pulsa");
+        tv_denom.setText(getString(R.string.billerinput_text_spinner_pulsa));
         et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
         et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         radioGroup.setVisibility(View.VISIBLE);
@@ -520,6 +520,7 @@ public class BillerInputPulsa extends BaseFragment {
                     layout_payment_method.setVisibility(View.VISIBLE);
                     layout_add_fee.setVisibility(View.GONE);
                     layout_detail.setVisibility(View.GONE);
+                    setActionBarTitle(getString(R.string.biller_ab_title) + " - " + getString(R.string.prepaid_title));
                     break;
                 case R.id.radioPascabayar:
                     layout_denom.setVisibility(View.GONE);
@@ -528,6 +529,7 @@ public class BillerInputPulsa extends BaseFragment {
                     layout_payment_method.setVisibility(View.GONE);
                     layout_add_fee.setVisibility(View.GONE);
                     layout_detail.setVisibility(View.GONE);
+                    setActionBarTitle(getString(R.string.biller_ab_title) + " - " + getString(R.string.postpaid_title));
                     break;
             }
             initRealm();
@@ -541,7 +543,7 @@ public class BillerInputPulsa extends BaseFragment {
                 if (inputValidation()) {
                     btn_submit.setEnabled(false);
                     cust_id = NoHPFormat.formatTo62(String.valueOf(et_payment_remark.getText()));
-                    showDialog(cust_id);
+                    showDialog();
                 }
             } else
                 DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
@@ -584,13 +586,12 @@ public class BillerInputPulsa extends BaseFragment {
             mListBillerData = new ArrayList<>();
     }
 
-    private void showDialog(String _payment_remark) {
-
+    private void showDialog() {
 
         Bundle mArgs = getArguments();
 
         if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
-            mArgs.putString(DefineValue.CUST_ID, _payment_remark);
+            mArgs.putString(DefineValue.CUST_ID, cust_id);
             mArgs.putString(DefineValue.ITEM_ID, denom_item_id);
             mArgs.putInt(DefineValue.BUY_TYPE, BillerActivity.PURCHASE_TYPE);
         } else if (buy_type_detail.equalsIgnoreCase("PASCABAYAR")) {
@@ -655,12 +656,12 @@ public class BillerInputPulsa extends BaseFragment {
                     sentPaymentBillerModel = getGson().fromJson(object, SentPaymentBillerModel.class);
                     String code = sentPaymentBillerModel.getError_code();
                     if (code.equals(WebParams.SUCCESS_CODE)) {
-                        if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
+                        if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)) {
                             changeToConfirmBiller(sentPaymentBillerModel.getFee(), sentPaymentBillerModel.getMerchant_type(), bank_code, product_code, -1);
-                        }else{
+                        } else {
                             int attempt = sentPaymentBillerModel.getFailed_attempt();
-                            if (attempt!=-1)
-                                attempt=sentPaymentBillerModel.getMax_failed()-attempt;
+                            if (attempt != -1)
+                                attempt = sentPaymentBillerModel.getMax_failed() - attempt;
                             sentDataReqToken(tx_id, product_code, biller_comm_code, sentPaymentBillerModel.getFee(), sentPaymentBillerModel.getMerchant_type(), bank_code, attempt);
                         }
                     } else if (code.equals(WebParams.LOGOUT_CODE)) {
@@ -820,9 +821,9 @@ public class BillerInputPulsa extends BaseFragment {
         if (getIs_input_amount())
             mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(total));
 
-        Fragment fragment=new BillerConfirm();
+        Fragment fragment = new BillerConfirm();
         fragment.setArguments(mArgs);
-        switchFragment(fragment,BillerActivity.FRAG_BIL_INPUT,null,true,BillerConfirm.TAG);
+        switchFragment(fragment, BillerActivity.FRAG_BIL_INPUT, null, true, BillerConfirm.TAG);
     }
 
     private void switchFragment(Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
@@ -935,8 +936,16 @@ public class BillerInputPulsa extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==REQUEST_BillerInqReq)
+        if (requestCode == REQUEST_BillerInqReq)
             sentInquryBiller();
+    }
+
+    private void setActionBarTitle(String _title) {
+        if (getActivity() == null)
+            return;
+
+        BillerActivity fca = (BillerActivity) getActivity();
+        fca.setToolbarTitle(_title);
     }
 }
 

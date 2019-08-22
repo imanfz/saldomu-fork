@@ -345,12 +345,16 @@
     <string name="billerinput_radio_text_internet_banking" translatable="false">Internet Banking</string>
     <string name="billerinput_radio_text_emoney" translatable="false">Emoney</string>
     <string name="billerinput_text_payment_options">Pilihan Pembayaran</string>
-    <string name="billerinput_text_spinner_default_payment">Pilih metode pembayaran Anda</string>
+    <string name="billerinput_text_spinner_default_payment">Pilih metode pembayaran</string>
     <string name="billerinput_validation_spinner_default_payment">Silahkan pilih metode pembayaran!</string>
+    <string name="billerinput_text_spinner_data">Paket Data</string>
+    <string name="billerinput_text_spinner_pulsa">Nominal Pulsa</string>
     <string name="billerinput_text_spinner_default_data">Pilih Paket Data</string>
     <string name="billerinput_text_spinner_default_pulsa">Pilih Nominal Pulsa</string>
+    <string name="billerinput_text_spinner_default_listrik">Pilih Token Listrik</string>
     <string name="billerinput_validation_spinner_default_data">Silahkan pilih paket data</string>
     <string name="billerinput_validation_spinner_default_pulsa">Silahkan pilih nominal pulsa</string>
+    <string name="billerinput_validation_spinner_default_listrik">Silahkan pilih token listrik</string>
 
     <string name="billertoken_text_biller_id">ID Pelanggan</string>
     <string name="billertoken_text_biller_name">Nama Biller</string>
@@ -1377,5 +1381,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="upload_doc">Lengkapi dokumen anda dibawah ini :</string>
     <string name="p2p_transfer">Sesama Saldomu</string>
     <string name="bank_transfer">Rekening Bank</string>
+    <string name="prepaid_title">Voucher Pulsa Handphone</string>
+    <string name="postpaid_title">Tagihan Pascabayar</string>
+    <string name="token_listrik">Token Listrik</string>
+    <string name="tagihan_listrik">Tagihan Listrik</string>
 
 </resources>
