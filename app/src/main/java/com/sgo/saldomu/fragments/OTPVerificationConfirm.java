@@ -127,7 +127,7 @@ public class OTPVerificationConfirm extends BaseFragment {
             public void onFinish() {
                     Timber.d("sisa onfinish timer " +sisa);
                     btResend.setEnabled(true);
-                    btResend.setBackground(getActivity().getResources().getDrawable(R.drawable.rounded_background_orange));
+                    btResend.setBackground(getActivity().getResources().getDrawable(R.drawable.rounded_background_blue));
             }
         }.start();
     }

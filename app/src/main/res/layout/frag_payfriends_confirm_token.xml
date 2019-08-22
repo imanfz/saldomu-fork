@@ -140,7 +140,8 @@
                     android:layout_margin="20dp"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:src="@drawable/icon_arrow" />
+                    android:src="@drawable/arrow" />
+
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -385,11 +386,11 @@
                 android:id="@+id/notes_edit_text"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="Notes"
-                android:layout_marginRight="16dp"
-                android:inputType="text"
                 android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:enabled="false"
+                android:hint="Notes"
+                android:inputType="text"
                 android:textSize="@dimen/abc_text_size_medium_material" />
 
 

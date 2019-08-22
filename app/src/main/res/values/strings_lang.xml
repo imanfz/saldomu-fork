@@ -182,6 +182,7 @@
     <string name="menu_item_title_ask_for_money">Minta Saldo</string>
     <string name="menu_item_title_purchase_pulsa">Pembelian E-Voucher HP</string>
     <string name="menu_item_title_upgrade_member">Upgrade Member</string>
+    <string name="menu_item_title_upgrade_online">Upgrade Online</string>
     <string name="menu_item_title_upgrade_via_agent">Upgrade via Agent</string>
     <string name="menu_item_title_buy">Biller</string>
     <string name="menu_item_title_beli">Beli</string>
@@ -655,7 +656,7 @@
 
     <string name="cashout_bank_acc_no_text">No. Rekening Tujuan</string>
     <string name="cashout_nominal_text">Nominal</string>
-    <string name="cashout_bank_acc_no_hint">Masukkan nomor akun</string>
+    <string name="cashout_bank_acc_no_hint">Masukkan nomor rekening</string>
     <string name="cashout_bank_acc_name_hint">Masukkan nama penerima</string>
     <string name="cashout_nominal_hint">Masukkan nominal penarikan</string>
     <string name="cashout_bank_acc_name_text">Nama Penerima</string>
@@ -1376,7 +1377,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="prepaid">Prabayar</string>
     <string name="postpaid">Pascabayar</string>
     <string name="upload_doc">Lengkapi dokumen anda dibawah ini :</string>
-    <string name="p2p_transfer">Ke Sesama Saldomu</string>
-    <string name="bank_transfer">Ke Rekening Bank</string>
+    <string name="p2p_transfer">Sesama Saldomu</string>
+    <string name="bank_transfer">Rekening Bank</string>
 
 </resources>

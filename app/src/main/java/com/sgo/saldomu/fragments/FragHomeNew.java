@@ -7,14 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,21 +32,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.Resource;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.PromoObject;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.ActivityListTransfer;
 import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
-import com.sgo.saldomu.activities.CashoutActivity;
 import com.sgo.saldomu.activities.HistoryActivity;
-import com.sgo.saldomu.activities.HistoryDetailActivity;
 import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsActivity;
@@ -74,14 +68,12 @@ import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.ShopCategory;
-import com.sgo.saldomu.models.retrofit.Banner;
 import com.sgo.saldomu.models.retrofit.CategoriesModel;
 import com.sgo.saldomu.models.retrofit.CategoryListModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 import com.synnapps.carouselview.CarouselView;
-import com.synnapps.carouselview.ImageClickListener;
 import com.synnapps.carouselview.ImageListener;
 
 import org.json.JSONArray;
@@ -89,11 +81,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import io.realm.Realm;
@@ -384,17 +372,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent i = new Intent(getActivity(), TopUpActivity.class);
                     i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_pay_friends))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        if (getLvlClass().isLevel1QAC()) {
-                            getLvlClass().showDialogLevel();
-                        } else {
-                            Intent i = new Intent(getActivity(), ActivityListTransfer.class);
-                            switchActivity(i, MainPage.ACTIVITY_RESULT);
-                        }
-                    }
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_ask_for_money))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();
@@ -512,11 +489,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
                     Intent intent = new Intent(getActivity(), HistoryActivity.class);
                     startActivity(intent);
-                } else if (menuItemName.equals(getString(R.string.title_cashout_bank))) {
-                    Intent intent = new Intent(getActivity(), CashoutActivity.class);
-                    startActivity(intent);
-//                    newFragment = new ListCashOut();
-//                    switchFragment(newFragment, getString(R.string.title_cashout_bank));
                 }
 
                 if (isAgent) {
@@ -672,7 +644,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         });
 
         if (sp.getBoolean(DefineValue.SAME_BANNER, false) == false)
-//        if (sp.getString(DefineValue.DATA_BANNER, "") == null)
             getPromoList();
         else
             populateBanner();
@@ -969,9 +940,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             menuDrawables.add(getResources().getDrawable(R.drawable.ic_laporan));
 
             menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
-            menuDrawables.add(getResources().getDrawable(R.drawable.group));
-
-            menuStrings.add(getResources().getString(R.string.title_cashout_bank));
             menuDrawables.add(getResources().getDrawable(R.drawable.group));
         }
 

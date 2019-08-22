@@ -651,6 +651,31 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                     break;
                 case FCMManager.VERIFY_ACC:
                     break;
+                case FCMManager.CONFIRM_ATC:
+
+                    Timber.d("MASUK SINI FCM APP MESSAGING");
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
+
+                    bundleToJSONString = bundleToJSON.getJson(bundle);
+                    mEditor = sp.edit();
+                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
+                    mEditor.apply();
+
+                    if (flagLogin.equals(DefineValue.STRING_YES)) {
+                        intent = new Intent(this, BBSActivity.class);
+                        intent.putExtras(bundle);
+
+
+                        stackBuilder.addParentStack(BBSActivity.class);
+                        stackBuilder.addNextIntent(intent);
+
+                        contentIntent =
+                                stackBuilder.getPendingIntent(
+                                        1,
+                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                );
+                    }
+                    break;
                 default:
                     break;
             }

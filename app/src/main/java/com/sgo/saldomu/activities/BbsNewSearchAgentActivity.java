@@ -1090,7 +1090,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 Toast.makeText(this, getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
             }
             setMember(listbankSource);
-
         }
 
 

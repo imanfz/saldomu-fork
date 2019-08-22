@@ -136,7 +136,7 @@ android {
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 53
+            versionCode = 54
             versionName "3.6"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
@@ -268,6 +268,10 @@ dependencies {
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
+
+    implementation 'com.scottyab:aes-crypto:0.0.4'
+    implementation 'com.jakewharton:butterknife:9.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0'
 
     implementation 'com.chaos.view:pinview:1.4.2'
 

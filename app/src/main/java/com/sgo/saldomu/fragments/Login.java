@@ -126,26 +126,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
             userIDValue.setEnabled(true);
         }
 
-//        if (m != null) {
-//            if (m.containsKey(DefineValue.IS_POS)) {
-//                if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y")) {
-//                    is_pos = m.getString(DefineValue.IS_POS, "");
-//                    getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
-//                    userIDValue.setEnabled(true);
-//                    userIDValue.setHint("No HP POS yang sudah terdaftar");
-//                }
-//            }
-//        } else if (sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
-//            getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
-//            userIDValue.setEnabled(true);
-//        }
-
-
         if (sp.contains(DefineValue.SENDER_ID) && !sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
-        } else if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty() && m.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("N")) {
+        } else if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty() && sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("N")) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
@@ -174,7 +159,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         } else if (m != null) {
             if (m.containsKey(DefineValue.IS_POS)) {
                 if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y")) {
-                    is_pos = m.getString(DefineValue.IS_POS, "");
+                    is_pos = m.getString(DefineValue.IS_POS, "N");
                     logo.setImageDrawable(getResources().getDrawable(R.drawable.logo_pos));
                     getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
                     userIDValue.setEnabled(true);
@@ -571,6 +556,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         String arrJson = toJson(commModel.getAgent_scheme_codes()).toString();
                         mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
                         mEditor.putString(DefineValue.IS_AGENT_TRX_REQ, commModel.getIs_agent_trx_request());
+                        mEditor.putString(DefineValue.COMM_UPGRADE_MEMBER, commModel.getComm_upgrade_member());
                         Timber.w("isi comm id yg bener:" + commModel.getCommId());
 
                         break;

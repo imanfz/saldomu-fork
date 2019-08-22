@@ -8,7 +8,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,14 +17,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.Denom_Data_Model;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -51,7 +52,11 @@ public class BillerInputPulsa extends BaseFragment {
     private EditText et_payment_remark;
     private Spinner spin_denom;
     private Button btn_submit;
-    private View layout_month;
+    private RadioGroup radioGroup;
+    private LinearLayout layout_add_fee;
+    private LinearLayout layout_detail;
+    private LinearLayout layout_denom;
+    private LinearLayout layout_payment_method;
 
     private SecurePreferences sp;
     private String biller_type_code;
@@ -60,6 +65,7 @@ public class BillerInputPulsa extends BaseFragment {
     private String biller_item_id;
     private String final_payment_remark;
     private String buy_type;
+    private String buy_type_detail = "PRABAYAR";
     private int buy_code;
 
     private Realm realm;
@@ -75,7 +81,7 @@ public class BillerInputPulsa extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.frag_biller_input, container, false);
+        v = inflater.inflate(R.layout.frag_biller_input_new, container, false);
         return v;
     }
 
@@ -85,16 +91,22 @@ public class BillerInputPulsa extends BaseFragment {
 
         Bundle args = getArguments();
         biller_type_code = args.getString(DefineValue.BILLER_TYPE, "");
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
-        spin_denom = v.findViewById(R.id.spinner_billerinput_denom);
+        spin_denom = v.findViewById(R.id.billerinput_spinner_denom);
         tv_denom = v.findViewById(R.id.billerinput_text_denom);
         img_operator = v.findViewById(R.id.img_operator);
-        tv_payment_remark = v.findViewById(R.id.billerinput_text_payment_remark);
-        et_payment_remark = v.findViewById(R.id.payment_remark_billerinput_value);
+        tv_payment_remark = v.findViewById(R.id.billerinput_text_nomor_hp);
+        et_payment_remark = v.findViewById(R.id.billerinput_et_nomor_hp);
         btn_submit = v.findViewById(R.id.btn_submit_billerinput);
-        layout_month = v.findViewById(R.id.billerinput_layout_month);
+        radioGroup = v.findViewById(R.id.billerinput_radio);
+        layout_add_fee = v.findViewById(R.id.billerinput_layout_add_fee);
+        layout_detail = v.findViewById(R.id.billerinput_layout_detail);
+        layout_denom = v.findViewById(R.id.billerinput_layout_denom);
+        layout_payment_method = v.findViewById(R.id.billerinput_layout_payment_method);
 
         btn_submit.setOnClickListener(submitInputListener);
+        radioGroup.setOnCheckedChangeListener(radioListener);
 
         initLayout();
         initPrefixListener();
@@ -131,30 +143,55 @@ public class BillerInputPulsa extends BaseFragment {
                             img_operator.setBackground(getResources().getDrawable(R.drawable.three));
                         } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("smart")) {
                             img_operator.setBackground(getResources().getDrawable(R.drawable.smartfren));
-                        }else
+                        } else if (BillerIdNumber.prefix_name.toLowerCase().equalsIgnoreCase("axis")) {
+                            img_operator.setBackground(getResources().getDrawable(R.drawable.axis));
+                        } else
                             img_operator.setVisibility(View.GONE);
 
-                        for (int i = 0; i < _data.size(); i++) {
-                            Timber.d("_data" + _data.get(i));
-                            if (_data != null) {
-                                if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
+                        if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
+                            for (int i = 0; i < _data.size(); i++) {
+                                Timber.d("_data" + _data.get(i));
+                                if (_data != null) {
+                                    if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
+                                        biller_comm_id = mListBillerData.get(i).getComm_id();
+                                        biller_comm_name = mListBillerData.get(i).getComm_name();
+                                        biller_item_id = mListBillerData.get(i).getItem_id();
+
+                                        mBillerData = new Biller_Data_Model();
+                                        mBillerData = realm.where(Biller_Data_Model.class).
+                                                equalTo(WebParams.COMM_ID, biller_comm_id).
+                                                equalTo(WebParams.COMM_NAME, biller_comm_name).
+                                                equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
+                                                findFirst();
+
+                                        mListDenomData = realm.copyFromRealm(mBillerData.getDenom_data_models());
+
+                                        initializeSpinnerDenom();
+                                    }
+                                }
+
+                            }
+                        } else if (buy_type_detail.equalsIgnoreCase("PASCABAYAR")) {
+                            for (int i = 0; i < mListBillerData.size(); i++) {
+                                Timber.d(mListBillerData.get(i).getComm_name());
+                                if (mListBillerData.get(i).getComm_name().contains(BillerIdNumber.prefix_name)) {
                                     biller_comm_id = mListBillerData.get(i).getComm_id();
                                     biller_comm_name = mListBillerData.get(i).getComm_name();
                                     biller_item_id = mListBillerData.get(i).getItem_id();
-
-                                    mBillerData = new Biller_Data_Model();
-                                    mBillerData = realm.where(Biller_Data_Model.class).
-                                            equalTo(WebParams.COMM_ID, biller_comm_id).
-                                            equalTo(WebParams.COMM_NAME, biller_comm_name).
-                                            equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
-                                            findFirst();
-
-                                    mListDenomData = realm.copyFromRealm(mBillerData.getDenom_data_models());
-
-                                    initializeSpinnerDenom();
+                                    break;
+                                }
+                                if (mListBillerData.get(i).getComm_name().contains("Excelcomindo Xplor")){
+                                    biller_comm_id = mListBillerData.get(i).getComm_id();
+                                    biller_comm_name = mListBillerData.get(i).getComm_name();
+                                    biller_item_id = mListBillerData.get(i).getItem_id();
+                                    break;
                                 }
                             }
-
+                            if (BuildConfig.DEBUG&&BuildConfig.FLAVOR.equals("development")){
+                                biller_comm_id = mListBillerData.get(0).getComm_id();
+                                biller_comm_name = mListBillerData.get(0).getComm_name();
+                                biller_item_id = mListBillerData.get(0).getItem_id();
+                            }
                         }
                     }
                 }
@@ -219,14 +256,34 @@ public class BillerInputPulsa extends BaseFragment {
     };
 
     public void initLayout() {
-        buy_type = "PLS";
-        buy_code = BillerActivity.PURCHASE_TYPE;
         tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
         tv_denom.setText("Nominal Pulsa");
         et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
         et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
-        layout_month.setVisibility(View.GONE);
+        radioGroup.setVisibility(View.VISIBLE);
+        layout_payment_method.setVisibility(View.GONE);
+        layout_add_fee.setVisibility(View.GONE);
+        layout_detail.setVisibility(View.GONE);
     }
+
+    private RadioGroup.OnCheckedChangeListener radioListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            switch (checkedId) {
+                case R.id.radioPrabayar:
+                    layout_denom.setVisibility(View.VISIBLE);
+                    buy_type_detail = "PRABAYAR";
+                    biller_type_code = "PLS";
+                    break;
+                case R.id.radioPascabayar:
+                    layout_denom.setVisibility(View.GONE);
+                    buy_type_detail = "PASCABAYAR";
+                    biller_type_code = "HP";
+                    break;
+            }
+            initRealm();
+        }
+    };
 
     private Button.OnClickListener submitInputListener = new Button.OnClickListener() {
         @Override
@@ -264,31 +321,45 @@ public class BillerInputPulsa extends BaseFragment {
     }
 
     private void initRealm() {
-        realm = Realm.getInstance(RealmManager.BillerConfiguration);
-
         mBillerType = realm.where(Biller_Type_Data_Model.class).
-                equalTo(WebParams.BILLER_TYPE_CODE, "PLS").
+                equalTo(WebParams.BILLER_TYPE_CODE, biller_type_code).
                 findFirst();
-
         if (mBillerType != null) {
             mListBillerData = mBillerType.getBiller_data_models();
             _data.clear();
             for (int i = 0; i < mListBillerData.size(); i++) {
                 _data.add(mListBillerData.get(i).getComm_name());
             }
-//            adapter.notifyDataSetChanged();
         } else
             mListBillerData = new ArrayList<>();
 
+//        mBillerTypePost = realm.where(Biller_Type_Data_Model.class)
+//                .equalTo(WebParams.BILLER_TYPE_CODE, "HP")
+//                .findFirst();
+//        if (mBillerTypePost != null) {
+//            mListBillerDataPost = mBillerTypePost.getBiller_data_models();
+//            _data.clear();
+//            for (int i = 0; i < mListBillerDataPost.size(); i++) {
+//                _data.add(mListBillerDataPost.get(i).getComm_name());
+//            }
+//        } else
+//            mListBillerDataPost = new ArrayList<>();
     }
 
     private void showDialog(String _payment_remark) {
 
 
         Bundle mArgs = getArguments();
-        mArgs.putString(DefineValue.CUST_ID, _payment_remark);
-        mArgs.putString(DefineValue.ITEM_ID, denom_item_id);
-        mArgs.putInt(DefineValue.BUY_TYPE, buy_code);
+
+        if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
+            mArgs.putString(DefineValue.CUST_ID, _payment_remark);
+            mArgs.putString(DefineValue.ITEM_ID, denom_item_id);
+            mArgs.putInt(DefineValue.BUY_TYPE, BillerActivity.PURCHASE_TYPE);
+        } else{
+            mArgs.putString(DefineValue.CUST_ID, et_payment_remark.getText().toString());
+            mArgs.putString(DefineValue.ITEM_ID, biller_item_id);
+            mArgs.putInt(DefineValue.BUY_TYPE, BillerActivity.PAYMENT_TYPE);
+        }
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
         mArgs.putString(DefineValue.COMMUNITY_ID, biller_comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, biller_comm_name);
@@ -301,14 +372,15 @@ public class BillerInputPulsa extends BaseFragment {
 
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
+    private void switchFragment(Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
         if (getActivity() == null)
             return;
 
         BillerActivity fca = (BillerActivity) getActivity();
         fca.switchContent(i, name, next_name, isBackstack, tag);
         et_payment_remark.setText("");
-        spin_denom.setSelection(0);
+        if (buy_type_detail.equalsIgnoreCase("PRABAYAR"))
+            spin_denom.setSelection(0);
     }
 
     @Override
