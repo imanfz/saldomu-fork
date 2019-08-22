@@ -587,4 +587,7 @@ public class WebParams {
     public static String CUST_OCCUPATION = "cust_occupation";
     public static String CUST_NATIONALITY = "cust_nationality";
 
+    public static String TX_FAVORITE_TYPE = "tx_favorite_type";
+    public static String NOTES = "notes";
+
 }

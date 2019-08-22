@@ -589,6 +589,8 @@ public class DefineValue {
     public static String EXTRA_SIGNATURE = "extra_signature";
     public static String SAME_BANNER = "sameBanner";
     public static String DATA_BANNER = "dataBanner";
+    public static String P2P = "P2P";
+    public static String FAVORITE_CUSTOMER_ID = "FAVORITE_CUSTOMER_ID";
     public static String COMM_UPGRADE_MEMBER = "commUpgradeMember";
     public static String MEMBER_ID_CUST = "memberIdCust";
     public static String NIK = "nik";
