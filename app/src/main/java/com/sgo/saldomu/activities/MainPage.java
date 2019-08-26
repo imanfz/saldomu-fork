@@ -349,7 +349,7 @@ public class MainPage extends BaseActivity {
 //        }
 //
 //        if(isSimSame) {
-        showProgLoading(getString(R.string.initialize), false);
+        showProgLoading(getString(R.string.please_wait), false);
 
         startLocationService();
 
@@ -1355,8 +1355,8 @@ public class MainPage extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         invalidateOptionsMenu();
         if (item.getItemId() == R.id.favorite) {
-            Intent i = new Intent(this, NotificationActivity.class);
-            switchActivity(i, ACTIVITY_RESULT);
+            Intent i = new Intent(this, FavoriteActivity.class);
+            startActivity(i);
         } else if (item.getItemId() == R.id.notifications) {
             if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
                 //NotificationActionView.setCountDelta(this, 3);

@@ -577,5 +577,17 @@ public class WebParams {
     public static String FILE_TITLE = "file_title";
     public static String MEMBER_EMAIL = "member_email";
     public static String BILLER_INFO = "biller_info";
+    public static String MEMBER_ID_CUST = "member_id_cust";
+    public static String CUST_RT = "cust_rt";
+    public static String CUST_RW = "cust_rw";
+    public static String CUST_KELURAHAN = "cust_kelurahan";
+    public static String CUST_KECAMATAN = "cust_kecamatan";
+    public static String CUST_RELIGION = "cust_religion";
+    public static String CUST_MARRIAGE_STATUS = "cust_marriage_status";
+    public static String CUST_OCCUPATION = "cust_occupation";
+    public static String CUST_NATIONALITY = "cust_nationality";
+
+    public static String TX_FAVORITE_TYPE = "tx_favorite_type";
+    public static String NOTES = "notes";
 
 }

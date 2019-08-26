@@ -199,7 +199,7 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     Timber.d("isi response confirm cashout:"+response.toString());
-                                    showReportBillerDialog(name, DateTimeFormat.getCurrentDateTime(), userPhoneID, txId, bankName, accNo,
+                                    showReportBillerDialog(name, response.optString(WebParams.RC_DTIME), userPhoneID, txId, bankName, accNo,
                                             accName, ccyId + " " + CurrencyFormat.format(nominal),
                                             ccyId + " " + CurrencyFormat.format(fee), ccyId + " " + CurrencyFormat.format(total),
                                             response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));

@@ -206,6 +206,7 @@
     <string name="menu_item_contact_list">Daftar Kontak</string>
     <string name="menu_item_timeline_detail">LINI WAKTU</string>
     <string name="menu_item_history_detail">Riwayat</string>
+    <string name="menu_item_favorite">Favorite</string>
     <string name="menu_item_group_detail">GRUP</string>
     <string name="menu_item_share">Bagikan</string>
     <string name="menu_item_bbs_register_location">Registrasi Toko Member</string>
@@ -369,6 +370,7 @@
     <string name="payfriends_text_amount">Jumlah</string>
     <string name="payfriends_text_fee">Biaya Admin</string>
     <string name="payfriends_text_message">Pesan</string>
+    <string name="save_as_favorite_text_message">Simpan Sebagai Favorite</string>
     <string name="payfriends_text_otp">Kode OTP</string>
     <string name="payfriends_hint_recipients">Masukkan penerima</string>
     <string name="payfriends_hint_amount">Masukkan jumlah</string>
@@ -388,6 +390,7 @@
     <string name="payfriends_text_total_amount">Total Jumlah</string>
     <string name="payfriends_text_error_recipient">Gagal transfer :</string>
     <string name="payfriends_amount_zero">Jumlah harus lebih besar dari nol</string>
+    <string name="payfriends_notes_zero">Notes tidak boleh kosong</string>
 
     <string name="askfriends_btn_proses_request">Proses Permintaan</string>
     <string name="askfriends_dialog_title">Permintaan Uang Sukses</string>
@@ -1345,6 +1348,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="new_email">Email Baru</string>
     <string name="level_dialog_agent">Belum Menjadi Agen?</string>
     <string name="level_dialog_agent1">Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini.</string>
+    <string name="delete_item_favorite_dialog">Apakah Anda ingin menghapus favorite ini?</string>
     <string name="dialog_change_email">Ganti Email</string>
     <string name="dialog_change_email1">Silahkan cek Inbox Email anda, untuk lakukan memverifikasi perubahan Email anda.</string>
     <string name="show_status">Tampilkan Status</string>
@@ -1386,9 +1390,22 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="upload_doc">Lengkapi dokumen anda dibawah ini :</string>
     <string name="p2p_transfer">Sesama Saldomu</string>
     <string name="bank_transfer">Rekening Bank</string>
+    <string name="ktp_warn">NIK dibutuhkan.</string>
+    <string name="ktp_warn1">NIK harus 16 karakter</string>
+    <string name="rt_validation">RT dibutuhkan!</string>
+    <string name="rw_validation">RW dibutuhkan!</string>
+    <string name="urban_village_validation">Kelurahan dibutuhkan!</string>
+    <string name="sub_district_validation">Kecamatan dibutuhkan!</string>
+    <string name="religion_validation">Agama dibutuhkan!</string>
+    <string name="job_validation">Pekerjaan dibutuhkan!</string>
+    <string name="KTP_title">1. Foto KTP</string>
+    <string name="KTP_and_cust_title">2. Foto dengan KTP</string>
+    <string name="sign_title">3. Foto Tanda Tangan</string>
+    <string name="success_upgrade_member_via_agent">Konfirmasi data calon member Gold akan diverifikasi oleh tim Saldomu.
+        Proses verifikasi maksimal 2x24 jam. Pastikan data yang dimasukkan benar. Kami akan memproses secara hukum.</string>
     <string name="prepaid_title">Voucher Pulsa Handphone</string>
     <string name="postpaid_title">Tagihan Pascabayar</string>
     <string name="token_listrik">Token Listrik</string>
     <string name="tagihan_listrik">Tagihan Listrik</string>
-
+    <string name="please_wait">Harap Menunggu...</string>
 </resources>

@@ -446,7 +446,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         dialogDormant();
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, "OVO");
+                        intent.putExtra(DefineValue.BILLER_TYPE, "EMON");
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_emoney));
                         startActivity(intent);
                     }
@@ -663,7 +663,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 .findFirst();
 
         mBillerTypeDataEMoney = realm.where(Biller_Type_Data_Model.class)
-                .equalTo(WebParams.BILLER_TYPE_CODE, "OVO")
+                .equalTo(WebParams.BILLER_TYPE_CODE, "EMON")
                 .findFirst();
 
         mBillerTypeDataGame = realm.where(Biller_Type_Data_Model.class)
@@ -880,7 +880,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
 
                 menuStrings.add(getResources().getString(R.string.menu_item_title_upgrade_member));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_dalam_proses));
+                menuDrawables.add(getResources().getDrawable(R.drawable.ic_upgrade));
 
 
             } else {
