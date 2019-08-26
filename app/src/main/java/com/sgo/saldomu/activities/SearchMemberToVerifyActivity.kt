@@ -39,6 +39,7 @@ class SearchMemberToVerifyActivity : BaseActivity() {
     }
 
     private fun initialize() {
+        setActionBarIcon(R.drawable.ic_arrow_left)
         actionBarTitle = getString(R.string.menu_item_title_upgrade_member)
 
         submit_button.setOnClickListener {

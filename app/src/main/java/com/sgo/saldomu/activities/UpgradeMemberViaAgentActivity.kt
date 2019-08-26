@@ -30,7 +30,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
     internal lateinit var adapters: ArrayAdapter<String>
     var memberDOB: String = ""
     private lateinit var fromFormat: DateFormat
-    
+
     override fun getLayoutResource(): Int {
         return R.layout.activity_upgrade_member_via_agent
     }
@@ -41,6 +41,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
     }
 
     private fun initialize() {
+        setActionBarIcon(R.drawable.ic_arrow_left)
         actionBarTitle = getString(R.string.menu_item_title_upgrade_member)
 
         initPOBSpinner()
@@ -138,6 +139,10 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
         } else if (birth_place_list.getText().toString().trim({ it <= ' ' }).length == 0) run {
             birth_place_list.setError("Kota kosong")
             birth_place_list.requestFocus()
+            return false
+        }else if (birthday_text_view.getText().toString().equals("Masukan Tanggal Lahir",true)) {
+            address_edit_text.requestFocus()
+            address_edit_text.setError(resources.getString(R.string.myprofile_validation_date_empty))
             return false
         } else if (address_edit_text.getText().toString().length == 0) {
             address_edit_text.requestFocus()

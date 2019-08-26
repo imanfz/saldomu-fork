@@ -1402,6 +1402,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="postpaid_title">Tagihan Pascabayar</string>
     <string name="token_listrik">Token Listrik</string>
     <string name="tagihan_listrik">Tagihan Listrik</string>
-
->>>>>>> 46c0d75777d3ad9005210bdb049cc1a9a155100b
+    <string name="please_wait">Harap Menunggu...</string>
 </resources>
