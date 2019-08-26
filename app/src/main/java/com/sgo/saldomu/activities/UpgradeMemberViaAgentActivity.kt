@@ -3,6 +3,7 @@ package com.sgo.saldomu.activities
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -140,9 +141,13 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             birth_place_list.setError("Kota kosong")
             birth_place_list.requestFocus()
             return false
-        }else if (birthday_text_view.getText().toString().equals("Masukan Tanggal Lahir",true)) {
-            address_edit_text.requestFocus()
-            address_edit_text.setError(resources.getString(R.string.myprofile_validation_date_empty))
+        }else if (birthday_text_view.getText().toString().length==0) {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Alert")
+                    .setMessage(getString(R.string.myprofile_validation_date_empty))
+                    .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
             return false
         } else if (address_edit_text.getText().toString().length == 0) {
             address_edit_text.requestFocus()
