@@ -23,9 +23,6 @@ import kotlinx.android.synthetic.main.activity_search_member_to_verifiy.*
 import timber.log.Timber
 
 class SearchMemberToVerifyActivity : BaseActivity() {
-    private var progdialog: ProgressDialog? = null
-    private lateinit var memberIdCust: String
-    private lateinit var custId: String
 
     override fun getLayoutResource(): Int {
         return R.layout.activity_search_member_to_verifiy
@@ -43,6 +40,7 @@ class SearchMemberToVerifyActivity : BaseActivity() {
         actionBarTitle = getString(R.string.menu_item_title_upgrade_member)
 
         submit_button.setOnClickListener {
+            if(inputValidation())
             searchMember()
         }
 
@@ -63,13 +61,21 @@ class SearchMemberToVerifyActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun inputValidation():Boolean
+    {
+        if(etNote.text.length==0 || etNote.text.length<10)
+        {
+            etNote.requestFocus()
+            etNote.setError(getString(R.string.login_validation_userID))
+            return false
+        }
+        return true;
+    }
+
     private fun searchMember() {
         try {
 
-            if (progdialog == null)
-                progdialog = DefinedDialog.CreateProgressDialog(this@SearchMemberToVerifyActivity, "")
-            else
-                progdialog!!.show()
+            showProgressDialog()
 
             val params = RetrofitService.getInstance()
                     .getSignature(MyApiClient.LINK_SEARCH_MEMBER)
@@ -135,8 +141,7 @@ class SearchMemberToVerifyActivity : BaseActivity() {
                         }
 
                         override fun onComplete() {
-                            if (progdialog!!.isShowing())
-                                progdialog!!.dismiss()
+                            dismissProgressDialog()
                         }
                     })
         } catch (e: Exception) {

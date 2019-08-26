@@ -102,21 +102,6 @@ class DetailMemberToVerifyActivity : BaseActivity() {
 
     private fun sendUpgradeCustData() {
         try {
-//            intent.getStringExtra(DefineValue.MEMBER_ID_CUST)
-//            intent.getStringExtra(DefineValue.NIK)
-//            intent.getStringExtra(DefineValue.MEMBER_CUST_NAME)
-//            intent.getStringExtra(DefineValue.MEMBER_POB)
-//            intent.getStringExtra(DefineValue.MEMBER_DOB)
-//            intent.getStringExtra(DefineValue.MEMBER_ADDRESS)
-//            intent.getStringExtra(DefineValue.MEMBER_RT)
-//            intent.getStringExtra(DefineValue.MEMBER_RW)
-//            intent.getStringExtra(DefineValue.MEMBER_KELURAHAN)
-//            intent.getStringExtra(DefineValue.MEMBER_KECAMATAN)
-//            intent.getStringExtra(DefineValue.MEMBER_RELIGION)
-//            intent.getStringExtra(DefineValue.MEMBER_STATUS)
-//            intent.getStringExtra(DefineValue.MEMBER_OCUPATION)
-//            intent.getStringExtra(DefineValue.MEMBER_NATIONALITY)
-
             showProgressDialog()
 
             val params = RetrofitService.getInstance()
