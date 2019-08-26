@@ -556,6 +556,10 @@ public class BillerInputPulsa extends BaseFragment {
             et_payment_remark.setError(this.getString(R.string.regist1_validation_nohp));
             return false;
         }
+        if (denom_item_id == null) {
+            Toast.makeText(getActivity(), getString(R.string.billerinput_validation_spinner_default_pulsa), Toast.LENGTH_LONG).show();
+            return false;
+        }
         return true;
     }
 
