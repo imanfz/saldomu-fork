@@ -186,7 +186,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:text="SALDOMU terdaftar sebagai PENYELENGGARA TEKNOLOGI FINANSIAL di Bank Indonesia dengan Nomor 20/85/DKSP/Srt/B tertanggal 8 Maret 2018."
+                android:text="@string/about_apps_desc_2"
                 android:textAlignment="center"
                 android:gravity="center"
                 android:textSize="12sp" />
@@ -196,7 +196,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:text="Pemberitahuan :"
+                android:text="@string/about_apps_desc_pemberitahuan"
                 android:textSize="12sp" />
 
             <TextView
@@ -204,7 +204,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:text="1. SALDOMU hanya didistribusikan melalui Google Play oleh PT Mitra Pembayaran Elektronik."
+                android:text="@string/about_apps_desc_pemberitahuan_1"
                 android:textSize="12sp" />
 
             <TextView
@@ -212,7 +212,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:text="2. Harap TIDAK melakukan login di media lain selain aplikasi resmi untuk menghindari segala jenis penipuan yang mengatasnamakan SALDOMU."
+                android:text="@string/about_apps_desc_pemberitahuan_2"
                 android:textSize="12sp" />
 
             <TextView
@@ -220,7 +220,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:text="3. Apabila terdapat indikasi penipuan harap melapor kepada kami melalui support@saldomu.com"
+                android:text="@string/about_apps_desc_pemberitahuan_3"
                 android:textSize="12sp" />
 
 

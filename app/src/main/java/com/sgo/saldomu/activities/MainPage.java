@@ -349,7 +349,7 @@ public class MainPage extends BaseActivity {
 //        }
 //
 //        if(isSimSame) {
-        showProgLoading(getString(R.string.initialize), false);
+        showProgLoading(getString(R.string.please_wait), false);
 
         startLocationService();
 

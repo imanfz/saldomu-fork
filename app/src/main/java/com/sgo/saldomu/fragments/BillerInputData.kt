@@ -3,9 +3,7 @@ package com.sgo.saldomu.fragments
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.inputmethodservice.Keyboard
 import android.os.Bundle
-import android.os.Message
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
@@ -27,21 +25,14 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.dialogs.AlertDialogFrag
 import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.DefinedDialog
-import com.sgo.saldomu.dialogs.PickLanguageDialog
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.InqBillerModel
 import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
-import kotlinx.android.synthetic.main.activity_history_detail.*
 import kotlinx.android.synthetic.main.dialog_notification.*
-import kotlinx.android.synthetic.main.frag_biller_input.*
 import kotlinx.android.synthetic.main.frag_biller_input_new.*
-import kotlinx.android.synthetic.main.frag_biller_input_new.billerinput_text_denom
-import kotlinx.android.synthetic.main.frag_biller_input_new.btn_submit_billerinput
-import kotlinx.android.synthetic.main.frag_biller_input_new.img_operator
-import kotlinx.android.synthetic.main.no_data.*
 import timber.log.Timber
 import java.util.*
 
@@ -105,10 +96,6 @@ class BillerInputData : BaseFragment() {
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
         levelClass = LevelClass(activity, sp)
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false)
-
-
-//        billerinput_text_payment_remark.text="test"
-//        billerinput_text_denom.text=billerinput_text_payment_remark.text
 
         btn_submit_billerinput.setOnClickListener { submitInputListener() }
 
@@ -196,24 +183,25 @@ class BillerInputData : BaseFragment() {
 
     private fun initLayout() {
         buy_type = BillerActivity.PURCHASE_TYPE
-        billerinput_text_denom.text = "Jenis Paket Data"
-        billerinput_et_nomor_hp.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(13))
-        billerinput_et_nomor_hp.inputType = InputType.TYPE_CLASS_NUMBER
+        billerinput_text_denom.text = getString(R.string.billerinput_text_spinner_data)
+        billerinput_et_id_remark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(13))
+        billerinput_et_id_remark.inputType = InputType.TYPE_CLASS_NUMBER
         billerinput_et_add_fee.inputType = InputType.TYPE_CLASS_NUMBER
         billerinput_detail_layout_add_fee.visibility = View.GONE
+        billerinput_layout_denom.visibility = View.VISIBLE
         billerinput_layout_add_fee.visibility = View.GONE
         billerinput_layout_detail.visibility = View.GONE
     }
 
     private fun initEditTextListener() {
-        billerinput_et_nomor_hp.addTextChangedListener(object : TextWatcher {
+        billerinput_et_id_remark.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
                 val string = editable.toString()
                 if (string.length > 3) {
                     cust_id = string
                     checkOperator(string)
                 } else
-                    cust_id = NoHPFormat.formatTo62(billerinput_et_nomor_hp.text.toString())
+                    cust_id = NoHPFormat.formatTo62(billerinput_et_id_remark.text.toString())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -333,10 +321,10 @@ class BillerInputData : BaseFragment() {
     }
 
     private fun inputValidation(): Boolean {
-        if (billerinput_et_nomor_hp.text.length < 10 ||
-                billerinput_et_nomor_hp.text.length > 15) {
-            billerinput_et_nomor_hp.requestFocus()
-            billerinput_et_nomor_hp.error = getString(R.string.regist1_validation_nohp)
+        if (billerinput_et_id_remark.text.length < 10 ||
+                billerinput_et_id_remark.text.length > 15) {
+            billerinput_et_id_remark.requestFocus()
+            billerinput_et_id_remark.error = getString(R.string.regist1_validation_nohp)
             return false
         }
         if (item_name == null) {
@@ -385,13 +373,12 @@ class BillerInputData : BaseFragment() {
 
         val fca = activity as BillerActivity?
         fca?.switchContent(mFrag, name, next_name, isBackstack, tag)
-        billerinput_et_nomor_hp.text.clear()
+        billerinput_et_id_remark.text.clear()
         billerinput_spinner_denom.setSelection(0)
     }
 
     private fun countTotal() {
-        total = item_price + additional_fee
-        total -= fee
+        total = item_price + additional_fee + fee
         billerinput_detail_total.text = getString(R.string.rp_) + " " + CurrencyFormat.format(total)
     }
 
@@ -400,7 +387,7 @@ class BillerInputData : BaseFragment() {
             showProgressDialog()
             ToggleKeyboard.hide_keyboard(activity!!)
 
-            cust_id = NoHPFormat.formatTo62(billerinput_et_nomor_hp.text.toString())
+            cust_id = NoHPFormat.formatTo62(billerinput_et_id_remark.text.toString())
 
             extraSignature = biller_comm_id + item_id + cust_id
 
@@ -483,18 +470,18 @@ class BillerInputData : BaseFragment() {
         try {
             showProgressDialog()
 
-            val bank_code = mTempBank?.bank_code
-            val product_code = mTempBank?.product_code
+            val bankCode = mTempBank?.bank_code
+            val productCode = mTempBank?.product_code
 
-            extraSignature = tx_id + item_id + biller_comm_id + product_code
+            extraSignature = tx_id + item_id + biller_comm_id + productCode
 
             val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_PAYMENT_BILLER, extraSignature)
             params[WebParams.DENOM_ITEM_ID] = item_id
             params[WebParams.DENOM_ITEM_REMARK] = cust_id
             params[WebParams.TX_ID] = tx_id
             params[WebParams.AMOUNT] = item_price
-            params[WebParams.BANK_CODE] = bank_code
-            params[WebParams.PRODUCT_CODE] = product_code
+            params[WebParams.BANK_CODE] = bankCode
+            params[WebParams.PRODUCT_CODE] = productCode
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.COMM_ID] = biller_comm_id
             params[WebParams.MEMBER_CUST] = sp.getString(DefineValue.CUST_ID, "")
@@ -520,12 +507,12 @@ class BillerInputData : BaseFragment() {
                             var code = sentPaymentBillerModel.error_code
                             if (code == WebParams.SUCCESS_CODE) {
                                 if (mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_IB) {
-                                    changeToConfirmBiller(sentPaymentBillerModel.fee, sentPaymentBillerModel.merchant_type, bank_code, product_code, -1)
+                                    changeToConfirmBiller(sentPaymentBillerModel.fee, sentPaymentBillerModel.merchant_type, bankCode, productCode, -1)
                                 } else {
                                     var attempt = sentPaymentBillerModel.failed_attempt
                                     if (attempt != -1)
                                         attempt = sentPaymentBillerModel.max_failed - attempt
-                                    sentDataReqToken(tx_id, product_code, biller_comm_code, sentPaymentBillerModel.fee, sentPaymentBillerModel.merchant_type, bank_code, attempt)
+                                    sentDataReqToken(tx_id, productCode, biller_comm_code, sentPaymentBillerModel.fee, sentPaymentBillerModel.merchant_type, bankCode, attempt)
                                 }
                             } else if (code == WebParams.LOGOUT_CODE) {
                                 var message = sentPaymentBillerModel.error_message
@@ -658,7 +645,7 @@ class BillerInputData : BaseFragment() {
                         }
 
                         override fun onError(throwable: Throwable?) {
-                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
                         }
 
                         override fun onComplete() {
@@ -720,10 +707,10 @@ class BillerInputData : BaseFragment() {
         message_dialog.visibility = View.VISIBLE
         message_dialog.text = getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
 
-        btn_dialog_notification_ok.setOnClickListener(View.OnClickListener {
+        btn_dialog_notification_ok.setOnClickListener {
             changeToConfirmBiller(fee, merchantType, bankCode, productCode, -1)
             dialog.dismiss()
-        })
+        }
         dialog.show()
     }
 

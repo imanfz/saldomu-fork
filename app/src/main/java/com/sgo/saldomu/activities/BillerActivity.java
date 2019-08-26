@@ -16,6 +16,7 @@ import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.fragments.BillerInputData;
+import com.sgo.saldomu.fragments.BillerInputPLN;
 import com.sgo.saldomu.fragments.BillerInputPulsa;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -210,7 +211,8 @@ public class BillerActivity extends BaseActivity {
         Fragment mLBM;
         String tag;
 
-        if (isOneBiller&&!_biller_type_code.equalsIgnoreCase("DATA")) {
+        if (isOneBiller&&!_biller_type_code.equalsIgnoreCase("DATA")
+                &&!_biller_type_code.equalsIgnoreCase("TKN")) {
             mLBM = new BillerInput();
             mArgs.putString(DefineValue.COMMUNITY_ID, mListBillerData.get(0).getComm_id());
             mArgs.putString(DefineValue.COMMUNITY_NAME, mListBillerData.get(0).getComm_name());
@@ -224,7 +226,10 @@ public class BillerActivity extends BaseActivity {
             } else if (_biller_type_code.equalsIgnoreCase("DATA")){
                 mLBM = new BillerInputData();
                 tag = BillerInput.TAG;
-            } else{
+            } else if (_biller_type_code.equalsIgnoreCase("TKN")){
+                mLBM = new BillerInputPLN();
+                tag = BillerInput.TAG;
+            } else {
                 mLBM = new ListBillerMerchant();
                 tag = ListBillerMerchant.TAG;
                 Log.wtf("ListBillerMerchant ", "ListBillerMerchant");

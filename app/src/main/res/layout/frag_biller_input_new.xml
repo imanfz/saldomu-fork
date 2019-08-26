@@ -1,55 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/grey_1000w"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/grey_1000w"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <RadioGroup
+        android:id="@+id/billerinput_radio"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingTop="5dp"
+        android:paddingRight="20dp"
+        android:visibility="gone">
+
+        <RadioButton
+            android:id="@+id/radioPrabayar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="@string/prepaid"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/abc_text_size_medium_material" />
+
+        <RadioButton
+            android:id="@+id/radioPascabayar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/postpaid"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/abc_text_size_medium_material" />
+    </RadioGroup>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
-            <TextView
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:id="@+id/tv_ovo"/>
-
-            <RadioGroup
-                android:id="@+id/billerinput_radio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="10dp"
-                android:orientation="horizontal">
-                <RadioButton
-                    android:id="@+id/radioPrabayar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/prepaid"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="@dimen/abc_text_size_medium_material"
-                    android:checked="true"/>
-                <RadioButton
-                    android:id="@+id/radioPascabayar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/postpaid"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="@dimen/abc_text_size_medium_material" />
-            </RadioGroup>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -60,7 +57,7 @@
                 android:paddingBottom="10dp">
 
                 <TextView
-                    android:id="@+id/billerinput_text_nomor_hp"
+                    android:id="@+id/billerinput_text_id_remark"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
@@ -69,20 +66,20 @@
                     android:textSize="@dimen/abc_text_size_medium_material" />
 
                 <EditText
-                    android:id="@+id/billerinput_et_nomor_hp"
+                    android:id="@+id/billerinput_et_id_remark"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/billerinput_text_nomor_hp"
+                    android:layout_below="@id/billerinput_text_id_remark"
                     android:enabled="true"
                     android:maxLength="32" />
 
                 <ImageView
                     android:id="@+id/img_operator"
-                    android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/billerinput_text_nomor_hp"
-                    android:layout_toRightOf="@id/billerinput_et_nomor_hp"/>
+                    android:layout_below="@id/billerinput_text_id_remark"
+                    android:layout_toRightOf="@id/billerinput_et_id_remark"
+                    android:visibility="visible" />
             </RelativeLayout>
 
             <LinearLayout
@@ -97,7 +94,7 @@
                     android:id="@+id/billerinput_text_denom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
+                    android:paddingTop="5dp"
                     android:text="@string/billerinput_text_denom"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/abc_text_size_medium_material" />
@@ -125,59 +122,30 @@
                 </RelativeLayout>
             </LinearLayout>
 
-            <!--<LinearLayout-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="right"-->
-            <!--android:layout_marginRight="30dp"-->
-            <!--android:layout_marginBottom="6dp"-->
-            <!--android:gravity="right"-->
-            <!--android:orientation="horizontal">-->
-
-            <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:gravity="right"-->
-            <!--android:text="@string/share_options"-->
-            <!--android:textColor="@color/colorPrimaryDark"-->
-            <!--android:textSize="@dimen/abc_text_size_caption_material"-->
-            <!--android:textStyle="bold" />-->
-
-            <!--<Spinner-->
-            <!--android:id="@+id/privacy_spinner"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:gravity="right" />-->
-
-            <!--</LinearLayout>-->
-
             <LinearLayout
                 android:id="@+id/billerinput_layout_payment_method"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                >
+                android:paddingRight="20dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:paddingTop="5dp"
                     android:text="@string/billerinput_text_payment_options"
-                    android:paddingTop="10dp"
-                    />
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
 
                 <Spinner
+                    android:id="@+id/billerinput_spinner_payment_options"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
+                    android:layout_gravity="center_horizontal"
                     android:spinnerMode="dropdown"
                     android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
-                    android:id="@+id/billerinput_spinner_payment_options"
-                    android:layout_gravity="center_horizontal"/>
+                    android:visibility="visible" />
 
             </LinearLayout>
 
@@ -188,19 +156,20 @@
                 android:orientation="vertical"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:paddingTop="5dp"
                     android:text="@string/additional_fee"
-                    android:paddingTop="10dp"
-                    />
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
                 <EditText
                     android:id="@+id/billerinput_et_add_fee"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/billerinput_text_nomor_hp"
+                    android:layout_below="@id/billerinput_text_id_remark"
                     android:enabled="true"
                     android:maxLength="32" />
             </LinearLayout>
@@ -212,102 +181,129 @@
                 android:orientation="vertical"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
+                    android:paddingTop="5dp"
                     android:text="@string/detail"
-                    android:paddingTop="10dp"
-                    />
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
+
                     <TextView
                         android:id="@+id/billerinput_detail_text_name"
                         android:layout_width="220dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:text="Paket data 100 GB"/>
+                        android:text="Paket data 100 GB" />
+
                     <TextView
                         android:id="@+id/billerinput_detail_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:gravity="right"
-                        android:text="Rp. 1.456.789,00"/>
+                        android:text="Rp. 1.456.789,00" />
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
+
                     <TextView
                         android:id="@+id/billerinput_detail_text_admin_fee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:text="@string/fee"/>
+                        android:text="@string/fee" />
+
                     <TextView
                         android:id="@+id/billerinput_detail_admin_fee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="Rp. 0,00"/>
+                        android:text="Rp. 0,00" />
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:id="@+id/billerinput_detail_layout_add_fee"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
+
                     <TextView
                         android:id="@+id/billerinput_detail_text_add_fee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:text="@string/additional_fee"/>
+                        android:text="@string/additional_fee" />
+
                     <TextView
                         android:id="@+id/billerinput_detail_admin_add_fee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="Rp. 0,00"/>
+                        android:text="Rp. 0,00" />
                 </RelativeLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="5dp"
-                    android:background="@color/grey_400"/>
+                    android:background="@color/grey_400" />
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/abc_text_size_medium_material"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textStyle="bold"
                         android:text="@string/total"
-                        />
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/billerinput_detail_total"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:textStyle="bold"
+                        android:text="Rp. 121.000,00"
                         android:textSize="@dimen/abc_text_size_medium_material"
-                        android:text="Rp. 121.000,00"/>
+                        android:textStyle="bold" />
                 </RelativeLayout>
             </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingBottom="20dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/biller_notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp" />
+            </ScrollView>
 
             <LinearLayout
                 android:id="@+id/layout_warn_pln"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:orientation="vertical"
                 android:visibility="gone">
 
@@ -326,33 +322,37 @@
                     android:textStyle="italic" />
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
-    <com.balysv.materialripple.MaterialRippleLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/card_bk_orange"
-        android:layout_marginRight="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginBottom="8dp"
-        app:mrl_rippleOverlay="true"
-        app:mrl_rippleColor="@color/colorPrimary"
-        app:mrl_rippleAlpha="0.2"
-        app:mrl_rippleDelayClick="false"
-        app:mrl_rippleHover="true"
-        >
-        <Button
-            android:id="@+id/btn_submit_billerinput"
+        android:layout_weight="0.5">
+
+        <com.balysv.materialripple.MaterialRippleLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@color/grey_1000w"
-            android:gravity="center"
-            android:text="@string/submit"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/button_transparant"
-            />
-    </com.balysv.materialripple.MaterialRippleLayout>
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/card_bk_blue"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleColor="@color/colorPrimary"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            app:mrl_rippleOverlay="true">
 
-</RelativeLayout>
+            <Button
+                android:id="@+id/btn_submit_billerinput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_transparant"
+                android:text="@string/submit"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/grey_1000w" />
+        </com.balysv.materialripple.MaterialRippleLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,50 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
-    <include
-        android:id="@+id/main_toolbar"
-        layout="@layout/toolbar_main" />
-
-    <!--<Button-->
-    <!--android:id="@+id/upgrade_online_button"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginStart="16dp"-->
-    <!--android:layout_marginTop="8dp"-->
-    <!--android:layout_marginEnd="16dp"-->
-    <!--android:background="@color/colorPrimaryDark"-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textAppearance="@style/TextAppearance.AppCompat.Button"-->
-    <!--android:text="Upgrade Online"-->
-    <!--app:layout_constraintEnd_toEndOf="parent"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintTop_toBottomOf="@+id/main_toolbar" />-->
-
-
-    <!--<Button-->
-    <!--android:id="@+id/upgrade_via_agent_button"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@color/colorPrimaryDark"-->
-    <!--android:layout_marginStart="16dp"-->
-    <!--android:layout_marginTop="8dp"-->
-    <!--android:layout_marginEnd="16dp"-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textAppearance="@style/TextAppearance.AppCompat.Button"-->
-    <!--android:text="Upgrade Via Agent"-->
-    <!--app:layout_constraintEnd_toEndOf="parent"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintTop_toBottomOf="@+id/upgrade_online_button" />-->
+    <include android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main"/>
 
     <LinearLayout
         android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_10dp">
 
         <android.support.v7.widget.CardView
             android:id="@+id/upgrade_online_button"
@@ -73,7 +44,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginBottom="8dp"
-                    android:src="@drawable/ic_transfer_p2p" />
+                    android:src="@drawable/ic_via_online" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -113,7 +84,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginBottom="8dp"
-                    android:src="@drawable/ic_groups_icon_color"
+                    android:src="@drawable/ic_agent"
                     android:tint="#5ec8da" />
 
                 <TextView
@@ -127,5 +98,6 @@
             </LinearLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>
+>>>>>>> 3ca83c4a19db87972d4656b10db2b652f2c62850
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

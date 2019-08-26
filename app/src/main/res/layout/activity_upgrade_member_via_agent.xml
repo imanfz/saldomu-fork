@@ -21,7 +21,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_margin="@dimen/margin_10dp">
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
@@ -44,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Masukan NIK"
                     android:inputType="number"
-                    android:maxLength="30"
+                    android:maxLength="16"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
 
@@ -86,12 +87,13 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:layout_width="fill_parent"
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Tempat Lahir"
-                    android:maxLength="30"
-                    android:textSize="@dimen/abc_text_size_medium_material" />
+                    android:id="@+id/birth_place_list"
+                    android:hint="Masukkan Tempat Lahir"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -108,6 +110,7 @@
                     android:text="Tanggal Lahir"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
+                    android:layout_marginBottom="@dimen/margin_10dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -117,6 +120,7 @@
                     android:layout_marginStart="8dp"
                     android:hint="Masukan Tanggal Lahir"
                     android:maxLength="30"
+                    android:layout_marginBottom="8dp"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
 
@@ -154,16 +158,40 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="RT/RW"
+                    android:text="RT"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
                 <EditText
-                    android:id="@+id/rt_rw_edit_text"
+                    android:id="@+id/rt_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan RT / RW"
+                    android:hint="Masukan RT "
+                    android:maxLength="30"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="RW"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/rw_edit_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Masukan RW"
                     android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
@@ -230,11 +258,10 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/religion_edit_text"
+                <Spinner
+                    android:id="@+id/religion_spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Agama"
                     android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
@@ -253,11 +280,10 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/status_edit_text"
+                <Spinner
+                    android:id="@+id/status_spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Status Perkawinan"
                     android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
@@ -298,12 +324,10 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/nationality_edit_text"
+                <Spinner
+                    android:id="@+id/nationality_spinner"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Kewarganegaraan"
-                    android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
 

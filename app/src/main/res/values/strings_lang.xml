@@ -346,10 +346,16 @@
     <string name="billerinput_radio_text_internet_banking" translatable="false">Internet Banking</string>
     <string name="billerinput_radio_text_emoney" translatable="false">Emoney</string>
     <string name="billerinput_text_payment_options">Pilihan Pembayaran</string>
-    <string name="billerinput_text_spinner_default_payment">Pilih metode pembayaran Anda</string>
+    <string name="billerinput_text_spinner_default_payment">Pilih metode pembayaran</string>
     <string name="billerinput_validation_spinner_default_payment">Silahkan pilih metode pembayaran!</string>
+    <string name="billerinput_text_spinner_data">Paket Data</string>
+    <string name="billerinput_text_spinner_pulsa">Nominal Pulsa</string>
     <string name="billerinput_text_spinner_default_data">Pilih Paket Data</string>
+    <string name="billerinput_text_spinner_default_pulsa">Pilih Nominal Pulsa</string>
+    <string name="billerinput_text_spinner_default_listrik">Pilih Token Listrik</string>
     <string name="billerinput_validation_spinner_default_data">Silahkan pilih paket data</string>
+    <string name="billerinput_validation_spinner_default_pulsa">Silahkan pilih nominal pulsa</string>
+    <string name="billerinput_validation_spinner_default_listrik">Silahkan pilih token listrik</string>
 
     <string name="billertoken_text_biller_id">ID Pelanggan</string>
     <string name="billertoken_text_biller_name">Nama Biller</string>
@@ -552,6 +558,11 @@
 
     <string name="about_apps">Tentang Aplikasi</string>
     <string name="about_apps_desc"><b>Saldomu</b> adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
+    <string name="about_apps_desc_2">SALDOMU terdaftar sebagai PENYELENGGARA TEKNOLOGI FINANSIAL di Bank Indonesia dengan Nomor 20/85/DKSP/Srt/B tertanggal 8 Maret 2018.</string>
+    <string name="about_apps_desc_pemberitahuan">Pemberitahuan :</string>
+    <string name="about_apps_desc_pemberitahuan_1">1. SALDOMU hanya didistribusikan melalui Google Play oleh PT Mitra Pembayaran Elektronik.</string>
+    <string name="about_apps_desc_pemberitahuan_2">2. Harap TIDAK melakukan login di media lain selain aplikasi resmi untuk menghindari segala jenis penipuan yang mengatasnamakan SALDOMU.</string>
+    <string name="about_apps_desc_pemberitahuan_3">3. Apabila terdapat indikasi penipuan harap melapor kepada kami melalui support@saldomu.com</string>
     <string name="about_apps_ver" translatable="false">Version</string>
     <string name="about_apps_ver_detail" translatable="false">V 1.0 last update (16/04/2015)</string>
     <string name="about_apps_ver_detail1" translatable="false">PT. MITRA PEMBAYARAN ELEKTRONIK \n
@@ -1379,5 +1390,22 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="upload_doc">Lengkapi dokumen anda dibawah ini :</string>
     <string name="p2p_transfer">Sesama Saldomu</string>
     <string name="bank_transfer">Rekening Bank</string>
-
+    <string name="ktp_warn">NIK dibutuhkan.</string>
+    <string name="ktp_warn1">NIK harus 16 karakter</string>
+    <string name="rt_validation">RT dibutuhkan!</string>
+    <string name="rw_validation">RW dibutuhkan!</string>
+    <string name="urban_village_validation">Kelurahan dibutuhkan!</string>
+    <string name="sub_district_validation">Kecamatan dibutuhkan!</string>
+    <string name="religion_validation">Agama dibutuhkan!</string>
+    <string name="job_validation">Pekerjaan dibutuhkan!</string>
+    <string name="KTP_title">1. Foto KTP</string>
+    <string name="KTP_and_cust_title">2. Foto dengan KTP</string>
+    <string name="sign_title">3. Foto Tanda Tangan</string>
+    <string name="success_upgrade_member_via_agent">Konfirmasi data calon member Gold akan diverifikasi oleh tim Saldomu.
+        Proses verifikasi maksimal 2x24 jam. Pastikan data yang dimasukkan benar. Kami akan memproses secara hukum.</string>
+    <string name="prepaid_title">Voucher Pulsa Handphone</string>
+    <string name="postpaid_title">Tagihan Pascabayar</string>
+    <string name="token_listrik">Token Listrik</string>
+    <string name="tagihan_listrik">Tagihan Listrik</string>
+    <string name="please_wait">Harap Menunggu...</string>
 </resources>

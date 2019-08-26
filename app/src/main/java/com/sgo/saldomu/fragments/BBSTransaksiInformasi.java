@@ -1180,11 +1180,11 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         btnNext.setEnabled(true);
         cashInHistory();
 
-        Fragment mFrag = new FragDataMandiriLKD();
+        Fragment mFrag = new FragDataC2A();
         mFrag.setArguments(mArgs);
 
         getFragmentManager().beginTransaction().addToBackStack(TAG)
-                .replace(R.id.bbsTransaksiFragmentContent, mFrag, FragDataMandiriLKD.TAG).commit();
+                .replace(R.id.bbsTransaksiFragmentContent, mFrag, FragDataC2A.TAG).commit();
         ToggleKeyboard.hide_keyboard(act);
     }
 
