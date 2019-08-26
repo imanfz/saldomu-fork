@@ -271,7 +271,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
 
     ProgressDialog getProgDialog() {
         if (progressDialog == null)
-            progressDialog = DefinedDialog.CreateProgressDialog(this);
+            progressDialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.please_wait));
         return progressDialog;
     }
 

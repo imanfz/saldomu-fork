@@ -55,8 +55,8 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-public class FragDataMandiriLKD extends BaseFragment {
-    public final static String TAG = "com.sgo.saldomu.fragments.FragDataMandiriLKD";
+public class FragDataC2A extends BaseFragment {
+    public final static String TAG = "com.sgo.saldomu.fragments.FragDataC2A";
     View v;
     SecurePreferences sp;
     Bundle bundle;
