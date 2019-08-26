@@ -172,6 +172,7 @@ class BillerInputPLN : BaseFragment() {
                 R.id.radioPascabayar -> {
                     billerinput_layout_denom.visibility = View.GONE
                     billerinput_layout_payment_method.visibility = View.GONE
+                    billerinput_layout_add_fee.visibility = View.GONE
                     billerinput_layout_detail.visibility = View.GONE
                     buy_type_detail = "PASCABAYAR"
                     biller_type_code = "PLN"
@@ -304,24 +305,24 @@ class BillerInputPLN : BaseFragment() {
             billerinput_spinner_payment_options.adapter = adapterPaymentOptions
             billerinput_spinner_payment_options.onItemSelectedListener = spinnerPaymentListener
 //            if (isVisible) {
-                val tempDataPaymentName = ArrayList<String>()
-                paymentData?.add(getString(R.string.billerinput_text_spinner_default_payment))
+            val tempDataPaymentName = ArrayList<String>()
+            paymentData?.add(getString(R.string.billerinput_text_spinner_default_payment))
 
-                for (i in mListBankBiller!!.indices) {
-                    if (mListBankBiller?.get(i)?.product_code == DefineValue.SCASH) {
-                        paymentData?.add(getString(R.string.appname))
-                        mListBankBiller?.get(i)?.product_name = getString(R.string.appname)
-                    } else {
-                        tempDataPaymentName.add(mListBankBiller?.get(i)?.product_name!!)
-                    }
+            for (i in mListBankBiller!!.indices) {
+                if (mListBankBiller?.get(i)?.product_code == DefineValue.SCASH) {
+                    paymentData?.add(getString(R.string.appname))
+                    mListBankBiller?.get(i)?.product_name = getString(R.string.appname)
+                } else {
+                    tempDataPaymentName.add(mListBankBiller?.get(i)?.product_name!!)
                 }
-                if (tempDataPaymentName.isNotEmpty())
-                    tempDataPaymentName.sort()
+            }
+            if (tempDataPaymentName.isNotEmpty())
+                tempDataPaymentName.sort()
 
-                paymentData?.addAll(tempDataPaymentName)
-                adapterPaymentOptions?.notifyDataSetChanged()
+            paymentData?.addAll(tempDataPaymentName)
+            adapterPaymentOptions?.notifyDataSetChanged()
 
-                billerinput_spinner_payment_options.setSelection(1) //set metode pembayaran jadi saldomu
+            billerinput_spinner_payment_options.setSelection(1) //set metode pembayaran jadi saldomu
 //            }
         } else {
             biller_item_id = mBillerData?.item_id
@@ -346,10 +347,12 @@ class BillerInputPLN : BaseFragment() {
             billerinput_et_id_remark.error = getString(R.string.billerinput_validation_payment_remark)
             return false
         }
-        if (item_name == null) {
-            billerinput_spinner_denom.requestFocus()
-            Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_listrik), Toast.LENGTH_LONG).show()
-            return false
+        if (buy_type_detail.equals("PRABAYAR", ignoreCase = true)) {
+            if (item_name == null) {
+                billerinput_spinner_denom.requestFocus()
+                Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_listrik), Toast.LENGTH_LONG).show()
+                return false
+            }
         }
         return true
     }
@@ -359,7 +362,7 @@ class BillerInputPLN : BaseFragment() {
             if (position != 0) {
                 item_id = mListDenomData?.get(position - 1)?.item_id
                 item_name = mListDenomData?.get(position - 1)?.item_name
-                if (inputValidation()){
+                if (inputValidation()) {
                     sentInquryBiller()
                 }
             } else {
