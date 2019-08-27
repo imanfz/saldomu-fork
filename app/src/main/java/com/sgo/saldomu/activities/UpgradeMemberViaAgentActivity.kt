@@ -47,6 +47,8 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
 
         initPOBSpinner()
 
+        initGenderSpinner()
+
         initReligionSpinner()
 
         initStatusSpinner()
@@ -61,6 +63,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
                 intent.putExtra(DefineValue.MEMBER_CUST_NAME, fullname_edit_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_POB, birth_place_list.text.toString())
                 intent.putExtra(DefineValue.MEMBER_DOB, memberDOB)
+                intent.putExtra(DefineValue.MEMBER_GENDER, gender_spinner.selectedItem.toString())
                 intent.putExtra(DefineValue.MEMBER_ADDRESS, address_edit_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_RT, rt_edit_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_RW, rw_edit_text.text.toString())
@@ -77,6 +80,13 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
         birthday_text_view.setOnClickListener {
             birthdayOnClick()
         }
+    }
+
+    private fun initGenderSpinner() {
+        val genderAdapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_type, android.R.layout.simple_spinner_item)
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        gender_spinner.setAdapter(genderAdapter)
     }
 
     private fun initNationalitySpinner() {
@@ -145,6 +155,14 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date_empty))
+                    .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            return false
+        }else if (gender_spinner.selectedItem.equals("-Pilih Jenis Kelamin-")) {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Alert")
+                    .setMessage(getString(R.string.gender_validation))
                     .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
             val dialog = builder.create()
             dialog.show()

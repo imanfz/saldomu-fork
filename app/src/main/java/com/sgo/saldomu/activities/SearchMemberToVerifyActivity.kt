@@ -49,6 +49,9 @@ class SearchMemberToVerifyActivity : BaseActivity() {
             val intent = Intent(this, UpgradeMemberViaAgentActivity::class.java)
 //            intent.putExtra(DefineValue.MEMBER_ID_CUST, memberIdCust)
             startActivity(intent)
+//            layout_memberid.visibility==View.GONE
+//            layout_input.visibility==View.VISIBLE
+//            etNote.setText("")
         }
     }
 
