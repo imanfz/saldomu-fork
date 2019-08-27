@@ -197,7 +197,9 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
                     var calendar : Calendar = Calendar.getInstance()
                     calendar.set(year, monthOfYear, dayOfMonth )
 
-                    birthday_text_view.text = "$dayOfMonth - $monthOfYear - $year"
+                    var monthdisplay = monthOfYear+1
+
+                    birthday_text_view.text = "$dayOfMonth - $monthdisplay - $year"
                     fromFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ID", "INDONESIA"))
                     memberDOB = fromFormat.format(calendar.time)
                 }, year, month, day)

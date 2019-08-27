@@ -145,6 +145,8 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                                 code = model.error_message
 
                                 Toast.makeText(this@DetailMemberToVerifyActivity, code, Toast.LENGTH_LONG).show()
+                                if(code=="0160")
+                                    finish()
                             }
                         }
 

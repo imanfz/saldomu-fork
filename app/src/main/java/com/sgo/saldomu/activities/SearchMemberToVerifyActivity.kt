@@ -11,6 +11,7 @@ import com.securepreferences.SecurePreferences
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
+import com.sgo.saldomu.coreclass.NoHPFormat
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
@@ -81,7 +82,7 @@ class SearchMemberToVerifyActivity : BaseActivity() {
                     .getSignature(MyApiClient.LINK_SEARCH_MEMBER)
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_ID] = MyApiClient.COMM_ID
-            params[WebParams.CUST_ID] = etNote.text.toString()
+            params[WebParams.CUST_ID] = NoHPFormat.formatTo62(etNote.text.toString())
 
             Timber.d("isi params check member:$params")
 

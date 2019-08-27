@@ -168,7 +168,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="Masukan RT "
-                    android:maxLength="30"
+                    android:maxLength="3"
+                    android:inputType="number"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
 
@@ -192,7 +193,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="Masukan RW"
-                    android:maxLength="30"
+                    android:maxLength="3"
+                    android:inputType="number"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
 
