@@ -123,6 +123,7 @@ public class BillerInputPulsa extends BaseFragment {
     private String item_name;
     private String description;
     private String enabledAdditionalFee;
+    private Double amount = 0.0;
     private Double total = 0.0;
     private Double item_price = 0.0;
     private Double fee = 0.0;
@@ -234,6 +235,7 @@ public class BillerInputPulsa extends BaseFragment {
     }
 
     private void countTotal() {
+        amount = item_price + fee;
         total = item_price + additional_fee + fee;
         tv_detail_total.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(total));
     }
@@ -452,7 +454,7 @@ public class BillerInputPulsa extends BaseFragment {
                         tx_id = model.getTx_id();
                         item_id = model.getItem_id();
                         ccy_id = model.getCcy_id();
-                        item_price = Double.parseDouble(model.getAmount());
+                        item_price = Double.parseDouble(model.getAmount()) - Double.parseDouble(model.getAdmin_fee());
                         item_name = model.getItem_name();
                         description = getGson().toJson(model.getDescription());
                         fee = Double.parseDouble(model.getAdmin_fee());
@@ -630,7 +632,7 @@ public class BillerInputPulsa extends BaseFragment {
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id);
 
             params.put(WebParams.TX_ID, tx_id);
-            params.put(WebParams.AMOUNT, item_price);
+            params.put(WebParams.AMOUNT, amount);
 
             params.put(WebParams.BANK_CODE, bank_code);
             params.put(WebParams.PRODUCT_CODE, product_code);
