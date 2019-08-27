@@ -549,12 +549,12 @@ class BillerInputPLN : BaseFragment() {
         }
     }
 
-    private fun changeToConfirmBiller(fee: String, merchant_type: String, bank_code: String?, product_code: String?, attempt: Int) {
+    private fun changeToConfirmBiller(feeModel: String, merchant_type: String, bank_code: String?, product_code: String?, attempt: Int) {
         val mArgs = Bundle()
         mArgs.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription!!)
         mArgs.putString(DefineValue.TX_ID, tx_id)
         mArgs.putString(DefineValue.CCY_ID, ccy_id)
-        mArgs.putString(DefineValue.AMOUNT, sentPaymentBillerModel.amount)
+        mArgs.putString(DefineValue.AMOUNT, item_price.toString())
         mArgs.putString(DefineValue.ITEM_ID, item_id)
         mArgs.putString(DefineValue.ITEM_NAME, item_name)
         mArgs.putString(DefineValue.BILLER_COMM_ID, biller_comm_id)
@@ -566,7 +566,7 @@ class BillerInputPLN : BaseFragment() {
         mArgs.putString(DefineValue.BILLER_COMM_CODE, biller_comm_code)
         mArgs.putString(DefineValue.BILLER_API_KEY, biller_api_key)
         mArgs.putString(DefineValue.CALLBACK_URL, callback_url)
-        mArgs.putString(DefineValue.FEE, sentPaymentBillerModel.fee)
+        mArgs.putString(DefineValue.FEE, fee.toString())
         mArgs.putString(DefineValue.TOTAL_AMOUNT, sentPaymentBillerModel.total_amount)
         mArgs.putString(DefineValue.PRODUCT_PAYMENT_TYPE, mTempBank?.product_type)
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code)
