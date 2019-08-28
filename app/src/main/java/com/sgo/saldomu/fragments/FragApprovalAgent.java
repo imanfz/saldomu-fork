@@ -343,7 +343,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
         } else {
 
-            progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
+            progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), getString(R.string.please_wait));
             String extraSignature   = shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus;
             HashMap<String, Object> params3 = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT,
                     extraSignature);
@@ -673,7 +673,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         ft.attach(frg);
         ft.commitAllowingStateLoss();*/
 
-        progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
+        progdialog              = DefinedDialog.CreateProgressDialog(getContext(), getString(R.string.please_wait));
 
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRANSACTION_AGENT);
 

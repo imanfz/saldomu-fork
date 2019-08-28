@@ -102,21 +102,6 @@ class DetailMemberToVerifyActivity : BaseActivity() {
 
     private fun sendUpgradeCustData() {
         try {
-//            intent.getStringExtra(DefineValue.MEMBER_ID_CUST)
-//            intent.getStringExtra(DefineValue.NIK)
-//            intent.getStringExtra(DefineValue.MEMBER_CUST_NAME)
-//            intent.getStringExtra(DefineValue.MEMBER_POB)
-//            intent.getStringExtra(DefineValue.MEMBER_DOB)
-//            intent.getStringExtra(DefineValue.MEMBER_ADDRESS)
-//            intent.getStringExtra(DefineValue.MEMBER_RT)
-//            intent.getStringExtra(DefineValue.MEMBER_RW)
-//            intent.getStringExtra(DefineValue.MEMBER_KELURAHAN)
-//            intent.getStringExtra(DefineValue.MEMBER_KECAMATAN)
-//            intent.getStringExtra(DefineValue.MEMBER_RELIGION)
-//            intent.getStringExtra(DefineValue.MEMBER_STATUS)
-//            intent.getStringExtra(DefineValue.MEMBER_OCUPATION)
-//            intent.getStringExtra(DefineValue.MEMBER_NATIONALITY)
-
             showProgressDialog()
 
             val params = RetrofitService.getInstance()
@@ -137,6 +122,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             params[WebParams.CUST_MARRIAGE_STATUS] = intent.getStringExtra(DefineValue.MEMBER_STATUS)
             params[WebParams.CUST_OCCUPATION] = intent.getStringExtra(DefineValue.MEMBER_OCUPATION)
             params[WebParams.CUST_NATIONALITY] = intent.getStringExtra(DefineValue.MEMBER_NATIONALITY)
+            params[WebParams.CUST_GENDER] = intent.getStringExtra(DefineValue.MEMBER_GENDER)
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_ID] = MyApiClient.COMM_ID
             params[WebParams.IS_REGISTER] = "Y"
@@ -157,9 +143,11 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(this@DetailMemberToVerifyActivity, message)
                             } else {
-                                code = model.error_message
+                                var msg = model.error_message
 
-                                Toast.makeText(this@DetailMemberToVerifyActivity, code, Toast.LENGTH_LONG).show()
+                                Toast.makeText(this@DetailMemberToVerifyActivity, msg, Toast.LENGTH_LONG).show()
+                                if(code=="0160")
+                                    finish()
                             }
                         }
 

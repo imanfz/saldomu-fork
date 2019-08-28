@@ -1193,7 +1193,7 @@ public class MainPage extends BaseActivity {
 
     private void sentLogout() {
         try {
-            showProgLoading("", true);
+            showProgressDialog();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LOGOUT);
 //            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
@@ -1222,7 +1222,7 @@ public class MainPage extends BaseActivity {
 
                         @Override
                         public void onComplete() {
-                            hideProgLoading();
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {

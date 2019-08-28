@@ -462,8 +462,7 @@ public class ActivityProfileQr extends BaseActivity implements ProgressRequestBo
 
     private void getHelpList() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(this, "");
-            progdialog.show();
+            showProgressDialog();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -525,14 +524,12 @@ public class ActivityProfileQr extends BaseActivity implements ProgressRequestBo
 
                         @Override
                         public void onComplete() {
-                            if(progdialog.isShowing())
-                                progdialog.dismiss();
+                            dismissProgressDialog();
                         }
                     });
         }
         catch (Exception e){
-            if(progdialog.isShowing())
-                progdialog.dismiss();
+            dismissProgressDialog();
             Timber.d("httpclient:"+e.getMessage());
         }
     }
@@ -609,8 +606,7 @@ public class ActivityProfileQr extends BaseActivity implements ProgressRequestBo
     }
     private void uploadFileToServer(File photoFile) {
 
-        progdialog = DefinedDialog.CreateProgressDialog(ActivityProfileQr.this, "");
-
+        showProgressDialog();
         if (accessKey == null)
             accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
@@ -667,7 +663,7 @@ public class ActivityProfileQr extends BaseActivity implements ProgressRequestBo
 
                     }
 
-                    progdialog.dismiss();
+                    dismissProgressDialog();
 
                 });
     }
