@@ -55,6 +55,9 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
 
         holder.customerIdText.text = model.customer_id
         holder.messageText.text = model.notes
+        if (model.item_name != null) {
+            holder.customerNameText.text = model.item_name
+        }
         Log.e("model.product_type : " , model.product_type)
 
         holder.itemLinearLayout.setOnClickListener {
@@ -78,6 +81,7 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
     internal inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var customerIdText: TextView = itemView.findViewById(R.id.customer_id_text)
         var messageText: TextView = itemView.findViewById(R.id.message_text)
+        var customerNameText: TextView = itemView.findViewById(R.id.customer_name)
         var itemLinearLayout: RelativeLayout = itemView.findViewById(R.id.item_linear_layout)
     }
 

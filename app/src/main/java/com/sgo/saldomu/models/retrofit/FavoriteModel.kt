@@ -8,5 +8,6 @@ class FavoriteModel(
         val product_type: String,
         val notes: String,
         val item_id: String,
-        val item_name: String
+        val item_name: String,
+        val benef_bank_code: String
 ): jsonModel()
