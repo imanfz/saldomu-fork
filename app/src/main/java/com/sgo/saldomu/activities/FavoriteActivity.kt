@@ -44,6 +44,7 @@ class FavoriteActivity : BaseActivity() {
             intent.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHOUT)
         }
         intent.putExtra(DefineValue.PRODUCT_CODE, model.benef_bank_code)
+        intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
 
         startActivity(intent)
     }

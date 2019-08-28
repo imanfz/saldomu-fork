@@ -1240,6 +1240,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.FEE, model.getAdmin_fee());
         mArgs.putString(DefineValue.TOTAL_AMOUNT, model.getTotal_amount());
         mArgs.putString(DefineValue.ADDITIONAL_FEE, model.getAdditional_fee());
+
+        mArgs.putString(DefineValue.BENEF_BANK_CODE, benef_product_code);
         btnNext.setEnabled(true);
         cashOutHistory();
 
