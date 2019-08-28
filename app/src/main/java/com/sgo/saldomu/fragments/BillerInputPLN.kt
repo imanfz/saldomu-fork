@@ -71,7 +71,7 @@ class BillerInputPLN : BaseFragment() {
     private var fee = 0.0
     private var item_price = 0.0
     private var additional_fee = 0.0
-    private var buy_type = 0
+    private var amount = 0.0
     private var total = 0.0
 
     private var realm: Realm? = null
@@ -406,7 +406,7 @@ class BillerInputPLN : BaseFragment() {
                                 tx_id = model.tx_id
                                 item_id = model.item_id
                                 ccy_id = model.ccy_id
-                                item_price = model.amount.toDouble()
+                                item_price = model.amount.toDouble() - model.admin_fee.toDouble()
                                 item_name = model.item_name
                                 description = getGson().toJson(model.description)
                                 fee = model.admin_fee.toDouble()
@@ -488,7 +488,7 @@ class BillerInputPLN : BaseFragment() {
             params[WebParams.DENOM_ITEM_ID] = item_id
             params[WebParams.DENOM_ITEM_REMARK] = cust_id
             params[WebParams.TX_ID] = tx_id
-            params[WebParams.AMOUNT] = item_price
+            params[WebParams.AMOUNT] = amount
             params[WebParams.BANK_CODE] = bankCode
             params[WebParams.PRODUCT_CODE] = productCode
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
@@ -549,12 +549,12 @@ class BillerInputPLN : BaseFragment() {
         }
     }
 
-    private fun changeToConfirmBiller(fee: String, merchant_type: String, bank_code: String?, product_code: String?, attempt: Int) {
+    private fun changeToConfirmBiller(feeModel: String, merchant_type: String, bank_code: String?, product_code: String?, attempt: Int) {
         val mArgs = Bundle()
         mArgs.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription!!)
         mArgs.putString(DefineValue.TX_ID, tx_id)
         mArgs.putString(DefineValue.CCY_ID, ccy_id)
-        mArgs.putString(DefineValue.AMOUNT, sentPaymentBillerModel.amount)
+        mArgs.putString(DefineValue.AMOUNT, item_price.toString())
         mArgs.putString(DefineValue.ITEM_ID, item_id)
         mArgs.putString(DefineValue.ITEM_NAME, item_name)
         mArgs.putString(DefineValue.BILLER_COMM_ID, biller_comm_id)
@@ -566,7 +566,7 @@ class BillerInputPLN : BaseFragment() {
         mArgs.putString(DefineValue.BILLER_COMM_CODE, biller_comm_code)
         mArgs.putString(DefineValue.BILLER_API_KEY, biller_api_key)
         mArgs.putString(DefineValue.CALLBACK_URL, callback_url)
-        mArgs.putString(DefineValue.FEE, sentPaymentBillerModel.fee)
+        mArgs.putString(DefineValue.FEE, fee.toString())
         mArgs.putString(DefineValue.TOTAL_AMOUNT, sentPaymentBillerModel.total_amount)
         mArgs.putString(DefineValue.PRODUCT_PAYMENT_TYPE, mTempBank?.product_type)
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code)
@@ -728,6 +728,7 @@ class BillerInputPLN : BaseFragment() {
     }
 
     private fun countTotal() {
+        amount = item_price + fee
         total = item_price + additional_fee + fee
         billerinput_detail_total.text = getString(R.string.rp_) + " " + CurrencyFormat.format(total)
     }
