@@ -21,6 +21,7 @@ import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
 import com.sgo.saldomu.coreclass.BundleToJSON;
@@ -383,7 +384,7 @@ public class FCMManager {
                     }
                     break;
                 case FCMManager.BLAST_INFO:
-                    i = new Intent(mContext, MainPage.class);
+                    i = new Intent(mContext, NotificationActivity.class);
                     break;
                 case FCMManager.SOURCE_OF_FUND:
                     if (msg.containsKey("options") && msg.getString("options") != null) {

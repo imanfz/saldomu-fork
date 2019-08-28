@@ -12,6 +12,7 @@ import com.sgo.saldomu.activities.RegisterSMSBankingActivity
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.LevelClass
+import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.dialogs.InformationDialog
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.list_transfer.*
@@ -43,9 +44,23 @@ class ListTransfer : BaseFragment() {
             switchActivity(i)
         }
         card_view2.setOnClickListener {
-            val i = Intent(activity, CashoutActivity::class.java)
-            switchActivity(i)
+            if (sp.getBoolean(DefineValue.IS_AGENT, false) == false) {
+                val i = Intent(activity, CashoutActivity::class.java)
+                switchActivity(i)
+            } else
+                DialogWaitingUpgradeAgent()
         }
+    }
+
+    private fun DialogWaitingUpgradeAgent() {
+        val dialognya = DefinedDialog.MessageDialog(activity, this.getString(R.string.alertbox_title_information),
+                this.getString(R.string.cashout_dialog_message)
+        ) { v, isLongClick ->  }
+
+        dialognya.setCanceledOnTouchOutside(false)
+        dialognya.setCancelable(false)
+        dialognya.show()
+
     }
 
     private fun switchActivity(mIntent: Intent) {
