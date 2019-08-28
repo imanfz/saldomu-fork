@@ -181,12 +181,17 @@ public class BillerInputPulsa extends BaseFragment {
         btn_submit.setOnClickListener(submitInputListener);
         radioGroup.setOnCheckedChangeListener(radioListener);
 
-        et_payment_remark.setText(args.getString(DefineValue.CUST_ID, ""));
-
         initLayout();
         initPrefixListener();
         initRealm();
+
+        if (args.getString(DefineValue.CUST_ID, "") != ""){
+            et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
+            checkOperator();
+            showChoosePayment();
+        }
     }
+
 
     private void initPrefixListener() {
         et_payment_remark.addTextChangedListener(new TextWatcher() {
@@ -204,7 +209,6 @@ public class BillerInputPulsa extends BaseFragment {
             public void afterTextChanged(Editable editable) {
                 String string = editable.toString();
                 if (string.length() > 3) {
-                    cust_id = string;
                     checkOperator();
                 }
             }
@@ -243,6 +247,7 @@ public class BillerInputPulsa extends BaseFragment {
     }
 
     private void checkOperator() {
+        cust_id = et_payment_remark.getText().toString();
         PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(), cust_id);
 
         if (BillerIdNumber != null) {
@@ -381,6 +386,28 @@ public class BillerInputPulsa extends BaseFragment {
         } else {
             biller_item_id = mBillerData.getItem_id();
         }
+    }
+
+    private void showChoosePayment() {
+        ArrayList<String> tempDataPaymentName = new ArrayList<>();
+        paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
+
+        for (int i = 0; i < mListBankBiller.size(); i++) {
+            if (mListBankBiller.get(i).getProduct_code().equals(DefineValue.SCASH)) {
+                paymentData.add(getString(R.string.appname));
+                mListBankBiller.get(i).setProduct_name(getString(R.string.appname));
+            } else {
+                tempDataPaymentName.add(mListBankBiller.get(i).getProduct_name());
+            }
+        }
+        if (!tempDataPaymentName.isEmpty())
+            Collections.sort(tempDataPaymentName);
+
+        paymentData.addAll(tempDataPaymentName);
+        adapterPaymentOptions.notifyDataSetChanged();
+
+        spin_payment_options.setSelection(1); //set metode pembayaran jadi saldomu
+
     }
 
     private Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
