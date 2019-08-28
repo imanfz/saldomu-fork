@@ -67,6 +67,7 @@ public class BBSTransaksiPagerItem extends Fragment {
         args.putString(DefineValue.TYPE, type);
         args.putString(DefineValue.AMOUNT, defaultAmount);
         args.putString(DefineValue.KEY_CODE, noHpPengirim);
+        args.putString(DefineValue.FAVORITE_CUSTOMER_ID, bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID,""));
         if ( defaultProductCode != null )
             args.putString(DefineValue.PRODUCT_CODE, defaultProductCode);
         newFrag.setArguments(args);

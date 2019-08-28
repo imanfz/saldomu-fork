@@ -58,7 +58,16 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
         if (model.item_name != null) {
             holder.customerNameText.text = model.item_name
         }
-        Log.e("model.product_type : " , model.product_type)
+
+        if (model.tx_favorite_type == "BBS") {
+            if (model.product_type.equals("CTA")) {
+                holder.customerNameText.text = context.getText(R.string.cash_in)
+            } else {
+                holder.customerNameText.text = context.getText(R.string.cash_out)
+            }
+        }
+
+        Log.e("model.product_type : ", model.product_type)
 
         holder.itemLinearLayout.setOnClickListener {
             if (model.tx_favorite_type == "TRF") {
@@ -71,7 +80,7 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
         }
 
         holder.itemLinearLayout.setOnLongClickListener {
-            Log.e("model.product_type : " , "s")
+            Log.e("model.product_type : ", "s")
             listener.onDeleteFavorite(model)
             return@setOnLongClickListener true
         }
