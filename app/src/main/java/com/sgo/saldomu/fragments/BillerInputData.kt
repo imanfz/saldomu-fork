@@ -102,6 +102,12 @@ class BillerInputData : BaseFragment() {
         initLayout()
         initEditTextListener()
         initRealm()
+
+        if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
+            billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
+            checkOperator()
+            showChoosePayment()
+        }
     }
 
     private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
@@ -147,8 +153,8 @@ class BillerInputData : BaseFragment() {
 
     }
 
-    private fun checkOperator(string: String?) {
-        val billerIdNumber = PrefixOperatorValidator.validation(activity, string)
+    private fun checkOperator() {
+        val billerIdNumber = PrefixOperatorValidator.validation(activity, cust_id)
 
         if (billerIdNumber != null) {
 
@@ -199,7 +205,7 @@ class BillerInputData : BaseFragment() {
                 val string = editable.toString()
                 if (string.length > 3) {
                     cust_id = string
-                    checkOperator(string)
+                    checkOperator()
                 } else
                     cust_id = NoHPFormat.formatTo62(billerinput_et_id_remark.text.toString())
             }
@@ -308,6 +314,27 @@ class BillerInputData : BaseFragment() {
         }
     }
 
+    private fun showChoosePayment() {
+        val tempDataPaymentName = ArrayList<String>()
+        paymentData?.add(getString(R.string.billerinput_text_spinner_default_payment))
+
+        for (i in mListBankBiller!!.indices) {
+            if (mListBankBiller?.get(i)?.product_code == DefineValue.SCASH) {
+                paymentData?.add(getString(R.string.appname))
+                mListBankBiller?.get(i)?.product_name = getString(R.string.appname)
+            } else {
+                tempDataPaymentName.add(mListBankBiller?.get(i)?.product_name!!)
+            }
+        }
+        if (tempDataPaymentName.isNotEmpty())
+            tempDataPaymentName.sort()
+
+        paymentData?.addAll(tempDataPaymentName)
+        adapterPaymentOptions?.notifyDataSetChanged()
+
+        billerinput_spinner_payment_options.setSelection(1) //set metode pembayaran jadi saldomu
+
+    }
 
     private fun submitInputListener() {
         if (InetHandler.isNetworkAvailable(activity)) {
