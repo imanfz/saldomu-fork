@@ -63,7 +63,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
     }
 
     internal fun getHistory() {
-        setDialog(true)
+        showProgressDialog()
 
         extraSignature = sp.getString(DefineValue.MEMBER_ID, "")
         params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HISTORY, extraSignature)
@@ -96,12 +96,14 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             }
 
             override fun onError(throwable: Throwable) {
-                setDialog(false)
+//                setDialog(false)
+                dismissProgressDialog()
                 Toast.makeText(this@HistoryActivity, throwable.localizedMessage, Toast.LENGTH_SHORT).show()
             }
 
             override fun onComplete() {
-                setDialog(false)
+//                setDialog(false)
+                dismissProgressDialog()
                 mRecyclerView.visibility = View.VISIBLE
             }
         })
@@ -137,20 +139,20 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             mRecyclerView.itemAnimator = DefaultItemAnimator()
             mLayoutManager?.let {
                 addOnScrollListener(object : PaginationScrollListener(it) {
-                override fun isLastPage(): Boolean {
-                    return isLastPage
-                }
+                    override fun isLastPage(): Boolean {
+                        return isLastPage
+                    }
 
-                override fun isLoading(): Boolean {
-                    return isLoading
-                }
+                    override fun isLoading(): Boolean {
+                        return isLoading
+                    }
 
-                override fun loadMoreItems() {
-                    isLoading = true
-                    currentPage++
-                    getHistory()
-                }
-            })
+                    override fun loadMoreItems() {
+                        isLoading = true
+                        currentPage++
+                        getHistory()
+                    }
+                })
             }
         }
     }
@@ -168,7 +170,8 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
     }
 
     fun getTrxStatus(historyModel: HistoryModel) {
-        dialog.show()
+//        dialog.show()
+        showProgressDialog()
 
         extraSignature = historyModel.tx_id + historyModel.comm_id
         val params = RetrofitService.getInstance()
@@ -203,11 +206,13 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                     }
 
                     override fun onError(throwable: Throwable) {
-                        setDialog(false)
+//                        setDialog(false)
+                        dismissProgressDialog()
                     }
 
                     override fun onComplete() {
-                        setDialog(false)
+//                        setDialog(false)
+                        dismissProgressDialog()
                     }
                 })
     }
@@ -240,7 +245,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             showReportCollectorDialog(response)
         } else if (_object.buss_scheme_code == "SG3") {
             showReportSOFDialog(response)
-        } else if (_object.buss_scheme_code == "OR" || _object.buss_scheme_code == "ORP" || _object.buss_scheme_code=="IR") run {
+        } else if (_object.buss_scheme_code == "OR" || _object.buss_scheme_code == "ORP" || _object.buss_scheme_code == "IR") run {
             showReportBillerDialog(response)
         }
     }

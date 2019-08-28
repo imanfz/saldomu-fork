@@ -895,11 +895,14 @@ public class MyProfileNewActivity extends BaseActivity {
                 MyApiClient.COMM_ID);
         RequestBody request3 = RequestBody.create(MediaType.parse("text/plain"),
                 String.valueOf(flag));
+        RequestBody request4 = RequestBody.create(MediaType.parse("text/plain"),
+                userPhoneID);
 
         params.put(WebParams.USER_ID, request1);
 //        params.put(WebParams.USER_IMAGES, photoFile);
         params.put(WebParams.COMM_ID, request2);
         params.put(WebParams.TYPE, request3);
+        params.put(WebParams.CUST_ID, request4);
         Timber.d("params upload foto ktp: " + params.toString());
         Timber.d("params upload foto type: " + flag);
 

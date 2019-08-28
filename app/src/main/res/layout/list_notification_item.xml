@@ -28,6 +28,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_cash_in"
                 android:scaleType="fitCenter"
+            android:layout_marginRight="7dp"
                 android:layout_gravity="center"
                 android:visibility="gone"
                 />

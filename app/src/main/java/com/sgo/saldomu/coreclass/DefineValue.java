@@ -597,6 +597,7 @@ public class DefineValue {
     public static String MEMBER_CUST_NAME = "memberCustName";
     public static String MEMBER_POB = "memberPOB";
     public static String MEMBER_DOB = "memberDOB";
+    public static String MEMBER_GENDER = "memberGender";
     public static String MEMBER_ADDRESS = "memberAddress";
     public static String MEMBER_RT = "memberRT";
     public static String MEMBER_RW = "memberRW";

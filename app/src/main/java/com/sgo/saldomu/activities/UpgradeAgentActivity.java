@@ -202,8 +202,7 @@ public class UpgradeAgentActivity extends BaseActivity {
 
     private void getHelpList() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(this, "");
-            progdialog.show();
+            showProgressDialog();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -261,8 +260,7 @@ public class UpgradeAgentActivity extends BaseActivity {
 
                         @Override
                         public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {

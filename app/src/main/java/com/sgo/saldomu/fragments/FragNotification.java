@@ -412,11 +412,12 @@ public class FragNotification extends BaseFragment {
     private void sentRetrieveNotif(final Boolean isDialog) {
         try {
 
-            if (isDialog) {
-                out = DefinedDialog.CreateProgressDialog(getActivity(), "");
-                if (!out.isShowing())
-                    out.show();
-            }
+//            if (isDialog) {
+//                out = DefinedDialog.CreateProgressDialog(getActivity(), "");
+//                if (!out.isShowing())
+//                    out.show();
+//            }
+            showProgressDialog();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_RETRIEVE);
             params.put(WebParams.USER_ID, _userid);
@@ -431,10 +432,7 @@ public class FragNotification extends BaseFragment {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
-                                if (isDialog) {
-                                    if (out.isShowing())
-                                        out.dismiss();
-                                }
+                                dismissProgressDialog();
 
                                 NotifModel model = getGson().fromJson(object, NotifModel.class);
 
@@ -493,13 +491,13 @@ public class FragNotification extends BaseFragment {
                                                             detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
                                                         break;
                                                     case NotificationActivity.TYPE_TRANSFER:
-                                                        image = R.drawable.ic_cash_in;
+                                                        image = R.drawable.ic_ask_money_notif;
                                                         title = getString(R.string.notif_text_ask4money_name) + " " + from_name;
                                                         detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
                                                                 "\n" + notif_detail.get(WebParams.DESC);
                                                         break;
                                                     case NotificationActivity.TYPE_PAID:
-                                                        image = R.drawable.ic_cash_out;
+                                                        image = R.drawable.ic_cash_in_notif;
                                                         title = getString(R.string.notif_text_paid_name) + " " + from_name;
                                                         detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
                                                                 "\n" + notif_detail.get(WebParams.DESC);
@@ -526,12 +524,12 @@ public class FragNotification extends BaseFragment {
                                                         title = getString(R.string.notif_title_photo_ktp_rejected);
                                                         break;
                                                     case NotificationActivity.BLAST_INFO:
-                                                        image = R.drawable.ic_cash_out;
+                                                        image = R.drawable.ic_logo_inbox;
                                                         title = notif_detail.getString(WebParams.SUBJECT);
                                                         detail = notif_detail.getString(WebParams.DESC);
                                                         break;
                                                     case NotificationActivity.SOURCE_OF_FUND:
-                                                        image = R.drawable.ic_cash_out;
+                                                        image = R.drawable.ic_logo_inbox;
                                                         title = notif_detail.getString(WebParams.SUBJECT);
                                                         detail = notif_detail.getString(WebParams.DESC);
                                                         break;
@@ -634,11 +632,12 @@ public class FragNotification extends BaseFragment {
     private void sentClaimTransfer(final Boolean isDialog, String _hold_id) {
         try {
             flagClaim = true;
-            if (isDialog) {
-                out = DefinedDialog.CreateProgressDialog(getActivity(), "");
-                if (!out.isShowing())
-                    out.show();
-            }
+//            if (isDialog) {
+//                out = DefinedDialog.CreateProgressDialog(getActivity(), "");
+//                if (!out.isShowing())
+//                    out.show();
+//            }
+            showProgressDialog();
 
             extraSignature = _hold_id + MyApiClient.COMM_ID;
 
@@ -682,9 +681,10 @@ public class FragNotification extends BaseFragment {
 
                         @Override
                         public void onComplete() {
-                            if (isDialog)
-                                if (out.isShowing())
-                                    out.dismiss();
+//                            if (isDialog)
+//                                if (out.isShowing())
+//                                    out.dismiss();
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {

@@ -3,6 +3,7 @@ package com.sgo.saldomu.activities
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -46,6 +47,8 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
 
         initPOBSpinner()
 
+        initGenderSpinner()
+
         initReligionSpinner()
 
         initStatusSpinner()
@@ -60,6 +63,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
                 intent.putExtra(DefineValue.MEMBER_CUST_NAME, fullname_edit_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_POB, birth_place_list.text.toString())
                 intent.putExtra(DefineValue.MEMBER_DOB, memberDOB)
+                intent.putExtra(DefineValue.MEMBER_GENDER, gender_spinner.selectedItem.toString())
                 intent.putExtra(DefineValue.MEMBER_ADDRESS, address_edit_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_RT, rt_edit_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_RW, rw_edit_text.text.toString())
@@ -76,6 +80,13 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
         birthday_text_view.setOnClickListener {
             birthdayOnClick()
         }
+    }
+
+    private fun initGenderSpinner() {
+        val genderAdapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_type, android.R.layout.simple_spinner_item)
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        gender_spinner.setAdapter(genderAdapter)
     }
 
     private fun initNationalitySpinner() {
@@ -140,9 +151,21 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             birth_place_list.setError("Kota kosong")
             birth_place_list.requestFocus()
             return false
-        }else if (birthday_text_view.getText().toString().equals("Masukan Tanggal Lahir",true)) {
-            address_edit_text.requestFocus()
-            address_edit_text.setError(resources.getString(R.string.myprofile_validation_date_empty))
+        }else if (birthday_text_view.getText().toString().length==0) {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Alert")
+                    .setMessage(getString(R.string.myprofile_validation_date_empty))
+                    .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+            return false
+        }else if (gender_spinner.selectedItem.equals("-Pilih Jenis Kelamin-")) {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Alert")
+                    .setMessage(getString(R.string.gender_validation))
+                    .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
             return false
         } else if (address_edit_text.getText().toString().length == 0) {
             address_edit_text.requestFocus()
@@ -192,7 +215,9 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
                     var calendar : Calendar = Calendar.getInstance()
                     calendar.set(year, monthOfYear, dayOfMonth )
 
-                    birthday_text_view.text = "$dayOfMonth - $monthOfYear - $year"
+                    var monthdisplay = monthOfYear+1
+
+                    birthday_text_view.text = "$dayOfMonth - $monthdisplay - $year"
                     fromFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ID", "INDONESIA"))
                     memberDOB = fromFormat.format(calendar.time)
                 }, year, month, day)
