@@ -20,6 +20,7 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
     interface FavoriteListener {
         fun onShowBillerActivity(model: FavoriteModel)
         fun onShowTransferActivity(model: FavoriteModel)
+        fun onStartBBSActivity(model: FavoriteModel)
         fun onDeleteFavorite(model: FavoriteModel)
     }
 
@@ -62,7 +63,7 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
             } else if (model.tx_favorite_type == "BIL") {
                 listener.onShowBillerActivity(model)
             } else if (model.tx_favorite_type == "BBS") {
-
+                listener.onStartBBSActivity(model)
             }
         }
 

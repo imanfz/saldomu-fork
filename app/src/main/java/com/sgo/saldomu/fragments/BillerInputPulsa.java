@@ -180,6 +180,8 @@ public class BillerInputPulsa extends BaseFragment {
         btn_submit.setOnClickListener(submitInputListener);
         radioGroup.setOnCheckedChangeListener(radioListener);
 
+        et_payment_remark.setText(args.getString(DefineValue.CUST_ID, ""));
+
         initLayout();
         initPrefixListener();
         initRealm();
