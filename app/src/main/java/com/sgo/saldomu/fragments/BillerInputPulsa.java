@@ -181,6 +181,8 @@ public class BillerInputPulsa extends BaseFragment {
         btn_submit.setOnClickListener(submitInputListener);
         radioGroup.setOnCheckedChangeListener(radioListener);
 
+        et_payment_remark.setText(args.getString(DefineValue.CUST_ID, ""));
+
         initLayout();
         initPrefixListener();
         initRealm();
@@ -790,12 +792,12 @@ public class BillerInputPulsa extends BaseFragment {
         }
     }
 
-    private void changeToConfirmBiller(String fee, String merchant_type, String bank_code, String product_code, int attempt) {
+    private void changeToConfirmBiller(String feeModel, String merchant_type, String bank_code, String product_code, int attempt) {
         Bundle mArgs = new Bundle();
         mArgs.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
         mArgs.putString(DefineValue.TX_ID, tx_id);
         mArgs.putString(DefineValue.CCY_ID, ccy_id);
-        mArgs.putString(DefineValue.AMOUNT, sentPaymentBillerModel.getAmount());
+        mArgs.putString(DefineValue.AMOUNT, item_price.toString());
         mArgs.putString(DefineValue.ITEM_ID, item_id);
         mArgs.putString(DefineValue.ITEM_NAME, item_name);
         mArgs.putString(DefineValue.BILLER_COMM_ID, biller_comm_id);
@@ -807,7 +809,7 @@ public class BillerInputPulsa extends BaseFragment {
         mArgs.putString(DefineValue.BILLER_COMM_CODE, biller_comm_code);
         mArgs.putString(DefineValue.BILLER_API_KEY, biller_api_key);
         mArgs.putString(DefineValue.CALLBACK_URL, callback_url);
-        mArgs.putString(DefineValue.FEE, sentPaymentBillerModel.getFee());
+        mArgs.putString(DefineValue.FEE, fee.toString());
         mArgs.putString(DefineValue.TOTAL_AMOUNT, sentPaymentBillerModel.getTotal_amount());
         mArgs.putString(DefineValue.PRODUCT_PAYMENT_TYPE, mTempBank.getProduct_type());
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);

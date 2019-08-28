@@ -163,9 +163,14 @@ public class BillerInput extends Fragment {
         layout_month = v.findViewById(R.id.billerinput_layout_month);
         layout_warn_pln = v.findViewById(R.id.layout_warn_pln);
         tv_notes = v.findViewById(R.id.biller_notes);
+
+        et_payment_remark.setText(args.getString(DefineValue.CUST_ID, ""));
         if (args.containsKey(DefineValue.BILLER_ID_NUMBER)) {
             et_payment_remark.setText(args.getString(DefineValue.BILLER_ID_NUMBER));
         }
+
+
+
         btn_submit.setOnClickListener(submitInputListener);
         radioGroup.setOnCheckedChangeListener(radioListener);
         layout_denom.setVisibility(View.VISIBLE);

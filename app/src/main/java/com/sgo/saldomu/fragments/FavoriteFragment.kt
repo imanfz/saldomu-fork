@@ -179,6 +179,10 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
         (activity as FavoriteActivity).startTransferActivity(model)
     }
 
+    override fun onStartBBSActivity(model: FavoriteModel) {
+        (activity as FavoriteActivity).startBBSActivity(model)
+    }
+
     override fun onDeleteFavorite(model: FavoriteModel) {
         var dialogFrag : AlertDialogFrag = AlertDialogFrag.newInstance(activity!!.getString(R.string.menu_item_favorite),
                 activity!!.getString(R.string.delete_item_favorite_dialog), activity!!.getString(R.string.yes),

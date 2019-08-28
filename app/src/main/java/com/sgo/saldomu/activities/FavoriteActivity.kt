@@ -28,12 +28,29 @@ class FavoriteActivity : BaseActivity() {
 
         intent.putExtra(DefineValue.BILLER_TYPE, model.product_type)
         intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
-//        intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
 
         startActivity(intent)
     }
 
-    fun startTransferActivity (model: FavoriteModel) {
+    fun startBBSActivity(model: FavoriteModel) {
+        var intent = Intent(this, BBSActivity::class.java)
+
+        intent.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION)
+        // CTA = cash in
+        // ATC == cash out
+        // emo =
+        if (model.product_type.equals(DefineValue.BBS_CASHIN)) {
+
+        }
+        intent.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN)
+
+
+
+        startActivity(intent)
+    }
+
+
+    fun startTransferActivity(model: FavoriteModel) {
         var intent = Intent(this, PayFriendsActivity::class.java)
         intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
         startActivity(intent)
@@ -85,7 +102,7 @@ class FavoriteActivity : BaseActivity() {
 
     inner class FavoritePagerAdapter(fm: FragmentManager, private val context: Context) : FragmentStatePagerAdapter(fm) {
         private val PAGE_COUNT = 3
-        private val tabTitles = arrayOf("BIL", "BBS", "TRF")
+        private val tabTitles = arrayOf("Biller", "Laku Pandai", "Transfer")
         private val bilFragment: FavoriteFragment = FavoriteFragment().newInstance("BIL")
         private val bbsFragment: FavoriteFragment = FavoriteFragment().newInstance("BBS")
         private val trfFragment: FavoriteFragment = FavoriteFragment().newInstance("TRF")
