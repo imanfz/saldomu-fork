@@ -25,6 +25,7 @@ import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
 import com.sgo.saldomu.coreclass.BundleToJSON;
@@ -609,12 +610,12 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                     break;
 
                 case FCMManager.BLAST_INFO:
-                    intent = new Intent(this, MainPage.class);
+                    intent = new Intent(this, NotificationActivity.class);
                     if (flagLogin.equals(DefineValue.STRING_NO)) {
 
 
                     } else {
-                        stackBuilder.addParentStack(MainPage.class);
+                        stackBuilder.addParentStack(NotificationActivity.class);
                         stackBuilder.addNextIntent(intent);
 
                         contentIntent =
