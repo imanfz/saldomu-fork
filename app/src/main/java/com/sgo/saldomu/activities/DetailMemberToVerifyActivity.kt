@@ -143,9 +143,9 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(this@DetailMemberToVerifyActivity, message)
                             } else {
-                                code = model.error_message
+                                var msg = model.error_message
 
-                                Toast.makeText(this@DetailMemberToVerifyActivity, code, Toast.LENGTH_LONG).show()
+                                Toast.makeText(this@DetailMemberToVerifyActivity, msg, Toast.LENGTH_LONG).show()
                                 if(code=="0160")
                                     finish()
                             }

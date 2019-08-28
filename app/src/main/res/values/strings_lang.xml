@@ -1409,4 +1409,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="tagihan_listrik">Tagihan Listrik</string>
     <string name="please_wait">Harap Menunggu...</string>
     <string name="gender_validation">Jenis Kelamin dibutuhkan!</string>
+    <string name="empty_notification">Sepertinya kamu masih belum mendapatkan pesan atau melakukan transaksi.</string>
 </resources>
