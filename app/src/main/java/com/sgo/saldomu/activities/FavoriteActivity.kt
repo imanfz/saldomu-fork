@@ -38,13 +38,12 @@ class FavoriteActivity : BaseActivity() {
         intent.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION)
         // CTA = cash in
         // ATC == cash out
-        // emo =
-        if (model.product_type.equals(DefineValue.BBS_CASHIN)) {
-
+        if (model.product_type.equals("CTA")) {
+            intent.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN)
+        } else {
+            intent.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHOUT)
         }
-        intent.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN)
-
-
+        intent.putExtra(DefineValue.PRODUCT_CODE, model.benef_bank_code)
 
         startActivity(intent)
     }
