@@ -59,6 +59,7 @@ class ListTransfer : BaseFragment() {
 
         dialognya.setCanceledOnTouchOutside(false)
         dialognya.setCancelable(false)
+        dialognya.show()
 
     }
 
