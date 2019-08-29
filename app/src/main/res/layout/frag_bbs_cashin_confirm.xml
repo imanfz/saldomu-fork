@@ -491,6 +491,7 @@
                 android:layout_marginRight="16dp"
                 android:inputType="text"
                 android:layout_marginLeft="16dp"
+                android:visibility="gone"
                 android:enabled="false"
                 android:textSize="@dimen/abc_text_size_medium_material" />
 

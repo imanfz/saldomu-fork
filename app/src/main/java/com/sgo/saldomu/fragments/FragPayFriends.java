@@ -584,6 +584,7 @@ public class FragPayFriends extends BaseFragment {
 
                         @Override
                         public void onComplete() {
+                            phoneNumberJsonArr = new JSONArray();
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }

@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.sgo.saldomu.R
@@ -147,6 +148,9 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
 
                             if (code == WebParams.SUCCESS_CODE) {
                                 adapter.removeItem(model)
+                            }else
+                            {
+                                Toast.makeText(context,message, Toast.LENGTH_LONG).show()
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()

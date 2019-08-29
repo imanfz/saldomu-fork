@@ -160,6 +160,7 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
         }
 
         favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            notesEditText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             notesEditText.setEnabled(isChecked);
         });
 

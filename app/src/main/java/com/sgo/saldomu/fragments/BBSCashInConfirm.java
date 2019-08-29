@@ -326,6 +326,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         }
 
         favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            notesEditText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             notesEditText.setEnabled(isChecked);
         });
     }

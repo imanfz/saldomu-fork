@@ -345,6 +345,7 @@
                 android:id="@+id/notes_edit_text"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:hint="Notes"
                 android:layout_marginRight="16dp"
                 android:inputType="text"
