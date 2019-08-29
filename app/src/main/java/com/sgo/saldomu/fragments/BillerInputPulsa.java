@@ -132,7 +132,7 @@ public class BillerInputPulsa extends BaseFragment {
     private String biller_comm_code;
     private String biller_api_key;
     private String callback_url;
-    private List<String> paymentData;
+    private List<String> paymentData = new ArrayList<>();
     private ArrayAdapter<String> adapterPaymentOptions;
     private Spinner spin_payment_options;
     private String payment_name;
@@ -188,7 +188,9 @@ public class BillerInputPulsa extends BaseFragment {
         if (args.getString(DefineValue.CUST_ID, "") != "") {
             et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
             checkOperator();
-            showChoosePayment();
+            if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
+                showChoosePayment();
+            }
         }
     }
 

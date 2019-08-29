@@ -348,6 +348,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
 
         favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            notesEditText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             notesEditText.setEnabled(isChecked);
         });
 

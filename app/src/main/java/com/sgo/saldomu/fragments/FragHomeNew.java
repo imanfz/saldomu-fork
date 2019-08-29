@@ -878,10 +878,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 menuStrings.add(getResources().getString(R.string.menu_item_title_onprogress_agent));
                 menuDrawables.add(getResources().getDrawable(R.drawable.ic_dalam_proses));
 
-
-                menuStrings.add(getResources().getString(R.string.menu_item_title_upgrade_member));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_upgrade));
-
+              if (!sp.getString(DefineValue.COMM_UPGRADE_MEMBER,"").equalsIgnoreCase("O")) {
+                    menuStrings.add(getResources().getString(R.string.menu_item_title_upgrade_member));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_upgrade));
+                }
 
             } else {
                 checkSchemeCodeMember();
