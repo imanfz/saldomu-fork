@@ -256,10 +256,7 @@ public class BillerActivity extends BaseActivity {
                 }
                 tag = BillerInput.TAG;
             } else {
-                if ((intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID) &&
-                        ((_biller_type_code.equalsIgnoreCase("AIR")) ||
-                                (_biller_type_code.equalsIgnoreCase("EMON")) ||
-                                (_biller_type_code.equalsIgnoreCase("VCHR"))))) {
+                if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)){
                     mLBM = new BillerInput();
                     mArgs.putString(DefineValue.COMMUNITY_ID, intent.getStringExtra(DefineValue.COMMUNITY_ID));
                     mArgs.putString(DefineValue.COMMUNITY_NAME, intent.getStringExtra(DefineValue.COMMUNITY_NAME));
