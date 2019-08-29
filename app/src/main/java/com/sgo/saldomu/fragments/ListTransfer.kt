@@ -48,11 +48,11 @@ class ListTransfer : BaseFragment() {
                 val i = Intent(activity, CashoutActivity::class.java)
                 switchActivity(i)
             } else
-                DialogWaitingUpgradeAgent()
+                DialogCantCashout()
         }
     }
 
-    private fun DialogWaitingUpgradeAgent() {
+    private fun DialogCantCashout() {
         val dialognya = DefinedDialog.MessageDialog(activity, this.getString(R.string.alertbox_title_information),
                 this.getString(R.string.cashout_dialog_message)
         ) { v, isLongClick ->  }

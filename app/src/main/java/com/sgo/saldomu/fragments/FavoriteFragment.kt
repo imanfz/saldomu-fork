@@ -79,6 +79,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
     }
 
     private fun getListFavorite() {
+        showProgressDialog()
         extraSignature = key
         params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_FAVORITE_LIST, extraSignature)
         params[WebParams.USER_ID] = userPhoneID
@@ -116,13 +117,13 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
 
                     override fun onComplete() {
                         Log.e(HistoryActivity.TAG, "onComplete")
-                        setDialog(false)
+                        dismissProgressDialog()
                     }
                 })
     }
 
     private fun deleteFavoriteItem(model: FavoriteModel) {
-        setDialog(true)
+        showProgressDialog()
 
         extraSignature = model.customer_id + model.product_type + model.tx_favorite_type
         val url = MyApiClient.LINK_TRX_FAVORITE_DELETE
@@ -159,7 +160,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
 
                     override fun onComplete() {
                         Log.e(TAG, "onComplete")
-                        setDialog(false)
+                        dismissProgressDialog()
                     }
                 })
     }
