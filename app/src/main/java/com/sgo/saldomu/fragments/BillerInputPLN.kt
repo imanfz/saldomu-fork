@@ -240,7 +240,7 @@ class BillerInputPLN : BaseFragment() {
         }
 
         if (mBillerData == null || mBillerData?.item_id!!.isEmpty() && mBillerData?.denom_data_models!!.size == 0) {
-            progdialog = DefinedDialog.CreateProgressDialog(activity, "")
+            showProgressDialog()
         }
 
         if (mBillerType != null) {

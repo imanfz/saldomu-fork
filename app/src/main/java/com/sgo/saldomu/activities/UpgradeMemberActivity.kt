@@ -39,21 +39,27 @@ class UpgradeMemberActivity : BaseActivity() {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
-
-        if (sp.getString(DefineValue.COMM_UPGRADE_MEMBER, "") != null)
-            if (sp.getString(DefineValue.COMM_UPGRADE_MEMBER, "") == "O") {
-                upgrade_via_agent_button.isEnabled == false
-            } else if (sp.getString(DefineValue.COMM_UPGRADE_MEMBER, "") == "A") {
-                upgrade_online_button.isEnabled == false
-            }
-
         upgrade_online_button.setOnClickListener {
             startActivity(Intent(this, MyProfileNewActivity::class.java))
         }
 
         upgrade_via_agent_button.setOnClickListener {
-            reqUpgradeViaAgent()
+            if (sp.getString(DefineValue.COMM_UPGRADE_MEMBER, "").equals("O")) {
+                DialogCantUpgradeviaAgent()
+            } else
+                reqUpgradeViaAgent()
         }
+    }
+
+    private fun DialogCantUpgradeviaAgent() {
+        val dialognya = DefinedDialog.MessageDialog(this, this.getString(R.string.alertbox_title_information),
+                this.getString(R.string.cashout_dialog_message)
+        ) { v, isLongClick -> }
+
+        dialognya.setCanceledOnTouchOutside(false)
+        dialognya.setCancelable(false)
+        dialognya.show()
+
     }
 
     private fun reqUpgradeViaAgent() {
