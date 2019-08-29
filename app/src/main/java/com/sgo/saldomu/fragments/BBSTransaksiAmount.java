@@ -224,9 +224,8 @@ public class BBSTransaksiAmount extends Fragment {
 
             initializeDataBBS(CTA);
 
-            for (int i =0 ;i<aListMember.size() ; i++){
-                Log.e("CTA22 : ", String.valueOf(aListMember.get(i)));
-            }
+            actv_rekening_member.setText(defaultProductCode);
+            actv_rekening_member.requestFocus();
 
         } else {
             if(type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)){
@@ -271,9 +270,8 @@ public class BBSTransaksiAmount extends Fragment {
 
             initializeDataBBS(ATC);
 
-            for (int i =0 ;i<aListMember.size() ; i++){
-                Log.e("ACT22 : ", String.valueOf(aListMember.get(i)));
-            }
+            actv_rekening_member.setText(defaultProductCode);
+            actv_rekening_member.requestFocus();
         }
         actv_rekening_member.setAdapter(adapterMember);
         actv_rekening_member.addTextChangedListener(textWatcher);
