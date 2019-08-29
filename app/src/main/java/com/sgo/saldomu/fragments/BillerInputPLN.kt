@@ -122,6 +122,7 @@ class BillerInputPLN : BaseFragment() {
         biller_comm_id = arguments!!.getString(DefineValue.COMMUNITY_ID, "")
         biller_comm_name = arguments!!.getString(DefineValue.COMMUNITY_NAME, "")
         biller_item_id = arguments!!.getString(DefineValue.BILLER_ITEM_ID, "")
+
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false)
         realm = Realm.getInstance(RealmManager.BillerConfiguration)
@@ -213,6 +214,7 @@ class BillerInputPLN : BaseFragment() {
         billerinput_et_id_remark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(13))
         billerinput_et_id_remark.inputType = InputType.TYPE_CLASS_NUMBER
         billerinput_et_id_remark.keyListener = DigitsKeyListener.getInstance(digitsListener)
+        billerinput_et_id_remark.setText(arguments!!.getString(DefineValue.CUST_ID,""))
         billerinput_et_add_fee.inputType = InputType.TYPE_CLASS_NUMBER
         billerinput_detail_layout_add_fee.visibility = View.GONE
         billerinput_layout_denom.visibility = View.VISIBLE

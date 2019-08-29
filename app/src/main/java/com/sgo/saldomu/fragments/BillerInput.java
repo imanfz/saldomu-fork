@@ -321,7 +321,7 @@ public class BillerInput extends Fragment {
 
         if (mBillerData.getBiller_info() != null) {
             tv_notes.setVisibility(View.VISIBLE);
-            tv_notes.setText(mBillerData.getBiller_info().toString());
+            tv_notes.setText(mBillerData.getBiller_info());
         }
 
         if (mBillerData == null || mBillerData.getItem_id().isEmpty() && mBillerData.getDenom_data_models().size() == 0) {

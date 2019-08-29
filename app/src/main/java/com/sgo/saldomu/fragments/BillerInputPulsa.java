@@ -185,7 +185,7 @@ public class BillerInputPulsa extends BaseFragment {
         initPrefixListener();
         initRealm();
 
-        if (args.getString(DefineValue.CUST_ID, "") != ""){
+        if (args.getString(DefineValue.CUST_ID, "") != "") {
             et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
             checkOperator();
             showChoosePayment();
@@ -564,6 +564,7 @@ public class BillerInputPulsa extends BaseFragment {
                     break;
             }
             initRealm();
+            checkOperator();
         }
     };
 
@@ -587,10 +588,11 @@ public class BillerInputPulsa extends BaseFragment {
             et_payment_remark.setError(this.getString(R.string.regist1_validation_nohp));
             return false;
         }
-        if (denom_item_id == null) {
-            Toast.makeText(getActivity(), getString(R.string.billerinput_validation_spinner_default_pulsa), Toast.LENGTH_LONG).show();
-            return false;
-        }
+        if (buy_type_detail.equalsIgnoreCase("PRABAYAR"))
+            if (denom_item_id == null) {
+                Toast.makeText(getActivity(), getString(R.string.billerinput_validation_spinner_default_pulsa), Toast.LENGTH_LONG).show();
+                return false;
+            }
         return true;
     }
 
