@@ -170,7 +170,6 @@ public class BillerInput extends Fragment {
         }
 
 
-
         btn_submit.setOnClickListener(submitInputListener);
         radioGroup.setOnCheckedChangeListener(radioListener);
         layout_denom.setVisibility(View.VISIBLE);
@@ -313,13 +312,20 @@ public class BillerInput extends Fragment {
         }
 
         mBillerData = new Biller_Data_Model();
-        mBillerData = realm.where(Biller_Data_Model.class).
-                equalTo(WebParams.COMM_ID, biller_comm_id).
-                equalTo(WebParams.COMM_NAME, biller_comm_name).
-                equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
-                findFirst();
 
-        if (mBillerData.getBiller_info() != null) {
+        if (!biller_type_code.equalsIgnoreCase("EMON")) {
+            mBillerData = realm.where(Biller_Data_Model.class).
+                    equalTo(WebParams.COMM_ID, biller_comm_id).
+                    equalTo(WebParams.COMM_NAME, biller_comm_name).
+                    equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
+                    findFirst();
+        }else {
+            mBillerData = realm.where(Biller_Data_Model.class).
+                    equalTo(WebParams.COMM_ID, biller_comm_id).
+                    findFirst();
+        }
+
+        if (mBillerData.getBiller_info() != null || !mBillerData.getBiller_info().equals("")) {
             tv_notes.setVisibility(View.VISIBLE);
             tv_notes.setText(mBillerData.getBiller_info());
         }
