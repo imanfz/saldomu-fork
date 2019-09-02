@@ -48,8 +48,8 @@ import java.io.File
 
 class DetailMemberToVerifyActivity : BaseActivity() {
     private val RESULT_CAMERA_KTP = 201
-    private val RESULT_CAMERA_CUST_KTP = 202
-    private val RESULT_CAMERA_TTD = 203
+//    private val RESULT_CAMERA_CUST_KTP = 202
+//    private val RESULT_CAMERA_TTD = 203
     private val RC_CAMERA_STORAGE = 14
     private lateinit var pickAndCameraUtil: PickAndCameraUtil
     private val KTP_TYPE = 1
@@ -82,15 +82,15 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             camera_dialog()
         }
 
-        camera_selfie_ktp_paspor.setOnClickListener {
-            set_result_photo = RESULT_CAMERA_CUST_KTP
-            camera_dialog()
-        }
-
-        camera_ttd.setOnClickListener {
-            set_result_photo = RESULT_CAMERA_TTD
-            camera_dialog()
-        }
+//        camera_selfie_ktp_paspor.setOnClickListener {
+//            set_result_photo = RESULT_CAMERA_CUST_KTP
+//            camera_dialog()
+//        }
+//
+//        camera_ttd.setOnClickListener {
+//            set_result_photo = RESULT_CAMERA_TTD
+//            camera_dialog()
+//        }
 
         submit_button.setOnClickListener {
             if (ktp != null && custAndKTP != null && ttd != null) {
@@ -213,28 +213,28 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                         camera_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
                     }
                 }
-            RESULT_CAMERA_CUST_KTP ->
-                if (resultCode == Activity.RESULT_OK && pickAndCameraUtil!!.getCaptureImageUri() != null) {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                        ImageCompressionAsyncTask(CUST_AND_KTP_TYPE).execute(pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.getCaptureImageUri()))
-                    } else {
-                        ImageCompressionAsyncTask(CUST_AND_KTP_TYPE).execute(pickAndCameraUtil!!.getCurrentPhotoPath())
-                    }
-                } else {
-                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
-                    camera_selfie_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
-                }
-            RESULT_CAMERA_TTD ->
-                if (resultCode == Activity.RESULT_OK && pickAndCameraUtil!!.getCaptureImageUri() != null) {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                        ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.getCaptureImageUri()))
-                    } else {
-                        ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil!!.getCurrentPhotoPath())
-                    }
-                } else {
-                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
-                    camera_ttd.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
-                }
+//            RESULT_CAMERA_CUST_KTP ->
+//                if (resultCode == Activity.RESULT_OK && pickAndCameraUtil!!.getCaptureImageUri() != null) {
+//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//                        ImageCompressionAsyncTask(CUST_AND_KTP_TYPE).execute(pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.getCaptureImageUri()))
+//                    } else {
+//                        ImageCompressionAsyncTask(CUST_AND_KTP_TYPE).execute(pickAndCameraUtil!!.getCurrentPhotoPath())
+//                    }
+//                } else {
+//                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
+//                    camera_selfie_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
+//                }
+//            RESULT_CAMERA_TTD ->
+//                if (resultCode == Activity.RESULT_OK && pickAndCameraUtil!!.getCaptureImageUri() != null) {
+//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//                        ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.getCaptureImageUri()))
+//                    } else {
+//                        ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil!!.getCurrentPhotoPath())
+//                    }
+//                } else {
+//                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
+//                    camera_ttd.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
+//                }
         }
     }
 
@@ -286,10 +286,11 @@ class DetailMemberToVerifyActivity : BaseActivity() {
 
                 if (flag == KTP_TYPE) {
                     camera_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
-                } else if (flag == CUST_AND_KTP_TYPE) {
-                    camera_selfie_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
-                } else
-                    camera_ttd.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
+                }
+//                else if (flag == CUST_AND_KTP_TYPE) {
+//                    camera_selfie_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
+//                } else
+//                    camera_ttd.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
 
             }
         }
@@ -314,16 +315,16 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                     ktp = file
                     uploadFileToServer(ktp!!, KTP_TYPE)
                 }
-                CUST_AND_KTP_TYPE -> {
-                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_selfie_ktp_paspor)
-                    custAndKTP = file
-                    uploadFileToServer(custAndKTP!!, CUST_AND_KTP_TYPE)
-                }
-                TTD_TYPE -> {
-                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_ttd)
-                    ttd = file
-                    uploadFileToServer(ttd!!, TTD_TYPE)
-                }
+//                CUST_AND_KTP_TYPE -> {
+//                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_selfie_ktp_paspor)
+//                    custAndKTP = file
+//                    uploadFileToServer(custAndKTP!!, CUST_AND_KTP_TYPE)
+//                }
+//                TTD_TYPE -> {
+//                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_ttd)
+//                    ttd = file
+//                    uploadFileToServer(ttd!!, TTD_TYPE)
+//                }
             }
         }
     }
