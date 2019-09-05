@@ -496,6 +496,9 @@
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".utils.camera.CameraActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".services.BalanceService"
