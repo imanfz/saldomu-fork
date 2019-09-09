@@ -1300,6 +1300,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
 
     <string name="lbl_profil_saya">Profil Saya</string>
+    <string name="lbl_qr_saya">QR Saya</string>
     <string name="lbl_member_saya">Status Saya</string>
     <string name="lbl_member_lvl_silver">SILVER</string>
     <string name="lbl_member_lvl_gold">GOLD</string>

@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
+
+
+
+    <me.dm7.barcodescanner.zxing.ZXingScannerView
+        android:id="@+id/scanner_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
+
+
+    <ImageButton
+        android:id="@+id/gallery_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/chip_delete"/>
 
 
-        <me.dm7.barcodescanner.zxing.ZXingScannerView
-            android:id="@+id/scanner_view"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
-</android.support.constraint.ConstraintLayout>
+
+</RelativeLayout>

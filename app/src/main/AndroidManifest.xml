@@ -498,6 +498,13 @@
 
         <activity
             android:name=".utils.camera.CameraActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.MyQRActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 
         <service

@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.MyQRActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
 import com.sgo.saldomu.activities.UpgradeMemberActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -131,6 +132,13 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         initLayout();
         checkAgent();
         setView();
+
+        imageQR.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getContext(), MyQRActivity.class);
+            intent.putExtra("sourceAcct", sourceAcct);
+            intent.putExtra("sourceAcctName", sourceAcctName);
+            startActivity(intent);
+        });
     }
 
     private void initData() {
