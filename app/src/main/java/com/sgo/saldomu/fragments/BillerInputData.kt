@@ -352,6 +352,7 @@ class BillerInputData : BaseFragment() {
                 billerinput_et_id_remark.text.length > 15) {
             billerinput_et_id_remark.requestFocus()
             billerinput_et_id_remark.error = getString(R.string.regist1_validation_nohp)
+            initializeSpinnerDenom()
             return false
         }
         if (item_name == null) {

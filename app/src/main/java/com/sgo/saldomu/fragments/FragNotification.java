@@ -297,12 +297,6 @@ public class FragNotification extends BaseFragment {
                     getActivity().finish();
                     break;
                 case NotificationActivity.SOURCE_OF_FUND:
-//                    sentReadNotif(mData.get(position).getNotif_id(), position);
-//                    Intent dataSourceOfFund = new Intent();
-//                    dataSourceOfFund.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
-//                    dataSourceOfFund.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.SOURCE_OF_FUND);
-//                    getActivity().setResult(MainPage.RESULT_NOTIF, dataSourceOfFund);
-
                     Intent s = new Intent(getActivity(), SourceOfFundActivity.class);
                     s.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
                     s.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.SOURCE_OF_FUND);
