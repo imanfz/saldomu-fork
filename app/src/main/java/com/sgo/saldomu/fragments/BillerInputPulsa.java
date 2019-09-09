@@ -588,6 +588,7 @@ public class BillerInputPulsa extends BaseFragment {
         if (et_payment_remark.getText().toString().length() == 0 || et_payment_remark.getText().toString().equals("0") || et_payment_remark.length() == 1) {
             et_payment_remark.requestFocus();
             et_payment_remark.setError(this.getString(R.string.regist1_validation_nohp));
+            initializeSpinnerDenom();
             return false;
         }
         if (buy_type_detail.equalsIgnoreCase("PRABAYAR"))
