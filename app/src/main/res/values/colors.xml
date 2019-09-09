@@ -330,4 +330,5 @@
     <color name="p2p_color_indicator_success">@color/green_400</color>
     <color name="p2p_color_indicator_failed">@color/red_400</color>
     <color name="p2p_color_indicator_nonmember">@color/orange_800</color>
+    <color name="preview_mock">#9a000000</color>
 </resources>
