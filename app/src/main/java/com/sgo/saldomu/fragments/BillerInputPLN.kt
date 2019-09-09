@@ -347,6 +347,7 @@ class BillerInputPLN : BaseFragment() {
                 billerinput_et_id_remark.text.length > 15) {
             billerinput_et_id_remark.requestFocus()
             billerinput_et_id_remark.error = getString(R.string.billerinput_validation_payment_remark)
+            initSpinnerDenom()
             return false
         }
         if (buy_type_detail.equals("PRABAYAR", ignoreCase = true)) {
@@ -365,7 +366,7 @@ class BillerInputPLN : BaseFragment() {
                 item_id = mListDenomData?.get(position - 1)?.item_id
                 item_name = mListDenomData?.get(position - 1)?.item_name
                 if (inputValidation()) {
-                    sentInquryBiller()
+                    sentInquiryBiller()
                 }
             } else {
                 item_id = null
@@ -378,7 +379,7 @@ class BillerInputPLN : BaseFragment() {
         }
     }
 
-    private fun sentInquryBiller() {
+    private fun sentInquiryBiller() {
         try {
             showProgressDialog()
             ToggleKeyboard.hide_keyboard(activity!!)
@@ -639,7 +640,7 @@ class BillerInputPLN : BaseFragment() {
                                             startActivityForResult(mI, REQUEST_BillerInqReq)
                                         }
                                         dialogFrag.cancelListener = DialogInterface.OnClickListener { dialog, which ->
-                                            sentInquryBiller()
+                                            sentInquiryBiller()
                                         }
                                         dialogFrag.setTargetFragment(this@BillerInputPLN, 0)
                                         dialogFrag.show(activity?.supportFragmentManager, AlertDialogFrag.TAG)
@@ -726,7 +727,7 @@ class BillerInputPLN : BaseFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_BillerInqReq)
-            sentInquryBiller()
+            sentInquiryBiller()
     }
 
     private fun countTotal() {

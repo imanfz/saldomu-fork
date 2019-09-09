@@ -41,6 +41,7 @@ public class ListBillerMerchant extends ListFragment {
     private View v;
     private String userID;
     private String accessKey;
+    private String billerType;
     private String billerTypeCode, billerIdNumber;
     private List<Biller_Data_Model> mListBillerData;
     private Biller_Type_Data_Model mBillerType;
@@ -128,10 +129,11 @@ public class ListBillerMerchant extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         changeToInputBiller(mListBillerData.get(position).getComm_id(),
                 mListBillerData.get(position).getComm_name(),
-                mListBillerData.get(position).getItem_id());
+                mListBillerData.get(position).getItem_id(),
+                mBillerType.getBiller_type());
     }
 
-    private void changeToInputBiller(String _comm_id, String _comm_name, String _item_id) {
+    private void changeToInputBiller(String _comm_id, String _comm_name, String _item_id, String _buy_type) {
 //        if(_item_id.isEmpty())
 //            callUpdateDenom(_comm_id, _comm_name);
 
@@ -141,6 +143,7 @@ public class ListBillerMerchant extends ListFragment {
         mArgs.putString(DefineValue.BILLER_ITEM_ID, _item_id);
         mArgs.putString(DefineValue.BILLER_TYPE, billerTypeCode);
         mArgs.putString(DefineValue.BILLER_ID_NUMBER, billerIdNumber);
+        mArgs.putString(DefineValue.BUY_TYPE, _buy_type);
 
         BillerInput mBI = new BillerInput();
         mBI.setArguments(mArgs);
@@ -213,24 +216,24 @@ public class ListBillerMerchant extends ListFragment {
         };
         realm.addChangeListener(realmListener);
 
-        if (billerIdNumber != null && !billerIdNumber.equals("")) {
-            PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(), billerIdNumber);
-            Log.wtf("billeridnumber", "billeridnumber");
-            if (BillerIdNumber != null) {
-                for (int i = 0; i < _data.size(); i++) {
-                    Timber.d("_data" + _data.get(i));
-                    if (_data != null) {
-                        Timber.d("prefix name = " + BillerIdNumber.prefix_name);
-                        if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
-                            changeToInputBiller(mListBillerData.get(i).getComm_id(),
-                                    mListBillerData.get(i).getComm_name(),
-                                    mListBillerData.get(i).getItem_id());
-                        }
-                    }
-
-                }
-            }
-        }
+//        if (billerIdNumber != null && !billerIdNumber.equals("")) {
+//            PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(), billerIdNumber);
+//            Log.wtf("billeridnumber", "billeridnumber");
+//            if (BillerIdNumber != null) {
+//                for (int i = 0; i < _data.size(); i++) {
+//                    Timber.d("_data" + _data.get(i));
+//                    if (_data != null) {
+//                        Timber.d("prefix name = " + BillerIdNumber.prefix_name);
+//                        if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
+//                            changeToInputBiller(mListBillerData.get(i).getComm_id(),
+//                                    mListBillerData.get(i).getComm_name(),
+//                                    mListBillerData.get(i).getItem_id());
+//                        }
+//                    }
+//
+//                }
+//            }
+//        }
 
     }
 
