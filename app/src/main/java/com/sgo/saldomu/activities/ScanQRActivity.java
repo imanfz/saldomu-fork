@@ -3,13 +3,17 @@ package com.sgo.saldomu.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -19,23 +23,34 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Reader;
 import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ScanQRUtils;
 import com.sgo.saldomu.models.QrModel;
+
+import java.io.IOException;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import timber.log.Timber;
 
 public class ScanQRActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private ZXingScannerView mScannerView;
+    private ImageButton galleryImageButton;
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 100;
     public static final String ALLOW_KEY = "ALLOWED";
     public static final String CAMERA_PREF = "camera_pref";
-    public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String Name = "nameKey";
     public static final String valCode="MSIGNCODE";
     private String bundleType, bundleSource,scanResult;
@@ -43,6 +58,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     public static final String mypreference = "mypref";
     public static final String QRVALUE= "qrvalue";
     QrModel parcelQRData;
+    private static final int SELECT_IMAGE = 111;
 
 
 
@@ -52,10 +68,11 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.qrscan_activity);
         sharedpreferences = getSharedPreferences(mypreference,
                 Context.MODE_PRIVATE);
-        setContentView(R.layout.qrscan_activity);
-        mScannerView = (ZXingScannerView)findViewById(R.id.scanner_view);
+        mScannerView = findViewById(R.id.scanner_view);
+        galleryImageButton = findViewById(R.id.gallery_image_button);
 
         Intent intent= getIntent();
         Bundle b = intent.getExtras();
@@ -87,10 +104,14 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
                             MY_PERMISSIONS_REQUEST_CAMERA);
                 }
             }
-        } else {
-            mScannerView = new ZXingScannerView(this);
-            setContentView(mScannerView);
         }
+
+        galleryImageButton.setOnClickListener(view -> {
+            Intent intent2 = new Intent();
+            intent2.setType("image/*");
+            intent2.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent2, "Select Picture"), SELECT_IMAGE);
+        });
 
     }
 
@@ -115,23 +136,19 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         alertDialog.setTitle("Alert");
         alertDialog.setMessage("App needs to access the Camera.");
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "DONT ALLOW",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        finish();
-                    }
+                (dialog, which) -> {
+                    dialog.dismiss();
+                    finish();
                 });
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "ALLOW",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        ActivityCompat.requestPermissions(ScanQRActivity.this,
-                                new String[]{Manifest.permission.CAMERA},
-                                MY_PERMISSIONS_REQUEST_CAMERA);
+                (dialog, which) -> {
+                    dialog.dismiss();
+                    ActivityCompat.requestPermissions(ScanQRActivity.this,
+                            new String[]{Manifest.permission.CAMERA},
+                            MY_PERMISSIONS_REQUEST_CAMERA);
 
 
 
-                    }
                 });
         alertDialog.show();
     }
@@ -141,19 +158,15 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         alertDialog.setTitle("Alert");
         alertDialog.setMessage("App needs to access the Camera.");
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "DONT ALLOW",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        //finish();
-                    }
+                (dialog, which) -> {
+                    dialog.dismiss();
+                    //finish();
                 });
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "SETTINGS",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        startInstalledAppDetailsActivity(ScanQRActivity.this);
+                (dialog, which) -> {
+                    dialog.dismiss();
+                    startInstalledAppDetailsActivity(ScanQRActivity.this);
 
-                    }
                 });
         alertDialog.show();
     }
@@ -161,7 +174,6 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         if (context == null) {
             return;
         }
-
 
         final Intent i = new Intent();
         i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -221,7 +233,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 //        builder.setTitle("Scan Result");
 //        builder.setMessage(rawResult.getText());
 //        AlertDialog alert1 = builder.create();
-//        alert1.show();
+//        alert1.show();`
 //        SharedPreferences.Editor editor = sharedpreferences.edit();
 //        editor.putString(Name, rawResult.getText());
 //        editor.apply();
@@ -232,6 +244,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 //        SharedPreferences.Editor editor = sharedpreferences.edit();
 //        editor.putString(QRVALUE, rawResult.getText());
 //        editor.apply();
+
 
         if(qrType==null){
             Toast.makeText(ScanQRActivity.this, "QrCode tidak sesuai!",Toast.LENGTH_SHORT).show();
@@ -320,22 +333,70 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SELECT_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    Bitmap bitmap1 = null;
+                    try {
+                        bitmap1 = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    WallpaperManager image = null;
 
 
+                    Bitmap bMap = bitmap1;
+                    String contents = null;
 
+                    int[] intArray = new int[bMap.getWidth() * bMap.getHeight()];
 
-//    private void checkValue(String vals){
-//        if (vals.equalsIgnoreCase(valCode)){
-//            Toast.makeText(getApplication(),"SUCCESS",
-//                    Toast.LENGTH_SHORT).show();
-//            Intent intent = new Intent(ScanQRActivity.this, SMSPinActivity.class);
-//            startActivity(intent);
-//        }else{
-//            Toast.makeText(getApplication(),"FAILED",
-//                    Toast.LENGTH_SHORT).show();
-//        }
-//
-//
-//
-//    }
+                    bMap.getPixels(intArray, 0, bMap.getWidth(), 0, 0, bMap.getWidth(), bMap.getHeight());
+
+                    LuminanceSource source = new RGBLuminanceSource(bMap.getWidth(), bMap.getHeight(), intArray);
+                    BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+                    Reader reader = new MultiFormatReader();
+                    Result result = null;
+                    try {
+                        result = reader.decode(bitmap);
+                        contents = result.getText();
+                        Log.d("Result QR", "Ini Isinya :" + contents);
+
+                        divideResult(result.getText());
+
+                        if(qrType==null){
+                            Toast.makeText(ScanQRActivity.this, "QrCode tidak sesuai!",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(!qrType.isEmpty()){
+                            QrModel qrModel = new QrModel(benef, benefName, qrType);
+                            Timber.d("Isi qrOBJ name:"+qrModel.getSourceName()+" id:"+qrModel.getSourceAcct()+" type:"+qrModel.getQrType());            Intent intent = new Intent();
+                            intent.putExtra(DefineValue.QR_OBJ, qrModel);
+                            setResult(RESULT_OK, intent);
+                        }else{
+                            Toast.makeText(ScanQRActivity.this, "Result QR:"+result.getText(),Toast.LENGTH_SHORT).show();
+                        }
+                        mScannerView.resumeCameraPreview(this);
+                        this.finish();
+
+                    } catch (Resources.NotFoundException e) {
+                        e.printStackTrace();
+                    } catch (ChecksumException e) {
+                        e.printStackTrace();
+                    } catch (com.google.zxing.FormatException e) {
+                        e.printStackTrace();
+                    } catch (NotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
