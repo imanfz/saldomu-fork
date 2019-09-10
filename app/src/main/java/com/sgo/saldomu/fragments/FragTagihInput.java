@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ import timber.log.Timber;
 
 public class FragTagihInput extends BaseFragment {
     Spinner sp_mitra, sp_communtiy;
+    LinearLayout ll_komunitas;
     SecurePreferences sp;
     EditText et_memberCode;
     Button btn_submit, btn_cancel, btn_regShop;
@@ -71,15 +73,13 @@ public class FragTagihInput extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         Bundle bundle = getArguments();
-        if (bundle!=null)
-        {
-            is_search = bundle.getBoolean(DefineValue.IS_SEARCH_DGI,false);
-            if (bundle.containsKey(DefineValue.ANCHOR_NAME_PG))
-            {
-                commCodePG = bundle.getString(DefineValue.COMM_CODE_PG,"");
-                commNamePG = bundle.getString(DefineValue.COMM_NAME_PG,"");
-                anchorNamePG = bundle.getString(DefineValue.ANCHOR_NAME_PG,"");
-                memberCode = bundle.getString(DefineValue.MEMBER_CODE_PG,"");
+        if (bundle != null) {
+            is_search = bundle.getBoolean(DefineValue.IS_SEARCH_DGI, false);
+            if (bundle.containsKey(DefineValue.ANCHOR_NAME_PG)) {
+                commCodePG = bundle.getString(DefineValue.COMM_CODE_PG, "");
+                commNamePG = bundle.getString(DefineValue.COMM_NAME_PG, "");
+                anchorNamePG = bundle.getString(DefineValue.ANCHOR_NAME_PG, "");
+                memberCode = bundle.getString(DefineValue.MEMBER_CODE_PG, "");
             }
         }
 
@@ -116,11 +116,11 @@ public class FragTagihInput extends BaseFragment {
                 bundle.putString(DefineValue.COMMUNITY_NAME, communityNameArrayList.get(sp_communtiy.getSelectedItemPosition()));
 
                 newFrag.setArguments(bundle);
-                if(getActivity() == null){
+                if (getActivity() == null) {
                     return;
                 }
                 TagihActivity ftf = (TagihActivity) getActivity();
-                ftf.switchContent(newFrag,"Registrasi Alamat Toko",true);
+                ftf.switchContent(newFrag, "Registrasi Alamat Toko", true);
             }
         }
     };
@@ -128,19 +128,18 @@ public class FragTagihInput extends BaseFragment {
     Button.OnClickListener cancelListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (inputValidation())
-            {
+            if (inputValidation()) {
                 Fragment newFrag = new FragCancelTransactionDGI();
                 Bundle bundle = new Bundle();
                 bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
                 bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
 
                 newFrag.setArguments(bundle);
-                if(getActivity() == null){
+                if (getActivity() == null) {
                     return;
                 }
                 TagihActivity ftf = (TagihActivity) getActivity();
-                ftf.switchContent(newFrag,"Pembatalan Transaksi",true);
+                ftf.switchContent(newFrag, "Pembatalan Transaksi", true);
             }
         }
     };
@@ -154,9 +153,9 @@ public class FragTagihInput extends BaseFragment {
         btn_cancel = v.findViewById(R.id.btn_cancel);
         btn_regShop = v.findViewById(R.id.bt_registTokoDGI);
         tv_saldo_collector = v.findViewById(R.id.tv_saldoCollector);
+        ll_komunitas = v.findViewById(R.id.ll_komunitas);
 
-        if (is_search)
-        {
+        if (is_search) {
             btn_cancel.setVisibility(View.VISIBLE);
             et_memberCode.setText(memberCode);
         }
@@ -171,7 +170,7 @@ public class FragTagihInput extends BaseFragment {
         Realm _realm = RealmManager.getRealmTagih();
         RealmResults<TagihModel> list = _realm.where(TagihModel.class).findAll();
         mitraNameData.addAll(list);
-
+        mitraNameArrayList.add(getString(R.string.mitra_default));
         for (int i = 0; i < list.size(); i++) {
             mitraNameArrayList.add(list.get(i).getAnchor_name());
         }
@@ -180,7 +179,7 @@ public class FragTagihInput extends BaseFragment {
         communityAdapter = new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, communityNameArrayList);
         sp_communtiy.setAdapter(communityAdapter);
 
-        if (anchorNamePG!=null) {
+        if (anchorNamePG != null) {
             int spinnerPosition = mitraAdapter.getPosition(anchorNamePG);
             sp_mitra.setSelection(spinnerPosition);
         }
@@ -188,10 +187,11 @@ public class FragTagihInput extends BaseFragment {
         sp_mitra.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                initializeCommunity(position);
-
+                if (position != 0) {
+                    ll_komunitas.setVisibility(View.VISIBLE);
+                    initializeCommunity(position - 1);
+                }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -209,19 +209,19 @@ public class FragTagihInput extends BaseFragment {
         Log.d("mainpage", "id : " + listTagih.get(0).getId());
 
         communityNameArrayList.clear();
-
+        communityNameArrayList.add(getString(R.string.community_default));
         for (int i = 0; i < listTagih.size(); i++) {
             communityNameArrayList.add(listTagih.get(i).getComm_name());
-            Timber.d("comm code tagih : "+listTagih.get(i).getComm_code());
+            Timber.d("comm code tagih : " + listTagih.get(i).getComm_code());
         }
         communityAdapter.notifyDataSetChanged();
 
-        if(listTagih != null && listTagih.size() > 0){
+        if (listTagih != null && listTagih.size() > 0) {
             commCodeTagih = listTagih.get(0).getComm_code();
-        }else
-            commCodeTagih ="";
+        } else
+            commCodeTagih = "";
 
-        if (commNamePG!=null) {
+        if (commNamePG != null) {
             int spinnerPosition = communityAdapter.getPosition(commNamePG);
             sp_communtiy.setSelection(spinnerPosition);
         }
@@ -230,9 +230,14 @@ public class FragTagihInput extends BaseFragment {
         sp_communtiy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                commCodeTagih = listTagih.get(position).getComm_code();
 
-                Timber.d("TEST comm code tagih selected: "+listTagih.get(position).getComm_code()+" pos:"+position);
+                if (position != 0){
+                    position-=1;
+                    commCodeTagih = listTagih.get(position).getComm_code();
+                }
+                else
+                    commCodeTagih = "";
+                Timber.d("comm code tagih selected: " + listTagih.get(position).getComm_code() + " pos:" + position);
             }
 
             @Override
@@ -249,17 +254,22 @@ public class FragTagihInput extends BaseFragment {
             et_memberCode.setError(getString(R.string.error_input_tagih));
             return false;
         }
-            return true;
+        if (commCodeTagih.equals("")){
+            sp_communtiy.requestFocus();
+            Toast.makeText(getActivity(),getString(R.string.error_input_community),Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
-    public void getBalanceCollector(){
-        try{
+    public void getBalanceCollector() {
+        try {
             showProgressDialog();
-            if(!memberIDLogin.isEmpty()) {
+            if (!memberIDLogin.isEmpty()) {
 
                 extraSignature = memberIDLogin;
 
-                params =  RetrofitService.getInstance().getSignature(MyApiClient.LINK_SALDO_COLLECTOR, extraSignature);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_SALDO_COLLECTOR, extraSignature);
                 params.put(WebParams.MEMBER_ID, memberIDLogin);
                 params.put(WebParams.USER_ID, userPhoneID);
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -311,8 +321,8 @@ public class FragTagihInput extends BaseFragment {
                             });
                 }
             }
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -324,7 +334,7 @@ public class FragTagihInput extends BaseFragment {
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.MEMBER_CODE, et_memberCode.getText().toString());
-        params.put(WebParams.COMM_CODE,commCodeTagih);
+        params.put(WebParams.COMM_CODE, commCodeTagih);
         params.put(WebParams.USER_ID, userPhoneID);
         Timber.d("params list invoice DGI : " + params.toString());
 
@@ -352,11 +362,11 @@ public class FragTagihInput extends BaseFragment {
                                 mEditor.apply();
 
                                 newFrag.setArguments(bundle);
-                                if(getActivity() == null){
+                                if (getActivity() == null) {
                                     return;
                                 }
                                 TagihActivity ftf = (TagihActivity) getActivity();
-                                ftf.switchContent(newFrag,"List Invoice",true);
+                                ftf.switchContent(newFrag, "List Invoice", true);
                             } else {
                                 Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                             }

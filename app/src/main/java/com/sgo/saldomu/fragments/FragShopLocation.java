@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +49,7 @@ public class FragShopLocation extends BaseFragment {
     Spinner sp_city;
     Button bt_regist, bt_back;
     TextView useCurrLoc, setCoordinate, codeStore, commNameText;
+    LinearLayout linearLayoutSetLocation;
     AutoCompleteTextView cityLocField;
 
     CustomAutoCompleteAdapter adapter;
@@ -73,6 +75,7 @@ public class FragShopLocation extends BaseFragment {
         sp_city = v.findViewById(R.id.sp_city);
         bt_back = v.findViewById(R.id.btn_cancel);
         bt_regist = v.findViewById(R.id.btn_shop_register);
+        linearLayoutSetLocation = v.findViewById(R.id.ll_setLocation);
 
         return v;
     }
@@ -112,6 +115,9 @@ public class FragShopLocation extends BaseFragment {
 
         adapters.notifyDataSetChanged();
 
+        linearLayoutSetLocation.setOnClickListener(v -> {
+            startActivityForResult(new Intent(getActivity(), MapsActivity.class), 100);
+        });
         setCoordinate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -224,8 +230,9 @@ public class FragShopLocation extends BaseFragment {
                 if (resultCode == 201) {
                     if (data != null && data.getExtras() != null) {
                         String address = data.getStringExtra("address");
-
+                        setCoordinate.setVisibility(View.VISIBLE);
                         setCoordinate.setText(address);
+                        linearLayoutSetLocation.setVisibility(View.GONE);
                         longitude = data.getDoubleExtra("longitude", 0);
                         latitude = data.getDoubleExtra("latitude", 0);
                     }

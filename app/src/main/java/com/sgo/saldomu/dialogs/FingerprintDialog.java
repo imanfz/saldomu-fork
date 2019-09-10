@@ -56,7 +56,7 @@ public class FingerprintDialog extends DialogFragment {
     private FingerprintManager fingerprintManager;
     private KeyguardManager keyguardManager;
     private FingerprintHandler helper;
-    private TextView tv_status;
+    private TextView tv_status, tv_usepassword;
     private ImageView iv_finger;
     private static final String KEY_NAME = "saldomuFingerprint";
     private int attempt;
@@ -77,9 +77,13 @@ public class FingerprintDialog extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         tv_status=v.findViewById(R.id.tv_error_finger);
+        tv_usepassword=v.findViewById(R.id.tv_usepassword);
         iv_finger=v.findViewById(R.id.iv_finger);
         listener=(FingerprintDialogListener)getTargetFragment();
 
+        tv_usepassword.setOnClickListener(v -> {
+            getDialog().dismiss();
+        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //Get an instance of KeyguardManager and FingerprintManager//
             keyguardManager = (KeyguardManager) getActivity().getSystemService(KEYGUARD_SERVICE);
