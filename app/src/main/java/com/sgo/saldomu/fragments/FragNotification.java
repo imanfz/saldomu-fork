@@ -113,7 +113,7 @@ public class FragNotification extends BaseFragment {
         mPtr.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-//                sentRetrieveNotif(false);
+                sentRetrieveNotif(false);
             }
 
             @Override
@@ -297,12 +297,6 @@ public class FragNotification extends BaseFragment {
                     getActivity().finish();
                     break;
                 case NotificationActivity.SOURCE_OF_FUND:
-//                    sentReadNotif(mData.get(position).getNotif_id(), position);
-//                    Intent dataSourceOfFund = new Intent();
-//                    dataSourceOfFund.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
-//                    dataSourceOfFund.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.SOURCE_OF_FUND);
-//                    getActivity().setResult(MainPage.RESULT_NOTIF, dataSourceOfFund);
-
                     Intent s = new Intent(getActivity(), SourceOfFundActivity.class);
                     s.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
                     s.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.SOURCE_OF_FUND);
@@ -424,6 +418,7 @@ public class FragNotification extends BaseFragment {
             params.put(WebParams.MEMBER_ID, _memberId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+            params.put(WebParams.MEMBER_CREATED, sp.getString(DefineValue.MEMBER_CREATED,""));
 
             Timber.d("isi params Retrieve Notif:" + params.toString());
 

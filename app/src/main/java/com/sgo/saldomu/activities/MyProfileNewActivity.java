@@ -47,6 +47,7 @@ import com.sgo.saldomu.models.retrofit.SentExecCustModel;
 import com.sgo.saldomu.models.retrofit.UpdateProfileModel;
 import com.sgo.saldomu.models.retrofit.UploadFotoModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
+import com.sgo.saldomu.utils.camera.CameraActivity;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.BlinkingEffectClass;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
@@ -153,7 +154,7 @@ public class MyProfileNewActivity extends BaseActivity {
         selfie = (File) savedInstanceState.getSerializable("selfieKtp");
         ttd = (File) savedInstanceState.getSerializable("TTD");
 
-        if (isVerifiedMember ) {
+        if (isVerifiedMember) {
             btn1.setVisibility(View.GONE);
             dataVerifiedMember.setVisibility(View.VISIBLE);
             if (ktp != null) {
@@ -508,7 +509,11 @@ public class MyProfileNewActivity extends BaseActivity {
                                     pickAndCameraUtil.chooseGallery(RESULT_GALLERY_TTD);
                                 }
                             } else if (which == 1) {
-                                pickAndCameraUtil.runCamera(set_result_photo);
+                                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
+                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
+                                } else {
+                                    pickAndCameraUtil.runCamera(set_result_photo);
+                                }
                             }
 
                         }
@@ -671,7 +676,7 @@ public class MyProfileNewActivity extends BaseActivity {
 //                                    alert11.show();
 //                                }
 //                                else {
-                                    finish();
+                                finish();
 //                                }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
@@ -868,6 +873,18 @@ public class MyProfileNewActivity extends BaseActivity {
                     Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
                 break;
+            case CameraActivity.REQUEST_CODE:
+                if (CameraActivity.getResult(data) != null) {
+                    final String path = CameraActivity.getResult(data);
+                    if (set_result_photo == RESULT_CAMERA_KTP){
+                        new ImageCompressionAsyncTask(KTP_TYPE).execute(path);
+                    } else {
+                        new ImageCompressionAsyncTask(TTD_TYPE).execute(path);
+                    }
+                } else {
+                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
+                }
+                break;
             default:
                 break;
         }
@@ -911,7 +928,7 @@ public class MyProfileNewActivity extends BaseActivity {
                 new ProgressRequestBody.UploadCallbacks() {
                     @Override
                     public void onProgressUpdate(int percentage) {
-                        switch (flag){
+                        switch (flag) {
                             case KTP_TYPE:
                                 pb1.setProgress(percentage);
                                 break;
@@ -939,7 +956,7 @@ public class MyProfileNewActivity extends BaseActivity {
                         String error_message = model.getError_message();
                         if (error_code.equalsIgnoreCase("0000")) {
 
-                            switch (flag){
+                            switch (flag) {
                                 case KTP_TYPE:
                                     pb1.setProgress(100);
                                     BlinkingEffectClass.blink(layoutKTP);

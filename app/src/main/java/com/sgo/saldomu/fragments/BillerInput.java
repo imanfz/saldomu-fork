@@ -258,12 +258,8 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PAM));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (biller_type_code.equals(billerType[7]) || biller_type_code.equals(billerType[19])) {
-//            if (biller_type_code.equals(billerType[19])) {
-//                tv_ovo.setVisibility(View.VISIBLE);
-//                tv_ovo.setText(R.string.newhome_ovo);
-//            }
             buy_type = _buy_type[1];
-            buy_code = BillerActivity.PAYMENT_TYPE;
+            buy_code = BillerActivity.PURCHASE_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
             et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);

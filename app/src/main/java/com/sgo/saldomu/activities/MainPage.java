@@ -1185,6 +1185,7 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.DATA_BANNER);
         mEditor.remove(DefineValue.IS_POS);
         mEditor.remove(DefineValue.COMM_UPGRADE_MEMBER);
+        mEditor.remove(DefineValue.MEMBER_CREATED);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -1268,19 +1269,19 @@ public class MainPage extends BaseActivity {
 
                             mNavDrawer.selectItem(NavigationDrawMenu.MPAYFRIENDS, dataBundle);
                             break;
-                        case NotificationActivity.TYPE_LIKE:
+                        case NotificationActivity.TYPE_LIKE: break;
                         case NotificationActivity.TYPE_COMMENT:
-                            int _post_id = Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID, "0"));
-                            if (mContent instanceof FragMainPage) {
-                                FragMainPage mFrag = (FragMainPage) mContent;
-                                if (mFrag.getFragment(0) instanceof MyHistory) {
-                                    MyHistory _history = (MyHistory) mFrag.getFragment(0);
-                                    _history.ScrolltoItem(_post_id);
-                                }
-                            }
-                            Intent i = new Intent(this, HistoryDetailActivity.class);
-                            i.putExtras(data);
-                            switchActivity(i, ACTIVITY_RESULT);
+//                            int _post_id = Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID, "0"));
+//                            if (mContent instanceof FragMainPage) {
+//                                FragMainPage mFrag = (FragMainPage) mContent;
+//                                if (mFrag.getFragment(0) instanceof MyHistory) {
+//                                    MyHistory _history = (MyHistory) mFrag.getFragment(0);
+//                                    _history.ScrolltoItem(_post_id);
+//                                }
+//                            }
+//                            Intent i = new Intent(this, HistoryDetailActivity.class);
+//                            i.putExtras(data);
+//                            switchActivity(i, ACTIVITY_RESULT);
                             break;
                         case NotificationActivity.REJECTED_KTP:
                             Intent e = new Intent(this, MyProfileNewActivity.class);

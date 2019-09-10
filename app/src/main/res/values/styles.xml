@@ -45,7 +45,7 @@
     </style>
 
     <style name="CustomProgressbar" parent="@android:style/Widget.ProgressBar">
-        <item name="android:color">@color/white</item>
+        <item name="android:color">@color/transparent</item>
     </style>
 
     <style name="Reg_Button">

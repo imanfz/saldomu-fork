@@ -140,18 +140,22 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                             (FingerprintManager) getActivity().getSystemService(FINGERPRINT_SERVICE);
 
                     //Check whether the device has a fingerprint sensor//
-                    if (!fingerprintManager.isHardwareDetected() ||
-                            (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED)
-                            || !fingerprintManager.hasEnrolledFingerprints()) {
-                        // If a fingerprint sensor isn’t available, then inform the user that they’ll be unable to use your app’s fingerprint functionality//
+                    try {
+                        if (!fingerprintManager.isHardwareDetected() ||
+                                (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED)
+                                || !fingerprintManager.hasEnrolledFingerprints()) {
+                            // If a fingerprint sensor isn’t available, then inform the user that they’ll be unable to use your app’s fingerprint functionality//
 
-                    } else if (sp.getString(DefineValue.USER_PASSWORD, "") != "") {
-                        // Create and show the dialog.
-                        isFingerprint = false;
-                        FingerprintDialog fingerprintDialog = new FingerprintDialog();
-                        fingerprintDialog.setTargetFragment(Login.this, 300);
-                        fingerprintDialog.setCancelable(false);
-                        fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
+                        } else if (sp.getString(DefineValue.USER_PASSWORD, "") != "") {
+                            // Create and show the dialog.
+                            isFingerprint = false;
+                            FingerprintDialog fingerprintDialog = new FingerprintDialog();
+                            fingerprintDialog.setTargetFragment(Login.this, 300);
+                            fingerprintDialog.setCancelable(true);
+                            fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
+                        }
+                    }catch (NullPointerException e){
+                        Timber.e(e.getMessage());
                     }
                 }
             }
@@ -557,6 +561,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                         mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
                         mEditor.putString(DefineValue.IS_AGENT_TRX_REQ, commModel.getIs_agent_trx_request());
                         mEditor.putString(DefineValue.COMM_UPGRADE_MEMBER, commModel.getComm_upgrade_member());
+                        mEditor.putString(DefineValue.MEMBER_CREATED, commModel.getMember_created());
                         Timber.w("isi comm id yg bener:" + commModel.getCommId());
 
                         break;
