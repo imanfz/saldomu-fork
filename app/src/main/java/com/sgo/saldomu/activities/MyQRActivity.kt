@@ -10,9 +10,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.Toast
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
@@ -39,14 +37,14 @@ class MyQRActivity : BaseActivity() {
         setActionBarIcon(R.drawable.ic_arrow_left)
         actionBarTitle = getString(R.string.lbl_qr_saya)
 
-        val layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, resources.displayMetrics.widthPixels)
+        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, resources.displayMetrics.widthPixels)
         iv_qr.layoutParams = layoutParams
-
 
         sourceAcct = intent.getStringExtra("sourceAcct")
         sourceAcctName = intent.getStringExtra("sourceAcctName")
         imageBitmap = ScanQRUtils.getInstance(this).generateQRCode(DefineValue.QR_TYPE_FROM_DEFAULT_ACCOUNT, sourceAcct, sourceAcctName)
         name_text_view.text = sourceAcctName
+        phone_number_text_view.text = sourceAcct
         iv_qr.setImageBitmap(imageBitmap)
 
         save_button.setOnClickListener {
