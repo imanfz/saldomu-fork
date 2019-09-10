@@ -799,6 +799,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="failed_save_gallery">Gagal simpan gambar di galeri</string>
     <string name="saving_gallery">Menyimpan di galeri...</string>
     <string name="community">Komunitas</string>
+    <string name="community_default">Pilih Komunitas</string>
     <string name="member_code">Kode Member</string>
     <string name="shop_code">Kode Toko</string>
     <string name="foldername_struk">Struk Saldomu</string>
@@ -1308,7 +1309,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="lbl_need_help">Halo SaldoMu, </string>
     <string name="mitra">Mitra</string>
+    <string name="mitra_default">Pilih Mitra</string>
     <string name="error_input_tagih">Kode Toko dibutuhkan!</string>
+    <string name="error_input_community">Komunitas dibutuhkan!</string>
     <string name="invoice_dgi_search">Cari Invoice</string>
     <string name="invoice_dgi_payment">Bayar Invoice</string>
     <string name="payment_type">Tipe Pembayaran</string>
@@ -1333,6 +1336,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="city">Kota</string>
     <string name="collector_balance">Collection Limit</string>
     <string name="address_hint">Masukkan Alamat disini</string>
+    <string name="city_hint">Masukkan Kota disini</string>
     <string name="cancel_transaction_dgi">Transaksi Sukses Dibatalkan</string>
     <string name="password_validation">Validasi Password</string>
     <string name="terms_condition_upload_ktp">Dengan ini saya menyatakan bahwa dokumen yang saya unggah adalah benar keabsahannya
@@ -1385,6 +1389,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="fingerprint_success">Fingerprint recognized</string>
     <string name="fingerprint_failed">Fingerprint not recognized. Try again.</string>
     <string name="fingerprint_attempt">Fingerprint authentication failed</string>
+    <string name="fingerprint_use_password_text">Tap here to use password</string>
     <string name="dialog_download_title">File Starter Kit</string>
     <string name="prepaid">Prabayar</string>
     <string name="postpaid">Pascabayar</string>
@@ -1412,4 +1417,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="gender_validation">Jenis Kelamin dibutuhkan!</string>
     <string name="empty_notification">Sepertinya kamu masih belum mendapatkan pesan atau melakukan transaksi.</string>
     <string name="cashout_dialog_message">Menu ini tidak tersedia untuk Anda.</string>
+    <string name="adress_detail">Alamat Lengkap</string>
+    <string name="location">Lokasi</string>
+    <string name="set_location">Set Lokasi</string>
 </resources>
