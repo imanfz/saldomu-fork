@@ -92,6 +92,9 @@ public class LoginCommunityModel {
     @SerializedName("comm_upgrade_member")
     @Expose
     private String comm_upgrade_member;
+    @SerializedName("member_created")
+    @Expose
+    private String member_created;
 
     public String getCommId() {
         return commId;
@@ -288,4 +291,12 @@ public class LoginCommunityModel {
     }
 
     public String getComm_upgrade_member() {return comm_upgrade_member;}
+
+    public void setMember_created(String member_created) {
+        this.member_created = member_created;
+    }
+
+    public String getMember_created() {
+        return member_created;
+    }
 }

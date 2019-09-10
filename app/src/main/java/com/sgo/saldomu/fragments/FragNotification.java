@@ -113,7 +113,7 @@ public class FragNotification extends BaseFragment {
         mPtr.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-//                sentRetrieveNotif(false);
+                sentRetrieveNotif(false);
             }
 
             @Override
@@ -418,6 +418,7 @@ public class FragNotification extends BaseFragment {
             params.put(WebParams.MEMBER_ID, _memberId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+            params.put(WebParams.MEMBER_CREATED, sp.getString(DefineValue.MEMBER_CREATED,""));
 
             Timber.d("isi params Retrieve Notif:" + params.toString());
 

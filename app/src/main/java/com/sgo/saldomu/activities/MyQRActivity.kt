@@ -86,7 +86,7 @@ class MyQRActivity : BaseActivity() {
     }
 
     private fun getOutputMediaFile(): File? {
-        var mediaStorageDir = File(Environment.getExternalStorageDirectory().toString() + "/Android/data/" + applicationContext.packageName + "/Files")
+        var mediaStorageDir = File(Environment.getExternalStorageDirectory().path, this.getString(R.string.appname) + "Image")
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
@@ -98,7 +98,6 @@ class MyQRActivity : BaseActivity() {
         mediaFile = File(mediaStorageDir.path + File.separator + mImageName)
         return mediaFile
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

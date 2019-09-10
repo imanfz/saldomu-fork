@@ -1185,6 +1185,7 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.DATA_BANNER);
         mEditor.remove(DefineValue.IS_POS);
         mEditor.remove(DefineValue.COMM_UPGRADE_MEMBER);
+        mEditor.remove(DefineValue.MEMBER_CREATED);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
