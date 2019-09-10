@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -40,7 +42,9 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ScanQRUtils;
 import com.sgo.saldomu.models.QrModel;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import timber.log.Timber;
@@ -52,14 +56,13 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     public static final String ALLOW_KEY = "ALLOWED";
     public static final String CAMERA_PREF = "camera_pref";
     public static final String Name = "nameKey";
-    public static final String valCode="MSIGNCODE";
-    private String bundleType, bundleSource,scanResult;
+    public static final String valCode = "MSIGNCODE";
+    private String bundleType, bundleSource, scanResult;
     SharedPreferences sharedpreferences;
     public static final String mypreference = "mypref";
-    public static final String QRVALUE= "qrvalue";
+    public static final String QRVALUE = "qrvalue";
     QrModel parcelQRData;
     private static final int SELECT_IMAGE = 111;
-
 
 
     private String qrType, benef, benefName;
@@ -74,12 +77,12 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         mScannerView = findViewById(R.id.scanner_view);
         galleryImageButton = findViewById(R.id.gallery_image_button);
 
-        Intent intent= getIntent();
+        Intent intent = getIntent();
         Bundle b = intent.getExtras();
-        if(b != null){
+        if (b != null) {
             assert b != null;
-            bundleType =b.getString("bundleType");
-            bundleSource=b.getString("bundleSource");
+            bundleType = b.getString("bundleType");
+            bundleSource = b.getString("bundleSource");
         }
 
         if (ContextCompat.checkSelfPermission(this,
@@ -148,7 +151,6 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
                             MY_PERMISSIONS_REQUEST_CAMERA);
 
 
-
                 });
         alertDialog.show();
     }
@@ -170,6 +172,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
                 });
         alertDialog.show();
     }
+
     public static void startInstalledAppDetailsActivity(final Activity context) {
         if (context == null) {
             return;
@@ -185,7 +188,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 
         context.startActivity(i);
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -212,7 +215,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         switch (item.getItemId()) {
             case android.R.id.home:
                 Intent parentIntent = NavUtils.getParentActivityIntent(this);
-                if(parentIntent == null) {
+                if (parentIntent == null) {
                     finish();
                     return true;
                 } else {
@@ -246,21 +249,19 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 //        editor.apply();
 
 
-        if(qrType==null){
-            Toast.makeText(ScanQRActivity.this, "QrCode tidak sesuai!",Toast.LENGTH_SHORT).show();
-        }
-        else if(!qrType.isEmpty()){
+        if (qrType == null) {
+            Toast.makeText(ScanQRActivity.this, "QrCode tidak sesuai!", Toast.LENGTH_SHORT).show();
+        } else if (!qrType.isEmpty()) {
             QrModel qrModel = new QrModel(benef, benefName, qrType);
-            Timber.d("Isi qrOBJ name:"+qrModel.getSourceName()+" id:"+qrModel.getSourceAcct()+" type:"+qrModel.getQrType());            Intent intent = new Intent();
+            Timber.d("Isi qrOBJ name:" + qrModel.getSourceName() + " id:" + qrModel.getSourceAcct() + " type:" + qrModel.getQrType());
+            Intent intent = new Intent();
             intent.putExtra(DefineValue.QR_OBJ, qrModel);
             setResult(RESULT_OK, intent);
-        }else{
-            Toast.makeText(ScanQRActivity.this, "Result QR:"+rawResult.getText(),Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(ScanQRActivity.this, "Result QR:" + rawResult.getText(), Toast.LENGTH_SHORT).show();
         }
         mScannerView.resumeCameraPreview(this);
         this.finish();
-
-
 
 
 //        if(qrType != null ){
@@ -294,33 +295,32 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 
     }
 
-    public void divideResult(String rawResult){
+    public void divideResult(String rawResult) {
 
 
         String result = rawResult;
         String[] array = new String[10];
 
-        int i=0;
-        for(String value : result.split(ScanQRUtils.SCAN_QR_SEPARATOR)){
-            Timber.d("splitt string:"+value);
+        int i = 0;
+        for (String value : result.split(ScanQRUtils.SCAN_QR_SEPARATOR)) {
+            Timber.d("splitt string:" + value);
             array[i] = value;
 
-            if(array[i].contains(DefineValue.QR_TYPE)){
-                qrType = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR)+1);
-            }
-            else if(array[i].contains(DefineValue.NO_HP_BENEF)){
-                benef = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR)+1);
-                Timber.d("TEST benef:"+ benef);
-            }
-            else if(array[i].contains(DefineValue.SOURCE_ACCT_NAME)){
-                benefName = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR)+1);
-                Timber.d("TEST benefName:"+ benefName);
+            if (array[i].contains(DefineValue.QR_TYPE)) {
+                qrType = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1);
+            } else if (array[i].contains(DefineValue.NO_HP_BENEF)) {
+                benef = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1);
+                Timber.d("TEST benef:" + benef);
+            } else if (array[i].contains(DefineValue.SOURCE_ACCT_NAME)) {
+                benefName = array[i].substring(array[i].indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1);
+                Timber.d("TEST benefName:" + benefName);
             }
             i++;
         }
 //        Timber.d("isi qrType:"+ qrType +" benef:"+benef+" amount:"+amount+" messages:"+messages);
     }
-    private void PassResult(){
+
+    private void PassResult() {
         Intent intent = new Intent(this, ScanQRActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("bundleType", bundleType);
@@ -342,11 +342,15 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
                 if (data != null) {
                     Bitmap bitmap1 = null;
                     try {
-                        bitmap1 = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+//                        bitmap1 = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
 
+                        InputStream inputStream = this.getContentResolver().openInputStream(data.getData());
+                        bitmap1 = BitmapFactory.decodeStream(inputStream);
                     } catch (IOException e) {
+                        Log.d("bitmap1 QR", e.getLocalizedMessage());
                         e.printStackTrace();
                     }
+//                    bitmap1 = getBitmap(data.getData());
                     WallpaperManager image = null;
 
 
@@ -369,16 +373,16 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 
                         divideResult(result.getText());
 
-                        if(qrType==null){
-                            Toast.makeText(ScanQRActivity.this, "QrCode tidak sesuai!",Toast.LENGTH_SHORT).show();
-                        }
-                        else if(!qrType.isEmpty()){
+                        if (qrType == null) {
+                            Toast.makeText(ScanQRActivity.this, "QrCode tidak sesuai!", Toast.LENGTH_SHORT).show();
+                        } else if (!qrType.isEmpty()) {
                             QrModel qrModel = new QrModel(benef, benefName, qrType);
-                            Timber.d("Isi qrOBJ name:"+qrModel.getSourceName()+" id:"+qrModel.getSourceAcct()+" type:"+qrModel.getQrType());            Intent intent = new Intent();
+                            Timber.d("Isi qrOBJ name:" + qrModel.getSourceName() + " id:" + qrModel.getSourceAcct() + " type:" + qrModel.getQrType());
+                            Intent intent = new Intent();
                             intent.putExtra(DefineValue.QR_OBJ, qrModel);
                             setResult(RESULT_OK, intent);
-                        }else{
-                            Toast.makeText(ScanQRActivity.this, "Result QR:"+result.getText(),Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ScanQRActivity.this, "Result QR:" + result.getText(), Toast.LENGTH_SHORT).show();
                         }
                         mScannerView.resumeCameraPreview(this);
                         this.finish();
