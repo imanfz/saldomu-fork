@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -48,7 +49,7 @@ public class FragShopLocation extends BaseFragment {
     EditText et_address;
     Spinner sp_city;
     Button bt_regist, bt_back;
-    TextView useCurrLoc, setCoordinate, codeStore, commNameText;
+    TextView useCurrLoc, setCoordinate, codeStore, commNameText, changeLoc;
     LinearLayout linearLayoutSetLocation;
     AutoCompleteTextView cityLocField;
 
@@ -70,6 +71,7 @@ public class FragShopLocation extends BaseFragment {
         codeStore = v.findViewById(R.id.regis_shop_store_code);
         cityLocField = v.findViewById(R.id.get_shop_location_list);
         commNameText = v.findViewById(R.id.regis_shop_community);
+        changeLoc = v.findViewById(R.id.regis_shop_change_location);
 
         et_address = v.findViewById(R.id.et_address);
         sp_city = v.findViewById(R.id.sp_city);
@@ -115,31 +117,19 @@ public class FragShopLocation extends BaseFragment {
 
         adapters.notifyDataSetChanged();
 
-        linearLayoutSetLocation.setOnClickListener(v -> {
-            startActivityForResult(new Intent(getActivity(), MapsActivity.class), 100);
-        });
-        setCoordinate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), MapsActivity.class), 100);
+        final View.OnClickListener openMap = v -> startActivityForResult(new Intent(getActivity(), MapsActivity.class), 100);
+        linearLayoutSetLocation.setOnClickListener(openMap);
+
+        changeLoc.setOnClickListener(openMap);
+
+        bt_regist.setOnClickListener(v -> {
+            if (checkInput()) {
+                setMemberLocation();
             }
         });
 
-        bt_regist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkInput()) {
-                    setMemberLocation();
-                }
-            }
-        });
+        bt_back.setOnClickListener(v -> getFragmentManager().popBackStack());
 
-        bt_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getFragmentManager().popBackStack();
-            }
-        });
     }
 
     boolean checkInput() {
@@ -224,12 +214,13 @@ public class FragShopLocation extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+//        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         switch (requestCode) {
             case 100:
                 if (resultCode == 201) {
                     if (data != null && data.getExtras() != null) {
                         String address = data.getStringExtra("address");
+                        changeLoc.setVisibility(View.VISIBLE);
                         setCoordinate.setVisibility(View.VISIBLE);
                         setCoordinate.setText(address);
                         linearLayoutSetLocation.setVisibility(View.GONE);
