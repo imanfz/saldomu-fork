@@ -278,6 +278,7 @@ public class MyApiClient {
     public static String LINK_SEARCH_MEMBER;
     public static String LINK_EXEC_UPGRADE_MEMBER;
     public static String LINK_REQ_UPGRADE_MEMBER;
+    public static String LINK_GET_BILLER_DENOM;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -479,6 +480,8 @@ public class MyApiClient {
         LINK_SEARCH_MEMBER          = headaddressfinal + "CheckMemberID/Retrieve";
         LINK_EXEC_UPGRADE_MEMBER    = headaddressfinal + "ExecUpgradeMember/Invoke";
         LINK_REQ_UPGRADE_MEMBER     = headaddressfinal + "InitiateUpgradeGold/Invoke";
+
+        LINK_GET_BILLER_DENOM     = headaddressfinal + "BillerEspayNew/Retrieve";
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)

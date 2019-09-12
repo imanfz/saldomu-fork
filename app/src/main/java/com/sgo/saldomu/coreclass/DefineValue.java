@@ -296,6 +296,7 @@ public class DefineValue {
     public static String BILLER_TYPE_PLN_TKN = "tkn";
     public static String BILLER_TYPE_NON_TAG = "non";
     public static String BILLER_TYPE_PLN = "pln";
+    public static String BILLER_TYPE_EMON = "EMON";
     public static String VALUE_ITEM_DATA = "valueItemData";
     public static String IS_SHOW_DESCRIPTION = "isDescription";
     public static String IS_PLN = "isPLN";
