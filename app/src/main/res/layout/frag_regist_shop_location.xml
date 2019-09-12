@@ -116,14 +116,29 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="20dp"/>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/location"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="10dp"
-                    android:textSize="18sp"/>
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/location"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="10dp"
+                        android:textSize="18sp"/>
+
+                    <TextView
+                        android:id="@+id/regis_shop_change_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:gravity="end"
+                        android:text="@string/change"
+                        android:textSize="18sp"
+                        android:textColor="@color/colorPrimary"/>
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -208,7 +223,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:background="@color/grey_50">
         <Button
             android:layout_margin="10dp"
             android:layout_width="match_parent"

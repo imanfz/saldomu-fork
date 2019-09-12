@@ -454,7 +454,8 @@ class BillerInputData : BaseFragment() {
                                 }
 
                                 billerinput_layout_detail.visibility = View.VISIBLE
-                                isShowDescription = false
+                                if (is_display_amount)
+                                    isShowDescription = true
                                 billerinput_detail_text_name.text = item_name
                                 billerinput_detail_price.text = getString(R.string.rp_) + " " + CurrencyFormat.format(item_price)
                                 billerinput_detail_admin_fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(fee)
