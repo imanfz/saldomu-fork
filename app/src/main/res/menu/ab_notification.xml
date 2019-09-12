@@ -24,7 +24,14 @@
             android:icon="@drawable/ic_setting"
             someNamespace:showAsAction="always"
             />
-
+        <item
+            android:id="@+id/search"
+            android:orderInCategory="4"
+            android:title="@string/menu_item_title_search"
+            android:icon="@drawable/ic_search"
+            someNamespace:showAsAction="always"
+            android:visible="false"
+            />
         <item
             android:id="@+id/right_drawer_menu"
             android:orderInCategory="99"

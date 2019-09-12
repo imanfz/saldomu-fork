@@ -151,7 +151,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                             isFingerprint = false;
                             FingerprintDialog fingerprintDialog = new FingerprintDialog();
                             fingerprintDialog.setTargetFragment(Login.this, 300);
-                            fingerprintDialog.setCancelable(true);
+                            fingerprintDialog.setCancelable(false);
                             fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
                         }
                     }catch (NullPointerException e){
