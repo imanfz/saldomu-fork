@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,6 +75,7 @@ import timber.log.Timber;
 
 public class BillerInputPulsa extends BaseFragment {
 
+    private static final String TAG = "BillerInputPulsa";
     public final static int REQUEST_BillerInqReq = 22;
     private View v;
     private TextView tv_denom;
@@ -183,6 +185,7 @@ public class BillerInputPulsa extends BaseFragment {
 
         initLayout();
         initPrefixListener();
+        getBillerDenom();
         initRealm();
 
         if (args.getString(DefineValue.CUST_ID, "") != "") {
@@ -986,6 +989,40 @@ public class BillerInputPulsa extends BaseFragment {
 
         BillerActivity fca = (BillerActivity) getActivity();
         fca.setToolbarTitle(_title);
+    }
+
+    private void getBillerDenom(){
+        Log.v(TAG, "getBillerDenom()");
+
+        extraSignature = biller_type_code;
+//        HashMap<String, Object> params = RetrofitService.getInstance().getSignature88(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+        params.put(WebParams.BILLER_TYPE, biller_type_code);
+
+        Log.v(TAG, "getBillerDenom : "+ "params");
+        Log.v(TAG, "getBillerDenom : "+ params);
+
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_BILLER_DENOM, params, new ResponseListener() {
+            @Override
+            public void onResponses(JsonObject object) {
+                Log.v(TAG, "getBillerDenom : "+ "onResponses");
+                Log.v(TAG, "getBillerDenom : "+ object.toString());
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                Log.e(TAG, "getBillerDenom : "+ "onError");
+                Log.e(TAG, "getBillerDenom : "+ throwable.getMessage());
+                Toast.makeText(getContext(), throwable.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onComplete() {
+                Log.v(TAG, "getBillerDenom : "+ "onComplete");
+            }
+        });
     }
 }
 
