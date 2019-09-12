@@ -500,7 +500,8 @@ public class BillerInputPulsa extends BaseFragment {
                         }
 
                         layout_detail.setVisibility(View.VISIBLE);
-                        isShowDescription = false;
+                        if (is_display_amount)
+                            isShowDescription = true;
                         tv_detail_item_name.setText(item_name);
                         tv_detail_item_price.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(item_price));
                         tv_detail_admin_fee.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(fee));

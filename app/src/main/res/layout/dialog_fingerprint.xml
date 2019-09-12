@@ -19,4 +19,11 @@
         android:text="@string/confirm_fingerprint"
         android:autoSizeTextType="uniform"
         />
+    <TextView
+        android:id="@+id/tv_usepassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/colorPrimary"
+        android:text="@string/fingerprint_use_password_text"/>
 </LinearLayout>

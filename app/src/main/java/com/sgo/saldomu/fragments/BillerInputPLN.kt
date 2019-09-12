@@ -421,7 +421,8 @@ class BillerInputPLN : BaseFragment() {
                                 }
 
                                 billerinput_layout_detail.visibility = View.VISIBLE
-                                isShowDescription = false
+                                if (is_display_amount)
+                                    isShowDescription = true
                                 billerinput_detail_text_name.text = item_name
                                 billerinput_detail_price.text = getString(R.string.rp_) + " " + CurrencyFormat.format(item_price)
                                 billerinput_detail_admin_fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(fee)
@@ -554,7 +555,6 @@ class BillerInputPLN : BaseFragment() {
 
     private fun changeToConfirmBiller(feeModel: String, merchant_type: String, bank_code: String?, product_code: String?, attempt: Int) {
         val mArgs = Bundle()
-        mArgs.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription!!)
         mArgs.putString(DefineValue.TX_ID, tx_id)
         mArgs.putString(DefineValue.CCY_ID, ccy_id)
         mArgs.putString(DefineValue.AMOUNT, item_price.toString())
@@ -583,8 +583,10 @@ class BillerInputPLN : BaseFragment() {
         mArgs.putInt(DefineValue.ATTEMPT, attempt)
         mArgs.putString(DefineValue.ADDITIONAL_FEE, sentPaymentBillerModel.additional_fee)
 
-        if (is_display_amount)
+        if (is_display_amount){
+            mArgs.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription!!)
             mArgs.putString(DefineValue.DESCRIPTION, description)
+        }
 
         if (getIs_input_amount()!!)
             mArgs.putString(DefineValue.TOTAL_AMOUNT, total.toString())
