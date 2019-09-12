@@ -610,6 +610,7 @@ public class DefineValue {
     public static String CUST_ID_MEMBER = "custIdMember";
     public static String BENEF_BANK_CODE= "benef_bank_code";
     public static String MEMBER_CREATED= "member_created";
+    public static String PAYMENT_BANK = "paymentBank";
 
 }
 

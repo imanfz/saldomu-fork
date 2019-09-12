@@ -245,7 +245,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             showReportCollectorDialog(response)
         } else if (_object.buss_scheme_code == "SG3") {
             showReportSOFDialog(response)
-        } else if (_object.buss_scheme_code == "OR" || _object.buss_scheme_code == "ORP" || _object.buss_scheme_code == "IR") run {
+        } else if (_object.buss_scheme_code == "OR" || _object.buss_scheme_code == "ORP" || _object.buss_scheme_code == "IR" || _object.buss_scheme_code=="OC") run {
             showReportBillerDialog(response)
         }
     }
@@ -253,6 +253,8 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
     private fun showReportBillerDialog(response: GetTrxStatusReportModel) {
         val args = Bundle()
         val dialog = ReportBillerDialog.newInstance(this)
+        args.putString(DefineValue.USERID_PHONE, response.member_cust_id)
+        args.putString(DefineValue.USER_NAME, response.member_cust_name)
         args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response.created!!))
         args.putString(DefineValue.TX_ID, response.tx_id)
         args.putString(DefineValue.DETAIL, response.detail)
@@ -265,6 +267,8 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.MEMBER_NAME, response.member_name)
         args.putString(DefineValue.PAYMENT_PHONE, response.payment_phone)
         args.putString(DefineValue.PAYMENT_NAME, response.payment_name)
+        args.putString(DefineValue.PAYMENT_BANK, response.payment_bank)
+        args.putString(DefineValue.NO_BENEF, response.benef_acct_no)
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.admin_fee))
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.total_amount))
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tx_amount))
