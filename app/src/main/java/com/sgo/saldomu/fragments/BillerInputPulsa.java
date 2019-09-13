@@ -185,7 +185,7 @@ public class BillerInputPulsa extends BaseFragment {
 
         initLayout();
         initPrefixListener();
-        getBillerDenom();
+//        getBillerDenom();
         initRealm();
 
         if (args.getString(DefineValue.CUST_ID, "") != "") {

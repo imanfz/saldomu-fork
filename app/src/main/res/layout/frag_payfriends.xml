@@ -29,14 +29,14 @@
                 >
             <Button
                     android:id="@+id/btn_get_otp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/white"
                     android:gravity="center"
                     android:text="@string/proses"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/button_transparant"
+                    android:background="@drawable/rounded_background_blue"
                     />
 
         </com.balysv.materialripple.MaterialRippleLayout>

@@ -280,8 +280,6 @@ public class MyApiClient {
     public static String LINK_REQ_UPGRADE_MEMBER;
     public static String LINK_GET_BILLER_DENOM;
 
-    public static String LINK_GET_BILLER_DENOM;
-
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
         LINK_REG_STEP1           = headaddressfinal + "RegStep1/Invoke";

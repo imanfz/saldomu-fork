@@ -439,9 +439,10 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                     } else {
                         new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getCurrentPhotoPath());
                     }
-                } else {
-                    Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_LONG).show();
                 }
+//                else {
+//                    Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_LONG).show();
+//                }
                 break;
             default:
                 break;

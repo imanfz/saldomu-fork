@@ -324,7 +324,7 @@
     <string name="listcontact_edittext_hint_filter">Cari Kontak</string>
     <string name="listcontact_text_loading">Melakukan Cek Kontak …</string>
 
-    <string name="biller_ab_title">Daftar Biller</string>
+    <string name="biller_ab_title">Biller</string>
     <string name="biller_empty_data">Data tidak tersedia</string>
 
     <string name="biller_name">Nama</string>

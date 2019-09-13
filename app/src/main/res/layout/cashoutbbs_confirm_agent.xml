@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout android:id="@+id/cashout_bottom_layout"
-        android:background="@color/windowBackgroundColor"
+        android:background="@color/white"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:padding="8dp"
@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:gravity="center"
                 android:text="@string/sent"
                 android:layout_gravity="center_horizontal"
