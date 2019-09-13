@@ -216,7 +216,8 @@ public class BillerDesciption extends BaseFragment {
         if (buy_type == BillerActivity.PURCHASE_TYPE) {
             tv_biller_name_value = v.findViewById(R.id.billertoken_biller_name_value);
             tv_biller_name_value.setText(biller_name);
-            if (is_display_amount && biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN_TKN)) {
+            if (is_display_amount ) {
+                if (biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN_TKN) || biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_EMON))
                 initializeDescriptionLayout();
             }
         } else if (buy_type == BillerActivity.PAYMENT_TYPE) {

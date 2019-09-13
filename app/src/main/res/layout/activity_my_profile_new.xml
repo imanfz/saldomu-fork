@@ -150,7 +150,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="30dp"
-                    android:background="@color/colorPrimaryDark"
+                    android:background="@drawable/rounded_background_blue"
                     android:text="Selanjutnya"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -375,7 +375,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="30dp"
-                        android:background="@color/colorPrimaryDark"
+                        android:background="@drawable/rounded_background_blue"
                         android:text="Proses"
                         android:saveEnabled="false"
                         android:textColor="@color/white" />

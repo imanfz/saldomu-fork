@@ -278,7 +278,6 @@ public class MyApiClient {
     public static String LINK_SEARCH_MEMBER;
     public static String LINK_EXEC_UPGRADE_MEMBER;
     public static String LINK_REQ_UPGRADE_MEMBER;
-
     public static String LINK_GET_BILLER_DENOM;
 
     public void InitializeAddress(){
