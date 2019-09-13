@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -85,15 +86,18 @@ import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.services.UpdateBBSBirthPlace;
 import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
+import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import io.realm.Realm;
 import timber.log.Timber;
@@ -157,6 +161,7 @@ public class MainPage extends BaseActivity {
     private NotificationActionView actionView;
 
     private LevelClass levelClass;
+    public  PickAndCameraUtil pickAndCameraUtil;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -183,6 +188,9 @@ public class MainPage extends BaseActivity {
         bottomNavigationView = findViewById(R.id.home_bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
         bottomNavigationView.setOnNavigationItemSelectedListener(drawerListener);
+
+        pickAndCameraUtil = new PickAndCameraUtil(this);
+
 
         isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
         userNameLogin = sp.getString(DefineValue.USER_NAME, "");
@@ -1312,8 +1320,14 @@ public class MainPage extends BaseActivity {
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
+            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                if (fragment.isVisible()) {
+                    fragment.onActivityResult(requestCode, resultCode, data);
+                }
+            }
         }
     }
+
 
     private Boolean isLogin() {
         flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);

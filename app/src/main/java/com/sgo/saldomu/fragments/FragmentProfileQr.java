@@ -24,11 +24,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyQRActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
 import com.sgo.saldomu.activities.UpgradeMemberActivity;
+import com.sgo.saldomu.coreclass.CoreApp;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -58,6 +61,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -83,7 +87,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private ImageView custImage;
     private DateFormat fromFormat;
     private DateFormat dobFormat;
-    private PickAndCameraUtil pickAndCameraUtil;
+//    private PickAndCameraUtil pickAndCameraUtil;
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
     final int RC_CAMERA_STORAGE = 14;
@@ -125,7 +129,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         levelClass = new LevelClass(getActivity(), sp);
         fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID", "INDONESIA"));
         dobFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID", "INDONESIA"));
-        pickAndCameraUtil = new PickAndCameraUtil(getActivity());
+//        pickAndCameraUtil = new PickAndCameraUtil(getActivity());
 
         initData();
         checkContactCenter();
@@ -290,7 +294,8 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                     (dialog, which) -> {
                         if (which == 0) {
                             Timber.wtf("masuk gallery");
-                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+                            ((MainPage)getActivity()).pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+//                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
                         } else if (which == 1) {
                             chooseCamera();
                         }
@@ -324,14 +329,15 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
         Timber.wtf("url prof pic:" + _url_profpic);
 
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
+        Bitmap bm = BitmapFactory.decodeResource(Objects.requireNonNull(CoreApp.getAppContext()).getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
         if (_url_profpic != null && _url_profpic.isEmpty()) {
-            GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, custImage);
+            GlideManager.sharedInstance().initializeGlide(CoreApp.getAppContext(), R.drawable.user_unknown_menu, roundedImage, custImage);
         } else {
-            GlideManager.sharedInstance().initializeGlide(getActivity(), _url_profpic, roundedImage, custImage);
+            GlideManager.sharedInstance().initializeGlide(CoreApp.getAppContext(), _url_profpic, roundedImage, custImage);
         }
+
     }
 
     private void viewOnProggressUpgrade() {
@@ -393,7 +399,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private void chooseCamera() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(getContext(), perms)) {
-            pickAndCameraUtil.runCamera(RESULT_CAMERA);
+            ((MainPage)getActivity()).pickAndCameraUtil.runCamera(RESULT_CAMERA);
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
                     RC_CAMERA_STORAGE, perms);
@@ -406,19 +412,25 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         switch (requestCode) {
             case RESULT_GALERY:
                 if (resultCode == RESULT_OK) {
-                    new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+                    new ImageCompressionAsyncTask().execute(((MainPage)getActivity()).pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
                 }
                 break;
             case RESULT_CAMERA:
-                if (resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri() != null) {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                        new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
-                    } else {
-                        new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getCurrentPhotoPath());
-                    }
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    new ImageCompressionAsyncTask().execute(((MainPage)getActivity()).pickAndCameraUtil.getRealPathFromURI(((MainPage)getActivity()).pickAndCameraUtil.getCaptureImageUri()));
                 } else {
-                    Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_LONG).show();
+                    new ImageCompressionAsyncTask().execute(((MainPage)getActivity()).pickAndCameraUtil.getCurrentPhotoPath());
                 }
+
+//                if (resultCode == RESULT_OK && ((MainPage)getActivity()).pickAndCameraUtil.getCaptureImageUri() != null) {
+//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//                        new ImageCompressionAsyncTask().execute(((MainPage)getActivity()).pickAndCameraUtil.getRealPathFromURI(((MainPage)getActivity()).pickAndCameraUtil.getCaptureImageUri()));
+//                    } else {
+//                        new ImageCompressionAsyncTask().execute(((MainPage)getActivity()).pickAndCameraUtil.getCurrentPhotoPath());
+//                    }
+//                } else {
+//                    Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_LONG).show();
+//                }
                 break;
             default:
                 break;
@@ -428,7 +440,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
         @Override
         protected File doInBackground(String... params) {
-            return pickAndCameraUtil.compressImage(params[0]);
+            return ((MainPage)getActivity()).pickAndCameraUtil.compressImage(params[0]);
         }
 
         @Override
@@ -464,7 +476,10 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
         RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_UPLOAD_PROFILE_PIC, params2, filePart,
                 object -> {
-                    UploadPPModel model = gson.fromJson(object, UploadPPModel.class);
+
+                    Log.e("sse : ", object.toString());
+                    Gson gson2 = new Gson();
+                    UploadPPModel model = gson2.fromJson(object, UploadPPModel.class);
 
                     String error_code = model.getError_code();
                     String error_message = model.getError_message();
@@ -490,15 +505,18 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                         alert.show();
 
                     }
-                    progdialog.dismiss();
+//                    progdialog.dismiss();
                 });
     }
 
     @Override
     public void onProgressUpdate(int percentage) {
         Log.d("okhttp", "percentage :" + percentage);
-        if (progdialog.isShowing())
-            progdialog.setProgress(percentage);
+        if (progdialog == null) {
+            progdialog = DefinedDialog.CreateProgressDialog(getContext(), "");
+        }
+//        if (progdialog.isShowing())
+//            progdialog.setProgress(percentage);
     }
 
     private void checkAgent() {
