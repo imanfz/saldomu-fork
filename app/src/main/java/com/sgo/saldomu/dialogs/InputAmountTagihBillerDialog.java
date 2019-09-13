@@ -170,7 +170,7 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
 
 
     boolean checkInput(String input) {
-        return Integer.valueOf(input) <= Integer.valueOf(lbl_remain_amount.getText().toString()) &&
+        return Integer.valueOf(input) <= Integer.valueOf(obj.getRemain_amount()) &&
                 !input.substring(0, 1).equalsIgnoreCase("0");
     }
 
