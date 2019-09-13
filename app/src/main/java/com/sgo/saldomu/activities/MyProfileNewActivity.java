@@ -874,15 +874,17 @@ public class MyProfileNewActivity extends BaseActivity {
                 }
                 break;
             case CameraActivity.REQUEST_CODE:
-                if (CameraActivity.getResult(data) != null) {
-                    final String path = CameraActivity.getResult(data);
-                    if (set_result_photo == RESULT_CAMERA_KTP){
-                        new ImageCompressionAsyncTask(KTP_TYPE).execute(path);
+                if (data != null) {
+                    if (CameraActivity.getResult(data) != null) {
+                        final String path = CameraActivity.getResult(data);
+                        if (set_result_photo == RESULT_CAMERA_KTP) {
+                            new ImageCompressionAsyncTask(KTP_TYPE).execute(path);
+                        } else {
+                            new ImageCompressionAsyncTask(TTD_TYPE).execute(path);
+                        }
                     } else {
-                        new ImageCompressionAsyncTask(TTD_TYPE).execute(path);
+                        Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
                 break;
             default:
