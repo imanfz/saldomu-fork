@@ -103,6 +103,8 @@ class BillerInputData : BaseFragment() {
         initEditTextListener()
         initRealm()
 
+//        getDenomData()
+
         if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
             billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
             checkOperator()
@@ -747,6 +749,82 @@ class BillerInputData : BaseFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_BillerInqReq)
             sentInquryBiller()
+    }
+
+    private fun getDenomData() {
+        try {
+            showProgressDialog()
+            ToggleKeyboard.hide_keyboard(activity!!)
+
+            cust_id = NoHPFormat.formatTo62(billerinput_et_id_remark.text.toString())
+
+            extraSignature = "DATA"
+
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature)
+//            params[WebParams.DENOM_ITEM_ID] = item_id
+//            params[WebParams.DENOM_ITEM_REMARK] = cust_id
+            params[WebParams.USER_ID] = userPhoneID
+            params[WebParams.COMM_ID] = MyApiClient.COMM_ID
+            params[WebParams.BILLER_TYPE] = "DATA"
+
+            Timber.d("isi params sent inquiry biller:$params")
+
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_BILLER_DENOM, params,
+                    object : ResponseListener {
+                        override fun onResponses(response: JsonObject?) {
+                            val model = getGson().fromJson(response, InqBillerModel::class.java)
+                            var code = model.error_code
+                            if (code == WebParams.SUCCESS_CODE) {
+                                setIs_input_amount(model.biller_input_amount == DefineValue.STRING_YES)
+                                is_display_amount = model.biller_display_amount == DefineValue.STRING_YES
+
+                                tx_id = model.tx_id
+                                item_id = model.item_id
+                                ccy_id = model.ccy_id
+                                item_price = model.amount.toDouble()
+                                item_name = model.item_name
+                                description = getGson().toJson(model.description)
+                                fee = model.admin_fee.toDouble()
+                                enabledAdditionalFee = model.enabled_additional_fee
+
+                                if (isAgent!! && enabledAdditionalFee.equals(DefineValue.Y)) {
+                                    billerinput_layout_add_fee.visibility = View.VISIBLE
+                                    billerinput_detail_layout_add_fee.visibility = View.VISIBLE
+                                }
+
+                                billerinput_layout_detail.visibility = View.VISIBLE
+                                isShowDescription = false
+                                billerinput_detail_text_name.text = item_name
+                                billerinput_detail_price.text = getString(R.string.rp_) + " " + CurrencyFormat.format(item_price)
+                                billerinput_detail_admin_fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(fee)
+                            } else if (code == WebParams.LOGOUT_CODE) {
+                                val message = model.error_message
+                                val test = AlertDialogLogout.getInstance()
+                                test.showDialoginActivity(activity, message)
+                            } else {
+                                code = model.error_code + " : " + model.error_message
+                                if (isVisible) {
+                                    Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
+                                    fragManager.popBackStack()
+                                }
+                                billerinput_layout_detail.visibility = View.GONE
+                            }
+                        }
+
+                        override fun onError(throwable: Throwable?) {
+                            fragManager.popBackStack()
+                        }
+
+                        override fun onComplete() {
+                            dismissProgressDialog()
+
+                            countTotal()
+                        }
+
+                    })
+        } catch (e: Exception) {
+            Timber.d("httpclient:" + e.message)
+        }
     }
 
 }

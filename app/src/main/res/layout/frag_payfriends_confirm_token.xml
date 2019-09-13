@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/windowBackgroundColor"
+        android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="8dp">
@@ -68,11 +68,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/button_transparant"
+                    android:background="@drawable/rounded_background_blue"
                     android:gravity="center"
                     android:text="@string/submit"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                    android:textColor="@color/colorPrimaryDark" />
+                    android:textColor="@color/white" />
 
             </com.balysv.materialripple.MaterialRippleLayout>
 
@@ -95,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/button_transparant"
+                android:background="@drawable/rounded_background_outline"
                 android:text="@string/cancel"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/colorSecondaryDark" />

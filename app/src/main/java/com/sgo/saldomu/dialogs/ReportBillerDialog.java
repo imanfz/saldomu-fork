@@ -676,10 +676,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
                 tv_name_value.setText(args.getString(DefineValue.USER_NAME));
-                tv_bank_name_value.setText(args.getString(DefineValue.BANK_NAME));
-                tv_bank_acc_no_value.setText(args.getString(DefineValue.ACCOUNT_NUMBER));
-                tv_bank_acc_name_value.setText(args.getString(DefineValue.ACCT_NAME));
-                tv_nominal_value.setText(args.getString(DefineValue.NOMINAL));
+                tv_bank_name_value.setText(args.getString(DefineValue.PAYMENT_BANK));
+                tv_bank_acc_no_value.setText(args.getString(DefineValue.NO_BENEF));
+                tv_bank_acc_name_value.setText(args.getString(DefineValue.PAYMENT_NAME));
+                tv_nominal_value.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee_value.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
             }else if (buss_scheme_code.equals("BDK")){
