@@ -125,16 +125,20 @@ public class CameraActivity extends Activity implements View.OnClickListener {
         }
         switch (type) {
             case TYPE_IDCARD_FRONT:
-                cropView.setImageResource(R.mipmap.camera_idcard_front);
+                cropView.setImageResource(R.mipmap.camera_company_saldomu);
+//                cropView.setImageResource(R.mipmap.camera_idcard_front);
                 break;
             case TYPE_IDCARD_BACK:
-                cropView.setImageResource(R.mipmap.camera_idcard_back);
+                cropView.setImageResource(R.mipmap.camera_company_saldomu);
+//                cropView.setImageResource(R.mipmap.camera_idcard_back);
                 break;
             case TYPE_COMPANY_PORTRAIT:
-                cropView.setImageResource(R.mipmap.camera_company);
+//                cropView.setImageResource(R.mipmap.camera_company);
+                cropView.setImageResource(R.mipmap.camera_company_saldomu);
                 break;
             case TYPE_COMPANY_LANDSCAPE:
-                cropView.setImageResource(R.mipmap.camera_company_landscape);
+                cropView.setImageResource(R.mipmap.camera_company_saldomu);
+//                cropView.setImageResource(R.mipmap.camera_company_landscape);
                 break;
         }
 
