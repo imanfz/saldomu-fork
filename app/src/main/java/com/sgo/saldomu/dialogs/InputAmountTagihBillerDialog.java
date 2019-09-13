@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.models.InvoiceDGI;
 
 public class InputAmountTagihBillerDialog extends DialogFragment {
@@ -31,17 +32,17 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
 
     EditText inpAmount;
     TextView lbl_partial, lbl_remain_amount;
-    Button btnDone,btnCancel;
+    Button btnDone, btnCancel;
     TableRow inputInvLayout;
 
-    public interface OnTap{
+    public interface OnTap {
         void onTap(int pos, String value);
     }
 
-    public static InputAmountTagihBillerDialog newDialog(int pos, InvoiceDGI obj, String partialPayment, OnTap listener){
+    public static InputAmountTagihBillerDialog newDialog(int pos, InvoiceDGI obj, String partialPayment, OnTap listener) {
         InputAmountTagihBillerDialog dialog = new InputAmountTagihBillerDialog();
         dialog.partialPayment = partialPayment;
-        dialog.obj =obj;
+        dialog.obj = obj;
         dialog.listener = listener;
         dialog.pos = pos;
 
@@ -64,10 +65,10 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
         view = inflater.inflate(R.layout.dialog_input_invoicedgi, container, false);
 
         getDialog().setTitle(getString(R.string.invoice_dgi_payment));
-        inpAmount             = view.findViewById(R.id.inpAmount);
+        inpAmount = view.findViewById(R.id.inpAmount);
 //        inpAmount.addTextChangedListener(textWatcher);
-        btnDone               = view.findViewById(R.id.btnDone);
-        btnCancel             = view.findViewById(R.id.btnCancel);
+        btnDone = view.findViewById(R.id.btnDone);
+        btnCancel = view.findViewById(R.id.btnCancel);
         inputInvLayout = view.findViewById(R.id.tableInvoiceAmount);
 
 
@@ -75,13 +76,16 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
         lbl_doc_no.setText(obj.getDoc_no());
 
         TextView lbl_doc_desc = view.findViewById(R.id.lbl_doc_desc);
-        lbl_doc_desc.setText(obj.getDoc_desc());
+        if (obj.getDoc_desc() == null)
+            lbl_doc_desc.setText("-");
+        else
+            lbl_doc_desc.setText(obj.getDoc_desc());
 
         TextView lbl_amount = view.findViewById(R.id.lbl_amount);
-        lbl_amount.setText(obj.getAmount());
+        lbl_amount.setText(CurrencyFormat.format(obj.getAmount()));
 
         lbl_remain_amount = view.findViewById(R.id.lbl_remain_amount);
-        lbl_remain_amount.setText(obj.getRemain_amount());
+        lbl_remain_amount.setText(CurrencyFormat.format(obj.getRemain_amount()));
 
         lbl_partial = view.findViewById(R.id.lbl_partial);
 //        lbl_partial.setText(obj.getInput_amount());
@@ -113,7 +117,7 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
 
             if (charSequence.toString().substring(0, 1).equalsIgnoreCase("0")) {
                 inpAmount.setText("");
-            }else {
+            } else {
 //                inpAmount.setText(editable);
             }
 
@@ -130,30 +134,29 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(partialPayment.equalsIgnoreCase("Y")) {
+        if (partialPayment.equalsIgnoreCase("Y")) {
             showInvoiceAmount();
             lbl_partial.setText("Yes");
-        }else if (partialPayment.equalsIgnoreCase("O"))
-        {
+        } else if (partialPayment.equalsIgnoreCase("O")) {
             showInvoiceAmount();
             lbl_partial.setText("Over/Bisa Lebih");
-        }
-        else lbl_partial.setText("No");
+        } else lbl_partial.setText("No");
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String input = inpAmount.getText().toString().trim();
 
-                if (input.equalsIgnoreCase("") || inpAmount.getVisibility()==View.GONE) {
+                if (input.equalsIgnoreCase("") || inpAmount.getVisibility() == View.GONE) {
                     input = obj.getRemain_amount();
-            }
+                }
 
                 if (checkInput(input)) {
                     listener.onTap(pos, input);
 
                     dismiss();
-                }else Toast.makeText(getActivity(), "Jumlah input tidak sesuai", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(getActivity(), "Jumlah input tidak sesuai", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -166,17 +169,15 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
     }
 
 
-
-    boolean checkInput(String input){
+    boolean checkInput(String input) {
         return Integer.valueOf(input) <= Integer.valueOf(lbl_remain_amount.getText().toString()) &&
                 !input.substring(0, 1).equalsIgnoreCase("0");
     }
 
-    void showInvoiceAmount(){
+    void showInvoiceAmount() {
         inputInvLayout.setVisibility(View.VISIBLE);
         inpAmount.setText(obj.getInput_amount());
-        if (inpAmount.getText().toString().equalsIgnoreCase("0"))
-        {
+        if (inpAmount.getText().toString().equalsIgnoreCase("0")) {
             inpAmount.setText("");
         }
     }
