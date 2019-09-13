@@ -218,8 +218,9 @@
 <!--            >-->
 
             <Button
+                android:layout_weight="1"
                 android:id="@+id/confirmation_dialog_back_button"
-                android:layout_width="188dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginRight="@dimen/margin_5dp"
@@ -252,6 +253,7 @@
                 android:text="@string/ok"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/rounded_background_blue"
+                android:layout_weight="1"
                 />
 
 <!--        </com.balysv.materialripple.MaterialRippleLayout>-->

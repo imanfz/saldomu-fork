@@ -1423,4 +1423,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="set_location">Set Lokasi</string>
     <string name="change">Ubah</string>
     <string name="hint_amount">Masukkan Total Pembayaran</string>
+    <string name="upgrade">U P G R A D E</string>
 </resources>
