@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.models.InvoiceDGI;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvinvoiceNo, tvremainAmount, tvInputremainAmount, tvdueDate;
         View view;
-        LinearLayout topLayout;
+        LinearLayout topLayout, remainAmountLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -46,6 +47,7 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
             tvdueDate = itemView.findViewById(R.id.tv_due_date);
             view = itemView.findViewById(R.id.view_list_invoice);
             topLayout = itemView.findViewById(R.id.top_layout);
+            remainAmountLayout = itemView.findViewById(R.id.ll_remain_amount);
         }
     }
 
@@ -66,14 +68,14 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
         InvoiceDGI obj = invoiceDGIModelArrayList.get(position);
 
         holder.tvinvoiceNo.setText("INVOICE " + invoiceDGIModelArrayList.get(position).getDoc_no());
-        holder.tvremainAmount.setText("Sisa : " + invoiceDGIModelArrayList.get(position).getRemain_amount());
-        holder.tvdueDate.setText("Due date : " + invoiceDGIModelArrayList.get(position).getDue_date());
+        holder.tvremainAmount.setText(CurrencyFormat.format(invoiceDGIModelArrayList.get(position).getRemain_amount()));
+        holder.tvdueDate.setText(invoiceDGIModelArrayList.get(position).getDue_date());
 
         if (obj.getInput_amount().equalsIgnoreCase("0") || obj.getInput_amount().equalsIgnoreCase("")) {
-            holder.tvInputremainAmount.setVisibility(View.GONE);
+            holder.remainAmountLayout.setVisibility(View.GONE);
         } else {
-            holder.tvInputremainAmount.setVisibility(View.VISIBLE);
-            holder.tvInputremainAmount.setText("Bayar : " + invoiceDGIModelArrayList.get(position).getInput_amount());
+            holder.remainAmountLayout.setVisibility(View.VISIBLE);
+            holder.tvInputremainAmount.setText(CurrencyFormat.format(invoiceDGIModelArrayList.get(position).getInput_amount()));
         }
         holder.view.setVisibility(View.VISIBLE);
 
