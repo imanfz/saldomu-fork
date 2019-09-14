@@ -52,7 +52,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bayar \t\t\t\t\t:"
+            android:text="Bayar \t\t\t\t\t\t:"
             android:textColor="@color/red"/>
         <TextView
             android:layout_width="match_parent"
