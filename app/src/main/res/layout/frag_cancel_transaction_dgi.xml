@@ -53,21 +53,26 @@
         android:orientation="horizontal"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_margin="20dp">
+        android:layout_margin="10dp">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center"
             android:text="@string/cancel"
-            android:id="@+id/btn_cancel"/>
+            android:id="@+id/btn_cancel"
+            android:textColor="@color/black"
+            android:layout_marginRight="@dimen/margin_10dp"
+            android:background="@drawable/rounded_background_outline"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:text="@string/submit"
-            android:id="@+id/btn_submit"/>
+            android:id="@+id/btn_submit"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_background_blue"/>
 
     </LinearLayout>
 

@@ -324,7 +324,7 @@
     <string name="listcontact_edittext_hint_filter">Cari Kontak</string>
     <string name="listcontact_text_loading">Melakukan Cek Kontak …</string>
 
-    <string name="biller_ab_title">Daftar Biller</string>
+    <string name="biller_ab_title">Biller</string>
     <string name="biller_empty_data">Data tidak tersedia</string>
 
     <string name="biller_name">Nama</string>
@@ -1422,4 +1422,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="location">Lokasi</string>
     <string name="set_location">Set Lokasi</string>
     <string name="change">Ubah</string>
+    <string name="hint_amount">Masukkan Total Pembayaran</string>
+    <string name="upgrade">U P G R A D E</string>
 </resources>

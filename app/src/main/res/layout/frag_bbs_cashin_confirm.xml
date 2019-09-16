@@ -9,7 +9,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout android:id="@+id/bbscashin_bottom_layout"
-        android:background="@color/windowBackgroundColor"
+        android:background="@color/white"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:padding="8dp"
@@ -44,7 +44,7 @@
                     android:gravity="center"
                     android:text="@string/kembali"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/button_transparant"
+                    android:background="@drawable/rounded_background_outline"
                     />
 
             </com.balysv.materialripple.MaterialRippleLayout>
@@ -55,7 +55,7 @@
                 android:background="@drawable/card_bk_blue"
                 android:layout_weight="1"
                 app:mrl_rippleOverlay="true"
-                app:mrl_rippleColor="@color/colorPrimaryDark"
+                app:mrl_rippleColor="@color/colorPrimary"
                 app:mrl_rippleAlpha="0.2"
                 app:mrl_rippleDelayClick="false"
                 app:mrl_rippleHover="true"
@@ -65,11 +65,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:gravity="center"
                     android:text="@string/sent"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/button_transparant"
+                    android:background="@drawable/rounded_background_blue"
                     />
 
             </com.balysv.materialripple.MaterialRippleLayout>
@@ -97,10 +97,10 @@
                 android:layout_gravity="center"
                 android:padding="6dp"
                 android:maxEms="10"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:text="@string/reg2_btn_text_resend_token_sms"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:background="@drawable/button_transparant"
+                android:background="@drawable/rounded_background_blue"
             />
 
         </com.balysv.materialripple.MaterialRippleLayout>

@@ -6,7 +6,7 @@
 
             <corners android:radius="2.9dp"/>
 
-            <solid android:color="@color/colorPrimaryDark" />
+            <solid android:color="@color/colorPrimary" />
 
 
         </shape>
@@ -18,7 +18,7 @@
             android:dither="true">
 
             <corners android:radius="3dp" />
-            <solid android:color="@color/colorPrimaryDark" />
+            <solid android:color="@color/colorPrimary" />
         </shape>
     </item>
 </layer-list>

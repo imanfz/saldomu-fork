@@ -264,10 +264,10 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
         args.putString(DefineValue.DATE_TIME,_date);
         args.putString(DefineValue.USERID_PHONE,_userId);
         args.putString(DefineValue.TX_ID,_txId);
-        args.putString(DefineValue.BANK_NAME,_bankName);
-        args.putString(DefineValue.ACCOUNT_NUMBER,_accNo);
-        args.putString(DefineValue.ACCT_NAME,_accName);
-        args.putString(DefineValue.NOMINAL,_nominal);
+        args.putString(DefineValue.PAYMENT_BANK,_bankName);
+        args.putString(DefineValue.NO_BENEF,_accNo);
+        args.putString(DefineValue.PAYMENT_NAME,_accName);
+        args.putString(DefineValue.AMOUNT,_nominal);
         args.putString(DefineValue.FEE,_fee);
         args.putString(DefineValue.TOTAL_AMOUNT,_totalAmount);
         args.putString(DefineValue.REPORT_TYPE,DefineValue.CASHOUT);

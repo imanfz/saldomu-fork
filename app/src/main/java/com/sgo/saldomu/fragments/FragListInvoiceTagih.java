@@ -11,12 +11,14 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -63,15 +65,14 @@ public class FragListInvoiceTagih extends BaseFragment {
     // declare view objects
     RecyclerView listMenu;
     ProgressBar prgLoading;
-    TextView txtAlert;
     TextView lbl_header;
     TableLayout tabel_footer;
     TableRow row_phone;
     TextView lbl_total_pay_amount;
     RelativeLayout contentLayout;
+    LinearLayout searchLayout;
     Button btnDone;
     Button btnReset;
-    Button btnBack;
     private AutoCompleteTextView search;
     Spinner sp_payment_type, sp_phone_number, sp_payment_method;
     String mobile_phone, paymentCode, paymentName, ccy_id, buyer_fee, seller_fee, commission_fee, min_amount, max_amount;
@@ -101,6 +102,7 @@ public class FragListInvoiceTagih extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_list_invoice_dgi, container, false);
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -118,7 +120,6 @@ public class FragListInvoiceTagih extends BaseFragment {
             commCodeTagih = bundle.getString(DefineValue.COMMUNITY_CODE, "");
         }
 
-        txtAlert = view.findViewById(R.id.txtAlert);
         prgLoading = view.findViewById(R.id.prgLoading);
         contentLayout = view.findViewById(R.id.content);
         listMenu = view.findViewById(R.id.listMenu);
@@ -128,11 +129,12 @@ public class FragListInvoiceTagih extends BaseFragment {
 
         btnDone = view.findViewById(R.id.btn_done);
         btnReset = view.findViewById(R.id.btnReset);
-        btnBack = view.findViewById(R.id.btn_back);
         sp_payment_type = view.findViewById(R.id.cbo_payment_type);
         sp_payment_method = view.findViewById(R.id.sp_metode_pembayaran);
         sp_phone_number = view.findViewById(R.id.cbo_phone_number);
         search = view.findViewById(R.id.search);
+        searchLayout = view.findViewById(R.id.layout_search);
+        searchLayout.setVisibility(View.GONE);
 
         invoiceDGIModelArrayList = new ArrayList<>();
 
@@ -159,12 +161,6 @@ public class FragListInvoiceTagih extends BaseFragment {
             }
         });
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
-                getFragmentManager().popBackStack();
-            }
-        });
-
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,9 +171,9 @@ public class FragListInvoiceTagih extends BaseFragment {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (lbl_total_pay_amount.getText().toString().equalsIgnoreCase("0")){
+                if (lbl_total_pay_amount.getText().toString().equalsIgnoreCase("0")) {
                     Toast.makeText(getActivity(), "Tidak ada invoice yang dibayarkan", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     PaymentRemarkDialog dialog = PaymentRemarkDialog.newDialog(new PaymentRemarkDialog.onTap() {
                         @Override
                         public void onOK(String msg) {
@@ -190,14 +186,30 @@ public class FragListInvoiceTagih extends BaseFragment {
                 }
             }
         });
-
         parseResponse();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        getActivity().getMenuInflater().inflate(R.menu.ab_notification, menu);
+    }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.favorite).setVisible(false);
+        menu.findItem(R.id.notifications).setVisible(false);
+        menu.findItem(R.id.settings).setVisible(false);
+        menu.findItem(R.id.search).setVisible(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        getActivity().invalidateOptionsMenu();
+        if (item.getItemId() == R.id.search)
+            searchLayout.setVisibility(View.VISIBLE);
+        return super.onOptionsItemSelected(item);
     }
 
     public void initializeRecyclerview() {
@@ -236,7 +248,7 @@ public class FragListInvoiceTagih extends BaseFragment {
     void countTotalPrice() {
         total = 0;
         for (InvoiceDGI obj : invoiceDGIModelArrayList
-                ) {
+        ) {
             if (Integer.valueOf(obj.getInput_amount()) != 0) {
                 total += Integer.valueOf(obj.getInput_amount());
             }
@@ -245,10 +257,9 @@ public class FragListInvoiceTagih extends BaseFragment {
         lbl_total_pay_amount.setText(String.valueOf(total));
     }
 
-    void resetData()
-    {
-        for (InvoiceDGI obj: invoiceDGIModelArrayList
-             ) {
+    void resetData() {
+        for (InvoiceDGI obj : invoiceDGIModelArrayList
+        ) {
             obj.setInput_amount("0");
         }
 
@@ -261,7 +272,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         JSONArray jsonArray = new JSONArray();
         try {
             for (InvoiceDGI obj : invoiceDGIModelArrayList
-                    ) {
+            ) {
                 if (Integer.valueOf(obj.getInput_amount()) != 0) {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("doc_id", obj.getDoc_id());
@@ -279,14 +290,13 @@ public class FragListInvoiceTagih extends BaseFragment {
     }
 
     public void parseResponse() {
-
+        bankBillerModelArrayList.clear();
         try {
             JSONObject obj = new JSONObject(response);
 
             partialPayment = obj.optString("partial_payment", "");
 
             JSONArray mArrayPaymentMethod = new JSONArray(obj.optString(WebParams.BANK, ""));
-
             for (int i = 0; i < mArrayPaymentMethod.length(); i++) {
                 paymentMethod = mArrayPaymentMethod.getJSONObject(i).getString(WebParams.PRODUCT_CODE);
                 bank_code = mArrayPaymentMethod.getJSONObject(i).getString(WebParams.BANK_CODE);
@@ -297,11 +307,9 @@ public class FragListInvoiceTagih extends BaseFragment {
 
                 bankBillerModelArrayList.add(bankBillerModel);
             }
-
-            paymentMethodAdapter = new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, paymentMethodArr);
-            sp_payment_method.setAdapter(paymentMethodAdapter);
-
+            paymentMethodAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_text_primary_dark, paymentMethodArr);
             initializePaymentMethod();
+            sp_payment_method.setAdapter(paymentMethodAdapter);
 
             JSONArray mArrayMobilePhone = new JSONArray(obj.optString(WebParams.PHONE_DATA, ""));
 
@@ -314,7 +322,7 @@ public class FragListInvoiceTagih extends BaseFragment {
                 mobilePhoneModelArrayList.add(mobilePhoneModel);
             }
 
-            mobilePhoneAdapter = new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, mobilePhoneArr);
+            mobilePhoneAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_text_primary_dark, mobilePhoneArr);
             sp_phone_number.setAdapter(mobilePhoneAdapter);
 
             initializeMobilePhone();
@@ -332,7 +340,7 @@ public class FragListInvoiceTagih extends BaseFragment {
                 paymentTypeDGIModelArrayList.add(paymentTypeDGIModel);
             }
 
-            paymentTypeAdapter = new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, paymentTypeArr);
+            paymentTypeAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_text_primary_dark, paymentTypeArr);
             sp_payment_type.setAdapter(paymentTypeAdapter);
 
             sp_payment_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -405,17 +413,19 @@ public class FragListInvoiceTagih extends BaseFragment {
     }
 
     public void initializeMobilePhone() {
-        for (int i = 0; i < mobilePhoneModelArrayList.size(); i++) {
-            mobilePhoneArr.add(mobilePhoneModelArrayList.get(i).getMobile_phone());
-        }
+        if (mobilePhoneArr.isEmpty())
+            for (int i = 0; i < mobilePhoneModelArrayList.size(); i++) {
+                mobilePhoneArr.add(mobilePhoneModelArrayList.get(i).getMobile_phone());
+            }
 
         mobilePhoneAdapter.notifyDataSetChanged();
     }
 
     public void initializePaymentType() {
-        for (int i = 0; i < paymentTypeDGIModelArrayList.size(); i++) {
-            paymentTypeArr.add(paymentTypeDGIModelArrayList.get(i).getPayment_name());
-        }
+        if (paymentTypeArr.isEmpty())
+            for (int i = 0; i < paymentTypeDGIModelArrayList.size(); i++) {
+                paymentTypeArr.add(paymentTypeDGIModelArrayList.get(i).getPayment_name());
+            }
 
         paymentTypeAdapter.notifyDataSetChanged();
     }
@@ -423,20 +433,19 @@ public class FragListInvoiceTagih extends BaseFragment {
     public void initializePaymentMethod() {
 
         ArrayList<String> tempDataPaymentName = new ArrayList<>();
-
 //        for (int i = 0; i < bankBillerModelArrayList.size(); i++) {
 //            paymentMethodArr.add(bankBillerModelArrayList.get(i).getProduct_code());
 //        }
-
-        for (int i = 0; i < bankBillerModelArrayList.size(); i++) {
-            if (bankBillerModelArrayList.get(i).getProduct_code().equals(DefineValue.SCASH)) {
-                paymentMethodArr.add(getString(R.string.appname));
+        if (paymentMethodArr.isEmpty())
+            for (int i = 0; i < bankBillerModelArrayList.size(); i++) {
+                if (bankBillerModelArrayList.get(i).getProduct_code().equals(DefineValue.SCASH)) {
+                    paymentMethodArr.add(getString(R.string.appname));
 //                    tempDataPaymentName.add(getString(R.string.appname));
-                bankBillerModelArrayList.get(i).setProduct_name(getString(R.string.appname));
-            } else {
-                tempDataPaymentName.add(bankBillerModelArrayList.get(i).getProduct_code());
+                    bankBillerModelArrayList.get(i).setProduct_name(getString(R.string.appname));
+                } else {
+                    tempDataPaymentName.add(bankBillerModelArrayList.get(i).getProduct_code());
+                }
             }
-        }
 
         paymentMethodAdapter.notifyDataSetChanged();
     }
@@ -482,11 +491,11 @@ public class FragListInvoiceTagih extends BaseFragment {
         bundle1.putString(DefineValue.REMARK, remark);
         bundle1.putString(DefineValue.MOBILE_PHONE, phone_no);
         newFrag.setArguments(bundle1);
-        if(getActivity() == null){
+        if (getActivity() == null) {
             return;
         }
         TagihActivity ftf = (TagihActivity) getActivity();
-        ftf.switchContent(newFrag,"Konfirmasi",true);
+        ftf.switchContent(newFrag, "Konfirmasi", true);
 
 
     }

@@ -22,15 +22,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:visibility="visible">
+            android:layout_alignParentTop="true"
+            android:visibility="gone">
 
             <AutoCompleteTextView
                 android:id="@+id/search"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_margin="10dp"
                 android:layout_weight="0.25"
                 android:background="@drawable/background_search"
                 android:hint="@string/invoice_dgi_search"
@@ -38,43 +37,27 @@
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/darker_gray"
                 android:textSize="16sp" />
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1.75"
-                android:src="@drawable/ic_search_black_24dp" />
-
         </LinearLayout>
+
+        <View
+            android:id="@+id/topView"
+            android:layout_below="@id/layout_search"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/listMenu"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/tabel_footer"
-            android:layout_below="@+id/layout_search"
+            android:layout_above="@id/tabel_footer"
+            android:layout_below="@+id/topView"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:divider="@color/background"
             android:dividerHeight="1dp"
             android:fadeScrollbars="true"
             android:fastScrollEnabled="true"
             android:scrollbars="vertical"
-            android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/txtAlert"
-            android:layout_width="fill_parent"
-            android:layout_height="80dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="15.0dip"
-            android:layout_marginTop="12.0dip"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:text=""
-            android:textAppearance="?android:textAppearanceLarge"
-            android:textColor="@android:color/black"
             android:visibility="visible" />
 
         <TableLayout
@@ -85,7 +68,7 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:stretchColumns="2"
+            android:stretchColumns="1"
             android:visibility="visible">
 
             <View
@@ -97,8 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -106,19 +88,13 @@
                     android:padding="8dp"
                     android:text="@string/metode_pembayaran"
                     android:textColor="@color/black"
-                    android:textSize="14.0sp" />
-
-                <View
-                    style="@style/VerticalLine"
-                    android:layout_width="1.0dip"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip" />
+                    android:textSize="14.0sp"
+                    android:textStyle="bold"/>
 
                 <Spinner
                     android:id="@+id/sp_metode_pembayaran"
                     android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:popupBackground="@android:color/white" />
             </TableRow>
 
@@ -136,23 +112,16 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-
                     android:padding="8dp"
                     android:text="@string/payment_type"
                     android:textColor="@color/black"
-                    android:textSize="14.0sp" />
-
-                <View
-                    style="@style/VerticalLine"
-                    android:layout_width="1.0dip"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip" />
+                    android:textSize="14.0sp"
+                    android:textStyle="bold"/>
 
                 <Spinner
                     android:id="@+id/cbo_payment_type"
                     android:layout_width="fill_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:popupBackground="@android:color/white" />
             </TableRow>
 
@@ -171,18 +140,11 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-
                     android:padding="8dp"
-                    android:text="@string/phone_number"
+                    android:text="@string/phone"
                     android:textColor="@color/black"
-                    android:textSize="14.0sp" />
-
-                <View
-                    style="@style/VerticalLine"
-                    android:layout_width="1.0dip"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip" />
+                    android:textSize="14.0sp"
+                    android:textStyle="bold"/>
 
                 <Spinner
                     android:id="@+id/cbo_phone_number"
@@ -199,7 +161,8 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center">
 
                 <TextView
                     style="@style/TextOnForm"
@@ -207,19 +170,15 @@
                     android:layout_height="wrap_content"
                     android:padding="8dp"
                     android:text="@string/total_bayar"
-                    android:textColor="@color/black" />
-
-                <View
-                    style="@style/VerticalLine"
-                    android:layout_width="1.0dip"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dip"
-                    android:layout_marginRight="5dip" />
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/lbl_total_pay_amount"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:paddingRight="20dp"
+                    android:gravity="end"
                     android:text="0"
                     android:textColor="@color/black"
                     android:textStyle="bold"
@@ -237,8 +196,8 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btn_back"
-                    style="@style/ButtonYellow"
+                    android:id="@+id/btnReset"
+                    android:background="@drawable/rounded_background_outline"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12.0dip"
@@ -246,23 +205,13 @@
                     android:layout_marginRight="5.0dip"
                     android:layout_marginTop="5.0dip"
                     android:layout_weight="1"
-                    android:text="@string/kembali" />
-
-                <Button
-                    android:id="@+id/btnReset"
-                    style="@style/ButtonYellow"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12.0dip"
-                    android:layout_marginLeft="5.0dip"
-                    android:layout_marginRight="5.0dip"
-                    android:layout_marginTop="5.0dip"
-                    android:layout_weight="2"
-                    android:text="@string/reset" />
+                    android:text="@string/reset"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/colorPrimary"/>
 
                 <Button
                     android:id="@+id/btn_done"
-                    style="@style/ButtonYellow"
+                    android:background="@drawable/rounded_background_blue"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12.0dip"
@@ -270,7 +219,9 @@
                     android:layout_marginRight="5.0dip"
                     android:layout_marginTop="5.0dip"
                     android:layout_weight="1"
-                    android:text="@string/checkout" />
+                    android:text="@string/checkout"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/grey_1000w"/>
             </TableRow>
 
         </TableLayout>

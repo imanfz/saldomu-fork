@@ -139,14 +139,15 @@
 
         <Button
             android:id="@+id/btnDone"
-            style="@style/ButtonYellow"
+            android:background="@drawable/rounded_background_blue"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12.0dip"
             android:layout_marginLeft="8.0dip"
             android:layout_marginRight="8.0dip"
             android:layout_marginTop="5.0dip"
-            android:text="@string/ok"/>
+            android:text="@string/ok"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 </ScrollView>

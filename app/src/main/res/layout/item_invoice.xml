@@ -11,21 +11,56 @@
         android:id="@+id/tv_invoice_no"
         android:textStyle="bold"/>
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_due_date"/>
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Due date \t\t\t:"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text=""
+            android:id="@+id/tv_due_date"/>
+    </LinearLayout>
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_remain_amount"/>
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sisa \t\t\t\t\t\t\t:"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text=""
+            android:id="@+id/tv_remain_amount"/>
+    </LinearLayout>
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/ll_remain_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_input_remain_amount"
-        android:textColor="@color/red"/>
+        android:orientation="horizontal"
+        android:visibility="visible">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bayar \t\t\t\t\t\t:"
+            android:textColor="@color/red"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:id="@+id/tv_input_remain_amount"
+            android:textColor="@color/red"/>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

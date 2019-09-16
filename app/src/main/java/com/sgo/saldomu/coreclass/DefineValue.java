@@ -296,6 +296,7 @@ public class DefineValue {
     public static String BILLER_TYPE_PLN_TKN = "tkn";
     public static String BILLER_TYPE_NON_TAG = "non";
     public static String BILLER_TYPE_PLN = "pln";
+    public static String BILLER_TYPE_EMON = "EMON";
     public static String VALUE_ITEM_DATA = "valueItemData";
     public static String IS_SHOW_DESCRIPTION = "isDescription";
     public static String IS_PLN = "isPLN";
@@ -610,6 +611,7 @@ public class DefineValue {
     public static String CUST_ID_MEMBER = "custIdMember";
     public static String BENEF_BANK_CODE= "benef_bank_code";
     public static String MEMBER_CREATED= "member_created";
+    public static String PAYMENT_BANK = "paymentBank";
 
 }
 

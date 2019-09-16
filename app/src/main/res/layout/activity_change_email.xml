@@ -61,7 +61,7 @@
         <Button
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
+            android:background="@drawable/rounded_background_blue"
             android:textColor="@color/white"
             android:text="@string/save"
             android:id="@+id/btn_save"

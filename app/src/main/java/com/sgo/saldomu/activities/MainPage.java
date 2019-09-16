@@ -189,7 +189,7 @@ public class MainPage extends BaseActivity {
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
         bottomNavigationView.setOnNavigationItemSelectedListener(drawerListener);
 
-        pickAndCameraUtil = new PickAndCameraUtil(this);
+//        pickAndCameraUtil = new PickAndCameraUtil(this);
 
 
         isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
@@ -1319,10 +1319,12 @@ public class MainPage extends BaseActivity {
                 mNavDrawer.refreshDataNavDrawer();
             }
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
-            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-                if (fragment.isVisible()) {
-                    fragment.onActivityResult(requestCode, resultCode, data);
+            if (resultCode == -1) {
+                super.onActivityResult(requestCode, resultCode, data);
+                for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                    if (fragment.isVisible() && data.getData() != null) {
+                        fragment.onActivityResult(requestCode, resultCode, data);
+                    }
                 }
             }
         }

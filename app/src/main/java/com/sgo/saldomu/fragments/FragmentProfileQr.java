@@ -129,7 +129,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         levelClass = new LevelClass(getActivity(), sp);
         fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID", "INDONESIA"));
         dobFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID", "INDONESIA"));
-//        pickAndCameraUtil = new PickAndCameraUtil(getActivity());
+
 
         initData();
         checkContactCenter();
@@ -143,6 +143,12 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
             intent.putExtra("sourceAcctName", sourceAcctName);
             startActivity(intent);
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainPage)getActivity()).pickAndCameraUtil = new PickAndCameraUtil(getActivity());
     }
 
     private void initData() {
@@ -284,27 +290,27 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                 checkIsLv1();
             }
         });
-        custImage.setOnClickListener(v -> {
-            final String[] items = {"Choose from Gallery", "Take a Photo"};
-
-            AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
-            a.setCancelable(true);
-            a.setTitle("Choose Profile Picture");
-            a.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items),
-                    (dialog, which) -> {
-                        if (which == 0) {
-                            Timber.wtf("masuk gallery");
-                            ((MainPage)getActivity()).pickAndCameraUtil.chooseGallery(RESULT_GALERY);
-//                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
-                        } else if (which == 1) {
-                            chooseCamera();
-                        }
-
-                    }
-            );
-            a.create();
-            a.show();
-        });
+//        custImage.setOnClickListener(v -> {
+//            final String[] items = {"Choose from Gallery", "Take a Photo"};
+//
+//            AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
+//            a.setCancelable(true);
+//            a.setTitle("Choose Profile Picture");
+//            a.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items),
+//                    (dialog, which) -> {
+//                        if (which == 0) {
+//                            Timber.wtf("masuk gallery");
+//                            ((MainPage)getActivity()).pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+////                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+//                        } else if (which == 1) {
+//                            chooseCamera();
+//                        }
+//
+//                    }
+//            );
+//            a.create();
+//            a.show();
+//        });
     }
 
     private String getLvl() {
@@ -440,6 +446,9 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
         @Override
         protected File doInBackground(String... params) {
+            if (((MainPage)getActivity()).pickAndCameraUtil == null) {
+                ((MainPage)getActivity()).pickAndCameraUtil = new PickAndCameraUtil(getActivity());
+            }
             return ((MainPage)getActivity()).pickAndCameraUtil.compressImage(params[0]);
         }
 
@@ -505,7 +514,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                         alert.show();
 
                     }
-//                    progdialog.dismiss();
+                    progdialog.dismiss();
                 });
     }
 
@@ -513,10 +522,10 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     public void onProgressUpdate(int percentage) {
         Log.d("okhttp", "percentage :" + percentage);
         if (progdialog == null) {
-            progdialog = DefinedDialog.CreateProgressDialog(getContext(), "");
+            progdialog = DefinedDialog.CreateProgressDialog(CoreApp.getAppContext(), "");
         }
-//        if (progdialog.isShowing())
-//            progdialog.setProgress(percentage);
+        if (progdialog.isShowing())
+            progdialog.setProgress(percentage);
     }
 
     private void checkAgent() {

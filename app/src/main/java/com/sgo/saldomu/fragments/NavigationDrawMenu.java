@@ -62,6 +62,7 @@ import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.activities.ReportActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
+import com.sgo.saldomu.coreclass.CoreApp;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -439,9 +440,10 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                     } else {
                         new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getCurrentPhotoPath());
                     }
-                } else {
-                    Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_LONG).show();
                 }
+//                else {
+//                    Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_LONG).show();
+//                }
                 break;
             default:
                 break;
@@ -857,7 +859,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
     private void uploadFileToServer(File photoFile) {
 
-        progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+        progdialog2 = DefinedDialog.CreateProgressDialog(CoreApp.getAppContext(), "");
 
         if (accessKey == null)
             accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
