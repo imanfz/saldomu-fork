@@ -134,7 +134,6 @@ public class FragListInvoiceTagih extends BaseFragment {
         sp_phone_number = view.findViewById(R.id.cbo_phone_number);
         search = view.findViewById(R.id.search);
         searchLayout = view.findViewById(R.id.layout_search);
-        searchLayout.setVisibility(View.GONE);
 
         invoiceDGIModelArrayList = new ArrayList<>();
 
@@ -290,7 +289,6 @@ public class FragListInvoiceTagih extends BaseFragment {
     }
 
     public void parseResponse() {
-        bankBillerModelArrayList.clear();
         try {
             JSONObject obj = new JSONObject(response);
 

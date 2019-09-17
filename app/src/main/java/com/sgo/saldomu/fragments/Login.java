@@ -81,7 +81,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
     private View v;
     private Bundle argsBundleNextLogin = new Bundle();
     private Boolean isTexted = false;
-    private Boolean isFingerprint = false;
+    Boolean isFingerprint = false;
     private FingerprintManager fingerprintManager;
 
     @Override
@@ -386,6 +386,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
 
                 @Override
                 public void onComplete() {
+                    isFingerprint = false;
                     image_spinner.clearAnimation();
                     image_spinner.setVisibility(View.INVISIBLE);
                     btnLogin.setEnabled(true);
