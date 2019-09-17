@@ -108,7 +108,7 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
                     temp.addAll(originalList);
                 } else {
                     for (InvoiceDGI model : originalList){
-                        if (model.getDoc_no().contains(charString))
+                        if (model.getDoc_no().toLowerCase().contains(charString))
                             temp.add(model);
                     }
                 }

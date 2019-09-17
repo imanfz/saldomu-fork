@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_alignParentTop="true"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <AutoCompleteTextView
                 android:id="@+id/search"

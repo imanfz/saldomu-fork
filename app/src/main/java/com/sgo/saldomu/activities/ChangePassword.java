@@ -182,7 +182,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
                                     Toast.makeText(ChangePassword.this, getString(R.string.changepass_toast_success), Toast.LENGTH_LONG).show();
 //                            sp.edit().putString(DefineValue.IS_FIRST_TIME, DefineValue.NO);
                                     sp.edit().putString(DefineValue.IS_CHANGED_PASS, DefineValue.STRING_YES).apply();
-                                    sp.edit().putString(DefineValue.USER_PASSWORD,RSA.opensslEncrypt(et_pass_current.getText().toString())).apply();
+                                    sp.edit().remove(DefineValue.USER_PASSWORD).apply();
                                     finishChild();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
 //                                    Timber.d("isi response autologout:"+response.toString());
