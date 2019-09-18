@@ -1,9 +1,11 @@
 package com.sgo.saldomu.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,7 +33,6 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyQRActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
 import com.sgo.saldomu.activities.UpgradeMemberActivity;
-import com.sgo.saldomu.coreclass.CoreApp;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -92,6 +93,8 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private final int RESULT_CAMERA = 200;
     final int RC_CAMERA_STORAGE = 14;
     final int RESULT_OK = -1;
+    Context context;
+    Activity activity;
 
     // UI LAYOUT
     TextView tv_name, tv_phone_no, tv_lvl_member_value, currencyLimit, limitValue, tv_email, tv_dob;
@@ -100,6 +103,15 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     ProgressDialog progdialog;
     RelativeLayout lytUpgrade, lytDetail;
     LinearLayout llBalanceDetail;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Activity){
+            activity=(Activity) context;
+        }
+    }
 
     @Nullable
     @Override
@@ -118,6 +130,9 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         llBalanceDetail = v.findViewById(R.id.llBalanceDetail);
         currencyLimit = v.findViewById(R.id.currency_limit_value);
         limitValue = v.findViewById(R.id.limit_value);
+        context = container.getContext();
+
+        setImageProfPic();
         return v;
     }
 
@@ -138,7 +153,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         setView();
 
         imageQR.setOnClickListener(view1 -> {
-            Intent intent = new Intent(getContext(), MyQRActivity.class);
+            Intent intent = new Intent(context, MyQRActivity.class);
             intent.putExtra("sourceAcct", sourceAcct);
             intent.putExtra("sourceAcctName", sourceAcctName);
             startActivity(intent);
@@ -185,7 +200,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
     private void getHelpList() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getContext(), "");
+            progdialog = DefinedDialog.CreateProgressDialog(context, "");
             progdialog.show();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
@@ -268,7 +283,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         tv_lvl_member_value.setText(getLvl());
         currencyLimit.setText(sp.getString(DefineValue.BALANCE_CCYID, ""));
         limitValue.setText(CurrencyFormat.format(sp.getString(DefineValue.BALANCE_REMAIN_LIMIT, "")));
-        setImageProfPic();
+//        setImageProfPic();
 
 
         viewOnProggressUpgrade();
@@ -290,27 +305,26 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                 checkIsLv1();
             }
         });
-//        custImage.setOnClickListener(v -> {
-//            final String[] items = {"Choose from Gallery", "Take a Photo"};
-//
-//            AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
-//            a.setCancelable(true);
-//            a.setTitle("Choose Profile Picture");
-//            a.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items),
-//                    (dialog, which) -> {
-//                        if (which == 0) {
-//                            Timber.wtf("masuk gallery");
-//                            ((MainPage)getActivity()).pickAndCameraUtil.chooseGallery(RESULT_GALERY);
-////                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
-//                        } else if (which == 1) {
-//                            chooseCamera();
-//                        }
-//
-//                    }
-//            );
-//            a.create();
-//            a.show();
-//        });
+        custImage.setOnClickListener(v -> {
+            final String[] items = {"Choose from Gallery", "Take a Photo"};
+
+            AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
+            a.setCancelable(true);
+            a.setTitle("Choose Profile Picture");
+            a.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items),
+                    (dialog, which) -> {
+                        if (which == 0) {
+                            Timber.wtf("masuk gallery");
+                            ((MainPage)getActivity()).pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+//                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+                        } else if (which == 1) {
+                            chooseCamera();
+                        }
+                    }
+            );
+            a.create();
+            a.show();
+        });
     }
 
     private String getLvl() {
@@ -335,13 +349,13 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
         Timber.wtf("url prof pic:" + _url_profpic);
 
-        Bitmap bm = BitmapFactory.decodeResource(Objects.requireNonNull(CoreApp.getAppContext()).getResources(), R.drawable.user_unknown_menu);
+        Bitmap bm = BitmapFactory.decodeResource(Objects.requireNonNull(context).getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
         if (_url_profpic != null && _url_profpic.isEmpty()) {
-            GlideManager.sharedInstance().initializeGlide(CoreApp.getAppContext(), R.drawable.user_unknown_menu, roundedImage, custImage);
+            GlideManager.sharedInstance().initializeGlide(context, R.drawable.user_unknown_menu, roundedImage, custImage);
         } else {
-            GlideManager.sharedInstance().initializeGlide(CoreApp.getAppContext(), _url_profpic, roundedImage, custImage);
+            GlideManager.sharedInstance().initializeGlide(context, _url_profpic, roundedImage, custImage);
         }
 
     }
@@ -404,7 +418,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     @AfterPermissionGranted(RC_CAMERA_STORAGE)
     private void chooseCamera() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
-        if (EasyPermissions.hasPermissions(getContext(), perms)) {
+        if (EasyPermissions.hasPermissions(context, perms)) {
             ((MainPage)getActivity()).pickAndCameraUtil.runCamera(RESULT_CAMERA);
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
@@ -486,9 +500,11 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_UPLOAD_PROFILE_PIC, params2, filePart,
                 object -> {
 
-                    Log.e("sse : ", object.toString());
+
                     Gson gson2 = new Gson();
                     UploadPPModel model = gson2.fromJson(object, UploadPPModel.class);
+
+                    Log.e("sse : ", model.getImg_url());
 
                     String error_code = model.getError_code();
                     String error_message = model.getError_message();
@@ -502,7 +518,16 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
                         mEditor.commit();
 
-                        setImageProfPic();
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+//                                GlideManager.sharedInstance().clear(context);
+//                                GlideManager.sharedInstance().initializeGlide(context, model.getImg_url(), null, custImage);
+                                setImageProfPic();
+                            }
+                        });
+
+//                        setImageProfPic();
                     } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
                         AlertDialogLogout test = AlertDialogLogout.getInstance();
                         test.showDialoginActivity(getActivity(), error_message);
@@ -522,7 +547,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     public void onProgressUpdate(int percentage) {
         Log.d("okhttp", "percentage :" + percentage);
         if (progdialog == null) {
-            progdialog = DefinedDialog.CreateProgressDialog(CoreApp.getAppContext(), "");
+            progdialog = DefinedDialog.CreateProgressDialog(context, "");
         }
         if (progdialog.isShowing())
             progdialog.setProgress(percentage);
