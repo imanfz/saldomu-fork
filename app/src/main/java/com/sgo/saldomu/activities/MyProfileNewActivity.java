@@ -11,8 +11,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.adapter.BankCashoutAdapter;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
@@ -41,6 +45,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.BankCashoutModel;
 import com.sgo.saldomu.models.retrofit.ContactDataModel;
 import com.sgo.saldomu.models.retrofit.GetHelpModel;
 import com.sgo.saldomu.models.retrofit.SentExecCustModel;
@@ -58,6 +63,7 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -83,7 +89,8 @@ public class MyProfileNewActivity extends BaseActivity {
     TextView tv_dob, tv_pb1, tv_pb2, tv_pb3, tv_verified_member, tv_respon_reject_KTP, tv_respon_reject_selfie, tv_respon_reject_ttd;
     LinearLayout dataMemberBasic, dataVerifiedMember;
     RelativeLayout layoutKTP, layoutSelfie, layoutTTD;
-    EditText et_nama, et_noHp, et_email;
+    EditText et_nama, et_noHp, et_email, et_acctNo;
+    Spinner sp_bank;
     private ProgressBar pb1, pb2, pb3;
     private ImageButton cameraKTP, selfieKTP, cameraTTD;
     private Button btn1, btn2;
@@ -123,6 +130,9 @@ public class MyProfileNewActivity extends BaseActivity {
     Gson gson;
     private LinearLayout lytVerifiedMember;
     CheckBox cb_termsncond;
+    BankCashoutAdapter adapter;
+    List<BankCashoutModel> listBankCashOut = new ArrayList<>();
+    private String bankCode = "";
 
     @Override
     protected int getLayoutResource() {
@@ -240,9 +250,11 @@ public class MyProfileNewActivity extends BaseActivity {
         et_noHp = v.findViewById(R.id.myprofile_value_hp);
         et_nama = v.findViewById(R.id.myprofile_value_name);
         et_email = v.findViewById(R.id.myprofile_value_email);
+        et_acctNo = v.findViewById(R.id.bank_acc_no);
         cameraKTP = v.findViewById(R.id.camera_ktp_paspor);
         selfieKTP = v.findViewById(R.id.camera_selfie_ktp_paspor);
         cameraTTD = v.findViewById(R.id.camera_ttd);
+        sp_bank = v.findViewById(R.id.spinner_nameBank);
         btn1 = v.findViewById(R.id.button1);
         btn2 = v.findViewById(R.id.button2);
         btn2.setEnabled(false);
@@ -250,7 +262,9 @@ public class MyProfileNewActivity extends BaseActivity {
         cb_termsncond = v.findViewById(R.id.cb_termnsncond);
 
         levelClass = new LevelClass(this, sp);
-
+        adapter = new BankCashoutAdapter(this, android.R.layout.simple_spinner_item);
+        sp_bank.setAdapter(adapter);
+        sp_bank.setOnItemSelectedListener(spinnerNamaBankListener);
 //        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
         if (!is_agent && !levelClass.isLevel1QAC() && !isUpgradeAgent) {
@@ -383,7 +397,7 @@ public class MyProfileNewActivity extends BaseActivity {
         }
 
         initializeData();
-
+        getBankCashout();
     }
 
 
@@ -441,7 +455,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (ValidationPhoto()) {
+            if (ValidationPhoto() && inputValidation()) {
                 sentExecCust();
             }
         }
@@ -484,6 +498,18 @@ public class MyProfileNewActivity extends BaseActivity {
             Timber.d("Masuk ke setImageCameraTTD di MyprofileactivityNew");
             set_result_photo = RESULT_CAMERA_TTD;
             camera_dialog();
+        }
+    };
+
+    Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
+            BankCashoutModel model = listBankCashOut.get(i);
+            bankCode = model.getBank_code();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
         }
     };
 
@@ -765,6 +791,10 @@ public class MyProfileNewActivity extends BaseActivity {
         } else if (et_email.getText().toString().length() > 0 && !isValidEmail(et_email.getText())) {
             et_email.requestFocus();
             et_email.setError(getString(R.string.regist1_validation_email));
+            return false;
+        } else if (et_acctNo.getText().toString().length() == 0) {
+            et_acctNo.requestFocus();
+            et_acctNo.setError(getResources().getString(R.string.cashout_accno_validation));
             return false;
         } else if (compare == 100) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1071,6 +1101,8 @@ public class MyProfileNewActivity extends BaseActivity {
             params.put(WebParams.CUST_GENDER, "");
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.BANK_CODE, bankCode);
+            params.put(WebParams.SOURCE_ACCT_NO, et_acctNo.getText().toString());
 
             Timber.d("isi params execute customer:" + params.toString());
 
@@ -1231,6 +1263,50 @@ public class MyProfileNewActivity extends BaseActivity {
                     uploadFileToServer(ttd, TTD_TYPE);
                     break;
             }
+        }
+    }
+
+    public void getBankCashout() {
+        try {
+            final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(this, "");
+
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BANKCASHOUT, memberIDLogin);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
+            params.put(WebParams.USER_ID, userPhoneID);
+
+            Timber.d("isi params get Bank cashout:" + params.toString());
+
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANKCASHOUT, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            Log.e("getBankCashout", object.get("bank_cashout").toString());
+
+                            Type type = new TypeToken<List<BankCashoutModel>>() {
+                            }.getType();
+                            Gson gson2 = new Gson();
+                            listBankCashOut = gson2.fromJson(object.get("bank_cashout"), type);
+
+                            Log.e("getBankCashout", listBankCashOut.toString());
+
+                            adapter.updateAdapter(listBankCashOut);
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (prodDialog.isShowing())
+                                prodDialog.dismiss();
+                        }
+                    });
+
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 }

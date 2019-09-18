@@ -358,6 +358,81 @@
 
                     </RelativeLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sgoplus_text_bank"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="@dimen/abc_text_size_medium_material"
+                                android:textStyle="bold" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:id="@+id/spinning_wheel_bank_name"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:src="@drawable/default_spinner"
+                                    android:visibility="invisible" />
+
+                                <Spinner
+                                    android:id="@+id/spinner_nameBank"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:visibility="visible" />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="8dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/no_rekening"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="@dimen/abc_text_size_medium_material"
+                                android:textStyle="bold" />
+
+                            <EditText
+                                android:id="@+id/bank_acc_no"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/cashout_bank_acc_no_hint"
+                                android:inputType="number"
+                                android:maxLength="15"
+                                android:paddingLeft="10dp"
+                                android:textSize="@dimen/abc_text_size_medium_material" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingBottom="10sp"
+                                android:text="@string/cashout_lkd_warning_1"
+                                android:textColor="@color/red"
+                                android:textSize="12sp"
+                                android:textStyle="italic" />
+                        </LinearLayout>
+                    </LinearLayout>
+
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

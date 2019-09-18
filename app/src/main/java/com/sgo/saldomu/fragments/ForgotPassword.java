@@ -194,7 +194,7 @@ public class ForgotPassword extends BaseFragment {
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 //                                    Timber.d("response forgot password" + response.toString());
                                 showDialog(getString(R.string.forgotpass_text_message_success));
-                                sp.edit().remove(DefineValue.USER_PASSWORD);
+                                sp.edit().remove(DefineValue.USER_PASSWORD).apply();
                             } else {
 //                                    Timber.d("error forgot password" + response.toString());
                                 String codemessage = model.getError_message();

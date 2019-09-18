@@ -82,6 +82,7 @@ public class FingerprintDialog extends DialogFragment {
         listener=(FingerprintDialogListener)getTargetFragment();
 
         tv_usepassword.setOnClickListener(v -> {
+            listener.onFinishFingerprintDialog(false);
             getDialog().dismiss();
         });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
