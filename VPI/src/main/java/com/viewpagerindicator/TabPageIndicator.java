@@ -159,8 +159,10 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         if (iconResId != 0) {
             tabView.setCompoundDrawablesWithIntrinsicBounds(iconResId, 0, 0, 0);
         }
-
-        mTabLayout.addView(tabView, new LinearLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT, 1));
+//          before
+//        mTabLayout.addView(tabView, new LinearLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT, 1));
+        
+        mTabLayout.addView(tabView, new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT, 0));
     }
 
     @Override

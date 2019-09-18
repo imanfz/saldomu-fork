@@ -22,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -161,7 +162,11 @@ public class MainPage extends BaseActivity {
     private NotificationActionView actionView;
 
     private LevelClass levelClass;
-    public  PickAndCameraUtil pickAndCameraUtil;
+    public PickAndCameraUtil pickAndCameraUtil;
+
+    private final int RESULT_GALERY = 100;
+    private final int RESULT_CAMERA = 200;
+    private String currentTab = "";
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -202,12 +207,14 @@ public class MainPage extends BaseActivity {
         Intent i;
         switch (item.getItemId()) {
             case R.id.menu_home:
+                currentTab = userNameLogin;
                 Fragment fragmentHome = new FragMainPage();
 //                switchContent(newFragment, getString(R.string.appname).toUpperCase());
 //                switchContent(newFragment, setGreetings());
                 switchContent(fragmentHome, userNameLogin);
                 return true;
             case R.id.menu_transfer:
+                currentTab = getString(R.string.transfer);
                 if (isDormant.equalsIgnoreCase("Y")) {
                     dialogDormant();
                 } else {
@@ -225,14 +232,16 @@ public class MainPage extends BaseActivity {
             case R.id.menu_help:
 //                i = new Intent(MainPage.this, ContactActivity.class);
 //                switchActivity(i, MainPage.ACTIVITY_RESULT);
-                BaseFragment fragmentHelp=new FragHelp();
-                switchContent(fragmentHelp,getString(R.string.help_center));
+                BaseFragment fragmentHelp = new FragHelp();
+                switchContent(fragmentHelp, getString(R.string.help_center));
                 return true;
             case R.id.menu_profile:
+                currentTab = getString(R.string.myprofilelist_ab_title);
 //                i = new Intent(MainPage.this, ActivityProfileQr.class);
 //                startActivity(i);
-                BaseFragment fragmentProfile=new FragmentProfileQr();
-                switchContent(fragmentProfile,getString(R.string.myprofilelist_ab_title));
+
+                BaseFragment fragmentProfile = new FragmentProfileQr();
+                switchContent(fragmentProfile, getString(R.string.myprofilelist_ab_title));
                 return true;
         }
         return false;
@@ -1171,7 +1180,7 @@ public class MainPage extends BaseActivity {
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
         if (sp.getString(DefineValue.IS_POS, "N").equals(DefineValue.N)) {
             mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
-        }else
+        } else
             mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
         mEditor.putString(DefineValue.PREVIOUS_BALANCE, balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, contact_first_time);
@@ -1277,7 +1286,8 @@ public class MainPage extends BaseActivity {
 
                             mNavDrawer.selectItem(NavigationDrawMenu.MPAYFRIENDS, dataBundle);
                             break;
-                        case NotificationActivity.TYPE_LIKE: break;
+                        case NotificationActivity.TYPE_LIKE:
+                            break;
                         case NotificationActivity.TYPE_COMMENT:
 //                            int _post_id = Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID, "0"));
 //                            if (mContent instanceof FragMainPage) {
@@ -1320,11 +1330,11 @@ public class MainPage extends BaseActivity {
             }
         } else {
             if (resultCode == -1) {
-                super.onActivityResult(requestCode, resultCode, data);
-                for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-                    if (fragment.isVisible() && data.getData() != null) {
-                        fragment.onActivityResult(requestCode, resultCode, data);
-                    }
+                Fragment fragmentProfileQr = getSupportFragmentManager().findFragmentByTag(getString(R.string.myprofilelist_ab_title));
+                if (requestCode == RESULT_GALERY) {
+                    fragmentProfileQr.onActivityResult(requestCode, resultCode, data);
+                } else if (requestCode == RESULT_CAMERA) {
+                    fragmentProfileQr.onActivityResult(requestCode, resultCode, data);
                 }
             }
         }
@@ -1480,7 +1490,10 @@ public class MainPage extends BaseActivity {
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
         }
-        bottomNavigationView.setSelectedItemId(R.id.menu_home);
+
+        if (currentTab.equalsIgnoreCase(userNameLogin)){
+            bottomNavigationView.setSelectedItemId(R.id.menu_home);
+        }
 
         LocalBroadcastManager.getInstance(this).registerReceiver(btnReceiver, new IntentFilter(MainPage.RESULT_HOME_BALANCE));
 
