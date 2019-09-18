@@ -43,6 +43,7 @@
     <com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton
         android:id="@+id/searchLocationEditText"
         android:layout_width="0dp"
+        android:layout_marginLeft="8dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:hint="@string/search_location_hint_request_bbs_activity_label"
@@ -102,10 +103,11 @@
         <Button
             android:id="@+id/btnProses"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:layout_weight="1.07"
             android:gravity="center_vertical|center"
             android:text="@string/menu_item_search_agent"
+            android:textSize="14sp"
             tools:layout_editor_absoluteX="283dp"
             tools:layout_editor_absoluteY="8dp"
             android:background="@drawable/rounded_background_blue"
