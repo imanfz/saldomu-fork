@@ -120,7 +120,6 @@ public class MyProfileNewActivity extends BaseActivity {
     private boolean isUpgradeAgent = false; //saat antri untuk diverifikasi upgrade agent
     private boolean is_verified = false;
     private boolean is_agent = false;
-    private boolean is_tnc = false;
     private String listContactPhone = "";
     private String listAddress = "";
     private String contactCenter;
