@@ -24,7 +24,7 @@ class FavoriteActivity : BaseActivity() {
         intent.putExtra(DefineValue.BILLER_NAME, model.item_name)
         intent.putExtra(DefineValue.COMMUNITY_ID, model.comm_id)
         intent.putExtra(DefineValue.ITEM_ID, model.item_id)
-        intent.putExtra(DefineValue.COMMUNITY_NAME, model.item_name)
+        intent.putExtra(DefineValue.COMMUNITY_NAME, model.comm_name)
 
         intent.putExtra(DefineValue.BILLER_TYPE, model.product_type)
         intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
