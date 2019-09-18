@@ -120,6 +120,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private boolean isUpgradeAgent = false; //saat antri untuk diverifikasi upgrade agent
     private boolean is_verified = false;
     private boolean is_agent = false;
+    private boolean is_tnc = false;
     private String listContactPhone = "";
     private String listAddress = "";
     private String contactCenter;
@@ -258,6 +259,7 @@ public class MyProfileNewActivity extends BaseActivity {
         btn1 = v.findViewById(R.id.button1);
         btn2 = v.findViewById(R.id.button2);
         btn2.setEnabled(false);
+        btn2.setBackground(getResources().getDrawable(R.drawable.rounded_background_button_disabled));
         lytVerifiedMember = v.findViewById(R.id.lyt_verifying_member);
         cb_termsncond = v.findViewById(R.id.cb_termnsncond);
 
@@ -342,10 +344,13 @@ public class MyProfileNewActivity extends BaseActivity {
         cb_termsncond.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
+                if (isChecked) {
                     btn2.setEnabled(true);
-                else
+                    btn2.setBackground(getResources().getDrawable(R.drawable.rounded_background_blue));
+                } else {
                     btn2.setEnabled(false);
+                    btn2.setBackground(getResources().getDrawable(R.drawable.rounded_background_button_disabled));
+                }
             }
         });
 
@@ -455,7 +460,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (ValidationPhoto() && inputValidation()) {
+            if (ValidationPhoto() && bankValidation()) {
                 sentExecCust();
             }
         }
@@ -792,10 +797,6 @@ public class MyProfileNewActivity extends BaseActivity {
             et_email.requestFocus();
             et_email.setError(getString(R.string.regist1_validation_email));
             return false;
-        } else if (et_acctNo.getText().toString().length() == 0) {
-            et_acctNo.requestFocus();
-            et_acctNo.setError(getResources().getString(R.string.cashout_accno_validation));
-            return false;
         } else if (compare == 100) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Alert")
@@ -846,6 +847,15 @@ public class MyProfileNewActivity extends BaseActivity {
             }
         }
 
+        return true;
+    }
+
+    private boolean bankValidation() {
+        if (et_acctNo.getText().toString().length() == 0) {
+            et_acctNo.requestFocus();
+            et_acctNo.setError(getResources().getString(R.string.cashout_accno_validation));
+            return false;
+        }
         return true;
     }
 
