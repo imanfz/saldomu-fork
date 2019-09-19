@@ -24,7 +24,7 @@ class FavoriteActivity : BaseActivity() {
         intent.putExtra(DefineValue.BILLER_NAME, model.item_name)
         intent.putExtra(DefineValue.COMMUNITY_ID, model.comm_id)
         intent.putExtra(DefineValue.ITEM_ID, model.item_id)
-        if (model.notes == "OVO"){
+        if (model.comm_id.contains("OVO")){
             intent.putExtra(DefineValue.COMMUNITY_NAME, model.comm_name)
         } else {
             intent.putExtra(DefineValue.COMMUNITY_NAME, model.item_name)
