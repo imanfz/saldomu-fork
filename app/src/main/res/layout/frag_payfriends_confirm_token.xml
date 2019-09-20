@@ -83,7 +83,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:background="@drawable/card_bk"
             app:mrl_rippleAlpha="0.2"
             app:mrl_rippleColor="@color/colorPrimary"
             app:mrl_rippleDelayClick="false"
@@ -98,7 +97,7 @@
                 android:background="@drawable/rounded_background_outline"
                 android:text="@string/cancel"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/colorSecondaryDark" />
+                android:textColor="@color/black" />
 
         </com.balysv.materialripple.MaterialRippleLayout>
 

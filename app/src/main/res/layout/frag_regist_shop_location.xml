@@ -234,7 +234,7 @@
             android:background="@drawable/rounded_background_outline"
             android:text="@string/cancel"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/black"
             android:id="@+id/btn_cancel"/>
         <Button
             android:layout_margin="10dp"
