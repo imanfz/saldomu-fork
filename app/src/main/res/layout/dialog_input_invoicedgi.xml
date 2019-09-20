@@ -220,7 +220,7 @@
                 android:layout_marginRight="15dp"
                 android:text="Batal"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/black"/>
 
             <Button
                 android:id="@+id/btnDone"

@@ -326,7 +326,7 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/card_bk"
+
                 app:mrl_rippleOverlay="true"
                 app:mrl_rippleColor="@color/colorPrimary"
                 app:mrl_rippleAlpha="0.2"
@@ -340,9 +340,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/cancel"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                    android:background="@drawable/button_transparant"
-                    android:textColor="@color/colorSecondaryDark"
+                    android:background="@drawable/rounded_background_outline"
+                    android:textColor="@color/black"
                     />
 
             </com.balysv.materialripple.MaterialRippleLayout>
@@ -354,7 +353,6 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/card_bk_blue"
                 app:mrl_rippleAlpha="0.2"
                 app:mrl_rippleColor="@color/white"
                 app:mrl_rippleDelayClick="false"
@@ -366,7 +364,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/button_transparant"
+                    android:background="@drawable/rounded_background_blue"
                     android:gravity="center"
                     android:text="@string/submit"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"

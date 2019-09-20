@@ -21,7 +21,6 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_bk"
             android:layout_marginRight="8dp"
             app:mrl_rippleOverlay="true"
             app:mrl_rippleColor="@color/colorPrimaryDark"
@@ -34,11 +33,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/colorSecondaryDark"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:text="@string/kembali"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
+                android:background="@drawable/rounded_background_outline"
                 />
 
         </com.balysv.materialripple.MaterialRippleLayout>
@@ -46,7 +45,6 @@
         <com.balysv.materialripple.MaterialRippleLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_bk_blue"
             android:layout_weight="1"
             app:mrl_rippleOverlay="true"
             app:mrl_rippleColor="@color/colorPrimaryDark"
@@ -63,7 +61,7 @@
                 android:gravity="center"
                 android:text="@string/sent"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
+                android:background="@drawable/rounded_background_blue"
                 />
 
         </com.balysv.materialripple.MaterialRippleLayout>

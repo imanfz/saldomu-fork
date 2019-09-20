@@ -584,7 +584,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     }
 
     private void hideOnProgUpgrade() {
-        btn_upgrade.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        btn_upgrade.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         btn_upgrade.setEnabled(true);
         lytUpgrade.setVisibility(View.GONE);
     }

@@ -309,7 +309,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/card_bk"
             android:layout_marginRight="40dp"
             android:layout_marginLeft="40dp"
             app:mrl_rippleOverlay="true"
@@ -326,8 +325,8 @@
                 android:layout_gravity="center"
                 android:text="@string/cancel"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:background="@drawable/button_transparant"
-                android:textColor="@color/colorSecondaryDark"
+                android:background="@drawable/rounded_background_outline"
+                android:textColor="@color/black"
                 />
 
     </com.balysv.materialripple.MaterialRippleLayout>
