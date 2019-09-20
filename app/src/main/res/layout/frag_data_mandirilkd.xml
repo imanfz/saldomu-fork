@@ -40,7 +40,7 @@
                 android:gravity="center"
                 android:text="@string/cancel"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/black"
                 android:layout_marginRight="@dimen/margin_10dp"/>
 <!--        </com.balysv.materialripple.MaterialRippleLayout>-->
 

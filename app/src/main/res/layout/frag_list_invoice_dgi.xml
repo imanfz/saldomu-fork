@@ -207,7 +207,7 @@
                     android:layout_weight="1"
                     android:text="@string/reset"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                    android:textColor="@color/colorPrimary"/>
+                    android:textColor="@color/black"/>
 
                 <Button
                     android:id="@+id/btn_done"
