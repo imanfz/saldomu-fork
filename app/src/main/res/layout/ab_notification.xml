@@ -14,22 +14,21 @@
 
     <TextView
         android:id="@android:id/text1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_alignRight="@android:id/icon"
         android:layout_alignTop="@android:id/icon"
-        android:layout_marginRight="-6dp"
-        android:layout_marginTop="-3dp"
-        android:background="@drawable/transparent"
+        android:layout_marginRight="-8dp"
+        android:layout_marginTop="-5dp"
+        android:background="@drawable/circle_border_orange_dark"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:minWidth="22dp"
         android:paddingBottom="2dp"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         android:paddingTop="2dp"
         android:textColor="@color/white"
-        android:textSize="12dp"
+        android:textSize="10sp"
         android:textStyle="bold"
         tools:ignore="SpUsage,RtlHardcoded" />
 </com.sgo.saldomu.coreclass.NotificationActionView>
