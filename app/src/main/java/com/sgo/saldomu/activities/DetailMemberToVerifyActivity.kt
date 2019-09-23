@@ -32,6 +32,7 @@ import com.sgo.saldomu.models.retrofit.SentExecCustModel
 import com.sgo.saldomu.models.retrofit.UploadFotoModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.utils.PickAndCameraUtil
+import com.sgo.saldomu.utils.camera.CameraActivity
 import com.sgo.saldomu.widgets.BaseActivity
 import com.sgo.saldomu.widgets.BlinkingEffectClass
 import com.sgo.saldomu.widgets.ProgressRequestBody
@@ -48,7 +49,7 @@ import java.io.File
 
 class DetailMemberToVerifyActivity : BaseActivity() {
     private val RESULT_CAMERA_KTP = 201
-//    private val RESULT_CAMERA_CUST_KTP = 202
+    //    private val RESULT_CAMERA_CUST_KTP = 202
 //    private val RESULT_CAMERA_TTD = 203
     private val RC_CAMERA_STORAGE = 14
     private lateinit var pickAndCameraUtil: PickAndCameraUtil
@@ -105,13 +106,13 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             showProgressDialog()
 
             val params = RetrofitService.getInstance()
-                    .getSignature(MyApiClient.LINK_EXEC_UPGRADE_MEMBER, sp.getString(DefineValue.MEMBER_ID_CUST,""))
-            params[WebParams.CUST_ID] = sp.getString(DefineValue.CUST_ID_MEMBER,"")
+                    .getSignature(MyApiClient.LINK_EXEC_UPGRADE_MEMBER, sp.getString(DefineValue.MEMBER_ID_CUST, ""))
+            params[WebParams.CUST_ID] = sp.getString(DefineValue.CUST_ID_MEMBER, "")
             params[WebParams.CUST_NAME] = intent.getStringExtra(DefineValue.MEMBER_CUST_NAME)
             params[WebParams.CUST_ID_TYPE] = "KTP"
             params[WebParams.CUST_ID_NUMBER] = intent.getStringExtra(DefineValue.NIK)
             params[WebParams.CUST_BIRTH_PLACE] = intent.getStringExtra(DefineValue.MEMBER_POB)
-            params[WebParams.MEMBER_ID] = sp.getString(DefineValue.MEMBER_ID_CUST,"")
+            params[WebParams.MEMBER_ID] = sp.getString(DefineValue.MEMBER_ID_CUST, "")
             params[WebParams.CUST_BIRTH_DATE] = intent.getStringExtra(DefineValue.MEMBER_DOB)
             params[WebParams.CUST_ADDRESS] = intent.getStringExtra(DefineValue.MEMBER_ADDRESS)
             params[WebParams.CUST_RT] = intent.getStringExtra(DefineValue.MEMBER_RT)
@@ -146,7 +147,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                                 var msg = model.error_message
 
                                 Toast.makeText(this@DetailMemberToVerifyActivity, msg, Toast.LENGTH_LONG).show()
-                                if(code=="0160")
+                                if (code == "0160")
                                     finish()
                             }
                         }
@@ -190,7 +191,10 @@ class DetailMemberToVerifyActivity : BaseActivity() {
     fun camera_dialog() {
         val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
         if (EasyPermissions.hasPermissions(this, *perms)) {
-            set_result_photo?.let { pickAndCameraUtil.runCamera(it) }
+            set_result_photo?.let {
+                CameraActivity.openCertificateCamera(this, CameraActivity.TYPE_COMPANY_PORTRAIT)
+//                pickAndCameraUtil.runCamera(it)
+            }
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
                     RC_CAMERA_STORAGE, *perms)
@@ -200,19 +204,30 @@ class DetailMemberToVerifyActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            RESULT_CAMERA_KTP ->
-                if (resultCode == Activity.RESULT_OK) {
-                    if (pickAndCameraUtil!!.getCaptureImageUri() != null) {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                            ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.getCaptureImageUri()))
-                        } else {
-                            ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil!!.getCurrentPhotoPath())
-                        }
+            CameraActivity.REQUEST_CODE ->
+                if (data != null) {
+                    if (CameraActivity.getResult(data) != null) {
+                        val path = CameraActivity.getResult(data)
+                        ImageCompressionAsyncTask(KTP_TYPE).execute(path)
                     } else {
-                        Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
                         camera_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
+                        Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
                     }
                 }
+
+//            RESULT_CAMERA_KTP ->
+//                if (resultCode == Activity.RESULT_OK) {
+//                    if (pickAndCameraUtil!!.getCaptureImageUri() != null) {
+//                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//                            ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.getCaptureImageUri()))
+//                        } else {
+//                            ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil!!.getCurrentPhotoPath())
+//                        }
+//                    } else {
+//                        Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
+//                        camera_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
+//                    }
+//                }
 //            RESULT_CAMERA_CUST_KTP ->
 //                if (resultCode == Activity.RESULT_OK && pickAndCameraUtil!!.getCaptureImageUri() != null) {
 //                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -252,7 +267,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
         val request3 = RequestBody.create(MediaType.parse("text/plain"),
                 (flag).toString())
         val request4 = RequestBody.create(MediaType.parse("text/plain"),
-                sp.getString(DefineValue.CUST_ID_MEMBER,""))
+                sp.getString(DefineValue.CUST_ID_MEMBER, ""))
 
         params[WebParams.USER_ID] = request1
         params[WebParams.COMM_ID] = request2
