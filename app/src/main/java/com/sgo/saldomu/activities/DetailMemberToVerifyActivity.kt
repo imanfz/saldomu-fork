@@ -93,7 +93,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
 //        }
 
         submit_button.setOnClickListener {
-            if (ktp != null && custAndKTP != null && ttd != null) {
+            if (ktp != null) {
                 sendUpgradeCustData()
             }
         }
