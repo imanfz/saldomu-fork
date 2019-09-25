@@ -591,5 +591,6 @@ public class WebParams {
     public static String NOTES = "notes";
     public static String SOURCE_BANK_CODE = "source_bank_code";
     public static String MEMBER_CREATED = "member_created";
+    public static String FROM_AGENT = "from_agent";
 
 }

@@ -1035,6 +1035,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="pln_warn">Demi kenyamanan bersama, sebaiknya tidak melakukan transaksi antara pukul 23.45 - 00.45. Karena transaksi tidak dapat diproses. </string>
 
     <string name="cashoutmember_tx_id">ID Transaksi</string>
+    <string name="cashoutmember_created">Tanggal Transaksi</string>
     <string name="cashoutmember_request_data">Meminta data...</string>
     <string name="cashoutmember_agent_name">Nama Agen</string>
     <string name="cashoutmember_bank_product">Bank Produk</string>
@@ -1425,4 +1426,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="hint_amount">Masukkan Total Pembayaran</string>
     <string name="upgrade">U P G R A D E</string>
     <string name="terms_bank_acct">*wajib memiliki rekening Bank</string>
+    <string name="resent_otp">Resent OTP</string>
 </resources>

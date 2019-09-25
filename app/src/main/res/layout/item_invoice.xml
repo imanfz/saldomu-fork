@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Due date \t\t\t:"/>
+            android:text="Due date :"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sisa \t\t\t\t\t\t\t:"/>
+            android:text="Sisa :"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bayar \t\t\t\t\t\t:"
+            android:text="Bayar :"
             android:textColor="@color/red"/>
         <TextView
             android:layout_width="match_parent"
