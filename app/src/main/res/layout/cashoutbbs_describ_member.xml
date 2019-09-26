@@ -104,6 +104,30 @@
                 >
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/cashoutmember_created"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/bbscashoutmember_created_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="16dp"
+                >
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="@string/cashoutmember_agent_name"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/text_size_medium_material"
@@ -282,7 +306,7 @@
             </LinearLayout>
 
             <LinearLayout android:id="@+id/bbscashoutmember_bottom_layout"
-                android:background="@color/windowBackgroundColor"
+                android:background="@color/grey_1000w"
                 android:gravity="center"
                 android:padding="8dp"
                 android:orientation="vertical"

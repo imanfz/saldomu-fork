@@ -127,6 +127,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_ID] = MyApiClient.COMM_ID
             params[WebParams.IS_REGISTER] = "Y"
+            params[WebParams.FROM_AGENT] = "Y"
 
             Timber.d("isi params upgrade member:$params")
 

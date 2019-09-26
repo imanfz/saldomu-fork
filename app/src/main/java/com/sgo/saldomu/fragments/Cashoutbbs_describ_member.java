@@ -58,6 +58,10 @@ import com.sgo.saldomu.widgets.BaseFragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import timber.log.Timber;
@@ -66,10 +70,10 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
     public final static String TAG = "com.sgo.saldomu.fragments.Cashoutbbs_describ_member";
     View v;
     //    layout_button_transaction;
-    String authType, amount, fee, total, ccyId, txId, comm_code,
+    String authType, amount, fee, total, ccyId, txId, created, comm_code,
             product_name, product_code, bank_code, bank_name, callback_url, api_key, comm_id, otp_member;
     private String product_h2h;
-    TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvAlert, tvBankProduct, tvAdditionalFee;
+    TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvCreated, tvAlert, tvBankProduct, tvAdditionalFee;
     LinearLayout layoutOTP, layoutNoEmpty, layoutButton;
     RelativeLayout layoutEmpty;
     EditText tokenValue;
@@ -124,6 +128,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
 //        layoutCode = (LinearLayout) v.findViewById(R.id.bbscashoutmember_code_layout);
         layoutButton = v.findViewById(R.id.bbscashoutmember_bottom_layout);
         tvTxId = v.findViewById(R.id.bbscashoutmember_tx_id_value);
+        tvCreated = v.findViewById(R.id.bbscashoutmember_created_value);
         tvAgent = v.findViewById(R.id.bbscashoutmember_agent_value);
         tvAmount = v.findViewById(R.id.bbscashoutmember_amount_value);
         tvFee = v.findViewById(R.id.bbscashoutmember_fee_value);
@@ -305,7 +310,12 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                     api_key = response.optString(WebParams.API_KEY, "");
                                     callback_url = response.optString(WebParams.CALLBACK_URL, "");
                                     comm_id = response.optString(WebParams.COMM_ID, "");
+                                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    Date date = formatter.parse(response.optString(WebParams.CREATED, ""));
+                                    SimpleDateFormat newFormat = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
+                                    created = newFormat.format(date);
                                     tvTxId.setText(txId);
+                                    tvCreated.setText(created);
                                     tvAgent.setText(response.optString(WebParams.MEMBER_NAME, ""));
                                     tvBankProduct.setText(product_name);
                                     tvAmount.setText(ccyId + ". " + CurrencyFormat.format(response.optString(WebParams.TX_AMOUNT, "0")));
@@ -330,6 +340,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                     handlerWS.postDelayed(runnableWS, 60000);
                                 }
                             } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                         }

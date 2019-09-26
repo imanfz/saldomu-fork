@@ -53,7 +53,7 @@ import timber.log.Timber;
 public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback{
     View view;
     RecyclerView listInvoice;
-    Button btn_detail, btn_cancel, btn_resend, btn_confirm;
+    Button btn_detail, btn_resend, btn_confirm;
     SecurePreferences sp;
     EditText et_otp;
     InvoiceDGIAdapter invoiceDGIAdapter;
@@ -62,7 +62,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
     int attempt = 0, failed = 0;
     DetailInvoiceTagihDialog detailInvoiceTagihDialog;
 
-    TextView tv_total;
+    TextView tv_total, tv_desc;
 
     String paymentType, remark, phone, total, product_code;
     Bundle bundle;
@@ -95,15 +95,13 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
 
         listInvoice = view.findViewById(R.id.listMenu);
         et_otp = view.findViewById(R.id.txtOtp);
-        btn_detail = view.findViewById(R.id.btn_desc);
-        btn_cancel = view.findViewById(R.id.btnCancel);
+        tv_desc = view.findViewById(R.id.tv_desc);
         btn_resend = view.findViewById(R.id.btnResend);
         btn_confirm = view.findViewById(R.id.btnDone);
         tv_total = view.findViewById(R.id.lbl_total_pay_amount);
 
 
-        btn_detail.setOnClickListener(btnDetailListener);
-        btn_cancel.setOnClickListener(btnCancelListener);
+        tv_desc.setOnClickListener(tvDetailListener);
         btn_resend.setOnClickListener(btnResendListener);
         btn_confirm.setOnClickListener(btnConfirmListener);
 
@@ -159,7 +157,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                 false, false));
     }
 
-    private Button.OnClickListener btnDetailListener = new Button.OnClickListener() {
+    private TextView.OnClickListener tvDetailListener = new TextView.OnClickListener() {
         @Override
         public void onClick(View v) {
             detailInvoiceTagihDialog = DetailInvoiceTagihDialog.newDialog(
@@ -167,13 +165,6 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                     remark,
                     phone);
             detailInvoiceTagihDialog.show(getActivity().getSupportFragmentManager(), "detailInvoiceTagihDialog");
-        }
-    };
-
-    private Button.OnClickListener btnCancelListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            getFragmentManager().popBackStack();
         }
     };
 
