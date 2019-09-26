@@ -134,6 +134,11 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
         params[WebParams.CUSTOMER_ID] = model.customer_id
         params[WebParams.PRODUCT_TYPE] = model.product_type
         params[WebParams.TX_FAVORITE_TYPE] = model.tx_favorite_type
+        params[WebParams.COMM_ID] = model.comm_id
+        
+        if(model.product_type.isNullOrBlank()) {
+            params[WebParams.DENOM_ITEM_ID] = model.item_id
+        }
         Log.e(TAG, "params: $params")
 
         RetrofitService.getInstance().PostObjectRequest(url, params,
