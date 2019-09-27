@@ -334,6 +334,7 @@ public class RetrofitService {
         params.put(WebParams.RC_UUID, uuidnya);
         params.put(WebParams.RC_DTIME, dtime);
         params.put(WebParams.SIGNATURE, hash);
+        params.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
 
         return params;
     }
