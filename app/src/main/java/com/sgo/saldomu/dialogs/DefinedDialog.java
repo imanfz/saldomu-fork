@@ -1,9 +1,11 @@
 package com.sgo.saldomu.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.SearchAgentUpgradeActivity;
 import com.sgo.saldomu.coreclass.LifeCycleHandler;
 
 import timber.log.Timber;
@@ -130,7 +133,7 @@ public class DefinedDialog {
             dialog.dismiss();
         });
         dialog.findViewById(R.id.btn_dialog_search).setOnClickListener(v -> {
-
+            context.startActivity(new Intent(context, SearchAgentUpgradeActivity.class));
         });
         return dialog;
     }
