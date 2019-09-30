@@ -293,7 +293,6 @@ public class BillerInputPulsa extends BaseFragment {
                             initializeSpinnerDenom();
                         }
                     }
-
                 }
             } else if (buy_type_detail.equalsIgnoreCase("PASCABAYAR")) {
                 for (int i = 0; i < mListBillerData.size(); i++) {

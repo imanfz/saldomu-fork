@@ -24,6 +24,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.NFC" />
     <!-- <uses-permission android:name="android.permission.RECEIVE_SMS" /> -->
     <!-- <uses-permission android:name="android.permission.SEND_SMS" /> -->
     <!-- <uses-permission android:name="android.permission.READ_SMS" /> -->
@@ -126,7 +127,14 @@
             android:name=".activities.BillerActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+<!--            <intent-filter>-->
+<!--                <action android:name="android.nfc.action.TECH_DISCOVERED"/>-->
+<!--            </intent-filter>-->
+<!--            <meta-data android:name="android.nfc.action.TECH_DISCOVERED"-->
+<!--                android:resource="@xml/nfc_tech_filte" />-->
+        </activity>
         <activity
             android:name=".activities.PayFriendsConfirmTokenActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"

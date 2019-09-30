@@ -162,8 +162,6 @@ public class BillerDesciption extends BaseFragment {
 
         if (isAdded())
             sentInquiryBiller();
-
-
     }
 
     private void initializeData() {

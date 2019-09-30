@@ -1,13 +1,17 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.IsoDep;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
@@ -36,11 +41,12 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.NoHPFormat;
-import com.sgo.saldomu.coreclass.PrefixOperatorValidator;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.utils.Converter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +57,8 @@ import timber.log.Timber;
 /*
   Created by Administrator on 3/4/2015.
  */
-public class BillerInput extends Fragment {
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
+public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
 
     public final static String TAG = "BILLER_INPUT";
 
@@ -104,6 +111,7 @@ public class BillerInput extends Fragment {
     private String biller_info;
     String biller_api_key;
     private String biller_item_id;
+    private String biller_comm_code;
     private String final_payment_remark;
     private String buy_type;
     private int buy_code;
@@ -127,6 +135,25 @@ public class BillerInput extends Fragment {
     private ArrayList<String> _data;
     private List<Biller_Data_Model> mListBillerData;
 
+    private NfcAdapter nfcAdapter;
+    private String cardSelect = "";
+    private String cardAttribute = "";
+    private String cardInfo = "";
+    private String cardUid = "";
+    private String cardBalance = "";
+    private String saldo = "";
+    private String numberCard = "";
+
+    private String appletType = "";
+    private String updateCardKey = "";
+    private String session = "";
+    private String pendingAmount = "";
+    private String institutionReff = "";
+    private String sourceOfAccount = "";
+    private String merchantData = "";
+    private String optionNFC = "";
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.frag_biller_input, container, false);
@@ -138,12 +165,14 @@ public class BillerInput extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
 
         Bundle args = getArguments();
         biller_type_code = args.getString(DefineValue.BILLER_TYPE, "");
         biller_comm_id = args.getString(DefineValue.COMMUNITY_ID, "");
         biller_comm_name = args.getString(DefineValue.COMMUNITY_NAME, "");
         biller_item_id = args.getString(DefineValue.BILLER_ITEM_ID, "");
+        biller_comm_code = args.getString(DefineValue.BILLER_COMM_CODE, "");
 
         isToken = false;
 
@@ -260,8 +289,14 @@ public class BillerInput extends Fragment {
         } else if (biller_type_code.equals(billerType[7]) || biller_type_code.equals(billerType[19])) {
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PURCHASE_TYPE;
-            tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
-            et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
+            if (biller_comm_code.equals("EMONEYSALDOMU")) {
+                tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Emoney));
+                et_payment_remark.setText("6032984008386579");
+                et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(16)});
+            } else {
+                tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
+                et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
+            }
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (biller_type_code.equals(billerType[8])) {
             buy_type = _buy_type[1];
@@ -314,8 +349,9 @@ public class BillerInput extends Fragment {
                     equalTo(WebParams.COMM_ID, biller_comm_id).
                     equalTo(WebParams.COMM_NAME, biller_comm_name).
                     equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
+                    equalTo(WebParams.DENOM_COMM_CODE, biller_comm_code).
                     findFirst();
-        }else {
+        } else {
             mBillerData = realm.where(Biller_Data_Model.class).
                     equalTo(WebParams.COMM_ID, biller_comm_id).
                     findFirst();
@@ -462,7 +498,6 @@ public class BillerInput extends Fragment {
 
     private void showDialog(String _payment_remark) {
 
-
         Bundle mArgs = getArguments();
         mArgs.putString(DefineValue.CUST_ID, _payment_remark);
         if (denom_item_id.equals(""))
@@ -538,4 +573,95 @@ public class BillerInput extends Fragment {
         }
         super.onDestroy();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+//        NfcManager manager = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
+        nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
+        if (biller_comm_code.equals("EMONEYSALDOMU")) {
+            if (nfcAdapter != null && nfcAdapter.isEnabled()) {
+                //Yes NFC available
+                nfcAdapter.enableReaderMode(getActivity(), this::onTagDiscovered,
+                        NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK, null);
+
+            } else if (nfcAdapter != null && !nfcAdapter.isEnabled()) {
+                DialogFragment popUpNFC = new PopUpNFC();
+                popUpNFC.setCancelable(false);
+                popUpNFC.show(getActivity().getSupportFragmentManager(), "PopUpNFC");
+
+            } else {
+//                Toast.makeText(getActivity(), "Device Tidak Memiliki NFC", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+    @Override
+    public void onTagDiscovered(Tag tag) {
+        IsoDep isoDep = IsoDep.get(tag);
+        try {
+            isoDep.connect();
+
+            byte[] selectEmoneyResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00A40400080000000000000001"));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("SELECT_RESPONSE : ", Converter.Companion.toHex(selectEmoneyResponse));
+                    cardSelect = Converter.Companion.toHex(selectEmoneyResponse);
+                }
+            });
+
+            byte[] cardAttirbuteResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00F210000B"));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("CARD_ATTRIBUTE : ", Converter.Companion.toHex(cardAttirbuteResponse));
+                    cardAttribute = Converter.Companion.toHex(cardAttirbuteResponse);
+                }
+            });
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("UUID : ", Converter.Companion.toHex(tag.getId()));
+                    cardUid = Converter.Companion.toHex(tag.getId());
+                }
+            });
+
+            byte[] cardInfoResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00B300003F"));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("CARD_INFO : ", Converter.Companion.toHex(cardInfoResponse));
+                    cardInfo = Converter.Companion.toHex(cardInfoResponse);
+                    et_payment_remark.setText(cardInfo.substring(0, 16));
+                    numberCard = cardInfo.substring(0, 16);
+                }
+            });
+
+
+            byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00B500000A"));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    Log.d("LAST_BALANCE : ", Converter.Companion.toHex(lastBalanceResponse));
+                    cardBalance = Converter.Companion.toHex(lastBalanceResponse);
+//                    cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
+                    Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
+                    saldo = String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

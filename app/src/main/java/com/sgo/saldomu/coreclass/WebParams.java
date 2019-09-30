@@ -121,6 +121,7 @@ public class WebParams {
     public static String DENOM_DATA = "denom_data";
     public static String DENOM_DETAIL = "denom_detail";
     public static String DENOM_ITEM_ID = "item_id";
+    public static String DENOM_COMM_CODE = "comm_code";
     public static String DENOM_ITEM_NAME = "item_name";
     public static String DENOM_ITEM_PRICE = "item_price";
     public static String DENOM_CCY_ID = "ccy_id";
