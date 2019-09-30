@@ -130,10 +130,11 @@ public class ListBillerMerchant extends ListFragment {
         changeToInputBiller(mListBillerData.get(position).getComm_id(),
                 mListBillerData.get(position).getComm_name(),
                 mListBillerData.get(position).getItem_id(),
+                mListBillerData.get(position).getComm_code(),
                 mBillerType.getBiller_type());
     }
 
-    private void changeToInputBiller(String _comm_id, String _comm_name, String _item_id, String _buy_type) {
+    private void changeToInputBiller(String _comm_id, String _comm_name, String _item_id, String _comm_code, String _buy_type) {
 //        if(_item_id.isEmpty())
 //            callUpdateDenom(_comm_id, _comm_name);
 
@@ -141,6 +142,7 @@ public class ListBillerMerchant extends ListFragment {
         mArgs.putString(DefineValue.COMMUNITY_ID, _comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, _comm_name);
         mArgs.putString(DefineValue.BILLER_ITEM_ID, _item_id);
+        mArgs.putString(DefineValue.BILLER_COMM_CODE, _comm_code);
         mArgs.putString(DefineValue.BILLER_TYPE, billerTypeCode);
         mArgs.putString(DefineValue.BILLER_ID_NUMBER, billerIdNumber);
         mArgs.putString(DefineValue.BUY_TYPE, _buy_type);

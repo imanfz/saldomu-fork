@@ -1,5 +1,6 @@
 package com.sgo.saldomu.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -218,6 +219,7 @@ public class BillerActivity extends BaseActivity {
     }
 
 
+    @SuppressLint("NewApi")
     private void initializeListBiller() {
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.BILLER_TYPE, _biller_type_code);
@@ -226,7 +228,7 @@ public class BillerActivity extends BaseActivity {
         Intent intent = getIntent();
 
         if (isOneBiller && !_biller_type_code.equalsIgnoreCase("DATA")
-                && !_biller_type_code.equalsIgnoreCase("TKN")) {
+                && !_biller_type_code.equalsIgnoreCase("TKN") && !_biller_type_code.equalsIgnoreCase("EMON")) {
             mLBM = new BillerInput();
             if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
                 mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));

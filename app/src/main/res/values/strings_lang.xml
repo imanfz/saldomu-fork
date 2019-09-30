@@ -335,6 +335,7 @@
     <string name="billerinput_text_keterangan">Keterangan</string>
     <string name="billerinput_text_payment_remark">ID Pelanggan</string>
     <string name="billerinput_text_payment_remark_Pulsa">Nomor Handphone</string>
+    <string name="billerinput_text_payment_remark_Emoney">Nomor Kartu</string>
     <string name="billerinput_text_payment_remark_Listrik">Nomor Meter</string>
     <string name="billerinput_text_payment_remark_CC">Nomor Kartu Kredit</string>
     <string name="billerinput_text_payment_remark_PAM">Nomor Pelanggan</string>
