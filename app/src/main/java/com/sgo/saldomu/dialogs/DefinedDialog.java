@@ -115,6 +115,26 @@ public class DefinedDialog {
         return dialog;
     }
 
+    public static Dialog MessageSearchAgent(Context context, String _title, String _message){
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_search_agent);
+        dialog.setCancelable(false);
+
+        TextView title = dialog.findViewById(R.id.title_dialog);
+        TextView message = dialog.findViewById(R.id.message_dialog);
+
+        title.setText(_title);
+        message.setText(_message);
+        dialog.findViewById(R.id.btn_dialog_cancel).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        dialog.findViewById(R.id.btn_dialog_search).setOnClickListener(v -> {
+
+        });
+        return dialog;
+    }
+
     public static AlertDialog BuildAlertDialog(Context context, String title, String msg, int icon, Boolean isCancelable,
                                                String okbtn, DialogInterface.OnClickListener ok) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
