@@ -22,6 +22,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -31,8 +32,12 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.TagihCommunityModel;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONException;
@@ -282,6 +287,7 @@ public class FragTagihInput extends BaseFragment {
                                 @Override
                                 public void onResponses(JSONObject response) {
                                     try {
+                                        jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                         String code = response.getString(WebParams.ERROR_CODE);
                                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
@@ -299,6 +305,15 @@ public class FragTagihInput extends BaseFragment {
                                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                                 test.showDialoginMain(getActivity(), message);
                                             }
+                                        }else if (code.equals(DefineValue.ERROR_9333)) {
+                                            Timber.d("isi response app data:" + model.getApp_data());
+                                            final AppDataModel appModel = model.getApp_data();
+                                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                            alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                        } else if (code.equals(DefineValue.ERROR_0066)) {
+                                            Timber.d("isi response maintenance:" + response.toString());
+                                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                            alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                         } else {
                                             code = response.getString(WebParams.ERROR_MESSAGE);
                                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -344,7 +359,7 @@ public class FragTagihInput extends BaseFragment {
                     public void onResponses(JSONObject response) {
                         try {
                             dismissProgressDialog();
-
+                            jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                             Timber.d("response list invoice DGI : " + response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);
@@ -367,6 +382,15 @@ public class FragTagihInput extends BaseFragment {
                                 }
                                 TagihActivity ftf = (TagihActivity) getActivity();
                                 ftf.switchContent(newFrag, "List Invoice", true);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                             } else {
                                 Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                             }

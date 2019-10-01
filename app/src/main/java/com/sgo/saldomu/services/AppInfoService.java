@@ -38,10 +38,10 @@ public class AppInfoService extends Service {
             if(mainPageContext != null) {
                 if(utilsLoader == null)
                     utilsLoader = new UtilsLoader(mainPageContext);
-                utilsLoader.getAppVersion();
+//                utilsLoader.getAppVersion();
             }
             Timber.i("Service jalankan call AppInfo Service");
-            if(!isServiceDestroyed)mHandler.postDelayed(this, LOOPING_TIME);
+//            if(!isServiceDestroyed)mHandler.postDelayed(this, LOOPING_TIME);
         }
     };
 
@@ -51,7 +51,7 @@ public class AppInfoService extends Service {
         Timber.i("Masuk onCreate call AppInfo Service");
         setServiceDestroyed(false);
         mHandler.removeCallbacks(callBalance);
-        mHandler.postDelayed(callBalance, LOOPING_TIME);
+//        mHandler.postDelayed(callBalance, LOOPING_TIME);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class AppInfoService extends Service {
     }
 
     public void StartCallAppInfo(){
-        mHandler.postDelayed(callBalance, LOOPING_TIME);
+//        mHandler.postDelayed(callBalance, LOOPING_TIME);
     }
 
 }

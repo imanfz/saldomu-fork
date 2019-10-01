@@ -15,15 +15,20 @@ import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.FavoriteActivity
 import com.sgo.saldomu.activities.HistoryActivity
 import com.sgo.saldomu.adapter.FavoriteAdapter
+import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.dialogs.AlertDialogFrag
+import com.sgo.saldomu.dialogs.AlertDialogLogout
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.FavoriteModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.fragment_favorite.*
+import timber.log.Timber
 
 private const val TAG = "FavoriteFragment"
 
@@ -103,8 +108,18 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
                                 val list = gson.fromJson<List<FavoriteModel>>(`object`.get("favorite"), type)
                                 Log.e(TAG, "onResponses: $list")
                                 adapter.updateAdapter(list)
-                            } else {
-
+                            } else if (code == WebParams.LOGOUT_CODE) {
+                                val test = AlertDialogLogout.getInstance()
+                                test.showDialoginActivity(activity, message)
+                            } else if (code == DefineValue.ERROR_9333) run {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            } else if (code == DefineValue.ERROR_0066) run {
+                                Timber.d("isi response maintenance:$`object`")
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -153,6 +168,18 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
 
                             if (code == WebParams.SUCCESS_CODE) {
                                 adapter.removeItem(model)
+                            }else if (code == WebParams.LOGOUT_CODE) {
+                                val test = AlertDialogLogout.getInstance()
+                                test.showDialoginActivity(activity, message)
+                            } else if (code == DefineValue.ERROR_9333) run {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            } else if (code == DefineValue.ERROR_0066) run {
+                                Timber.d("isi response maintenance:$`object`")
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                             }else
                             {
                                 Toast.makeText(context,message, Toast.LENGTH_LONG).show()

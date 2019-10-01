@@ -22,9 +22,7 @@ import com.sgo.saldomu.activities.TopUpActivity
 import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
-import com.sgo.saldomu.dialogs.AlertDialogFrag
-import com.sgo.saldomu.dialogs.AlertDialogLogout
-import com.sgo.saldomu.dialogs.DefinedDialog
+import com.sgo.saldomu.dialogs.*
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.InqBillerModel
 import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel
@@ -463,6 +461,15 @@ class BillerInputData : BaseFragment() {
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(activity, message)
+                            } else if (code == DefineValue.ERROR_9333) run {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            } else if (code == DefineValue.ERROR_0066) run {
+                                Timber.d("isi response maintenance:" + response.toString())
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                             } else {
                                 code = model.error_code + " : " + model.error_message
                                 if (isVisible) {
@@ -549,6 +556,15 @@ class BillerInputData : BaseFragment() {
                                 var message = sentPaymentBillerModel.error_message
                                 var alertDialog = AlertDialogLogout.getInstance()
                                 alertDialog.showDialoginActivity(activity, message)
+                            } else if (code == DefineValue.ERROR_9333) run {
+                                Timber.d("isi response app data:" + sentPaymentBillerModel.getApp_data())
+                                val appModel = sentPaymentBillerModel.getApp_data()
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl())
+                            } else if (code == DefineValue.ERROR_0066) run {
+                                Timber.d("isi response maintenance:" + response.toString())
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(activity, sentPaymentBillerModel.getError_message())
                             } else {
                                 code = sentPaymentBillerModel.error_code + " : " + sentPaymentBillerModel.fee
                                 Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
@@ -647,6 +663,15 @@ class BillerInputData : BaseFragment() {
                             } else if (code == ErrorDefinition.WRONG_PIN_BILLER) {
                                 code = model.error_message
                                 showDialogError(code)
+                            } else if (code == DefineValue.ERROR_9333) run {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            } else if (code == DefineValue.ERROR_0066) run {
+                                Timber.d("isi response maintenance:" + response.toString())
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                             } else {
                                 var code_msg = model.error_message
                                 when (code) {
@@ -801,7 +826,16 @@ class BillerInputData : BaseFragment() {
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(activity, message)
-                            } else {
+                            }  else if (code == DefineValue.ERROR_9333) run {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            } else if (code == DefineValue.ERROR_0066) run {
+                                Timber.d("isi response maintenance:$response")
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                            }else {
                                 code = model.error_code + " : " + model.error_message
                                 if (isVisible) {
                                     Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
