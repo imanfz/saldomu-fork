@@ -39,6 +39,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.GetMemberModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -313,7 +314,7 @@ public class FragDataC2A extends BaseFragment {
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
-                                jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
+                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 Timber.d("response bbs send data : ", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {

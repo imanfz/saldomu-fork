@@ -178,8 +178,8 @@ public class FragShopLocation extends BaseFragment {
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 Timber.d("Isi response getBalance Collector:" + response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 

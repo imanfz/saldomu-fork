@@ -359,7 +359,7 @@ public class FragTagihInput extends BaseFragment {
                     public void onResponses(JSONObject response) {
                         try {
                             dismissProgressDialog();
-                            jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
+                            jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                             Timber.d("response list invoice DGI : " + response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);

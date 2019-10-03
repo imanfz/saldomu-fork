@@ -38,6 +38,7 @@ import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.PromoObject;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.ActivitySCADM;
 import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
@@ -388,7 +389,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     }
                 }
                 // upgrade Member AGENT
-                 else if (menuItemName.equals(getString(R.string.menu_item_title_upgrade_member))) {
+                else if (menuItemName.equals(getString(R.string.menu_item_title_upgrade_member))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();
                     } else {
@@ -491,6 +492,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     }
                 } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
                     Intent intent = new Intent(getActivity(), HistoryActivity.class);
+                    startActivity(intent);
+                }else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
+                    Intent intent = new Intent(getActivity(), ActivitySCADM.class);
                     startActivity(intent);
                 }
 
@@ -787,7 +791,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginMain(getActivity(), message);
-                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:" + model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
                                     AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -820,9 +824,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
     private void populateBanner() {
 
-        if (sp.getBoolean(DefineValue.SAME_BANNER,false)==true) {
+        if (sp.getBoolean(DefineValue.SAME_BANNER, false) == true) {
             try {
-                JSONArray mArrayPromo_ = new JSONArray(sp.getString(DefineValue.DATA_BANNER,""));
+                JSONArray mArrayPromo_ = new JSONArray(sp.getString(DefineValue.DATA_BANNER, ""));
                 for (int i = 0; i < mArrayPromo_.length(); i++) {
                     try {
                         String id = mArrayPromo_.getJSONObject(i).getString(WebParams.ID);
@@ -948,6 +952,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
             menuDrawables.add(getResources().getDrawable(R.drawable.group));
+
+            if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
+                menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
+                menuDrawables.add(getResources().getDrawable(R.drawable.group));
+            }
         }
 
 //        menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));

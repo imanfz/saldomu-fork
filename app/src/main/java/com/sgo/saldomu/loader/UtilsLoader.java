@@ -31,6 +31,7 @@ import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.FailedPinModel;
 import com.sgo.saldomu.models.retrofit.GetAppVersionModel;
 import com.sgo.saldomu.models.retrofit.GetBalanceModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.services.BalanceService;
 
 import java.util.HashMap;
@@ -266,7 +267,7 @@ public class UtilsLoader {
                     , new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            GetAppVersionModel model = RetrofitService.getInstance().getGson().fromJson(object, GetAppVersionModel.class);
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(object, GetAppVersionModel.class);
 
                             if (!model.getOn_error()) {
                                 String code = model.getError_code();
