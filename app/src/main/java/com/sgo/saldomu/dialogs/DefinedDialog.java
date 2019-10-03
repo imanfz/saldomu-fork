@@ -133,6 +133,7 @@ public class DefinedDialog {
             dialog.dismiss();
         });
         dialog.findViewById(R.id.btn_dialog_search).setOnClickListener(v -> {
+            dialog.dismiss();
             context.startActivity(new Intent(context, SearchAgentUpgradeActivity.class));
         });
         return dialog;
