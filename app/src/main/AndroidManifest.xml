@@ -601,6 +601,16 @@
         </activity>
         <activity android:name=".activities.MapsActivity" />
 
+        <activity
+            android:name=".activities.SearchAgentUpgradeActivity"
+            android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage" />
+        </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
