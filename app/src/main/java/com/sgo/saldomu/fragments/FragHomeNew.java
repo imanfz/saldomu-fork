@@ -45,12 +45,10 @@ import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.HistoryActivity;
 import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.activities.ReportActivity;
 import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
-import com.sgo.saldomu.activities.UpgradeMemberActivity;
 import com.sgo.saldomu.adapter.GridHome;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -235,10 +233,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                                         ShopCategory shopCategory = new ShopCategory();
                                         shopCategory.setCategoryId(obj.getCategory_id());
-                                        if (shopCategory.getCategoryId().contains("SETOR")) {
-                                            String categoryIDcta = shopCategory.getCategoryId().toString();
-                                            mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
-                                        }
+                                        if (shopCategory.getCategoryId().contains("SETOR"))
+                                            mEditor.putString(DefineValue.CATEGORY_ID_CTA, shopCategory.getCategoryId());
+                                        if (obj.getCategory_name().contains("Upgrade"))
+                                            mEditor.putString(DefineValue.CATEGORY_ID_UPG, shopCategory.getCategoryId());
                                         shopCategory.setSchemeCode(obj.getScheme_code());
                                         String tempCategory = obj.getCategory_name().toLowerCase();
                                         String[] strArray = tempCategory.split(" ");

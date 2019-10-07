@@ -317,6 +317,7 @@ public class DefineValue {
 
     public static String CATEGORY_ID    = "category_id";
     public static String CATEGORY_ID_CTA    = "category_id_cta";
+    public static String CATEGORY_ID_UPG    = "category_id_upg";
     public static String CATEGORY_NAME  = "category_name";
     public static String CATEGORY_CODE  = "category_code";
 
