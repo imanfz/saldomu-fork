@@ -279,6 +279,7 @@ public class MyApiClient {
     public static String LINK_EXEC_UPGRADE_MEMBER;
     public static String LINK_REQ_UPGRADE_MEMBER;
     public static String LINK_GET_BILLER_DENOM;
+    public static String LINK_GET_ANCHOR_COMMUNITIES;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -483,6 +484,7 @@ public class MyApiClient {
 
         LINK_GET_BILLER_DENOM     = headaddressfinal + "BillerEspayNew/Retrieve";
 
+        LINK_GET_ANCHOR_COMMUNITIES = headaddressfinal + "invoice/Getanchor/Communities";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());

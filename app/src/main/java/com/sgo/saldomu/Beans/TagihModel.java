@@ -2,16 +2,18 @@ package com.sgo.saldomu.Beans;
 
 import com.sgo.saldomu.models.TagihCommunityModel;
 
+import java.util.ArrayList;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class TagihModel extends RealmObject {
+public class TagihModel {
     @PrimaryKey
     private String id;
     private String anchor_name;
     private String anchor_cust;
-    private RealmList<TagihCommunityModel> listCommunity;
+    private ArrayList<TagihCommunityModel> listCommunity;
 
     public String getId() {
         return id;
@@ -37,11 +39,11 @@ public class TagihModel extends RealmObject {
         this.anchor_cust = anchor_cust;
     }
 
-    public RealmList<TagihCommunityModel> getListCommunity() {
+    public ArrayList<TagihCommunityModel> getListCommunity() {
         return listCommunity;
     }
 
-    public void setListCommunity(RealmList<TagihCommunityModel> listCommunity) {
+    public void setListCommunity(ArrayList<TagihCommunityModel> listCommunity) {
         this.listCommunity = listCommunity;
     }
 }
