@@ -465,10 +465,10 @@ public class BillerDesciption extends BaseFragment {
             if (cust_id.equalsIgnoreCase(""))
                 cust_id = userPhoneID;
 
-            extraSignature = biller_comm_id + item_id + cust_id;
+            extraSignature = biller_comm_id + "SLYEMN2000" + cust_id;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_BILLER, extraSignature);
-            params.put(WebParams.DENOM_ITEM_ID, item_id);
+            params.put(WebParams.DENOM_ITEM_ID, "SLYEMN2000");
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id);
             params.put(WebParams.COMM_ID, biller_comm_id);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -542,10 +542,10 @@ public class BillerDesciption extends BaseFragment {
             final String bank_code = mTempBank.getBank_code();
             final String product_code = mTempBank.getProduct_code();
 
-            extraSignature = tx_id + item_id + biller_comm_id + product_code;
+            extraSignature = tx_id + "SLYEMN2000" + biller_comm_id + product_code;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_PAYMENT_BILLER, extraSignature);
-            params.put(WebParams.DENOM_ITEM_ID, item_id);
+            params.put(WebParams.DENOM_ITEM_ID, "SLYEMN2000");
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id);
 
             params.put(WebParams.TX_ID, tx_id);
