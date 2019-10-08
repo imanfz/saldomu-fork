@@ -1,8 +1,9 @@
-package com.sgo.saldomu.dialogs;
+package com.sgo.saldomu.dialogs;/*
+  Created by Administrator on 1/26/2015.
+ */
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Patterns;
@@ -12,44 +13,41 @@ import com.sgo.saldomu.activities.MainPage;
 
 import timber.log.Timber;
 
-public class AlertDialogMaintenance {
-    private static AlertDialogMaintenance instance = null;
+public class AlertDialogUpdateApp {
+
+    private static AlertDialogUpdateApp instance = null;
     private static AlertDialog adInstance;
 
-    private AlertDialogMaintenance() {
+    private AlertDialogUpdateApp() {
         // Exists only to defeat instantiation.
     }
 
-    public static AlertDialogMaintenance getInstance() {
+    public static AlertDialogUpdateApp getInstance() {
         if (instance == null) {
-            instance = new AlertDialogMaintenance();
+            instance = new AlertDialogUpdateApp();
         }
         return instance;
     }
 
-    public void showDialogMaintenance(final Activity mContext, String message) {
-//        DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                mContext.finish();
-//                android.os.Process.killProcess(android.os.Process.myPid());
-//                System.exit(0);
-//                mContext.getParent().finish();
-//            }
-//        };
-//        android.support.v7.app.AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(mContext, mContext.getString(R.string.maintenance),
-//                message, android.R.drawable.ic_dialog_alert, false,
-//                mContext.getString(R.string.ok), okListener);
-//        alertDialog.show();
-//
-//        Timber.d("showDialogUpdate");
-
+    public void showDialogUpdate(final Activity mContext, String type, String package_name, String download_url) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle(mContext.getResources().getString(R.string.maintenance)).setMessage(mContext.getResources().getString(R.string.maintenance_message))
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setCancelable(false)
+        builder.setTitle(mContext.getResources().getString(R.string.update)).setMessage(mContext.getResources().getString(R.string.update_msg))
+                .setCancelable(true)
                 .setPositiveButton(mContext.getResources().getString(R.string.ok), (dialog, which) ->
                 {
+                    if (type.equalsIgnoreCase("1")) {
+                        try {
+                            mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + package_name)));
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + package_name)));
+                        }
+                    } else if (type.equalsIgnoreCase("2")) {
+                        String url = download_url;
+                        if (!Patterns.WEB_URL.matcher(url).matches())
+                            url = "http://www.google.com";
+                        mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    }
+
                     switchLogout(mContext);
                     mContext.finish();
                     android.os.Process.killProcess(android.os.Process.myPid());
@@ -83,6 +81,6 @@ public class AlertDialogMaintenance {
     }
 
     private void setAdInstance(AlertDialog adInstance) {
-        AlertDialogMaintenance.adInstance = adInstance;
+        AlertDialogUpdateApp.adInstance = adInstance;
     }
 }

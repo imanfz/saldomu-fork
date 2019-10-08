@@ -42,15 +42,19 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.BankCashoutModel;
 import com.sgo.saldomu.models.retrofit.ContactDataModel;
 import com.sgo.saldomu.models.retrofit.GetHelpModel;
 import com.sgo.saldomu.models.retrofit.SentExecCustModel;
 import com.sgo.saldomu.models.retrofit.UpdateProfileModel;
 import com.sgo.saldomu.models.retrofit.UploadFotoModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.utils.camera.CameraActivity;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -712,6 +716,15 @@ public class MyProfileNewActivity extends BaseActivity {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(MyProfileNewActivity.this, message);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
                             } else {
                                 code = model.getError_message();
                                 Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
@@ -1017,12 +1030,18 @@ public class MyProfileNewActivity extends BaseActivity {
 
                         } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
 
-//                                Timber.d("isi response autologout:" + response.toString());
-//                                String message = response.getString(WebParams.ERROR_MESSAGE);
-
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(MyProfileNewActivity.this, error_message);
-                        } else {
+                        } else if (error_code.equals(DefineValue.ERROR_9333)) {
+                            Timber.d("isi response app data:" + model.getApp_data());
+                            final AppDataModel appModel = model.getApp_data();
+                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                            alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                        } else if (error_code.equals(DefineValue.ERROR_0066)) {
+                            Timber.d("isi response maintenance:" + object.toString());
+                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                            alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
+                        }else {
                             Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
 
 
@@ -1152,7 +1171,16 @@ public class MyProfileNewActivity extends BaseActivity {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(MyProfileNewActivity.this, message);
-                            } else {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
+                            }else {
                                 code = model.getError_message();
 
                                 Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
@@ -1216,6 +1244,15 @@ public class MyProfileNewActivity extends BaseActivity {
 //                                Timber.d("isi response autologout:"+response.toString());
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(MyProfileNewActivity.this, message);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
                             } else {
                                 Toast.makeText(MyProfileNewActivity.this, message, Toast.LENGTH_LONG).show();
                             }
@@ -1290,16 +1327,30 @@ public class MyProfileNewActivity extends BaseActivity {
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
+
+                            Gson gson = new Gson();
+                            jsonModel model = gson.fromJson(object.toString(), jsonModel.class);
+
                             Log.e("getBankCashout", object.get("bank_cashout").toString());
 
-                            Type type = new TypeToken<List<BankCashoutModel>>() {
-                            }.getType();
+                            Type type = new TypeToken<List<BankCashoutModel>>() {}.getType();
                             Gson gson2 = new Gson();
                             listBankCashOut = gson2.fromJson(object.get("bank_cashout"), type);
 
                             Log.e("getBankCashout", listBankCashOut.toString());
 
                             adapter.updateAdapter(listBankCashOut);
+
+                            if (object.get("error_code").equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (object.get("error_code").equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
+                            }
                         }
 
                         @Override

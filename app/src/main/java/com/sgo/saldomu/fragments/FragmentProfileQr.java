@@ -45,9 +45,13 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.UploadPPModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
@@ -88,7 +92,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private ImageView custImage;
     private DateFormat fromFormat;
     private DateFormat dobFormat;
-//    private PickAndCameraUtil pickAndCameraUtil;
+    //    private PickAndCameraUtil pickAndCameraUtil;
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
     final int RC_CAMERA_STORAGE = 14;
@@ -108,8 +112,8 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof Activity){
-            activity=(Activity) context;
+        if (context instanceof Activity) {
+            activity = (Activity) context;
         }
     }
 
@@ -163,7 +167,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     @Override
     public void onResume() {
         super.onResume();
-        ((MainPage)getActivity()).pickAndCameraUtil = new PickAndCameraUtil(getActivity());
+        ((MainPage) getActivity()).pickAndCameraUtil = new PickAndCameraUtil(getActivity());
     }
 
     private void initData() {
@@ -213,6 +217,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
 
@@ -241,6 +246,15 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                                     Timber.d("isi response autologout:" + response.toString());
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                 } else {
                                     Timber.d("isi error help list:" + response.toString());
                                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
@@ -315,7 +329,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                     (dialog, which) -> {
                         if (which == 0) {
                             Timber.wtf("masuk gallery");
-                            ((MainPage)getActivity()).pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+                            ((MainPage) getActivity()).pickAndCameraUtil.chooseGallery(RESULT_GALERY);
 //                            pickAndCameraUtil.chooseGallery(RESULT_GALERY);
                         } else if (which == 1) {
                             chooseCamera();
@@ -419,7 +433,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private void chooseCamera() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(context, perms)) {
-            ((MainPage)getActivity()).pickAndCameraUtil.runCamera(RESULT_CAMERA);
+            ((MainPage) getActivity()).pickAndCameraUtil.runCamera(RESULT_CAMERA);
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
                     RC_CAMERA_STORAGE, perms);
@@ -432,14 +446,14 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         switch (requestCode) {
             case RESULT_GALERY:
                 if (resultCode == RESULT_OK) {
-                    new ImageCompressionAsyncTask().execute(((MainPage)getActivity()).pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+                    new ImageCompressionAsyncTask().execute(((MainPage) getActivity()).pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
                 }
                 break;
             case RESULT_CAMERA:
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    new ImageCompressionAsyncTask().execute(((MainPage)getActivity()).pickAndCameraUtil.getRealPathFromURI(((MainPage)getActivity()).pickAndCameraUtil.getCaptureImageUri()));
+                    new ImageCompressionAsyncTask().execute(((MainPage) getActivity()).pickAndCameraUtil.getRealPathFromURI(((MainPage) getActivity()).pickAndCameraUtil.getCaptureImageUri()));
                 } else {
-                    new ImageCompressionAsyncTask().execute(((MainPage)getActivity()).pickAndCameraUtil.getCurrentPhotoPath());
+                    new ImageCompressionAsyncTask().execute(((MainPage) getActivity()).pickAndCameraUtil.getCurrentPhotoPath());
                 }
 
 //                if (resultCode == RESULT_OK && ((MainPage)getActivity()).pickAndCameraUtil.getCaptureImageUri() != null) {
@@ -460,10 +474,10 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
         @Override
         protected File doInBackground(String... params) {
-            if (((MainPage)getActivity()).pickAndCameraUtil == null) {
-                ((MainPage)getActivity()).pickAndCameraUtil = new PickAndCameraUtil(getActivity());
+            if (((MainPage) getActivity()).pickAndCameraUtil == null) {
+                ((MainPage) getActivity()).pickAndCameraUtil = new PickAndCameraUtil(getActivity());
             }
-            return ((MainPage)getActivity()).pickAndCameraUtil.compressImage(params[0]);
+            return ((MainPage) getActivity()).pickAndCameraUtil.compressImage(params[0]);
         }
 
         @Override
@@ -499,8 +513,6 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
         RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_UPLOAD_PROFILE_PIC, params2, filePart,
                 object -> {
-
-
                     Gson gson2 = new Gson();
                     UploadPPModel model = gson2.fromJson(object, UploadPPModel.class);
 
@@ -521,17 +533,22 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-//                                GlideManager.sharedInstance().clear(context);
-//                                GlideManager.sharedInstance().initializeGlide(context, model.getImg_url(), null, custImage);
                                 setImageProfPic();
                             }
                         });
-
-//                        setImageProfPic();
                     } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
                         AlertDialogLogout test = AlertDialogLogout.getInstance();
                         test.showDialoginActivity(getActivity(), error_message);
-                    } else {
+                    } else if (error_code.equals(DefineValue.ERROR_9333)) {
+                        Timber.d("isi response app data:" + model.getApp_data());
+                        final AppDataModel appModel = model.getApp_data();
+                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                    } else if (error_code.equals(DefineValue.ERROR_0066)) {
+                        Timber.d("isi response maintenance:" + object.toString());
+                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                        alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                    }else {
                         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                         alert.setTitle("Upload Image");
                         alert.setMessage("Upload Image : " + error_message);

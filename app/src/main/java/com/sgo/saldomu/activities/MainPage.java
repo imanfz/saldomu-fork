@@ -61,6 +61,8 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.UserProfileHandler;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fcm.FCMWebServiceLoader;
@@ -74,6 +76,7 @@ import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.GetMemberModel;
 import com.sgo.saldomu.models.retrofit.MemberDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
@@ -372,7 +375,7 @@ public class MainPage extends BaseActivity {
         isForeground = true;
         agent = sp.getBoolean(DefineValue.IS_AGENT, false);
         UtilsLoader utilsLoader = new UtilsLoader(this, sp);
-        utilsLoader.getAppVersion();
+//        utilsLoader.getAppVersion();
         ActiveAndroid.initialize(this);
         InitializeNavDrawer();
         setupFab();
@@ -980,7 +983,18 @@ public class MainPage extends BaseActivity {
 
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginMain(MainPage.this, message);
-                            } else {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MainPage.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MainPage.this, model.getError_message());
+                            }else {
                                 Timber.d("Error ListMember comlist:" + model.getError_message());
                                 code = model.getError_message();
                                 Toast.makeText(MainPage.this, code, Toast.LENGTH_LONG).show();

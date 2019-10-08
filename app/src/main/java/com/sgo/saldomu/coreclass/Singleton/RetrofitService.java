@@ -355,6 +355,7 @@ public class RetrofitService {
         params.put(WebParams.RQ_UUID, uuidnya);
         params.put(WebParams.RQ_DTIME, dtime);
         params.put(WebParams.SIGNATURE, hash);
+        params.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
 
         return params;
     }
@@ -380,9 +381,12 @@ public class RetrofitService {
                 dtime);
         RequestBody req3 = RequestBody.create(MediaType.parse("text/plain"),
                 hash);
+        RequestBody req4 = RequestBody.create(MediaType.parse("text/plain"),
+                BuildConfig.VERSION_NAME);
         params.put(WebParams.RC_UUID, req1);
         params.put(WebParams.RC_DTIME, req2);
         params.put(WebParams.SIGNATURE, req3);
+        params.put(WebParams.PACKAGE_VERSION, req4);
 
         return params;
     }

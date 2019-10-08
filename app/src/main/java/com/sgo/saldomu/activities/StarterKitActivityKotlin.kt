@@ -21,6 +21,8 @@ import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.dialogs.AlertDialogLogout
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.interfaces.ResponseListener
@@ -46,7 +48,7 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
     private lateinit var levelAgent: String
     private var recyclerView: RecyclerView? = null
     private var starterKitListFileAdapter: StarterKitListFileAdapter? = null
-    private lateinit var message:String
+    private lateinit var message: String
 
     override fun getLayoutResource(): Int {
         return R.layout.starterkit_activity
@@ -126,6 +128,15 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
                     dismissProgressDialog()
                 } else if (code == WebParams.LOGOUT_CODE) {
                     switchLogout()
+                } else if (code == DefineValue.ERROR_9333) run {
+                    Timber.d("isi response app data:" + model.app_data)
+                    val appModel = model.app_data
+                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                    alertDialogUpdateApp.showDialogUpdate(this@StarterKitActivityKotlin, appModel.type, appModel.packageName, appModel.downloadUrl)
+                } else if (code == DefineValue.ERROR_0066) run {
+                    Timber.d("isi response maintenance:" + response.toString())
+                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                    alertDialogMaintenance.showDialogMaintenance(this@StarterKitActivityKotlin, model.error_message)
                 } else {
                     Toast.makeText(this@StarterKitActivityKotlin, message, Toast.LENGTH_SHORT).show()
                 }
@@ -179,6 +190,16 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginMain(this@StarterKitActivityKotlin, message)
                             }
+                            WebParams.ERROR_9333 -> {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(this@StarterKitActivityKotlin, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            }
+                            WebParams.ERROR_0066 -> {
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(this@StarterKitActivityKotlin, model.error_message)
+                            }
                             else -> {
                                 val msg = model.error_message
                                 Toast.makeText(this@StarterKitActivityKotlin, msg, Toast.LENGTH_SHORT).show()
@@ -197,7 +218,7 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
                 })
     }
 
-    private fun dialogSuccess(msg : String) {
+    private fun dialogSuccess(msg: String) {
         var dialognya = DefinedDialog.MessageDialog(this, this!!.getString(R.string.dialog_download_title),
                 msg
         ) { v, isLongClick ->

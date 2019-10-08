@@ -87,7 +87,6 @@ public class MyApiClient {
     private static String LINK_REGISTRASI;
     private static String LINK_VALID_REGISTRASI;
     public static String LINK_LOGIN;
-    public static String LINK_LOGIN_temp;
     public static String LINK_VALID_TOPUP;
     public static String LINK_LIST_MEMBER;
     public static String LINK_REQ_TOKEN_SGOL;
@@ -207,8 +206,8 @@ public class MyApiClient {
     public static String LINK_RESEND_TOKEN_LKD;
     public static String LINK_BBS_CITY;
     public static String LINK_BBS_BIRTH_PLACE;
-    public static String LINK_GLOBAL_BBS_COMM;
-    public static String LINK_GLOBAL_BBS_BANK_C2A;
+//    public static String LINK_GLOBAL_BBS_COMM;
+//    public static String LINK_GLOBAL_BBS_BANK_C2A;
     public static String LINK_GLOBAL_BBS_INSERT_C2A;
     public static String LINK_BBS_BANK_ACCOUNT;
     public static String LINK_BBS_BANK_ACCOUNT_DELETE;
@@ -288,7 +287,6 @@ public class MyApiClient {
         LINK_REG_STEP3           = headaddressfinal + "RegStep3/Invoke";
         LINK_VALID_REGISTRASI    = headaddressfinal + "InsertCustomer/Invoke";
         LINK_LOGIN               = headaddressfinal + "MemberLogin/SignIn";
-        LINK_LOGIN_temp          = headaddressfinal + "MemberLoginTemp/SignIn";
         LINK_VALID_TOPUP         = headaddressfinal + "TopUp/Invoke";
         LINK_LIST_MEMBER         = headaddressfinal + "Member/Retrieve";
         LINK_REQ_TOKEN_SGOL      = headaddressfinal + "InquiryTrx/Retrieve";
@@ -405,10 +403,10 @@ public class MyApiClient {
 
         LINK_RESEND_TOKEN_LKD       = headaddressfinal + "ResendToken/Invoke";
         LINK_BBS_CITY               = headaddressfinal + "ServiceBBSCity/getAllBBSCity";
-        LINK_GLOBAL_BBS_COMM        = headaddressfinal + "GlobalBBSComm/Retrieve";
-        LINK_GLOBAL_BBS_BANK_C2A    = headaddressfinal + "GlobalBBSBankC2A/Retrieve";
+//        LINK_GLOBAL_BBS_COMM        = headaddressfinal + "GlobalBBSComm/Retrieve";
+//        LINK_GLOBAL_BBS_BANK_C2A    = headaddressfinal + "GlobalBBSBankC2A/Retrieve";
         LINK_GLOBAL_BBS_INSERT_C2A  = headaddressfinal + "GlobalBBSInsertC2A/Invoke";
-        LINK_BBS_BANK_ACCOUNT       = headaddressfinal + "BBSBankAccount/Retrieve";
+//        LINK_BBS_BANK_ACCOUNT       = headaddressfinal + "BBSBankAccount/Retrieve";
         LINK_BBS_BANK_ACCOUNT_DELETE = headaddressfinal + "DelBBSBankAcct/Invoke";
         LINK_BBS_BANK_REG_ACCT      = headaddressfinal + "BBSBankRegAcct/Retrieve";
         LINK_BBS_CONFIRM_ACCT       = headaddressfinal + "BBSConfirmAcct/Invoke";
@@ -417,7 +415,7 @@ public class MyApiClient {
         LINK_BBS_GLOBAL_COMM        = headaddressfinal + "GlobalComm/Retrieve";
         LINK_BBS_BIRTH_PLACE        = headaddressfinal + "ServiceBBSBirthPlace/Retrieve";
         LINK_TRX_STATUS_BBS         = headaddressfinal + "TrxBBSStatus/Retrieve";
-        LINK_GLOBAL_BBS_BANK_A2C    = headaddressfinal + "GlobalBBSBankA2C/Retrieve";
+//        LINK_GLOBAL_BBS_BANK_A2C    = headaddressfinal + "GlobalBBSBankA2C/Retrieve";
         LINK_GLOBAL_BBS_INSERT_A2C  = headaddressfinal + "GlobalBBSInsertA2C/Invoke";
         LINK_BBS_LIST_MEMBER_A2C    = headaddressfinal + "BBSListMemberATC/Retrieve";
         LINK_BBS_OTP_MEMBER_A2C     = headaddressfinal + "BBSOTPMemberATC/Invoke";

@@ -25,6 +25,8 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.dialogs.AlertDialogLogout
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.interfaces.ObjListener
 import com.sgo.saldomu.interfaces.ResponseListener
@@ -144,7 +146,16 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(this@DetailMemberToVerifyActivity, message)
-                            } else {
+                            }  else if (code == DefineValue.ERROR_9333) run {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(this@DetailMemberToVerifyActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            } else if (code == DefineValue.ERROR_0066) run {
+                                Timber.d("isi response maintenance:$response")
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(this@DetailMemberToVerifyActivity, model.error_message)
+                            }else {
                                 var msg = model.error_message
 
                                 Toast.makeText(this@DetailMemberToVerifyActivity, msg, Toast.LENGTH_LONG).show()
@@ -297,6 +308,15 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             } else if (error_code == WebParams.LOGOUT_CODE) {
                 val test = AlertDialogLogout.getInstance()
                 test.showDialoginActivity(this@DetailMemberToVerifyActivity, error_message)
+            } else if (error_code == DefineValue.ERROR_9333) run {
+                Timber.d("isi response app data:" + model.app_data)
+                val appModel = model.app_data
+                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                alertDialogUpdateApp.showDialogUpdate(this@DetailMemberToVerifyActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
+            } else if (error_code == DefineValue.ERROR_0066) run {
+                Timber.d("isi response maintenance:$`object`")
+                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                alertDialogMaintenance.showDialogMaintenance(this@DetailMemberToVerifyActivity, model.error_message)
             } else {
                 Toast.makeText(this@DetailMemberToVerifyActivity, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show()
 

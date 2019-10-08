@@ -2,6 +2,7 @@ package com.sgo.saldomu.fragments;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,9 +44,12 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.FingerprintDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
 import com.sgo.saldomu.models.retrofit.LoginModel;
 import com.sgo.saldomu.securities.RSA;
@@ -148,7 +153,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                             fingerprintDialog.setCancelable(false);
                             fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
                         }
-                    }catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         Timber.e(e.getMessage());
                     }
                 }
@@ -368,6 +373,15 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                             showDialog(getString(R.string.login_failed_wrong_pass));
                     } else if (code.equals(DefineValue.ERROR_0002)) {
                         showDialog(getString(R.string.login_failed_wrong_id));
+                    } else if (code.equals(DefineValue.ERROR_9333)) {
+                        Timber.d("isi response app data:" + loginModel.getApp_data());
+                        final AppDataModel appModel = loginModel.getApp_data();
+                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                    } else if (code.equals(DefineValue.ERROR_0066)) {
+                        Timber.d("isi response maintenance:" + response.toString());
+                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                        alertDialogMaintenance.showDialogMaintenance(getActivity(), loginModel.getError_message());
                     } else {
                         Toast.makeText(getActivity(), loginModel.getError_message(), Toast.LENGTH_SHORT).show();
                     }

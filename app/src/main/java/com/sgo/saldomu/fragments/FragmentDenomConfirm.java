@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sgo.saldomu.Beans.DenomListModel;
 import com.sgo.saldomu.Beans.DenomOrderListModel;
@@ -40,13 +41,17 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.FailedPinModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -60,10 +65,9 @@ import java.util.Iterator;
 
 import timber.log.Timber;
 
-public class FragmentDenomConfirm extends BaseFragment implements DenomItemListAdapter.listener, ReportBillerDialog.OnDialogOkCallback{
+public class FragmentDenomConfirm extends BaseFragment implements DenomItemListAdapter.listener, ReportBillerDialog.OnDialogOkCallback {
 
-    TextView commCodeTextview, commNameTextview, memberCodeTextview, productBankTextview
-    , costTextview, feeTextview, totalTextview;
+    TextView commCodeTextview, commNameTextview, memberCodeTextview, productBankTextview, costTextview, feeTextview, totalTextview;
     Button submitBtn;
     DenomItemOrderListConfirmAdapter itemListAdapter;
     RecyclerView orderListrv;
@@ -73,10 +77,9 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
     SCADMCommunityModel obj;
     ArrayList<DenomListModel> itemList;
     ArrayList<DenomOrderListModel> orderList;
-    String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount, ccyID, bankGateway
-            , bankName, txID, remark, apiKey, memberIdSACDM, memberName="", commID, item_name="";
+    String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount, ccyID, bankGateway, bankName, txID, remark, apiKey, memberIdSACDM, memberName = "", commID, item_name = "";
     int attempt, failed;
-    Boolean isPIN=false;
+    Boolean isPIN = false;
 
     @Nullable
     @Override
@@ -107,10 +110,10 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         Bundle bundle = getArguments();
         assert bundle != null;
         bankGateway = bundle.getString(WebParams.BANK_GATEWAY, "");
-        bankName =  bundle.getString(WebParams.BANK_NAME, "");
-        attempt = bundle.getInt(DefineValue.ATTEMPT,-1);
-        bankCode =bundle.getString(WebParams.BANK_CODE, "");
-        productCode =bundle.getString(WebParams.PRODUCT_CODE, "");
+        bankName = bundle.getString(WebParams.BANK_NAME, "");
+        attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
+        bankCode = bundle.getString(WebParams.BANK_CODE, "");
+        productCode = bundle.getString(WebParams.PRODUCT_CODE, "");
 
         orderList = new ArrayList<>();
 
@@ -122,10 +125,10 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(orderListrv);
 
-        new UtilsLoader(getActivity(),sp).getFailedPIN(userPhoneID,new OnLoadDataListener() { //get pin attempt
+        new UtilsLoader(getActivity(), sp).getFailedPIN(userPhoneID, new OnLoadDataListener() { //get pin attempt
             @Override
             public void onSuccess(Object deData) {
-                attempt = (int)deData;
+                attempt = (int) deData;
             }
 
             @Override
@@ -156,8 +159,8 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         super.onResume();
     }
 
-    private boolean inputValidation(){
-        if(OTPedittext.getText().toString().length()==0){
+    private boolean inputValidation() {
+        if (OTPedittext.getText().toString().length() == 0) {
             OTPedittext.requestFocus();
             OTPedittext.setError(this.getString(R.string.regist2_validation_otp));
             return false;
@@ -165,17 +168,17 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         return true;
     }
 
-    String buildItem(){
+    String buildItem() {
         try {
 
             JSONArray parentArr = new JSONArray();
 
-            for (DenomListModel obj: itemList) {
-                if (obj.getOrderList().size()>0) {
+            for (DenomListModel obj : itemList) {
+                if (obj.getOrderList().size() > 0) {
                     JSONObject itemIdObj = new JSONObject();
                     JSONArray itemArr = new JSONArray();
 
-                    for (int i=0; i<obj.getOrderList().size(); i++){
+                    for (int i = 0; i < obj.getOrderList().size(); i++) {
                         JSONObject childObj = new JSONObject();
                         try {
                             childObj.put("item_qty", obj.getOrderList().get(i).getPulsa());
@@ -204,29 +207,28 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         i.putExtra(DefineValue.PRODUCT_CODE, product_code);
         i.putExtra(DefineValue.BANK_CODE, bank_code);
         i.putExtra(DefineValue.BANK_NAME, bank_name);
-        i.putExtra(DefineValue.PRODUCT_NAME,product_name);
+        i.putExtra(DefineValue.PRODUCT_NAME, product_name);
         i.putExtra(DefineValue.FEE, fee);
         i.putExtra(DefineValue.REMARK, remark);
-        i.putExtra(DefineValue.COMMUNITY_CODE,commCode);
-        i.putExtra(DefineValue.MEMBER_CODE,memberCode);
-        i.putExtra(DefineValue.MEMBER_ID_SCADM,memberIdSACDM);
-        i.putExtra(DefineValue.MEMBER_NAME,memberName);
-        i.putExtra(DefineValue.TX_ID,tx_id);
-        i.putExtra(DefineValue.AMOUNT,amount);
-        i.putExtra(DefineValue.TOTAL_AMOUNT,total_amount);
+        i.putExtra(DefineValue.COMMUNITY_CODE, commCode);
+        i.putExtra(DefineValue.MEMBER_CODE, memberCode);
+        i.putExtra(DefineValue.MEMBER_ID_SCADM, memberIdSACDM);
+        i.putExtra(DefineValue.MEMBER_NAME, memberName);
+        i.putExtra(DefineValue.TX_ID, tx_id);
+        i.putExtra(DefineValue.AMOUNT, amount);
+        i.putExtra(DefineValue.TOTAL_AMOUNT, total_amount);
         i.putExtra(DefineValue.COMMUNITY_ID, commID);
         i.putExtra(DefineValue.API_KEY, apiKey);
         i.putExtra(DefineValue.CALLBACK_URL, (DefineValue.CALLBACK_URL));
         i.putExtra(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
         i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.TOPUP_IB_TYPE);
-        Timber.d("isi args:"+i.toString());
+        Timber.d("isi args:" + i.toString());
 //        btn_next.setEnabled(true);
         startActivityForResult(i, MainPage.REQUEST_FINISH);
     }
 
 
-
-    private void setResultActivity(int result){
+    private void setResultActivity(int result) {
         if (getActivity() == null)
             return;
 
@@ -234,10 +236,10 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         fca.setResultActivity(result);
     }
 
-    private void CallPINinput(int _attempt){
+    private void CallPINinput(int _attempt) {
         Intent i = new Intent(getActivity(), InsertPIN.class);
-        if(_attempt == 1)
-            i.putExtra(DefineValue.ATTEMPT,_attempt);
+        if (_attempt == 1)
+            i.putExtra(DefineValue.ATTEMPT, _attempt);
         startActivityForResult(i, MainPage.REQUEST_FINISH);
     }
 
@@ -278,7 +280,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 //                            }
 //                            else {
 //                                String msg = response.getString(WebParams.ERROR_MESSAGE);
-////                            showDialog(msg);
+////                            showDialogUpdate(msg);
 //                            }
 //
 //                        } catch (JSONException e) {
@@ -299,11 +301,11 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 //                });
 //    }
 
-    void getDenomConfirmData(){
+    void getDenomConfirmData() {
 
         showProgressDialog();
 
-        extraSignature = obj.getMember_id_scadm()+obj.getComm_id()+ MyApiClient.CCY_VALUE;
+        extraSignature = obj.getMember_id_scadm() + obj.getComm_id() + MyApiClient.CCY_VALUE;
 
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_INVOKE_NEW, extraSignature);
 
@@ -319,30 +321,39 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         params.put(WebParams.PRODUCT_CODE, productCode);
         params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
 
-        Timber.d("isi params sent get denom invoke:"+params.toString());
+        Timber.d("isi params sent get denom invoke:" + params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_DENOM_INVOKE_NEW, params,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {
                         try {
-
-                            Timber.d("isi response get denom invoke:"+response.toString());
+                            Gson gson = new Gson();
+                            jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
+                            Timber.d("isi response get denom invoke:" + response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
 
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 setDataView(response);
 
-                            } else if(code.equals(WebParams.LOGOUT_CODE)){
-                                Timber.d("isi response autologout:"+response.toString());
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                Timber.d("isi response autologout:" + response.toString());
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
-                            }
-                            else {
+                                test.showDialoginActivity(getActivity(), message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            }else {
                                 String msg = response.getString(WebParams.ERROR_MESSAGE);
-//                            showDialog(msg);
+//                            showDialogUpdate(msg);
                             }
 
                         } catch (JSONException e) {
@@ -383,23 +394,20 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 String error_message = response.getString(WebParams.ERROR_MESSAGE);
                                 Timber.d("isi response InquiryTrx denom scadm: " + response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    if(bankGateway.equalsIgnoreCase("N"))
-                                    {
-                                        changeToSGOPlus(txID,productCode, productName,bankCode,
+                                    if (bankGateway.equalsIgnoreCase("N")) {
+                                        changeToSGOPlus(txID, productCode, productName, bankCode,
                                                 String.valueOf(amount), String.valueOf(fee), String.valueOf(totalAmount), bankName);
-                                    }
-                                    else if (bankGateway.equalsIgnoreCase("Y")) {
-                                        if (productCode.equalsIgnoreCase("SCASH")){
+                                    } else if (bankGateway.equalsIgnoreCase("Y")) {
+                                        if (productCode.equalsIgnoreCase("SCASH")) {
                                             CallPINinput(attempt);
-                                        }
-                                        else
-                                        {
-                                            if(inputValidation()) {
-                                                sentInsertTransTopup(OTPedittext.getText().toString(),amount);
+                                        } else {
+                                            if (inputValidation()) {
+                                                sentInsertTransTopup(OTPedittext.getText().toString(), amount);
                                             }
                                         }
                                     }
@@ -408,6 +416,15 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                 } else {
                                     Timber.d("Error resendTokenSGOL:" + response.toString());
                                     code = response.getString(WebParams.ERROR_MESSAGE);
@@ -435,12 +452,12 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         }
     }
 
-    private void sentInsertTransTopup(String tokenValue, final String _amount){
-        try{
+    private void sentInsertTransTopup(String tokenValue, final String _amount) {
+        try {
 //            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 //            progdialog.show();
 
-            extraSignature = txID+commCode+productCode+tokenValue;
+            extraSignature = txID + commCode + productCode + tokenValue;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
 
@@ -448,11 +465,11 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             params.put(WebParams.PRODUCT_CODE, productCode);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.COMM_ID, commName);
-            params.put(WebParams.MEMBER_ID,memberIdSACDM);
+            params.put(WebParams.MEMBER_ID, memberIdSACDM);
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(tokenValue));
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params insertTrxTOpupSGOL:"+params.toString());
+            Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
                     new ResponseListener() {
@@ -463,34 +480,40 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                             String code = model.getError_code();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                getTrxStatus(txID,commID,_amount);
+                                getTrxStatus(txID, commID, _amount);
                                 setResultActivity(MainPage.RESULT_BALANCE);
 
-                            }
-                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
-                            }
-                            else {
+                                test.showDialoginActivity(getActivity(), message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            } else {
 
-                                code = model.getError_code() +" : "+ model.getError_message();
-                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                code = model.getError_code() + " : " + model.getError_message();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 String message = model.getError_message();
 //                            progdialog.dismiss();
 //                            btn_next.setEnabled(true);
-                                if(isPIN && message.equals("PIN tidak sesuai")){
+                                if (isPIN && message.equals("PIN tidak sesuai")) {
                                     Intent i = new Intent(getActivity(), InsertPIN.class);
 
                                     attempt = model.getFailed_attempt();
                                     failed = model.getMax_failed();
 
-                                    if(attempt != -1)
-                                        i.putExtra(DefineValue.ATTEMPT,failed-attempt);
+                                    if (attempt != -1)
+                                        i.putExtra(DefineValue.ATTEMPT, failed - attempt);
 
                                     startActivityForResult(i, MainPage.REQUEST_FINISH);
-                                }
-                                else{
+                                } else {
                                     getActivity().finish();
                                 }
 
@@ -506,14 +529,14 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                         public void onComplete() {
 
                         }
-                    } );
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void getTrxStatus(final String txId, String comm_id, final String _amount){
-        try{
+    private void getTrxStatus(final String txId, String comm_id, final String _amount) {
+        try {
 
             extraSignature = txID + comm_id;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
@@ -523,7 +546,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             params.put(WebParams.TYPE, DefineValue.BIL_PAYMENT_TYPE);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
             params.put(WebParams.USER_ID, userPhoneID);
-            Timber.d("isi params sent get Trx Status:"+params.toString());
+            Timber.d("isi params sent get Trx Status:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
                     new ResponseListener() {
@@ -541,12 +564,20 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                                         txstatus, model.getTx_remark(), _amount, model.getTotal_amount(), model.getTx_fee(), getGson().toJson(model.getDenom_detail()), model.getBuss_scheme_code(),
                                         model.getBuss_scheme_name(), model.getProduct_name(), model.getOrder_id(), model.getComm_code(),
                                         model.getMember_code());
-                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
-                            }
-                            else {
+                                test.showDialoginActivity(getActivity(), message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            } else {
                                 String msg;
                                 msg = model.getError_message();
                                 showDialog(msg);
@@ -562,13 +593,13 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                         public void onComplete() {
 
                         }
-                    } );
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void showReportBillerDialog(String name,String date,String userId, String txId,String itemName,String txStatus,
+    private void showReportBillerDialog(String name, String date, String userId, String txId, String itemName, String txStatus,
                                         String txRemark, String _amount, String totalAmount, String txFee, String denom_detail,
                                         String buss_scheme_code, String buss_scheme_name, String product_name, String order_id,
                                         String comm_code, String member_code) {
@@ -585,34 +616,32 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(txFee));
 
         Boolean txStat = false;
-        if (txStatus.equals(DefineValue.SUCCESS)){
+        if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        }else if(txStatus.equals(DefineValue.ONRECONCILED)){
+        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        }else if(txStatus.equals(DefineValue.SUSPECT)){
+        } else if (txStatus.equals(DefineValue.SUSPECT)) {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        }
-        else if(!txStatus.equals(DefineValue.FAILED)){
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction)+" "+txStatus);
-        }
-        else {
+        } else if (!txStatus.equals(DefineValue.FAILED)) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+        } else {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
-        if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
+        if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
 
 
 //        double totalAmount = Double.parseDouble(amount) + Double.parseDouble(fee);
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
-        args.putString(DefineValue.DENOM_DETAIL,denom_detail);
-        args.putString(DefineValue.BUSS_SCHEME_CODE,buss_scheme_code);
-        args.putString(DefineValue.BUSS_SCHEME_NAME,buss_scheme_name);
-        args.putString(DefineValue.BANK_PRODUCT,product_name);
-        args.putString(DefineValue.ORDER_ID,order_id);
-        args.putString(DefineValue.COMMUNITY_CODE,comm_code);
-        args.putString(DefineValue.MEMBER_CODE,member_code);
+        args.putString(DefineValue.DENOM_DETAIL, denom_detail);
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
+        args.putString(DefineValue.BANK_PRODUCT, product_name);
+        args.putString(DefineValue.ORDER_ID, order_id);
+        args.putString(DefineValue.COMMUNITY_CODE, comm_code);
+        args.putString(DefineValue.MEMBER_CODE, member_code);
 
         dialog.setArguments(args);
         FragmentTransaction ft = getFragManager().beginTransaction();
@@ -648,7 +677,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         dialog.show();
     }
 
-    void setDataView(JSONObject resp){
+    void setDataView(JSONObject resp) {
         try {
 
             commName = obj.getComm_name();
@@ -656,8 +685,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             commID = obj.getComm_id();
             memberCode = obj.getMember_code();
             productName = resp.getString("product_name");
-            if (productName.equalsIgnoreCase("MANDIRI SMS"))
-            {
+            if (productName.equalsIgnoreCase("MANDIRI SMS")) {
                 OTPlayout.setVisibility(View.VISIBLE);
             }
             amount = CurrencyFormat.format(resp.getString("amount"));
@@ -678,16 +706,16 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             if (amount != null)
                 costTextview.setText(ccyID + " " + amount);
             if (fee != null)
-                feeTextview.setText(ccyID + " " +fee);
+                feeTextview.setText(ccyID + " " + fee);
             if (totalAmount != null)
-                totalTextview.setText(ccyID + " " +totalAmount);
+                totalTextview.setText(ccyID + " " + totalAmount);
 
             if (orderList.size() > 0)
                 orderList.clear();
 
             JSONObject itemArr = resp.getJSONObject("item");
             Iterator<String> keys = itemArr.keys();
-            while (keys.hasNext()){
+            while (keys.hasNext()) {
                 JSONObject obj = itemArr.getJSONObject(keys.next());
                 orderList.add(new DenomOrderListModel(obj));
             }
@@ -698,7 +726,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
             itemListAdapter.notifyDataSetChanged();
 
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -707,15 +735,15 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //Timber.d("onActivity result", "Biller Fragment"+" / "+requestCode+" / "+resultCode);
-        if(requestCode == MainPage.REQUEST_FINISH){
+        if (requestCode == MainPage.REQUEST_FINISH) {
             //  Log.d("onActivity result", "Biller Fragment masuk request exit");
-            if(resultCode == InsertPIN.RESULT_PIN_VALUE){
+            if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
                 String _amount;
                 _amount = amount;
                 //    Log.d("onActivity result", "Biller Fragment result pin value");
-                sentInsertTransTopup(value_pin,_amount);
-            }else {
+                sentInsertTransTopup(value_pin, _amount);
+            } else {
                 backToDenomSACDM();
             }
         }
@@ -736,7 +764,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         backToDenomSACDM();
     }
 
-    void backToDenomSACDM(){
+    void backToDenomSACDM() {
         getFragManager().popBackStack(DenomSCADMActivity.DENOM_PAYMENT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

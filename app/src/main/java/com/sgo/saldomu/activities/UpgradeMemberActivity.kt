@@ -13,6 +13,8 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.dialogs.AlertDialogLogout
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.SentExecCustModel
@@ -87,7 +89,16 @@ class UpgradeMemberActivity : BaseActivity() {
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(this@UpgradeMemberActivity, message)
-                            } else {
+                            }  else if (code == DefineValue.ERROR_9333) run {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(this@UpgradeMemberActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            } else if (code == DefineValue.ERROR_0066) run {
+                                Timber.d("isi response maintenance:$`object`")
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(this@UpgradeMemberActivity, model.error_message)
+                            }else {
                                 code = model.error_message
 
                                 Toast.makeText(this@UpgradeMemberActivity, code, Toast.LENGTH_LONG).show()

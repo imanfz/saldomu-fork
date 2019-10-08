@@ -60,8 +60,11 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.BankBillerItem;
 import com.sgo.saldomu.models.BillerDenomResponse;
 import com.sgo.saldomu.models.BillerItem;
@@ -523,7 +526,16 @@ public class BillerInputPulsa extends BaseFragment {
                     } else if (code.equals(WebParams.LOGOUT_CODE)) {
                         AlertDialogLogout dialogLogout = AlertDialogLogout.getInstance();
                         dialogLogout.showDialoginActivity(getActivity(), model.getError_message());
-                    } else {
+                    } else if (code.equals(DefineValue.ERROR_9333)) {
+                        Timber.d("isi response app data:" + model.getApp_data());
+                        final AppDataModel appModel = model.getApp_data();
+                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                    } else if (code.equals(DefineValue.ERROR_0066)) {
+                        Timber.d("isi response maintenance:" + object.toString());
+                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                        alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                    }else {
                         code = model.getError_code() + " : " + model.getError_message();
                         if (isVisible()) {
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -742,6 +754,15 @@ public class BillerInputPulsa extends BaseFragment {
                     } else if (code.equals(WebParams.LOGOUT_CODE)) {
                         AlertDialogLogout dialogLogout = AlertDialogLogout.getInstance();
                         dialogLogout.showDialoginActivity(getActivity(), sentPaymentBillerModel.getError_message());
+                    }else if (code.equals(DefineValue.ERROR_9333)) {
+                        Timber.d("isi response app data:" + sentPaymentBillerModel.getApp_data());
+                        final AppDataModel appModel = sentPaymentBillerModel.getApp_data();
+                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                    } else if (code.equals(DefineValue.ERROR_0066)) {
+                        Timber.d("isi response maintenance:" + object.toString());
+                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                        alertDialogMaintenance.showDialogMaintenance(getActivity(), sentPaymentBillerModel.getError_message());
                     } else {
                         code = sentPaymentBillerModel.getError_code() + " : " + sentPaymentBillerModel.getError_message();
                         if (isVisible()) {
@@ -805,6 +826,15 @@ public class BillerInputPulsa extends BaseFragment {
                                 code = model.getError_message();
                                 showDialogError(code);
 
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                             } else {
                                 String code_msg = model.getError_message();
                                 switch (code) {

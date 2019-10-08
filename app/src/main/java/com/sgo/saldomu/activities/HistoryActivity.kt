@@ -1,5 +1,6 @@
 package com.sgo.saldomu.activities
 
+import android.app.PendingIntent.getActivity
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
@@ -24,6 +25,8 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.dialogs.AlertDialogLogout
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.ReportBillerDialog
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel
@@ -92,6 +95,15 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                 } else if (code == WebParams.LOGOUT_CODE) {
                     val test = AlertDialogLogout.getInstance()
                     test.showDialoginActivity(this@HistoryActivity, message)
+                } else if (code == DefineValue.ERROR_9333) run {
+                    Timber.d("isi response app data:" + model.app_data)
+                    val appModel = model.app_data
+                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                    alertDialogUpdateApp.showDialogUpdate(this@HistoryActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                } else if (code == DefineValue.ERROR_0066) run {
+                    Timber.d("isi response maintenance:$`object`")
+                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                    alertDialogMaintenance.showDialogMaintenance(this@HistoryActivity, model.error_message)
                 }
             }
 
@@ -197,6 +209,16 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginMain(this@HistoryActivity, message)
+                            }
+                            WebParams.ERROR_9333 -> {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(this@HistoryActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            }
+                            WebParams.ERROR_0066 -> {
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(this@HistoryActivity, model.error_message)
                             }
                             else -> {
                                 val msg = model.error_message
