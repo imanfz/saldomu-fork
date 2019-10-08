@@ -43,6 +43,7 @@ public class RealmManager {
     public static RealmConfiguration BBSConfiguration;
     public static RealmConfiguration BBSMemberBankConfiguration;
     public static RealmConfiguration TagihDataConfig;
+    public static RealmConfiguration realmConfiguration;
 
     private Realm realm;
     private Realm bbsRealm;
@@ -143,6 +144,10 @@ public class RealmManager {
                 .schemaVersion(BuildConfig.REALM_SCHEME_TAGIH_VERSION)
                 .modules(new TagihModule())
                 .migration(new TagihDataMigration())
+                .build();
+
+        realmConfiguration = new RealmConfiguration.Builder()
+                .migration(new RealmMigration())
                 .build();
     }
 
