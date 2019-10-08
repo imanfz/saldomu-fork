@@ -434,6 +434,7 @@ class BillerInputData : BaseFragment() {
 
         realmResults = realm2?.where(BillerItem::class.java)?.equalTo("billerType", "DATA")?.findAll()
 
+        _data.clear()
         realmResults?.forEach { result ->
             _data.add(result.commName)
         }

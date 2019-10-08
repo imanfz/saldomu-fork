@@ -77,6 +77,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -291,9 +292,9 @@ public class BillerInputPulsa extends BaseFragment {
                     Timber.d("_data" + _data.get(i));
                     if (_data != null) {
                         if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
-                            biller_comm_id = realmResults.get(i).getCommId();
-                            biller_comm_name = realmResults.get(i).getCommName();
-                            biller_item_id = realmResults.get(i).getItemId();
+                            biller_comm_id = Objects.requireNonNull(realmResults.get(i)).getCommId();
+                            biller_comm_name = Objects.requireNonNull(realmResults.get(i)).getCommName();
+                            biller_item_id = Objects.requireNonNull(realmResults.get(i)).getItemId();
 
                             mDenomData = new BillerItem();
                             mDenomData = realm2.where(BillerItem.class).
@@ -654,6 +655,7 @@ public class BillerInputPulsa extends BaseFragment {
             return;
         }
 
+        _data.clear();
         for (BillerItem item : realmResults) {
             _data.add(item.getCommName());
         }
