@@ -43,6 +43,7 @@ public class RealmManager {
     public static RealmConfiguration BBSConfiguration;
     public static RealmConfiguration BBSMemberBankConfiguration;
     public static RealmConfiguration TagihDataConfig;
+    public static RealmConfiguration realmConfiguration;
 
     private Realm realm;
     private Realm bbsRealm;
@@ -91,9 +92,9 @@ public class RealmManager {
     private static class BBSMemberBankModule {
     }
 
-    @RealmModule(classes = { TagihModel.class, TagihCommunityModel.class})
-    private static class TagihModule {
-    }
+//    @RealmModule(classes = { TagihModel.class, TagihCommunityModel.class})
+//    private static class TagihModule {
+//    }
 
     public static void init(Context mContext, int rawBiller){
         File file = new File(mContext.getFilesDir(), BuildConfig.REALM_BILLER_NAME);
@@ -138,12 +139,12 @@ public class RealmManager {
                 .migration(new BBSMemberBankMigration())
                 .build();
 
-        TagihDataConfig = new RealmConfiguration.Builder()
-                .name(BuildConfig.REALM_TAGIH_NAME)
-                .schemaVersion(BuildConfig.REALM_SCHEME_TAGIH_VERSION)
-                .modules(new TagihModule())
-                .migration(new TagihDataMigration())
-                .build();
+//        TagihDataConfig = new RealmConfiguration.Builder()
+//                .name(BuildConfig.REALM_TAGIH_NAME)
+//                .schemaVersion(BuildConfig.REALM_SCHEME_TAGIH_VERSION)
+//                .modules(new TagihModule())
+//                .migration(new TagihDataMigration())
+//                .build();
     }
 
     private static DynamicRealm getDynamicRealm(RealmConfiguration realmConfig){
@@ -166,9 +167,9 @@ public class RealmManager {
         return Realm.getInstance(BillerConfiguration);
     }
 
-    public static Realm getRealmTagih(){
-        return Realm.getInstance(TagihDataConfig);
-    }
+//    public static Realm getRealmTagih(){
+//        return Realm.getInstance(TagihDataConfig);
+//    }
 
     public static void closeRealm(Realm realm){
         if(realm != null) {

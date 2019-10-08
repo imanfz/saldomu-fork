@@ -40,6 +40,7 @@ import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,6 +66,8 @@ public class FragTagihInput extends BaseFragment {
     private ArrayList<String> communityNameArrayList = new ArrayList<>();
     String commCodeTagih, balanceCollector, commNamePG, commCodePG, anchorNamePG, memberCode;
     ProgressDialog progdialog;
+    private ArrayList<TagihModel> anchorDataList = new ArrayList<>();
+    private ArrayList<TagihCommunityModel> communityDataList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -91,14 +94,72 @@ public class FragTagihInput extends BaseFragment {
         sp = CustomSecurePref.getInstance().getSecurePrefsInstance();
 
         getBalanceCollector();
-
+        getAnchor();
         initializeView();
 
-        InitializeData();
 
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);
         btn_regShop.setOnClickListener(registrationListener);
+    }
+
+    private void getAnchor() {
+        try {
+            showProgressDialog();
+            params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_ANCHOR_COMMUNITIES);
+            params.put(WebParams.USER_ID, userPhoneID);
+
+            Timber.d("param LINK_GET_ANCHOR_COMMUNITIES : " + params);
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_ANCHOR_COMMUNITIES, params, new ObjListeners() {
+                @Override
+                public void onResponses(JSONObject response) {
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            JSONArray anchors = response.getJSONArray("anchors");
+                            if (anchors.length() > 0) {
+                                for (int i = 0; i < anchors.length(); i++) {
+                                    JSONObject jsonObjectAnchor = anchors.getJSONObject(i);
+                                    TagihModel tagihModel = new TagihModel();
+                                    tagihModel.setId(jsonObjectAnchor.getString("anchor_id"));
+                                    tagihModel.setAnchor_cust(jsonObjectAnchor.getString("anchor_cust"));
+                                    tagihModel.setAnchor_name(jsonObjectAnchor.getString("anchor_name"));
+
+                                    anchorDataList.add(tagihModel);
+                                    JSONArray communities = jsonObjectAnchor.getJSONArray("communities");
+                                    ArrayList<TagihCommunityModel> comList = new ArrayList<>();
+                                    for (int j = 0; j < communities.length(); j++) {
+                                        JSONObject jsonObjectCommunities = communities.getJSONObject(j);
+                                        TagihCommunityModel tagihCommunityModel = new TagihCommunityModel();
+                                        tagihCommunityModel.setId(jsonObjectCommunities.getString("comm_id"));
+                                        tagihCommunityModel.setComm_code(jsonObjectCommunities.getString("comm_code"));
+                                        tagihCommunityModel.setComm_name(jsonObjectCommunities.getString("comm_name"));
+                                        comList.add(tagihCommunityModel);
+                                    }
+
+                                    tagihModel.setListCommunity(comList);
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+
+                }
+
+                @Override
+                public void onComplete() {
+                    initializeData();
+                    dismissProgressDialog();
+                }
+            });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
     }
 
     Button.OnClickListener submitListener = new Button.OnClickListener() {
@@ -171,13 +232,13 @@ public class FragTagihInput extends BaseFragment {
         sp_mitra.setAdapter(mitraAdapter);
     }
 
-    public void InitializeData() {
-        Realm _realm = RealmManager.getRealmTagih();
-        RealmResults<TagihModel> list = _realm.where(TagihModel.class).findAll();
-        mitraNameData.addAll(list);
+    public void initializeData() {
+//        Realm _realm = RealmManager.getRealmTagih();
+//        RealmResults<TagihModel> list = _realm.where(TagihModel.class).findAll();
+//        mitraNameData.addAll(anchorDataList);
         mitraNameArrayList.add(getString(R.string.mitra_default));
-        for (int i = 0; i < list.size(); i++) {
-            mitraNameArrayList.add(list.get(i).getAnchor_name());
+        for (int i = 0; i < anchorDataList.size(); i++) {
+            mitraNameArrayList.add(anchorDataList.get(i).getAnchor_name());
         }
         mitraAdapter.notifyDataSetChanged();
 
@@ -197,6 +258,7 @@ public class FragTagihInput extends BaseFragment {
                     initializeCommunity(position - 1);
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -207,22 +269,22 @@ public class FragTagihInput extends BaseFragment {
 
 
     public void initializeCommunity(int pos) {
-        Realm _realm = RealmManager.getRealmTagih();
-        final ArrayList<TagihCommunityModel> listTagih = new ArrayList<>();
-        listTagih.addAll(mitraNameData.get(pos).getListCommunity());
+//        Realm _realm = RealmManager.getRealmTagih();
+//        final ArrayList<TagihCommunityModel> listTagih = new ArrayList<>();
+        communityDataList.clear();
+        communityDataList.addAll(anchorDataList.get(pos).getListCommunity());
 //                _realm.where(TagihCommunityModel.class).findAll();
-        Log.d("mainpage", "id : " + listTagih.get(0).getId());
-
+        Log.d("mainpage", "id : " + communityDataList.get(0).getId());
         communityNameArrayList.clear();
         communityNameArrayList.add(getString(R.string.community_default));
-        for (int i = 0; i < listTagih.size(); i++) {
-            communityNameArrayList.add(listTagih.get(i).getComm_name());
-            Timber.d("comm code tagih : " + listTagih.get(i).getComm_code());
+        for (int i = 0; i < communityDataList.size(); i++) {
+            communityNameArrayList.add(communityDataList.get(i).getComm_name());
+            Timber.d("comm code tagih : " + communityDataList.get(i).getComm_code());
         }
         communityAdapter.notifyDataSetChanged();
 
-        if (listTagih != null && listTagih.size() > 0) {
-            commCodeTagih = listTagih.get(0).getComm_code();
+        if (communityDataList != null && communityDataList.size() > 0) {
+            commCodeTagih = communityDataList.get(0).getComm_code();
         } else
             commCodeTagih = "";
 
@@ -236,13 +298,12 @@ public class FragTagihInput extends BaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (position != 0){
-                    position-=1;
-                    commCodeTagih = listTagih.get(position).getComm_code();
-                }
-                else
+                if (position != 0) {
+                    position -= 1;
+                    commCodeTagih = communityDataList.get(position).getComm_code();
+                } else
                     commCodeTagih = "";
-                Timber.d("comm code tagih selected: " + listTagih.get(position).getComm_code() + " pos:" + position);
+                Timber.d("comm code tagih selected: " + communityDataList.get(position).getComm_code() + " pos:" + position);
             }
 
             @Override
@@ -259,9 +320,9 @@ public class FragTagihInput extends BaseFragment {
             et_memberCode.setError(getString(R.string.error_input_tagih));
             return false;
         }
-        if (commCodeTagih.equals("")){
+        if (commCodeTagih.equals("")) {
             sp_communtiy.requestFocus();
-            Toast.makeText(getActivity(),getString(R.string.error_input_community),Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.error_input_community), Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
