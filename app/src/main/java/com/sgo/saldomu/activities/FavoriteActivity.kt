@@ -87,13 +87,6 @@ class FavoriteActivity : BaseActivity() {
         tab_layout.setupWithViewPager(viewPager)
     }
 
-    private fun setDialog(show: Boolean) {
-        if (show)
-            dialog.show()
-        else
-            dialog.dismiss()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
