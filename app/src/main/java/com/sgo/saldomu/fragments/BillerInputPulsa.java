@@ -29,7 +29,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
@@ -60,17 +62,27 @@ import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.BankBillerItem;
+import com.sgo.saldomu.models.BillerDenomResponse;
+import com.sgo.saldomu.models.BillerItem;
+import com.sgo.saldomu.models.DenomDataItem;
 import com.sgo.saldomu.models.retrofit.InqBillerModel;
 import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class BillerInputPulsa extends BaseFragment {
@@ -107,13 +119,13 @@ public class BillerInputPulsa extends BaseFragment {
     private String denom_item_id;
     private double additional_fee;
 
-    private Realm realm;
-    private Biller_Data_Model mBillerData;
-    private Biller_Data_Model mDenomData;
-    private List<Denom_Data_Model> mListDenomData;
-    private Biller_Type_Data_Model mBillerType;
-    private List<Biller_Data_Model> mListBillerData;
-    private List<bank_biller_model> mListBankBiller;
+    private Realm realm2;
+    private BillerItem mBillerData;
+    private BillerItem mDenomData;
+    private List<DenomDataItem> mListDenomData;
+    //    private Biller_Type_Data_Model mBillerType;
+//    private List<BillerDataItem> mListBillerData;
+    private List<BankBillerItem> mListBankBiller;
     private ArrayList<String> _data = new ArrayList<>();
     private ArrayList<String> _denomData;
     private ArrayAdapter<String> adapterDenom;
@@ -141,6 +153,8 @@ public class BillerInputPulsa extends BaseFragment {
     private listBankModel mTempBank;
     private SentPaymentBillerModel sentPaymentBillerModel;
 
+    private RealmResults<BillerItem> realmResults;
+
 
     @Nullable
     @Override
@@ -155,7 +169,8 @@ public class BillerInputPulsa extends BaseFragment {
 
         Bundle args = getArguments();
         biller_type_code = args.getString(DefineValue.BILLER_TYPE, "");
-        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+//        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+        realm2 = Realm.getInstance(RealmManager.realmConfiguration);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
@@ -185,7 +200,7 @@ public class BillerInputPulsa extends BaseFragment {
 
         initLayout();
         initPrefixListener();
-//        getBillerDenom();
+        getBillerDenom();
         initRealm();
 
         if (args.getString(DefineValue.CUST_ID, "") != "") {
@@ -277,18 +292,18 @@ public class BillerInputPulsa extends BaseFragment {
                     Timber.d("_data" + _data.get(i));
                     if (_data != null) {
                         if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
-                            biller_comm_id = mListBillerData.get(i).getComm_id();
-                            biller_comm_name = mListBillerData.get(i).getComm_name();
-                            biller_item_id = mListBillerData.get(i).getItem_id();
+                            biller_comm_id = Objects.requireNonNull(realmResults.get(i)).getCommId();
+                            biller_comm_name = Objects.requireNonNull(realmResults.get(i)).getCommName();
+                            biller_item_id = Objects.requireNonNull(realmResults.get(i)).getItemId();
 
-                            mDenomData = new Biller_Data_Model();
-                            mDenomData = realm.where(Biller_Data_Model.class).
+                            mDenomData = new BillerItem();
+                            mDenomData = realm2.where(BillerItem.class).
                                     equalTo(WebParams.COMM_ID, biller_comm_id).
                                     equalTo(WebParams.COMM_NAME, biller_comm_name).
                                     equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
                                     findFirst();
 
-                            mListDenomData = realm.copyFromRealm(mDenomData.getDenom_data_models());
+                            mListDenomData = realm2.copyFromRealm(mDenomData.getDenomData());
 
                             initializeSpinnerDenom();
                         }
@@ -296,25 +311,25 @@ public class BillerInputPulsa extends BaseFragment {
 
                 }
             } else if (buy_type_detail.equalsIgnoreCase("PASCABAYAR")) {
-                for (int i = 0; i < mListBillerData.size(); i++) {
-                    Timber.d(mListBillerData.get(i).getComm_name());
-                    if (mListBillerData.get(i).getComm_name().contains(BillerIdNumber.prefix_name)) {
-                        biller_comm_id = mListBillerData.get(i).getComm_id();
-                        biller_comm_name = mListBillerData.get(i).getComm_name();
-                        biller_item_id = mListBillerData.get(i).getItem_id();
+                for (int i = 0; i < realmResults.size(); i++) {
+                    Timber.d(realmResults.get(i).getCommName());
+                    if (realmResults.get(i).getCommName().contains(BillerIdNumber.prefix_name)) {
+                        biller_comm_id = realmResults.get(i).getCommId();
+                        biller_comm_name = realmResults.get(i).getCommName();
+                        biller_item_id = realmResults.get(i).getItemId();
                         break;
                     }
-                    if (mListBillerData.get(i).getComm_name().contains("Excelcomindo Xplor")) {
-                        biller_comm_id = mListBillerData.get(i).getComm_id();
-                        biller_comm_name = mListBillerData.get(i).getComm_name();
-                        biller_item_id = mListBillerData.get(i).getItem_id();
+                    if (realmResults.get(i).getCommName().contains("Excelcomindo Xplor")) {
+                        biller_comm_id = realmResults.get(i).getCommId();
+                        biller_comm_name = realmResults.get(i).getCommName();
+                        biller_item_id = realmResults.get(i).getItemId();
                         break;
                     }
                 }
                 if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
-                    biller_comm_id = mListBillerData.get(0).getComm_id();
-                    biller_comm_name = mListBillerData.get(0).getComm_name();
-                    biller_item_id = mListBillerData.get(0).getItem_id();
+                    biller_comm_id = realmResults.get(0).getCommId();
+                    biller_comm_name = realmResults.get(0).getCommName();
+                    biller_item_id = realmResults.get(0).getItemId();
                 }
             }
         }
@@ -336,7 +351,7 @@ public class BillerInputPulsa extends BaseFragment {
                     _denomData.clear();
                     _denomData.add(getString(R.string.billerinput_text_spinner_default_pulsa));
                     for (int i = 0; i < mListDenomData.size(); i++) {
-                        _denomData.add(mListDenomData.get(i).getItem_name());
+                        _denomData.add(mListDenomData.get(i).getItemName());
                     }
 
                     getActivity().runOnUiThread(() -> {
@@ -348,20 +363,20 @@ public class BillerInputPulsa extends BaseFragment {
             deproses.run();
 
         } else {
-            denom_item_id = mBillerData.getItem_id();
+            denom_item_id = mBillerData.getItemId();
         }
 
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.privacy_list, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        mBillerData = new Biller_Data_Model();
-        mBillerData = realm.where(Biller_Data_Model.class).equalTo(WebParams.COMM_ID, biller_comm_id).equalTo(WebParams.COMM_NAME, biller_comm_name).findFirst();
-        mListBankBiller = realm.copyFromRealm(mBillerData.getBank_biller_models());
-        biller_comm_code = mBillerData.getComm_code();
-        biller_api_key = mBillerData.getApi_key();
-        callback_url = mBillerData.getCallback_url();
-        if (!mListBillerData.isEmpty()) {
+        mBillerData = new BillerItem();
+        mBillerData = realm2.where(BillerItem.class).equalTo(WebParams.COMM_ID, biller_comm_id).equalTo(WebParams.COMM_NAME, biller_comm_name).findFirst();
+        mListBankBiller = realm2.copyFromRealm(mBillerData.getBankBiller());
+        biller_comm_code = mBillerData.getCommCode();
+        biller_api_key = mBillerData.getApiKey();
+//        callback_url = mBillerData.getCallback_url();
+        if (!realmResults.isEmpty()) {
             paymentData = new ArrayList<>();
             adapterPaymentOptions = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, paymentData);
             adapterPaymentOptions.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -373,11 +388,11 @@ public class BillerInputPulsa extends BaseFragment {
                 paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
 
                 for (int i = 0; i < mListBankBiller.size(); i++) {
-                    if (mListBankBiller.get(i).getProduct_code().equals(DefineValue.SCASH)) {
+                    if (mListBankBiller.get(i).getProductCode().equals(DefineValue.SCASH)) {
                         paymentData.add(getString(R.string.appname));
-                        mListBankBiller.get(i).setProduct_name(getString(R.string.appname));
+                        mListBankBiller.get(i).setProductName(getString(R.string.appname));
                     } else {
-                        tempDataPaymentName.add(mListBankBiller.get(i).getProduct_name());
+                        tempDataPaymentName.add(mListBankBiller.get(i).getProductName());
                     }
                 }
                 if (!tempDataPaymentName.isEmpty())
@@ -389,7 +404,7 @@ public class BillerInputPulsa extends BaseFragment {
                 spin_payment_options.setSelection(1); //set metode pembayaran jadi saldomu
             }
         } else {
-            biller_item_id = mBillerData.getItem_id();
+            biller_item_id = mBillerData.getItemId();
         }
     }
 
@@ -398,11 +413,11 @@ public class BillerInputPulsa extends BaseFragment {
         paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
 
         for (int i = 0; i < mListBankBiller.size(); i++) {
-            if (mListBankBiller.get(i).getProduct_code().equals(DefineValue.SCASH)) {
+            if (mListBankBiller.get(i).getProductCode().equals(DefineValue.SCASH)) {
                 paymentData.add(getString(R.string.appname));
-                mListBankBiller.get(i).setProduct_name(getString(R.string.appname));
+                mListBankBiller.get(i).setProductName(getString(R.string.appname));
             } else {
-                tempDataPaymentName.add(mListBankBiller.get(i).getProduct_name());
+                tempDataPaymentName.add(mListBankBiller.get(i).getProductName());
             }
         }
         if (!tempDataPaymentName.isEmpty())
@@ -420,7 +435,7 @@ public class BillerInputPulsa extends BaseFragment {
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
             if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
                 if (position != 0) {
-                    denom_item_id = mListDenomData.get(position - 1).getItem_id();
+                    denom_item_id = mListDenomData.get(position - 1).getItemId();
                     if (cust_id.length() >= 10)
                         sentInquryBiller();
                 } else {
@@ -441,13 +456,13 @@ public class BillerInputPulsa extends BaseFragment {
             Object item = adapterView.getItemAtPosition(position);
             payment_name = item.toString();
             for (int i = 0; i < mListBankBiller.size(); i++) {
-                if (payment_name.equals(mListBankBiller.get(i).getProduct_name())) {
-                    mTempBank = new listBankModel(mListBankBiller.get(i).getBank_code(),
-                            mListBankBiller.get(i).getBank_name(),
-                            mListBankBiller.get(i).getProduct_code(),
-                            mListBankBiller.get(i).getProduct_name(),
-                            mListBankBiller.get(i).getProduct_type(),
-                            mListBankBiller.get(i).getProduct_h2h());
+                if (payment_name.equals(mListBankBiller.get(i).getProductName())) {
+                    mTempBank = new listBankModel(mListBankBiller.get(i).getBankCode(),
+                            mListBankBiller.get(i).getBankName(),
+                            mListBankBiller.get(i).getProductCode(),
+                            mListBankBiller.get(i).getProductName(),
+                            mListBankBiller.get(i).getProductType(),
+                            mListBankBiller.get(i).getProductH2h());
                 }
             }
         }
@@ -616,18 +631,34 @@ public class BillerInputPulsa extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
+//    private void initRealm() {
+//        mBillerType = realm.where(Biller_Type_Data_Model.class).
+//                equalTo(WebParams.BILLER_TYPE_CODE, biller_type_code).
+//                findFirst();
+//
+//        if (mBillerType != null) {
+//            mListBillerData = mBillerType.getBiller_data_models();
+//            _data.clear();
+//            for (int i = 0; i < mListBillerData.size(); i++) {
+//                _data.add(mListBillerData.get(i).getComm_name());
+//            }
+//        } else
+//            mListBillerData = new ArrayList<>();
+//    }
+
     private void initRealm() {
-        mBillerType = realm.where(Biller_Type_Data_Model.class).
-                equalTo(WebParams.BILLER_TYPE_CODE, biller_type_code).
-                findFirst();
-        if (mBillerType != null) {
-            mListBillerData = mBillerType.getBiller_data_models();
-            _data.clear();
-            for (int i = 0; i < mListBillerData.size(); i++) {
-                _data.add(mListBillerData.get(i).getComm_name());
-            }
-        } else
-            mListBillerData = new ArrayList<>();
+        Log.v(TAG, "initRealm()");
+
+        realmResults = realm2.where(BillerItem.class).equalTo("billerType", biller_type_code).findAll();
+
+        if (realmResults.isEmpty()) {
+            return;
+        }
+
+        _data.clear();
+        for (BillerItem item : realmResults) {
+            _data.add(item.getCommName());
+        }
     }
 
     private void showDialog() {
@@ -992,36 +1023,48 @@ public class BillerInputPulsa extends BaseFragment {
         fca.setToolbarTitle(_title);
     }
 
-    private void getBillerDenom(){
+    private void getBillerDenom() {
         Log.v(TAG, "getBillerDenom()");
 
         extraSignature = biller_type_code;
-//        HashMap<String, Object> params = RetrofitService.getInstance().getSignature88(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature);
         params.put(WebParams.USER_ID, userPhoneID);
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
         params.put(WebParams.BILLER_TYPE, biller_type_code);
 
-        Log.v(TAG, "getBillerDenom : "+ "params");
-        Log.v(TAG, "getBillerDenom : "+ params);
+        Log.v(TAG, "getBillerDenom : " + "params");
+        Log.v(TAG, "getBillerDenom : " + params);
 
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_BILLER_DENOM, params, new ResponseListener() {
             @Override
             public void onResponses(JsonObject object) {
-                Log.v(TAG, "getBillerDenom : "+ "onResponses");
-                Log.v(TAG, "getBillerDenom : "+ object.toString());
+                Log.v(TAG, "getBillerDenom : " + "onResponses");
+                Log.v(TAG, "getBillerDenom : " + object.toString());
+
+                Gson gson = new Gson();
+                BillerDenomResponse response = gson.fromJson(object, BillerDenomResponse.class);
+
+                if (response.getErrorCode().equals(WebParams.SUCCESS_CODE)) {
+                    realm2.beginTransaction();
+                    realm2.copyToRealm(response.getBiller());
+                    realm2.commitTransaction();
+                } else {
+                    Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onError(Throwable throwable) {
-                Log.e(TAG, "getBillerDenom : "+ "onError");
-                Log.e(TAG, "getBillerDenom : "+ throwable.getMessage());
+                Log.e(TAG, "getBillerDenom : " + "onError");
+                Log.e(TAG, "getBillerDenom : " + throwable.getMessage());
                 Toast.makeText(getContext(), throwable.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onComplete() {
-                Log.v(TAG, "getBillerDenom : "+ "onComplete");
+                if (_data.isEmpty()) {
+                    initRealm();
+                }
             }
         });
     }

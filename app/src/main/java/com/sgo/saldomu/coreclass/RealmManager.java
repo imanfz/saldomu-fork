@@ -43,6 +43,7 @@ public class RealmManager {
     public static RealmConfiguration BBSConfiguration;
     public static RealmConfiguration BBSMemberBankConfiguration;
     public static RealmConfiguration TagihDataConfig;
+    public static RealmConfiguration realmConfiguration;
 
     private Realm realm;
     private Realm bbsRealm;
