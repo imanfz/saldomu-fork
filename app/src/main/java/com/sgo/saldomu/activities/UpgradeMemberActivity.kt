@@ -33,7 +33,7 @@ class UpgradeMemberActivity : BaseActivity() {
     }
 
     private fun initialize() {
-        actionBarTitle = getString(R.string.menu_item_title_upgrade_via_agent)
+        actionBarTitle = getString(R.string.menu_item_title_upgrade_member)
 
         setActionBarIcon(R.drawable.ic_arrow_left)
 
