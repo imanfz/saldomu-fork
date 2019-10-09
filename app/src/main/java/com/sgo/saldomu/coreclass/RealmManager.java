@@ -145,6 +145,10 @@ public class RealmManager {
 //                .modules(new TagihModule())
 //                .migration(new TagihDataMigration())
 //                .build();
+
+        realmConfiguration = new RealmConfiguration.Builder()
+                .migration(new RealmMigration())
+                .build();
     }
 
     private static DynamicRealm getDynamicRealm(RealmConfiguration realmConfig){
