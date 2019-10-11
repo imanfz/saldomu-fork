@@ -8,16 +8,16 @@ public class GetAppVersionModel extends jsonModel {
     @Expose
     private
     String ref;
-    @SerializedName("app_data")
-    @Expose
-    private
-    AppDataModel app_data;
+//    @SerializedName("app_data")
+//    @Expose
+//    private
+//    AppDataModel app_data;
 
     public String getRef() {
         return ref;
     }
 
-    public AppDataModel getApp_data() {
-        return app_data;
-    }
+//    public AppDataModel getApp_data() {
+//        return app_data;
+//    }
 }

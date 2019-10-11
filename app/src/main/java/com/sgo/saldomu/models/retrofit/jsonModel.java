@@ -12,9 +12,10 @@ public class jsonModel {
     private String error_message;
     @SerializedName("on_error")
     private boolean on_error;
-//    @SerializedName("app_data")
-//    @Expose
-//    private List<AppDataModel> app_data = null;
+    @SerializedName("app_data")
+    @Expose
+    private
+    AppDataModel app_data;
 
     public String getError_code() {
         if (error_code == null)
@@ -32,7 +33,7 @@ public class jsonModel {
         return on_error;
     }
 
-//    public List<AppDataModel> getApp_data() {
-//        return app_data;
-//    }
+    public AppDataModel getApp_data() {
+        return app_data;
+    }
 }
