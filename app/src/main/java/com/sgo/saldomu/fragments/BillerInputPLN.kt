@@ -144,8 +144,9 @@ class BillerInputPLN : BaseFragment() {
         btn_submit_billerinput.setOnClickListener { submitInputListener() }
 
         initLayout()
-        initRealm()
         getBillerDenom()
+        getBillerDenom2()
+        initRealm()
 
         realmListener = RealmChangeListener {
             if (isVisible) {
@@ -175,6 +176,9 @@ class BillerInputPLN : BaseFragment() {
         billerinput_radio.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.radioPrabayar -> {
+                    billerinput_text_denom.visibility = View.VISIBLE
+                    billerinput_spinner_denom.visibility = View.VISIBLE
+
                     billerinput_layout_denom.visibility = View.VISIBLE
                     billerinput_layout_payment_method.visibility = View.VISIBLE
                     buy_type_detail = "PRABAYAR"
@@ -183,8 +187,11 @@ class BillerInputPLN : BaseFragment() {
                     billerinput_text_id_remark.text = getString(R.string.billerinput_text_payment_remark_Listrik)
                 }
                 R.id.radioPascabayar -> {
-                    billerinput_layout_denom.visibility = View.GONE
+                    billerinput_text_denom.visibility = View.GONE
+                    billerinput_spinner_denom.visibility = View.GONE
+
                     billerinput_layout_payment_method.visibility = View.GONE
+                    billerinput_layout_denom.visibility = View.GONE
                     billerinput_layout_add_fee.visibility = View.GONE
                     billerinput_layout_detail.visibility = View.GONE
                     buy_type_detail = "PASCABAYAR"
@@ -286,8 +293,9 @@ class BillerInputPLN : BaseFragment() {
             _data.add(result.commName)
         }
 
-        if (biller_type_code.equals("TKN"))
+        if (biller_type_code.equals("TKN")){
             initSpinnerDenom()
+        }
     }
 
     private fun initSpinnerDenom() {
@@ -301,6 +309,7 @@ class BillerInputPLN : BaseFragment() {
             adapterDenom?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             billerinput_spinner_denom.adapter = adapterDenom
             billerinput_spinner_denom.onItemSelectedListener = spinnerDenomListener
+            billerinput_text_denom.visibility = View.GONE
             billerinput_spinner_denom.visibility = View.GONE
 
             val deproses = object : Thread() {
@@ -312,8 +321,12 @@ class BillerInputPLN : BaseFragment() {
                     }
 
                     activity!!.runOnUiThread {
-                        billerinput_spinner_denom.visibility = View.VISIBLE
-                        adapterDenom!!.notifyDataSetChanged()
+
+                        if(buy_type_detail.equals("PRABAYAR")) {
+                            billerinput_text_denom.visibility = View.VISIBLE
+                            billerinput_spinner_denom.visibility = View.VISIBLE ///INI
+                            adapterDenom!!.notifyDataSetChanged()
+                        }
                     }
                 }
             }
@@ -393,7 +406,7 @@ class BillerInputPLN : BaseFragment() {
     }
 
     private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(adapterView: AdapterView<*>, view: View, position: Int, l: Long) {
+        override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, l: Long) {
             if (position != 0) {
                 item_id = mListDenomData?.get(position - 1)?.itemId
                 item_name = mListDenomData?.get(position - 1)?.itemName
@@ -887,6 +900,46 @@ class BillerInputPLN : BaseFragment() {
                 if (_data.isEmpty()) {
                     initRealm()
                 }
+            }
+        })
+    }
+
+    private fun getBillerDenom2() {
+        Log.v(TAG, "getBillerDenom()")
+
+        extraSignature = "PLN"
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature)
+        params[WebParams.USER_ID] = userPhoneID
+        params[WebParams.COMM_ID] = MyApiClient.COMM_ID
+        params[WebParams.BILLER_TYPE] = "PLN"
+
+        Log.v(TAG, "getBillerDenom : " + "params")
+        Log.v(TAG, "getBillerDenom : $params")
+
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_BILLER_DENOM, params, object : ResponseListener {
+            override fun onResponses(`object`: JsonObject) {
+                Log.v(TAG, "getBillerDenom : " + "onResponses")
+                Log.v(TAG, "getBillerDenom : $`object`")
+
+                val gson = Gson()
+                val response = gson.fromJson(`object`, BillerDenomResponse::class.java)
+
+                if (response.errorCode == WebParams.SUCCESS_CODE) {
+                    realm2?.beginTransaction()
+                    realm2?.copyToRealm(response.biller)
+                    realm2?.commitTransaction()
+                } else {
+                    Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onError(throwable: Throwable) {
+                Log.e(TAG, "getBillerDenom : " + "onError")
+                Log.e(TAG, "getBillerDenom : " + throwable.message)
+                Toast.makeText(context, throwable.localizedMessage, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onComplete() {
             }
         })
     }

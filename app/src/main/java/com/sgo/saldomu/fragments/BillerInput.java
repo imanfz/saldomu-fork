@@ -477,9 +477,9 @@ public class BillerInput extends Fragment {
 //        if(biller_type_code.equalsIgnoreCase(billerType[17]))
 //            mArgs.putString(DefineValue.VALUE_ITEM_DATA, "1");
 
-        Fragment mFrag = new BillerDesciption();
+        Fragment mFrag = new BillerDesciption2();
         mFrag.setArguments(mArgs);
-        switchFragment(mFrag, BillerActivity.FRAG_BIL_INPUT, null, true, BillerDesciption.TAG);
+        switchFragment(mFrag, BillerActivity.FRAG_BIL_INPUT, null, true, BillerDesciption2.TAG);
 
     }
 

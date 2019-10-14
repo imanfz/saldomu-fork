@@ -204,6 +204,7 @@ public class BillerInputPulsa extends BaseFragment {
         initLayout();
         initPrefixListener();
         getBillerDenom();
+        getBillerDenom2();
         initRealm();
 
         if (args.getString(DefineValue.CUST_ID, "") != "") {
@@ -330,9 +331,22 @@ public class BillerInputPulsa extends BaseFragment {
                     }
                 }
                 if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
-                    biller_comm_id = realmResults.get(0).getCommId();
-                    biller_comm_name = realmResults.get(0).getCommName();
-                    biller_item_id = realmResults.get(0).getItemId();
+                    for (BillerItem object : realmResults) {
+
+                        Log.e(TAG, "realmResults : " + object.getCommName());
+
+                        if (!object.getCommId().equals("")) {
+                            biller_comm_id = object.getCommId();
+                        }
+
+                        if (!object.getCommName().equals("")) {
+                            biller_comm_name = object.getCommName();
+                        }
+                        if (!object.getItemId().equals("")) {
+                            biller_item_id = object.getItemId();
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -535,7 +549,7 @@ public class BillerInputPulsa extends BaseFragment {
                         Timber.d("isi response maintenance:" + object.toString());
                         AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                         alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                    }else {
+                    } else {
                         code = model.getError_code() + " : " + model.getError_message();
                         if (isVisible()) {
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -663,12 +677,9 @@ public class BillerInputPulsa extends BaseFragment {
 
         realmResults = realm2.where(BillerItem.class).equalTo("billerType", biller_type_code).findAll();
 
-        if (realmResults.isEmpty()) {
-            return;
-        }
-
         _data.clear();
         for (BillerItem item : realmResults) {
+            Log.v(TAG, "_data " + item.getCommName());
             _data.add(item.getCommName());
         }
     }
@@ -754,7 +765,7 @@ public class BillerInputPulsa extends BaseFragment {
                     } else if (code.equals(WebParams.LOGOUT_CODE)) {
                         AlertDialogLogout dialogLogout = AlertDialogLogout.getInstance();
                         dialogLogout.showDialoginActivity(getActivity(), sentPaymentBillerModel.getError_message());
-                    }else if (code.equals(DefineValue.ERROR_9333)) {
+                    } else if (code.equals(DefineValue.ERROR_9333)) {
                         Timber.d("isi response app data:" + sentPaymentBillerModel.getApp_data());
                         final AppDataModel appModel = sentPaymentBillerModel.getApp_data();
                         AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -826,7 +837,7 @@ public class BillerInputPulsa extends BaseFragment {
                                 code = model.getError_message();
                                 showDialogError(code);
 
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -1092,9 +1103,51 @@ public class BillerInputPulsa extends BaseFragment {
 
             @Override
             public void onComplete() {
-                if (_data.isEmpty()) {
-                    initRealm();
+                Log.e(TAG, "onComplete()");
+                initRealm();
+            }
+        });
+    }
+
+    private void getBillerDenom2() {
+        Log.v(TAG, "getBillerDenom()");
+
+        extraSignature = "HP";
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+        params.put(WebParams.BILLER_TYPE, "HP");
+
+        Log.v(TAG, "getBillerDenom : " + "params");
+        Log.v(TAG, "getBillerDenom : " + params);
+
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_BILLER_DENOM, params, new ResponseListener() {
+            @Override
+            public void onResponses(JsonObject object) {
+                Log.v(TAG, "getBillerDenom : " + "onResponses");
+                Log.v(TAG, "getBillerDenom : " + object.toString());
+
+                Gson gson = new Gson();
+                BillerDenomResponse response = gson.fromJson(object, BillerDenomResponse.class);
+
+                if (response.getErrorCode().equals(WebParams.SUCCESS_CODE)) {
+                    realm2.beginTransaction();
+                    realm2.copyToRealm(response.getBiller());
+                    realm2.commitTransaction();
+                } else {
+                    Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                Log.e(TAG, "getBillerDenom : " + "onError");
+                Log.e(TAG, "getBillerDenom : " + throwable.getMessage());
+                Toast.makeText(getContext(), throwable.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onComplete() {
             }
         });
     }
