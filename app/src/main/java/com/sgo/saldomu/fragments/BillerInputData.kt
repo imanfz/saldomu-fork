@@ -940,9 +940,7 @@ class BillerInputData : BaseFragment() {
             }
 
             override fun onComplete() {
-                if (_data.isEmpty()) {
-                    initRealm()
-                }
+                initRealm()
             }
         })
     }

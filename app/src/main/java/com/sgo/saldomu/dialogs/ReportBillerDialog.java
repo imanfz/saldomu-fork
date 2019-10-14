@@ -451,7 +451,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
                 if (args.getString(DefineValue.BUSS_SCHEME_NAME).equalsIgnoreCase("Pembelian Paket Data")){
-                    tableLayoutDestination.setVisibility(View.VISIBLE);
+//                    tableLayoutDestination.setVisibility(View.VISIBLE);
                     tv_destinationValue.setText(args.getString(DefineValue.DESTINATION_REMARK));
                 }
 
