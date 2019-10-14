@@ -35,7 +35,7 @@ public class PrivacyPolicyActivity extends BaseActivity {
     SecurePreferences sp;
     private ProgressBar progbar;
     private Boolean isDisconnected;
-    private String domainPrivacyPolicy= "http://saldomu.com/privacypolicy";
+    private String domainPrivacyPolicy= "http://saldomu.com/index.php/privasi-kebijakan/";
 
     @Override
     protected int getLayoutResource() {
