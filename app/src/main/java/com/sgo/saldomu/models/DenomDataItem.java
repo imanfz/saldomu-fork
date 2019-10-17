@@ -3,9 +3,11 @@ package com.sgo.saldomu.models;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class DenomDataItem extends RealmObject {
 
+	@PrimaryKey
 	@SerializedName("item_id")
 	private String item_id;
 
