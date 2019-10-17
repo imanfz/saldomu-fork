@@ -94,6 +94,8 @@ public class FragTagihInput extends BaseFragment {
         sp = CustomSecurePref.getInstance().getSecurePrefsInstance();
 
         getBalanceCollector();
+
+        anchorDataList.clear();
         getAnchor();
         initializeView();
 
