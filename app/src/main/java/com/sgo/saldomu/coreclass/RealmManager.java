@@ -148,6 +148,7 @@ public class RealmManager {
 
         realmConfiguration = new RealmConfiguration.Builder()
                 .migration(new RealmMigration())
+                .deleteRealmIfMigrationNeeded()
                 .build();
     }
 
