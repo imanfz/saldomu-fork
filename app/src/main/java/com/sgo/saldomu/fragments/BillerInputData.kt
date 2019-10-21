@@ -15,7 +15,9 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.sgo.saldomu.Beans.*
+import com.sgo.saldomu.Beans.Biller_Data_Model
+import com.sgo.saldomu.Beans.Biller_Type_Data_Model
+import com.sgo.saldomu.Beans.listBankModel
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.BillerActivity
 import com.sgo.saldomu.activities.MainPage
@@ -39,7 +41,6 @@ import io.realm.RealmResults
 import kotlinx.android.synthetic.main.dialog_notification.*
 import kotlinx.android.synthetic.main.frag_biller_input_new.*
 import timber.log.Timber
-import java.util.*
 
 class BillerInputData : BaseFragment() {
 
@@ -96,7 +97,9 @@ class BillerInputData : BaseFragment() {
     private lateinit var levelClass: LevelClass
     private lateinit var sentPaymentBillerModel: SentPaymentBillerModel
 
-    var realmResults: RealmResults<BillerItem>? = null
+
+    private var billerItemList = ArrayList<BillerItem>()
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -195,11 +198,13 @@ class BillerInputData : BaseFragment() {
 
             for (i in _data.indices) {
                 Timber.d("_data" + _data[i])
+
                 if (_data != null) {
                     if (_data.get(i).toLowerCase().contains(billerIdNumber.prefix_name.toLowerCase())) {
-                        biller_comm_id = realmResults?.get(i)?.commId
-                        biller_comm_name = realmResults?.get(i)?.commName
-                        biller_item_id = realmResults?.get(i)?.itemId
+                        Timber.d("_data " + billerItemList?.get(i)?.commName)
+                        biller_comm_id = billerItemList?.get(i)?.commId
+                        biller_comm_name = billerItemList?.get(i)?.commName
+                        biller_item_id = billerItemList?.get(i)?.itemId
 
                         initializeSpinnerDenom()
                     }
@@ -267,10 +272,12 @@ class BillerInputData : BaseFragment() {
 
     private fun initializeSpinnerDenom() {
         mDenomData = BillerItem()
-        mDenomData = realm2?.where(BillerItem::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.equalTo(WebParams.DENOM_ITEM_ID, biller_item_id)?.findFirst()
+//        mDenomData = realm2?.where(BillerItem::class.java)?.findFirst()
+        mDenomData = realm2?.where(BillerItem::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.findFirst()
+
+
+
         mListDenomData = realm2?.copyFromRealm(mDenomData?.denomData)
-
-
 
 
 //        mDenomData = Biller_Data_Model()
@@ -313,7 +320,7 @@ class BillerInputData : BaseFragment() {
         biller_comm_code = mBillerData?.commCode
         biller_api_key = mBillerData?.apiKey
 //        callback_url = mBillerData?.callback_url
-        if (realmResults!!.isNotEmpty()) {
+        if (billerItemList!!.isNotEmpty()) {
             paymentData = ArrayList()
             adapterPaymentOptions = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentData)
             adapterPaymentOptions?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -429,10 +436,11 @@ class BillerInputData : BaseFragment() {
 
     private fun initRealm() {
         Log.v(TAG, "initRealm()")
+        var realmResults: RealmResults<BillerItem>? = realm2?.where(BillerItem::class.java)?.equalTo("billerType", "DATA")?.findAll()
 
-        realmResults = realm2?.where(BillerItem::class.java)?.equalTo("billerType", "DATA")?.findAll()
-
+        billerItemList.clear()
         _data.clear()
+        billerItemList.addAll(realmResults!!)
         realmResults?.forEach { result ->
             _data.add(result.commName)
         }
@@ -924,9 +932,17 @@ class BillerInputData : BaseFragment() {
                 val gson = Gson()
                 val response = gson.fromJson(`object`, BillerDenomResponse::class.java)
 
+
                 if (response.errorCode == WebParams.SUCCESS_CODE) {
+                    response.biller?.forEach { result ->
+                        _data.add(result.commName)
+                    }
+
+                    billerItemList.addAll(response.biller)
+
+
                     realm2?.beginTransaction()
-                    realm2?.copyToRealm(response.biller)
+                    realm2?.copyToRealmOrUpdate(response.biller)
                     realm2?.commitTransaction()
                 } else {
                     Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
@@ -940,7 +956,9 @@ class BillerInputData : BaseFragment() {
             }
 
             override fun onComplete() {
-                initRealm()
+                if (_data.isEmpty()) {
+                    initRealm()
+                }
             }
         })
     }
