@@ -14,7 +14,7 @@ public class BillerItem extends RealmObject {
 	@SerializedName("comm_name")
 	private String comm_name;
 
-	@PrimaryKey
+//	@PrimaryKey
 	@SerializedName("item_id")
 	private String item_id;
 
