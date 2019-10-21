@@ -278,7 +278,20 @@ class BillerInputData : BaseFragment() {
 
     private fun initializeSpinnerDenom() {
         mDenomData = BillerItem()
+<<<<<<< HEAD
+        mDenomData = realm2?.where(BillerItem::class.java)
+                ?.equalTo(WebParams.COMM_ID, biller_comm_id)
+                ?.equalTo(WebParams.COMM_NAME, biller_comm_name)
+                ?.equalTo(WebParams.DENOM_ITEM_ID, biller_item_id)
+                ?.findFirst()
+        mListDenomData = realm2?.copyFromRealm(mDenomData?.denomData)
+=======
+//        mDenomData = realm2?.where(BillerItem::class.java)?.findFirst()
         mDenomData = realm2?.where(BillerItem::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.findFirst()
+>>>>>>> e4b2fe76f9c2b179aca55caad8890b87ccee3759
+
+
+
         mListDenomData = realm2?.copyFromRealm(mDenomData?.denomData)
 
 
