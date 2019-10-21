@@ -299,9 +299,14 @@ public class BillerInputPulsa extends BaseFragment {
                                     equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
                                     findFirst();
 
-                            mListDenomData = realm2.copyFromRealm(mDenomData.getDenomData());
+                            if (mDenomData == null) {
+                                mListDenomData = new ArrayList<>();
+                            } else {
+                                mListDenomData = realm2.copyFromRealm(mDenomData.getDenomData());
 
-                            initializeSpinnerDenom();
+                                initializeSpinnerDenom();
+                            }
+
                         }
                     }
 

@@ -883,7 +883,7 @@ class BillerInputPLN : BaseFragment() {
 
                 if (response.errorCode == WebParams.SUCCESS_CODE) {
                     realm2?.beginTransaction()
-                    realm2?.copyToRealm(response.biller)
+                    realm2?.copyToRealmOrUpdate(response.biller)
                     realm2?.commitTransaction()
                 } else {
                     Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
@@ -926,7 +926,7 @@ class BillerInputPLN : BaseFragment() {
 
                 if (response.errorCode == WebParams.SUCCESS_CODE) {
                     realm2?.beginTransaction()
-                    realm2?.copyToRealm(response.biller)
+                    realm2?.copyToRealmOrUpdate(response.biller)
                     realm2?.commitTransaction()
                 } else {
                     Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
