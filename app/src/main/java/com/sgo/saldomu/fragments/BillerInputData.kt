@@ -201,16 +201,10 @@ class BillerInputData : BaseFragment() {
 
                 if (_data != null) {
                     if (_data.get(i).toLowerCase().contains(billerIdNumber.prefix_name.toLowerCase())) {
-<<<<<<< HEAD
-//                        biller_comm_id = realmResults?.get(i)?.commId
-//                        biller_comm_name = realmResults?.get(i)?.commName
-//                        biller_item_id = realmResults?.get(i)?.itemId
-=======
                         Timber.d("_data " + billerItemList?.get(i)?.commName)
                         biller_comm_id = billerItemList?.get(i)?.commId
                         biller_comm_name = billerItemList?.get(i)?.commName
                         biller_item_id = billerItemList?.get(i)?.itemId
->>>>>>> e4b2fe76f9c2b179aca55caad8890b87ccee3759
 
                         initializeSpinnerDenom()
                     }
@@ -281,10 +275,6 @@ class BillerInputData : BaseFragment() {
         mDenomData = realm2?.where(BillerItem::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.findFirst()
         mListDenomData = realm2?.copyFromRealm(mDenomData?.denomData)
 
-
-//        mDenomData = Biller_Data_Model()
-//        mDenomData = realm?.where(Biller_Data_Model::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.equalTo(WebParams.DENOM_ITEM_ID, biller_item_id)?.findFirst()
-//        mListDenomData = realm?.copyFromRealm(mDenomData?.denom_data_models)
         if (mListDenomData!!.isNotEmpty()) {
             denomData = ArrayList()
             adapterDenom = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, denomData)
@@ -940,25 +930,13 @@ class BillerInputData : BaseFragment() {
 
 
                 if (response.errorCode == WebParams.SUCCESS_CODE) {
-<<<<<<< HEAD
 
-                    response.biller?.forEach { result ->
-                        biller_comm_id = result.commId
-                        biller_comm_name = result.commName
-                        biller_item_id = result.itemId
-
-                        _data.add(result.commName)
-                    }
-
-=======
                     response.biller?.forEach { result ->
                         _data.add(result.commName)
                     }
 
                     billerItemList.addAll(response.biller)
-
-
->>>>>>> e4b2fe76f9c2b179aca55caad8890b87ccee3759
+                    
                     realm2?.beginTransaction()
                     realm2?.copyToRealmOrUpdate(response.biller)
                     realm2?.commitTransaction()
