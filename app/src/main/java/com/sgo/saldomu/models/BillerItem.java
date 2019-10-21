@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class BillerItem extends RealmObject {
 
@@ -22,6 +23,7 @@ public class BillerItem extends RealmObject {
 	@SerializedName("comm_code")
 	private String comm_code;
 
+	@PrimaryKey
 	@SerializedName("comm_id")
 	private String comm_id;
 
