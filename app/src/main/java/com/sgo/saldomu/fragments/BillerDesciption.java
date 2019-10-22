@@ -216,7 +216,6 @@ public class BillerDesciption extends BaseFragment {
 
         tv_item_name_value.setText(item_name);
         tv_id_cust.setText(cust_id);
-        tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(amount));
         View amount_layout = v.findViewById(R.id.billertoken_amount_layout);
         if (is_display_amount) {
             amount_layout.setVisibility(View.VISIBLE);
