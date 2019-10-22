@@ -56,6 +56,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -499,6 +500,12 @@ public class RetrofitService {
                         listener.onComplete();
                     }
                 });
+    }
+
+    public Observable<JsonObject> PostObjectRequest2(String link, HashMap<String, Object> param) {
+        return BuildRetrofit().PostObjectInterface(link, param)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public void PostObjectRequest(String link, HashMap<String, Object> param, final ResponseListener listener) {
