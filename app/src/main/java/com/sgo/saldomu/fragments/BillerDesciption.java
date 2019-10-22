@@ -850,7 +850,8 @@ public class BillerDesciption extends BaseFragment {
         mArgs.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
         mArgs.putString(DefineValue.TX_ID, tx_id);
         mArgs.putString(DefineValue.CCY_ID, ccy_id);
-        mArgs.putString(DefineValue.AMOUNT, sentPaymentBillerModel.getAmount());
+        Double amount = Double.parseDouble(sentPaymentBillerModel.getAmount())-Double.parseDouble(sentPaymentBillerModel.getFee());
+        mArgs.putString(DefineValue.AMOUNT, amount.toString());
         mArgs.putString(DefineValue.ITEM_NAME, item_name);
         mArgs.putString(DefineValue.BILLER_COMM_ID, biller_comm_id);
         mArgs.putString(DefineValue.BILLER_NAME, biller_name);
@@ -863,7 +864,6 @@ public class BillerDesciption extends BaseFragment {
         mArgs.putString(DefineValue.CALLBACK_URL, callback_url);
         mArgs.putString(DefineValue.ITEM_ID, item_id);
         mArgs.putString(DefineValue.FEE, sentPaymentBillerModel.getFee());
-        double totalAmount = Double.parseDouble(amount) + Double.parseDouble(fee);
         mArgs.putString(DefineValue.TOTAL_AMOUNT, sentPaymentBillerModel.getTotal_amount());
         mArgs.putString(DefineValue.PRODUCT_PAYMENT_TYPE, mTempBank.getProduct_type());
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
@@ -885,6 +885,7 @@ public class BillerDesciption extends BaseFragment {
 
         if (getIs_input_amount()) {
             String desired_amount = et_desired_amount.getText().toString();
+            double totalAmount = amount + Double.parseDouble(fee);
             totalAmount = Double.parseDouble(desired_amount) + Double.parseDouble(fee);
             mArgs.putString(DefineValue.AMOUNT_DESIRED, desired_amount);
             mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(totalAmount));
