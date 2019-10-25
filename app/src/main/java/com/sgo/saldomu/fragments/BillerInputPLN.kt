@@ -586,16 +586,16 @@ class BillerInputPLN : BaseFragment() {
                                 var alertDialog = AlertDialogLogout.getInstance()
                                 alertDialog.showDialoginActivity(activity, message)
                             } else if (code == DefineValue.ERROR_9333) run {
-                                Timber.d("isi response app data:" + sentPaymentBillerModel.getApp_data())
-                                val appModel = sentPaymentBillerModel.getApp_data()
+                                Timber.d("isi response app data:" + sentPaymentBillerModel.app_data)
+                                val appModel = sentPaymentBillerModel.app_data
                                 val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl())
+                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             } else if (code == DefineValue.ERROR_0066) run {
                                 Timber.d("isi response maintenance:" + response.toString())
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, sentPaymentBillerModel.getError_message())
+                                alertDialogMaintenance.showDialogMaintenance(activity, sentPaymentBillerModel.error_message)
                             } else {
-                                code = sentPaymentBillerModel.error_code + " : " + sentPaymentBillerModel.fee
+                                code = sentPaymentBillerModel.error_code + " : " + sentPaymentBillerModel.error_message
                                 Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
                                 fragmentManager?.popBackStack()
                                 dismissProgressDialog()
