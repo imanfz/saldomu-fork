@@ -780,7 +780,6 @@ public class BillerInputPulsa extends BaseFragment {
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             getFragmentManager().popBackStack();
                         }
-                        layout_detail.setVisibility(View.GONE);
                     }
                 }
 
@@ -792,6 +791,7 @@ public class BillerInputPulsa extends BaseFragment {
                 @Override
                 public void onComplete() {
                     btn_submit.setEnabled(true);
+                    dismissProgressDialog();
                 }
             });
         } catch (Exception e) {

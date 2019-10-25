@@ -201,10 +201,10 @@ class BillerInputData : BaseFragment() {
 
                 if (_data != null) {
                     if (_data.get(i).toLowerCase().contains(billerIdNumber.prefix_name.toLowerCase())) {
-                        Timber.d("_data " + billerItemList?.get(i)?.commName)
-                        biller_comm_id = billerItemList?.get(i)?.commId
-                        biller_comm_name = billerItemList?.get(i)?.commName
-                        biller_item_id = billerItemList?.get(i)?.itemId
+                        Timber.d("_data " + billerItemList.get(i).commName)
+                        biller_comm_id = billerItemList.get(i).commId
+                        biller_comm_name = billerItemList.get(i).commName
+                        biller_item_id = billerItemList.get(i).itemId
 
                         initializeSpinnerDenom()
                     }
@@ -312,7 +312,7 @@ class BillerInputData : BaseFragment() {
         biller_comm_code = mBillerData?.commCode
         biller_api_key = mBillerData?.apiKey
 //        callback_url = mBillerData?.callback_url
-        if (billerItemList!!.isNotEmpty()) {
+        if (billerItemList.isNotEmpty()) {
             paymentData = ArrayList()
             adapterPaymentOptions = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentData)
             adapterPaymentOptions?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -433,7 +433,7 @@ class BillerInputData : BaseFragment() {
         billerItemList.clear()
         _data.clear()
         billerItemList.addAll(realmResults!!)
-        realmResults?.forEach { result ->
+        realmResults.forEach { result ->
             biller_comm_id = result.commId
             biller_comm_name = result.commName
             biller_item_id = result.itemId
@@ -604,16 +604,16 @@ class BillerInputData : BaseFragment() {
                                 var alertDialog = AlertDialogLogout.getInstance()
                                 alertDialog.showDialoginActivity(activity, message)
                             } else if (code == DefineValue.ERROR_9333) run {
-                                Timber.d("isi response app data:" + sentPaymentBillerModel.getApp_data())
-                                val appModel = sentPaymentBillerModel.getApp_data()
+                                Timber.d("isi response app data:" + sentPaymentBillerModel.app_data)
+                                val appModel = sentPaymentBillerModel.app_data
                                 val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl())
+                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             } else if (code == DefineValue.ERROR_0066) run {
                                 Timber.d("isi response maintenance:" + response.toString())
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, sentPaymentBillerModel.getError_message())
+                                alertDialogMaintenance.showDialogMaintenance(activity, sentPaymentBillerModel.error_message)
                             } else {
-                                code = sentPaymentBillerModel.error_code + " : " + sentPaymentBillerModel.fee
+                                code = sentPaymentBillerModel.error_code + " : " + sentPaymentBillerModel.error_message
                                 Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
                                 fragmentManager?.popBackStack()
                                 dismissProgressDialog()
@@ -657,7 +657,7 @@ class BillerInputData : BaseFragment() {
         mArgs.putString(DefineValue.BILLER_TYPE, billerTypeCode)
         mArgs.putString(DefineValue.BANK_CODE, bank_code)
         mArgs.putString(DefineValue.PRODUCT_CODE, product_code)
-        mArgs.putBoolean(DefineValue.IS_DISPLAY, is_display_amount!!)
+        mArgs.putBoolean(DefineValue.IS_DISPLAY, is_display_amount)
         mArgs.putBoolean(DefineValue.IS_INPUT, getIs_input_amount()!!)
         mArgs.putString(DefineValue.SHARE_TYPE, "")
         mArgs.putBoolean(DefineValue.IS_SGO_PLUS, mTempBank?.product_type == DefineValue.BANKLIST_TYPE_IB)
