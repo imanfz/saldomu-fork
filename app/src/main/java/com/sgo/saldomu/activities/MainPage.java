@@ -126,6 +126,7 @@ public class MainPage extends BaseActivity {
 
     private final static int FIRST_SCREEN_LOGIN = 1;
     private final static int FIRST_SCREEN_INTRO = 2;
+    private final static int FIRST_SCREEN_SPLASHSCREEN = 3;
     private final static int REQCODE_PLAY_SERVICE = 312;
 
 
@@ -334,7 +335,11 @@ public class MainPage extends BaseActivity {
                         }
                     }
                 }
-                openFirstScreen(FIRST_SCREEN_INTRO);
+
+                if (sp.getString(DefineValue.USERID_PHONE, "").isEmpty()) {
+                    openFirstScreen(FIRST_SCREEN_SPLASHSCREEN);
+                } else
+                    openFirstScreen(FIRST_SCREEN_INTRO);
             } else {
                 initializeLogin();
             }
@@ -994,7 +999,7 @@ public class MainPage extends BaseActivity {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(MainPage.this, model.getError_message());
-                            }else {
+                            } else {
                                 Timber.d("Error ListMember comlist:" + model.getError_message());
                                 code = model.getError_message();
                                 Toast.makeText(MainPage.this, code, Toast.LENGTH_LONG).show();
@@ -1112,6 +1117,9 @@ public class MainPage extends BaseActivity {
                 break;
             case FIRST_SCREEN_INTRO:
                 i = new Intent(this, Introduction.class);
+                break;
+            case FIRST_SCREEN_SPLASHSCREEN:
+                i = new Intent(this, SplashScreen.class);
                 break;
             default:
                 i = new Intent(this, LoginActivity.class);
@@ -1500,7 +1508,7 @@ public class MainPage extends BaseActivity {
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
         }
 
-        if (currentTab.equalsIgnoreCase(userNameLogin)){
+        if (currentTab.equalsIgnoreCase(userNameLogin)) {
             bottomNavigationView.setSelectedItemId(R.id.menu_home);
         }
 

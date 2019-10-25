@@ -506,6 +506,11 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SplashScreen"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".services.BalanceService"

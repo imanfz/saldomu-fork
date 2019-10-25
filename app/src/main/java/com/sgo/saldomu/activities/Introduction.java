@@ -79,10 +79,15 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         if (InetHandler.isNetworkAvailable(this))
             new UtilsLoader(this).getAppVersion();
 
-        addSlide(IntroPage.newInstance(R.layout.intro_fragment));
-
-
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+//        if (sp.getString(DefineValue.USERID_PHONE, "").isEmpty()) {
+//            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
+//            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
+//            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
+//        } else
+            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
+
 
         sp.edit().remove(DefineValue.SENDER_ID).commit();
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
@@ -93,8 +98,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         Button donebtn = (Button) doneButton;
         skipbtn.setText(getString(R.string.start_now));
         donebtn.setText("POS");
-        skipbtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        donebtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+//        skipbtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+//        donebtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
         if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
             //cheat kalo diteken lama skip ke register (-1)
@@ -166,7 +171,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             Intent i = new Intent(Introduction.this, LoginActivity.class);
             i.putExtra(DefineValue.USER_IS_NEW, -2);
             i.putExtra(DefineValue.IS_POS, "Y");
-            sp.edit().putString(DefineValue.IS_POS,DefineValue.Y).commit();
+            sp.edit().putString(DefineValue.IS_POS, DefineValue.Y).commit();
             startActivity(i);
         }
     };

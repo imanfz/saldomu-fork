@@ -677,7 +677,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                                         }
                                     }
 
-                                    for (int i = 0; i < shopDetails.size(); i++) {
+                                    for (int i = 1; i < shopDetails.size(); i++) {
 
                                         if (shopDetails.get(i).getShopLatitude() != null && shopDetails.get(i).getShopLongitude() != null) {
                                             LatLng latLng = new LatLng(shopDetails.get(i).getShopLatitude(), shopDetails.get(i).getShopLongitude());
