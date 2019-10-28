@@ -171,7 +171,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/billerinput_text_id_remark"
                     android:enabled="true"
-                    android:maxLength="32" />
+                    android:maxLength="32"
+                    android:inputType="number"/>
             </LinearLayout>
 
             <LinearLayout
