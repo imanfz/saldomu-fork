@@ -411,7 +411,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
                 params.put(WebParams.OFFSET, sp.getString(DefineValue.OFFSET, ""));
             }
-
+            Timber.d("isi param report : " + params);
             RetrofitService.getInstance().PostObjectRequest(url, params,
                     new ResponseListener() {
                         @Override

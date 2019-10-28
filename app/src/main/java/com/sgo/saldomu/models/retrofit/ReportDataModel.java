@@ -68,6 +68,10 @@ public class ReportDataModel  {
     @Expose
     private
     String admin_fee;
+    @SerializedName("additional_fee")
+    @Expose
+    private
+    String additional_fee;
     @SerializedName("tx_description")
     @Expose
     private
@@ -207,5 +211,9 @@ public class ReportDataModel  {
 
     public String getBbs_name() {
         return bbs_name;
+    }
+
+    public String getAdditional_fee() {
+        return additional_fee;
     }
 }

@@ -78,7 +78,7 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportDataModel>{
         holder.tv_comm_name.setText(itemnya.getComm_name());
         holder.tv_ccy.setText(itemnya.getCcy_id());
 
-        Double total = Double.parseDouble(itemnya.getAmount()) + Double.parseDouble(itemnya.getAdmin_fee());
+        Double total = Double.parseDouble(itemnya.getAmount()) + Double.parseDouble(itemnya.getAdmin_fee()) + Double.parseDouble(itemnya.getAdditional_fee());
 
         holder.tv_amount.setText(CurrencyFormat.format(total));
         if(!itemnya.getDescription().equals(""))
