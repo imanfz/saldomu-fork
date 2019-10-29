@@ -325,7 +325,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.TX_ID, response.tx_id)
         args.putString(DefineValue.USERID_PHONE, response.member_cust_id)
         args.putString(DefineValue.DENOM_DATA, response.payment_name)
-        var amount = response.tx_amount!!.toDouble() - response.admin_fee!!.toDouble()
+        var amount = response.total_amount!!.toDouble() - response.admin_fee!!.toDouble() - response.additional_fee!!.toDouble()
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount))
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER)
         args.putString(DefineValue.PRODUCT_NAME, response.product_name)
