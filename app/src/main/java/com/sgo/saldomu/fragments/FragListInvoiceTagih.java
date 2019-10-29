@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -173,6 +174,11 @@ public class FragListInvoiceTagih extends BaseFragment {
                 if (lbl_total_pay_amount.getText().toString().equalsIgnoreCase("0")) {
                     Toast.makeText(getActivity(), "Tidak ada invoice yang dibayarkan", Toast.LENGTH_SHORT).show();
                 } else {
+//                    Bundle args = new Bundle();
+//                    args.putString(DefineValue.PAYMENT_TYPE_DESC, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_name());
+//                    DialogFragment newFragment = new PaymentRemarkDialog();
+//                    newFragment.setArguments(args);
+//                    newFragment.show(getActivity().getSupportFragmentManager(), "TAG");
                     PaymentRemarkDialog dialog = PaymentRemarkDialog.newDialog(new PaymentRemarkDialog.onTap() {
                         @Override
                         public void onOK(String msg) {
@@ -475,6 +481,8 @@ public class FragListInvoiceTagih extends BaseFragment {
         params.put(WebParams.BANK_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getBank_code());
         params.put(WebParams.PRODUCT_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getProduct_code());
         params.put(WebParams.INVOICE, invoiceList);
+        params.put(WebParams.LATITUDE, sp.getString(DefineValue.LAST_CURRENT_LATITUDE,""));
+        params.put(WebParams.LONGITUDE, sp.getString(DefineValue.LAST_CURRENT_LONGITUDE,""));
 
         Timber.d("params list invoice DGI : " + params.toString());
 

@@ -887,6 +887,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.KEY_VALUE, "");
         params.put(WebParams.SHOP_PHONE, userPhoneID);
         params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.LATITUDE, sp.getString(DefineValue.LAST_CURRENT_LATITUDE,""));
+        params.put(WebParams.LONGITUDE, sp.getString(DefineValue.LAST_CURRENT_LONGITUDE,""));
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TRANSACTION_BY_AGENT, params,
                 new ObjListeners() {

@@ -336,7 +336,7 @@ public class MainPage extends BaseActivity {
                     }
                 }
 
-                if (sp.getString(DefineValue.USERID_PHONE, "").isEmpty()) {
+                if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                     openFirstScreen(FIRST_SCREEN_SPLASHSCREEN);
                 } else
                     openFirstScreen(FIRST_SCREEN_INTRO);
@@ -1220,6 +1220,8 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.IS_POS);
         mEditor.remove(DefineValue.COMM_UPGRADE_MEMBER);
         mEditor.remove(DefineValue.MEMBER_CREATED);
+        mEditor.remove(DefineValue.LAST_CURRENT_LONGITUDE);
+        mEditor.remove(DefineValue.LAST_CURRENT_LATITUDE);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();

@@ -10,14 +10,18 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.DefineValue;
 
 public class PaymentRemarkDialog extends DialogFragment {
     View v;
 
     Button ok, cancel;
     EditText inputMsg;
+    String paymentTypeName;
+    LinearLayout layoutBankName, layoutDueDate;
 
     onTap listener;
 
@@ -49,6 +53,16 @@ public class PaymentRemarkDialog extends DialogFragment {
         ok = v.findViewById(R.id.pay_remark_dialog_ok_btn);
         cancel  = v.findViewById(R.id.pay_remark_dialog_cancel_btn);
         inputMsg = v.findViewById(R.id.pay_remark_dialog_input_msg);
+        layoutBankName = v.findViewById(R.id.layout_bank_name);
+        layoutDueDate = v.findViewById(R.id.layout_duedate);
+        Bundle bundle = getArguments();
+        paymentTypeName = bundle.getString(DefineValue.PAYMENT_TYPE_DESC, "");
+
+        if (paymentTypeName.equalsIgnoreCase("Bilyet Giro"))
+        {
+            layoutBankName.setVisibility(View.VISIBLE);
+            layoutDueDate.setVisibility(View.VISIBLE);
+        }
 
         return v;
     }

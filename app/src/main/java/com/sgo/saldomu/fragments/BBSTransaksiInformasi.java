@@ -607,6 +607,9 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 params.put(WebParams.TX_ID, aodTxId);
             }
 
+            params.put(WebParams.LATITUDE, sp.getString(DefineValue.LAST_CURRENT_LATITUDE,""));
+            params.put(WebParams.LONGITUDE, sp.getString(DefineValue.LAST_CURRENT_LONGITUDE,""));
+
             Log.d("params insert c2a", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A, params,
@@ -924,6 +927,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             }
 
             params.put(WebParams.CUSTOMER_ID, noHPMemberLocation);
+            params.put(WebParams.LATITUDE, sp.getString(DefineValue.LAST_CURRENT_LATITUDE,""));
+            params.put(WebParams.LONGITUDE, sp.getString(DefineValue.LAST_CURRENT_LONGITUDE,""));
 
             Log.d("params insert a2c", params.toString());
 
