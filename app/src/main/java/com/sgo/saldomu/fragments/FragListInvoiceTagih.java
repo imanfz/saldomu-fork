@@ -181,7 +181,7 @@ public class FragListInvoiceTagih extends BaseFragment {
                             bundle.putString(DefineValue.REMARK, paymentRemark);
                         }
                     });
-                    dialog.show(getFragmentManager(), "paymentremark dialog");
+                    dialog.show(getActivity().getSupportFragmentManager(), "paymentremark dialog");
                 }
             }
         });
