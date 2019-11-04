@@ -71,32 +71,6 @@
             android:stretchColumns="1"
             android:visibility="visible">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey_400" />
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="@string/metode_pembayaran"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
-
-                <Spinner
-                    android:id="@+id/sp_metode_pembayaran"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:popupBackground="@android:color/white" />
-            </TableRow>
 
             <View
                 android:layout_width="fill_parent"
@@ -124,6 +98,34 @@
                     android:layout_height="wrap_content"
                     android:popupBackground="@android:color/white" />
             </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_400" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="@string/metode_pembayaran"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <Spinner
+                    android:id="@+id/sp_metode_pembayaran"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:popupBackground="@android:color/white" />
+            </TableRow>
+
 
             <View
                 android:layout_width="fill_parent"

@@ -95,6 +95,10 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
                 latitude  = mLastLocation.getLatitude();
                 longitude = mLastLocation.getLongitude();
 
+                sp.edit().putDouble(DefineValue.LONGITUDE_UPDATED, longitude).apply();
+                sp.edit().putDouble(DefineValue.LATITUDE_UPDATED, latitude).apply();
+                sp.edit().apply();
+
                 Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
                 if ( isAgent )
@@ -131,9 +135,8 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         longitude   = mLastLocation.getLongitude();
         latitude    = mLastLocation.getLatitude();
 
-        sp.edit().putString(DefineValue.LAST_CURRENT_LONGITUDE, String.valueOf(longitude));
-        sp.edit().putString(DefineValue.LAST_CURRENT_LATITUDE, String.valueOf(latitude));
-        sp.edit().apply();
+        sp.edit().putDouble(DefineValue.LONGITUDE_UPDATED, longitude).apply();
+        sp.edit().putDouble(DefineValue.LATITUDE_UPDATED, latitude).apply();
 
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 

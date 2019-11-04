@@ -12,19 +12,19 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
         android:weightSum="1"
-        android:id="@+id/layout_bank_name"
-        android:visibility="gone">
+        android:id="@+id/layout_id_no">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:layout_marginLeft="@dimen/margin_10dp"
-            android:text="Bank"
-            android:textColor="@color/black" />
+            android:text="No. Bilyet Giro"
+            android:textColor="@color/black"
+            android:id="@+id/lbl_noId"/>
 
-        <Spinner
-            android:id="@+id/pay_remark_dialog_input_bank"
+        <EditText
+            android:id="@+id/et_id_no"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
@@ -74,7 +74,7 @@
             android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/pay_remark_dialog_due_date"
+            android:id="@+id/tv_due_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"

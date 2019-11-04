@@ -92,6 +92,7 @@ public class MyApiClient {
     public static String LINK_REQ_TOKEN_SGOL;
     public static String LINK_RESEND_TOKEN_SGOL;
     public static String LINK_INSERT_TRANS_TOPUP;
+    public static String LINK_INSERT_TRANS_TOPUP_NEW;
     public static String LINK_SALDO;
     public static String LINK_SALDO_COLLECTOR;
     //public static final String LINK_BANK_LIST;
@@ -292,6 +293,7 @@ public class MyApiClient {
         LINK_REQ_TOKEN_SGOL      = headaddressfinal + "InquiryTrx/Retrieve";
         LINK_RESEND_TOKEN_SGOL   = headaddressfinal + "InquiryResendToken/Invoke";
         LINK_INSERT_TRANS_TOPUP  = headaddressfinal + "InsertTrx/Invoke";
+        LINK_INSERT_TRANS_TOPUP_NEW  = headaddressfinal + "InsertTrxNew/Invoke";
         LINK_SALDO               = headaddressfinal + "Balance/Retrieve";
         //LINK_BANK_LIST           = headaddressfinal + "BankList/Retrieve";
         LINK_BANK_LIST           = headaddressfinal + "BankMember/Retrieve";

@@ -1089,7 +1089,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 params.put(WebParams.KEY_EMAIL, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
                 //Start
-                handler.postDelayed(runnable, timeDelayed);
+                handler.postDelayed(runnable,  timeDelayed);
             }
 
             //Timber.d("Current Latitude: " + currentLatitude.toString() + ", Current Longitude: " + currentLongitude.toString());

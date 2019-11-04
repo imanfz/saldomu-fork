@@ -615,6 +615,12 @@ public class DefineValue {
     public static String BENEF_BANK_CODE= "benef_bank_code";
     public static String MEMBER_CREATED= "member_created";
     public static String PAYMENT_BANK = "paymentBank";
+    public static String LATITUDE_UPDATED = "latitudeUpdated";
+    public static String LONGITUDE_UPDATED = "longitudeUpdated";
+    public static String TXID_PG = "txIdPg";
+    public static String CT_CODE = "CT";
+    public static String BG_CODE = "BG";
+    public static String TS_CODE = "TS";
 
 }
 
