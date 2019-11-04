@@ -187,12 +187,12 @@ public class FragListInvoiceTagih extends BaseFragment {
                         @Override
                         public void onOK(String msg, String s, String dedate) {
                             paymentRemark = msg;
-                            if (s.isEmpty()) {
+                            if (s.isEmpty() || s==null) {
                                 noId = "";
                             } else
                                 noId = s;
 
-                            if (dedate.isEmpty())
+                            if (dedate.isEmpty() || dedate==null)
                             {
                                 due_date = "";
                             }else
@@ -504,7 +504,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         params.put(WebParams.PAYMENT_REMARK, remark);
         params.put(WebParams.SOURCE_ACCT_BANK, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getBank_code());
         params.put(WebParams.PHONE_NO, phone_no);
-        params.put(WebParams.BANK_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getBank_code());
+        params.put(WebParams.BANK_CODE, "008");
         if (!paymentCode.equalsIgnoreCase("CT")) {
             params.put(WebParams.PRODUCT_CODE, "SCASH");
         } else
@@ -525,7 +525,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         bundle1.putString(DefineValue.PAYMENT_TYPE, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_code());
         bundle1.putString(DefineValue.PAYMENT_TYPE_DESC, paymentTypeDGIModelArrayList.get(sp_payment_type.getSelectedItemPosition()).getPayment_name());
         bundle1.putString(DefineValue.CCY_ID, ccy_id);
-        bundle1.putString(DefineValue.PRODUCT_CODE, bankBillerModelArrayList.get(sp_payment_method.getSelectedItemPosition()).getProduct_code());
+        bundle1.putString(DefineValue.PRODUCT_CODE, "SCASH");
         bundle1.putString(DefineValue.REMARK, remark);
         bundle1.putString(DefineValue.MOBILE_PHONE, phone_no);
         newFrag.setArguments(bundle1);

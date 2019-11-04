@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
@@ -47,8 +48,9 @@ public class PaymentRemarkDialog extends DialogFragment {
     private ArrayAdapter<String> bankAdapter;
     private com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd;
     private String dateNow;
-    private String dedate;
+    private String dedate="";
     private String due_date;
+    private String noId="";
     private DateFormat fromFormat;
     private DateFormat toFormat2;
     private TextView tvDueDate;
@@ -92,13 +94,16 @@ public class PaymentRemarkDialog extends DialogFragment {
         tvDueDate = v.findViewById(R.id.tv_due_date);
         tvLabelId = v.findViewById(R.id.lbl_noId);
 
-        if (paymentCode.equalsIgnoreCase("BG")) {
-            layoutNoId.setVisibility(View.VISIBLE);
-            layoutDueDate.setVisibility(View.VISIBLE);
-        } else if (paymentCode.equalsIgnoreCase("TS")) {
-            layoutNoId.setVisibility(View.VISIBLE);
-            tvLabelId.setText("No. Slip");
+        if (!paymentCode.equalsIgnoreCase(DefineValue.CT_CODE)){
+            if (paymentCode.equalsIgnoreCase("BG")) {
+                layoutNoId.setVisibility(View.VISIBLE);
+                layoutDueDate.setVisibility(View.VISIBLE);
+            } else if (paymentCode.equalsIgnoreCase("TS")) {
+                layoutNoId.setVisibility(View.VISIBLE);
+                tvLabelId.setText("No. Slip");
+            }
         }
+
 
 //        initBankList();
 
@@ -152,7 +157,7 @@ public class PaymentRemarkDialog extends DialogFragment {
             public void onClick(View v) {
                 if (inputValidation())
                 {
-                    listener.onOK(inputMsg.getText().toString(), etNoId.getText().toString(), dedate);
+                    listener.onOK(inputMsg.getText().toString(), noId, dedate);
                     dismiss();
                 }
             }

@@ -508,7 +508,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
 
             extraSignature = tx_id + sp.getString(DefineValue.COMM_CODE_DGI, "") + product_code + "";
 
-            params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
+            params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP_NEW, extraSignature);
 
             attempt = args.getInt(DefineValue.ATTEMPT, -1);
             params.put(WebParams.TX_ID, tx_id);
@@ -522,7 +522,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP_NEW, params,
                     new ObjListeners() {
 
                         @Override

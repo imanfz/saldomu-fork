@@ -12,7 +12,8 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
         android:weightSum="1"
-        android:id="@+id/layout_id_no">
+        android:id="@+id/layout_id_no"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="0dp"
