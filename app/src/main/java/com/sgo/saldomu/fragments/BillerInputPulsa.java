@@ -151,6 +151,7 @@ public class BillerInputPulsa extends BaseFragment {
     private listBankModel mTempBank;
     private SentPaymentBillerModel sentPaymentBillerModel;
     List<BillerItem> billerItemList = new ArrayList<>();
+    private Bundle args;
 
 
     @Nullable
@@ -164,7 +165,7 @@ public class BillerInputPulsa extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Bundle args = getArguments();
+        args = getArguments();
         biller_type_code = args.getString(DefineValue.BILLER_TYPE, "");
 //        realm = Realm.getInstance(RealmManager.BillerConfiguration);
         realm2 = Realm.getInstance(RealmManager.realmConfiguration);
@@ -200,13 +201,7 @@ public class BillerInputPulsa extends BaseFragment {
         initPrefixListener();
         getBillerDenom();
 
-        if (args.getString(DefineValue.CUST_ID, "") != "") {
-            et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
-            checkOperator();
-            if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
-                showChoosePayment();
-            }
-        }
+
     }
 
 
@@ -1073,6 +1068,15 @@ public class BillerInputPulsa extends BaseFragment {
 
                     billerItemList.addAll(response.getBiller());
                     realm2.copyToRealmOrUpdate(response.getBiller());
+
+                    if (args.getString(DefineValue.CUST_ID, "") != "") {
+                        et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
+                        checkOperator();
+                        if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
+                            showChoosePayment();
+                        }
+                    }
+
                 } else {
                     Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }
