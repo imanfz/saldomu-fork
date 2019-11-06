@@ -221,7 +221,18 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         initLayout();
         initRealm();
         initPrefixListener();
-        getBillerDenom();
+        if (_data.isEmpty())
+        {
+            getBillerDenom();
+        }else {
+            if (args.getString(DefineValue.CUST_ID, "") != "") {
+                et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
+                checkOperator();
+                if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
+                    showChoosePayment();
+                }
+            }
+        }
 
         favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             notesEditText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
@@ -1097,7 +1108,6 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
 
                     billerItemList.addAll(response.getBiller());
                     realm2.copyToRealmOrUpdate(response.getBiller());
-
                     if (args.getString(DefineValue.CUST_ID, "") != "") {
                         et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
                         checkOperator();
@@ -1105,7 +1115,6 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                             showChoosePayment();
                         }
                     }
-
                 } else {
                     Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }
