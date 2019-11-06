@@ -887,6 +887,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.KEY_VALUE, "");
         params.put(WebParams.SHOP_PHONE, userPhoneID);
         params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.LATITUDE, agentLatitude);
+        params.put(WebParams.LONGITUDE, agentLongitude);
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TRANSACTION_BY_AGENT, params,
                 new ObjListeners() {
@@ -926,6 +928,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                                 intent.putExtra(DefineValue.COMM_CODE_PG, response.getString(WebParams.COMM_CODE_PG));
                                                 intent.putExtra(DefineValue.COMM_NAME_PG, response.getString(WebParams.COMM_NAME_PG));
                                                 intent.putExtra(DefineValue.ANCHOR_NAME_PG, response.getString(WebParams.ANCHOR_NAME_PG));
+                                                intent.putExtra(DefineValue.TXID_PG, txId);
                                             }
                                             startActivity(intent);
                                             finish();

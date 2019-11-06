@@ -588,9 +588,7 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
         params.put(WebParams.TX_FAVORITE_TYPE, "BBS");
         params.put(WebParams.COMM_ID, comm_id);
         params.put(WebParams.NOTES, notesEditText.getText().toString());
-//        params.put(WebParams.BENEF_BANK_CODE, benef_bank_code);
         params.put(WebParams.BENEF_BANK_CODE, source_product_name);
-
         params.put(WebParams.SOURCE_BANK_CODE, tx_bank_code);
 
         Log.e("params ", params.toString());

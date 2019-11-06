@@ -64,7 +64,7 @@ public class FragTagihInput extends BaseFragment {
     private ArrayList<TagihModel> mitraNameData = new ArrayList<>();
     private ArrayAdapter<String> communityAdapter;
     private ArrayList<String> communityNameArrayList = new ArrayList<>();
-    String commCodeTagih, balanceCollector, commNamePG, commCodePG, anchorNamePG, memberCode;
+    String commCodeTagih, balanceCollector, commNamePG, commCodePG, anchorNamePG, memberCode, txIdPG;
     ProgressDialog progdialog;
     private ArrayList<TagihModel> anchorDataList = new ArrayList<>();
     private ArrayList<TagihCommunityModel> communityDataList = new ArrayList<>();
@@ -88,6 +88,7 @@ public class FragTagihInput extends BaseFragment {
                 commNamePG = bundle.getString(DefineValue.COMM_NAME_PG, "");
                 anchorNamePG = bundle.getString(DefineValue.ANCHOR_NAME_PG, "");
                 memberCode = bundle.getString(DefineValue.MEMBER_CODE_PG, "");
+                txIdPG = bundle.getString(DefineValue.TXID_PG, "");
             }
         }
 
@@ -434,6 +435,7 @@ public class FragTagihInput extends BaseFragment {
                                 bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
                                 bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
                                 bundle.putString(DefineValue.RESPONSE, responseListInvoice);
+                                bundle.putString(DefineValue.TXID_PG, txIdPG);
 
                                 SecurePreferences.Editor mEditor = sp.edit();
                                 mEditor.putString(DefineValue.COMM_CODE_DGI, response.getString(WebParams.COMM_CODE_DGI));
