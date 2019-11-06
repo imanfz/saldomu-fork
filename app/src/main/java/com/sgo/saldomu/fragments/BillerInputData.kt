@@ -126,13 +126,6 @@ class BillerInputData : BaseFragment() {
         getBillerDenom()
 
 //        getDenomData()
-
-
-        if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
-            billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
-            checkOperator()
-            showChoosePayment()
-        }
     }
 
     private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
@@ -940,6 +933,12 @@ class BillerInputData : BaseFragment() {
                     realm2?.beginTransaction()
                     realm2?.copyToRealmOrUpdate(response.biller)
                     realm2?.commitTransaction()
+
+                    if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
+                        billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
+                        checkOperator()
+                        showChoosePayment()
+                    }
                 } else {
                     Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
                 }

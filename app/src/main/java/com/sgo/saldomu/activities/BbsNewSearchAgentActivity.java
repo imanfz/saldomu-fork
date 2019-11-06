@@ -423,6 +423,10 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     latitude = mLastLocation.getLatitude();
                     longitude = mLastLocation.getLongitude();
 
+                    sp.edit().putString(DefineValue.LAST_CURRENT_LATITUDE, latitude.toString());
+                    sp.edit().putString(DefineValue.LAST_CURRENT_LONGITUDE, longitude.toString());
+                    sp.edit().apply();
+
                     Timber.d("GPS TEST Onconnected : Latitude : " + String.valueOf(latitude) + ", Longitude : " + String.valueOf(longitude));
 
                     if (globalMap != null) {
