@@ -196,6 +196,7 @@ public class BillerInputPulsa extends BaseFragment {
         radioGroup.setOnCheckedChangeListener(radioListener);
 
         initLayout();
+        initRealm();
         initPrefixListener();
         getBillerDenom();
 
@@ -653,21 +654,6 @@ public class BillerInputPulsa extends BaseFragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    private void initRealm() {
-//        mBillerType = realm.where(Biller_Type_Data_Model.class).
-//                equalTo(WebParams.BILLER_TYPE_CODE, biller_type_code).
-//                findFirst();
-//
-//        if (mBillerType != null) {
-//            mListBillerData = mBillerType.getBiller_data_models();
-//            _data.clear();
-//            for (int i = 0; i < mListBillerData.size(); i++) {
-//                _data.add(mListBillerData.get(i).getComm_name());
-//            }
-//        } else
-//            mListBillerData = new ArrayList<>();
-//    }
 
     private void initRealm() {
         Log.v(TAG, "initRealm()");

@@ -276,7 +276,6 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);
                             Timber.d("response confirm payment DGI : " + response.toString());
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-
                                 sentInquiry();
                             } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
@@ -339,7 +338,8 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                                         sentInsertTrxNew();
                                     } else{
                                         getFailedPin();
-                                        CallPINinput(attempt);}
+                                        CallPINinput(attempt);
+                                    }
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
