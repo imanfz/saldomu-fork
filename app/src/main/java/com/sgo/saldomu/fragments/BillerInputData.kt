@@ -492,6 +492,7 @@ class BillerInputData : BaseFragment() {
                                 }
 
                                 billerinput_layout_detail.visibility = View.VISIBLE
+                                billerinput_layout_favorite.visibility = View.GONE
                                 if (is_display_amount)
                                     isShowDescription = true
                                 billerinput_detail_text_name.text = item_name
