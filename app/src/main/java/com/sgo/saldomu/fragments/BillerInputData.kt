@@ -123,9 +123,15 @@ class BillerInputData : BaseFragment() {
         initLayout()
         initEditTextListener()
         initRealm()
-        getBillerDenom()
-
-//        getDenomData()
+        if(_data.isEmpty()) {
+            getBillerDenom()
+        }else{
+            if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
+                billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
+                checkOperator()
+                showChoosePayment()
+            }
+        }
     }
 
     private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
