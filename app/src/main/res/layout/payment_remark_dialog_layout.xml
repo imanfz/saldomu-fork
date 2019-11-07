@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:layout_marginLeft="@dimen/margin_10dp"
-            android:text="Tanggal Jatuh Tempo"
+            android:text="Tanggal Efektif"
             android:singleLine="false"
             android:textColor="@color/black" />
 

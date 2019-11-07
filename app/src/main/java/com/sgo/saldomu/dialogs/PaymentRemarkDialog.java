@@ -157,7 +157,7 @@ public class PaymentRemarkDialog extends DialogFragment {
             public void onClick(View v) {
                 if (inputValidation())
                 {
-                    listener.onOK(inputMsg.getText().toString(), noId, dedate);
+                    listener.onOK(inputMsg.getText().toString(), etNoId.getText().toString(), dedate);
                     dismiss();
                 }
             }
@@ -202,7 +202,7 @@ public class PaymentRemarkDialog extends DialogFragment {
                 if (tvDueDate.getText().toString().equalsIgnoreCase("Tekan untuk memilih tanggal")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Alert")
-                            .setMessage("Tanggal jatuh tempo harus diisi")
+                            .setMessage("Tanggal efektif harus diisi")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
