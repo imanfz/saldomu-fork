@@ -275,16 +275,16 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
 
             @Override
             public void afterTextChanged(Editable s) {
-                String s1 = s.toString();
-                if (!s1.isEmpty()) {
-                    if (s1 == "0" || s1 == "") {
+                String string = s.toString();
+                additional_fee = 0.0;
+                if (!string.isEmpty())
+                    if (string.equals("0")) {
                         et_add_fee.setText("");
                     } else {
-                        tv_add_fee.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(s1));
-                        additional_fee = Double.parseDouble(s1);
-                        countTotal();
+                        additional_fee = Double.parseDouble(string);
                     }
-                }
+                tv_add_fee.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(additional_fee));
+                countTotal();
             }
         });
     }

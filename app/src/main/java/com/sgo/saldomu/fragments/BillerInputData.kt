@@ -251,11 +251,12 @@ class BillerInputData : BaseFragment() {
                 val string = s.toString()
                 if (string == "0" || string == "") {
                     billerinput_et_add_fee.text.clear()
+                    additional_fee = 0.0
                 } else {
-                    billerinput_detail_admin_add_fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(string)
                     additional_fee = string.toDouble()
-                    countTotal()
                 }
+                billerinput_detail_admin_add_fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(additional_fee)
+                countTotal()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -498,6 +499,7 @@ class BillerInputData : BaseFragment() {
                                 }
 
                                 billerinput_layout_detail.visibility = View.VISIBLE
+                                billerinput_layout_favorite.visibility = View.GONE
                                 if (is_display_amount)
                                     isShowDescription = true
                                 billerinput_detail_text_name.text = item_name
