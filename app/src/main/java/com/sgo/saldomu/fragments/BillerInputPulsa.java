@@ -170,7 +170,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     List<BillerItem> billerItemList = new ArrayList<>();
     private boolean is_sgo_plus;
     private boolean isPIN;
-    private int buy_code;
+    private int buy_type;
     private Bundle args;
 
 
@@ -713,13 +713,13 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
             mArgs.putString(DefineValue.CUST_ID, cust_id);
             mArgs.putString(DefineValue.ITEM_ID, denom_item_id);
-            buy_code = BillerActivity.PURCHASE_TYPE;
+            buy_type = BillerActivity.PURCHASE_TYPE;
         } else if (buy_type_detail.equalsIgnoreCase("PASCABAYAR")) {
             mArgs.putString(DefineValue.CUST_ID, et_payment_remark.getText().toString());
             mArgs.putString(DefineValue.ITEM_ID, biller_item_id);
-            buy_code = BillerActivity.PAYMENT_TYPE;
+            buy_type = BillerActivity.PAYMENT_TYPE;
         }
-        mArgs.putInt(DefineValue.BUY_TYPE, buy_code);
+        mArgs.putInt(DefineValue.BUY_TYPE, buy_type);
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
         mArgs.putString(DefineValue.COMMUNITY_ID, biller_comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, biller_comm_name);
@@ -1317,14 +1317,14 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         i.putExtra(DefineValue.REPORT_TYPE, DefineValue.BILLER);
         i.putExtra(DefineValue.SHARE_TYPE, "");
         i.putExtra(DefineValue.DENOM_DATA, item_name);
-        i.putExtra(DefineValue.BUY_TYPE, buy_code);
+        i.putExtra(DefineValue.BUY_TYPE, buy_type);
         i.putExtra(DefineValue.PAYMENT_NAME, payment_name);
         i.putExtra(DefineValue.BILLER_NAME, biller_comm_name);
         i.putExtra(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
         i.putExtra(DefineValue.DESTINATION_REMARK, cust_id);
         i.putExtra(DefineValue.TOTAL_AMOUNT, totalAmount);
 
-        if (buy_code == BillerActivity.PURCHASE_TYPE)
+        if (buy_type == BillerActivity.PURCHASE_TYPE)
             i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.BIL_PURCHASE_TYPE);
         else
             i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.BIL_PAYMENT_TYPE);
@@ -1353,7 +1353,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
-            if (buy_code == BillerActivity.PURCHASE_TYPE)
+            if (buy_type == BillerActivity.PURCHASE_TYPE)
                 params.put(WebParams.TYPE, DefineValue.BIL_PURCHASE_TYPE);
             else
                 params.put(WebParams.TYPE, DefineValue.BIL_PAYMENT_TYPE);
@@ -1449,7 +1449,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         args.putString(DefineValue.DENOM_DATA, itemName);
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER);
-        args.putInt(DefineValue.BUY_TYPE, buy_code);
+        args.putInt(DefineValue.BUY_TYPE, buy_type);
         args.putString(DefineValue.PAYMENT_NAME, payment_name);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(totalAmount));
