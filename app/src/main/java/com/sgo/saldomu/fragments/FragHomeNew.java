@@ -43,6 +43,7 @@ import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
+import com.sgo.saldomu.activities.CashCollectionActivity;
 import com.sgo.saldomu.activities.HistoryActivity;
 import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
@@ -558,6 +559,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             dialogDormant();
                         } else
                             startActivity(new Intent(getActivity(), TagihActivity.class));
+                    }else if (menuItemName.equals(getString(R.string.menu_title_ctr))) {
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else
+                            startActivity(new Intent(getActivity(), CashCollectionActivity.class));
                     } else {
                         posIdx = -1;
                     }
@@ -1057,6 +1063,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_setor_tunai));
                         break;
                     case "BIL":
+                        break;
+                    case "CTR":
+                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + obj.optString(WebParams.CATEGORY_NAME));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_setor_tunai));
                         break;
                 }
             }

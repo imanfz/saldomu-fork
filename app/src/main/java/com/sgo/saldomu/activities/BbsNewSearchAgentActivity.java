@@ -85,6 +85,7 @@ import timber.log.Timber;
 
 import static com.activeandroid.Cache.getContext;
 import static com.sgo.saldomu.coreclass.DefineValue.CTA;
+import static com.sgo.saldomu.coreclass.DefineValue.CTR;
 
 public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -122,7 +123,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private Realm realm, realmBBSMemberBank;
     private CustomAutoCompleteTextViewWithIcon acMemberAcct;
     private SimpleAdapter adapterAccounts;
-    private List<BBSBankModel> listbankSource, listbankBenef;
+    private List<BBSBankModel> listbankSource, listbankBenef, listBankBenefCTR;
 
     private List<HashMap<String, String>> aListMember;
     // Keys used in Hashmap
@@ -184,7 +185,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         acMemberAcct = findViewById(R.id.acMemberAcct);
         if (bbsSchemeCode.equals(CTA)) {
             acMemberAcct.setHint(getString(R.string.bbs_setor_ke) + " " + getString(R.string.label_bank_pelangggan));
-        } else {
+        } else  {
             acMemberAcct.setHint(getString(R.string.bbs_tarik_dari) + " " + getString(R.string.label_bank_pelangggan));
         }
         acMemberAcct.setAdapter(adapterAccounts);
@@ -1086,6 +1087,11 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
                     .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
             setMember(listbankBenef);
+        } else if (schemeCode.equalsIgnoreCase(DefineValue.CTR)) {
+            listBankBenefCTR = realmBBSMemberBank.where(BBSBankModel.class)
+                    .equalTo(WebParams.SCHEME_CODE, CTR)
+                    .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
+            setMember(listBankBenefCTR);
         } else {
             listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
                     .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)

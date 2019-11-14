@@ -78,6 +78,10 @@ public class UpdateBBSData extends IntentService {
                 getBBSdata(ATC);
             else
                 atcState = true;
+
+//            if (BBSDataManager.isDataCTRNotValid())
+//                getBBSdata(CTR);
+
         } else
             Timber.d("user id atau access key kosong semua");
 
