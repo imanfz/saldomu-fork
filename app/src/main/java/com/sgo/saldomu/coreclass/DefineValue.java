@@ -352,6 +352,7 @@ public class DefineValue {
     public static String IS_JOIN_AGENT = "isJoinAgent";
     public static String ATC = "ATC";
     public static String CTA = "CTA";
+    public static String CTR = "CTR";
     public static String IS_UPDATE = "isUpdate";
     public static String BENEF_CITY = "benefCity";
     public static String BENEF_CITY_CODE = "benefCityCode";
@@ -441,6 +442,7 @@ public class DefineValue {
     public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
     public static String UPDATE_TIME_BBS_CTA_DATA = "updateTimeBBSDataCTA";
     public static String UPDATE_TIME_BBS_ATC_DATA = "updateTimeBBSDataATC";
+    public static String UPDATE_TIME_BBS_CTR_DATA = "updateTimeBBSDataCTR";
     public static String IS_UPDATING_BBS_DATA = "isUpdatingBBSData";
     public static String IS_BBS_DATA_UPDATED = "IsBBSDataUpdated";
     public static String IS_SUCCESS = "isSuccess";
