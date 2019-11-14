@@ -183,6 +183,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
                     equalTo(BBSBankModel.PRODUCT_NAME, bbsProductName)
                     .findFirst();
+        } else if ( bbsSchemeCode.equals(DefineValue.CTR) ) {
+            bbsBankModel = realmBBSMemberBank.where(BBSBankModel.class).
+                    equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTR).
+                    equalTo(BBSBankModel.PRODUCT_NAME, bbsProductName)
+                    .findFirst();
         } else {
             bbsBankModel = realmBBSMemberBank.where(BBSBankModel.class).
                     equalTo(BBSBankModel.SCHEME_CODE, DefineValue.ATC).

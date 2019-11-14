@@ -515,7 +515,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                 }
                                 tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
 
-                                if (response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA)) {
+                                if (response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ||
+                                        response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTR)) {
                                     tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
                                 } else if (response.getString(WebParams.SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
                                     btnCancel.setVisibility(View.VISIBLE);
@@ -918,9 +919,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                             bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
                                         } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.ATC)) {
                                             bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
-                                        }
-
-                                        if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
+                                        }else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
                                             Intent intent = new Intent(getApplicationContext(), TagihActivity.class);
                                             intent.putExtra(DefineValue.IS_SEARCH_DGI, true);
                                             if (response.getString(WebParams.COMM_CODE_PG) != null || response.getString(WebParams.MEMBER_CODE_PG) != null) {
@@ -932,7 +931,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                             }
                                             startActivity(intent);
                                             finish();
-
                                         } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
                                             Intent intent = new Intent(getApplicationContext(), MainPage.class);
                                             startActivity(intent);

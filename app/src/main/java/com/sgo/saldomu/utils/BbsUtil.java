@@ -51,7 +51,7 @@ public class BbsUtil {
                 hm.put("flag", Integer.toString(R.drawable.logo_maybank));
             else if(bankMember.get(i).getProduct_name().toLowerCase().contains("danamon"))
                 hm.put("flag", Integer.toString(R.drawable.danamon_small));
-            else if(bankMember.get(i).getProduct_name().toLowerCase().contains("cimb"))
+            else if(bankMember.get(i).getProduct_code().toLowerCase().contains("022"))
                 hm.put("flag", Integer.toString(R.drawable.cimb_small));
             else if(bankMember.get(i).getProduct_code().toLowerCase().contains("050"))
                 hm.put("flag", Integer.toString(R.drawable.standard_chartered));
