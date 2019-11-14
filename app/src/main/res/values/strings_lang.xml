@@ -1413,6 +1413,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
         Proses verifikasi maksimal 2x24 jam. Pastikan data yang dimasukkan benar. Kami akan memproses secara hukum.</string>
     <string name="prepaid_title">Voucher Pulsa Handphone</string>
     <string name="postpaid_title">Tagihan Pascabayar</string>
+    <string name="data_title">Paket Data Handphone</string>
+    <string name="pln_title">Voucher Token Listrik</string>
     <string name="token_listrik">Token Listrik</string>
     <string name="tagihan_listrik">Tagihan Listrik</string>
     <string name="please_wait">Harap Menunggu...</string>
