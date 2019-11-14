@@ -1,30 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/customer_id"
-        />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/customer_id"/>
-
-    <Button
-        android:id="@+id/btn_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_background_blue"
-        android:text="@string/bbs_agent_search"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-        android:textColor="@color/grey_1000w" />
+    android:layout_height="wrap_content"
+    android:background="@drawable/border"
+    android:orientation="vertical"
+    android:gravity="center">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -70,7 +50,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="@string/business_name"
+                android:text="@string/rsb_acc_no"
                 android:textColor="@color/black"
                 android:textStyle="bold"/>
 
@@ -83,10 +63,10 @@
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/tv_business_name"
+                android:id="@+id/tv_acc_no"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Budi Jaya Abadi"
+                android:text="000123456"
                 android:textColor="@color/black" />
         </TableRow>
 
@@ -99,7 +79,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="@string/myprofile_text_address"
+                android:text="@string/amount_deposit"
                 android:textColor="@color/black"
                 android:textStyle="bold"/>
 
@@ -112,42 +92,38 @@
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/tv_address"
+                android:id="@+id/tv_amount_deposit"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Alam Sutera"
+                android:text="Rp 1.000.000"
                 android:textColor="@color/black" />
         </TableRow>
     </TableLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/rsb_acc_no"/>
-
-    <Spinner
-        android:id="@+id/spinner_no_acc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/amount_deposit" />
-
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/amount_deposit"/>
-
-    <Button
-        android:id="@+id/btn_submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_background_blue"
-        android:text="@string/submit"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-        android:textColor="@color/grey_1000w" />
+        android:gravity="center"
+        android:padding="10dp">
+        <Button
+            android:id="@+id/btn_cancel"
+            android:background="@drawable/rounded_background_outline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:text="@string/cancel"
+            android:textColor="@color/black"/>
+        <Button
+            android:id="@+id/btn_ok"
+            android:background="@drawable/rounded_background_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:text="@string/ok"
+            android:textColor="@color/white"/>
+    </LinearLayout>
 
 
 </LinearLayout>
