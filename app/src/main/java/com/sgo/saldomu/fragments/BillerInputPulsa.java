@@ -1148,12 +1148,12 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
 
     private void onSaveToFavorite() {
         showProgressDialog();
-        extraSignature = cust_id + mTempBank.getProduct_type() + "BIL";
+        extraSignature = cust_id + biller_type_code + "BIL";
         Log.e("extraSignature params ", extraSignature);
         String url = MyApiClient.LINK_TRX_FAVORITE_SAVE;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(url, extraSignature);
         params.put(WebParams.USER_ID, userPhoneID);
-        params.put(WebParams.PRODUCT_TYPE, mTempBank.getProduct_type());
+        params.put(WebParams.PRODUCT_TYPE, biller_type_code);
         params.put(WebParams.CUSTOMER_ID, cust_id);
         params.put(WebParams.TX_FAVORITE_TYPE, "BIL");
         params.put(WebParams.COMM_ID, biller_comm_id);

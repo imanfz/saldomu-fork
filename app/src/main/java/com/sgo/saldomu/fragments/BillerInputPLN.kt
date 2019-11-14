@@ -137,7 +137,7 @@ class BillerInputPLN : BaseFragment() {
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false)
 //        realm = Realm.getInstance(RealmManager.BillerConfiguration)
         realm2 = Realm.getInstance(RealmManager.realmConfiguration)
-        setActionBarTitle(getString(R.string.biller_ab_title) + " - " + getString(R.string.newhome_listrik_pln))
+
         radioPrabayar.text = getString(R.string.token_listrik)
         radioPascabayar.text = getString(R.string.tagihan_listrik)
         billerinput_text_denom.text = getString(R.string.cashout_nominal_text)
@@ -834,14 +834,6 @@ class BillerInputPLN : BaseFragment() {
 
         }
 
-    }
-
-    private fun setActionBarTitle(_title: String) {
-        if (activity == null)
-            return
-
-        val fca = activity as BillerActivity?
-        fca!!.setToolbarTitle(_title)
     }
 
     private fun getIs_input_amount(): Boolean? {

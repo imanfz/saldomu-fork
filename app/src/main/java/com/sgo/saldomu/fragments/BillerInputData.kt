@@ -902,12 +902,12 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private fun onSaveToFavorite() {
         showProgressDialog()
-        extraSignature = cust_id + mTempBank?.product_type + "BIL"
+        extraSignature = cust_id + billerTypeCode + "BIL"
         Log.e("extraSignature params ", extraSignature)
         val url = MyApiClient.LINK_TRX_FAVORITE_SAVE
         val params = RetrofitService.getInstance().getSignature(url, extraSignature)
         params[WebParams.USER_ID] = userPhoneID
-        params[WebParams.PRODUCT_TYPE] = mTempBank?.product_type
+        params[WebParams.PRODUCT_TYPE] = billerTypeCode
         params[WebParams.CUSTOMER_ID] = cust_id
         params[WebParams.TX_FAVORITE_TYPE] = "BIL"
         params[WebParams.COMM_ID] = biller_comm_id

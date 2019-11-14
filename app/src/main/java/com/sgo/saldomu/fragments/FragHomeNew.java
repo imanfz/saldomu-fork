@@ -422,7 +422,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
                         intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
-                        intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
+                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.prepaid_title));
                         startActivity(intent);
                     }
                 } else if (menuItemName.equals(getString(R.string.newhome_data))) {
@@ -431,7 +431,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
                         intent.putExtra(DefineValue.BILLER_TYPE, "DATA");
-                        intent.putExtra(DefineValue.BILLER_NAME, "Paket Data Handphone");
+                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.data_title));
                         startActivity(intent);
                     }
                 } else if (menuItemName.equals(getString(R.string.newhome_listrik_pln))) {
@@ -440,7 +440,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
                         intent.putExtra(DefineValue.BILLER_TYPE, "TKN");
-                        intent.putExtra(DefineValue.BILLER_NAME, "Voucher Token Listrik");
+                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.pln_title));
                         startActivity(intent);
                     }
                 } else if (menuItemName.equals(getString(R.string.newhome_emoney))) {
