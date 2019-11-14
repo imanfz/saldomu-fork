@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,17 +29,25 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -54,9 +64,11 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
     private String userID, accessKey, comm_code, tx_product_code, source_product_type,
             source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             tx_id, amount, share_type, comm_id, benef_product_name,
-            userId_source, remark, source_product_name, transaksi, fee, totalAmount, additionalFee;
+            userId_source, remark, source_product_name, transaksi, fee, totalAmount, additionalFee, benef_bank_code;
     private Boolean retryToken = false;
     private TextView tv_additionalFee;
+    private Switch favoriteSwitch;
+    private EditText notesEditText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,9 +103,13 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
         layout_OTP = v.findViewById(R.id.layout_OTP);
         tokenValue = v.findViewById(R.id.bbscashout_value_token);
         tv_additionalFee = v.findViewById(R.id.bbscashout_additional_fee);
+        favoriteSwitch = v.findViewById(R.id.favorite_switch);
+        notesEditText = v.findViewById(R.id.notes_edit_text);
         Button btnBack = v.findViewById(R.id.btn_back);
 
         Bundle bundle = getArguments();
+        Log.e("mantul : ", bundle.toString());
+
         if (bundle != null) {
             transaksi = bundle.getString(DefineValue.TRANSACTION);
             source_product_h2h = bundle.getString(DefineValue.PRODUCT_H2H);
@@ -116,6 +132,8 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
             remark = bundle.getString(DefineValue.REMARK);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
             additionalFee = bundle.getString(DefineValue.ADDITIONAL_FEE,"0");
+
+            benef_bank_code = bundle.getString(DefineValue.BENEF_BANK_CODE,"");
 
             if (source_product_h2h.equalsIgnoreCase("Y") && !tx_product_code.equalsIgnoreCase("MANDIRILKD")) {
                 tvUserIdTitle.setText(getString(R.string.no_member));
@@ -144,6 +162,11 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
             getFragmentManager().popBackStack();
         }
 
+        favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            notesEditText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            notesEditText.setEnabled(isChecked);
+        });
+
     }
 
     Button.OnClickListener backListener = new Button.OnClickListener() {
@@ -160,15 +183,26 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
         @Override
         public void onClick(View view) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
+                if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
+                    notesEditText.requestFocus();
+                    notesEditText.setError(getString(R.string.payfriends_notes_zero));
+                    return;
+                }
+
                 btnSubmit.setEnabled(false);
                 if (retryToken) {
                     if (inputValidation())
                         sentRetryToken();
                 } else {
-                    if (inputValidation())
-                        sentInsertTransTopup(tokenValue.getText().toString());
-                    else
+                    if (inputValidation()) {
+                        if (favoriteSwitch.isChecked()) {
+                            onSaveToFavorite();
+                        } else {
+                            sentInsertTransTopup(tokenValue.getText().toString());
+                        }
+                    }else {
                         btnSubmit.setEnabled(true);
+                    }
                 }
 
             } else
@@ -230,6 +264,15 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
                                 String message = response.getError_message();
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 tokenValue.setText("");
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + response.getApp_data());
+                                final AppDataModel appModel = response.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), response.getError_message());
                             } else {
 //                            btnSubmit.setEnabled(true);
 //                            String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -295,6 +338,15 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
                                 String message = response.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + response.getApp_data());
+                                final AppDataModel appModel = response.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), response.getError_message());
                             } else {
                                 Timber.d("isi error sentRetryToken:" + response.toString());
                                 String code_msg = response.getError_message();
@@ -369,6 +421,15 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
                                 String message = response.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + response.getApp_data());
+                                final AppDataModel appModel = response.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), response.getError_message());
                             } else {
                                 String msg = response.getError_message();
                                 showDialog(msg);
@@ -514,5 +575,63 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
         getFragmentManager().beginTransaction()
                 .replace(R.id.bbsTransaksiFragmentContent, mFrag, BBSTransaksiAmount.TAG)
                 .addToBackStack(TAG).commit();
+    }
+
+    private void onSaveToFavorite() {
+        extraSignature = NoHPFormat.formatTo62(userId_source) + source_product_type + "BBS";
+        Log.e("extraSignature params ", extraSignature);
+        String url = MyApiClient.LINK_TRX_FAVORITE_SAVE;
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(url, extraSignature);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.PRODUCT_TYPE, source_product_type);
+        params.put(WebParams.CUSTOMER_ID, NoHPFormat.formatTo62(userId_source));
+        params.put(WebParams.TX_FAVORITE_TYPE, "BBS");
+        params.put(WebParams.COMM_ID, comm_id);
+        params.put(WebParams.NOTES, notesEditText.getText().toString());
+        params.put(WebParams.BENEF_BANK_CODE, source_product_name);
+        params.put(WebParams.SOURCE_BANK_CODE, tx_bank_code);
+
+        Log.e("params ", params.toString());
+
+        RetrofitService.getInstance().PostJsonObjRequest(url, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(response.toString(), jsonModel.class);
+                            Log.e("onResponses ", response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            }else {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.e("onResponses ", throwable.getLocalizedMessage());
+                        btnSubmit.setEnabled(true);
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        sentInsertTransTopup(tokenValue.getText().toString());
+                    }
+                });
     }
 }

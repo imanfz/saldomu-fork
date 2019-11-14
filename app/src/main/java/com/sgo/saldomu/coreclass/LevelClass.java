@@ -118,7 +118,7 @@ public class LevelClass {
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi params help list:"+response.toString());
+                                    Timber.d("isi response help list:"+response.toString());
 
                                     String contactCenter = response.getString(WebParams.CONTACT_DATA);
 

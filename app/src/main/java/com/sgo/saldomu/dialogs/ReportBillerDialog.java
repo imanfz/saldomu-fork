@@ -256,7 +256,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                     if (args.getBoolean(DefineValue.IS_MEMBER_CTA) == true) {
                         tv_produk_agent.setVisibility(View.GONE);
-//                        tv_source_acc_name_value.setVisibility(View.GONE);
+                        tv_source_acc_name_value.setVisibility(View.GONE);
                         v_produk_agent.setVisibility(View.GONE);
                     }
 
@@ -356,7 +356,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_name_value.setText(args.getString(DefineValue.USER_NAME));
                     tv_benef_bank_name_value.setText(args.getString(DefineValue.BANK_BENEF));
                     tv_member_shop_phone.setText(args.getString(DefineValue.MEMBER_SHOP_PHONE));
-                    tv_source_bank_name_value.setText(args.getString(DefineValue.PRODUCT_NAME));
+                    tv_source_bank_name_value.setText(args.getString(DefineValue.SOURCE_ACCT));
 
                     tv_source_acc_no_value.setText(args.getString(DefineValue.MEMBER_SHOP_NO));
                     tv_source_acc_name_value.setText(args.getString(DefineValue.MEMBER_SHOP_NAME));
@@ -433,7 +433,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_total_amount_text = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
                 TextView tv_additionalFee = inflated.findViewById(R.id.tv_additionalFee);
                 TextView tv_additionalFeeValue = inflated.findViewById(R.id.dialog_reportbiller_additionalfee_value);
+                TextView tv_destinationValue = inflated.findViewById(R.id.dialog_reportbiller_destination_value);
                 View viewAdditional = inflated.findViewById(R.id.view_additionalFee);
+                TableLayout tableLayoutDestination=inflated.findViewById(R.id.billertoken_layout_destination);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
@@ -447,6 +449,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_fee_text.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_text.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+
+                if (args.getString(DefineValue.BUSS_SCHEME_NAME).equalsIgnoreCase("Pembelian Paket Data")){
+//                    tableLayoutDestination.setVisibility(View.VISIBLE);
+                    tv_destinationValue.setText(args.getString(DefineValue.DESTINATION_REMARK));
+                }
 
                 if (isAgent)
                 {
@@ -669,10 +676,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
                 tv_name_value.setText(args.getString(DefineValue.USER_NAME));
-                tv_bank_name_value.setText(args.getString(DefineValue.BANK_NAME));
-                tv_bank_acc_no_value.setText(args.getString(DefineValue.ACCOUNT_NUMBER));
-                tv_bank_acc_name_value.setText(args.getString(DefineValue.ACCT_NAME));
-                tv_nominal_value.setText(args.getString(DefineValue.NOMINAL));
+                tv_bank_name_value.setText(args.getString(DefineValue.PAYMENT_BANK));
+                tv_bank_acc_no_value.setText(args.getString(DefineValue.NO_BENEF));
+                tv_bank_acc_name_value.setText(args.getString(DefineValue.PAYMENT_NAME));
+                tv_nominal_value.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee_value.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
             }else if (buss_scheme_code.equals("BDK")){

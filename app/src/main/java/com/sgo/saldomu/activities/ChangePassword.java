@@ -26,8 +26,11 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -91,7 +94,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     private void InitializeToolbar() {
         if (is_first_time) disableHomeIcon();
         else setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.changepass_ab_changepass));
+        setActionBarTitle(getString(R.string.menu_setting_change_pass));
     }
 
     @Override
@@ -182,12 +185,22 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
                                     Toast.makeText(ChangePassword.this, getString(R.string.changepass_toast_success), Toast.LENGTH_LONG).show();
 //                            sp.edit().putString(DefineValue.IS_FIRST_TIME, DefineValue.NO);
                                     sp.edit().putString(DefineValue.IS_CHANGED_PASS, DefineValue.STRING_YES).apply();
+                                    sp.edit().remove(DefineValue.USER_PASSWORD).apply();
                                     finishChild();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
 //                                    Timber.d("isi response autologout:"+response.toString());
 //                                    String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(ChangePassword.this, model.getError_message());
+                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(ChangePassword.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + object.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(ChangePassword.this, model.getError_message());
                                 }
 //                                else if(code.equals("0301")){
 //                                    AlertDialog.Builder builder = new AlertDialog.Builder(ChangePassword.this);

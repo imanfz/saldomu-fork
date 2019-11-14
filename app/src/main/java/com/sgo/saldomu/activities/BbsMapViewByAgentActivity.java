@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -53,10 +54,14 @@ import com.sgo.saldomu.coreclass.Singleton.InterfaceManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ConfirmDialogInterface;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.json.JSONArray;
@@ -95,7 +100,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     String htmlDirections = "";
     //TextToSpeech textToSpeech;
     Boolean isTTSActive = true;
-    Button btnTibaDiLokasi, btnCancel;
+    Button btnTibaDiLokasi, btnCancel, btnGetDirection;
     private int timeDelayed = 30000;
     Intent intentData;
 
@@ -153,6 +158,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         btnTibaDiLokasi = findViewById(R.id.btnTibaLokasi);
         btnCancel = findViewById(R.id.btnCancelDGI);
+        btnGetDirection=findViewById(R.id.btn_get_direction);
         tvAcctLabel = findViewById(R.id.tvAcctLabel);
         tvAcctName = findViewById(R.id.tvAcctName);
 
@@ -194,6 +200,12 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         TextView t = findViewById(R.id.name);
         t.setText(Html.fromHtml(getString(R.string.bbs_trx_detail_agent)));
 
+        btnGetDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDirection();
+            }
+        });
         btnTibaDiLokasi.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
@@ -203,6 +215,13 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     }
                 }
         );
+    }
+    private void getDirection() {
+        LatLng clientlatLng = new LatLng(benefLatitude,benefLongitude);
+        Intent intent=new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr="+clientlatLng.latitude+","+clientlatLng.longitude));
+        Timber.d("http://maps.google.com/maps?daddr="+clientlatLng.latitude+","+clientlatLng.longitude);
+        startActivity(intent);
     }
 
     @Override
@@ -868,6 +887,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.KEY_VALUE, "");
         params.put(WebParams.SHOP_PHONE, userPhoneID);
         params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.LATITUDE, agentLatitude);
+        params.put(WebParams.LONGITUDE, agentLongitude);
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TRANSACTION_BY_AGENT, params,
                 new ObjListeners() {
@@ -907,6 +928,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                                 intent.putExtra(DefineValue.COMM_CODE_PG, response.getString(WebParams.COMM_CODE_PG));
                                                 intent.putExtra(DefineValue.COMM_NAME_PG, response.getString(WebParams.COMM_NAME_PG));
                                                 intent.putExtra(DefineValue.ANCHOR_NAME_PG, response.getString(WebParams.ANCHOR_NAME_PG));
+                                                intent.putExtra(DefineValue.TXID_PG, txId);
                                             }
                                             startActivity(intent);
                                             finish();
@@ -998,6 +1020,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     @Override
                     public void onResponses(JSONObject response) {
                         try {
+                            jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
 
                             String code = response.getString(WebParams.ERROR_CODE);
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);
@@ -1006,7 +1029,16 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                                 finish();
 
-                            } else {
+                            }  else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(BbsMapViewByAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(BbsMapViewByAgentActivity.this, model.getError_message());
+                            }else {
                                 Toast.makeText(BbsMapViewByAgentActivity.this, response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
                             }
 

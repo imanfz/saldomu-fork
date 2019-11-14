@@ -4,8 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
+import com.activeandroid.util.Log;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
@@ -15,6 +21,7 @@ import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
 import com.sgo.saldomu.coreclass.BundleToJSON;
@@ -24,6 +31,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -50,6 +58,7 @@ public class FCMManager {
     public final static int BLAST_INFO                              = 1009;
     public final static int SOURCE_OF_FUND                          = 1010;
     public final static int VERIFY_ACC                              = 1011;
+    public final static int CONFIRM_ATC                             = 1012;
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
@@ -58,6 +67,7 @@ public class FCMManager {
     private Context mContext;
     private SecurePreferences sp;
     private BundleToJSON bundleToJSON = new BundleToJSON();
+//    final private static String token="";
 
     public FCMManager(Context context){
         this.mContext = context;
@@ -65,10 +75,6 @@ public class FCMManager {
 
     public static FCMManager getInstance(Context context){
         return new FCMManager(context);
-    }
-
-    public static String getTokenFCM(){
-        return FirebaseInstanceId.getInstance().getToken();
     }
 
     public static void subscribeAgent(){
@@ -378,7 +384,7 @@ public class FCMManager {
                     }
                     break;
                 case FCMManager.BLAST_INFO:
-                    i = new Intent(mContext, MainPage.class);
+                    i = new Intent(mContext, NotificationActivity.class);
                     break;
                 case FCMManager.SOURCE_OF_FUND:
                     if (msg.containsKey("options") && msg.getString("options") != null) {
@@ -396,6 +402,20 @@ public class FCMManager {
                             Timber.d("JSONException: " + e.getMessage());
                         }
                     }
+                    break;
+                case FCMManager.CONFIRM_ATC:
+
+
+                    bundleNextLogin.putInt(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
+
+                    i = new Intent(mContext, BBSActivity.class);
+                    i.putExtras(bundleNextLogin);
+
+                    bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                    mEditor = sp.edit();
+                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                    mEditor.apply();
+
                     break;
                 default:
                     i = new Intent(mContext, MainPage.class);

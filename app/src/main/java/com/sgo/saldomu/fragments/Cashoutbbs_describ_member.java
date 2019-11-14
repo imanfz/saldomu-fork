@@ -43,12 +43,15 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.OTPModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
@@ -58,6 +61,10 @@ import com.sgo.saldomu.widgets.BaseFragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import timber.log.Timber;
@@ -66,10 +73,10 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
     public final static String TAG = "com.sgo.saldomu.fragments.Cashoutbbs_describ_member";
     View v;
     //    layout_button_transaction;
-    String authType, amount, fee, total, ccyId, txId, comm_code,
+    String authType, amount, fee, total, ccyId, txId, created, comm_code,
             product_name, product_code, bank_code, bank_name, callback_url, api_key, comm_id, otp_member;
     private String product_h2h;
-    TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvAlert, tvBankProduct, tvAdditionalFee;
+    TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvCreated, tvAlert, tvBankProduct, tvAdditionalFee;
     LinearLayout layoutOTP, layoutNoEmpty, layoutButton;
     RelativeLayout layoutEmpty;
     EditText tokenValue;
@@ -124,6 +131,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
 //        layoutCode = (LinearLayout) v.findViewById(R.id.bbscashoutmember_code_layout);
         layoutButton = v.findViewById(R.id.bbscashoutmember_bottom_layout);
         tvTxId = v.findViewById(R.id.bbscashoutmember_tx_id_value);
+        tvCreated = v.findViewById(R.id.bbscashoutmember_created_value);
         tvAgent = v.findViewById(R.id.bbscashoutmember_agent_value);
         tvAmount = v.findViewById(R.id.bbscashoutmember_amount_value);
         tvFee = v.findViewById(R.id.bbscashoutmember_fee_value);
@@ -285,7 +293,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                         public void onResponses(JSONObject response) {
                             try {
 
-//                                GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
+                                jsonModel model = getGson().fromJson(response.toString(), jsonModel.class);
 
 //                                JSONObject response = new JSONObject(getGson().toJson(model));
 //                                tempResponse = new JSONObject(getGson().toJson(model));
@@ -305,7 +313,12 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                     api_key = response.optString(WebParams.API_KEY, "");
                                     callback_url = response.optString(WebParams.CALLBACK_URL, "");
                                     comm_id = response.optString(WebParams.COMM_ID, "");
+                                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    Date date = formatter.parse(response.optString(WebParams.CREATED, ""));
+                                    SimpleDateFormat newFormat = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
+                                    created = newFormat.format(date);
                                     tvTxId.setText(txId);
+                                    tvCreated.setText(created);
                                     tvAgent.setText(response.optString(WebParams.MEMBER_NAME, ""));
                                     tvBankProduct.setText(product_name);
                                     tvAmount.setText(ccyId + ". " + CurrencyFormat.format(response.optString(WebParams.TX_AMOUNT, "0")));
@@ -325,11 +338,22 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                     loading.setVisibility(View.GONE);
                                     tvAlert.setText(getString(R.string.cashoutmember_alert_no_tx));
                                     handlerWS.postDelayed(runnableWS, 60000);
-                                } else {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                }else {
                                     Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
                                     handlerWS.postDelayed(runnableWS, 60000);
                                 }
                             } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -436,7 +460,16 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                 if (pin_attempt != -1 && pin_attempt < 2)
                                     i.putExtra(DefineValue.ATTEMPT, pin_attempt);
                                 startActivityForResult(i, MainPage.REQUEST_FINISH);
-                            } else {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            }else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 getActivity().finish();
                             }
@@ -485,7 +518,16 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            } else {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            }else {
                                 code = model.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
                             }
@@ -534,7 +576,16 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            } else {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            }else {
                                 code = model.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
                             }
@@ -604,7 +655,16 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
-                                } else {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + object.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                }else {
                                     String msg = model.getError_message();
 //                            if(code.equals("0003")){
 //                                showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),

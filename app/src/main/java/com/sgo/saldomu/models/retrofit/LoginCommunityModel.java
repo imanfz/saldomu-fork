@@ -89,6 +89,12 @@ public class LoginCommunityModel {
     @SerializedName("is_agent_trx_request")
     @Expose
     private String is_agent_trx_request;
+    @SerializedName("comm_upgrade_member")
+    @Expose
+    private String comm_upgrade_member;
+    @SerializedName("member_created")
+    @Expose
+    private String member_created;
 
     public String getCommId() {
         return commId;
@@ -278,5 +284,19 @@ public class LoginCommunityModel {
 
     public String getIs_agent_trx_request() {
         return is_agent_trx_request;
+    }
+
+    public void setComm_upgrade_member(String comm_upgrade_member) {
+        this.comm_upgrade_member = comm_upgrade_member;
+    }
+
+    public String getComm_upgrade_member() {return comm_upgrade_member;}
+
+    public void setMember_created(String member_created) {
+        this.member_created = member_created;
+    }
+
+    public String getMember_created() {
+        return member_created;
     }
 }

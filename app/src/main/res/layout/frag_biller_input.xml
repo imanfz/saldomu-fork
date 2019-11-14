@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <LinearLayout
+        android:id="@+id/input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="3dp"
@@ -21,6 +23,33 @@
             android:text="asd"
             android:visibility="gone"
             android:id="@+id/tv_ovo"/>
+        <RadioGroup
+            android:id="@+id/billerinput_radio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/radioPrabayar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/prepaid"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/radioPascabayar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/postpaid"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+        </RadioGroup>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -137,6 +166,22 @@
             </RelativeLayout>
         </LinearLayout>
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="20dp"
+            android:visibility="visible">
+            <TextView
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/biller_notes"/>
+        </ScrollView>
+
+
+
         <!--<LinearLayout-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
@@ -191,30 +236,39 @@
 
     </LinearLayout>
 
-    <com.balysv.materialripple.MaterialRippleLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/card_bk"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        app:mrl_rippleAlpha="0.2"
-        app:mrl_rippleColor="@color/colorPrimary"
-        app:mrl_rippleDelayClick="false"
-        app:mrl_rippleHover="true"
-        app:mrl_rippleOverlay="true">
+<!--    <LinearLayout-->
+<!--        android:layout_below="@+id/input"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:weightSum="0.5"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_alignParentEnd="true">-->
+
+<!--        <com.balysv.materialripple.MaterialRippleLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="40dp"-->
+<!--            android:layout_marginRight="40dp"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:background="@drawable/card_bk_blue"-->
+<!--            app:mrl_rippleAlpha="0.2"-->
+<!--            app:mrl_rippleColor="@color/colorPrimary"-->
+<!--            app:mrl_rippleDelayClick="false"-->
+<!--            app:mrl_rippleHover="true"-->
+<!--            app:mrl_rippleOverlay="true">-->
 
         <Button
             android:id="@+id/btn_submit_billerinput"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/button_transparant"
-            android:gravity="center"
-            android:text="@string/proses"
+            android:background="@drawable/rounded_background_blue"
+            android:text="@string/submit"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@color/colorPrimaryDark" />
-    </com.balysv.materialripple.MaterialRippleLayout>
+            android:textColor="@color/grey_1000w"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="20dp"/>
+        <!--        </com.balysv.materialripple.MaterialRippleLayout>-->
+<!--    </LinearLayout>-->
 
-</LinearLayout>
+</RelativeLayout>

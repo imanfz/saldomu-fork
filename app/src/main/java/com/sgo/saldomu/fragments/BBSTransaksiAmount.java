@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -126,8 +127,9 @@ public class BBSTransaksiAmount extends Fragment {
                 String cashOut = sp.getString(DefineValue.CASH_OUT_HISTORY_TEMP, "");
                 Gson gson1 = new Gson();
                 cashOutHistoryModel = gson1.fromJson(cashOut, CashOutHistoryModel.class);
-
             }
+
+
         } else {
             getFragmentManager().popBackStack();
         }
@@ -206,6 +208,9 @@ public class BBSTransaksiAmount extends Fragment {
             frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
             frameAnimation.setRepeatCount(Animation.INFINITE);
 
+//            etNoAcct.setText(getArguments().getString(DefineValue.FAVORITE_CUSTOMER_ID,""));
+            etNoAcct.setText(getArguments().getString(DefineValue.FAVORITE_CUSTOMER_ID,""));
+
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};
 
@@ -219,6 +224,8 @@ public class BBSTransaksiAmount extends Fragment {
 
             initializeDataBBS(CTA);
 
+            actv_rekening_member.setText(defaultProductCode);
+            actv_rekening_member.requestFocus();
 
         } else {
             if(type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)){
@@ -246,6 +253,8 @@ public class BBSTransaksiAmount extends Fragment {
             actv_rekening_member = cashout_layout.findViewById(R.id.rekening_member_value);
             etNoAcct = cashout_layout.findViewById(R.id.no_tujuan_value);
 
+            etNoAcct.setText(getArguments().getString(DefineValue.FAVORITE_CUSTOMER_ID,""));
+
 
 
             // Keys used in Hashmap
@@ -260,6 +269,9 @@ public class BBSTransaksiAmount extends Fragment {
             adapterMember = new SimpleAdapter(getActivity().getBaseContext(), aListMember, R.layout.bbs_autocomplete_layout, from, to);
 
             initializeDataBBS(ATC);
+
+            actv_rekening_member.setText(defaultProductCode);
+            actv_rekening_member.requestFocus();
         }
         actv_rekening_member.setAdapter(adapterMember);
         actv_rekening_member.addTextChangedListener(textWatcher);

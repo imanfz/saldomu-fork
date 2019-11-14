@@ -126,3 +126,5 @@
 -dontwarn com.squareup.okhttp.**
 -dontwarn com.squareup.okhttp3.**
 -dontwarn javax.annotation.**
+
+-ignorewarnings -keep class * { public private *; }

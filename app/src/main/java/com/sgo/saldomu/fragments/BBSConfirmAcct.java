@@ -21,10 +21,13 @@ import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
@@ -50,7 +53,7 @@ public class BBSConfirmAcct extends BaseFragment {
         // Required empty public constructor
     }
 
-    public interface ActionListener{
+    public interface ActionListener {
         void onSuccess();
     }
 
@@ -59,7 +62,7 @@ public class BBSConfirmAcct extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = getArguments();
-        isUpdate = bundle.getBoolean(DefineValue.IS_UPDATE,false);
+        isUpdate = bundle.getBoolean(DefineValue.IS_UPDATE, false);
         realm = RealmManager.getRealmBBS();
 
         bbsCommModel = new BBSCommModel();
@@ -78,7 +81,7 @@ public class BBSConfirmAcct extends BaseFragment {
         bbsAccountACTModel.setScheme_code(DefineValue.ATC);
         bbsAccountACTModel.setComm_id(bbsCommModel.getComm_id());
 
-        progdialog = DefinedDialog.CreateProgressDialog(getContext(),"");
+        progdialog = DefinedDialog.CreateProgressDialog(getContext(), "");
         progdialog.dismiss();
     }
 
@@ -89,7 +92,7 @@ public class BBSConfirmAcct extends BaseFragment {
         View v = inflater.inflate(R.layout.fragment_bbsconfirm_acct, container, false);
 
         TextView tvComm = v.findViewById(R.id.tv_comm_value);
-        tvComm.setText(bundle.getString(DefineValue.COMMUNITY_NAME,""));
+        tvComm.setText(bundle.getString(DefineValue.COMMUNITY_NAME, ""));
 
         TextView tvBenefBank = v.findViewById(R.id.tv_benef_bank_value);
         tvBenefBank.setText(bundle.getString(DefineValue.BANK_NAME));
@@ -100,7 +103,7 @@ public class BBSConfirmAcct extends BaseFragment {
         TextView tvBenefAcctName = v.findViewById(R.id.tv_benef_acct_name_value);
         tvBenefAcctName.setText(bundle.getString(DefineValue.ACCT_NAME));
 
-        if(bundle.getString(DefineValue.ACCT_TYPE,"").equalsIgnoreCase(TYPE_ACCT)) {
+        if (bundle.getString(DefineValue.ACCT_TYPE, "").equalsIgnoreCase(TYPE_ACCT)) {
             View layoutCity = v.findViewById(R.id.bbsregistacct_city_layout);
             layoutCity.setVisibility(View.VISIBLE);
             TextView tvBenefAcctCity = v.findViewById(R.id.tv_benef_acct_city_value);
@@ -112,7 +115,7 @@ public class BBSConfirmAcct extends BaseFragment {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(inputValidation()){
+                if (inputValidation()) {
                     sentConfirmAcct(bundle.getString(DefineValue.COMMUNITY_CODE),
                             bundle.getString(DefineValue.MEMBER_CODE),
                             bundle.getString(DefineValue.TX_ID),
@@ -134,10 +137,9 @@ public class BBSConfirmAcct extends BaseFragment {
         if (getTargetFragment() instanceof ActionListener) {
             actionListener = (ActionListener) getTargetFragment();
         } else {
-            if(context instanceof ActionListener){
+            if (context instanceof ActionListener) {
                 actionListener = (ActionListener) context;
-            }
-            else {
+            } else {
                 throw new RuntimeException(context.toString()
                         + " must implement ActionListener BBS confirm acct");
             }
@@ -145,13 +147,13 @@ public class BBSConfirmAcct extends BaseFragment {
     }
 
     @Override
-    public void onDetach(){
+    public void onDetach() {
         super.onDetach();
         actionListener = null;
     }
 
-    public boolean inputValidation(){
-        if(etPassword.getText().toString().length()==0){
+    public boolean inputValidation() {
+        if (etPassword.getText().toString().length() == 0) {
             etPassword.requestFocus();
             etPassword.setError(getString(R.string.login_validation_pass));
             return false;
@@ -167,11 +169,11 @@ public class BBSConfirmAcct extends BaseFragment {
         super.onDestroy();
     }
 
-    private void sentConfirmAcct(final String commCode, final String memberCode, final String txId, final String tokenId){
-        try{
-            extraSignature = txId+tokenId+commCode+memberCode;
+    private void sentConfirmAcct(final String commCode, final String memberCode, final String txId, final String tokenId) {
+        try {
+            extraSignature = txId + tokenId + commCode + memberCode;
 
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_BBS_CONFIRM_ACCT,
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_CONFIRM_ACCT,
                     extraSignature);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);
@@ -197,12 +199,11 @@ public class BBSConfirmAcct extends BaseFragment {
                                 String title, msg;
                                 if (isUpdate) {
                                     title = getString(R.string.bbsconfirmacct_dialog_success_title_update);
-                                    msg = getString(R.string.bbsconfirmacct_dialog_success_msg_update,name,no);
+                                    msg = getString(R.string.bbsconfirmacct_dialog_success_msg_update, name, no);
                                     updateDataToRealm();
-                                }
-                                else {
+                                } else {
                                     title = getString(R.string.bbsconfirmacct_dialog_success_title);
-                                    msg = getString(R.string.bbsconfirmacct_dialog_success_msg,name,no);
+                                    msg = getString(R.string.bbsconfirmacct_dialog_success_msg, name, no);
                                     insertDataToRealm();
                                 }
 
@@ -215,10 +216,18 @@ public class BBSConfirmAcct extends BaseFragment {
                                             }
                                         });
                                 dialog.show();
-                            }
-                            else {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            } else {
                                 code = model.getError_message();
-                                 Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -232,13 +241,13 @@ public class BBSConfirmAcct extends BaseFragment {
 
                             progdialog.dismiss();
                         }
-                    } );
-        }catch (Exception e){
-            Timber.d("httpclient: "+e.getMessage());
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient: " + e.getMessage());
         }
     }
 
-    void insertDataToRealm(){
+    void insertDataToRealm() {
         String date = DateTimeFormat.getCurrentDate();
         bbsAccountACTModel.setLast_update(date);
         realm.beginTransaction();
@@ -246,12 +255,12 @@ public class BBSConfirmAcct extends BaseFragment {
         realm.commitTransaction();
     }
 
-    void updateDataToRealm(){
+    void updateDataToRealm() {
         BBSAccountACTModel tempBBSAccount = realm.where(BBSAccountACTModel.class)
-                .equalTo(BBSAccountACTModel.PRODUCT_CODE,bbsAccountACTModel.getProduct_code())
-                .equalTo(BBSAccountACTModel.ACCOUNT_NO,getArguments().getString(DefineValue.ACCT_NO_CURRENT))
+                .equalTo(BBSAccountACTModel.PRODUCT_CODE, bbsAccountACTModel.getProduct_code())
+                .equalTo(BBSAccountACTModel.ACCOUNT_NO, getArguments().getString(DefineValue.ACCT_NO_CURRENT))
                 .findFirst();
-        if(tempBBSAccount != null){
+        if (tempBBSAccount != null) {
             String date = DateTimeFormat.getCurrentDate();
             realm.beginTransaction();
             tempBBSAccount.setAccount_city(bbsAccountACTModel.getAccount_city());

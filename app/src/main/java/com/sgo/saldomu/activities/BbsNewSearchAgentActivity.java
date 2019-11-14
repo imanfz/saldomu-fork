@@ -423,6 +423,10 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     latitude = mLastLocation.getLatitude();
                     longitude = mLastLocation.getLongitude();
 
+                    sp.edit().putString(DefineValue.LAST_CURRENT_LATITUDE, latitude.toString());
+                    sp.edit().putString(DefineValue.LAST_CURRENT_LONGITUDE, longitude.toString());
+                    sp.edit().apply();
+
                     Timber.d("GPS TEST Onconnected : Latitude : " + String.valueOf(latitude) + ", Longitude : " + String.valueOf(longitude));
 
                     if (globalMap != null) {
@@ -677,7 +681,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                                         }
                                     }
 
-                                    for (int i = 0; i < shopDetails.size(); i++) {
+                                    for (int i = 1; i < shopDetails.size(); i++) {
 
                                         if (shopDetails.get(i).getShopLatitude() != null && shopDetails.get(i).getShopLongitude() != null) {
                                             LatLng latLng = new LatLng(shopDetails.get(i).getShopLatitude(), shopDetails.get(i).getShopLongitude());
@@ -1090,7 +1094,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 Toast.makeText(this, getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
             }
             setMember(listbankSource);
-
         }
 
 

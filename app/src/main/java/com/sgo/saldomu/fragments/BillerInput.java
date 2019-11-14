@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -54,7 +55,8 @@ public class BillerInput extends Fragment {
 
     public final static String TAG = "BILLER_INPUT";
 
-    private String[] billerType = {"PLS",  //pulsa  0
+    private String[] billerType = {
+            "PLS",  //pulsa  0
             "TKN",  //voucher listrik  1
             "CC",   //Kartu Kredit   2
             "CCL",  //Cicilan  3
@@ -73,8 +75,11 @@ public class BillerInput extends Fragment {
             "RMH",  //Perumahan  16
             "BPJS", //BILLER_TYPE_BPJS 17
             "GAME", // Game 18
-            "OVO", // saldo ovo 19
-            "VCHR"}; // voucher 20
+            "EMON", // Emoney 19
+            "VCHR",// voucher 20
+            "DATA" // data 21
+
+    };
     private View v;
     private View layout_denom;
     private View layout_month;
@@ -82,6 +87,7 @@ public class BillerInput extends Fragment {
     private TextView tv_payment_remark;
     private TextView tv_month;
     private TextView tv_ovo;
+    private TextView tv_notes;
     private EditText et_payment_remark;
     private Spinner spin_denom;
     private Spinner spin_month;
@@ -90,10 +96,12 @@ public class BillerInput extends Fragment {
     private ImageView spinWheelMonth;
     private ProgressDialog progdialog;
     private Animation frameAnimation;
+    private RadioGroup radioGroup;
     private String biller_type_code;
     private String biller_comm_id;
     private String biller_comm_name;
     private String denom_item_id;
+    private String biller_info;
     String biller_api_key;
     private String biller_item_id;
     private String final_payment_remark;
@@ -139,6 +147,7 @@ public class BillerInput extends Fragment {
 
         isToken = false;
 
+        radioGroup = v.findViewById(R.id.billerinput_radio);
         spin_denom = v.findViewById(R.id.spinner_billerinput_denom);
         tv_denom = v.findViewById(R.id.billerinput_text_denom);
         tv_payment_remark = v.findViewById(R.id.billerinput_text_payment_remark);
@@ -153,17 +162,23 @@ public class BillerInput extends Fragment {
         spinWheelMonth = v.findViewById(R.id.spinning_wheel_billerinput_month);
         layout_month = v.findViewById(R.id.billerinput_layout_month);
         layout_warn_pln = v.findViewById(R.id.layout_warn_pln);
+        tv_notes = v.findViewById(R.id.biller_notes);
+
+        et_payment_remark.setText(args.getString(DefineValue.CUST_ID, ""));
         if (args.containsKey(DefineValue.BILLER_ID_NUMBER)) {
             et_payment_remark.setText(args.getString(DefineValue.BILLER_ID_NUMBER));
         }
+
+
         btn_submit.setOnClickListener(submitInputListener);
+        radioGroup.setOnCheckedChangeListener(radioListener);
         layout_denom.setVisibility(View.VISIBLE);
 
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
         realm = Realm.getInstance(RealmManager.BillerConfiguration);
-
+        initializeRealm();
         initializeLayout();
         if (!biller_type_code.equalsIgnoreCase(billerType[0]))
             initializeSpinnerDenom();
@@ -201,33 +216,6 @@ public class BillerInput extends Fragment {
 
     private void initializeLayout() {
 
-        mBillerTypeData = new Biller_Type_Data_Model();
-        mBillerTypeData = realm.where(Biller_Type_Data_Model.class).
-                equalTo(WebParams.BILLER_TYPE_CODE, biller_type_code).
-                findFirst();
-
-
-        if (mBillerTypeData.getBiller_data_models().size() == 1) {
-            biller_comm_id = mBillerTypeData.getBiller_data_models().get(0).getComm_id();
-            biller_comm_name = mBillerTypeData.getBiller_data_models().get(0).getComm_name();
-            biller_item_id = mBillerTypeData.getBiller_data_models().get(0).getItem_id();
-        }
-
-        mBillerData = new Biller_Data_Model();
-        mBillerData = realm.where(Biller_Data_Model.class).
-                equalTo(WebParams.COMM_ID, biller_comm_id).
-                equalTo(WebParams.COMM_NAME, biller_comm_name).
-                equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
-                findFirst();
-
-
-        if (mBillerData == null || mBillerData.getItem_id().isEmpty() && mBillerData.getDenom_data_models().size() == 0) {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-        }
-
-        if (mBillerData != null)
-            mListDenomData = realm.copyFromRealm(mBillerData.getDenom_data_models());
-
 
         String[] _buy_type = getResources().getStringArray(R.array.buy_vpi_title);
 
@@ -246,15 +234,16 @@ public class BillerInput extends Fragment {
             layout_month.setVisibility(View.GONE);
         }
 
-        if (biller_type_code.equals(billerType[0])) {
+        if (biller_type_code.equals(billerType[0]) || biller_type_code.equals(billerType[21])) {
             buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
             et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
-        } else if (biller_type_code.equals(billerType[1])) {
+        } else if (biller_type_code.equals(billerType[1]) || biller_type_code.equals(billerType[5])) {
             buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
+            radioGroup.setVisibility(View.VISIBLE);
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Listrik));
             layout_warn_pln.setVisibility(View.VISIBLE);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
@@ -269,12 +258,8 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PAM));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else if (biller_type_code.equals(billerType[7]) || biller_type_code.equals(billerType[19])) {
-            if (biller_type_code.equals(billerType[19])) {
-                tv_ovo.setVisibility(View.VISIBLE);
-                tv_ovo.setText(R.string.newhome_ovo);
-            }
             buy_type = _buy_type[1];
-            buy_code = BillerActivity.PAYMENT_TYPE;
+            buy_code = BillerActivity.PURCHASE_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
             et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -307,6 +292,46 @@ public class BillerInput extends Fragment {
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
         }
+    }
+
+    private void initializeRealm() {
+        mBillerTypeData = new Biller_Type_Data_Model();
+        mBillerTypeData = realm.where(Biller_Type_Data_Model.class).
+                equalTo(WebParams.BILLER_TYPE_CODE, biller_type_code).
+                findFirst();
+
+        if (mBillerTypeData.getBiller_data_models().size() == 1) {
+            biller_comm_id = mBillerTypeData.getBiller_data_models().get(0).getComm_id();
+            biller_comm_name = mBillerTypeData.getBiller_data_models().get(0).getComm_name();
+            biller_item_id = mBillerTypeData.getBiller_data_models().get(0).getItem_id();
+            biller_info = mBillerTypeData.getBiller_data_models().get(0).getBiller_info();
+        }
+
+        mBillerData = new Biller_Data_Model();
+
+        if (!biller_type_code.equalsIgnoreCase("EMON")) {
+            mBillerData = realm.where(Biller_Data_Model.class).
+                    equalTo(WebParams.COMM_ID, biller_comm_id).
+                    equalTo(WebParams.COMM_NAME, biller_comm_name).
+                    equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
+                    findFirst();
+        }else {
+            mBillerData = realm.where(Biller_Data_Model.class).
+                    equalTo(WebParams.COMM_ID, biller_comm_id).
+                    findFirst();
+        }
+
+        if (mBillerData.getBiller_info() != null || !mBillerData.getBiller_info().equals("")) {
+            tv_notes.setVisibility(View.VISIBLE);
+            tv_notes.setText(mBillerData.getBiller_info());
+        }
+
+        if (mBillerData == null || mBillerData.getItem_id().isEmpty() && mBillerData.getDenom_data_models().size() == 0) {
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+        }
+
+        if (mBillerData != null)
+            mListDenomData = realm.copyFromRealm(mBillerData.getDenom_data_models());
     }
 
     private void initializeSpinnerDenom() {
@@ -411,22 +436,50 @@ public class BillerInput extends Fragment {
                 DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
+    private RadioGroup.OnCheckedChangeListener radioListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            switch (checkedId) {
+                case R.id.radioPrabayar:
+                    layout_denom.setVisibility(View.VISIBLE);
+                    biller_type_code = "TKN";
+                    buy_code = BillerActivity.PURCHASE_TYPE;
+                    tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Listrik));
+                    break;
+                case R.id.radioPascabayar:
+                    layout_denom.setVisibility(View.GONE);
+                    biller_type_code = "PLN";
+                    buy_code = BillerActivity.PAYMENT_TYPE;
+                    denom_item_id = mBillerData.getItem_id();
+                    tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark));
+                    break;
+            }
+            realm.refresh();
+            initializeRealm();
+            initializeSpinnerDenom();
+        }
+    };
 
     private void showDialog(String _payment_remark) {
 
 
         Bundle mArgs = getArguments();
         mArgs.putString(DefineValue.CUST_ID, _payment_remark);
-        mArgs.putString(DefineValue.ITEM_ID, denom_item_id);
+        if (denom_item_id.equals(""))
+            mArgs.putString(DefineValue.ITEM_ID, biller_item_id);
+        else
+            mArgs.putString(DefineValue.ITEM_ID, denom_item_id);
         mArgs.putInt(DefineValue.BUY_TYPE, buy_code);
         mArgs.putString(DefineValue.SHARE_TYPE, String.valueOf(privacy));
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
+        mArgs.putString(DefineValue.COMMUNITY_ID, biller_comm_id);
+        mArgs.putString(DefineValue.COMMUNITY_NAME, biller_comm_name);
 //        if(biller_type_code.equalsIgnoreCase(billerType[17]))
 //            mArgs.putString(DefineValue.VALUE_ITEM_DATA, "1");
 
-        Fragment mFrag = new BillerDesciption();
+        Fragment mFrag = new BillerDesciption2();
         mFrag.setArguments(mArgs);
-        switchFragment(mFrag, BillerActivity.FRAG_BIL_INPUT, null, true, BillerDesciption.TAG);
+        switchFragment(mFrag, BillerActivity.FRAG_BIL_INPUT, null, true, BillerDesciption2.TAG);
 
     }
 

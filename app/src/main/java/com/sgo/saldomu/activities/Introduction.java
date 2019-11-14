@@ -10,11 +10,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.paolorotolo.appintro.AppIntro;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
@@ -65,11 +69,11 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
     private String timeDate, timeStamp, fcm_id, fcmId_encrypted;
     private SecurePreferences sp;
-    private Fragment mFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
+
     }
 
     @Override
@@ -77,26 +81,27 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         if (InetHandler.isNetworkAvailable(this))
             new UtilsLoader(this).getAppVersion();
 
-        addSlide(IntroPage.newInstance(R.layout.intro_fragment));
-
-
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+//        if (sp.getString(DefineValue.USERID_PHONE, "").isEmpty()) {
+//            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
+//            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
+//            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
+//        } else
+            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
+
 
         sp.edit().remove(DefineValue.SENDER_ID).commit();
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
         timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
-
-        fcm_id = FCMManager.getTokenFCM();
-        fcmId_encrypted = Md5.hashMd5(fcm_id);
-        sp.edit().putString(DefineValue.FCM_ENCRYPTED, fcmId_encrypted).apply();
 
         setFlowAnimation();
         Button skipbtn = (Button) skipButton;
         Button donebtn = (Button) doneButton;
         skipbtn.setText(getString(R.string.start_now));
         donebtn.setText("POS");
-        skipbtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        donebtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+//        skipbtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+//        donebtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
         if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
             //cheat kalo diteken lama skip ke register (-1)
@@ -152,16 +157,13 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //                Intent i = new Intent(Introduction.this, OTPVerificationActivity.class);
 //                startActivity(i);
 //            }
+            sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 openLogin(-2);
-            } else {
-                handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                        sendFCM();
-                }
-            }, 3000);
-            }
+            } else if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
+                sendFCM();
+            } else
+                InitializeSmsDialog();
         }
     };
 
@@ -171,6 +173,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             Intent i = new Intent(Introduction.this, LoginActivity.class);
             i.putExtra(DefineValue.USER_IS_NEW, -2);
             i.putExtra(DefineValue.IS_POS, "Y");
+            sp.edit().putString(DefineValue.IS_POS, DefineValue.Y).commit();
             startActivity(i);
         }
     };
@@ -245,6 +248,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     }
 
     private void sendFCM() {
+        fcm_id = sp.getString(DefineValue.FCM_ID, "");
+        fcmId_encrypted = sp.getString(DefineValue.FCM_ENCRYPTED, "");
         showProgLoading("", true);
         try {
             HashMap<String, Object> params = RetrofitService

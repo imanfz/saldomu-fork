@@ -6,12 +6,15 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +33,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.adapter.BankCashoutAdapter;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
@@ -37,15 +42,21 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.BankCashoutModel;
 import com.sgo.saldomu.models.retrofit.ContactDataModel;
 import com.sgo.saldomu.models.retrofit.GetHelpModel;
 import com.sgo.saldomu.models.retrofit.SentExecCustModel;
 import com.sgo.saldomu.models.retrofit.UpdateProfileModel;
 import com.sgo.saldomu.models.retrofit.UploadFotoModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
+import com.sgo.saldomu.utils.camera.CameraActivity;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.BlinkingEffectClass;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
@@ -56,6 +67,7 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -81,7 +93,8 @@ public class MyProfileNewActivity extends BaseActivity {
     TextView tv_dob, tv_pb1, tv_pb2, tv_pb3, tv_verified_member, tv_respon_reject_KTP, tv_respon_reject_selfie, tv_respon_reject_ttd;
     LinearLayout dataMemberBasic, dataVerifiedMember;
     RelativeLayout layoutKTP, layoutSelfie, layoutTTD;
-    EditText et_nama, et_noHp, et_email;
+    EditText et_nama, et_noHp, et_email, et_acctNo;
+    Spinner sp_bank;
     private ProgressBar pb1, pb2, pb3;
     private ImageButton cameraKTP, selfieKTP, cameraTTD;
     private Button btn1, btn2;
@@ -121,6 +134,9 @@ public class MyProfileNewActivity extends BaseActivity {
     Gson gson;
     private LinearLayout lytVerifiedMember;
     CheckBox cb_termsncond;
+    BankCashoutAdapter adapter;
+    List<BankCashoutModel> listBankCashOut = new ArrayList<>();
+    private String bankCode = "";
 
     @Override
     protected int getLayoutResource() {
@@ -152,7 +168,7 @@ public class MyProfileNewActivity extends BaseActivity {
         selfie = (File) savedInstanceState.getSerializable("selfieKtp");
         ttd = (File) savedInstanceState.getSerializable("TTD");
 
-        if (isVerifiedMember ) {
+        if (isVerifiedMember) {
             btn1.setVisibility(View.GONE);
             dataVerifiedMember.setVisibility(View.VISIBLE);
             if (ktp != null) {
@@ -238,17 +254,22 @@ public class MyProfileNewActivity extends BaseActivity {
         et_noHp = v.findViewById(R.id.myprofile_value_hp);
         et_nama = v.findViewById(R.id.myprofile_value_name);
         et_email = v.findViewById(R.id.myprofile_value_email);
+        et_acctNo = v.findViewById(R.id.bank_acc_no);
         cameraKTP = v.findViewById(R.id.camera_ktp_paspor);
         selfieKTP = v.findViewById(R.id.camera_selfie_ktp_paspor);
         cameraTTD = v.findViewById(R.id.camera_ttd);
+        sp_bank = v.findViewById(R.id.spinner_nameBank);
         btn1 = v.findViewById(R.id.button1);
         btn2 = v.findViewById(R.id.button2);
         btn2.setEnabled(false);
+        btn2.setBackground(getResources().getDrawable(R.drawable.rounded_background_button_disabled));
         lytVerifiedMember = v.findViewById(R.id.lyt_verifying_member);
         cb_termsncond = v.findViewById(R.id.cb_termnsncond);
 
         levelClass = new LevelClass(this, sp);
-
+        adapter = new BankCashoutAdapter(this, android.R.layout.simple_spinner_item);
+        sp_bank.setAdapter(adapter);
+        sp_bank.setOnItemSelectedListener(spinnerNamaBankListener);
 //        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
         if (!is_agent && !levelClass.isLevel1QAC() && !isUpgradeAgent) {
@@ -326,10 +347,13 @@ public class MyProfileNewActivity extends BaseActivity {
         cb_termsncond.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
+                if (isChecked) {
                     btn2.setEnabled(true);
-                else
+                    btn2.setBackground(getResources().getDrawable(R.drawable.rounded_background_blue));
+                } else {
                     btn2.setEnabled(false);
+                    btn2.setBackground(getResources().getDrawable(R.drawable.rounded_background_button_disabled));
+                }
             }
         });
 
@@ -381,13 +405,7 @@ public class MyProfileNewActivity extends BaseActivity {
         }
 
         initializeData();
-
-
-//        if(et_noHp!=null && et_nama!=null && et_email!=null && tv_dob!=null && !isRegisteredLevel)
-//        {
-//            dialogUpgradeMember();
-//        }
-
+        getBankCashout();
     }
 
 
@@ -396,7 +414,7 @@ public class MyProfileNewActivity extends BaseActivity {
         else {
             setActionBarIcon(R.drawable.ic_arrow_left);
         }
-        setActionBarTitle(getString(R.string.lbl_profil_saya));
+        setActionBarTitle(getString(R.string.upgrade_member));
     }
 
     @Override
@@ -445,7 +463,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (ValidationPhoto()) {
+            if (ValidationPhoto() && bankValidation()) {
                 sentExecCust();
             }
         }
@@ -491,6 +509,18 @@ public class MyProfileNewActivity extends BaseActivity {
         }
     };
 
+    Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
+            BankCashoutModel model = listBankCashOut.get(i);
+            bankCode = model.getBank_code();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+        }
+    };
+
     @AfterPermissionGranted(RC_CAMERA_STORAGE)
     public void camera_dialog() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
@@ -513,7 +543,11 @@ public class MyProfileNewActivity extends BaseActivity {
                                     pickAndCameraUtil.chooseGallery(RESULT_GALLERY_TTD);
                                 }
                             } else if (which == 1) {
-                                pickAndCameraUtil.runCamera(set_result_photo);
+                                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
+                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
+                                } else {
+                                    pickAndCameraUtil.runCamera(set_result_photo);
+                                }
                             }
 
                         }
@@ -676,12 +710,21 @@ public class MyProfileNewActivity extends BaseActivity {
 //                                    alert11.show();
 //                                }
 //                                else {
-                                    finish();
+                                finish();
 //                                }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(MyProfileNewActivity.this, message);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
                             } else {
                                 code = model.getError_message();
                                 Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
@@ -819,6 +862,15 @@ public class MyProfileNewActivity extends BaseActivity {
         return true;
     }
 
+    private boolean bankValidation() {
+        if (et_acctNo.getText().toString().length() == 0) {
+            et_acctNo.requestFocus();
+            et_acctNo.setError(getResources().getString(R.string.cashout_accno_validation));
+            return false;
+        }
+        return true;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -873,6 +925,20 @@ public class MyProfileNewActivity extends BaseActivity {
                     Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
                 break;
+            case CameraActivity.REQUEST_CODE:
+                if (data != null) {
+                    if (CameraActivity.getResult(data) != null) {
+                        final String path = CameraActivity.getResult(data);
+                        if (set_result_photo == RESULT_CAMERA_KTP) {
+                            new ImageCompressionAsyncTask(KTP_TYPE).execute(path);
+                        } else {
+                            new ImageCompressionAsyncTask(TTD_TYPE).execute(path);
+                        }
+                    } else {
+                        Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -900,11 +966,14 @@ public class MyProfileNewActivity extends BaseActivity {
                 MyApiClient.COMM_ID);
         RequestBody request3 = RequestBody.create(MediaType.parse("text/plain"),
                 String.valueOf(flag));
+        RequestBody request4 = RequestBody.create(MediaType.parse("text/plain"),
+                userPhoneID);
 
         params.put(WebParams.USER_ID, request1);
 //        params.put(WebParams.USER_IMAGES, photoFile);
         params.put(WebParams.COMM_ID, request2);
         params.put(WebParams.TYPE, request3);
+        params.put(WebParams.CUST_ID, request4);
         Timber.d("params upload foto ktp: " + params.toString());
         Timber.d("params upload foto type: " + flag);
 
@@ -913,7 +982,7 @@ public class MyProfileNewActivity extends BaseActivity {
                 new ProgressRequestBody.UploadCallbacks() {
                     @Override
                     public void onProgressUpdate(int percentage) {
-                        switch (flag){
+                        switch (flag) {
                             case KTP_TYPE:
                                 pb1.setProgress(percentage);
                                 break;
@@ -941,7 +1010,7 @@ public class MyProfileNewActivity extends BaseActivity {
                         String error_message = model.getError_message();
                         if (error_code.equalsIgnoreCase("0000")) {
 
-                            switch (flag){
+                            switch (flag) {
                                 case KTP_TYPE:
                                     pb1.setProgress(100);
                                     BlinkingEffectClass.blink(layoutKTP);
@@ -961,12 +1030,18 @@ public class MyProfileNewActivity extends BaseActivity {
 
                         } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
 
-//                                Timber.d("isi response autologout:" + response.toString());
-//                                String message = response.getString(WebParams.ERROR_MESSAGE);
-
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(MyProfileNewActivity.this, error_message);
-                        } else {
+                        } else if (error_code.equals(DefineValue.ERROR_9333)) {
+                            Timber.d("isi response app data:" + model.getApp_data());
+                            final AppDataModel appModel = model.getApp_data();
+                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                            alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                        } else if (error_code.equals(DefineValue.ERROR_0066)) {
+                            Timber.d("isi response maintenance:" + object.toString());
+                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                            alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
+                        }else {
                             Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
 
 
@@ -1054,6 +1129,8 @@ public class MyProfileNewActivity extends BaseActivity {
             params.put(WebParams.CUST_GENDER, "");
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.BANK_CODE, bankCode);
+            params.put(WebParams.SOURCE_ACCT_NO, et_acctNo.getText().toString());
 
             Timber.d("isi params execute customer:" + params.toString());
 
@@ -1094,7 +1171,16 @@ public class MyProfileNewActivity extends BaseActivity {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(MyProfileNewActivity.this, message);
-                            } else {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
+                            }else {
                                 code = model.getError_message();
 
                                 Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
@@ -1158,6 +1244,15 @@ public class MyProfileNewActivity extends BaseActivity {
 //                                Timber.d("isi response autologout:"+response.toString());
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(MyProfileNewActivity.this, message);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
                             } else {
                                 Toast.makeText(MyProfileNewActivity.this, message, Toast.LENGTH_LONG).show();
                             }
@@ -1205,17 +1300,73 @@ public class MyProfileNewActivity extends BaseActivity {
                     break;
                 case SELFIE_TYPE:
                     GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, file, selfieKTP);
-//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(selfieKTP);
                     selfie = file;
                     uploadFileToServer(selfie, SELFIE_TYPE);
                     break;
                 case TTD_TYPE:
                     GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, file, cameraTTD);
-//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraTTD);
                     ttd = file;
                     uploadFileToServer(ttd, TTD_TYPE);
                     break;
             }
+        }
+    }
+
+    public void getBankCashout() {
+        try {
+            final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(this, "");
+
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BANKCASHOUT, memberIDLogin);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
+            params.put(WebParams.USER_ID, userPhoneID);
+
+            Timber.d("isi params get Bank cashout:" + params.toString());
+
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANKCASHOUT, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+
+                            Gson gson = new Gson();
+                            jsonModel model = gson.fromJson(object.toString(), jsonModel.class);
+
+                            Log.e("getBankCashout", object.get("bank_cashout").toString());
+
+                            Type type = new TypeToken<List<BankCashoutModel>>() {}.getType();
+                            Gson gson2 = new Gson();
+                            listBankCashOut = gson2.fromJson(object.get("bank_cashout"), type);
+
+                            Log.e("getBankCashout", listBankCashOut.toString());
+
+                            adapter.updateAdapter(listBankCashOut);
+
+                            if (object.get("error_code").equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (object.get("error_code").equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (prodDialog.isShowing())
+                                prodDialog.dismiss();
+                        }
+                    });
+
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 }

@@ -1,180 +1,251 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    android:padding="10dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/myprofile_text_address"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp"
-            android:textSize="18dp"/>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="50dp"
-            android:gravity="top"
-            android:padding="5dp"
-            android:background="@color/grey_200"
-            android:hint="@string/address_hint"
-            android:layout_marginBottom="20dp"
-            android:id="@+id/et_address"/>
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shop_code"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/city"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"
-            android:textSize="18dp"/>
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:hint="@string/address_hint"
-            android:layout_marginBottom="10dp"
-            android:id="@+id/sp_city"
-            android:visibility="gone"/>
-
-        <AutoCompleteTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/get_shop_location_list"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Koordinat"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp"
-            android:textSize="18dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Koordinat belum terpasang"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp"
-            android:id="@+id/regis_shop_showmap"
-            android:textSize="18dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Kode Toko"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp"
-            android:textSize="18dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp"
-            android:id="@+id/regis_shop_store_code"
-            android:textSize="18dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Komunitas"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp"
-            android:textSize="18dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp"
-            android:id="@+id/regis_shop_community"
-            android:textSize="18dp"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:visibility="gone">
-
-            <fragment
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/map"
-                tools:context=".activities.TagihActivity"
-                android:name="com.google.android.gms.maps.SupportMapFragment" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:background="@color/black"
-                android:id="@+id/center"
-                android:layout_centerInParent="true"/>
-
-            <ImageButton
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/location"
-                android:id="@+id/center_ic"
-                android:layout_above="@+id/center"
-                android:layout_centerHorizontal="true"/>
-
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/center_ic"
-                android:gravity="center">
+                android:gravity="end"
+                android:text=""
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:id="@+id/regis_shop_store_code"
+                android:textSize="18sp"/>
+        </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/curr_loc_text"
-                    android:text="Tempat"
-                    android:textColor="@color/red"/>
-
-            </LinearLayout>
-
-        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/grey_300"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:gravity="center">
-            <Button
-                android:layout_margin="20dp"
-                android:layout_width="150dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/cancel"
-                android:id="@+id/btn_cancel"/>
-            <Button
-                android:layout_margin="20dp"
-                android:layout_width="150dp"
+                android:text="@string/community"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/shop_registration"
-                android:id="@+id/btn_shop_register"/>
+                android:gravity="end"
+                android:text=""
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:id="@+id/regis_shop_community"
+                android:textSize="18sp"/>
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/grey_300"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/adress_detail"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="18sp"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="50dp"
+                    android:hint="@string/address_hint"
+                    android:id="@+id/et_address"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/city"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="18sp"/>
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:hint="@string/address_hint"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/sp_city"
+                    android:visibility="gone"/>
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/get_shop_location_list"
+                    android:hint="@string/city_hint"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/location"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="10dp"
+                        android:textSize="18sp"/>
+
+                    <TextView
+                        android:id="@+id/regis_shop_change_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:gravity="end"
+                        android:text="@string/change"
+                        android:textSize="18sp"
+                        android:textColor="@color/colorPrimary"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Koordinat belum terpasang"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="gone"
+                    android:id="@+id/regis_shop_showmap"
+                    android:textSize="18sp"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_setLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_dotted_outline"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:clickable="true">
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_location_on_grey"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/set_location"
+                        android:textSize="18dp"/>
+                </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:visibility="gone">
+
+                    <fragment
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/map"
+                        tools:context=".activities.TagihActivity"
+                        android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="1dp"
+                        android:background="@color/black"
+                        android:id="@+id/center"
+                        android:layout_centerInParent="true"/>
+
+                    <ImageButton
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_location_on_grey"
+                        android:id="@+id/center_ic"
+                        android:layout_above="@+id/center"
+                        android:layout_centerHorizontal="true"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/center_ic"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/curr_loc_text"
+                            android:text="Tempat"
+                            android:textColor="@color/red"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
-</ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/grey_50">
+        <Button
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_background_outline"
+            android:text="@string/cancel"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/black"
+            android:id="@+id/btn_cancel"/>
+        <Button
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="@string/submit"
+            android:id="@+id/btn_shop_register"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/grey_1000w"
+            android:background="@drawable/rounded_background_blue"/>
+    </LinearLayout>
+</RelativeLayout>

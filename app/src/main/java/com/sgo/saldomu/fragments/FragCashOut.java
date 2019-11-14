@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,9 +21,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CashoutActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.adapter.BankCashoutAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
@@ -30,16 +35,24 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.BankCashoutModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -65,6 +78,8 @@ public class FragCashOut extends BaseFragment {
     ArrayList<String> arrBankCode;
     ArrayList<String> arrBankGateway;
     boolean isBankGateway = false;
+    List<BankCashoutModel> listBankCashOut = new ArrayList<>();
+    BankCashoutAdapter adapter;
 
 
     @Override
@@ -141,14 +156,17 @@ public class FragCashOut extends BaseFragment {
         sp_privacy.setAdapter(spinAdapter);
         sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, arrBankName);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listBankCashOut);
+        adapter = new BankCashoutAdapter(getActivity(), android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_bank.setAdapter(adapter);
         sp_bank.setOnItemSelectedListener(spinnerNamaBankListener);
 
         txtBalance.setText(balance);
 
         btnProcess.setOnClickListener(btnProcessListener);
+
+        getBankCashout();
     }
 
     Button.OnClickListener btnProcessListener = new Button.OnClickListener() {
@@ -185,22 +203,27 @@ public class FragCashOut extends BaseFragment {
         @Override
         public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
 
-            Object item = adapterView.getItemAtPosition(i);
-            bankCode = arrBankCode.get(i);
-            bankName = item.toString();
-            if(!arrBankGateway.isEmpty()) bankGateway = arrBankGateway.get(i);
-            Timber.d("isi bank name cashout:"+item.toString() + bankCode + bankGateway);
-//            if(item.toString().toLowerCase().contains("mandiri")) {
-//
+            BankCashoutModel model = listBankCashOut.get(i);
+//            if (model.getBank_gateway().equalsIgnoreCase("Y")) {
+//                layout_acc_name.setVisibility(View.GONE);
+//            } else {
+//                layout_acc_name.setVisibility(View.VISIBLE);
 //            }
 
-            if(isBankGateway) {
-                if (bankGateway.equalsIgnoreCase("Y")) {
-                    layout_acc_name.setVisibility(View.GONE);
-                } else if (bankGateway.equalsIgnoreCase("N")) {
-                    layout_acc_name.setVisibility(View.VISIBLE);
-                }
-            }
+
+//            Object item = adapterView.getItemAtPosition(i);
+            bankCode = model.getBank_code();
+            bankName = model.getBank_name().toString();
+//            if(!arrBankGateway.isEmpty()) bankGateway = arrBankGateway.get(i);
+            Timber.d("isi bank name cashout:"+model.toString() + bankCode + bankGateway);
+
+//            if(isBankGateway) {
+//                if (bankGateway.equalsIgnoreCase("Y")) {
+//                    layout_acc_name.setVisibility(View.GONE);
+//                } else if (bankGateway.equalsIgnoreCase("N")) {
+//                    layout_acc_name.setVisibility(View.VISIBLE);
+//                }
+//            }
         }
 
         @Override
@@ -240,6 +263,8 @@ public class FragCashOut extends BaseFragment {
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                Gson gson = new Gson();
+                                jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     Timber.d("isi response req cashout:"+response.toString());
@@ -274,7 +299,16 @@ public class FragCashOut extends BaseFragment {
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginMain(getActivity(), message);
-                                } else {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                }else {
                                     Timber.d("isi error req cashout:"+response.toString());
                                     String code_msg = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -315,7 +349,6 @@ public class FragCashOut extends BaseFragment {
     }
 
     public void initializeBankCashout(){
-
         CashoutActivity fca = (CashoutActivity) getActivity();
         fca.setTitleToolbar(getString(R.string.title_cashout_bank));
 
@@ -385,5 +418,64 @@ public class FragCashOut extends BaseFragment {
 
         CashoutActivity fca = (CashoutActivity) getActivity();
         fca.switchContent(mFrag, getString(R.string.menu_item_title_cash_out), true, tag);
+    }
+
+    public void getBankCashout(){
+        try {
+            if (isAdded() || isVisible()) {
+                final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+
+                HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BANKCASHOUT, memberIDLogin);
+                params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                params.put(WebParams.MEMBER_ID, memberIDLogin );
+                params.put(WebParams.USER_ID, userPhoneID);
+
+                Timber.d("isi params get Bank cashout:" + params.toString());
+
+                RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANKCASHOUT, params,
+                        new ResponseListener() {
+                            @Override
+                            public void onResponses(JsonObject object) {
+
+                                Gson gson = new Gson();
+                                jsonModel model = gson.fromJson(object.toString(), jsonModel.class);
+
+                                Log.e("getBankCashout", object.get("bank_cashout").toString());
+
+                                Type type = new TypeToken<List<BankCashoutModel>>() {}.getType();
+                                Gson gson2 = new Gson();
+                                listBankCashOut = gson2.fromJson(object.get("bank_cashout"), type);
+
+                                Log.e("getBankCashout", listBankCashOut.toString());
+
+                                adapter.updateAdapter(listBankCashOut);
+
+                                if (object.get("error_code").equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (object.get("error_code").equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + object.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable throwable) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                if (prodDialog.isShowing())
+                                    prodDialog.dismiss();
+                            }
+                        });
+            }
+        }catch(Exception e){
+            Timber.d("httpclient:"+e.getMessage());
+        }
     }
 }

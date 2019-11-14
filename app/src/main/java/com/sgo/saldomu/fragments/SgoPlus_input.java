@@ -1,14 +1,15 @@
 package com.sgo.saldomu.fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -45,14 +46,16 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.DataReqModel;
 import com.sgo.saldomu.models.retrofit.TopupValidModel;
 import com.sgo.saldomu.widgets.BaseFragment;
-import android.support.v4.app.FragmentManager;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -575,7 +578,27 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            } else {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogMaintenance = AlertDialogUpdateApp.getInstance();
+                                alertDialogMaintenance.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        getActivity().finish();
+                                        android.os.Process.killProcess(android.os.Process.myPid());
+                                        System.exit(0);
+                                        getActivity().getParent().finish();
+                                    }
+                                };
+                                AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getActivity(), getActivity().getString(R.string.maintenance),
+                                        model.getError_message(), android.R.drawable.ic_dialog_alert, false,
+                                        getActivity().getString(R.string.ok), okListener);
+                                alertDialog.show();
+                            }else {
                                 code = model.getError_code() + " : " + model.getError_message();
 
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -693,6 +716,15 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                             } else {
                                 if (code.equals("0059") || code.equals("0164")) {
                                     showDialogErrorSMS(sentObject.nama_bank, code, model.getError_message());

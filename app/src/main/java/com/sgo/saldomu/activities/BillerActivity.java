@@ -15,6 +15,8 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.fragments.BillerInputData;
+import com.sgo.saldomu.fragments.BillerInputPLN;
 import com.sgo.saldomu.fragments.BillerInputPulsa;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -49,14 +51,14 @@ public class BillerActivity extends BaseActivity {
     private String _biller_merchant_name;
     private String userID;
     private String accessKey;
-    private String _biller_type_code;
+    public String _biller_type_code;
     private Boolean isOneBiller;
     private Boolean isEmptyBiller;
     private Biller_Type_Data_Model mBillerTypeData;
     private List<Biller_Data_Model> mListBillerData;
     private Realm realm;
     private RealmChangeListener realmListener;
-    BillerActivityRF mWorkFragment;
+    //    BillerActivityRF mWorkFragment;
     ProgressDialog progdialog;
     String IdNumber = null;
 
@@ -72,8 +74,52 @@ public class BillerActivity extends BaseActivity {
             return;
         }
 
-        realm = Realm.getInstance(RealmManager.BillerConfiguration);
         Intent intent = getIntent();
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+//        if (intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID) != null) {
+//
+//            setActionBarIcon(R.drawable.ic_arrow_left);
+//            setToolbarTitle(intent.getStringExtra(DefineValue.BILLER_TYPE) + " - " + intent.getStringExtra(DefineValue.COMMUNITY_NAME));
+//
+//            Bundle mArgs = new Bundle();
+//            Fragment mFrag;
+//            String tag = "";
+//            _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
+//            if (_biller_type_code .equalsIgnoreCase("AIR")) {
+//                mArgs.putString(DefineValue.COMMUNITY_ID, intent.getStringExtra(DefineValue.COMMUNITY_ID));
+//                mArgs.putString(DefineValue.COMMUNITY_NAME, intent.getStringExtra(DefineValue.COMMUNITY_NAME));
+//                mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+//                mArgs.putString(DefineValue.ITEM_ID, intent.getStringExtra(DefineValue.ITEM_ID));
+//                if (intent.getStringExtra(DefineValue.BILLER_TYPE).equals("GAME") || intent.getStringExtra(DefineValue.BILLER_TYPE).equals("VCHR")) {
+//                    mArgs.putInt(DefineValue.BUY_TYPE, PURCHASE_TYPE);
+//                } else {
+//                    mArgs.putInt(DefineValue.BUY_TYPE, PAYMENT_TYPE);
+//                }
+//
+//                mArgs.putString(DefineValue.SHARE_TYPE, "ss");
+//                mArgs.putString(DefineValue.BILLER_TYPE, intent.getStringExtra(DefineValue.BILLER_TYPE));
+//
+//                mFrag = new BillerDesciption();
+//                tag = BillerInput.TAG;
+//
+//                mFrag.setArguments(mArgs);
+//                fragmentManager = getSupportFragmentManager();
+//                android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.biller_content, mFrag, tag);
+//                fragmentTransaction.commitAllowingStateLoss();
+//                setResult(MainPage.RESULT_NORMAL);
+//                return;
+//            }
+
+
+//            mFrag.setArguments(mArgs);
+//            fragmentManager = getSupportFragmentManager();
+//            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//            fragmentTransaction.replace(R.id.biller_content, mFrag, tag);
+//            fragmentTransaction.commitAllowingStateLoss();
+//            setResult(MainPage.RESULT_NORMAL);
+//        }
+
         _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
         Timber.d("isi biller type code " + _biller_type_code);
         _biller_merchant_name = intent.getStringExtra(DefineValue.BILLER_NAME);
@@ -177,9 +223,14 @@ public class BillerActivity extends BaseActivity {
         mArgs.putString(DefineValue.BILLER_TYPE, _biller_type_code);
         Fragment mLBM;
         String tag;
+        Intent intent = getIntent();
 
-        if (isOneBiller) {
+        if (isOneBiller && !_biller_type_code.equalsIgnoreCase("DATA")
+                && !_biller_type_code.equalsIgnoreCase("TKN")) {
             mLBM = new BillerInput();
+            if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
+                mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+            }
             mArgs.putString(DefineValue.COMMUNITY_ID, mListBillerData.get(0).getComm_id());
             mArgs.putString(DefineValue.COMMUNITY_NAME, mListBillerData.get(0).getComm_name());
             mArgs.putString(DefineValue.BILLER_ITEM_ID, mListBillerData.get(0).getItem_id());
@@ -188,11 +239,38 @@ public class BillerActivity extends BaseActivity {
         } else {
             if (_biller_type_code.equalsIgnoreCase("PLS")) {
                 mLBM = new BillerInputPulsa();
+                if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
+                    mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+                }
+                tag = BillerInput.TAG;
+            } else if (_biller_type_code.equalsIgnoreCase("DATA")) {
+                mLBM = new BillerInputData();
+                if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
+                    mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+                }
+                tag = BillerInput.TAG;
+            } else if (_biller_type_code.equalsIgnoreCase("TKN")) {
+                mLBM = new BillerInputPLN();
+                if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
+                    mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+                }
                 tag = BillerInput.TAG;
             } else {
-                mLBM = new ListBillerMerchant();
-                tag = ListBillerMerchant.TAG;
-                Log.wtf("ListBillerMerchant ", "ListBillerMerchant");
+                if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)){
+                    mLBM = new BillerInput();
+                    mArgs.putString(DefineValue.COMMUNITY_ID, intent.getStringExtra(DefineValue.COMMUNITY_ID));
+                    mArgs.putString(DefineValue.COMMUNITY_NAME, intent.getStringExtra(DefineValue.COMMUNITY_NAME));
+                    mArgs.putString(DefineValue.BILLER_ITEM_ID, intent.getStringExtra(DefineValue.ITEM_ID));
+                    mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+
+                    mArgs.putString(DefineValue.BILLER_TYPE, intent.getStringExtra(DefineValue.BILLER_TYPE));
+                    mArgs.putString(DefineValue.BILLER_NAME, intent.getStringExtra(DefineValue.BILLER_NAME));
+                    tag = BillerInput.TAG;
+                } else {
+                    mLBM = new ListBillerMerchant();
+                    tag = ListBillerMerchant.TAG;
+                    Log.wtf("ListBillerMerchant ", "ListBillerMerchant");
+                }
             }
         }
 

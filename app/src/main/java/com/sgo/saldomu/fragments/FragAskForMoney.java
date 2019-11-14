@@ -371,8 +371,7 @@ public class FragAskForMoney extends BaseFragment {
 
     private void sentData(final String _message, final String _data) {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            progdialog.show();
+            showProgressDialog();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_ASKFORMONEY_SUBMIT);
             params.put(WebParams.MEMBER_ID, _memberId);
@@ -438,8 +437,7 @@ public class FragAskForMoney extends BaseFragment {
 
                         @Override
                         public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {

@@ -159,31 +159,6 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
             finish();
         }
 
-        /*
-        shopDetail.setKeyCode("62828282");
-        shopDetail.setKeyName("Ariawan Agus");
-        shopDetail.setCategoryName("Tarik Tunai");
-        shopDetail.setKeyProvince("Banten");
-        shopDetail.setKeyCountry("Indonesia");
-        shopDetail.setKeyDistrict("Alam Sutera");
-        shopDetail.setKeyAddress("Jln. Haji Ali, Alam Sutera");
-        shopDetail.setAmount("10000");
-        shopDetail.setCcyId("IDR");
-
-        ShopDetail shopDetail2   = new ShopDetail();
-        shopDetail2.setMemberCode("KODE-ABC1");
-        shopDetail2.setMemberName("NAMA-ABC1");
-        shopDetail2.setShopId("KODE-ABC1");
-        shopDetails.add(shopDetail2);
-
-        ShopDetail shopDetail3   = new ShopDetail();
-        shopDetail3.setMemberCode("KODE-ABC2");
-        shopDetail3.setMemberName("NAMA-ABC2");
-        shopDetail3.setShopId("KODE-ABC2");
-        shopDetails.add(shopDetail3);
-        */
-
-
         /*if ( shopDetails.size() > 1 ) {
             String[] arrayItems = new String[shopDetails.size()];
             for(int x = 0; x < shopDetails.size(); x++) {
@@ -246,6 +221,8 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
                                 tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
                                 tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
+                                if ( progdialog.isShowing())
+                                    progdialog.dismiss();
 
                         /*
                         RequestParams params2    = new RequestParams();
@@ -388,7 +365,8 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        if ( progdialog.isShowing())
+                            progdialog.dismiss();
                     }
 
                     @Override

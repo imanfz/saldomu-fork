@@ -31,9 +31,13 @@ import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
 import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +48,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import io.realm.Realm;
+import timber.log.Timber;
 
 /**
  * Created by thinkpad on 7/14/2016.
@@ -209,6 +214,8 @@ public class FragMerchantCategory extends Fragment {
                                 @Override
                                 public void onResponses(JSONObject response) {
                                     try {
+                                        Gson gson = new Gson();
+                                        jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
 
                                         String code = response.getString(WebParams.ERROR_CODE);
                                         if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -234,6 +241,15 @@ public class FragMerchantCategory extends Fragment {
                                                 Intent intent=new Intent(getActivity(),BbsMerchantCommunityList.class);
                                                 startActivity(intent);
                                             }
+                                        }else if (code.equals(DefineValue.ERROR_9333)) {
+                                            Timber.d("isi response app data:" + model.getApp_data());
+                                            final AppDataModel appModel = model.getApp_data();
+                                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                            alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                        } else if (code.equals(DefineValue.ERROR_0066)) {
+                                            Timber.d("isi response maintenance:" + response.toString());
+                                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                            alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                         } else {
                                             Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
                                         }

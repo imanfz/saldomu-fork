@@ -33,9 +33,12 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -61,10 +64,12 @@ public class UpgradeAgentActivity extends BaseActivity {
     private final int NPWP_TYPE = 4;
     final int RC_CAMERA_STORAGE = 14;
     final int RC_GALLERY = 15;
+    final int RC_CAMERA = 16;
     private final int RESULT_GALLERY_SIUP = 104;
     private final int RESULT_GALLERY_NPWP = 105;
     private final int RESULT_CAMERA_SIUP = 204;
     private final int RESULT_CAMERA_NPWP = 205;
+    private final int RESULT_CROP = 301;
     private ProgressBar pbSIUP, pbNPWP;
     private ImageButton cameraSIUP, cameraNPWP;
     File siup, npwp;
@@ -200,8 +205,7 @@ public class UpgradeAgentActivity extends BaseActivity {
 
     private void getHelpList() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(this, "");
-            progdialog.show();
+            showProgressDialog();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -214,6 +218,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
 
@@ -242,7 +247,16 @@ public class UpgradeAgentActivity extends BaseActivity {
                                     Timber.d("isi response autologout:" + response.toString());
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(UpgradeAgentActivity.this, message);
-                                } else {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(UpgradeAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this, model.getError_message());
+                                }else {
                                     Timber.d("isi error help list:" + response.toString());
                                     Toast.makeText(UpgradeAgentActivity.this, message, Toast.LENGTH_LONG).show();
                                 }
@@ -259,8 +273,7 @@ public class UpgradeAgentActivity extends BaseActivity {
 
                         @Override
                         public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
@@ -309,6 +322,9 @@ public class UpgradeAgentActivity extends BaseActivity {
                                 }
                             } else if (which == 1) {
                                 pickAndCameraUtil.runCamera(set_result_photo);
+//                                Intent intent=new Intent(getApplicationContext(),CameraViewActivity.class);
+//                                startActivityForResult(intent,set_result_photo);
+
                             }
 
                         }
@@ -328,6 +344,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -440,7 +457,16 @@ public class UpgradeAgentActivity extends BaseActivity {
                         } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(UpgradeAgentActivity.this, error_message);
-                        } else {
+                        } else if (error_code.equals(DefineValue.ERROR_9333)) {
+                            Timber.d("isi response app data:" + model.getApp_data());
+                            final AppDataModel appModel = model.getApp_data();
+                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                            alertDialogUpdateApp.showDialogUpdate(UpgradeAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                        } else if (error_code.equals(DefineValue.ERROR_0066)) {
+                            Timber.d("isi response maintenance:" + object.toString());
+                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                            alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this, model.getError_message());
+                        }else {
 
                             Timber.d("Masuk failure");
                             if (MyApiClient.PROD_FAILURE_FLAG) {
@@ -488,6 +514,8 @@ public class UpgradeAgentActivity extends BaseActivity {
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                Gson gson = new Gson();
+                                jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 Timber.d("response execute agent:" + response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -506,7 +534,16 @@ public class UpgradeAgentActivity extends BaseActivity {
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(UpgradeAgentActivity.this, message);
-                                } else {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(UpgradeAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this, model.getError_message());
+                                }else {
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(UpgradeAgentActivity.this, code, Toast.LENGTH_LONG).show();
                                     getFragmentManager().popBackStack();
@@ -568,6 +605,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                             new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
                         } else {
                             new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
+//                            new UpgradeAgentActivity.ImageCompressionAsyncTask(SIUP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
                         }
                     } else {
                         Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();

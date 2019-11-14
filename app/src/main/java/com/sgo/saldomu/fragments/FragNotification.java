@@ -34,8 +34,11 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.NotifModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
@@ -113,7 +116,7 @@ public class FragNotification extends BaseFragment {
         mPtr.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-//                sentRetrieveNotif(false);
+                sentRetrieveNotif(false);
             }
 
             @Override
@@ -297,12 +300,6 @@ public class FragNotification extends BaseFragment {
                     getActivity().finish();
                     break;
                 case NotificationActivity.SOURCE_OF_FUND:
-//                    sentReadNotif(mData.get(position).getNotif_id(), position);
-//                    Intent dataSourceOfFund = new Intent();
-//                    dataSourceOfFund.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
-//                    dataSourceOfFund.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.SOURCE_OF_FUND);
-//                    getActivity().setResult(MainPage.RESULT_NOTIF, dataSourceOfFund);
-
                     Intent s = new Intent(getActivity(), SourceOfFundActivity.class);
                     s.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
                     s.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.SOURCE_OF_FUND);
@@ -366,6 +363,15 @@ public class FragNotification extends BaseFragment {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                             } else {
                                 code = model.getError_code() + ":" + model.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -412,17 +418,19 @@ public class FragNotification extends BaseFragment {
     private void sentRetrieveNotif(final Boolean isDialog) {
         try {
 
-            if (isDialog) {
-                out = DefinedDialog.CreateProgressDialog(getActivity(), "");
-                if (!out.isShowing())
-                    out.show();
-            }
+//            if (isDialog) {
+//                out = DefinedDialog.CreateProgressDialog(getActivity(), "");
+//                if (!out.isShowing())
+//                    out.show();
+//            }
+            showProgressDialog();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_RETRIEVE);
             params.put(WebParams.USER_ID, _userid);
             params.put(WebParams.MEMBER_ID, _memberId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+            params.put(WebParams.MEMBER_CREATED, sp.getString(DefineValue.MEMBER_CREATED,""));
 
             Timber.d("isi params Retrieve Notif:" + params.toString());
 
@@ -431,10 +439,7 @@ public class FragNotification extends BaseFragment {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
-                                if (isDialog) {
-                                    if (out.isShowing())
-                                        out.dismiss();
-                                }
+                                dismissProgressDialog();
 
                                 NotifModel model = getGson().fromJson(object, NotifModel.class);
 
@@ -493,13 +498,13 @@ public class FragNotification extends BaseFragment {
                                                             detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
                                                         break;
                                                     case NotificationActivity.TYPE_TRANSFER:
-                                                        image = R.drawable.ic_cash_in;
+                                                        image = R.drawable.ic_ask_money_notif;
                                                         title = getString(R.string.notif_text_ask4money_name) + " " + from_name;
                                                         detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
                                                                 "\n" + notif_detail.get(WebParams.DESC);
                                                         break;
                                                     case NotificationActivity.TYPE_PAID:
-                                                        image = R.drawable.ic_cash_out;
+                                                        image = R.drawable.ic_cash_in_notif;
                                                         title = getString(R.string.notif_text_paid_name) + " " + from_name;
                                                         detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
                                                                 "\n" + notif_detail.get(WebParams.DESC);
@@ -526,12 +531,12 @@ public class FragNotification extends BaseFragment {
                                                         title = getString(R.string.notif_title_photo_ktp_rejected);
                                                         break;
                                                     case NotificationActivity.BLAST_INFO:
-                                                        image = R.drawable.ic_cash_out;
+                                                        image = R.drawable.ic_logo_inbox;
                                                         title = notif_detail.getString(WebParams.SUBJECT);
                                                         detail = notif_detail.getString(WebParams.DESC);
                                                         break;
                                                     case NotificationActivity.SOURCE_OF_FUND:
-                                                        image = R.drawable.ic_cash_out;
+                                                        image = R.drawable.ic_logo_inbox;
                                                         title = notif_detail.getString(WebParams.SUBJECT);
                                                         detail = notif_detail.getString(WebParams.DESC);
                                                         break;
@@ -591,7 +596,16 @@ public class FragNotification extends BaseFragment {
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
-                                } else {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + object.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                }else {
 
                                     if (code.equals("0003")) {
                                         if (FragNotification.this.isVisible()) {
@@ -634,11 +648,12 @@ public class FragNotification extends BaseFragment {
     private void sentClaimTransfer(final Boolean isDialog, String _hold_id) {
         try {
             flagClaim = true;
-            if (isDialog) {
-                out = DefinedDialog.CreateProgressDialog(getActivity(), "");
-                if (!out.isShowing())
-                    out.show();
-            }
+//            if (isDialog) {
+//                out = DefinedDialog.CreateProgressDialog(getActivity(), "");
+//                if (!out.isShowing())
+//                    out.show();
+//            }
+            showProgressDialog();
 
             extraSignature = _hold_id + MyApiClient.COMM_ID;
 
@@ -654,9 +669,9 @@ public class FragNotification extends BaseFragment {
                         @Override
                         public void onResponses(JsonObject object) {
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
+                            String code = model.getError_code();
 
                             if (!model.getOn_error()) {
-                                String code = model.getError_code();
 
 //                        if (code.equals(WebParams.SUCCESS_CODE)) {
 //
@@ -668,7 +683,16 @@ public class FragNotification extends BaseFragment {
                                 }
 
 //                                sentRetrieveNotif(true);
-                            } else {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            }else {
                                 Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_SHORT).show();
 
                             }
@@ -682,9 +706,10 @@ public class FragNotification extends BaseFragment {
 
                         @Override
                         public void onComplete() {
-                            if (isDialog)
-                                if (out.isShowing())
-                                    out.dismiss();
+//                            if (isDialog)
+//                                if (out.isShowing())
+//                                    out.dismiss();
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {

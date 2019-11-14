@@ -108,14 +108,14 @@
 
     <string-array name="report_list">
         <item>Transaksi</item>
-        <item>Transfer</item>
-        <item>Permintaan</item>
+        <!--<item>Transfer</item>-->
+        <!--<item>Permintaan</item>-->
     </string-array>
 
     <string-array name="report_list_agen">
         <item>Transaksi</item>
-        <item>Transfer</item>
-        <item>Permintaan</item>
+        <!--<item>Transfer</item>-->
+        <!--<item>Permintaan</item>-->
         <item>Fee</item>
     </string-array>
 
@@ -127,11 +127,15 @@
     </integer-array>
 
     <string-array name="settings_list_pin">
-        <item>@string/menu_setting_profile</item>
         <item>@string/menu_setting_info</item>
         <item>@string/privay_policy</item>
         <!--<item>FAQ</item>-->
 
+    </string-array>
+
+    <string-array name="transfer_list">
+        <item>@string/p2p_transfer</item>
+        <item>@string/bank_transfer</item>
     </string-array>
 
     <string-array name="settings_isnot_lvl1">
@@ -154,6 +158,11 @@
         <item>@string/menu_setting_about</item>
 
     </string-array>
+    <string-array name="settings_list_info">
+        <item>@string/menu_item_title_info_harga</item>
+        <item>@string/menu_item_title_starterkit</item>
+        <item>@string/logout</item>
+    </string-array>
 
     <string-array name="social_id_type">
         <item>KTP</item>
@@ -175,8 +184,9 @@
     </string-array>
 
     <string-array name="gender_type">
-        <item>Pria</item>
-        <item>Wanita</item>
+        <item>-Pilih Jenis Kelamin-</item>
+        <item>Laki-laki</item>
+        <item>Perempuan</item>
     </string-array>
 
     <string-array name="list_tipe_notif">
@@ -331,6 +341,26 @@
 
     <string-array name="item_tkn">
         <item>@string/newhome_listrik_pln</item>
+    </string-array>
+
+    <string-array name="list_religion">
+        <item>-Pilih Agama-</item>
+        <item>ISLAM</item>
+        <item>KRISTEN PROTESTAN</item>
+        <item>KRISTEN KATOLIK</item>
+        <item>HINDU</item>
+        <item>BUDDHA</item>
+        <item>KHONGHUCU</item>
+    </string-array>
+
+    <string-array name="list_marital_status">
+        <item>BELUM KAWIN</item>
+        <item>KAWIN</item>
+    </string-array>
+
+    <string-array name="list_nationality">
+        <item>WNI</item>
+        <item>WNA</item>
     </string-array>
 
 </resources>

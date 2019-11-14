@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
@@ -32,11 +33,14 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
@@ -311,7 +315,8 @@ public class FragCashOutAgen extends BaseFragment {
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
-
+                                Gson gson = new Gson();
+                                jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 Timber.d("isi response inquiry withdraw:" + response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -330,6 +335,15 @@ public class FragCashOutAgen extends BaseFragment {
                                     } else {
                                         initializeNoData();
                                     }
+                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                 } else {
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -381,6 +395,8 @@ public class FragCashOutAgen extends BaseFragment {
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                Gson gson = new Gson();
+                                jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
 
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 Timber.d("isi response req Code withdraw:" + response.toString());
@@ -399,6 +415,15 @@ public class FragCashOutAgen extends BaseFragment {
                                     failed = response.optInt(WebParams.MAX_FAILED, 3);
                                     Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
                                     CallPINinput(failed - attempt);
+                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                 } else {
 
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
@@ -462,6 +487,15 @@ public class FragCashOutAgen extends BaseFragment {
                                 test.showDialoginActivity(getActivity(), message);
                             } else if (code.equals(ErrorDefinition.NO_TRANSACTION)) {
                                 layout_noData.setVisibility(View.VISIBLE);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                             } else {
                                 code = model.getError_code() + ":" + model.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -565,6 +599,7 @@ public class FragCashOutAgen extends BaseFragment {
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
 
@@ -592,6 +627,15 @@ public class FragCashOutAgen extends BaseFragment {
                                     Timber.d("isi response autologout:" + response.toString());
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(act, message);
+                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                 } else {
                                     Toast.makeText(act, message, Toast.LENGTH_LONG).show();
                                 }

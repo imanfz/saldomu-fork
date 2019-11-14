@@ -1,6 +1,7 @@
 package com.sgo.saldomu.activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -14,6 +15,8 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
@@ -24,10 +27,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.securepreferences.SecurePreferences;
@@ -54,28 +61,35 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.UserProfileHandler;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.fcm.GooglePlayUtils;
+import com.sgo.saldomu.fragments.FragHelp;
 import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.FragTagihInput;
-import com.sgo.saldomu.fragments.MyHistory;
+import com.sgo.saldomu.fragments.FragmentProfileQr;
+import com.sgo.saldomu.fragments.ListTransfer;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
-import com.sgo.saldomu.fragments.RightSideDrawMenu;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.GetMemberModel;
 import com.sgo.saldomu.models.retrofit.MemberDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.services.UpdateBBSBirthPlace;
 import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
+import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,6 +126,7 @@ public class MainPage extends BaseActivity {
 
     private final static int FIRST_SCREEN_LOGIN = 1;
     private final static int FIRST_SCREEN_INTRO = 2;
+    private final static int FIRST_SCREEN_SPLASHSCREEN = 3;
     private final static int REQCODE_PLAY_SERVICE = 312;
 
 
@@ -127,7 +142,7 @@ public class MainPage extends BaseActivity {
     private DrawerLayout mDrawerLayout;
     public ActionBarDrawerToggle mDrawerToggle;
     private ProgressDialog progdialog;
-    private RelativeLayout mOuterRelativeContent;
+    private LinearLayout mOuterRelativeContent;
     private FrameLayout mLeftDrawerRelativeLayout;
     private FrameLayout mRightDrawerRelativeLayout;
     private float lastTranslate = 0.0f;
@@ -140,18 +155,108 @@ public class MainPage extends BaseActivity {
     AlertDialog devRootedDeviceAlertDialog;
     private Bundle savedInstanceState;
     private SMSclass smSclass;
-    private String isDormant;
+    private String isDormant, userNameLogin, fcm_id, fcmId_encrypted;
+    private BottomNavigationView bottomNavigationView;
+    private MenuItem itemData;
+    private NotificationActionView actionView;
 
     private LevelClass levelClass;
+    public PickAndCameraUtil pickAndCameraUtil;
+
+    private final int RESULT_GALERY = 100;
+    private final int RESULT_CAMERA = 200;
+    private String currentTab = "";
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.savedInstanceState = savedInstanceState;
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
 
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.FCM_ID, token);
+                        mEditor.putString(DefineValue.FCM_ENCRYPTED, Md5.hashMd5(token));
+                        mEditor.apply();
+                    }
+                });
+
+        this.savedInstanceState = savedInstanceState;
+        bottomNavigationView = findViewById(R.id.home_bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.menu_home);
+        bottomNavigationView.setOnNavigationItemSelectedListener(drawerListener);
+
+//        pickAndCameraUtil = new PickAndCameraUtil(this);
+
+
+        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
+        userNameLogin = sp.getString(DefineValue.USER_NAME, "");
         if (isHasAppPermission())
             InitializeApp();
+    }
+
+    BottomNavigationView.OnNavigationItemSelectedListener drawerListener = item -> {
+        Intent i;
+        switch (item.getItemId()) {
+            case R.id.menu_home:
+                currentTab = userNameLogin;
+                Fragment fragmentHome = new FragMainPage();
+//                switchContent(newFragment, getString(R.string.appname).toUpperCase());
+//                switchContent(newFragment, setGreetings());
+                switchContent(fragmentHome, userNameLogin);
+                return true;
+            case R.id.menu_transfer:
+                currentTab = getString(R.string.transfer);
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else {
+                    if (levelClass.isLevel1QAC()) {
+                        levelClass.showDialogLevel();
+                    } else {
+//                        i = new Intent(MainPage.this, ActivityListTransfer.class);
+//                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                        Fragment fragmentTransfer = new ListTransfer();
+                        switchContent(fragmentTransfer, getString(R.string.transfer));
+                        return true;
+                    }
+                }
+                return true;
+            case R.id.menu_help:
+//                i = new Intent(MainPage.this, ContactActivity.class);
+//                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                BaseFragment fragmentHelp = new FragHelp();
+                switchContent(fragmentHelp, getString(R.string.help_center));
+                return true;
+            case R.id.menu_profile:
+                currentTab = getString(R.string.myprofilelist_ab_title);
+//                i = new Intent(MainPage.this, ActivityProfileQr.class);
+//                startActivity(i);
+
+                BaseFragment fragmentProfile = new FragmentProfileQr();
+                switchContent(fragmentProfile, getString(R.string.myprofilelist_ab_title));
+                return true;
+        }
+        return false;
+    };
+
+    private void dialogDormant() {
+        Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.title_dialog_dormant),
+                getString(R.string.message_dialog_dormant_),
+                (v, isLongClick) -> {
+                    Intent i = new Intent(MainPage.this, TopUpActivity.class);
+                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                }
+        );
+
+        dialognya.show();
     }
 
     private void InitializeApp() {
@@ -230,7 +335,11 @@ public class MainPage extends BaseActivity {
                         }
                     }
                 }
-                openFirstScreen(FIRST_SCREEN_INTRO);
+
+                if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
+                    openFirstScreen(FIRST_SCREEN_SPLASHSCREEN);
+                } else
+                    openFirstScreen(FIRST_SCREEN_INTRO);
             } else {
                 initializeLogin();
             }
@@ -260,7 +369,7 @@ public class MainPage extends BaseActivity {
 //        }
 //
 //        if(isSimSame) {
-        showProgLoading(getString(R.string.initialize), false);
+        showProgLoading(getString(R.string.please_wait), false);
 
         startLocationService();
 
@@ -271,7 +380,7 @@ public class MainPage extends BaseActivity {
         isForeground = true;
         agent = sp.getBoolean(DefineValue.IS_AGENT, false);
         UtilsLoader utilsLoader = new UtilsLoader(this, sp);
-        utilsLoader.getAppVersion();
+//        utilsLoader.getAppVersion();
         ActiveAndroid.initialize(this);
         InitializeNavDrawer();
         setupFab();
@@ -632,8 +741,9 @@ public class MainPage extends BaseActivity {
 //        mRightDrawerRelativeLayout = findViewById(R.id.right_drawer);
         mDrawerLayout.setScrimColor(getResources().getColor(R.color.transparent));
         mOuterRelativeContent = findViewById(R.id.outer_layout_content);
-        findViewById(R.id.layout_include_fab).setVisibility(View.VISIBLE);
-
+//        findViewById(R.id.layout_include_fab).setVisibility(View.VISIBLE);
+        //buat lock gesture slide
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -642,6 +752,7 @@ public class MainPage extends BaseActivity {
 
 //        mRightDrawerRelativeLayout.getLayoutParams().width = width;
 //        mRightDrawerRelativeLayout.getLayoutParams().height = height;
+
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, getToolbar(), R.string.drawer_open, R.string.drawer_close) {
             @Override
@@ -706,6 +817,9 @@ public class MainPage extends BaseActivity {
             }
         };
         mDrawerToggle.syncState();
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
+        mDrawerLayout.setActivated(false);
+        disableHomeIcon();
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         getDataListMember();
@@ -754,6 +868,7 @@ public class MainPage extends BaseActivity {
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
+            params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
 
             Timber.d("isi params listmember mainpage:" + params.toString());
 
@@ -873,6 +988,17 @@ public class MainPage extends BaseActivity {
 
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginMain(MainPage.this, message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MainPage.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MainPage.this, model.getError_message());
                             } else {
                                 Timber.d("Error ListMember comlist:" + model.getError_message());
                                 code = model.getError_message();
@@ -992,6 +1118,9 @@ public class MainPage extends BaseActivity {
             case FIRST_SCREEN_INTRO:
                 i = new Intent(this, Introduction.class);
                 break;
+            case FIRST_SCREEN_SPLASHSCREEN:
+                i = new Intent(this, SplashScreen.class);
+                break;
             default:
                 i = new Intent(this, LoginActivity.class);
                 break;
@@ -1010,7 +1139,7 @@ public class MainPage extends BaseActivity {
     public void switchContent(Fragment mFragment, String fragName) {
         mContent = mFragment;
 
-        materialSheetFab.showFab();
+//        materialSheetFab.showFab();
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -1066,7 +1195,10 @@ public class MainPage extends BaseActivity {
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
+        if (sp.getString(DefineValue.IS_POS, "N").equals(DefineValue.N)) {
+            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
+        } else
+            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
         mEditor.putString(DefineValue.PREVIOUS_BALANCE, balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, contact_first_time);
 
@@ -1082,6 +1214,14 @@ public class MainPage extends BaseActivity {
         mEditor.putString(DefineValue.IS_POS, "");
         mEditor.remove(DefineValue.IS_DORMANT);
         mEditor.remove(DefineValue.IS_REGISTERED_LEVEL);
+        mEditor.remove(DefineValue.CATEGORY);
+        mEditor.remove(DefineValue.SAME_BANNER);
+        mEditor.remove(DefineValue.DATA_BANNER);
+        mEditor.remove(DefineValue.IS_POS);
+        mEditor.remove(DefineValue.COMM_UPGRADE_MEMBER);
+        mEditor.remove(DefineValue.MEMBER_CREATED);
+        mEditor.remove(DefineValue.LAST_CURRENT_LONGITUDE);
+        mEditor.remove(DefineValue.LAST_CURRENT_LATITUDE);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -1090,7 +1230,7 @@ public class MainPage extends BaseActivity {
 
     private void sentLogout() {
         try {
-            showProgLoading("", true);
+            showProgressDialog();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LOGOUT);
 //            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
@@ -1119,7 +1259,7 @@ public class MainPage extends BaseActivity {
 
                         @Override
                         public void onComplete() {
-                            hideProgLoading();
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
@@ -1166,18 +1306,19 @@ public class MainPage extends BaseActivity {
                             mNavDrawer.selectItem(NavigationDrawMenu.MPAYFRIENDS, dataBundle);
                             break;
                         case NotificationActivity.TYPE_LIKE:
+                            break;
                         case NotificationActivity.TYPE_COMMENT:
-                            int _post_id = Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID, "0"));
-                            if (mContent instanceof FragMainPage) {
-                                FragMainPage mFrag = (FragMainPage) mContent;
-                                if (mFrag.getFragment(0) instanceof MyHistory) {
-                                    MyHistory _history = (MyHistory) mFrag.getFragment(0);
-                                    _history.ScrolltoItem(_post_id);
-                                }
-                            }
-                            Intent i = new Intent(this, HistoryDetailActivity.class);
-                            i.putExtras(data);
-                            switchActivity(i, ACTIVITY_RESULT);
+//                            int _post_id = Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID, "0"));
+//                            if (mContent instanceof FragMainPage) {
+//                                FragMainPage mFrag = (FragMainPage) mContent;
+//                                if (mFrag.getFragment(0) instanceof MyHistory) {
+//                                    MyHistory _history = (MyHistory) mFrag.getFragment(0);
+//                                    _history.ScrolltoItem(_post_id);
+//                                }
+//                            }
+//                            Intent i = new Intent(this, HistoryDetailActivity.class);
+//                            i.putExtras(data);
+//                            switchActivity(i, ACTIVITY_RESULT);
                             break;
                         case NotificationActivity.REJECTED_KTP:
                             Intent e = new Intent(this, MyProfileNewActivity.class);
@@ -1207,9 +1348,17 @@ public class MainPage extends BaseActivity {
                 mNavDrawer.refreshDataNavDrawer();
             }
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
+            if (resultCode == -1) {
+                Fragment fragmentProfileQr = getSupportFragmentManager().findFragmentByTag(getString(R.string.myprofilelist_ab_title));
+                if (requestCode == RESULT_GALERY) {
+                    fragmentProfileQr.onActivityResult(requestCode, resultCode, data);
+                } else if (requestCode == RESULT_CAMERA) {
+                    fragmentProfileQr.onActivityResult(requestCode, resultCode, data);
+                }
+            }
         }
     }
+
 
     private Boolean isLogin() {
         flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
@@ -1223,17 +1372,9 @@ public class MainPage extends BaseActivity {
         AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
         alertbox.setTitle("Warning");
         alertbox.setMessage("Exit Application?");
-        alertbox.setPositiveButton("OK", new
-                DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        switchLogout();
-                    }
-                });
-        alertbox.setNegativeButton(getString(R.string.cancel), new
-                DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
+        alertbox.setPositiveButton("OK", (arg0, arg1) -> switchLogout());
+        alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
+        });
         alertbox.show();
     }
 //---------------------------------------------------------------------------------------------------------
@@ -1246,10 +1387,10 @@ public class MainPage extends BaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem itemData = menu.findItem(R.id.notifications);
+        itemData = menu.findItem(R.id.notifications);
 
         itemData.setActionView(R.layout.ab_notification);
-        NotificationActionView actionView = (NotificationActionView) itemData.getActionView();
+        actionView = (NotificationActionView) itemData.getActionView();
         actionView.setItemData(menu, itemData);
         actionView.setCount(AmountNotif); // initial value
         if (AmountNotif == 0) actionView.hideView();
@@ -1259,7 +1400,10 @@ public class MainPage extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         invalidateOptionsMenu();
-        if (item.getItemId() == R.id.notifications) {
+        if (item.getItemId() == R.id.favorite) {
+            Intent i = new Intent(this, FavoriteActivity.class);
+            startActivity(i);
+        } else if (item.getItemId() == R.id.notifications) {
             if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
                 //NotificationActionView.setCountDelta(this, 3);
                 //FragNotification fragNotification = new FragNotification();
@@ -1277,18 +1421,9 @@ public class MainPage extends BaseActivity {
 //            mDrawerLayout.openDrawer(mRightDrawerRelativeLayout);
 //            return true;
 //        }
-        else if (item.getItemId() == R.id.menu_item_home) {
-            invalidateOptionsMenu();
-            Fragment newFragment = new FragMainPage();
-            switchContent(newFragment, getString(R.string.appname).toUpperCase());
-            mNavDrawer.setPositionNull();
-            invalidateOptionsMenu();
-
-//            Realm _realm = RealmManager.getRealmTagih();
-//
-//            RealmResults<TagihModel> list = _realm.where(TagihModel.class).findAll();
-//
-//            Log.d("mainpage", "id : " + list.get(0).getId());
+        else if (item.getItemId() == R.id.settings) {
+            Intent i = new Intent(this, ActivityListSettings.class);
+            switchActivity(i, ACTIVITY_RESULT);
         }
         invalidateOptionsMenu();
         return super.onOptionsItemSelected(item);
@@ -1312,7 +1447,7 @@ public class MainPage extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Timber.w("get Back Stack Entry Count:" + String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
+        Timber.w("get Back Stack Entry Count:" + getSupportFragmentManager().getBackStackEntryCount());
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             showLogoutDialog();
         } else super.onBackPressed();
@@ -1375,6 +1510,10 @@ public class MainPage extends BaseActivity {
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
         }
 
+        if (currentTab.equalsIgnoreCase(userNameLogin)) {
+            bottomNavigationView.setSelectedItemId(R.id.menu_home);
+        }
+
         LocalBroadcastManager.getInstance(this).registerReceiver(btnReceiver, new IntentFilter(MainPage.RESULT_HOME_BALANCE));
 
     }
@@ -1389,6 +1528,8 @@ public class MainPage extends BaseActivity {
                 serviceAppInfoReference.StopCallAppInfo();
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(btnReceiver);
+        if (progdialog != null)
+            progdialog.dismiss();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.sgo.saldomu.activities;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -43,7 +44,7 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
 
         if (InetHandler.isNetworkAvailable(this))
-            new UtilsLoader(this).getAppVersion();
+//            new UtilsLoader(this).getAppVersion();
 
         if (findViewById(R.id.loginContent) != null) {
             if (savedInstanceState != null) {
@@ -66,7 +67,7 @@ public class LoginActivity extends BaseActivity {
 
             Bundle m = getIntent().getExtras();
             if (m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
-                if (m.getInt(DefineValue.USER_IS_NEW, 0) == 1) {
+                if (m.getInt(DefineValue.USER_IS_NEW, 0) == 1  ) {
                     newFrag = new Regist1();
                     newFrag.setArguments(m);
 //                } else if (BuildConfig.DEBUG == true && BuildConfig.FLAVOR.equalsIgnoreCase( "development") && m.getInt(DefineValue.USER_IS_NEW, 0) != 0 ) { //untuk shorcut dari tombol di activity introduction

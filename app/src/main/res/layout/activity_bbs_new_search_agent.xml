@@ -43,6 +43,7 @@
     <com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton
         android:id="@+id/searchLocationEditText"
         android:layout_width="0dp"
+        android:layout_marginLeft="8dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:hint="@string/search_location_hint_request_bbs_activity_label"
@@ -62,6 +63,7 @@
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:orientation="horizontal"
+        android:layout_margin="@dimen/margin_10dp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -101,12 +103,15 @@
         <Button
             android:id="@+id/btnProses"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:layout_weight="1.07"
             android:gravity="center_vertical|center"
             android:text="@string/menu_item_search_agent"
+            android:textSize="14sp"
             tools:layout_editor_absoluteX="283dp"
-            tools:layout_editor_absoluteY="8dp" />
+            tools:layout_editor_absoluteY="8dp"
+            android:background="@drawable/rounded_background_blue"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 
@@ -142,7 +147,7 @@
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/orange_800"
+                android:textColor="@color/colorPrimaryDark"
                 android:layout_alignBottom="@+id/imageView2"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/imageView2"
@@ -172,7 +177,7 @@
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/orange_800"
+                android:textColor="@color/colorPrimaryDark"
                 android:layout_alignBottom="@+id/imageView3"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/imageView3"
@@ -202,7 +207,7 @@
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/orange_800"
+                android:textColor="@color/colorPrimaryDark"
                 android:layout_alignBottom="@+id/imageView4"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/imageView4"

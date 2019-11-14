@@ -1,9 +1,11 @@
 package com.sgo.saldomu.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.SearchAgentUpgradeActivity;
 import com.sgo.saldomu.coreclass.LifeCycleHandler;
 
 import timber.log.Timber;
@@ -27,19 +30,22 @@ public class DefinedDialog {
     }
 
     public static ProgressDialog CreateProgressDialog(Context context, String message) {
-        ProgressDialog dialog = new ProgressDialog(context);
-        try {
+        if (context!=null){
+            ProgressDialog dialog = new ProgressDialog(context);
+            try {
                 dialog.show();
-        } catch (WindowManager.BadTokenException e) {
-            Timber.w("define dialog error:" + e.getMessage());
+            } catch (WindowManager.BadTokenException e) {
+                Timber.w("define dialog error:" + e.getMessage());
+            }
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setContentView(R.layout.dialog_progress);
+            TextView text1 = dialog.findViewById(R.id.progressText1);
+            text1.setText(message);
+            return dialog;
         }
-        dialog.setIndeterminate(true);
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.dialog_progress);
-        TextView text1 = dialog.findViewById(R.id.progressText1);
-        text1.setText(message);
-        return dialog;
+        return null;
     }
 
     public static void showErrorDialog(Context context, String message) {
@@ -108,6 +114,27 @@ public class DefinedDialog {
             public void onClick(View v) {
                 dialog.dismiss();
             }
+        });
+        return dialog;
+    }
+
+    public static Dialog MessageSearchAgent(Context context, String _title, String _message){
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_search_agent);
+        dialog.setCancelable(false);
+
+        TextView title = dialog.findViewById(R.id.title_dialog);
+        TextView message = dialog.findViewById(R.id.message_dialog);
+
+        title.setText(_title);
+        message.setText(_message);
+        dialog.findViewById(R.id.btn_dialog_cancel).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        dialog.findViewById(R.id.btn_dialog_search).setOnClickListener(v -> {
+            dialog.dismiss();
+            context.startActivity(new Intent(context, SearchAgentUpgradeActivity.class));
         });
         return dialog;
     }

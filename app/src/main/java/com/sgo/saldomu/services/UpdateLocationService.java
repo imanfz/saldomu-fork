@@ -1,5 +1,6 @@
 package com.sgo.saldomu.services;
 
+import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,11 +18,13 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.interfaces.ObjListeners;
 
 import org.json.JSONException;
@@ -38,6 +41,8 @@ import timber.log.Timber;
 
 public class UpdateLocationService extends JobService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+    private Activity mActivity;
 
     static public final String TAG = "UpdateLocationService";
     private Location mLastLocation;
@@ -90,6 +95,10 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
                 latitude  = mLastLocation.getLatitude();
                 longitude = mLastLocation.getLongitude();
 
+                sp.edit().putDouble(DefineValue.LONGITUDE_UPDATED, longitude).apply();
+                sp.edit().putDouble(DefineValue.LATITUDE_UPDATED, latitude).apply();
+                sp.edit().apply();
+
                 Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
                 if ( isAgent )
@@ -125,6 +134,9 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
 
         longitude   = mLastLocation.getLongitude();
         latitude    = mLastLocation.getLatitude();
+
+        sp.edit().putDouble(DefineValue.LONGITUDE_UPDATED, longitude).apply();
+        sp.edit().putDouble(DefineValue.LATITUDE_UPDATED, latitude).apply();
 
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
@@ -198,6 +210,7 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         params.put(WebParams.LONGITUDE, longitude );
         params.put(WebParams.LATITUDE, latitude );
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, "") );
+        params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, "") );
         Timber.d("params location update: "+params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_LOCATION, params,
@@ -206,6 +219,12 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
                     public void onResponses(JSONObject response) {
                         try {
                             String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.LOGOUT_CODE))
+                                if (getmActivity().isFinishing()) {
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getmActivity(), message);
+                                }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -222,6 +241,10 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
                     }
                 });
 
+    }
+
+    private Activity getmActivity() {
+        return mActivity;
     }
 
 }

@@ -62,6 +62,7 @@ import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.activities.ReportActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
+import com.sgo.saldomu.coreclass.CoreApp;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -90,7 +91,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import okhttp3.MediaType;
@@ -175,7 +179,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     private String isRegisteredLevel; //saat antri untuk diverifikasi
     String categoryIdcta;
     ArrayList<ShopCategory> shopCategories = new ArrayList<>();
-    private String isDormant;
+    private String isDormant, userNameLogin;
 
     Intent i;
 
@@ -209,6 +213,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
         isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL, "0");
         categoryIdcta = sp.getString(DefineValue.CATEGORY_ID_CTA, "");
+        userNameLogin = sp.getString(DefineValue.USER_NAME, "");
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
         ListView mListView = v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
@@ -413,7 +418,8 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
     public void initializeNavDrawer() {
         if (!getActivity().isFinishing()) {
             Fragment newFragment = new FragMainPage();
-            switchFragment(newFragment, getString(R.string.appname).toUpperCase());
+            MainPage mainPage=(MainPage) getActivity();
+            switchFragment(newFragment, userNameLogin);
             refreshDataNavDrawer();
         }
     }
@@ -434,9 +440,10 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                     } else {
                         new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getCurrentPhotoPath());
                     }
-                } else {
-                    Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_LONG).show();
                 }
+//                else {
+//                    Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_LONG).show();
+//                }
                 break;
             default:
                 break;
@@ -477,7 +484,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 //        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));
         models.add(new navdrawmainmenuModel(R.drawable.ic_report, R.drawable.ic_report, getString(R.string.menu_item_title_scadm), MSCADM));              //6
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_report, R.drawable.ic_report, getString(R.string.menu_item_title_report), MREPORT));              //6
-        models.add(new navdrawmainmenuModel(R.drawable.ic_user, R.drawable.ic_user, getString(R.string.menu_item_title_help1), MHELP));                          //12
+        models.add(new navdrawmainmenuModel(R.drawable.ic_user, R.drawable.ic_user, getString(R.string.menu_item_title_help), MHELP));                          //12
         models.add(new navdrawmainmenuModel(R.drawable.ic_belanja, R.drawable.ic_belanja, getString(R.string.menu_item_title_info_harga), MINFO)); //28                         //15
         models.add(new navdrawmainmenuModel(R.drawable.ic_setting, R.drawable.ic_setting, getString(R.string.menu_item_title_setting), MSETTINGS));                    //11
 //        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_logout)));                                        //13
@@ -621,17 +628,9 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 AlertDialog.Builder alertbox = new AlertDialog.Builder(getActivity());
                 alertbox.setTitle(getString(R.string.warning));
                 alertbox.setMessage(getString(R.string.exit_message));
-                alertbox.setPositiveButton(getString(R.string.ok), new
-                        DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                switchLogout();
-                            }
-                        });
-                alertbox.setNegativeButton(getString(R.string.cancel), new
-                        DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface arg0, int arg1) {
-                            }
-                        });
+                alertbox.setPositiveButton(getString(R.string.ok), (arg0, arg1) -> switchLogout());
+                alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
+                });
                 alertbox.show();
                 break;
             case MREGISTERLOCATION:
@@ -679,6 +678,10 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 break;
             case MINFO:
                 startActivity(new Intent(getActivity(), InfoHargaWebActivity.class));
+                break;
+            case MCASHOUT:
+                newFragment = new FragListCategoryBbs();
+                switchFragment(newFragment, getString(R.string.title_cashout_bank));
                 break;
         }
     }
@@ -856,7 +859,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
 
     private void uploadFileToServer(File photoFile) {
 
-        progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+        progdialog2 = DefinedDialog.CreateProgressDialog(CoreApp.getAppContext(), "");
 
         if (accessKey == null)
             accessKey = sp.getString(DefineValue.ACCESS_KEY, "");

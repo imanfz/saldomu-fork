@@ -570,5 +570,30 @@ public class WebParams {
 
     public static String FCM_ID = "fcm_id";
     public static String REFERENCE_ID = "reference_id";
+    public static String CLIENT_APP = "client_app";
+
+    public static String STARTER_KITS = "starter_kits";
+    public static String STARTER_ID = "starter_id";
+    public static String FILE_TITLE = "file_title";
+    public static String MEMBER_EMAIL = "member_email";
+    public static String BILLER_INFO = "biller_info";
+    public static String MEMBER_ID_CUST = "member_id_cust";
+    public static String CUST_RT = "cust_rt";
+    public static String CUST_RW = "cust_rw";
+    public static String CUST_KELURAHAN = "cust_kelurahan";
+    public static String CUST_KECAMATAN = "cust_kecamatan";
+    public static String CUST_RELIGION = "cust_religion";
+    public static String CUST_MARRIAGE_STATUS = "cust_marriage_status";
+    public static String CUST_OCCUPATION = "cust_occupation";
+    public static String CUST_NATIONALITY = "cust_nationality";
+
+    public static String TX_FAVORITE_TYPE = "tx_favorite_type";
+    public static String NOTES = "notes";
+    public static String SOURCE_BANK_CODE = "source_bank_code";
+    public static String MEMBER_CREATED = "member_created";
+    public static String FROM_AGENT = "from_agent";
+    public static String ERROR_9333 = "9333";
+    public static String ERROR_0066 = "0066";
+    public static String LOC_TX_ID = "loc_tx_id";
 
 }

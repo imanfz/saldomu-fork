@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CashoutActivity;
 import com.sgo.saldomu.activities.InsertPIN;
@@ -32,12 +33,16 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.TransactionResult;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -196,10 +201,12 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                Gson gson = new Gson();
+                                jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     Timber.d("isi response confirm cashout:"+response.toString());
-                                    showReportBillerDialog(name, DateTimeFormat.getCurrentDateTime(), userPhoneID, txId, bankName, accNo,
+                                    showReportBillerDialog(name, response.optString(WebParams.RC_DTIME), userPhoneID, txId, bankName, accNo,
                                             accName, ccyId + " " + CurrencyFormat.format(nominal),
                                             ccyId + " " + CurrencyFormat.format(fee), ccyId + " " + CurrencyFormat.format(total),
                                             response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
@@ -213,6 +220,15 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
                                 else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     showDialogError(code);
+                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                 }else {
                                     Timber.d("isi error confirm cashout:"+response.toString());
                                     String code_msg = response.getString(WebParams.ERROR_MESSAGE);
@@ -264,10 +280,10 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
         args.putString(DefineValue.DATE_TIME,_date);
         args.putString(DefineValue.USERID_PHONE,_userId);
         args.putString(DefineValue.TX_ID,_txId);
-        args.putString(DefineValue.BANK_NAME,_bankName);
-        args.putString(DefineValue.ACCOUNT_NUMBER,_accNo);
-        args.putString(DefineValue.ACCT_NAME,_accName);
-        args.putString(DefineValue.NOMINAL,_nominal);
+        args.putString(DefineValue.PAYMENT_BANK,_bankName);
+        args.putString(DefineValue.NO_BENEF,_accNo);
+        args.putString(DefineValue.PAYMENT_NAME,_accName);
+        args.putString(DefineValue.AMOUNT,_nominal);
         args.putString(DefineValue.FEE,_fee);
         args.putString(DefineValue.TOTAL_AMOUNT,_totalAmount);
         args.putString(DefineValue.REPORT_TYPE,DefineValue.CASHOUT);

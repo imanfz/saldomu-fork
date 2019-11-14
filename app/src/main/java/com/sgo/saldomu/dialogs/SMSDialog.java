@@ -44,6 +44,7 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.InqSMSModel;
 
 import java.util.Calendar;
@@ -180,8 +181,6 @@ public class SMSDialog extends DialogFragment {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 tvMessage.setText(message1);
                 progText.setVisibility(View.GONE);
                 progBar.setVisibility(View.GONE);
@@ -274,7 +273,7 @@ public class SMSDialog extends DialogFragment {
 //        dateTime = DateTimeFormat.getCurrentDateTimeMillis();
 
 
-//        timeStamp = String.valueOf(date);
+        timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
         Timber.i("isi timestamp : "+timeStamp);
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
@@ -341,6 +340,7 @@ public class SMSDialog extends DialogFragment {
 
     public void sentSms() {
         if (!isStop) {
+            String msg;
             Timber.d("jalanin sentSMSVerify "+ICCIDDevice);
             String mobileNetworkCode = NoHPFormat.getMNC(ICCIDDevice);
             String mobileDestination    = NoHPFormat.getSMSVerifyDestination(mobileNetworkCode);
@@ -349,8 +349,11 @@ public class SMSDialog extends DialogFragment {
 
 
 //            smsClass.sendSMSVerify(mobileDestination, imeiDevice, ICCIDDevice, timeStamp, dateTime, smsVerifyListener);
-            String msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime + "_" +fcmEncrypted ;
-            Uri uri=Uri.parse("smsto:"+mobileDestination);
+            if (!sp.getString(DefineValue.FCM_ID,"").isEmpty()) {
+                msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime + "_" + fcmEncrypted;
+            }else {
+                msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime;
+            }Uri uri=Uri.parse("smsto:"+mobileDestination);
             Intent intent=new Intent(Intent.ACTION_SENDTO,uri);
             intent.putExtra("sms_body",msg);
             startActivityForResult(intent,REQUEST_SMS);
@@ -410,6 +413,15 @@ public class SMSDialog extends DialogFragment {
                                             }
                                         }, 3000);
 
+                                    }else if (code.equals(DefineValue.ERROR_9333)) {
+                                        Timber.d("isi response app data:" + model.getApp_data());
+                                        final AppDataModel appModel = model.getApp_data();
+                                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    } else if (code.equals(DefineValue.ERROR_0066)) {
+                                        Timber.d("isi response maintenance:" + object.toString());
+                                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                        alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                     } else {
 //                                            if ()
 //                                idx_fail++;

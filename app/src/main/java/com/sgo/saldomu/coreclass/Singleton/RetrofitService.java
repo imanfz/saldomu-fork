@@ -56,6 +56,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -334,6 +335,7 @@ public class RetrofitService {
         params.put(WebParams.RC_UUID, uuidnya);
         params.put(WebParams.RC_DTIME, dtime);
         params.put(WebParams.SIGNATURE, hash);
+        params.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
 
         return params;
     }
@@ -354,6 +356,7 @@ public class RetrofitService {
         params.put(WebParams.RQ_UUID, uuidnya);
         params.put(WebParams.RQ_DTIME, dtime);
         params.put(WebParams.SIGNATURE, hash);
+        params.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
 
         return params;
     }
@@ -379,9 +382,12 @@ public class RetrofitService {
                 dtime);
         RequestBody req3 = RequestBody.create(MediaType.parse("text/plain"),
                 hash);
+        RequestBody req4 = RequestBody.create(MediaType.parse("text/plain"),
+                BuildConfig.VERSION_NAME);
         params.put(WebParams.RC_UUID, req1);
         params.put(WebParams.RC_DTIME, req2);
         params.put(WebParams.SIGNATURE, req3);
+        params.put(WebParams.PACKAGE_VERSION, req4);
 
         return params;
     }
@@ -494,6 +500,12 @@ public class RetrofitService {
                         listener.onComplete();
                     }
                 });
+    }
+
+    public Observable<JsonObject> PostObjectRequest2(String link, HashMap<String, Object> param) {
+        return BuildRetrofit().PostObjectInterface(link, param)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public void PostObjectRequest(String link, HashMap<String, Object> param, final ResponseListener listener) {
