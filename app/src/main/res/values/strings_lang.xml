@@ -1427,4 +1427,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="upgrade">U P G R A D E</string>
     <string name="terms_bank_acct">*wajib memiliki rekening Bank</string>
     <string name="resent_otp">Resent OTP</string>
+    <string name="menu_title_ctr">Cash Collection</string>
 </resources>

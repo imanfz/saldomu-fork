@@ -491,7 +491,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
                     Intent intent = new Intent(getActivity(), HistoryActivity.class);
                     startActivity(intent);
-                }else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     Intent intent = new Intent(getActivity(), ActivitySCADM.class);
                     startActivity(intent);
                 }
@@ -983,6 +983,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         break;
                     case "UPG":
                         menuStrings.add(getResources().getString(R.string.menu_item_title_upgrade_member));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_upgrade));
+                        break;
+                    case "CTR":
+                        menuStrings.add(getResources().getString(R.string.menu_title_ctr));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_upgrade));
                         break;
                     case "BIL":
