@@ -105,7 +105,7 @@ public class BillerDesciption2 extends BaseFragment {
     private String shareType;
     private String callback_url;
     private String biller_type_code;
-    private TextView tv_biller_name_value;
+    private TextView tv_biller_name_value, tvbillerid;
     private TextView tv_item_name_value;
     private TextView tv_amount_value, tv_total_value;
     private TextView tv_id_cust;
@@ -148,6 +148,7 @@ public class BillerDesciption2 extends BaseFragment {
         spin_payment_options = v.findViewById(R.id.spinner_billerinput_payment_options);
         layout_additionalFee = v.findViewById(R.id.layout_additional_fee);
         et_additionalFee = v.findViewById(R.id.et_additionalfee);
+        tvbillerid = v.findViewById(R.id.tv_billerid);
 
         return v;
     }
@@ -197,6 +198,11 @@ public class BillerDesciption2 extends BaseFragment {
         biller_comm_code = mBillerData.getComm_code();
         biller_api_key = mBillerData.getApi_key();
         callback_url = mBillerData.getCallback_url();
+
+        if (biller_type_code.equalsIgnoreCase("GAME"))
+        {
+            tvbillerid.setText("No. Referensi");
+        }
 
         if (biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS) ||
                 biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_NON_TAG) ||

@@ -130,13 +130,13 @@ android {
             buildConfigField 'String', "SMS_CENTER_XL", "\"+6287850097188\""
             buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282257800888\""
             buildConfigField 'String', "SMS_CENTER_IND", "\"+6285784575700\""
-            buildConfigField 'String', "SMS_CENTER_3", "\"+6287850097188\""
+            buildConfigField 'String', "SMS_CENTER_3", "\"+6289665482956\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 64
+            versionCode = 65
             versionName "3.8"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
