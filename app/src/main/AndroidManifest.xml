@@ -511,6 +511,11 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CashCollectionActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".services.BalanceService"

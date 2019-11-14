@@ -42,6 +42,7 @@ public class UpdateBBSData extends IntentService {
     final public static int FAILED = 10;
     final String CTA = "CTA";
     final String ATC = "ATC";
+    final String CTR = "CTR";
 
     SecurePreferences sp;
     private ResultReceiver localResultReceiver;
