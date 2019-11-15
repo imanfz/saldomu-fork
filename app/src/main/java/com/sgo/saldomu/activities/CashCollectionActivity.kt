@@ -27,7 +27,7 @@ class CashCollectionActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
 
-        InitializeToolbar()
+        initializeToolbar()
 
         if (findViewById<View>(R.id.layout_cashcollection) != null) {
             if (savedInstanceState != null) {
@@ -48,7 +48,7 @@ class CashCollectionActivity : BaseActivity() {
         setResult(MainPage.RESULT_NORMAL)
     }
 
-    fun InitializeToolbar() {
+    fun initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left)
         actionBarTitle = getString(R.string.menu_title_ctr)
     }
@@ -64,10 +64,6 @@ class CashCollectionActivity : BaseActivity() {
             }
             else -> return super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     fun switchContent(mFragment: Fragment, fragName: String, isBackstack: Boolean) {
@@ -94,11 +90,4 @@ class CashCollectionActivity : BaseActivity() {
         setResult(MainPage.RESULT_BALANCE)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
 }
