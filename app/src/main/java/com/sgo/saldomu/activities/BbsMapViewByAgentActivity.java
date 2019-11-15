@@ -931,7 +931,14 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                             }
                                             startActivity(intent);
                                             finish();
-                                        } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
+                                        } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.CTR)) {
+                                            Intent intent = new Intent(getApplicationContext(), CashCollectionActivity.class);
+                                            intent.putExtra(DefineValue.BANK_CODE, response.optString(WebParams.BANK_CODE));
+                                            intent.putExtra(DefineValue.IS_SEARCH_CTR, true);
+                                            intent.putExtra(DefineValue.AMOUNT, response.optString(WebParams.AMOUNT));
+                                            startActivity(intent);
+                                            finish();
+                                        }else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
                                             Intent intent = new Intent(getApplicationContext(), MainPage.class);
                                             startActivity(intent);
                                             finish();

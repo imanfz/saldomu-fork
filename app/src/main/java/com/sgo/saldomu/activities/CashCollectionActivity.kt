@@ -19,6 +19,8 @@ class CashCollectionActivity : BaseActivity() {
     internal lateinit var fragmentManager: FragmentManager
     internal lateinit var mContent: Fragment
     internal lateinit var newFragment: Fragment
+    lateinit var bankCode: String
+    lateinit var amount: String
 
     override fun getLayoutResource(): Int {
         return R.layout.activity_cash_collection
@@ -29,6 +31,13 @@ class CashCollectionActivity : BaseActivity() {
 
         initializeToolbar()
 
+        val intent = intent
+        val is_search = intent.getBooleanExtra(DefineValue.IS_SEARCH_CTR, false)
+        if (is_search) {
+            bankCode = intent.getStringExtra(DefineValue.BANK_CODE)
+            amount = intent.getStringExtra(DefineValue.AMOUNT)
+        }
+
         if (findViewById<View>(R.id.layout_cashcollection) != null) {
             if (savedInstanceState != null) {
                 return
@@ -36,7 +45,13 @@ class CashCollectionActivity : BaseActivity() {
 
             newFragment = FragCashCollection()
             val bundle = Bundle()
-            bundle.putBoolean(DefineValue.IS_SEARCH_DGI, true)
+            bundle.putBoolean(DefineValue.IS_SEARCH_CTR, is_search)
+            if (is_search)
+            {
+                bundle.putString(DefineValue.BANK_CODE, bankCode)
+                bundle.putString(DefineValue.AMOUNT, amount)
+            }
+            newFragment.arguments = bundle
         }
 
         mContent = newFragment
