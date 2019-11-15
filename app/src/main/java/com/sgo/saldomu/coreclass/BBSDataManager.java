@@ -87,31 +87,31 @@ public class BBSDataManager {
         }
     }
 
-//    public static Boolean isDataCTRNotValid(){
-//        BBSDataManager bbsDataManager = new BBSDataManager();
-//        boolean a = bbsDataManager.isMustUpdate();
-//        boolean b = bbsDataManager.isSameUser();
-//        Log.d("bbs data manager", "a: " + a + ", b: " + b);
-//        if(a || !b) {
-////        if(bbsDataManager.isMustUpdate() || !bbsDataManager.isSameUser()) {
-//            Timber.d("return true data ctr must update");
-//            return true;
-//        }
-//
-//        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-//        if(sp.contains(DefineValue.UPDATE_TIME_BBS_CTR_DATA)){
-//            String curr_date = sp.getString(DefineValue.UPDATE_TIME_BBS_CTR_DATA,"");
-////            Calendar checkCalendar = Calendar.getInstance();
-//            Date checkDate = DateTimeFormat.convertStringtoCustomDate(curr_date);
-////            return checkDate.compareTo(checkCalendar.getTime()) == 0;
-//            Timber.d("return dari checkDateismorethan31days data ctr ");
-//            return DateTimeFormat.checkDateisMoreThan31Days(checkDate);
-//        }
-//        else {
-//            Timber.d("return true data atc not valid");
-//            return true;
-//        }
-//    }
+    public static Boolean isDataCTRNotValid(){
+        BBSDataManager bbsDataManager = new BBSDataManager();
+        boolean a = bbsDataManager.isMustUpdate();
+        boolean b = bbsDataManager.isSameUser();
+        Log.d("bbs data manager", "a: " + a + ", b: " + b);
+        if(a || !b) {
+//        if(bbsDataManager.isMustUpdate() || !bbsDataManager.isSameUser()) {
+            Timber.d("return true data ctr must update");
+            return true;
+        }
+
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        if(sp.contains(DefineValue.UPDATE_TIME_BBS_CTR_DATA)){
+            String curr_date = sp.getString(DefineValue.UPDATE_TIME_BBS_CTR_DATA,"");
+//            Calendar checkCalendar = Calendar.getInstance();
+            Date checkDate = DateTimeFormat.convertStringtoCustomDate(curr_date);
+//            return checkDate.compareTo(checkCalendar.getTime()) == 0;
+            Timber.d("return dari checkDateismorethan31days data ctr ");
+            return DateTimeFormat.checkDateisMoreThan31Days(checkDate);
+        }
+        else {
+            Timber.d("return true data atc not valid");
+            return true;
+        }
+    }
 
     @NonNull
     public Boolean isValidToUpdate() {

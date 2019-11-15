@@ -623,6 +623,7 @@ public class DefineValue {
     public static String CT_CODE = "CT";
     public static String BG_CODE = "BG";
     public static String TS_CODE = "TS";
+    public static String IS_SEARCH_CTR = "isSearchCTR";
 
 }
 
