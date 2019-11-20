@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,12 +24,10 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.ChangePassword;
 import com.sgo.saldomu.activities.CreatePIN;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.PasswordRegisterActivity;
@@ -71,9 +70,9 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     CheckBox cb_terms;
     View v;
     final int RC_READ_SMS = 10;
-
     Fragment mFragment;
     ProgressDialog progdialog;
+    SecurePreferences sp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,6 +97,8 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         namaValue = getActivity().findViewById(R.id.name_value);
         emailValue = getActivity().findViewById(R.id.email_value);
@@ -172,6 +173,8 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             noHPValue.setText(noHPValid);
             noHPValue.setEnabled(false);
         }
+
+
     }
 
     @Override
@@ -263,6 +266,8 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             params.put(WebParams.CUST_EMAIL, emailValue.getText());
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.FLAG_NEW_FLOW, DefineValue.Y);
+            params.put(WebParams.LATITUDE, sp.getDouble(DefineValue.LATITUDE_UPDATED,0.0));
+            params.put(WebParams.LONGITUDE, sp.getDouble(DefineValue.LONGITUDE_UPDATED,0.0));
             if (referalValue.getText().toString().trim().length() >0) {
                 params.put(WebParams.REFERAL_NO, referalValue.getText());
             } else params.put(WebParams.REFERAL_NO, "");
@@ -652,7 +657,9 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     }
 
     @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
 
     }
+
+
 }
