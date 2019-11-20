@@ -12,11 +12,15 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.loopj.android.http.JsonHttpResponseHandler;
+
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.RSA;
@@ -24,10 +28,12 @@ import com.sgo.saldomu.widgets.BaseActivity;
 import com.venmo.android.pin.PinFragment;
 import com.venmo.android.pin.PinFragmentConfiguration;
 import com.venmo.android.pin.Validator;
-import org.apache.http.Header;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -58,23 +64,45 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         if(userId.isEmpty())
             userId = getIntent().getExtras().getString(DefineValue.USERID_PHONE,"");
 
-        new UtilsLoader(this,sp).getFailedPIN(userId, new OnLoadDataListener() {
-            @Override
-            public void onSuccess(Object deData) {
-                String _dedata = String.valueOf(deData);
-                setTextAttempt(_dedata);
-            }
+        String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
 
-            @Override
-            public void onFail(Bundle message) {
+        if (flagLogin.equalsIgnoreCase(DefineValue.STRING_NO)){
+            new UtilsLoader(this,sp).getFailedPINNo(userId, new OnLoadDataListener() {
+                @Override
+                public void onSuccess(Object deData) {
+                    String _dedata = String.valueOf(deData);
+                    setTextAttempt(_dedata);
+                }
 
-            }
+                @Override
+                public void onFail(Bundle message) {
 
-            @Override
-            public void onFailure(String message) {
+                }
 
-            }
-        });
+                @Override
+                public void onFailure(String message) {
+
+                }
+            });
+        }else {
+            new UtilsLoader(this,sp).getFailedPIN(userId, new OnLoadDataListener() {
+                @Override
+                public void onSuccess(Object deData) {
+                    String _dedata = String.valueOf(deData);
+                    setTextAttempt(_dedata);
+                }
+
+                @Override
+                public void onFail(Bundle message) {
+
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+            });
+        }
 
         InitializeToolbar();
 
@@ -207,62 +235,48 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     public void getHelpPin(final ProgressBar progDialog, final TextView Message){
         try{
-            MyApiClient.getHelpPIN(this, new JsonHttpResponseHandler() {
 
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    super.onSuccess(statusCode, headers, response);
-                    String message_value;
-                    try {
-                        JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));
-                        JSONObject mObject;
-                        Log.d("getHelpPin", response.toString());
-                        for (int i = 0; i < arrayContact.length(); i++) {
-                            mObject = arrayContact.getJSONObject(i);
+            HashMap<String, Object>  params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_HELP_PIN, "");
+
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_HELP_PIN, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            String message_value;
+                            try {
+                                JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));
+                                JSONObject mObject;
+                                Log.d("getHelpPin", response.toString());
+                                for (int i = 0; i < arrayContact.length(); i++) {
+                                    mObject = arrayContact.getJSONObject(i);
 //                            id = mObject.optString(WebParams.ID, "0");
-                            if (i == 1) {
-                                message_value = mObject.optString(WebParams.DESCRIPTION, "") + " " +
-                                        mObject.optString(WebParams.NAME, "") + "\n" +
-                                        mObject.optString(WebParams.CONTACT_PHONE, "") + " " +
-                                        getString(R.string.or) + " " +
-                                        mObject.optString(WebParams.CONTACT_EMAIL, "");
-                                Message.setText(message_value);
-                                break;
+                                    if (i == 1) {
+                                        message_value = mObject.optString(WebParams.DESCRIPTION, "") + " " +
+                                                mObject.optString(WebParams.NAME, "") + "\n" +
+                                                mObject.optString(WebParams.CONTACT_PHONE, "") + " " +
+                                                getString(R.string.or) + " " +
+                                                mObject.optString(WebParams.CONTACT_EMAIL, "");
+                                        Message.setText(message_value);
+                                        break;
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    progDialog.setIndeterminate(false);
-                    progDialog.setVisibility(View.GONE);
-                    Message.setVisibility(View.VISIBLE);
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    progDialog.setIndeterminate(false);
-                    progDialog.setVisibility(View.GONE);
-                    Message.setVisibility(View.VISIBLE);
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    progDialog.setIndeterminate(false);
-                    progDialog.setVisibility(View.GONE);
-                    Message.setVisibility(View.VISIBLE);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    progDialog.setIndeterminate(false);
-                    progDialog.setVisibility(View.GONE);
-                    Message.setVisibility(View.VISIBLE);
-                }
-            });
-
+                        @Override
+                        public void onComplete() {
+                            progDialog.setIndeterminate(false);
+                            progDialog.setVisibility(View.GONE);
+                            Message.setVisibility(View.VISIBLE);
+                        }
+                    });
         }catch (Exception e){
             Timber.d("httpclient"+e.getMessage());
         }

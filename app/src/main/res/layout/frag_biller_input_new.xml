@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_1000w"
+    android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/billerinput_radio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingTop="5dp"
+        android:paddingRight="20dp"
+        android:visibility="gone">
+
+        <RadioButton
+            android:id="@+id/radioPrabayar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="@string/prepaid"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/abc_text_size_medium_material" />
+
+        <RadioButton
+            android:id="@+id/radioPascabayar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/postpaid"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/abc_text_size_medium_material" />
+    </RadioGroup>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:id="@+id/billerinput_text_id_remark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:text="@string/billerinput_text_payment_remark_Pulsa"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+                <EditText
+                    android:id="@+id/billerinput_et_id_remark"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/billerinput_text_id_remark"
+                    android:enabled="true"
+                    android:maxLength="32" />
+
+                <ImageView
+                    android:id="@+id/img_operator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/billerinput_text_id_remark"
+                    android:layout_toRightOf="@id/billerinput_et_id_remark"
+                    android:visibility="visible" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/billerinput_layout_denom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:id="@+id/billerinput_text_denom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="@string/billerinput_text_denom"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/spinning_wheel_billerinput_denom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/default_spinner"
+                        android:visibility="invisible" />
+
+                    <Spinner
+                        android:id="@+id/billerinput_spinner_denom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:spinnerMode="dropdown"
+                        android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                        android:visibility="visible" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/billerinput_layout_payment_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="@string/billerinput_text_payment_options"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+                <Spinner
+                    android:id="@+id/billerinput_spinner_payment_options"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:spinnerMode="dropdown"
+                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/billerinput_layout_add_fee"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="@string/additional_fee"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+                <EditText
+                    android:id="@+id/billerinput_et_add_fee"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/billerinput_text_id_remark"
+                    android:enabled="true"
+                    android:maxLength="32"
+                    android:inputType="number"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/billerinput_layout_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="@string/detail"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:id="@+id/billerinput_detail_text_name"
+                        android:layout_width="220dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="Paket data 100 GB" />
+
+                    <TextView
+                        android:id="@+id/billerinput_detail_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="right"
+                        android:text="Rp. 1.456.789,00" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:id="@+id/billerinput_detail_text_admin_fee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="@string/fee" />
+
+                    <TextView
+                        android:id="@+id/billerinput_detail_admin_fee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="Rp. 0,00" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/billerinput_detail_layout_add_fee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:id="@+id/billerinput_detail_text_add_fee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="@string/additional_fee" />
+
+                    <TextView
+                        android:id="@+id/billerinput_detail_admin_add_fee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="Rp. 0,00" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/grey_400" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/billerinput_detail_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="Rp. 121.000,00"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/billerinput_layout_favorite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/save_as_favorite_text_message"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold" />
+
+                    <Switch
+                        android:id="@+id/favorite_switch"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/notes_edit_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Notes"
+                    android:visibility="gone"
+                    android:inputType="text"
+                    android:enabled="false"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+            </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingBottom="20dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/biller_notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp" />
+            </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/layout_warn_pln"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Keterangan : "
+                    android:textColor="@color/red_A700"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pln_warn"
+                    android:textColor="@color/red_A700"
+                    android:textStyle="italic" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5">
+
+<!--        <com.balysv.materialripple.MaterialRippleLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="40dp"-->
+<!--            android:layout_marginRight="40dp"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:background="@drawable/card_bk_blue"-->
+<!--            app:mrl_rippleAlpha="0.2"-->
+<!--            app:mrl_rippleColor="@color/colorPrimary"-->
+<!--            app:mrl_rippleDelayClick="false"-->
+<!--            app:mrl_rippleHover="true"-->
+<!--            app:mrl_rippleOverlay="true">-->
+
+            <Button
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:id="@+id/btn_submit_billerinput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/rounded_background_blue"
+                android:text="@string/submit"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/grey_1000w" />
+<!--        </com.balysv.materialripple.MaterialRippleLayout>-->
+    </LinearLayout>
+
+
+</LinearLayout>

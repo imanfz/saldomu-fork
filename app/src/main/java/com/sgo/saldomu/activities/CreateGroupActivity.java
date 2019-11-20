@@ -8,27 +8,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
+
 import com.android.ex.chips.BaseRecipientAdapter;
 import com.android.ex.chips.RecipientEditTextView;
 import com.android.ex.chips.recipientchip.DrawableRecipientChip;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
@@ -153,8 +157,7 @@ public class CreateGroupActivity extends BaseActivity {
             String desc = etDesc.getText().toString();
             final String groupName = etGroupName.getText().toString();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_ADD_GROUP,
-                    _ownerID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_ADD_GROUP);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PAGE, page);
             params.put(WebParams.COUNT, DefineValue.COUNT);
@@ -166,66 +169,47 @@ public class CreateGroupActivity extends BaseActivity {
 
             Timber.d("isi params sent add group:" + params.toString());
 
-            MyApiClient.sentAddGroup(this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_ADD_GROUP, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                String count = response.getString(WebParams.COUNT);
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String count = response.getString(WebParams.COUNT);
+                                if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+                                    Timber.d("isi params sent add group:"+response.toString());
+                                    Toast.makeText(getApplicationContext(), "Group " + groupName + " Created!", Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                            Timber.d("isi params sent add group:"+response.toString());
-                            Toast.makeText(getApplicationContext(), "Group " + groupName + " Created!", Toast.LENGTH_LONG).show();
-                            finish();
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(CreateGroupActivity.this,message);
+                                }
+                                else {
+                                    Timber.d("isi error sent add group:"+response.toString());
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(CreateGroupActivity.this,message);
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                        else {
-                            Timber.d("isi error sent add group:"+response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+
+                        @Override
+                        public void onComplete() {
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(CreateGroupActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(CreateGroupActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    Timber.w("Error Koneksi Add Group:"+throwable.toString());
-                }
-            });
-
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

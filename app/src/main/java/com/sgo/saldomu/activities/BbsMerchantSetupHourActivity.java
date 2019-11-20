@@ -19,31 +19,30 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.gson.Gson;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GridViewAdapter;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fragments.ClosedTypePickerFragment;
 import com.sgo.saldomu.fragments.TimePickerFragment;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.OpenHourDays;
 import com.sgo.saldomu.models.SetupOpenHour;
+import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -370,7 +369,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                     try{
                         progdialog = DefinedDialog.CreateProgressDialog(BbsMerchantSetupHourActivity.this, "");
 
-                        RequestParams params = new RequestParams();
+                        HashMap<String, Object> params = new HashMap<>();
 
                         UUID rcUUID             = UUID.randomUUID();
                         String  dtime           = DateTimeFormat.getCurrentDateTime();
@@ -461,63 +460,43 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
 
                         params.put(WebParams.SIGNATURE, signature);
 
-Log.d("TEST", params.toString());
+                        Log.d("TEST", params.toString());
 
-                        MyApiClient.setupOpeningHour(BbsMerchantSetupHourActivity.this, params, new JsonHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                progdialog.dismiss();
-                                Timber.d("isi response sent request cash in:" + response.toString());
-
-                                try {
-                                    String code = response.getString(WebParams.ERROR_CODE);
-                                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                                        Intent intent=new Intent(getApplicationContext(),BbsMerchantCommunityList.class);
-                                        startActivity(intent);
+                        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SETUP_OPENING_HOUR, params,
+                                new ObjListeners() {
+                                    @Override
+                                    public void onResponses(JSONObject response) {
+                                        try {
+                                            String code = response.getString(WebParams.ERROR_CODE);
+                                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                                Intent intent=new Intent(getApplicationContext(),BbsMerchantCommunityList.class);
+                                                startActivity(intent);
+                                            }
+                                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                                //test.showDialoginActivity(getApplication(),message);
+                                            }
+                                            else {
+                                                code = response.getString(WebParams.ERROR_MESSAGE);
+                                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                    else if(code.equals(WebParams.LOGOUT_CODE)){
-                                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                        //test.showDialoginActivity(getApplication(),message);
+
+                                    @Override
+                                    public void onError(Throwable throwable) {
+
                                     }
-                                    else {
-                                        code = response.getString(WebParams.ERROR_MESSAGE);
-                                        Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+
+                                    @Override
+                                    public void onComplete() {
+                                        if (progdialog.isShowing())
+                                            progdialog.dismiss();
                                     }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                                super.onFailure(statusCode, headers, responseString, throwable);
-                                failure(throwable);
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                super.onFailure(statusCode, headers, throwable, errorResponse);
-                                failure(throwable);
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                                super.onFailure(statusCode, headers, throwable, errorResponse);
-                                failure(throwable);
-                            }
-
-                            private void failure(Throwable throwable){
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                                if (progdialog.isShowing())
-                                    progdialog.dismiss();
-
-                                Timber.w("Error Koneksi sent request setup open hour:"+throwable.toString());
-                            }
-                        });
+                                });
                     }catch (Exception e){
                         Timber.d("httpclient:"+e.getMessage());
                     }

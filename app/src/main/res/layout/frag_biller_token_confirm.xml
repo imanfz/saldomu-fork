@@ -191,6 +191,32 @@
             </LinearLayout>
 
             <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                android:id="@+id/layout_additionalFee"
+                android:visibility="gone"
+                >
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/additional_fee"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/tv_additionalFee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                    />
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:orientation="vertical"
                           android:layout_marginBottom="12dp"
@@ -293,81 +319,146 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="6dp"
+                android:orientation="horizontal">
 
+                <Switch
+                    android:id="@+id/favorite_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="24dp"
-                      android:layout_marginRight="40dp"
-                      android:layout_marginLeft="40dp"
-                      android:layout_marginBottom="8dp"
-            android:baselineAligned="false">
-
-            <com.balysv.materialripple.MaterialRippleLayout
-                    android:id="@+id/layout_btn_resend"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/card_bk_orange"
-                    android:layout_gravity="center"
-                    android:visibility="gone"
-                    android:layout_marginRight="8dp"
-                    app:mrl_rippleOverlay="true"
-                    app:mrl_rippleColor="@color/colorPrimary"
-                    app:mrl_rippleAlpha="0.2"
-                    app:mrl_rippleDelayClick="false"
-                    app:mrl_rippleHover="true"
-                    >
-                <Button
-                        android:id="@+id/billertoken_btn_resend"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="6dp"
-                        android:maxEms="9"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                        android:textColor="@color/grey_1000w"
-                        android:gravity="center"
-                        android:text="@string/reg2_btn_text_resend_token_sms"
-                        android:layout_gravity="center_horizontal"
-                        android:background="@drawable/button_transparant"
-                        />
-            </com.balysv.materialripple.MaterialRippleLayout>
+                    android:text="@string/save_as_favorite_text_message"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-            <com.balysv.materialripple.MaterialRippleLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/card_bk_orange"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    app:mrl_rippleOverlay="true"
-                    app:mrl_rippleColor="@color/white"
-                    app:mrl_rippleAlpha="0.2"
-                    app:mrl_rippleDelayClick="false"
-                    app:mrl_rippleHover="true"
-                    >
-                <Button
-                        android:id="@+id/billertoken_btn_verification"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                        android:textColor="@color/grey_1000w"
-                        android:gravity="center"
-                        android:text="@string/submit"
-                        android:layout_gravity="center_horizontal"
-                        android:background="@drawable/button_transparant"
-                        />
-            </com.balysv.materialripple.MaterialRippleLayout>
+            <EditText
+                android:id="@+id/notes_edit_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:hint="Notes"
+                android:layout_marginRight="16dp"
+                android:inputType="text"
+                android:layout_marginLeft="16dp"
+                android:enabled="false"
+                android:textSize="@dimen/abc_text_size_medium_material" />
 
         </LinearLayout>
 
 
-        <com.balysv.materialripple.MaterialRippleLayout
+        <!--<LinearLayout android:layout_width="match_parent"-->
+                      <!--android:layout_height="wrap_content"-->
+                      <!--android:layout_marginTop="24dp"-->
+                      <!--android:layout_marginRight="40dp"-->
+                      <!--android:layout_marginLeft="40dp"-->
+                      <!--android:layout_marginBottom="8dp"-->
+            <!--android:baselineAligned="false">-->
+
+            <!--<com.balysv.materialripple.MaterialRippleLayout-->
+                    <!--android:id="@+id/layout_btn_resend"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:background="@drawable/card_bk_blue"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:layout_marginRight="8dp"-->
+                    <!--app:mrl_rippleOverlay="true"-->
+                    <!--app:mrl_rippleColor="@color/colorPrimary"-->
+                    <!--app:mrl_rippleAlpha="0.2"-->
+                    <!--app:mrl_rippleDelayClick="false"-->
+                    <!--app:mrl_rippleHover="true"-->
+                    <!--&gt;-->
+                <!--<Button-->
+                        <!--android:id="@+id/billertoken_btn_resend"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:padding="6dp"-->
+                        <!--android:maxEms="9"-->
+                        <!--android:textAppearance="@style/TextAppearance.AppCompat.Button"-->
+                        <!--android:textColor="@color/grey_1000w"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="@string/reg2_btn_text_resend_token_sms"-->
+                        <!--android:layout_gravity="center_horizontal"-->
+                        <!--android:background="@drawable/button_transparant"-->
+                        <!--/>-->
+            <!--</com.balysv.materialripple.MaterialRippleLayout>-->
+
+            <!--<com.balysv.materialripple.MaterialRippleLayout-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:background="@drawable/card_bk_blue"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:layout_weight="1"-->
+                    <!--app:mrl_rippleOverlay="true"-->
+                    <!--app:mrl_rippleColor="@color/white"-->
+                    <!--app:mrl_rippleAlpha="0.2"-->
+                    <!--app:mrl_rippleDelayClick="false"-->
+                    <!--app:mrl_rippleHover="true"-->
+                    <!--&gt;-->
+                <!--<Button-->
+                        <!--android:id="@+id/billertoken_btn_verification"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:textAppearance="@style/TextAppearance.AppCompat.Button"-->
+                        <!--android:textColor="@color/grey_1000w"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="@string/submit"-->
+                        <!--android:layout_gravity="center_horizontal"-->
+                        <!--android:background="@drawable/button_transparant"-->
+                        <!--/>-->
+            <!--</com.balysv.materialripple.MaterialRippleLayout>-->
+
+        <!--</LinearLayout>-->
+
+
+        <!--<com.balysv.materialripple.MaterialRippleLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:background="@drawable/card_bk"-->
+                <!--android:layout_marginRight="40dp"-->
+                <!--android:layout_marginLeft="40dp"-->
+                <!--app:mrl_rippleOverlay="true"-->
+                <!--app:mrl_rippleColor="@color/colorPrimary"-->
+                <!--app:mrl_rippleAlpha="0.2"-->
+                <!--app:mrl_rippleDelayClick="false"-->
+                <!--app:mrl_rippleHover="true"-->
+                <!--&gt;-->
+
+            <!--<Button-->
+                    <!--android:id="@+id/billertoken_btn_cancel"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:text="@string/cancel"-->
+                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Button"-->
+                    <!--android:background="@drawable/button_transparant"-->
+                    <!--android:textColor="@color/colorSecondaryDark"-->
+                    <!--/>-->
+
+        <!--</com.balysv.materialripple.MaterialRippleLayout>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.balysv.materialripple.MaterialRippleLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/card_bk"
-                android:layout_marginRight="40dp"
-                android:layout_marginLeft="40dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
                 app:mrl_rippleOverlay="true"
                 app:mrl_rippleColor="@color/colorPrimary"
                 app:mrl_rippleAlpha="0.2"
@@ -375,19 +466,75 @@
                 app:mrl_rippleHover="true"
                 >
 
-            <Button
+                <Button
                     android:id="@+id/billertoken_btn_cancel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/cancel"
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                    android:background="@drawable/button_transparant"
-                    android:textColor="@color/colorSecondaryDark"
+                    android:background="@drawable/rounded_background_outline"
+                    android:textColor="@color/black"
                     />
 
-        </com.balysv.materialripple.MaterialRippleLayout>
+            </com.balysv.materialripple.MaterialRippleLayout>
 
+            <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleColor="@color/white"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                app:mrl_rippleOverlay="true">
+
+                <Button
+                    android:id="@+id/billertoken_btn_verification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/rounded_background_blue"
+                    android:gravity="center"
+                    android:text="@string/submit"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/grey_1000w" />
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+        </LinearLayout>
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/layout_btn_resend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_bk_blue"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:visibility="gone"
+            app:mrl_rippleOverlay="true"
+            app:mrl_rippleColor="@color/colorPrimary"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            >
+            <Button
+                android:id="@+id/billertoken_btn_resend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="6dp"
+                android:maxEms="9"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/grey_1000w"
+                android:gravity="center"
+                android:text="@string/reg2_btn_text_resend_token_sms"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_transparant"
+                />
+        </com.balysv.materialripple.MaterialRippleLayout>
     </LinearLayout>
 
 </ScrollView>

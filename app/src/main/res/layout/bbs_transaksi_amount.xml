@@ -17,51 +17,54 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
     <LinearLayout android:id="@+id/bbstransaksi_bottom_layout"
-        android:background="@color/windowBackgroundColor"
+        android:background="@color/white"
         android:layout_alignParentBottom="true"
         android:padding="8dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.balysv.materialripple.MaterialRippleLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:background="@drawable/card_bk"
-            app:mrl_rippleOverlay="true"
-            app:mrl_rippleColor="@color/colorPrimaryDark"
-            app:mrl_rippleAlpha="0.2"
-            app:mrl_rippleDelayClick="false"
-            app:mrl_rippleHover="true"
-            >
+<!--        <com.balysv.materialripple.MaterialRippleLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/card_bk"-->
+<!--            app:mrl_rippleOverlay="true"-->
+<!--            app:mrl_rippleColor="@color/colorPrimaryDark"-->
+<!--            app:mrl_rippleAlpha="0.2"-->
+<!--            app:mrl_rippleDelayClick="false"-->
+<!--            app:mrl_rippleHover="true"-->
+<!--            >-->
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/black"
                 android:gravity="center"
                 android:text="@string/kembali"
+                android:layout_marginRight="@dimen/margin_5dp"
                 android:id="@+id/back_btn"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
+                android:background="@drawable/rounded_background_outline"
                 />
 
-        </com.balysv.materialripple.MaterialRippleLayout>
+<!--        </com.balysv.materialripple.MaterialRippleLayout>-->
 
-        <com.balysv.materialripple.MaterialRippleLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/card_bk_orange"
-            app:mrl_rippleOverlay="true"
-            app:mrl_rippleColor="@color/colorPrimaryDark"
-            app:mrl_rippleAlpha="0.2"
-            app:mrl_rippleDelayClick="false"
-            app:mrl_rippleHover="true"
-            >
+<!--        <com.balysv.materialripple.MaterialRippleLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:background="@drawable/rounded_background_blue"-->
+<!--            app:mrl_rippleOverlay="true"-->
+<!--            app:mrl_rippleColor="@color/colorPrimaryDark"-->
+<!--            app:mrl_rippleAlpha="0.2"-->
+<!--            app:mrl_rippleDelayClick="false"-->
+<!--            app:mrl_rippleHover="true"-->
+<!--            >-->
             <Button
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
@@ -70,10 +73,10 @@
                 android:text="@string/next"
                 android:id="@+id/proses_btn"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
+                android:background="@drawable/rounded_background_blue"
                 />
 
-        </com.balysv.materialripple.MaterialRippleLayout>
+<!--        </com.balysv.materialripple.MaterialRippleLayout>-->
 
     </LinearLayout>
 
@@ -109,19 +112,22 @@
                     android:id="@+id/circle_step_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="50dp"
-                    android:paddingRight="50dp"
+                    android:paddingLeft="70dp"
+                    android:paddingRight="@dimen/margin_10dp"
                     android:paddingBottom="16dp"
-                    android:paddingStart="16dp"
+                    android:paddingStart="50dp"
+                    android:layout_marginLeft="@dimen/margin_10dp"
+                    android:layout_marginRight="@dimen/margin_10dp"
                     android:layout_marginBottom="15dp"
                     app:circlestep_circle_count="3"
-                    app:circlestep_path_color="@color/colorPrimaryDark"
+                    app:circlestep_path_color="@color/colorPrimary"
                     app:circlestep_current_inner_circle_color="@color/colorPrimary"
-                    app:circlestep_current_outer_circle_color="@color/colorPrimaryDark"
+                    app:circlestep_current_outer_circle_color="@color/colorPrimary"
                     app:circlestep_circle_color="@color/grey_500"
                     app:circlestep_circle_text_size="14sp"
-                    app:circlestep_text_below_circle_size="14sp"
-                    app:circlestep_text_below_circle_color="@color/grey_800"/>
+                    app:circlestep_text_below_circle_size="12sp"
+                    app:circlestep_text_below_circle_color="@color/grey_800"
+                    android:layout_gravity="center"/>
 
                 <View
                     android:layout_width="match_parent"

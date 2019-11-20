@@ -9,10 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -20,19 +17,20 @@ import com.sgo.saldomu.adapter.CustomTabPagerAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import io.realm.Realm;
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -115,9 +113,8 @@ public class FragMenuKelola extends Fragment {
         String flagApprove      = DefineValue.STRING_YES;
 
         String extraSignature = flagApprove;
-        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_MEMBER_SHOP_LIST,
-                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
-                extraSignature);
+
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_MEMBER_SHOP_LIST, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
@@ -126,12 +123,9 @@ public class FragMenuKelola extends Fragment {
         params.put(WebParams.FLAG_APPROVE, flagApprove);
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
-
-        MyApiClient.getMemberShopList(getContext(), params, false, new JsonHttpResponseHandler() {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_MEMBER_SHOP_LIST, params, new ObjListeners() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                progdialog.dismiss();
-
+            public void onResponses(JSONObject response) {
                 try {
 
                     String code = response.getString(WebParams.ERROR_CODE);
@@ -195,28 +189,14 @@ public class FragMenuKelola extends Fragment {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
+            public void onError(Throwable throwable) {
+
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //if (MyApiClient.PROD_FAILURE_FLAG)
-                //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                //else
-                Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
+            public void onComplete() {
                 progdialog.dismiss();
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
             }
-
         });
 
         // Inflate the layout for this fragment

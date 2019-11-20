@@ -1,18 +1,24 @@
 package com.sgo.saldomu.activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Display;
@@ -21,13 +27,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.JsonObject;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.commentModel;
 import com.sgo.saldomu.Beans.likeModel;
@@ -43,33 +52,45 @@ import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.NotificationHandler;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.RootUtil;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.UserProfileHandler;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.fcm.GooglePlayUtils;
+import com.sgo.saldomu.fragments.FragHelp;
 import com.sgo.saldomu.fragments.FragMainPage;
-import com.sgo.saldomu.fragments.MyHistory;
+import com.sgo.saldomu.fragments.FragTagihInput;
+import com.sgo.saldomu.fragments.FragmentProfileQr;
+import com.sgo.saldomu.fragments.ListTransfer;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
-import com.sgo.saldomu.fragments.RightSideDrawMenu;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.GetMemberModel;
+import com.sgo.saldomu.models.retrofit.MemberDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.services.UpdateBBSBirthPlace;
 import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
+import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
+import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -77,47 +98,55 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.realm.Realm;
 import timber.log.Timber;
 
 /**
- Created by Administrator on 7/11/2014.
+ * Created by Administrator on 7/11/2014.
  */
 public class MainPage extends BaseActivity {
 
-    public static final int REQUEST_FINISH = 0 ;//untuk Request Code dari child activity ke parent activity
-    private static final int RESULT_ERROR = -1 ;//untuk Result Code dari child activity ke parent activity kalau error (aplikasi exit)
+    public static final int REQUEST_FINISH = 0;//untuk Request Code dari child activity ke parent activity
+    private static final int RESULT_ERROR = -1;//untuk Result Code dari child activity ke parent activity kalau error (aplikasi exit)
     public static final int RESULT_LOGOUT = 1;//untuk Result Code dari child activity ke parent activity kalau sukses (aplikasi auto logout)
-    public static final int RESULT_NORMAL = 2 ;//untuk Result Code dari child activity ke parent activity kalau normal (aplikasi close ke parent activity)
+    public static final int RESULT_NORMAL = 2;//untuk Result Code dari child activity ke parent activity kalau normal (aplikasi close ke parent activity)
     public static final int RESULT_BALANCE = 3;
     public static final int RESULT_NOTIF = 5;
-    public static final int RESULT_BILLER = 7 ;
-	public static final int RESULT_REFRESH_NAVDRAW= 8;
+    public static final int RESULT_BILLER = 7;
+    public static final int RESULT_REFRESH_NAVDRAW = 8;
     public static final int RESULT_FIRST_TIME = 9;
     public static final int RESULT_BBS = 11;
     public static final int RESULT_BBS_MEMBER_OTP = 12;
-    public static final int RESULT_BBS_STATUS= 13;
-    public static final int RESULT_RETRY= 14;
+    public static final int RESULT_BBS_STATUS = 13;
+    public static final int RESULT_RETRY = 14;
+    public static final int RESULT_BALANCE_COLLECTOR = 14;
 
     public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;
 
     private final static int FIRST_SCREEN_LOGIN = 1;
     private final static int FIRST_SCREEN_INTRO = 2;
+    private final static int FIRST_SCREEN_SPLASHSCREEN = 3;
     private final static int REQCODE_PLAY_SERVICE = 312;
+
+
+    public static String RESULT_HOME_BALANCE = "refresh_home_balance";
+    public static String HOME_BALANCE_ANIMATE = "refresh_home_btn_animate";
 
     private static int AmountNotif = 0;
 
     private String flagLogin = DefineValue.STRING_NO;
     private Fragment mContent;
     private NavigationDrawMenu mNavDrawer;
+    FragTagihInput fragTagihInput;
     private DrawerLayout mDrawerLayout;
     public ActionBarDrawerToggle mDrawerToggle;
     private ProgressDialog progdialog;
-    private RelativeLayout mOuterRelativeContent;
+    private LinearLayout mOuterRelativeContent;
     private FrameLayout mLeftDrawerRelativeLayout;
     private FrameLayout mRightDrawerRelativeLayout;
     private float lastTranslate = 0.0f;
-//    private BroadcastReceiver mRegistrationBroadcastReceiver; // gcm
+    //    private BroadcastReceiver mRegistrationBroadcastReceiver; // gcm
     private BalanceService serviceReferenceBalance;
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
@@ -126,23 +155,114 @@ public class MainPage extends BaseActivity {
     AlertDialog devRootedDeviceAlertDialog;
     private Bundle savedInstanceState;
     private SMSclass smSclass;
+    private String isDormant, userNameLogin, fcm_id, fcmId_encrypted;
+    private BottomNavigationView bottomNavigationView;
+    private MenuItem itemData;
+    private NotificationActionView actionView;
 
     private LevelClass levelClass;
+    public PickAndCameraUtil pickAndCameraUtil;
+
+    private final int RESULT_GALERY = 100;
+    private final int RESULT_CAMERA = 200;
+    private String currentTab = "";
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.savedInstanceState = savedInstanceState;
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
 
-        if(isHasAppPermission())
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.FCM_ID, token);
+                        mEditor.putString(DefineValue.FCM_ENCRYPTED, Md5.hashMd5(token));
+                        mEditor.apply();
+                    }
+                });
+
+        this.savedInstanceState = savedInstanceState;
+        bottomNavigationView = findViewById(R.id.home_bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.menu_home);
+        bottomNavigationView.setOnNavigationItemSelectedListener(drawerListener);
+
+//        pickAndCameraUtil = new PickAndCameraUtil(this);
+
+
+        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
+        userNameLogin = sp.getString(DefineValue.USER_NAME, "");
+        if (isHasAppPermission())
             InitializeApp();
     }
 
-    private void InitializeApp(){
-        if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
-            if (RootUtil.isDeviceRooted()){
-                if (BuildConfig.FLAVOR.equals("development")){
+    BottomNavigationView.OnNavigationItemSelectedListener drawerListener = item -> {
+        Intent i;
+        switch (item.getItemId()) {
+            case R.id.menu_home:
+                currentTab = userNameLogin;
+                Fragment fragmentHome = new FragMainPage();
+//                switchContent(newFragment, getString(R.string.appname).toUpperCase());
+//                switchContent(newFragment, setGreetings());
+                switchContent(fragmentHome, userNameLogin);
+                return true;
+            case R.id.menu_transfer:
+                currentTab = getString(R.string.transfer);
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else {
+                    if (levelClass.isLevel1QAC()) {
+                        levelClass.showDialogLevel();
+                    } else {
+//                        i = new Intent(MainPage.this, ActivityListTransfer.class);
+//                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                        Fragment fragmentTransfer = new ListTransfer();
+                        switchContent(fragmentTransfer, getString(R.string.transfer));
+                        return true;
+                    }
+                }
+                return true;
+            case R.id.menu_help:
+//                i = new Intent(MainPage.this, ContactActivity.class);
+//                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                BaseFragment fragmentHelp = new FragHelp();
+                switchContent(fragmentHelp, getString(R.string.help_center));
+                return true;
+            case R.id.menu_profile:
+                currentTab = getString(R.string.myprofilelist_ab_title);
+//                i = new Intent(MainPage.this, ActivityProfileQr.class);
+//                startActivity(i);
+
+                BaseFragment fragmentProfile = new FragmentProfileQr();
+                switchContent(fragmentProfile, getString(R.string.myprofilelist_ab_title));
+                return true;
+        }
+        return false;
+    };
+
+    private void dialogDormant() {
+        Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.title_dialog_dormant),
+                getString(R.string.message_dialog_dormant_),
+                (v, isLongClick) -> {
+                    Intent i = new Intent(MainPage.this, TopUpActivity.class);
+                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                }
+        );
+
+        dialognya.show();
+    }
+
+    private void InitializeApp() {
+        if (GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
+            if (RootUtil.isDeviceRooted()) {
+                if (BuildConfig.FLAVOR.equals("production")) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
                     builder.setMessage("Apakah anda ingin melewati pengecekan device?")
@@ -160,16 +280,16 @@ public class MainPage extends BaseActivity {
                     });
                     builder.setCancelable(false);
                     devRootedDeviceAlertDialog = builder.create();
-                    if(!isFinishing())
+                    if (!isFinishing())
                         devRootedDeviceAlertDialog.show();
-                }else {
+                } else {
                     switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
+//                    initializeDashboard();
                 }
-            }else {
+            } else {
                 initializeDashboard();
             }
-        }
-        else {
+        } else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
         }
     }
@@ -178,8 +298,8 @@ public class MainPage extends BaseActivity {
         JobScheduleManager.getInstance(this).scheduleUploadLocationService();
     }
 
-    private void initializeDashboard(){
-        if(isHasAppPermission()) {
+    private void initializeDashboard() {
+        if (isHasAppPermission()) {
             if (checkNotificationNotif()) {
                 int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
 
@@ -215,7 +335,11 @@ public class MainPage extends BaseActivity {
                         }
                     }
                 }
-                openFirstScreen(FIRST_SCREEN_INTRO);
+
+                if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
+                    openFirstScreen(FIRST_SCREEN_SPLASHSCREEN);
+                } else
+                    openFirstScreen(FIRST_SCREEN_INTRO);
             } else {
                 initializeLogin();
             }
@@ -231,11 +355,11 @@ public class MainPage extends BaseActivity {
     @Override
     public void onDeny() {
         super.onDeny();
-        Toast.makeText(this,getString(R.string.cancel_permission),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.cancel_permission), Toast.LENGTH_SHORT).show();
         this.finish();
     }
 
-    void initializeLogin(){
+    void initializeLogin() {
 //        Boolean isSimSame = true;
 //        if (BuildConfig.FLAVOR.equals("production")){
 //            if(smSclass == null)
@@ -245,63 +369,62 @@ public class MainPage extends BaseActivity {
 //        }
 //
 //        if(isSimSame) {
+        showProgLoading(getString(R.string.please_wait), false);
 
-            startLocationService();
+        startLocationService();
 
 //            if (savedInstanceState != null)
 //                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
-            levelClass = new LevelClass(this,sp);
-            isForeground = true;
-            agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-            UtilsLoader utilsLoader = new UtilsLoader(this, sp);
-            utilsLoader.getAppVersion();
-            ActiveAndroid.initialize(this);
-            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-            progdialog.show();
-            InitializeNavDrawer();
-            setupFab();
-            FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userPhoneID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
+        levelClass = new LevelClass(this, sp);
+        isForeground = true;
+        agent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        UtilsLoader utilsLoader = new UtilsLoader(this, sp);
+//        utilsLoader.getAppVersion();
+        ActiveAndroid.initialize(this);
+        InitializeNavDrawer();
+        setupFab();
+        FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userPhoneID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
-            AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+        AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
 
 
-            if (checkNotificationAction()) {
-                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+        if (checkNotificationAction()) {
+            int type = Integer.valueOf(getIntent().getExtras().getString("type"));
 
-                Map<String, String> msgMap = new HashMap<String, String>();
-                Intent intentData = getIntent();
-                if (intentData.hasExtra("model_notif")) {
-                    msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
-                }
-                if (intentData.hasExtra("options")) {
-                    msgMap.put("options", intentData.getStringExtra("options"));
-                }
-                Timber.d("testing :" + msgMap.toString());
-
-                FCMManager fcmManager = new FCMManager(this);
-                Intent intent = fcmManager.checkingAction(type, msgMap);
-                if (intent != null) {
-                    startActivity(intent);
-                }
-                //this.finish();
-            } else {
-                String sp_model_notif = sp.getString(DefineValue.MODEL_NOTIF, "");
-                if (!sp_model_notif.equals("")) {
-                    if (sp_model_notif.equals("2")) {
-                        Intent i = new Intent(this, MyProfileNewActivity.class);
-                        startActivity(i);
-                    }
-                    sp.edit().remove(DefineValue.MODEL_NOTIF).apply();
-                }
+            Map<String, String> msgMap = new HashMap<String, String>();
+            Intent intentData = getIntent();
+            if (intentData.hasExtra("model_notif")) {
+                msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
             }
-
-            String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
-            if (!notifDataNextLogin.equals("")) {
-
-                changeActivityNextLogin(notifDataNextLogin);
-
+            if (intentData.hasExtra("options")) {
+                msgMap.put("options", intentData.getStringExtra("options"));
             }
+            Timber.d("testing :" + msgMap.toString());
+
+            FCMManager fcmManager = new FCMManager(this);
+            Intent intent = fcmManager.checkingAction(type, msgMap);
+            if (intent != null) {
+                startActivity(intent);
+            }
+            //this.finish();
+        } else {
+            String sp_model_notif = sp.getString(DefineValue.MODEL_NOTIF, "");
+            if (!sp_model_notif.equals("")) {
+                if (sp_model_notif.equals("2")) {
+                    Intent i = new Intent(this, MyProfileNewActivity.class);
+                    startActivity(i);
+                }
+                sp.edit().remove(DefineValue.MODEL_NOTIF).apply();
+            }
+        }
+
+        String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
+        if (!notifDataNextLogin.equals("")) {
+
+            changeActivityNextLogin(notifDataNextLogin);
+
+        }
 //        }
 //        else {
 //            Logout(FIRST_SCREEN_INTRO);
@@ -317,12 +440,12 @@ public class MainPage extends BaseActivity {
 
             int modelNotif = jsonObj.getInt("model_notif");
 
-            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX && modelNotif != FCMManager.MEMBER_RATING_TRX
+            if (modelNotif != FCMManager.SHOP_ACCEPT_TRX && modelNotif != FCMManager.MEMBER_RATING_TRX
                     && modelNotif != FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT
                     && modelNotif != FCMManager.AGENT_LOCATION_KEY_ACCEPT_TRANSACTION
                     && modelNotif != FCMManager.SHOP_NOTIF_TRANSACTION
                     && modelNotif != FCMManager.SHOP_ACCEPT_TRX
-                    && modelNotif != FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION ) {
+                    && modelNotif != FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION) {
                 sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
             }
 
@@ -416,6 +539,9 @@ public class MainPage extends BaseActivity {
                     bundle.putString(DefineValue.BBS_DEFAULT_RATING, jsonObj.getString(WebParams.DEFAULT_RATING));
                     i.putExtras(bundle);
                     break;
+                case FCMManager.BLAST_INFO:
+                    i = new Intent(this, MainPage.class);
+                    break;
                 default:
                     i = new Intent(this, MainPage.class);
                     break;
@@ -430,21 +556,21 @@ public class MainPage extends BaseActivity {
 
     }
 
-    void switchErrorActivity(int type){
+    void switchErrorActivity(int type) {
         Intent i = new Intent(this, ErrorActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        i.putExtra(DefineValue.TYPE,type);
+        i.putExtra(DefineValue.TYPE, type);
         startActivity(i);
     }
 
-    boolean checkNotificationAction(){
+    boolean checkNotificationAction() {
         Bundle extras = getIntent().getExtras();
-        if(extras != null) {
-            Timber.d("masuk check notification " +extras.toString());
+        if (extras != null) {
+            Timber.d("masuk check notification " + extras.toString());
             if (extras.containsKey("type")) {
                 return true;
             }
@@ -452,10 +578,10 @@ public class MainPage extends BaseActivity {
         return false;
     }
 
-    boolean checkNotificationNotif(){
+    boolean checkNotificationNotif() {
         Bundle extras = getIntent().getExtras();
-        if(extras != null) {
-            Timber.d("masuk check notification " +extras.toString());
+        if (extras != null) {
+            Timber.d("masuk check notification " + extras.toString());
             if (extras.containsKey("type_notif")) {
                 return true;
             }
@@ -485,7 +611,7 @@ public class MainPage extends BaseActivity {
             Timber.i("Main page service connection Balance Bound service connected");
             serviceReferenceBalance = ((BalanceService.MyLocalBinder) service).getService();
             serviceReferenceBalance.setMainPageContext(MainPage.this);
-            isBound=true;
+            isBound = true;
         }
 
         @Override
@@ -511,7 +637,7 @@ public class MainPage extends BaseActivity {
             Timber.i("Main page service connection AppVersion Bound service connected");
             serviceAppInfoReference = ((AppInfoService.MyLocalBinder) service).getService();
             serviceAppInfoReference.setMainPageContext(MainPage.this);
-            isBoundAppInfo=true;
+            isBoundAppInfo = true;
         }
 
         @Override
@@ -537,7 +663,7 @@ public class MainPage extends BaseActivity {
             Timber.i("Main page service connection UserProfile Bound service connected");
             serviceUserProfileReference = ((UserProfileService.MyLocalBinder) service).getService();
             serviceUserProfileReference.setMainPageContext(MainPage.this);
-            isBoundUserProfile=true;
+            isBoundUserProfile = true;
         }
 
         @Override
@@ -581,7 +707,7 @@ public class MainPage extends BaseActivity {
         if (!isBoundAppInfo) {
             Timber.i("Main Page service connection AppInfo Masuk binding");
             Intent bindIntent = new Intent(this, AppInfoService.class);
-            isBoundAppInfo = bindService(bindIntent, AppInfoServiceConnection,Context.BIND_AUTO_CREATE);
+            isBoundAppInfo = bindService(bindIntent, AppInfoServiceConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
@@ -592,7 +718,7 @@ public class MainPage extends BaseActivity {
         if (!isBoundUserProfile) {
             Timber.i("Main Page service connection UserProfile Masuk binding");
             Intent bindIntent = new Intent(this, UserProfileService.class);
-            isBoundUserProfile = bindService(bindIntent, UserProfileServiceConnection,Context.BIND_AUTO_CREATE);
+            isBoundUserProfile = bindService(bindIntent, UserProfileServiceConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
@@ -602,34 +728,43 @@ public class MainPage extends BaseActivity {
         isBoundUserProfile = false;
     }
 
-    private void InitializeNavDrawer(){
+    BroadcastReceiver btnReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mNavDrawer.getBalance(true);
+        }
+    };
+
+    private void InitializeNavDrawer() {
         mDrawerLayout = findViewById(R.id.main_drawer);
         mLeftDrawerRelativeLayout = findViewById(R.id.left_drawer);
-        mRightDrawerRelativeLayout = findViewById(R.id.right_drawer);
+//        mRightDrawerRelativeLayout = findViewById(R.id.right_drawer);
         mDrawerLayout.setScrimColor(getResources().getColor(R.color.transparent));
         mOuterRelativeContent = findViewById(R.id.outer_layout_content);
-        findViewById(R.id.layout_include_fab).setVisibility(View.VISIBLE);
-
+//        findViewById(R.id.layout_include_fab).setVisibility(View.VISIBLE);
+        //buat lock gesture slide
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         int width = size.x - 150;
         int height = size.y;
 
-        mRightDrawerRelativeLayout.getLayoutParams().width = width;
-        mRightDrawerRelativeLayout.getLayoutParams().height = height;
+//        mRightDrawerRelativeLayout.getLayoutParams().width = width;
+//        mRightDrawerRelativeLayout.getLayoutParams().height = height;
 
-            mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, getToolbar(), R.string.drawer_open, R.string.drawer_close) {
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, getToolbar(), R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 invalidateOptionsMenu();
                 ToggleKeyboard.hide_keyboard(MainPage.this);
 
-                if(drawerView == mLeftDrawerRelativeLayout)
-                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,mRightDrawerRelativeLayout);
-                else
-                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,mLeftDrawerRelativeLayout);
+//                if (drawerView == mLeftDrawerRelativeLayout)
+//                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mRightDrawerRelativeLayout);
+//                else
+//                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mLeftDrawerRelativeLayout);
             }
 
             @Override
@@ -648,21 +783,18 @@ public class MainPage extends BaseActivity {
 
                 float moveFactor = (drawerView.getWidth() * slideOffset);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                {
-                    if(drawerView == mLeftDrawerRelativeLayout)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    if (drawerView == mLeftDrawerRelativeLayout)
                         mOuterRelativeContent.setTranslationX(moveFactor);
-                    else if(drawerView == mRightDrawerRelativeLayout)
+                    else if (drawerView == mRightDrawerRelativeLayout)
                         mOuterRelativeContent.setTranslationX(-moveFactor);
-                }
-                else
-                {
+                } else {
                     TranslateAnimation anim = null;
 
-                    if(drawerView == mLeftDrawerRelativeLayout)
+                    if (drawerView == mLeftDrawerRelativeLayout)
                         anim = new TranslateAnimation(lastTranslate, moveFactor, 0.0f, 0.0f);
-                    else if(drawerView == mRightDrawerRelativeLayout)
-                        anim = new TranslateAnimation(lastTranslate, -moveFactor, 0.0f, 0.0f);
+//                    else if (drawerView == mRightDrawerRelativeLayout)
+//                        anim = new TranslateAnimation(lastTranslate, -moveFactor, 0.0f, 0.0f);
 
                     if (anim != null) {
                         anim.setDuration(0);
@@ -678,29 +810,32 @@ public class MainPage extends BaseActivity {
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 invalidateOptionsMenu();
-                if(drawerView == mLeftDrawerRelativeLayout)
-                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED,mRightDrawerRelativeLayout);
-                else
-                    mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED,mLeftDrawerRelativeLayout);
+//                if (drawerView == mLeftDrawerRelativeLayout)
+//                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mRightDrawerRelativeLayout);
+//                else
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mLeftDrawerRelativeLayout);
             }
         };
         mDrawerToggle.syncState();
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
+        mDrawerLayout.setActivated(false);
+        disableHomeIcon();
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         getDataListMember();
         mNavDrawer = new NavigationDrawMenu();
-        getSupportFragmentManager().beginTransaction().replace(R.id.left_menu_layout,mNavDrawer,NavigationDrawMenu.TAG).commitAllowingStateLoss();
+        getSupportFragmentManager().beginTransaction().replace(R.id.left_menu_layout, mNavDrawer, NavigationDrawMenu.TAG).commitAllowingStateLoss();
     }
 
 
-    private void refreshPromo(){
-        RightSideDrawMenu mRightDrawer = (RightSideDrawMenu) getSupportFragmentManager().findFragmentById(R.id.main_list_menu_fragment_right);
-        if(mRightDrawer != null)
-            mRightDrawer.autoRefreshList();
-    }
+//    private void refreshPromo() {
+//        RightSideDrawMenu mRightDrawer = (RightSideDrawMenu) getSupportFragmentManager().findFragmentById(R.id.main_list_menu_fragment_right);
+//        if (mRightDrawer != null)
+//            mRightDrawer.autoRefreshList();
+//    }
 
-    private void initializeNavDrawer(){
-        if(mNavDrawer != null) {
+    private void initializeNavDrawer() {
+        if (mNavDrawer != null) {
             mNavDrawer.initializeNavDrawer();
             mNavDrawer.getBalance(true);
         }
@@ -724,241 +859,228 @@ public class MainPage extends BaseActivity {
             switchActivity(tempIntent, ACTIVITY_RESULT);
         }
 
-        try{
+        try {
 
-            String cust_id = sp.getString(DefineValue.CUST_ID,"");
+            String cust_id = sp.getString(DefineValue.CUST_ID, "");
 
-            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LIST_MEMBER
-                    , MyApiClient.COMM_ID_PULSA);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_MEMBER, MyApiClient.COMM_ID_PULSA);
             params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
+            params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
 
             Timber.d("isi params listmember mainpage:" + params.toString());
 
-            MyApiClient.sentDataListMember(this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            String arraynya = response.getString(WebParams.MEMBER_DATA);
-                            Timber.d("Isi response listmember:" + response.toString());
-                            if (!arraynya.isEmpty()) {
-                                JSONArray arrayJson = new JSONArray(arraynya);
-                                JSONObject objectJson = arrayJson.getJSONObject(0);
+            RetrofitService.getInstance().PostObjectRequestDebounce(MyApiClient.LINK_LIST_MEMBER, params
+                    , new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            GetMemberModel model = RetrofitService.getInstance().getGson().fromJson(object, GetMemberModel.class);
 
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                if (!model.getMemberData().isEmpty()) {
+
+                                    MemberDataModel memberModel = model.getMemberData().get(0);
+
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.MEMBER_CODE, memberModel.getMember_code());
+                                    mEditor.putString(DefineValue.MEMBER_ID, memberModel.getMember_id());
+                                    mEditor.putString(DefineValue.MEMBER_NAME, memberModel.getMember_name());
+                                    mEditor.apply();
+
+                                    if (mNavDrawer != null && serviceReferenceBalance != null)
+                                        serviceReferenceBalance.runBalance();
+
+                                    initializeNavDrawer();
+                                    CheckNotification();
+
+                                    String is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK, "N");
+
+                                    if (is_new_bulk.equalsIgnoreCase(DefineValue.STRING_YES)) {
+                                        UserProfileHandler mBH = new UserProfileHandler(getApplication());
+                                        mBH.sentUserProfile(new OnLoadDataListener() {
+                                            @Override
+                                            public void onSuccess(Object deData) {
+
+                                                checkField();
+                                            }
+
+                                            @Override
+                                            public void onFail(Bundle message) {
+
+                                            }
+
+                                            @Override
+                                            public void onFailure(String message) {
+
+                                            }
+                                        }, is_new_bulk);
+                                    } else {
+
+                                        checkField();
+                                    }
+
+                                    setupBBSData();
+                                    try {
+                                        JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
+
+                                        if (!shopAgentObject.optString("member_id", "").equalsIgnoreCase("")
+                                                && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO)) {
+                                            Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.putExtra("memberId", shopAgentObject.optString("member_id", ""));
+                                            intent.putExtra("shopId", shopAgentObject.optString("shop_id", ""));
+                                            intent.putExtra("shopName", shopAgentObject.optString("shop_name", ""));
+                                            intent.putExtra("memberType", shopAgentObject.optString("member_type", ""));
+                                            intent.putExtra("memberName", shopAgentObject.optString("member_name", ""));
+                                            intent.putExtra("commName", shopAgentObject.optString("comm_name", ""));
+                                            intent.putExtra("province", shopAgentObject.optString("province", ""));
+                                            intent.putExtra("district", shopAgentObject.optString("district", ""));
+                                            intent.putExtra("address", shopAgentObject.optString("address1", ""));
+                                            intent.putExtra("category", "");
+                                            intent.putExtra("isMobility", shopAgentObject.optString("is_mobility", ""));
+                                            switchActivity(intent, ACTIVITY_RESULT);
+                                        } else if (!shopAgentObject.optString("member_id", "").equalsIgnoreCase("")
+                                                && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO)) {
+                                            Bundle bundle = new Bundle();
+                                            bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
+
+                                            Intent intent = new Intent(MainPage.this, BBSActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.putExtras(bundle);
+                                            startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
+                                            finish();
+                                        }
+
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+//                                    }
+//                                    else if (!sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO)) {
+//                                        try {
+//
+//
+//                                        } catch (Exception e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    }
+
+                                } else {
+
+                                    Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
+
+                                }
+
+                                String member_dap = RetrofitService.getInstance().getGson().toJson(model.getMember_dap());
                                 SecurePreferences.Editor mEditor = sp.edit();
-                                mEditor.putString(DefineValue.MEMBER_CODE, objectJson.optString(WebParams.MEMBER_CODE, ""));
-                                mEditor.putString(DefineValue.MEMBER_ID, objectJson.optString(WebParams.MEMBER_ID, ""));
-                                mEditor.putString(DefineValue.MEMBER_NAME, objectJson.optString(WebParams.MEMBER_NAME, ""));
+                                mEditor.putString(DefineValue.MEMBER_DAP, member_dap);
                                 mEditor.apply();
 
-                                if(mNavDrawer != null && serviceReferenceBalance != null)
-                                    serviceReferenceBalance.runBalance();
 
-                                initializeNavDrawer();
-                                CheckNotification();
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                Timber.d("isi response autologout:" + model.getError_message());
 
-                                String is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
+                                String message = model.getError_message();
 
-                                if(is_new_bulk.equalsIgnoreCase(DefineValue.STRING_YES))
-                                {
-                                    UserProfileHandler mBH = new UserProfileHandler(getApplication());
-                                    mBH.sentUserProfile(new OnLoadDataListener() {
-                                        @Override
-                                        public void onSuccess(Object deData) {
-                                            if (progdialog.isShowing())
-                                                progdialog.dismiss();
-                                            checkField();
-                                        }
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginMain(MainPage.this, message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MainPage.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
 
-                                        @Override
-                                        public void onFail(Bundle message) {
-
-                                        }
-
-                                        @Override
-                                        public void onFailure(String message) {
-
-                                        }
-                                    }, is_new_bulk);
-                                }
-                                else {
-                                    if (progdialog.isShowing())
-                                        progdialog.dismiss();
-                                    checkField();
-                                }
-
-//                                if (progdialog.isShowing())
-//                                    progdialog.dismiss();
-//                                checkField();
-                                setupBBSData();
-
-                                if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
-                                    try{
-                                        JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
-                                        Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        intent.putExtra("memberId", shopAgentObject.getString("member_id"));
-                                        intent.putExtra("shopId", shopAgentObject.getString("shop_id"));
-                                        intent.putExtra("shopName", shopAgentObject.getString("shop_name"));
-                                        intent.putExtra("memberType", shopAgentObject.getString("member_type"));
-                                        intent.putExtra("memberName", shopAgentObject.getString("member_name"));
-                                        intent.putExtra("commName", shopAgentObject.getString("comm_name"));
-                                        intent.putExtra("province", shopAgentObject.getString("province"));
-                                        intent.putExtra("district", shopAgentObject.getString("district"));
-                                        intent.putExtra("address", shopAgentObject.getString("address1"));
-                                        intent.putExtra("category", "");
-                                        intent.putExtra("isMobility", shopAgentObject.getString("is_mobility"));
-                                        switchActivity(intent, ACTIVITY_RESULT);
-                                    }catch(Exception e){
-                                        e.printStackTrace();
-                                    }
-                                } else if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO) ) {
-                                    try{
-                                        Bundle bundle = new Bundle();
-                                        bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
-
-                                        Intent intent = new Intent(MainPage.this, BBSActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        intent.putExtras(bundle);
-                                        startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
-                                        finish();
-
-                                    }catch(Exception e){
-                                        e.printStackTrace();
-                                    }
-                                }
-
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MainPage.this, model.getError_message());
                             } else {
+                                Timber.d("Error ListMember comlist:" + model.getError_message());
+                                code = model.getError_message();
+                                Toast.makeText(MainPage.this, code, Toast.LENGTH_LONG).show();
 
-                                Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
-                                if (progdialog.isShowing())
-                                    progdialog.dismiss();
                             }
 
-
-                            String member_dap = response.getString(WebParams.MEMBER_DAP);
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.MEMBER_DAP, member_dap);
-                            mEditor.apply();
-
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
-
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            progdialog.dismiss();
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(MainPage.this, message);
-                        } else {
-                            Timber.d("Error ListMember comlist:" + response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            progdialog.dismiss();
-                            Toast.makeText(MainPage.this, code, Toast.LENGTH_LONG).show();
+                            hideProgLoading();
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        @Override
+                        public void onError(Throwable throwable) {
+                            sentLogout();
+//                            getDataListMember();
+                        }
 
-                }
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onComplete() {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                        }
+                    });
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
 
-                private void failure(Throwable throwable){
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(MainPage.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(MainPage.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-//                    if (BuildConfig.FLAVOR.equals("development")){
-//                        Logout(FIRST_SCREEN_LOGIN);
-//                    }else
-                        sentLogout();
-//                    finish();
-                    Timber.w("Error Koneksi List member comlist:" + throwable.getMessage());
-                }
-            });
-        }catch (Exception e){
+        } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    void setupBBSData(){
-        boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
-        if(isAgent){
+    void setupBBSData() {
+        boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        if (isAgent) {
+            RealmManager.getInstance().setBbsRealm(RealmManager.getRealmBBS());
+            RealmManager.getInstance().setRealm(Realm.getDefaultInstance());
             callBBSCityService();
             checkAndRunServiceBBS();
             callAgentShopService();
             callBBSBirthPlaceService();
-        }else {
+        } else {
 
         }
-
-
     }
+
     /**
      * Check jika bisa menjalankan ServiceUpdateData langsung
      * Check jika MustUpdate, IsSameUser, dan IsUpdated
      */
-    void checkAndRunServiceBBS(){
+    void checkAndRunServiceBBS() {
         BBSDataManager bbsDataManager = new BBSDataManager();
-        if(bbsDataManager.isValidToUpdate()) {
+        if (bbsDataManager.isValidToUpdate()) {
             bbsDataManager.runServiceUpdateData(this);
             Timber.d("Run Service update data BBS");
         }
     }
 
-    private void CheckNotification(){
-        Thread mth = new Thread(){
+    private void CheckNotification() {
+        Thread mth = new Thread() {
             @Override
             public void run() {
-                NotificationHandler mNoHand = new NotificationHandler(MainPage.this,sp);
+                NotificationHandler mNoHand = new NotificationHandler(MainPage.this, sp);
                 mNoHand.sentRetrieveNotif();
             }
         };
         mth.start();
     }
 
-    private void callBBSCityService(){
+    private void callBBSCityService() {
         Timber.d("Panggil service BBS City");
         UpdateBBSCity.startUpdateBBSCity(MainPage.this);
     }
 
-    private void callBBSBirthPlaceService(){
+    private void callBBSBirthPlaceService() {
         Timber.d("Panggil service BBS Birth Place");
         UpdateBBSBirthPlace.startUpdateBBSBirthPlace(MainPage.this);
     }
 
-    private void showChangePassword(){
+    private void showChangePassword() {
         Intent i = new Intent(this, ChangePassword.class);
         i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
         switchActivity(i, ACTIVITY_RESULT);
     }
 
-    private void showMyProfile(){
+    private void showMyProfile() {
         Intent i = new Intent(this, MyProfileNewActivity.class);
 //        i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
         switchActivity(i, ACTIVITY_RESULT);
@@ -970,14 +1092,12 @@ public class MainPage extends BaseActivity {
 
     }
 
-    private void checkField(){
+    private void checkField() {
         if (sp.getString(DefineValue.IS_CHANGED_PASS, "").equals(DefineValue.STRING_NO)) {
             showChangePassword();
-        }
-        else if (sp.getString(DefineValue.IS_HAVE_PIN, "").equalsIgnoreCase(DefineValue.STRING_NO)) {
+        } else if (sp.getString(DefineValue.IS_HAVE_PIN, "").equalsIgnoreCase(DefineValue.STRING_NO)) {
             showCreatePin();
-        }
-        else  if (levelClass.isLevel1QAC() && sp.getString(DefineValue.IS_FIRST,"").equalsIgnoreCase(DefineValue.YES)) {
+        } else if (levelClass.isLevel1QAC() && sp.getString(DefineValue.IS_FIRST, "").equalsIgnoreCase(DefineValue.YES)) {
             showMyProfile();
         }
 //        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
@@ -989,17 +1109,20 @@ public class MainPage extends BaseActivity {
 //----------------------------------------------------------------------------------------------------------------
 
 
-    private void openFirstScreen(int index){
+    private void openFirstScreen(int index) {
         Intent i;
-        switch(index){
-            case FIRST_SCREEN_LOGIN :
-                i = new Intent(this,LoginActivity.class);
+        switch (index) {
+            case FIRST_SCREEN_LOGIN:
+                i = new Intent(this, LoginActivity.class);
                 break;
-            case FIRST_SCREEN_INTRO :
-                i = new Intent(this,Introduction.class);
+            case FIRST_SCREEN_INTRO:
+                i = new Intent(this, Introduction.class);
+                break;
+            case FIRST_SCREEN_SPLASHSCREEN:
+                i = new Intent(this, SplashScreen.class);
                 break;
             default:
-                i = new Intent(this,LoginActivity.class);
+                i = new Intent(this, LoginActivity.class);
                 break;
         }
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1013,30 +1136,29 @@ public class MainPage extends BaseActivity {
         invalidateOptionsMenu();
     }
 
-    public void switchContent(Fragment mFragment,String fragName) {
+    public void switchContent(Fragment mFragment, String fragName) {
         mContent = mFragment;
 
-        materialSheetFab.showFab();
+//        materialSheetFab.showFab();
 
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main_page_content, mContent, fragName)
                 .commitAllowingStateLoss();
         setActionBarTitle(fragName);
-        if(mDrawerLayout !=null)mDrawerLayout.closeDrawer(mLeftDrawerRelativeLayout);
+        if (mDrawerLayout != null) mDrawerLayout.closeDrawer(mLeftDrawerRelativeLayout);
     }
 
-    public void switchContent(Fragment mFragment,String fragName,Boolean isBackstack) {
+    public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
 
-        if(isBackstack){
+        if (isBackstack) {
             Timber.d("backstack");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.main_page_content, mFragment, fragName)
                     .addToBackStack(null)
                     .commit();
-        }
-        else {
+        } else {
             Timber.d("bukan backstack");
             getSupportFragmentManager()
                     .beginTransaction()
@@ -1045,11 +1167,11 @@ public class MainPage extends BaseActivity {
 
         }
         setActionBarTitle(fragName);
-        if(mDrawerLayout !=null)mDrawerLayout.closeDrawer(mLeftDrawerRelativeLayout);
+        if (mDrawerLayout != null) mDrawerLayout.closeDrawer(mLeftDrawerRelativeLayout);
     }
 
     public void switchActivity(Intent mIntent, int activity_type) {
-        switch (activity_type){
+        switch (activity_type) {
             case ACTIVITY_RESULT:
                 startActivityForResult(mIntent, REQUEST_FINISH);
                 break;
@@ -1058,23 +1180,27 @@ public class MainPage extends BaseActivity {
         }
     }
 
-    public void switchMenu( int IdxItemMenu,Bundle data) {
+    public void switchMenu(int IdxItemMenu, Bundle data) {
         mNavDrawer.selectItem(IdxItemMenu, data);
     }
 
     public void switchLogout() {
         sentLogout();
     }
+
     private void Logout(int logoutTo) {
 
         String balance = sp.getString(DefineValue.BALANCE_AMOUNT, "");
-        String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME,"");
+        String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME, "");
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userPhoneID);
-        mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
-        mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
+        if (sp.getString(DefineValue.IS_POS, "N").equals(DefineValue.N)) {
+            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
+        } else
+            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
+        mEditor.putString(DefineValue.PREVIOUS_BALANCE, balance);
+        mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, contact_first_time);
 
         mEditor.putString(DefineValue.IS_AGENT_APPROVE, "");
         mEditor.putString(DefineValue.AGENT_NAME, "");
@@ -1084,80 +1210,60 @@ public class MainPage extends BaseActivity {
         mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, "");
         mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, "");
         mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
+        mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, "");
+        mEditor.putString(DefineValue.IS_POS, "");
+        mEditor.remove(DefineValue.IS_DORMANT);
+        mEditor.remove(DefineValue.IS_REGISTERED_LEVEL);
+        mEditor.remove(DefineValue.CATEGORY);
+        mEditor.remove(DefineValue.SAME_BANNER);
+        mEditor.remove(DefineValue.DATA_BANNER);
+        mEditor.remove(DefineValue.IS_POS);
+        mEditor.remove(DefineValue.COMM_UPGRADE_MEMBER);
+        mEditor.remove(DefineValue.MEMBER_CREATED);
+        mEditor.remove(DefineValue.LAST_CURRENT_LONGITUDE);
+        mEditor.remove(DefineValue.LAST_CURRENT_LATITUDE);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
         openFirstScreen(logoutTo);
     }
-	
-	private void sentLogout(){
-        try{
-            if(progdialog != null && !progdialog.isShowing()) {
-                progdialog = DefinedDialog.CreateProgressDialog(this, "");
-                progdialog.show();
-            }
 
-            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
+    private void sentLogout() {
+        try {
+            showProgressDialog();
+
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LOGOUT);
+//            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params logout:"+params.toString());
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGOUT, params
+                    , new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(object, jsonModel.class);
 
-            MyApiClient.sentLogout(this, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                        progdialog.dismiss();
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("logout:"+response.toString());
-                            //stopService(new Intent(MainPage.this, UpdateLocationService.class));
-                            Logout(FIRST_SCREEN_LOGIN);
+                            if (model.getError_code().equals(WebParams.SUCCESS_CODE)) {
+                                //stopService(new Intent(MainPage.this, UpdateLocationService.class));
+                                Logout(FIRST_SCREEN_INTRO);
 
-                        } else {
-                            progdialog.dismiss();
-                            Timber.d("isi error logout:"+response.toString());
-                            Toast.makeText(MainPage.this, message, Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(MainPage.this, model.getError_message(), Toast.LENGTH_LONG).show();
+                            }
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
+                            MainPage.this.finish();
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(MainPage.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(MainPage.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    MainPage.this.finish();
-                    Timber.w("Error Koneksi logout mainpage:"+throwable.toString());
-                }
-            });
-        }
-        catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+                        @Override
+                        public void onComplete() {
+                            dismissProgressDialog();
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -1172,93 +1278,103 @@ public class MainPage extends BaseActivity {
             if (resultCode == RESULT_ERROR) {
                 this.finish();
             }
-            if(resultCode == RESULT_BALANCE){
+            if (resultCode == RESULT_BALANCE) {
                 Timber.w("Masuk result Balance");
                 mNavDrawer.getBalance(true);
             }
-            if(resultCode == RESULT_NOTIF){
+            if (resultCode == RESULT_BALANCE_COLLECTOR) {
+                Timber.w("Masuk result Balance collector");
+                fragTagihInput.getBalanceCollector();
+            }
+            if (resultCode == RESULT_NOTIF) {
                 Timber.w("Masuk result notif");
                 CheckNotification();
                 invalidateOptionsMenu();
-                if(data != null){
-                    int _type = data.getIntExtra(DefineValue.NOTIF_TYPE,0);
-                    switch (_type){
-                        case NotificationActivity.TYPE_TRANSFER :
+                if (data != null) {
+                    int _type = data.getIntExtra(DefineValue.NOTIF_TYPE, 0);
+                    switch (_type) {
+                        case NotificationActivity.TYPE_TRANSFER:
                             Bundle dataBundle = new Bundle();
-                            dataBundle.putString(DefineValue.AMOUNT,data.getStringExtra(DefineValue.AMOUNT));
-                            dataBundle.putString(DefineValue.CUST_NAME,data.getStringExtra(DefineValue.CUST_NAME));
-                            dataBundle.putString(DefineValue.MESSAGE,data.getStringExtra(DefineValue.MESSAGE));
-                            dataBundle.putString(DefineValue.USERID_PHONE,data.getStringExtra(DefineValue.USERID_PHONE));
-                            dataBundle.putString(DefineValue.TRX,data.getStringExtra(DefineValue.TRX));
-                            dataBundle.putString(DefineValue.REQUEST_ID,data.getStringExtra(DefineValue.REQUEST_ID));
+                            dataBundle.putString(DefineValue.AMOUNT, data.getStringExtra(DefineValue.AMOUNT));
+                            dataBundle.putString(DefineValue.CUST_NAME, data.getStringExtra(DefineValue.CUST_NAME));
+                            dataBundle.putString(DefineValue.MESSAGE, data.getStringExtra(DefineValue.MESSAGE));
+                            dataBundle.putString(DefineValue.USERID_PHONE, data.getStringExtra(DefineValue.USERID_PHONE));
+                            dataBundle.putString(DefineValue.TRX, data.getStringExtra(DefineValue.TRX));
+                            dataBundle.putString(DefineValue.REQUEST_ID, data.getStringExtra(DefineValue.REQUEST_ID));
+                            dataBundle.putBoolean(DefineValue.CONFIRM_PAYFRIEND, true);
 
-                            mNavDrawer.selectItem(NavigationDrawMenu.MPAYFRIENDS,dataBundle);
+                            mNavDrawer.selectItem(NavigationDrawMenu.MPAYFRIENDS, dataBundle);
                             break;
                         case NotificationActivity.TYPE_LIKE:
+                            break;
                         case NotificationActivity.TYPE_COMMENT:
-                            int _post_id = Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID,"0"));
-                            if(mContent instanceof FragMainPage){
-                                FragMainPage mFrag = (FragMainPage)mContent;
-                                if(mFrag.getFragment(0) instanceof MyHistory){
-                                    MyHistory _history =(MyHistory) mFrag.getFragment(0);
-                                    _history.ScrolltoItem(_post_id);
-                                }
-                            }
-                            Intent i = new Intent(this, HistoryDetailActivity.class);
-                            i.putExtras(data);
-                            switchActivity(i,ACTIVITY_RESULT);
+//                            int _post_id = Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID, "0"));
+//                            if (mContent instanceof FragMainPage) {
+//                                FragMainPage mFrag = (FragMainPage) mContent;
+//                                if (mFrag.getFragment(0) instanceof MyHistory) {
+//                                    MyHistory _history = (MyHistory) mFrag.getFragment(0);
+//                                    _history.ScrolltoItem(_post_id);
+//                                }
+//                            }
+//                            Intent i = new Intent(this, HistoryDetailActivity.class);
+//                            i.putExtras(data);
+//                            switchActivity(i, ACTIVITY_RESULT);
                             break;
                         case NotificationActivity.REJECTED_KTP:
                             Intent e = new Intent(this, MyProfileNewActivity.class);
-                            switchActivity(e,ACTIVITY_RESULT);
+                            switchActivity(e, ACTIVITY_RESULT);
                             break;
                         case NotificationActivity.REJECTED_SIUP_NPWP:
                             Intent a = new Intent(this, UpgradeAgentActivity.class);
-                            switchActivity(a,ACTIVITY_RESULT);
+                            switchActivity(a, ACTIVITY_RESULT);
+                            break;
+                        case NotificationActivity.SOURCE_OF_FUND:
+                            Intent s = new Intent(this, SourceOfFundActivity.class);
+                            s.putExtras(data);
+                            switchActivity(s, ACTIVITY_RESULT);
                             break;
                     }
                 }
             }
-            if(resultCode == RESULT_REFRESH_NAVDRAW) {
+            if (resultCode == RESULT_REFRESH_NAVDRAW) {
 //                Timber.d("masuukk result refesh navdraw");
                 mNavDrawer.refreshUINavDrawer();
                 mNavDrawer.refreshDataNavDrawer();
 
             }
-            if(resultCode == RESULT_FIRST_TIME){
-                    checkField();
+            if (resultCode == RESULT_FIRST_TIME) {
+                checkField();
                 mNavDrawer.refreshUINavDrawer();
                 mNavDrawer.refreshDataNavDrawer();
             }
-        }
-        else {
-            super.onActivityResult(requestCode, resultCode, data);
+        } else {
+            if (resultCode == -1) {
+                Fragment fragmentProfileQr = getSupportFragmentManager().findFragmentByTag(getString(R.string.myprofilelist_ab_title));
+                if (requestCode == RESULT_GALERY) {
+                    fragmentProfileQr.onActivityResult(requestCode, resultCode, data);
+                } else if (requestCode == RESULT_CAMERA) {
+                    fragmentProfileQr.onActivityResult(requestCode, resultCode, data);
+                }
+            }
         }
     }
 
-    private Boolean isLogin(){
+
+    private Boolean isLogin() {
         flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        if(flagLogin == null)
+        if (flagLogin == null)
             flagLogin = DefineValue.STRING_NO;
         Timber.d("isLoginMainPage");
         return flagLogin.equals(DefineValue.STRING_YES);
     }
 
-    private void showLogoutDialog(){
-        AlertDialog.Builder alertbox=new AlertDialog.Builder(this);
+    private void showLogoutDialog() {
+        AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
         alertbox.setTitle("Warning");
         alertbox.setMessage("Exit Application?");
-        alertbox.setPositiveButton("OK", new
-                DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        switchLogout();
-                    }
-                });
-        alertbox.setNegativeButton(getString(R.string.cancel), new
-                DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
+        alertbox.setPositiveButton("OK", (arg0, arg1) -> switchLogout());
+        alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
+        });
         alertbox.show();
     }
 //---------------------------------------------------------------------------------------------------------
@@ -1271,44 +1387,43 @@ public class MainPage extends BaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem itemData = menu.findItem(R.id.notifications);
+        itemData = menu.findItem(R.id.notifications);
 
         itemData.setActionView(R.layout.ab_notification);
-        NotificationActionView actionView = (NotificationActionView) itemData.getActionView();
+        actionView = (NotificationActionView) itemData.getActionView();
         actionView.setItemData(menu, itemData);
         actionView.setCount(AmountNotif); // initial value
-        if(AmountNotif == 0) actionView.hideView();
+        if (AmountNotif == 0) actionView.hideView();
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         invalidateOptionsMenu();
-        if(item.getItemId() == R.id.notifications){
-            if(getSupportFragmentManager().getBackStackEntryCount() == 0 ){
+        if (item.getItemId() == R.id.favorite) {
+            Intent i = new Intent(this, FavoriteActivity.class);
+            startActivity(i);
+        } else if (item.getItemId() == R.id.notifications) {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
                 //NotificationActionView.setCountDelta(this, 3);
                 //FragNotification fragNotification = new FragNotification();
                 //switchContent(fragNotification, "Notification",true);
-                Intent i = new Intent(this,NotificationActivity.class);
-                switchActivity(i,ACTIVITY_RESULT);
-            }
-            else getSupportFragmentManager().popBackStack();
+                Intent i = new Intent(this, NotificationActivity.class);
+                switchActivity(i, ACTIVITY_RESULT);
+            } else getSupportFragmentManager().popBackStack();
             return true;
         }
-        else if(item.getItemId() == R.id.right_drawer_menu){
-            refreshPromo();
-            if (mDrawerLayout.isDrawerOpen(mRightDrawerRelativeLayout)){
-                mDrawerLayout.closeDrawer(mRightDrawerRelativeLayout);
-            }
-            mDrawerLayout.openDrawer(mRightDrawerRelativeLayout);
-            return true;
-        }
-        else if(item.getItemId() == R.id.menu_item_home) {
-            invalidateOptionsMenu();
-            Fragment newFragment = new FragMainPage();
-            switchContent(newFragment, getString(R.string.appname).toUpperCase());
-            mNavDrawer.setPositionNull();
-            invalidateOptionsMenu();
+//        else if (item.getItemId() == R.id.right_drawer_menu) {
+//            refreshPromo();
+//            if (mDrawerLayout.isDrawerOpen(mRightDrawerRelativeLayout)) {
+//                mDrawerLayout.closeDrawer(mRightDrawerRelativeLayout);
+//            }
+//            mDrawerLayout.openDrawer(mRightDrawerRelativeLayout);
+//            return true;
+//        }
+        else if (item.getItemId() == R.id.settings) {
+            Intent i = new Intent(this, ActivityListSettings.class);
+            switchActivity(i, ACTIVITY_RESULT);
         }
         invalidateOptionsMenu();
         return super.onOptionsItemSelected(item);
@@ -1318,7 +1433,7 @@ public class MainPage extends BaseActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        if(mDrawerToggle != null)
+        if (mDrawerToggle != null)
             mDrawerToggle.syncState();
     }
 
@@ -1326,17 +1441,16 @@ public class MainPage extends BaseActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
-        if(mDrawerToggle != null)
+        if (mDrawerToggle != null)
             mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
     public void onBackPressed() {
-        Timber.w("get Back Stack Entry Count:" + String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
+        Timber.w("get Back Stack Entry Count:" + getSupportFragmentManager().getBackStackEntryCount());
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             showLogoutDialog();
-        }
-        else super.onBackPressed();
+        } else super.onBackPressed();
 
     }
 
@@ -1378,12 +1492,10 @@ public class MainPage extends BaseActivity {
     }
 
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
-        if(isForeground) {
+        if (isForeground) {
             if (serviceReferenceBalance != null) {
                 serviceReferenceBalance.StartCallBalance();
             }
@@ -1398,18 +1510,26 @@ public class MainPage extends BaseActivity {
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
         }
 
+        if (currentTab.equalsIgnoreCase(userNameLogin)) {
+            bottomNavigationView.setSelectedItemId(R.id.menu_home);
+        }
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(btnReceiver, new IntentFilter(MainPage.RESULT_HOME_BALANCE));
+
     }
 
     @Override
     protected void onPause() {
-        if(isForeground){
-            if(serviceReferenceBalance != null)
+        super.onPause();
+        if (isForeground) {
+            if (serviceReferenceBalance != null)
                 serviceReferenceBalance.StopCallBalance();
-            if(serviceAppInfoReference != null)
+            if (serviceAppInfoReference != null)
                 serviceAppInfoReference.StopCallAppInfo();
         }
-        super.onPause();
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(btnReceiver);
+        if (progdialog != null)
+            progdialog.dismiss();
     }
 
     @Override
@@ -1420,17 +1540,35 @@ public class MainPage extends BaseActivity {
         doUnbindUserProfileService();
     }
 
+    void showProgLoading(String msg, boolean islogout) {
+        if (islogout) {
+            progdialog = DefinedDialog.CreateProgressDialog(this, msg);
+        } else {
+            if (progdialog == null)
+//            {
+                progdialog = DefinedDialog.CreateProgressDialog(this, msg);
+//            } else
+            progdialog.show();
+        }
+    }
+
+    void hideProgLoading() {
+        if (progdialog != null) {
+            if (progdialog.isShowing())
+                progdialog.dismiss();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         Timber.w("destroy main page");
         /*serviceReferenceBalance.StopCallBalance();
         doUnbindService();*/
-        if(progdialog != null && progdialog.isShowing()) {
-            progdialog.dismiss();
-        }
+
+        hideProgLoading();
 
         JobScheduleManager.getInstance(this).cancelAll();
-        MyApiClient.CancelRequestWS(this,true);
+        RetrofitService.dispose();
         super.onDestroy();
     }
 
@@ -1448,7 +1586,7 @@ public class MainPage extends BaseActivity {
         materialSheetFab = FabInstance.newInstance(this, new FabInstance.OnBtnListener() {
             @Override
             public void OnClickItemFAB(int idx) {
-                switch (idx){
+                switch (idx) {
                     case FabInstance.ITEM_FAB_ASK4MONEY:
                         switchMenu(NavigationDrawMenu.MASK4MONEY, null);
                         break;
@@ -1461,7 +1599,7 @@ public class MainPage extends BaseActivity {
 
     }
 
-    private void showValidasiEmail(){
+    private void showValidasiEmail() {
         Intent i = new Intent(this, ValidasiEmailActivity.class);
         i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
         switchActivity(i, ACTIVITY_RESULT);

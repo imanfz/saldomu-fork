@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginLeft="@dimen/padding_small"
     android:layout_marginTop="@dimen/abc_text_size_medium_material"
-    android:visibility="gone"
+    android:visibility="visible"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:stretchColumns="1">
@@ -26,7 +26,7 @@
             android:layout_width="0dp"
             tools:text="8382392"
             android:gravity="center"
-            android:textColor="@color/amber_900"
+            android:textColor="@color/colorPrimary"
             android:padding="6dip"
             android:textStyle="bold"
             android:visibility="gone"
@@ -238,6 +238,30 @@
             android:gravity="right"
             android:padding="3dip" />
     </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/additional_fee_cash"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_reportbbs_additionalfee_value"
+            android:layout_weight="2"
+            android:maxLines="1"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
 
     <View
         android:layout_width="match_parent"

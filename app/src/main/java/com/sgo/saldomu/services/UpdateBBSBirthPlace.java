@@ -5,18 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place;
+import com.sgo.saldomu.interfaces.ObjListeners;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -57,49 +57,39 @@ public class UpdateBBSBirthPlace extends IntentService {
 
     private void getListBBSBirthPlace(){
         try{
-            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_BIRTH_PLACE,
-                    BuildConfig.SECRET_KEY);
+
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_BBS_BIRTH_PLACE,
+                    "");
             Timber.d("params bbs birth place " +params.toString());
 
-            MyApiClient.getBBSBirthPlace(this,true, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("Isi response get BBS birth place: "+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            insertToRealm(response.optJSONArray(WebParams.BBS_CITY));
-                        }else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_BIRTH_PLACE, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("Isi response get BBS birth place: "+response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    insertToRealm(response.optJSONArray(WebParams.BBS_CITY));
+                                }else {
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onComplete() {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    Timber.w("Error Koneksi get BBS birth place:" + throwable.toString());
-                }
-            });
+                        }
+                    });
         }catch (Exception e){
             Log.d("httpclient:",e.getMessage());
         }

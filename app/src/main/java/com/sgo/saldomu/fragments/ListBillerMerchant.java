@@ -4,9 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
@@ -37,7 +41,8 @@ public class ListBillerMerchant extends ListFragment {
     private View v;
     private String userID;
     private String accessKey;
-    private String billerTypeCode,billerIdNumber;
+    private String billerType;
+    private String billerTypeCode, billerIdNumber;
     private List<Biller_Data_Model> mListBillerData;
     private Biller_Type_Data_Model mBillerType;
     private EasyAdapter adapter;
@@ -48,7 +53,7 @@ public class ListBillerMerchant extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.wtf("onCreate View ListBillerMerchant","onCreate View ListBillerMerchant" );
+        Log.wtf("onCreate View ListBillerMerchant", "onCreate View ListBillerMerchant");
         v = inflater.inflate(R.layout.frag_list_biller_tab, container, false);
         return v;
     }
@@ -56,18 +61,21 @@ public class ListBillerMerchant extends ListFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.wtf("onActivityCreated ListBillerMerchant","onActivityCreated ListBillerMerchant" );
+        Log.wtf("onActivityCreated ListBillerMerchant", "onActivityCreated ListBillerMerchant");
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        userID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
 //        realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
 //        _data = new ArrayList<>();
 //        adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _data);
 
-        ListView listView1 = (ListView) v.findViewById(android.R.id.list);
+        ListView listView1 = v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
+
+        if (mBillerType!=null)
+            setActionBarTitle(getString(R.string.biller_ab_title) + "-" + mBillerType.getBiller_type_name());
 
 //        if(!realm.isInTransaction())
 //            initializeData();
@@ -93,26 +101,25 @@ public class ListBillerMerchant extends ListFragment {
 //        }
     }
 
-    private void initializeData(){
+    private void initializeData() {
         Bundle args = getArguments();
-        billerTypeCode = args.getString(DefineValue.BILLER_TYPE,"");
-        billerIdNumber = args.getString(DefineValue.BILLER_ID_NUMBER,"");
+        billerTypeCode = args.getString(DefineValue.BILLER_TYPE, "");
+        billerIdNumber = args.getString(DefineValue.BILLER_ID_NUMBER, "");
 
         mBillerType = realm.where(Biller_Type_Data_Model.class).
-                        equalTo(WebParams.BILLER_TYPE_CODE,billerTypeCode).
-                        findFirst();
+                equalTo(WebParams.BILLER_TYPE_CODE, billerTypeCode).
+                findFirst();
 
-        if(mBillerType !=null) {
+        if (mBillerType != null) {
             mListBillerData = mBillerType.getBiller_data_models();
             setActionBarTitle(getString(R.string.biller_ab_title) + "-" + mBillerType.getBiller_type_name());
             _data.clear();
-            for (int i = 0 ;i< mListBillerData.size();i++){
+            for (int i = 0; i < mListBillerData.size(); i++) {
                 _data.add(mListBillerData.get(i).getComm_name());
             }
 
             adapter.notifyDataSetChanged();
-        }
-        else
+        } else
             mListBillerData = new ArrayList<>();
 
 
@@ -121,38 +128,40 @@ public class ListBillerMerchant extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         changeToInputBiller(mListBillerData.get(position).getComm_id(),
-                            mListBillerData.get(position).getComm_name(),
-                            mListBillerData.get(position).getItem_id());
+                mListBillerData.get(position).getComm_name(),
+                mListBillerData.get(position).getItem_id(),
+                mBillerType.getBiller_type());
     }
 
-    private void changeToInputBiller(String _comm_id, String _comm_name, String _item_id){
+    private void changeToInputBiller(String _comm_id, String _comm_name, String _item_id, String _buy_type) {
 //        if(_item_id.isEmpty())
 //            callUpdateDenom(_comm_id, _comm_name);
 
         Bundle mArgs = new Bundle();
-        mArgs.putString(DefineValue.COMMUNITY_ID,_comm_id);
-        mArgs.putString(DefineValue.COMMUNITY_NAME,_comm_name);
-        mArgs.putString(DefineValue.BILLER_ITEM_ID,_item_id);
-        mArgs.putString(DefineValue.BILLER_TYPE,billerTypeCode);
-        mArgs.putString(DefineValue.BILLER_ID_NUMBER,billerIdNumber);
+        mArgs.putString(DefineValue.COMMUNITY_ID, _comm_id);
+        mArgs.putString(DefineValue.COMMUNITY_NAME, _comm_name);
+        mArgs.putString(DefineValue.BILLER_ITEM_ID, _item_id);
+        mArgs.putString(DefineValue.BILLER_TYPE, billerTypeCode);
+        mArgs.putString(DefineValue.BILLER_ID_NUMBER, billerIdNumber);
+        mArgs.putString(DefineValue.BUY_TYPE, _buy_type);
 
-        BillerInput mBI = new BillerInput() ;
+        BillerInput mBI = new BillerInput();
         mBI.setArguments(mArgs);
 
-        String fragname = mBillerType.getBiller_type_name()+"-"+_comm_name;
+        String fragname = mBillerType.getBiller_type_name() + "-" + _comm_name;
 
-        switchFragment(mBI,BillerActivity.FRAG_BIL_LIST_MERCHANT,fragname,true, BillerInput.TAG);
+        switchFragment(mBI, BillerActivity.FRAG_BIL_LIST_MERCHANT, fragname, true, BillerInput.TAG);
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name,String next_name, Boolean isBackstack, String tag){
+    private void switchFragment(android.support.v4.app.Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
         if (getActivity() == null)
             return;
 
         BillerActivity fca = (BillerActivity) getActivity();
-        fca.switchContent(i,name,next_name,isBackstack,tag);
+        fca.switchContent(i, name, next_name, isBackstack, tag);
     }
 
-    private void setActionBarTitle(String _title){
+    private void setActionBarTitle(String _title) {
         if (getActivity() == null)
             return;
 
@@ -191,51 +200,46 @@ public class ListBillerMerchant extends ListFragment {
 
         realm = Realm.getInstance(RealmManager.BillerConfiguration);
         _data = new ArrayList<>();
-        adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _data);
+        adapter = new EasyAdapter(getActivity(), R.layout.list_view_item_with_arrow, _data);
 
-        if(!realm.isInTransaction())
+        if (!realm.isInTransaction())
             initializeData();
 
         realmListener = new RealmChangeListener() {
             @Override
             public void onChange(Object element) {
                 Timber.d("Masuk realm listener bilactive asdfasdfa");
-                if(isVisible()){
+                if (isVisible()) {
                     initializeData();
                 }
-            }};
+            }
+        };
         realm.addChangeListener(realmListener);
 
-        if (billerIdNumber!=null && !billerIdNumber.equals(""))
-        {
-
-            PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(),billerIdNumber);
-            Log.wtf("billeridnumber","billeridnumber");
-            if (BillerIdNumber!=null)
-            {
-                for (int i=0; i<_data.size(); i++)
-                {
-                    Timber.d("_data"+_data.get(i));
-                    if (_data!=null)
-                    {
-                        Timber.d("prefix name = "+BillerIdNumber.prefix_name);
-                        if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase()))
-                        {
-                            changeToInputBiller(mListBillerData.get(i).getComm_id(),
-                                    mListBillerData.get(i).getComm_name(),
-                                    mListBillerData.get(i).getItem_id());
-                        }
-                    }
-
-                }
-            }
-        }
+//        if (billerIdNumber != null && !billerIdNumber.equals("")) {
+//            PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(), billerIdNumber);
+//            Log.wtf("billeridnumber", "billeridnumber");
+//            if (BillerIdNumber != null) {
+//                for (int i = 0; i < _data.size(); i++) {
+//                    Timber.d("_data" + _data.get(i));
+//                    if (_data != null) {
+//                        Timber.d("prefix name = " + BillerIdNumber.prefix_name);
+//                        if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
+//                            changeToInputBiller(mListBillerData.get(i).getComm_id(),
+//                                    mListBillerData.get(i).getComm_name(),
+//                                    mListBillerData.get(i).getItem_id());
+//                        }
+//                    }
+//
+//                }
+//            }
+//        }
 
     }
 
     @Override
     public void onDestroy() {
-        if(!realm.isInTransaction() && !realm.isClosed()) {
+        if (!realm.isInTransaction() && !realm.isClosed()) {
             realm.removeChangeListener(realmListener);
             realm.close();
         }

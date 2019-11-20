@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         >
         <RelativeLayout
@@ -87,6 +87,30 @@
                     />
                 <TextView
                     android:id="@+id/bbscashoutmember_tx_id_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="16dp"
+                >
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cashoutmember_created"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/bbscashoutmember_created_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_medium_material"
@@ -205,6 +229,33 @@
                     android:textStyle="bold"
                     android:textSize="@dimen/text_size_medium_material"
                     android:textColor="@color/colorPrimaryDark"
+                    android:text="@string/additional_fee"
+                    />
+
+                <TextView
+                    android:id="@+id/bbscashoutmember_additionalfee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textColor="@color/colorPrimaryDark"
                     android:text="@string/cashoutmember_total"
                     />
 
@@ -255,7 +306,7 @@
             </LinearLayout>
 
             <LinearLayout android:id="@+id/bbscashoutmember_bottom_layout"
-                android:background="@color/windowBackgroundColor"
+                android:background="@color/grey_1000w"
                 android:gravity="center"
                 android:padding="8dp"
                 android:orientation="vertical"
@@ -272,7 +323,7 @@
                         android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_bk_orange"
+                        android:background="@drawable/card_bk_blue"
                         android:layout_marginRight="8dp"
                         app:mrl_rippleOverlay="true"
                         app:mrl_rippleColor="@color/colorPrimaryDark"
@@ -299,7 +350,6 @@
                     <com.balysv.materialripple.MaterialRippleLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_bk_orange"
                         android:layout_weight="1"
                         app:mrl_rippleOverlay="true"
                         app:mrl_rippleColor="@color/colorPrimaryDark"
@@ -312,11 +362,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                            android:textColor="@color/black"
+                            android:textColor="@color/white"
                             android:gravity="center"
                             android:text="@string/ok"
                             android:layout_gravity="center_horizontal"
-                            android:background="@drawable/button_transparant"
+                            android:background="@drawable/rounded_background_blue"
                             />
                     </com.balysv.materialripple.MaterialRippleLayout>
                 </LinearLayout>
@@ -325,7 +375,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@drawable/card_bk"
                     android:layout_marginTop="8dp"
                     app:mrl_rippleOverlay="true"
                     app:mrl_rippleColor="@color/colorPrimaryDark"
@@ -341,8 +390,8 @@
                         android:layout_gravity="center"
                         android:text="@string/cancel"
                         android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                        android:background="@drawable/button_transparant"
-                        android:textColor="@color/colorSecondaryDark"
+                        android:background="@drawable/rounded_background_outline"
+                        android:textColor="@color/black"
                         />
 
                 </com.balysv.materialripple.MaterialRippleLayout>

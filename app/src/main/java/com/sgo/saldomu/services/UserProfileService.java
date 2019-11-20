@@ -3,10 +3,11 @@ package com.sgo.saldomu.services;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
-import android.os.*;
+import android.os.Binder;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.os.Process;
-
-import com.sgo.saldomu.loader.UserProfileHandler;
 
 import timber.log.Timber;
 
@@ -34,8 +35,8 @@ public class UserProfileService extends Service {
         public void run() {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             if(mainPageContext != null) {
-                UserProfileHandler mBH = new UserProfileHandler(mainPageContext);
-                mBH.sentUserProfile();
+//                UserProfileHandler mBH = new UserProfileHandler(mainPageContext);
+//                mBH.sentUserProfile();
             }
             Timber.i("Service jalankan call UserProfile Service");
         }

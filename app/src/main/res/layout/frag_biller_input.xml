@@ -1,84 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
 
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  android:background="@color/grey_1000w"
-                  android:layout_margin="3dp"
-            >
+    <LinearLayout
+        android:id="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:background="@color/grey_1000w"
+        android:orientation="vertical">
+        <TextView
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="asd"
+            android:visibility="gone"
+            android:id="@+id/tv_ovo"/>
+        <RadioGroup
+            android:id="@+id/billerinput_radio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/radioPrabayar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/prepaid"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/radioPascabayar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/postpaid"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+        </RadioGroup>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/billerinput_text_payment_remark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/billerinput_text_payment_remark"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+
+            <EditText
+                android:id="@+id/payment_remark_billerinput_value"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/billerinput_text_payment_remark"
+                android:enabled="true"
+                android:maxLength="32" />
+
+            <ImageView
+                android:id="@+id/img_operator"
+                android:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/billerinput_text_payment_remark"
+                android:layout_toRightOf="@id/payment_remark_billerinput_value"/>
+        </RelativeLayout>
 
         <LinearLayout
-                android:id="@+id/billerinput_layout_denom"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                >
+            android:id="@+id/billerinput_layout_denom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp">
+
             <TextView
-                    android:id="@+id/billerinput_text_denom"
+                android:id="@+id/billerinput_text_denom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/billerinput_text_denom"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/spinning_wheel_billerinput_denom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:text="@string/billerinput_text_denom"
-                    android:paddingTop="10dp"
-                    />
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                    >
-                <ImageView
-                        android:id="@+id/spinning_wheel_billerinput_denom"
-                        android:visibility="invisible"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/default_spinner"
-                        android:layout_centerInParent="true"
-                        />
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/default_spinner"
+                    android:visibility="invisible" />
+
                 <Spinner
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="visible"
-                        android:spinnerMode="dropdown"
-                        android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
-                        android:id="@+id/spinner_billerinput_denom"
-                        android:layout_gravity="center_horizontal"/>
+                    android:id="@+id/spinner_billerinput_denom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:spinnerMode="dropdown"
+                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                    android:visibility="visible" />
             </RelativeLayout>
         </LinearLayout>
 
-
-        <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="10dp"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                >
-            <TextView
-                    android:id="@+id/billerinput_text_payment_remark"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
-                    android:text="@string/billerinput_text_payment_remark"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:paddingTop="10dp"
-                    />
-            <EditText
-                    android:id="@+id/payment_remark_billerinput_value"
-                    android:layout_below="@id/billerinput_text_payment_remark"
-                    android:enabled="true"
-                    android:maxLength="32"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/billerinput_layout_month"
@@ -86,118 +132,143 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            >
+            android:paddingRight="30dp">
+
             <TextView
                 android:id="@+id/billerinput_text_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:textColor="@color/colorPrimaryDark"
-                android:text="@string/billerinput_text_month"
                 android:paddingTop="10dp"
-                />
+                android:text="@string/billerinput_text_month"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
+
                 <ImageView
                     android:id="@+id/spinning_wheel_billerinput_month"
-                    android:visibility="invisible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/default_spinner"
                     android:layout_centerInParent="true"
-                    />
+                    android:src="@drawable/default_spinner"
+                    android:visibility="invisible" />
+
                 <Spinner
+                    android:id="@+id/spinner_billerinput_month"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
+                    android:layout_gravity="center_horizontal"
                     android:spinnerMode="dropdown"
                     android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
-                    android:id="@+id/spinner_billerinput_month"
-                    android:layout_gravity="center_horizontal"/>
+                    android:visibility="visible" />
             </RelativeLayout>
         </LinearLayout>
 
-        <LinearLayout android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal"
-                      android:gravity="right"
-                      android:layout_gravity="right"
-                      android:layout_marginBottom="6dp"
-                      android:layout_marginRight="30dp"
-                >
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:layout_gravity="center_vertical"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="@dimen/abc_text_size_caption_material"
-                    android:text="@string/share_options"/>
-
-            <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/privacy_spinner"
-                    android:gravity="right"
-                    android:layout_gravity="center_vertical"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="20dp"
+            android:visibility="visible">
+            <TextView
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/biller_notes"/>
+        </ScrollView>
+
+
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="right"-->
+            <!--android:layout_marginRight="30dp"-->
+            <!--android:layout_marginBottom="6dp"-->
+            <!--android:gravity="right"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:gravity="right"-->
+                <!--android:text="@string/share_options"-->
+                <!--android:textColor="@color/colorPrimaryDark"-->
+                <!--android:textSize="@dimen/abc_text_size_caption_material"-->
+                <!--android:textStyle="bold" />-->
+
+            <!--<Spinner-->
+                <!--android:id="@+id/privacy_spinner"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:gravity="right" />-->
+
+        <!--</LinearLayout>-->
+
+        <LinearLayout
+            android:id="@+id/layout_warn_pln"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:visibility="gone"
-            android:id="@+id/layout_warn_pln">
+            android:orientation="vertical"
+            android:visibility="gone">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Keterangan : "
                 android:textColor="@color/red_A700"
-                android:textStyle="italic"/>
+                android:textStyle="italic" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/pln_warn"
                 android:textColor="@color/red_A700"
-                android:textStyle="italic"/>
+                android:textStyle="italic" />
         </LinearLayout>
-
 
 
     </LinearLayout>
 
-    <com.balysv.materialripple.MaterialRippleLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/card_bk"
-            android:layout_gravity="center"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            app:mrl_rippleOverlay="true"
-            app:mrl_rippleColor="@color/colorPrimary"
-            app:mrl_rippleAlpha="0.2"
-            app:mrl_rippleDelayClick="false"
-            app:mrl_rippleHover="true"
-            >
-        <Button
-                android:id="@+id/btn_submit_billerinput"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/colorPrimaryDark"
-                android:gravity="center"
-                android:text="@string/proses"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
-                />
-    </com.balysv.materialripple.MaterialRippleLayout>
+<!--    <LinearLayout-->
+<!--        android:layout_below="@+id/input"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:weightSum="0.5"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_alignParentEnd="true">-->
 
-</LinearLayout>
+<!--        <com.balysv.materialripple.MaterialRippleLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="40dp"-->
+<!--            android:layout_marginRight="40dp"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:background="@drawable/card_bk_blue"-->
+<!--            app:mrl_rippleAlpha="0.2"-->
+<!--            app:mrl_rippleColor="@color/colorPrimary"-->
+<!--            app:mrl_rippleDelayClick="false"-->
+<!--            app:mrl_rippleHover="true"-->
+<!--            app:mrl_rippleOverlay="true">-->
+
+        <Button
+            android:id="@+id/btn_submit_billerinput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/rounded_background_blue"
+            android:text="@string/submit"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/grey_1000w"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="20dp"/>
+        <!--        </com.balysv.materialripple.MaterialRippleLayout>-->
+<!--    </LinearLayout>-->
+
+</RelativeLayout>

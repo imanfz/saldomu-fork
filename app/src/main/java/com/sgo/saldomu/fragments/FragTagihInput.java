@@ -1,6 +1,5 @@
 package com.sgo.saldomu.fragments;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,34 +12,34 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.util.Log;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.SCADMCommunityModel;
-import com.sgo.saldomu.Beans.TagihCommunityModel;
 import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.JoinCommunitySCADMActivity;
-import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.TagihActivity;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
-import com.sgo.saldomu.coreclass.ToggleKeyboard;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
-import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.models.MobilePhoneModel;
-import com.sgo.saldomu.models.PaymentTypeDGIModel;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
+import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.models.TagihCommunityModel;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,17 +52,22 @@ import timber.log.Timber;
 
 public class FragTagihInput extends BaseFragment {
     Spinner sp_mitra, sp_communtiy;
+    LinearLayout ll_komunitas;
     SecurePreferences sp;
     EditText et_memberCode;
-    Button btn_submit;
+    Button btn_submit, btn_cancel, btn_regShop;
+    Boolean is_search = false;
     View v;
+    TextView tv_saldo_collector;
     private ArrayAdapter<String> mitraAdapter;
     private ArrayList<String> mitraNameArrayList = new ArrayList<>();
     private ArrayList<TagihModel> mitraNameData = new ArrayList<>();
     private ArrayAdapter<String> communityAdapter;
     private ArrayList<String> communityNameArrayList = new ArrayList<>();
-    String commCodeTagih;
+    String commCodeTagih, balanceCollector, commNamePG, commCodePG, anchorNamePG, memberCode, txIdPG;
     ProgressDialog progdialog;
+    private ArrayList<TagihModel> anchorDataList = new ArrayList<>();
+    private ArrayList<TagihCommunityModel> communityDataList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -76,11 +80,89 @@ public class FragTagihInput extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        initiatizeView();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            is_search = bundle.getBoolean(DefineValue.IS_SEARCH_DGI, false);
+            if (bundle.containsKey(DefineValue.ANCHOR_NAME_PG)) {
+                commCodePG = bundle.getString(DefineValue.COMM_CODE_PG, "");
+                commNamePG = bundle.getString(DefineValue.COMM_NAME_PG, "");
+                anchorNamePG = bundle.getString(DefineValue.ANCHOR_NAME_PG, "");
+                memberCode = bundle.getString(DefineValue.MEMBER_CODE_PG, "");
+                txIdPG = bundle.getString(DefineValue.TXID_PG, "");
+            }
+        }
 
-        InitializeData();
+        sp = CustomSecurePref.getInstance().getSecurePrefsInstance();
+
+        getBalanceCollector();
+
+        anchorDataList.clear();
+        getAnchor();
+        initializeView();
+
 
         btn_submit.setOnClickListener(submitListener);
+        btn_cancel.setOnClickListener(cancelListener);
+        btn_regShop.setOnClickListener(registrationListener);
+    }
+
+    private void getAnchor() {
+        try {
+            showProgressDialog();
+            params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_ANCHOR_COMMUNITIES);
+            params.put(WebParams.USER_ID, userPhoneID);
+
+            Timber.d("param LINK_GET_ANCHOR_COMMUNITIES : " + params);
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_ANCHOR_COMMUNITIES, params, new ObjListeners() {
+                @Override
+                public void onResponses(JSONObject response) {
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            JSONArray anchors = response.getJSONArray("anchors");
+                            if (anchors.length() > 0) {
+                                for (int i = 0; i < anchors.length(); i++) {
+                                    JSONObject jsonObjectAnchor = anchors.getJSONObject(i);
+                                    TagihModel tagihModel = new TagihModel();
+                                    tagihModel.setId(jsonObjectAnchor.getString("anchor_id"));
+                                    tagihModel.setAnchor_cust(jsonObjectAnchor.getString("anchor_cust"));
+                                    tagihModel.setAnchor_name(jsonObjectAnchor.getString("anchor_name"));
+
+                                    anchorDataList.add(tagihModel);
+                                    JSONArray communities = jsonObjectAnchor.getJSONArray("communities");
+                                    ArrayList<TagihCommunityModel> comList = new ArrayList<>();
+                                    for (int j = 0; j < communities.length(); j++) {
+                                        JSONObject jsonObjectCommunities = communities.getJSONObject(j);
+                                        TagihCommunityModel tagihCommunityModel = new TagihCommunityModel();
+                                        tagihCommunityModel.setId(jsonObjectCommunities.getString("comm_id"));
+                                        tagihCommunityModel.setComm_code(jsonObjectCommunities.getString("comm_code"));
+                                        tagihCommunityModel.setComm_name(jsonObjectCommunities.getString("comm_name"));
+                                        comList.add(tagihCommunityModel);
+                                    }
+
+                                    tagihModel.setListCommunity(comList);
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+
+                }
+
+                @Override
+                public void onComplete() {
+                    initializeData();
+                    dismissProgressDialog();
+                }
+            });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
     }
 
     Button.OnClickListener submitListener = new Button.OnClickListener() {
@@ -92,33 +174,92 @@ public class FragTagihInput extends BaseFragment {
         }
     };
 
-    private void initiatizeView() {
+    Button.OnClickListener registrationListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (inputValidation()) {
+                Fragment newFrag = new FragShopLocation();
+                Bundle bundle = new Bundle();
+                bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
+                bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+                bundle.putString(DefineValue.COMMUNITY_NAME, communityNameArrayList.get(sp_communtiy.getSelectedItemPosition()));
+
+                newFrag.setArguments(bundle);
+                if (getActivity() == null) {
+                    return;
+                }
+                TagihActivity ftf = (TagihActivity) getActivity();
+                ftf.switchContent(newFrag, "Registrasi Alamat Toko", true);
+            }
+        }
+    };
+
+    Button.OnClickListener cancelListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (inputValidation()) {
+                Fragment newFrag = new FragCancelTransactionDGI();
+                Bundle bundle = new Bundle();
+                bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
+                bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+
+                newFrag.setArguments(bundle);
+                if (getActivity() == null) {
+                    return;
+                }
+                TagihActivity ftf = (TagihActivity) getActivity();
+                ftf.switchContent(newFrag, "Pembatalan Transaksi", true);
+            }
+        }
+    };
+
+
+    private void initializeView() {
         sp_mitra = v.findViewById(R.id.sp_mitra);
         sp_communtiy = v.findViewById(R.id.sp_community);
         et_memberCode = v.findViewById(R.id.et_memberCode);
         btn_submit = v.findViewById(R.id.btn_submit);
+        btn_cancel = v.findViewById(R.id.btn_cancel);
+        btn_regShop = v.findViewById(R.id.bt_registTokoDGI);
+        tv_saldo_collector = v.findViewById(R.id.tv_saldoCollector);
+        ll_komunitas = v.findViewById(R.id.ll_komunitas);
+
+        if (is_search) {
+            btn_cancel.setVisibility(View.VISIBLE);
+            et_memberCode.setText(memberCode);
+        }
+
+        mitraNameArrayList.clear();
 
         mitraAdapter = new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, mitraNameArrayList);
         sp_mitra.setAdapter(mitraAdapter);
     }
 
-    public void InitializeData() {
-        Realm _realm = RealmManager.getRealmTagih();
-        RealmResults<TagihModel> list = _realm.where(TagihModel.class).findAll();
-        mitraNameData.addAll(list);
-
-        for (int i = 0; i < list.size(); i++) {
-            mitraNameArrayList.add(list.get(i).getAnchor_name());
+    public void initializeData() {
+//        Realm _realm = RealmManager.getRealmTagih();
+//        RealmResults<TagihModel> list = _realm.where(TagihModel.class).findAll();
+//        mitraNameData.addAll(anchorDataList);
+        mitraNameArrayList.add(getString(R.string.mitra_default));
+        for (int i = 0; i < anchorDataList.size(); i++) {
+            mitraNameArrayList.add(anchorDataList.get(i).getAnchor_name());
         }
         mitraAdapter.notifyDataSetChanged();
 
         communityAdapter = new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, communityNameArrayList);
         sp_communtiy.setAdapter(communityAdapter);
 
+        if (anchorNamePG != null) {
+            int spinnerPosition = mitraAdapter.getPosition(anchorNamePG);
+            sp_mitra.setSelection(spinnerPosition);
+        }
+
         sp_mitra.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                initializeCommunity(position);
+                if (position != 0) {
+                    ll_komunitas.setVisibility(View.VISIBLE);
+                    initializeCommunity(position - 1);
+                }
             }
 
             @Override
@@ -126,42 +267,53 @@ public class FragTagihInput extends BaseFragment {
 
             }
         });
+
     }
 
 
     public void initializeCommunity(int pos) {
-        Realm _realm = RealmManager.getRealmTagih();
-        final ArrayList<TagihCommunityModel> listTagih = new ArrayList<>();
-        listTagih.addAll(mitraNameData.get(pos).getListCommunity());
+//        Realm _realm = RealmManager.getRealmTagih();
+//        final ArrayList<TagihCommunityModel> listTagih = new ArrayList<>();
+        communityDataList.clear();
+        communityDataList.addAll(anchorDataList.get(pos).getListCommunity());
 //                _realm.where(TagihCommunityModel.class).findAll();
-        Log.d("mainpage", "id : " + listTagih.get(0).getId());
-
+        Log.d("mainpage", "id : " + communityDataList.get(0).getId());
         communityNameArrayList.clear();
-
-        for (int i = 0; i < listTagih.size(); i++) {
-            communityNameArrayList.add(listTagih.get(i).getComm_name());
-            Timber.d("comm code tagih : "+listTagih.get(i).getComm_code());
+        communityNameArrayList.add(getString(R.string.community_default));
+        for (int i = 0; i < communityDataList.size(); i++) {
+            communityNameArrayList.add(communityDataList.get(i).getComm_name());
+            Timber.d("comm code tagih : " + communityDataList.get(i).getComm_code());
         }
         communityAdapter.notifyDataSetChanged();
 
-        if(listTagih != null && listTagih.size() > 0){
-            commCodeTagih = listTagih.get(0).getComm_code();
-        }else
-            commCodeTagih ="";
+        if (communityDataList != null && communityDataList.size() > 0) {
+            commCodeTagih = communityDataList.get(0).getComm_code();
+        } else
+            commCodeTagih = "";
+
+        if (commNamePG != null) {
+            int spinnerPosition = communityAdapter.getPosition(commNamePG);
+            sp_communtiy.setSelection(spinnerPosition);
+        }
 
 
         sp_communtiy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                commCodeTagih = listTagih.get(position).getComm_code();
 
-                Timber.d("TEST comm code tagih selected: "+listTagih.get(position).getComm_code()+" pos:"+position);
+                if (position != 0) {
+                    position -= 1;
+                    commCodeTagih = communityDataList.get(position).getComm_code();
+                } else
+                    commCodeTagih = "";
+                Timber.d("comm code tagih selected: " + communityDataList.get(position).getComm_code() + " pos:" + position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+
         });
     }
 
@@ -171,85 +323,159 @@ public class FragTagihInput extends BaseFragment {
             et_memberCode.setError(getString(R.string.error_input_tagih));
             return false;
         }
-            return true;
+        if (commCodeTagih.equals("")) {
+            sp_communtiy.requestFocus();
+            Toast.makeText(getActivity(), getString(R.string.error_input_community), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    public void getBalanceCollector() {
+        try {
+            showProgressDialog();
+            if (!memberIDLogin.isEmpty()) {
+
+                extraSignature = memberIDLogin;
+
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_SALDO_COLLECTOR, extraSignature);
+                params.put(WebParams.MEMBER_ID, memberIDLogin);
+                params.put(WebParams.USER_ID, userPhoneID);
+                params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                params.put(WebParams.IS_AUTO, "Y");
+
+                if (!memberIDLogin.isEmpty()) {
+
+                    RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SALDO_COLLECTOR, params,
+                            new ObjListeners() {
+                                @Override
+                                public void onResponses(JSONObject response) {
+                                    try {
+                                        jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
+                                        String code = response.getString(WebParams.ERROR_CODE);
+                                        if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                            balanceCollector = response.getString(WebParams.AMOUNT);
+
+                                            tv_saldo_collector.setText(CurrencyFormat.format(balanceCollector));
+
+//                                    SecurePreferences.Editor mEditor = sp.edit();
+//                                    mEditor.putString(DefineValue.BALANCE_COLLECTOR_AMOUNT, response.optString(WebParams.AMOUNT, ""));
+//                                    mEditor.commit();
+
+                                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                            if (getActivity().isFinishing()) {
+                                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                                test.showDialoginMain(getActivity(), message);
+                                            }
+                                        }else if (code.equals(DefineValue.ERROR_9333)) {
+                                            Timber.d("isi response app data:" + model.getApp_data());
+                                            final AppDataModel appModel = model.getApp_data();
+                                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                            alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                        } else if (code.equals(DefineValue.ERROR_0066)) {
+                                            Timber.d("isi response maintenance:" + response.toString());
+                                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                            alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                        } else {
+                                            code = response.getString(WebParams.ERROR_MESSAGE);
+                                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable throwable) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    dismissProgressDialog();
+                                }
+                            });
+                }
+            }
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
     }
 
     public void sendDataTagih() {
-        if (progdialog == null)
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-        else
-            progdialog.show();
+        showProgressDialog();
 
         String extraSignature = commCodeTagih + et_memberCode.getText().toString();
-        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_LIST_INVOICE_DGI,
-                userPhoneID, accessKey, extraSignature);
+        params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_INVOICE_DGI, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.MEMBER_CODE, et_memberCode.getText().toString());
-        params.put(WebParams.COMM_CODE,commCodeTagih);
+        params.put(WebParams.COMM_CODE, commCodeTagih);
         params.put(WebParams.USER_ID, userPhoneID);
         Timber.d("params list invoice DGI : " + params.toString());
 
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_LIST_INVOICE_DGI, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            dismissProgressDialog();
+                            jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
+                            Timber.d("response list invoice DGI : " + response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String error_message = response.getString(WebParams.ERROR_MESSAGE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-        MyApiClient.inputDataDGI(getActivity(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                String responseListInvoice = response.toString();
+                                Fragment newFrag = new FragListInvoiceTagih();
+                                Bundle bundle = new Bundle();
+                                bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
+                                bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+                                bundle.putString(DefineValue.RESPONSE, responseListInvoice);
+                                bundle.putString(DefineValue.TXID_PG, txIdPG);
 
-                try {
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.COMM_CODE_DGI, response.getString(WebParams.COMM_CODE_DGI));
+                                mEditor.apply();
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                    Timber.d("response list invoice DGI : " + response.toString());
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                newFrag.setArguments(bundle);
+                                if (getActivity() == null) {
+                                    return;
+                                }
+                                TagihActivity ftf = (TagihActivity) getActivity();
+                                ftf.switchContent(newFrag, "List Invoice", true);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            } else {
+                                Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
+                            }
 
-                        String responseListInvoice = response.toString();
-                        Fragment newFrag = new FragListInvoiceTagih();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(DefineValue.RESPONSE, responseListInvoice);
-                        newFrag.setArguments(bundle);
-                        if(getActivity() == null){
-                            return;
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        TagihActivity ftf = (TagihActivity) getActivity();
-                        ftf.switchContent(newFrag,"List Invoice",true);
-                    } else {
-                        Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG);
                     }
 
+                    @Override
+                    public void onError(Throwable throwable) {
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onComplete() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //llHeaderProgress.setVisibility(View.GONE);
-                //pbHeaderProgress.setVisibility(View.GONE);
-
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error list invoice DGI : " + throwable.toString());
-
-            }
-
-        });
+                    }
+                });
     }
 
 

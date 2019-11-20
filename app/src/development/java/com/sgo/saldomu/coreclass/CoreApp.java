@@ -1,15 +1,21 @@
 package com.sgo.saldomu.coreclass;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.sgo.saldomu.Beans.commentModel;
@@ -22,6 +28,7 @@ import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;
@@ -32,10 +39,12 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
+import static com.sgo.saldomu.fragments.FragTutupManual.TAG;
+
 /*
   Created by Administrator on 8/15/2014.
  */
-public class CoreApp extends Application {
+public class CoreApp extends MultiDexApplication {
 
     private Activity mCurrentActivity = null;
     private static CoreApp _instance;
@@ -61,7 +70,7 @@ public class CoreApp extends Application {
         // Simply add the handler, and that's it! No need to add any code
         // to every activity. Everything is contained in MyLifecycleHandler
         // with just a few lines of code. Now *that's* nice.
-        if(BuildConfig.DEBUG)
+        if (BuildConfig.DEBUG)
             Timber.plant(new Timber.DebugTree());
         else
             Timber.plant(new Timber.Tree() {
@@ -96,21 +105,22 @@ public class CoreApp extends Application {
             e.printStackTrace();
         }
 
-        if(MyApiClient.PROD_FLAG_ADDRESS){
+        if (MyApiClient.PROD_FLAG_ADDRESS) {
             MyApiClient.COMM_ID = MyApiClient.COMM_ID_PROD;
             MyApiClient.COMM_ID_PULSA = MyApiClient.COMM_ID_PULSA_PROD;
+            MyApiClient.COMM_ID_TAGIH = MyApiClient.COMM_ID_TAGIH_PROD;
             MyApiClient.URL_FAQ = MyApiClient.URL_FAQ_PROD;
             MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_PROD;
-        }
-        else {
+        } else {
             MyApiClient.COMM_ID = MyApiClient.COMM_ID_DEV;
             MyApiClient.COMM_ID_PULSA = MyApiClient.COMM_ID_PULSA_DEV;
+            MyApiClient.COMM_ID_TAGIH = MyApiClient.COMM_ID_TAGIH_DEV;
             MyApiClient.URL_FAQ = MyApiClient.URL_FAQ_DEV;
             MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_DEV;
         }
 
         myApiClient.InitializeAddress();
-        Timber.wtf("isi headaddressfinal:"+ MyApiClient.headaddressfinal);
+        Timber.wtf("isi headaddressfinal:" + MyApiClient.headaddressfinal);
         Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
         configurationBuilder.addModelClasses(
                 communityModel.class,
@@ -153,14 +163,13 @@ public class CoreApp extends Application {
     }
 
 
-
     private void deleteBundledRealmFile(String outFileName) {
         File file = new File(this.getFilesDir(), outFileName);
-        if(file.exists()) {
-            if(file.delete())
-                Timber.d("delete "+getString(R.string.success));
+        if (file.exists()) {
+            if (file.delete())
+                Timber.d("delete " + getString(R.string.success));
             else
-                Timber.d("delete "+getString(R.string.failed));
+                Timber.d("delete " + getString(R.string.failed));
 
         }
     }
@@ -171,12 +180,12 @@ public class CoreApp extends Application {
             File file = new File(this.getFilesDir(), outFileName);
             long sizeraw = inputStream.available();
             long sizefile = 0;
-            if(file.exists()) {
+            if (file.exists()) {
                 sizefile = file.length();
-                Timber.d("sizeRaw / sizeFile = "+ String.valueOf(sizeraw)+" / "+String.valueOf(sizefile));
+                Timber.d("sizeRaw / sizeFile = " + String.valueOf(sizeraw) + " / " + String.valueOf(sizefile));
             }
 
-            if(sizeraw != sizefile) {
+            if (sizeraw != sizefile) {
                 FileOutputStream outputStream = new FileOutputStream(file);
                 byte[] buf = new byte[1024];
                 int bytesRead;
@@ -201,13 +210,12 @@ public class CoreApp extends Application {
         setsDefSystemLanguage(newConfig);
     }
 
-    private void setsDefSystemLanguage (android.content.res.Configuration newConfig){
+    private void setsDefSystemLanguage(android.content.res.Configuration newConfig) {
 
-        String delanguage ;
-        if(newConfig == null){
+        String delanguage;
+        if (newConfig == null) {
             delanguage = Locale.getDefault().getLanguage();
-        }
-        else {
+        } else {
             delanguage = newConfig.locale.getLanguage();
         }
 
@@ -215,22 +223,23 @@ public class CoreApp extends Application {
 
     }
 
-	
-	@Override
+
+    @Override
     public void onTerminate() {
         super.onTerminate();
-        MyApiClient.CancelRequestWS(this, true);
+        RetrofitService.dispose();
         ActiveAndroid.dispose();
     }
 
-    public static Context getAppContext(){
+    public static Context getAppContext() {
         return get_instance().getApplicationContext();
     }
 
-    public Activity getCurrentActivity(){
+    public Activity getCurrentActivity() {
         return mCurrentActivity;
     }
-    public void setCurrentActivity(Activity mCurrentActivity){
+
+    public void setCurrentActivity(Activity mCurrentActivity) {
         this.mCurrentActivity = mCurrentActivity;
     }
 

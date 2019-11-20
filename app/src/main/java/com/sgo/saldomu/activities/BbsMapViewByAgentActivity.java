@@ -10,13 +10,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.text.Html;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -44,32 +43,33 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
+import com.sgo.saldomu.coreclass.Singleton.InterfaceManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
-import com.sgo.saldomu.coreclass.ToggleKeyboard;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.fragments.BBSTransaksiInformasi;
-import com.sgo.saldomu.fragments.FragJoinCommunitySCADM;
-import com.sgo.saldomu.fragments.NavigationDrawMenu;
+import com.sgo.saldomu.interfaces.ConfirmDialogInterface;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -100,7 +100,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     String htmlDirections = "";
     //TextToSpeech textToSpeech;
     Boolean isTTSActive = true;
-    Button btnTibaDiLokasi, btnCancel;
+    Button btnTibaDiLokasi, btnCancel, btnGetDirection;
     private int timeDelayed = 30000;
     Intent intentData;
 
@@ -149,17 +149,18 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         txId = intentData.getStringExtra(DefineValue.AOD_TX_ID);
         lines = new ArrayList<>();
-        tvCategoryName = (TextView) findViewById(R.id.tvCategoryName);
-        tvMemberName = (TextView) findViewById(R.id.tvMemberName);
-        tvAmount = (TextView) findViewById(R.id.tvAmount);
-        tvDurasi = (TextView) findViewById(R.id.tvDurasi);
+        tvCategoryName = findViewById(R.id.tvCategoryName);
+        tvMemberName = findViewById(R.id.tvMemberName);
+        tvAmount = findViewById(R.id.tvAmount);
+        tvDurasi = findViewById(R.id.tvDurasi);
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
-        tvBbsNote = (TextView) findViewById(R.id.tvBbsNote);
+        tvBbsNote = findViewById(R.id.tvBbsNote);
 
-        btnTibaDiLokasi = (Button) findViewById(R.id.btnTibaLokasi);
+        btnTibaDiLokasi = findViewById(R.id.btnTibaLokasi);
         btnCancel = findViewById(R.id.btnCancelDGI);
-        tvAcctLabel = (TextView) findViewById(R.id.tvAcctLabel);
-        tvAcctName = (TextView) findViewById(R.id.tvAcctName);
+        btnGetDirection=findViewById(R.id.btn_get_direction);
+        tvAcctLabel = findViewById(R.id.tvAcctLabel);
+        tvAcctName = findViewById(R.id.tvAcctName);
 
         shopDetail = new ShopDetail();
         shopDetail.setKeyCode(sp.getString(DefineValue.KEY_CODE, ""));
@@ -196,9 +197,15 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         title = getString(R.string.menu_item_title_map_agent);
         initializeToolbar(title);
 
-        TextView t = (TextView) findViewById(R.id.name);
+        TextView t = findViewById(R.id.name);
         t.setText(Html.fromHtml(getString(R.string.bbs_trx_detail_agent)));
 
+        btnGetDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDirection();
+            }
+        });
         btnTibaDiLokasi.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
@@ -208,6 +215,13 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     }
                 }
         );
+    }
+    private void getDirection() {
+        LatLng clientlatLng = new LatLng(benefLatitude,benefLongitude);
+        Intent intent=new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr="+clientlatLng.latitude+","+clientlatLng.longitude));
+        Timber.d("http://maps.google.com/maps?daddr="+clientlatLng.latitude+","+clientlatLng.longitude);
+        startActivity(intent);
     }
 
     @Override
@@ -456,9 +470,9 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         isInquiryRoute = false;
 
         String extraSignature = txId + memberId + shopId;
-        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_LOCATION_AGENT,
-                userPhoneID, accessKey, extraSignature);
-
+//        + agentLatitude + agentLongitude;
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION_AGENT,
+                extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -473,129 +487,115 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         handler.removeCallbacks(runnable2);
 
-        MyApiClient.updateLocationAgent(getApplication(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //if ( progdialog.isShowing())
-                //progdialog.dismiss();
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_LOCATION_AGENT, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            isRunning = false;
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                try {
-                    isRunning = false;
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                benefLatitude = response.getDouble(WebParams.KEY_LATITUDE);
+                                benefLongitude = response.getDouble(WebParams.KEY_LONGITUDE);
 
-                        benefLatitude = response.getDouble(WebParams.KEY_LATITUDE);
-                        benefLongitude = response.getDouble(WebParams.KEY_LONGITUDE);
+                                shopDetail.setKeyCode(response.getString(DefineValue.KEY_CODE));
+                                shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
+                                shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
+                                //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
+                                //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
+                                //shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
+                                //shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
+                                //shopDetail.setCcyId(response.getString(DefineValue.KEY_CCY));
 
-                        shopDetail.setKeyCode(response.getString(DefineValue.KEY_CODE));
-                        shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
-                        shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
-                        //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
-                        //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
-                        //shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
-                        //shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
-                        //shopDetail.setCcyId(response.getString(DefineValue.KEY_CCY));
-
-                        if (response.getString(WebParams.BBS_NOTE) != null) {
-                            tvBbsNote.setText(response.getString(WebParams.BBS_NOTE));
-                        } else {
-                            tvBbsNote.setText("");
-                        }
-                        tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
-
-                        if (response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA)) {
-                            tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
-                        } else if (response.getString(WebParams.SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
-                            btnCancel.setVisibility(View.VISIBLE);
-                            btnCancel.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    cancelDGI();
+                                if (response.getString(WebParams.BBS_NOTE) != null) {
+                                    tvBbsNote.setText(response.getString(WebParams.BBS_NOTE));
+                                } else {
+                                    tvBbsNote.setText("");
                                 }
-                            });
-                        } else {
-                            tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
-                        }
+                                tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
 
-                        tvAcctName.setText(response.getString(WebParams.PRODUCT_NAME));
-
-                        if (response.has(DefineValue.KEY_TX_STATUS)) {
-                            if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.SUCCESS)) {
-
-                                handler.removeCallbacks(runnable2);
-
-                                Bundle bundle = new Bundle();
-                                bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
-                                if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.CTA)) {
-                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
-                                } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.ATC)) {
-                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                                if (response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA)) {
+                                    tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
+                                } else if (response.getString(WebParams.SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
+                                    btnCancel.setVisibility(View.VISIBLE);
+                                    btnCancel.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            cancelDGI();
+                                        }
+                                    });
+                                } else {
+                                    tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
                                 }
 
-                                bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
-                                bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
+                                tvAcctName.setText(response.getString(WebParams.PRODUCT_NAME));
 
-                                Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                                finish();
+                                if (response.has(DefineValue.KEY_TX_STATUS)) {
+                                    if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.SUCCESS)) {
 
-                            } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
-                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                                startActivity(intent);
-                                finish();
+                                        handler.removeCallbacks(runnable2);
+
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                                        if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.CTA)) {
+                                            bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                                        } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.ATC)) {
+                                            bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                                        }
+
+                                        bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
+                                        bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
+
+                                        Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
+                                        intent.putExtras(bundle);
+                                        startActivity(intent);
+                                        finish();
+
+                                    } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
+                                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+
+                                        setMapCamera();
+                                        handler.postDelayed(runnable2, timeDelayed);
+                                    }
+                                } else {
+                                    setMapCamera();
+                                    handler.postDelayed(runnable2, timeDelayed);
+                                }
                             } else {
+                                //if ( progdialog.isShowing())
+                                //progdialog.dismiss();
 
-                                setMapCamera();
-                                handler.postDelayed(runnable2, timeDelayed);
+                                code = response.getString(WebParams.ERROR_MESSAGE);
+//                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                InterfaceManager.showConfirmDialog(BbsMapViewByAgentActivity.this, code,
+                                        new ConfirmDialogInterface() {
+                                            @Override
+                                            public void OnOK() {
+                                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        });
                             }
-                        } else {
-                            setMapCamera();
-                            handler.postDelayed(runnable2, timeDelayed);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } else {
-                        //if ( progdialog.isShowing())
-                        //progdialog.dismiss();
-
-                        code = response.getString(WebParams.ERROR_MESSAGE);
-                        Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-
-                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                        startActivity(intent);
-                        finish();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+                    }
 
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onComplete() {
 
-                //if ( progdialog.isShowing() )
-                //progdialog.dismiss();
-
-                isRunning = false;
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
+                    }
+                });
 
     }
 
@@ -664,69 +664,80 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         @Override
         protected Integer doInBackground(Void... params) {
 
+            HashMap<String, Object> query = MyApiClient.googleDestination();
+            query.put("origin", dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString());
+//            query.put("sensor", "false");
+//            query.put("units", "metric");
+//            query.put("mode", DefineValue.GMAP_MODE);
+//            query.put("language", Locale.getDefault().getLanguage());
+            query.put("destination", targetLatitude.toString() + "," + targetLongitude.toString());
+
             String nextParams = "origin=" + dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString();
             nextParams += "&sensor=false";
             nextParams += "&units=metric";
             nextParams += "&mode=" + DefineValue.GMAP_MODE;
             nextParams += "&language=" + Locale.getDefault().getLanguage();
 
-            RequestParams rqParams = new RequestParams();
-            rqParams.put("origin", agentLatitude.toString() + "," + agentLongitude.toString());
-            rqParams.put("sensor", "false");
-            rqParams.put("units", "metric");
-            rqParams.put("mode", DefineValue.GMAP_MODE);
-            rqParams.put("language", Locale.getDefault().getLanguage());
-
-
+//            RequestParams rqParams = new RequestParams();
+//            rqParams.put("origin", agentLatitude.toString()+","+agentLongitude.toString());
+//            rqParams.put("sensor", "false");
+//            rqParams.put("units", "metric");
+//            rqParams.put("mode", DefineValue.GMAP_MODE);
+//            rqParams.put("language", Locale.getDefault().getLanguage() );
             String tempParams = nextParams;
             tempParams += "&destination=" + targetLatitude.toString() + "," + targetLongitude.toString();
 
-            getGoogleMapRoute(tempParams, 0);
+            getGoogleMapRoute(query, 0);
             return null;
         }
 
     }
 
-    public void getGoogleMapRoute(String tempParams, final int idx) {
-        MyApiClient.getGoogleMapRoute(getApplicationContext(), tempParams, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Timber.w("Response google map route:" + response.toString());
-                try {
+    public void getGoogleMapRoute(
+//            String tempParams
+            HashMap<String, Object> query, final int idx) {
 
-                    JSONArray array = response.getJSONArray("routes");
-                    JSONObject routes = array.getJSONObject(0);
-                    JSONArray legs = routes.getJSONArray("legs");
-                    JSONObject steps = legs.getJSONObject(0);
-                    JSONObject distance = steps.getJSONObject("distance");
-                    JSONObject duration = steps.getJSONObject("duration");
+        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
+//                        + "?" + tempParams,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                    distanceBetween = distance.getInt("value");
+                            JSONArray array = response.getJSONArray("routes");
+                            JSONObject routes = array.getJSONObject(0);
+                            JSONArray legs = routes.getJSONArray("legs");
+                            JSONObject steps = legs.getJSONObject(0);
+                            JSONObject distance = steps.getJSONObject("distance");
+                            JSONObject duration = steps.getJSONObject("duration");
 
-                    isInquiryRoute = true;
+                            distanceBetween = distance.getInt("value");
 
-                    String parsedDistance = distance.getString("text");
+                            isInquiryRoute = true;
 
-                    int iDistance = distance.getInt("value");
+                            String parsedDistance = distance.getString("text");
 
-                    final String parseDuration = duration.getString("text");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvDurasi.setText(parseDuration);
-                        }
-                    });
+                            int iDistance = distance.getInt("value");
 
-                    JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
-                    String points = overviewPolyline.getString("points");
 
-                    encodedPoints = points;
+                            final String parseDuration = duration.getString("text");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvDurasi.setText(parseDuration);
+                                }
+                            });
 
-                    JSONArray directions = steps.getJSONArray("steps");
+                            JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
+                            String points = overviewPolyline.getString("points");
 
-                    if (directions.length() > 0) {
-                        JSONObject toDirection = directions.getJSONObject(0);
-                        htmlDirections = toDirection.getString("html_instructions");
+                            encodedPoints = points;
+
+                            JSONArray directions = steps.getJSONArray("steps");
+
+                            if (directions.length() > 0) {
+                                JSONObject toDirection = directions.getJSONObject(0);
+                                htmlDirections = toDirection.getString("html_instructions");
 
                         /*JSONArray toDistanceArray = toDirection.getJSONArray("distance");
                         JSONObject toDistanceObject = toDistanceArray.getJSONObject(0);
@@ -735,35 +746,22 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                         htmlDirections += " ( " + toDistanceString + " ) ";
                         //tvDirection.setText(Html.fromHtml(toDirection.getString("html_instructions")));
                         */
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
+                    @Override
+                    public void onError(Throwable throwable) {
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onComplete() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
-
-
+                    }
+                });
     }
 
     public void setPolyline() {
@@ -874,13 +872,13 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     }
 
     private void confirmTransactionByAgent() {
-        if(progdialog2 == null)
+        if (progdialog2 == null)
             progdialog2 = DefinedDialog.CreateProgressDialog(this, "");
         else
             progdialog2.show();
         String extraSignature = txId;
-        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CONFIRM_TRANSACTION_BY_AGENT,
-                userPhoneID, accessKey, extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TRANSACTION_BY_AGENT,
+                extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -889,193 +887,179 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.KEY_VALUE, "");
         params.put(WebParams.SHOP_PHONE, userPhoneID);
         params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.LATITUDE, agentLatitude);
+        params.put(WebParams.LONGITUDE, agentLongitude);
 
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TRANSACTION_BY_AGENT, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-        MyApiClient.confirmTransactionByAgent(getApplicationContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                benefLatitude = response.getDouble(WebParams.KEY_LATITUDE);
+                                benefLongitude = response.getDouble(WebParams.KEY_LONGITUDE);
 
-                try {
-                    if (progdialog2.isShowing())
-                        progdialog2.dismiss();
+                                shopDetail.setKeyCode(response.getString(DefineValue.KEY_CODE));
+                                shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
+                                shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
 
-                        benefLatitude = response.getDouble(WebParams.KEY_LATITUDE);
-                        benefLongitude = response.getDouble(WebParams.KEY_LONGITUDE);
+                                if (response.has(DefineValue.KEY_TX_STATUS)) {
+                                    if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.ONRECONCILED)) {
 
-                        shopDetail.setKeyCode(response.getString(DefineValue.KEY_CODE));
-                        shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
-                        shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
+                                        handler.removeCallbacks(runnable2);
 
-                        tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                                        if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.CTA)) {
+                                            bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                                        } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.ATC)) {
+                                            bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                                        }
 
-                        if (response.has(DefineValue.KEY_TX_STATUS)) {
-                            if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.ONRECONCILED)) {
+                                        if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
+                                            Intent intent = new Intent(getApplicationContext(), TagihActivity.class);
+                                            intent.putExtra(DefineValue.IS_SEARCH_DGI, true);
+                                            if (response.getString(WebParams.COMM_CODE_PG) != null || response.getString(WebParams.MEMBER_CODE_PG) != null) {
+                                                intent.putExtra(DefineValue.MEMBER_CODE_PG, response.getString(WebParams.MEMBER_CODE_PG));
+                                                intent.putExtra(DefineValue.COMM_CODE_PG, response.getString(WebParams.COMM_CODE_PG));
+                                                intent.putExtra(DefineValue.COMM_NAME_PG, response.getString(WebParams.COMM_NAME_PG));
+                                                intent.putExtra(DefineValue.ANCHOR_NAME_PG, response.getString(WebParams.ANCHOR_NAME_PG));
+                                                intent.putExtra(DefineValue.TXID_PG, txId);
+                                            }
+                                            startActivity(intent);
+                                            finish();
 
+                                        } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
+                                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+
+                                            bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
+                                            bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
+                                            bundle.putString(DefineValue.PRODUCT_CODE, response.getString(WebParams.PRODUCT_CODE));
+
+                                            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                            SecurePreferences.Editor mEditor = prefs.edit();
+                                            mEditor.putString(DefineValue.AOD_TX_ID, txId);
+                                            mEditor.apply();
+
+                                            Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
+                                            intent.putExtras(bundle);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+
+                                    } else {
+                                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
+                                }
                                 handler.removeCallbacks(runnable2);
+                            } else {
+//                                Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
 
-                                Bundle bundle = new Bundle();
-                                bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
-                                if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.CTA)) {
-                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
-                                } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.ATC)) {
-                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
-                                }
+                                InterfaceManager.showConfirmDialog(BbsMapViewByAgentActivity.this,
+                                        response.getString(WebParams.ERROR_MESSAGE),
+                                        new ConfirmDialogInterface() {
+                                            @Override
+                                            public void OnOK() {
+                                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        });
 
-                                if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI))
-                                {
-                                    Intent intent = new Intent(getApplicationContext(), TagihActivity.class);
-                                    startActivity(intent);
-                                    finish();
-
-                                }else {
-
-                                    bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
-                                    bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
-                                    bundle.putString(DefineValue.PRODUCT_CODE, response.getString(WebParams.PRODUCT_CODE));
-
-                                    SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                    SecurePreferences.Editor mEditor = prefs.edit();
-                                    mEditor.putString(DefineValue.AOD_TX_ID, txId);
-                                    mEditor.apply();
-
-                                    Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                    finish();
-                                }
-
-                            } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
-                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                                startActivity(intent);
-                                finish();
                             }
 
-                        } else {
-                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
 
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
-
-                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
                     }
 
-                    handler.removeCallbacks(runnable2);
+                    @Override
+                    public void onError(Throwable throwable) {
 
+                    }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //llHeaderProgress.setVisibility(View.GONE);
-                //pbHeaderProgress.setVisibility(View.GONE);
-                if (progdialog2.isShowing())
-                    progdialog2.dismiss();
-
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
-
+                    @Override
+                    public void onComplete() {
+                        if (progdialog2.isShowing())
+                            progdialog2.dismiss();
+                    }
+                });
     }
 
+
     public void cancelDGI() {
-        if(progdialog2 == null)
+        if (progdialog2 == null)
             progdialog2 = DefinedDialog.CreateProgressDialog(this, "");
         else
             progdialog2.show();
         String extraSignature = txId;
-        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CANCEL_TRANSACTION_DGI,
-                userPhoneID, accessKey, extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CANCEL_TRANSACTION_DGI,
+                extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.TX_ID, txId);
         params.put(WebParams.USER_ID, userPhoneID);
         Timber.d("params cancel transaction DGI : " + params.toString());
 
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CANCEL_TRANSACTION_DGI, params,
+                new ObjListeners() {
 
-        MyApiClient.cancelTransactionDGI(getApplicationContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
 
-                try {
-                    if (progdialog2.isShowing())
-                        progdialog2.dismiss();
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String error_message = response.getString(WebParams.ERROR_MESSAGE);
+                            Timber.d("response cancel transaction DGI : " + response.toString());
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    String error_message = response.getString(WebParams.ERROR_MESSAGE);
-                    Timber.d("response cancel transaction DGI : " + response.toString());
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                finish();
 
-                        finish();
+                            }  else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(BbsMapViewByAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(BbsMapViewByAgentActivity.this, model.getError_message());
+                            }else {
+                                Toast.makeText(BbsMapViewByAgentActivity.this, response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
+                            }
 
-                    } else {
-                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+                            handler.removeCallbacks(runnable2);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
-                    handler.removeCallbacks(runnable2);
+                    @Override
+                    public void onError(Throwable throwable) {
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //llHeaderProgress.setVisibility(View.GONE);
-                //pbHeaderProgress.setVisibility(View.GONE);
-
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error cancel transaction DGI : " + throwable.toString());
-
-            }
-
-        });
+                    @Override
+                    public void onComplete() {
+                        if (progdialog2.isShowing())
+                            progdialog2.dismiss();
+                    }
+                });
     }
 
     @Override

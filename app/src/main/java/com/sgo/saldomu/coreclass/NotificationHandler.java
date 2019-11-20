@@ -2,18 +2,24 @@ package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
 import android.widget.Toast;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
-import org.apache.http.Header;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.NotifModel;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -37,8 +43,7 @@ public class NotificationHandler {
     public void sentRetrieveNotif(){
         try{
             if(!sp.getString(DefineValue.USERID_PHONE,"").isEmpty()) {
-                RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_NOTIF_RETRIEVE,
-                        userID, accessKey);
+                HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_RETRIEVE);
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.MEMBER_ID, userID);
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -46,68 +51,58 @@ public class NotificationHandler {
 
                 Timber.d("isi params Retrieve Notif Handler:" + params.toString());
 
-                MyApiClient.sentRetrieveNotif(mContext, params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        try {
-                            String code = response.getString(WebParams.ERROR_CODE);
-                            Timber.w("isi response Retrieve Notif handler:" + response.toString());
+                RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_NOTIF_RETRIEVE, params,
+                        new ResponseListener() {
+                            @Override
+                            public void onResponses(JsonObject object) {
+                                try {
+                                    Gson gson = new Gson();
+                                    NotifModel model = gson.fromJson(object, NotifModel.class);
 
-                            if (code.equals(WebParams.SUCCESS_CODE) || code.equals(ErrorDefinition.NO_TRANSACTION)) {
-                                JSONArray mArrayData = new JSONArray(response.getString(WebParams.NOTIF_DATA));
-                                int idx = 0;
-                                JSONObject mObject;
-                                for (int i = 0; i < mArrayData.length(); i++) {
-                                    mObject = mArrayData.getJSONObject(i);
-                                    if (mObject != null) {
-                                        if (mObject.getInt(WebParams.NOTIF_READ) == NotificationActivity.UNREAD) {
-                                            String notif_detail_string = mArrayData.getJSONObject(i).optString(WebParams.NOTIF_DETAIL, "");
-                                            if (!notif_detail_string.isEmpty())
-                                                idx++;
+                                    String code = model.getError_message();
+
+                                    if (code.equals(WebParams.SUCCESS_CODE) || code.equals(ErrorDefinition.NO_TRANSACTION)) {
+                                        JSONArray mArrayData = new JSONArray(gson.toJson(model.getData_user_notif()));
+                                        int idx = 0;
+                                        JSONObject mObject;
+                                        for (int i = 0; i < mArrayData.length(); i++) {
+                                            mObject = mArrayData.getJSONObject(i);
+                                            if (mObject != null) {
+                                                if (mObject.getInt(WebParams.NOTIF_READ) == NotificationActivity.UNREAD) {
+                                                    String notif_detail_string = mArrayData.getJSONObject(i).optString(WebParams.NOTIF_DETAIL, "");
+                                                    if (!notif_detail_string.isEmpty())
+                                                        idx++;
+                                                }
+                                            }
                                         }
+                                        setNotifCount(String.valueOf(idx));
+                                        //setNotifCount(response.getString(WebParams.UNREAD));
+                                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                        String message = model.getError_message();
+                                        setLogout(message);
+                                    } else {
+                                        code = model.getError_code() + ":" + model.getError_message();
+                                        //Toast.makeText(mContext, code, Toast.LENGTH_LONG).show();
+                                        Timber.d("error Notification handler:" + code);
                                     }
+
+                                } catch (JSONException e) {
+
+                                    Toast.makeText(mContext, mContext.getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
                                 }
-                                setNotifCount(String.valueOf(idx));
-                                //setNotifCount(response.getString(WebParams.UNREAD));
-                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                Timber.d("isi response autologout:" + response.toString());
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                setLogout(message);
-                            } else {
-                                code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                                //Toast.makeText(mContext, code, Toast.LENGTH_LONG).show();
-                                Timber.d("error Notification handler:" + code);
                             }
 
-                        } catch (JSONException e) {
+                            @Override
+                            public void onError(Throwable throwable) {
 
-                            Toast.makeText(mContext, mContext.getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
-                        }
-                    }
+                            }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                        failure(throwable);
-                    }
+                            @Override
+                            public void onComplete() {
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        failure(throwable);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        failure(throwable);
-                    }
-
-                    private void failure(Throwable throwable) {
-                        Timber.w("Error Koneksi Notification Handler:" + throwable.toString());
-                    }
-                });
+                            }
+                        } );
             }
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());

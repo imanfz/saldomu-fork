@@ -2,30 +2,43 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:someNamespace="http://schemas.android.com/apk/res-auto">
 
-
         <item
-            android:id="@+id/menu_item_home"
-            android:orderInCategory="1"
-            android:title="@string/appname"
-            android:icon="@drawable/ic_home_white"
+            android:id="@+id/favorite"
+            android:orderInCategory="2"
+            android:title="@string/notifications"
+            android:icon="@drawable/ic_favorite"
             someNamespace:showAsAction="always"
             />
-
 
         <item
             android:id="@+id/notifications"
             android:orderInCategory="2"
             android:title="@string/notifications"
-            android:icon="@drawable/ic_notifications"
+            android:icon="@drawable/ic_notification"
             someNamespace:showAsAction="always"
             />
-
-    <item
+        <item
+            android:id="@+id/settings"
+            android:orderInCategory="3"
+            android:title="@string/menu_item_title_setting"
+            android:icon="@drawable/ic_setting"
+            someNamespace:showAsAction="always"
+            />
+        <item
+            android:id="@+id/search"
+            android:orderInCategory="4"
+            android:title="@string/menu_item_title_search"
+            android:icon="@drawable/ic_search"
+            someNamespace:showAsAction="always"
+            android:visible="false"
+            />
+        <item
             android:id="@+id/right_drawer_menu"
             android:orderInCategory="99"
             android:title="@string/social_promo"
             android:icon="@drawable/ic_menu_promo"
             someNamespace:showAsAction="ifRoom"
+            android:visible="false"
             />
 
 </menu>

@@ -1,5 +1,6 @@
 package com.sgo.saldomu.services;
 
+import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,18 +16,21 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.interfaces.ObjListeners;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -37,6 +41,8 @@ import timber.log.Timber;
 
 public class UpdateLocationService extends JobService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+    private Activity mActivity;
 
     static public final String TAG = "UpdateLocationService";
     private Location mLastLocation;
@@ -89,6 +95,10 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
                 latitude  = mLastLocation.getLatitude();
                 longitude = mLastLocation.getLongitude();
 
+                sp.edit().putDouble(DefineValue.LONGITUDE_UPDATED, longitude).apply();
+                sp.edit().putDouble(DefineValue.LATITUDE_UPDATED, latitude).apply();
+                sp.edit().apply();
+
                 Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
                 if ( isAgent )
@@ -124,6 +134,9 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
 
         longitude   = mLastLocation.getLongitude();
         latitude    = mLastLocation.getLatitude();
+
+        sp.edit().putDouble(DefineValue.LONGITUDE_UPDATED, longitude).apply();
+        sp.edit().putDouble(DefineValue.LATITUDE_UPDATED, latitude).apply();
 
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
@@ -187,8 +200,9 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
             e.printStackTrace();
         }
 
-        RequestParams params    = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_LOCATION,
-                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""));
+        String extraSignature   = String.valueOf(latitude) + String.valueOf(longitude);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION,
+                "");
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
@@ -196,42 +210,41 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         params.put(WebParams.LONGITUDE, longitude );
         params.put(WebParams.LATITUDE, latitude );
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, "") );
+        params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, "") );
         Timber.d("params location update: "+params.toString());
 
-        MyApiClient.updateLocationService(getApplicationContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Timber.d("respon location update: "+response.toString());
-                try {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_LOCATION, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.LOGOUT_CODE))
+                                if (getmActivity().isFinishing()) {
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getmActivity(), message);
+                                }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-                    String code = response.getString(WebParams.ERROR_CODE);
+                    @Override
+                    public void onError(Throwable throwable) {
 
+                    }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onComplete() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    }
+                });
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+    }
 
-            private void ifFailure(Throwable throwable) {
-
-                Timber.w("Error Koneksi Update Location Service:" + throwable.toString());
-
-            }
-
-        });
-
+    private Activity getmActivity() {
+        return mActivity;
     }
 
 }

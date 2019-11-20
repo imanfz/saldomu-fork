@@ -25,31 +25,33 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-//import com.google.zxing.BarcodeFormat;
-//import com.google.zxing.WriterException;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.friendModel;
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.Contents;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.QRCodeEncoder;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
+import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
@@ -137,8 +139,7 @@ public class AddByQRCodeActivity extends BaseActivity
     private void insertContact(List<friendModel> mfriendModel){
         try{
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    _ownerID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             GsonBuilder gsonBuilder = new GsonBuilder();
             Gson gson = gsonBuilder.registerTypeAdapter(friendModel.class, new friendAdapter()).create();
             params.put(WebParams.USER_ID, _ownerID);
@@ -148,70 +149,56 @@ public class AddByQRCodeActivity extends BaseActivity
 
             Timber.i("request "+params.toString());
 
-            JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_USER_CONTACT_INSERT, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
+                                String code = response.getString(WebParams.ERROR_CODE);
 
-                        Timber.i("code "+code);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            String arrayFriend = response.getString(WebParams.DATA_CONTACT);
-                            String arrayMyFriend = response.getString(WebParams.DATA_FRIEND);
-                            insertFriendToDB(new JSONArray(arrayFriend), new JSONArray(arrayMyFriend));
+                                Timber.i("code "+code);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    String arrayFriend = response.getString(WebParams.DATA_CONTACT);
+                                    String arrayMyFriend = response.getString(WebParams.DATA_FRIEND);
+                                    insertFriendToDB(new JSONArray(arrayFriend), new JSONArray(arrayMyFriend));
+
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout "+response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(AddByQRCodeActivity.this,message);
+                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(AddByQRCodeActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(AddByQRCodeActivity.this, model.getError_message());
+                                }
+                                else {
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getApplicationContext(),code,Toast.LENGTH_SHORT).show();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
 
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout "+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(AddByQRCodeActivity.this,message);
+
+                        @Override
+                        public void onComplete() {
+
                         }
-                        else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getApplicationContext(),code,Toast.LENGTH_SHORT).show();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onProgress(long bytesWritten, long totalSize) {
-                    super.onProgress(bytesWritten, totalSize);
-                    Timber.d("onProgress insert contact:"+bytesWritten+" / "+totalSize);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(AddByQRCodeActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(AddByQRCodeActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    Timber.w("Error Koneksi User contact insert "+throwable.toString());
-                }
-
-            };
-            MyApiClient.sentInsertContact(this, params, mHandler);
+                    });
         }catch (Exception e){
             Timber.d("httpclient"+e.getMessage());
         }

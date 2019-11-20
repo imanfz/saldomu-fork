@@ -5,37 +5,39 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout android:id="@+id/bbsregistacct_bottom_layout"
-        android:background="@color/windowBackgroundColor"
+        android:background="@color/white"
         android:layout_alignParentBottom="true"
         android:gravity="center"
-        android:padding="8dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_10dp">
 
         <com.balysv.materialripple.MaterialRippleLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_bk_orange"
+            android:background="@drawable/rounded_background_blue"
             app:mrl_rippleOverlay="true"
             app:mrl_rippleColor="@color/colorPrimaryDark"
             app:mrl_rippleAlpha="0.2"
             app:mrl_rippleDelayClick="false"
             app:mrl_rippleHover="true"
+            android:layout_margin="@dimen/margin_10dp"
             >
             <Button
                 android:id="@+id/btn_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:gravity="center"
                 android:text="@string/save"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
+                android:background="@drawable/rounded_background_blue"
                 />
 
         </com.balysv.materialripple.MaterialRippleLayout>

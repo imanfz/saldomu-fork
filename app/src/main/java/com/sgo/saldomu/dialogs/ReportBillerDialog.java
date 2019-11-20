@@ -33,11 +33,16 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BluetoothPrinter.zj.BluetoothService;
 import com.sgo.saldomu.BluetoothPrinter.zj.DevicesList;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JsonSorting;
+import com.sgo.saldomu.coreclass.LevelClass;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.ViewToBitmap;
 
 import org.json.JSONArray;
@@ -70,6 +75,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private ImageView printStruk;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
+
+    private LevelClass levelClass;
+    private Boolean isAgent;
+    SecurePreferences sp;
 
     Bundle args;
 
@@ -179,10 +188,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         View view = inflater.inflate(R.layout.dialog_report_biller, container);
         ViewStub stub = view.findViewById(R.id.stub);
 
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        levelClass = new LevelClass(getActivity(), sp);
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+
         args = getArguments();
         Timber.d("isi args report:" + args.toString());
 
-        type = args.getString(DefineValue.REPORT_TYPE);
+        type = args.getString(DefineValue.REPORT_TYPE, "");
         buss_scheme_code = args.getString(DefineValue.BUSS_SCHEME_CODE);
 
         LinearLayout layout_txId = view.findViewById(R.id.layout_tx_id);
@@ -212,7 +225,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                     String benef_type = args.getString(DefineValue.TYPE_BENEF, "");
                     String benef_product_code = args.getString(DefineValue.BENEF_PRODUCT_CODE, "");
-                    if (benef_type.equalsIgnoreCase(DefineValue.ACCT) || benef_product_code.equalsIgnoreCase("MANDIRILKD"))
+                    String benef_bank_name = args.getString(DefineValue.BANK_BENEF, "");
+                    if (benef_type.equalsIgnoreCase(DefineValue.ACCT) || benef_product_code.equalsIgnoreCase("MANDIRILKD") || benef_bank_name.equalsIgnoreCase("Mandiri Laku Pandai"))
                         tvNoDestination.setText(R.string.number_destination);
                     else
                         tvNoDestination.setText(R.string.number_hp_destination);
@@ -237,6 +251,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_fee_value = inflated.findViewById(R.id.dialog_reportbbs_fee_value);
                     TextView tv_total_amount_value = inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
                     TextView tv_produk_agent = inflated.findViewById(R.id.tv_produk_agen);
+                    TextView tv_additionalFee = inflated.findViewById(R.id.dialog_reportbbs_additionalFee);
                     View v_produk_agent = inflated.findViewById(R.id.view_produkAgen);
 
                     if (args.getBoolean(DefineValue.IS_MEMBER_CTA) == true) {
@@ -255,6 +270,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_benef_bank_name_value.setText(args.getString(DefineValue.BANK_BENEF));
                     tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
                     tv_fee_value.setText(args.getString(DefineValue.FEE));
+                    tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
             } else if (buss_scheme_code.equalsIgnoreCase("ATC")) {
@@ -274,6 +290,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_source_acc_name_value = inflated.findViewById(R.id.dialog_reportbs_bank_source_acc_name_value);
                     TextView tv_amount_value = inflated.findViewById(R.id.dialog_reportbbs_amount_value);
                     TextView tv_fee_value = inflated.findViewById(R.id.dialog_reportbbs_fee_value);
+                    TextView tv_additionalfee_value = inflated.findViewById(R.id.dialog_reportbbs_additionalfee_value);
                     TextView tv_total_amount_value = inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
                     TextView tv_member_shop_phone = inflated.findViewById(R.id.dialog_reportbbs_member_shop_phone);
                     Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
@@ -302,6 +319,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_source_acc_name_value.setText(args.getString(DefineValue.SOURCE_ACCT_NAME));
                     tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
                     tv_fee_value.setText(args.getString(DefineValue.FEE));
+                    tv_additionalfee_value.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                     tv_member_shop_phone.setText(args.getString(DefineValue.MEMBER_SHOP_PHONE));
 
@@ -330,6 +348,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_benef_bank_name_value = inflated.findViewById(R.id.dialog_reportbbs_benef_bank_value);
                     TextView tv_amount_value = inflated.findViewById(R.id.dialog_reportbbs_amount_value);
                     TextView tv_fee_value = inflated.findViewById(R.id.dialog_reportbbs_fee_value);
+                    TextView tv_additionalFee = inflated.findViewById(R.id.dialog_reportbbs_additionalFee_value);
                     TextView tv_total_amount_value = inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
 
                     tv_transaction_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
@@ -337,13 +356,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_name_value.setText(args.getString(DefineValue.USER_NAME));
                     tv_benef_bank_name_value.setText(args.getString(DefineValue.BANK_BENEF));
                     tv_member_shop_phone.setText(args.getString(DefineValue.MEMBER_SHOP_PHONE));
-                    tv_source_bank_name_value.setText(args.getString(DefineValue.PRODUCT_NAME));
+                    tv_source_bank_name_value.setText(args.getString(DefineValue.SOURCE_ACCT));
 
                     tv_source_acc_no_value.setText(args.getString(DefineValue.MEMBER_SHOP_NO));
                     tv_source_acc_name_value.setText(args.getString(DefineValue.MEMBER_SHOP_NAME));
 
                     tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
                     tv_fee_value.setText(args.getString(DefineValue.FEE));
+                    tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
             } else if (buss_scheme_code.equalsIgnoreCase("EMO") || buss_scheme_code.equalsIgnoreCase("TOP")) {
@@ -411,6 +431,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_payment_options_text = inflated.findViewById(R.id.dialog_reportbiller_payment_options_value);
                 TextView tv_fee_text = inflated.findViewById(R.id.dialog_reportbiller_fee_value);
                 TextView tv_total_amount_text = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
+                TextView tv_additionalFee = inflated.findViewById(R.id.tv_additionalFee);
+                TextView tv_additionalFeeValue = inflated.findViewById(R.id.dialog_reportbiller_additionalfee_value);
+                TextView tv_destinationValue = inflated.findViewById(R.id.dialog_reportbiller_destination_value);
+                View viewAdditional = inflated.findViewById(R.id.view_additionalFee);
+                TableLayout tableLayoutDestination=inflated.findViewById(R.id.billertoken_layout_destination);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
@@ -424,6 +449,19 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_fee_text.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_text.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+
+                if (args.getString(DefineValue.BUSS_SCHEME_NAME).equalsIgnoreCase("Pembelian Paket Data")){
+//                    tableLayoutDestination.setVisibility(View.VISIBLE);
+                    tv_destinationValue.setText(args.getString(DefineValue.DESTINATION_REMARK));
+                }
+
+                if (isAgent)
+                {
+                    viewAdditional.setVisibility(View.VISIBLE);
+                    tv_additionalFee.setVisibility(View.VISIBLE);
+                    tv_additionalFeeValue.setVisibility(View.VISIBLE);
+                    tv_additionalFeeValue.setText(args.getString(DefineValue.ADDITIONAL_FEE));
+                }
 
                 createTableDesc(args.getString(DefineValue.BILLER_DETAIL, ""), mTableLayout, type);
 
@@ -638,10 +676,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
                 tv_name_value.setText(args.getString(DefineValue.USER_NAME));
-                tv_bank_name_value.setText(args.getString(DefineValue.BANK_NAME));
-                tv_bank_acc_no_value.setText(args.getString(DefineValue.ACCOUNT_NUMBER));
-                tv_bank_acc_name_value.setText(args.getString(DefineValue.ACCT_NAME));
-                tv_nominal_value.setText(args.getString(DefineValue.NOMINAL));
+                tv_bank_name_value.setText(args.getString(DefineValue.PAYMENT_BANK));
+                tv_bank_acc_no_value.setText(args.getString(DefineValue.NO_BENEF));
+                tv_bank_acc_name_value.setText(args.getString(DefineValue.PAYMENT_NAME));
+                tv_nominal_value.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee_value.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
             }else if (buss_scheme_code.equals("BDK")){
@@ -673,13 +711,78 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_amount.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee.setText(args.getString(DefineValue.FEE));
                 tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
+            }else if(buss_scheme_code.equalsIgnoreCase("DGI"))
+            {
+                stub.setLayoutResource(R.layout.layout_dialog_report_dgi);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
+
+                TextView tv_report_type = inflated.findViewById(R.id.dialog_reportbiller_buss_scheme_name);
+                TextView tv_agent_name = inflated.findViewById(R.id.dialog_report_agent_name_value);
+                TextView tv_mitra_name = inflated.findViewById(R.id.dialog_report_mitra_name_value);
+                TextView tv_community_name = inflated.findViewById(R.id.dialog_report_community_name_value);
+                TextView tv_shop_name = inflated.findViewById(R.id.dialog_report_shop_name_value);
+                TextView tv_payment_type = inflated.findViewById(R.id.dialog_report_payment_type_value);
+                TextView tv_amount = inflated.findViewById(R.id.dialog_reportbiller_amount_value);
+                TextView tv_fee = inflated.findViewById(R.id.dialog_reportbiller_fee_value);
+                TextView tv_total_amount = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
+
+                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME,""));
+                tv_agent_name.setText(args.getString(DefineValue.USER_NAME,""));
+                tv_mitra_name.setText(args.getString(DefineValue.DGI_ANCHOR_NAME,""));
+                tv_community_name.setText(args.getString(DefineValue.DGI_COMM_NAME,""));
+                tv_shop_name.setText(args.getString(DefineValue.DGI_MEMBER_NAME,""));
+                tv_payment_type.setText(args.getString(DefineValue.PAYMENT_TYPE_DESC, ""));
+                tv_amount.setText(args.getString(DefineValue.AMOUNT));
+                tv_fee.setText(args.getString(DefineValue.FEE));
+                tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
+
+                TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
+                mTableLayout.setVisibility(View.VISIBLE);
+
+                createTableDGI(args.getString(DefineValue.INVOICE, ""), mTableLayout);
+
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                if (!isSuccess) {
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
+            }else if(buss_scheme_code.equalsIgnoreCase("SG3"))
+            {
+                stub.setLayoutResource(R.layout.layout_dialog_report_sof);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
+
+                TextView tv_report_type = inflated.findViewById(R.id.dialog_reportbiller_buss_scheme_name);
+                TextView tv_comm_name = inflated.findViewById(R.id.dialog_report_merchant_name_value);
+                TextView tv_payment_remark = inflated.findViewById(R.id.dialog_reportbiller_paymentremark_value);
+                TextView tv_amount = inflated.findViewById(R.id.dialog_reportbiller_amount_value);
+                TextView tv_fee = inflated.findViewById(R.id.dialog_reportbiller_fee_value);
+                TextView tv_total_amount = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
+
+                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME,""));
+                tv_comm_name.setText(args.getString(DefineValue.COMMUNITY_NAME,""));
+                tv_payment_remark.setText(args.getString(DefineValue.REMARK,""));
+                tv_amount.setText(args.getString(DefineValue.AMOUNT));
+                tv_fee.setText(args.getString(DefineValue.FEE));
+                tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
+
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                if (!isSuccess) {
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
             }
         }
 
         Button btn_ok = view.findViewById(R.id.dialog_reportbiller_btn_ok);
 
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         btn_ok.setOnClickListener(this);
 
@@ -764,157 +867,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 Intent BTIntent = new Intent(getActivity(), DevicesList.class);
                 this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
             } else {
-                //printStruk();
                 printStrukImage();
             }
         }
-    }
-
-    private void printStruk() {
-        String titleStr, remark;
-        StringBuilder contentSb = new StringBuilder();
-        StringBuilder content2Sb = new StringBuilder();
-
-        titleStr = "        Saldomu" + "\n";
-
-        remark = args.getString(DefineValue.TRX_MESSAGE) + "\n";
-
-        contentSb.append("Tanggal dan \n");
-        contentSb.append("Waktu      : " + args.getString(DefineValue.DATE_TIME) + "\n");
-        if (!buss_scheme_code.equalsIgnoreCase("P2P"))
-            contentSb.append("ID Transaksi : " + args.getString(DefineValue.TX_ID) + "\n\n");
-
-        if (buss_scheme_code.equalsIgnoreCase("CTA")) {
-            if (type.equals(DefineValue.BBS_CASHIN)) {
-
-                content2Sb.append("Jenis Transaksi : " + args.getString(DefineValue.BUSS_SCHEME_NAME) + "\n");
-                content2Sb.append("No. Handphone \n");
-                content2Sb.append("Agen         : " + args.getString(DefineValue.USERID_PHONE) + "\n");
-                content2Sb.append("Nama Agen    : " + args.getString(DefineValue.USER_NAME) + "\n");
-                if (args.getBoolean(DefineValue.IS_MEMBER_CTA) == false) {
-                    content2Sb.append("Produk Agen  : " + args.getString(DefineValue.PRODUCT_NAME) + "\n");
-                }
-                content2Sb.append("No. Handphone\n");
-                content2Sb.append("Pelanggan    : " + args.getString(DefineValue.MEMBER_SHOP_PHONE) + "\n");
-                content2Sb.append("Produk Pelanggan : " + args.getString(DefineValue.BANK_BENEF) + "\n");
-                content2Sb.append("No. Tujuan   : " + args.getString(DefineValue.NO_BENEF) + "\n");
-                content2Sb.append("Nama Tujuan  : " + args.getString(DefineValue.NAME_BENEF) + "\n");
-                content2Sb.append("Jumlah       : " + args.getString(DefineValue.AMOUNT) + "\n");
-                content2Sb.append("Biaya Admin  : " + args.getString(DefineValue.FEE) + "\n");
-                content2Sb.append("Total        : " + args.getString(DefineValue.TOTAL_AMOUNT) + "\n\n\n");
-            }
-        } else if (buss_scheme_code.equalsIgnoreCase("ATC")) {
-            if (type.equals(DefineValue.BBS_MEMBER_OTP)) {
-
-                if (args.getBoolean(DefineValue.IS_REPORT) == false && !args.getString(DefineValue.OTP_MEMBER).isEmpty()) {
-                    content2Sb.append("         Kode Tarik Tunai\n");
-                    content2Sb.append(args.getString(DefineValue.OTP_MEMBER) + "\n");
-                }
-                content2Sb.append("Jenis Transaksi: " + args.getString(DefineValue.BUSS_SCHEME_NAME) + "\n");
-                content2Sb.append("No. Handphone \n");
-                content2Sb.append("Agen         : " + args.getString(DefineValue.MEMBER_PHONE) + "\n");
-                content2Sb.append("Nama Agen    : " + args.getString(DefineValue.MEMBER_NAME) + "\n");
-                content2Sb.append("No. Handphone\n");
-                content2Sb.append("Pelanggan    : " + args.getString(DefineValue.MEMBER_SHOP_PHONE) + "\n");
-                content2Sb.append("Produk Pelanggan : " + args.getString(DefineValue.SOURCE_ACCT) + "\n");
-                content2Sb.append("No. Sumber   : " + args.getString(DefineValue.MEMBER_SHOP_NO) + "\n");
-                content2Sb.append("Nama Sumber  : " + args.getString(DefineValue.SOURCE_ACCT_NAME) + "\n");
-                content2Sb.append("Jumlah       : " + args.getString(DefineValue.AMOUNT) + "\n");
-                content2Sb.append("Biaya Admin  : " + args.getString(DefineValue.FEE) + "\n");
-                content2Sb.append("Total        : " + args.getString(DefineValue.TOTAL_AMOUNT) + "\n\n\n");
-
-            } else if (type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)) {
-                content2Sb.append("Jenis Transaksi: " + args.getString(DefineValue.BUSS_SCHEME_NAME) + "\n");
-                content2Sb.append("No. Handphone \n");
-                content2Sb.append("Agen         : " + args.getString(DefineValue.USERID_PHONE) + "\n");
-                content2Sb.append("Nama Agen    : " + args.getString(DefineValue.USER_NAME) + "\n");
-                content2Sb.append("Produk Agen  : " + args.getString(DefineValue.BANK_BENEF) + "\n");
-                content2Sb.append("No. Handphone\n");
-                content2Sb.append("Pelanggan    : " + args.getString(DefineValue.MEMBER_SHOP_PHONE) + "\n");
-                content2Sb.append("Produk Pelanggan : " + args.getString(DefineValue.PRODUCT_NAME) + "\n");
-                content2Sb.append("No. Sumber   : " + args.getString(DefineValue.MEMBER_SHOP_NO) + "\n");
-                content2Sb.append("Nama Sumber  : " + args.getString(DefineValue.MEMBER_SHOP_NAME) + "\n");
-                content2Sb.append("Jumlah       : " + args.getString(DefineValue.AMOUNT) + "\n");
-                content2Sb.append("Biaya Admin  : " + args.getString(DefineValue.FEE) + "\n");
-                content2Sb.append("Total        : " + args.getString(DefineValue.TOTAL_AMOUNT) + "\n\n\n");
-            }
-        } else if (buss_scheme_code.equalsIgnoreCase("EMO")) {
-            if (type.equals(DefineValue.TOPUP) || type.equals(DefineValue.COLLECTION)) {
-                content2Sb.append("Jenis Transaksi: " + args.getString(DefineValue.BUSS_SCHEME_NAME) + "\n");
-                content2Sb.append("Nomor Handphone  :" + args.getString(DefineValue.USERID_PHONE) + "\n");
-                content2Sb.append("Nama          : " + args.getString(DefineValue.USER_NAME) + "\n");
-                content2Sb.append("Produk Bank   : " + args.getString(DefineValue.BANK_PRODUCT) + "\n");
-                content2Sb.append("Jumlah        : " + args.getString(DefineValue.AMOUNT) + "\n");
-                content2Sb.append("Biaya Admin   : " + args.getString(DefineValue.FEE) + "\n");
-                content2Sb.append("Total         : " + args.getString(DefineValue.TOTAL_AMOUNT) + "\n");
-                if (type.equals(DefineValue.COLLECTION)) {
-                    content2Sb.append("Pesan         : " + args.getString(DefineValue.REMARK) + "\n\n\n");
-                } else content2Sb.append("\n\n");
-            }
-        } else if (buss_scheme_code.equalsIgnoreCase("BIL")) {
-            if (type.equals(DefineValue.BILLER) || type.equals(DefineValue.BILLER_BPJS) || type.equals(DefineValue.BILLER_PLN)) {
-                content2Sb.append("Jenis Transaksi : " + args.getString(DefineValue.BUSS_SCHEME_NAME) + "\n");
-                content2Sb.append("Nomor Handphone : " + args.getString(DefineValue.USERID_PHONE) + "\n");
-                content2Sb.append("Nama         : " + args.getString(DefineValue.USER_NAME) + "\n");
-                content2Sb.append("Kategori     : " + args.getString(DefineValue.DESTINATION_REMARK) + "\n");
-//                if ((args.getString(DefineValue.BILLER_DETAIL)).equalsIgnoreCase(""))
-//                {
-//                    content2Sb.append(createTableDesc(args.getString(DefineValue.BILLER_DETAIL, ""), mTableLayout, type));
-//                }
-                content2Sb.append("Produk Bank  : " + args.getString(DefineValue.DENOM_DATA) + "\n");
-                content2Sb.append("Jumlah       : " + args.getString(DefineValue.AMOUNT) + "\n");
-                content2Sb.append("Biaya Admin  : " + args.getString(DefineValue.FEE) + "\n");
-                content2Sb.append("Total        : " + args.getString(DefineValue.TOTAL_AMOUNT) + "\n\n\n");
-            }
-        } else if (buss_scheme_code.equals("P2P") || type.equals(DefineValue.PAYFRIENDS)) {
-            content2Sb.append("Jenis Transaksi : " + args.getString(DefineValue.BUSS_SCHEME_NAME) + "\n");
-            content2Sb.append("Nomor Handphone : " + args.getString(DefineValue.USERID_PHONE) + "\n");
-            content2Sb.append("Nama          : " + args.getString(DefineValue.USER_NAME) + "\n");
-//            content2Sb.append(createTablePayFriend(args.getString(DefineValue.TRANSFER_DATA, ""), mTableLayout, type););
-            content2Sb.append("Jumlah untuk tiap \n");
-            content2Sb.append("penerima      : " + args.getString(DefineValue.AMOUNT_EACH) + "\n");
-            content2Sb.append("Jumlah        : " + args.getString(DefineValue.AMOUNT) + "\n");
-            content2Sb.append("Biaya Admin   : " + args.getString(DefineValue.FEE) + "\n");
-            content2Sb.append("Total         : " + args.getString(DefineValue.TOTAL_AMOUNT) + "\n");
-            content2Sb.append("Pesan         : " + args.getString(DefineValue.MESSAGE) + "\n\n\n");
-
-        } else if (buss_scheme_code.equals("OR")) {
-            content2Sb.append("Jenis Transaksi : " + args.getString(DefineValue.BUSS_SCHEME_NAME) + "\n");
-            content2Sb.append("Nomor Handphone : " + args.getString(DefineValue.MEMBER_PHONE) + "\n");
-            content2Sb.append("Nama          : " + args.getString(DefineValue.MEMBER_NAME) + "\n");
-            content2Sb.append("No. Tujuan    : " + args.getString(DefineValue.PAYMENT_PHONE) + "\n");
-            content2Sb.append("Nama Tujuan   : " + args.getString(DefineValue.PAYMENT_NAME) + "\n");
-            content2Sb.append("Pesan         : " + args.getString(DefineValue.REMARK) + "\n");
-            content2Sb.append("Jumlah        : " + args.getString(DefineValue.AMOUNT) + "\n");
-            content2Sb.append("Biaya Admin   : " + args.getString(DefineValue.FEE) + "\n");
-            content2Sb.append("Total         : " + args.getString(DefineValue.TOTAL_AMOUNT) + "\n");
-        } else if (buss_scheme_code.equals("IR")) {
-            content2Sb.append("Jenis Transaksi : " + args.getString(DefineValue.BUSS_SCHEME_NAME) + "\n");
-            content2Sb.append("Nomor Handphone : " + args.getString(DefineValue.MEMBER_PHONE) + "\n");
-            content2Sb.append("Nama          : " + args.getString(DefineValue.MEMBER_NAME) + "\n");
-            content2Sb.append("No. Sumber    : " + args.getString(DefineValue.PAYMENT_PHONE) + "\n");
-            content2Sb.append("Nama Sumber   : " + args.getString(DefineValue.PAYMENT_NAME) + "\n");
-            content2Sb.append("Pesan         : " + args.getString(DefineValue.REMARK) + "\n");
-            content2Sb.append("Jumlah        : " + args.getString(DefineValue.AMOUNT) + "\n");
-            content2Sb.append("Biaya Admin   : " + args.getString(DefineValue.FEE) + "\n");
-            content2Sb.append("Total         : " + args.getString(DefineValue.TOTAL_AMOUNT) + "\n");
-        } else if (buss_scheme_code.equals("OC") || type.equals(DefineValue.CASHOUT)) {
-            content2Sb.append("Jenis Transaksi : " + args.getString(DefineValue.BUSS_SCHEME_NAME) + "\n");
-            content2Sb.append("Nomor Handphone : " + args.getString(DefineValue.MEMBER_PHONE) + "\n");
-            content2Sb.append("Nama          : " + args.getString(DefineValue.MEMBER_NAME) + "\n");
-            content2Sb.append("Nama Bank     : " + args.getString(DefineValue.MEMBER_NAME) + "\n");
-            content2Sb.append("No. Rekening\n");
-            content2Sb.append("Tujuan        : " + args.getString(DefineValue.MEMBER_SHOP_PHONE) + "\n");
-            content2Sb.append("Nama Penerima : " + args.getString(DefineValue.MEMBER_SHOP_PHONE) + "\n");
-            content2Sb.append("Nominal       : " + args.getString(DefineValue.MEMBER_SHOP_PHONE) + "\n");
-            content2Sb.append("Biaya Admin   : " + args.getString(DefineValue.FEE) + "\n");
-            content2Sb.append("Total         : " + args.getString(DefineValue.TOTAL_AMOUNT) + "\n");
-        }
-
-        SendDataString(titleStr);
-        SendDataString(remark);
-        SendDataString(contentSb.toString());
-        SendDataString(content2Sb.toString());
     }
 
     private void reqPermissionSaveorShareImage(Boolean isShareImage) {
@@ -1127,6 +1082,56 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         }
     }
 
+    private void createTableDGI(String jsonData, TableLayout mTableLayout) {
+        try {
+            JSONArray jsonArray = new JSONArray(jsonData);
+            TextView detail_field;
+            TextView detail_value;
+            TableRow layout_table_row;
+
+            TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT);
+            TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT, 8.0f);
+            rowParams.setMargins(6, 6, 6, 6);
+            TableRow.LayoutParams rowParams2 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT);
+            rowParams2.setMargins(6, 6, 6, 6);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                JSONObject model = jsonArray.getJSONObject(i);
+
+                detail_field = new TextView(getActivity());
+                detail_field.setGravity(Gravity.LEFT);
+                detail_field.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                detail_field.setLayoutParams(rowParams2);
+                detail_field.setTextColor(Color.parseColor("#757575"));
+                detail_value = new TextView(getActivity());
+                detail_value.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                detail_value.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                detail_value.setLayoutParams(rowParams);
+                detail_value.setPadding(6, 9, 3, 9);
+                detail_value.setTextColor(Color.parseColor("#757575"));
+                View line = new View(getActivity());
+                line.setLayoutParams(new LinearLayout.LayoutParams((ViewGroup.LayoutParams.MATCH_PARENT), 1));
+                line.setBackgroundColor(Color.parseColor("#e0e0e0"));
+                line.setPadding(8, 3, 3, 3);
+                layout_table_row = new TableRow(getActivity());
+                layout_table_row.setLayoutParams(tableParams);
+                layout_table_row.addView(detail_field);
+                layout_table_row.addView(detail_value);
+                detail_field.setText(model.getString("doc_no"));
+                detail_value.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(model.getString("amount")));
+                mTableLayout.addView(layout_table_row);
+                mTableLayout.addView(line);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onClick(View v) {
         this.dismiss();
@@ -1307,6 +1312,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         }
     }
 
-
 }
+
 

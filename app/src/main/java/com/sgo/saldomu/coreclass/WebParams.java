@@ -32,6 +32,7 @@ public class WebParams {
     public static String COUNT_RESEND = "count_resend";
 
     public static String PASSWORD_LOGIN = "password";
+    public static String FLAG_LOGIN = "flag_login";
     public static String USER_NAME = "user_name";
     public static String COMMUNITY= "community";
     public static String BUSS_SCHEME_NAME= "buss_scheme_name";
@@ -455,6 +456,7 @@ public class WebParams {
     public static String MEMBER_TYPE    = "member_type";
     public static String PERIOD_MONTH = "period_month";
     public static String BBS_CITY   = "bbs_city";
+    public static String CITY   = "city";
     public static String COMM_SOURCE= "comm_source";
     public static String GCM_ID     = "gcm_id";
     public static String DEVICE_NAME= "device_name";
@@ -520,16 +522,78 @@ public class WebParams {
     public static String LKD_PRODUCT_CODE  = "lkd_product_code";
     public static String SOURCE_OF_FUND = "source_of_fund";
     public static String IS_POS = "is_pos";
+
     public static String MOBILE_PHONE = "mobile_phone";
     public static String PHONE_DATA = "phone_data";
+    public static String INVOICE_DATA = "invoice_data";
+    public static String INVOICE = "invoice";
     public static String FEE_DATA = "fee_data";
     public static String PAYMENT_TYPE = "payment_type";
+    public static String PAYMENT_TYPE_DESC = "payment_type_desc";
     public static String PAYMENT_CODE = "payment_code";
     public static String BUYER_FEE = "buyer_fee";
     public static String SELLER_FEE = "seller_fee";
     public static String COMMISSION_FEE = "commission_fee";
     public static String MIN_AMOUNT = "min_amount";
     public static String MAX_AMOUNT = "max_amount";
+    public static String DOC_NO = "doc_no";
+    public static String DOC_ID = "doc_id";
+    public static String REMAIN_AMOUNT = "remain_amount";
+    public static String DUE_DATE = "due_date";
+    public static String CCY = "ccy";
 
+    public static String SALES_ID = "sales_id";
+    public static String SOURCE_ACCT_BANK = "source_acct_bank";
+    public static String PHONE_NO = "phone_no";
+    public static String KODE_OTP = "kode_otp";
+    public static String COMM_CODE_DGI = "comm_code_dgi";
+    public static String DGI_MEMBER_NAME= "dgi_member_name";
+    public static String DGI_ANCHOR_NAME= "dgi_anchor_name";
+    public static String DGI_COMM_NAME= "dgi_comm_name";
+    public static String AGENT_SCHEME_CODES= "agent_scheme_codes";
+    public static String IS_MEMBER_SHOP_DGI= "is_member_shop_dgi";
+    public static String NEXT_VISIT_DATE= "next_visit_date";
+    public static String AGENT_TYPE = "agent_type";
+
+    public static String MEMBER_ID_GOWORLD = "member_id_goworld";
+    public static String MEMBER_CODE_GOWORLD = "member_code_goworld";
+    public static String COMM_ID_GOWORLD = "comm_id_goworld";
+    public static String COMM_CODE_GOWORLD = "comm_code_goworld";
+    public static String SUBJECT = "subject";
+    public static String OTP = "otp";
+    public static String IS_MANUAL = "is_manual";
+    public static String ADDITIONAL_FEE = "additional_fee";
+    public static String MEMBER_CODE_PG = "member_code_pg";
+    public static String COMM_CODE_PG = "comm_code_pg";
+    public static String COMM_NAME_PG = "comm_name_pg";
+    public static String ANCHOR_NAME_PG = "anchor_name_pg";
+
+    public static String FCM_ID = "fcm_id";
+    public static String REFERENCE_ID = "reference_id";
+    public static String CLIENT_APP = "client_app";
+
+    public static String STARTER_KITS = "starter_kits";
+    public static String STARTER_ID = "starter_id";
+    public static String FILE_TITLE = "file_title";
+    public static String MEMBER_EMAIL = "member_email";
+    public static String BILLER_INFO = "biller_info";
+    public static String MEMBER_ID_CUST = "member_id_cust";
+    public static String CUST_RT = "cust_rt";
+    public static String CUST_RW = "cust_rw";
+    public static String CUST_KELURAHAN = "cust_kelurahan";
+    public static String CUST_KECAMATAN = "cust_kecamatan";
+    public static String CUST_RELIGION = "cust_religion";
+    public static String CUST_MARRIAGE_STATUS = "cust_marriage_status";
+    public static String CUST_OCCUPATION = "cust_occupation";
+    public static String CUST_NATIONALITY = "cust_nationality";
+
+    public static String TX_FAVORITE_TYPE = "tx_favorite_type";
+    public static String NOTES = "notes";
+    public static String SOURCE_BANK_CODE = "source_bank_code";
+    public static String MEMBER_CREATED = "member_created";
+    public static String FROM_AGENT = "from_agent";
+    public static String ERROR_9333 = "9333";
+    public static String ERROR_0066 = "0066";
+    public static String LOC_TX_ID = "loc_tx_id";
 
 }

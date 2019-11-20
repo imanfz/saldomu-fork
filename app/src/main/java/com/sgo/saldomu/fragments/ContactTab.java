@@ -42,8 +42,8 @@ public class ContactTab extends Fragment {
             ViewPager pager;
             String[] titles = getActivity().getResources().getStringArray(R.array.contact_tab_list);
 
-            tabs = (TabPageIndicator) getCurrentView().findViewById(R.id.contact_tabs);
-            pager = (ViewPager) getCurrentView().findViewById(R.id.contact_pager);
+            tabs = getCurrentView().findViewById(R.id.contact_tabs);
+            pager = getCurrentView().findViewById(R.id.contact_pager);
             adapternya = new ContactTabAdapter(getChildFragmentManager(), getActivity(), titles);
             pager.setAdapter(adapternya);
             pager.setPageMargin(pageMargin);

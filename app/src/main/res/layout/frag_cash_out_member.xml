@@ -275,7 +275,6 @@
                     <com.balysv.materialripple.MaterialRippleLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/card_bk_yellow"
                         android:layout_weight="1"
                         app:mrl_rippleOverlay="true"
                         app:mrl_rippleColor="@color/colorPrimary"
@@ -288,11 +287,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                            android:textColor="@color/black"
+                            android:textColor="@color/white"
                             android:gravity="center"
                             android:text="@string/ok"
                             android:layout_gravity="center_horizontal"
-                            android:background="@drawable/button_transparant"
+                            android:background="@drawable/rounded_background_blue"
                             />
                     </com.balysv.materialripple.MaterialRippleLayout>
                 </LinearLayout>
@@ -301,7 +300,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@drawable/card_bk"
                     android:layout_marginTop="8dp"
                     app:mrl_rippleOverlay="true"
                     app:mrl_rippleColor="@color/colorPrimary"
@@ -317,8 +315,8 @@
                         android:layout_gravity="center"
                         android:text="@string/cancel"
                         android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                        android:background="@drawable/button_transparant"
-                        android:textColor="@color/colorSecondaryDark"
+                        android:background="@drawable/rounded_background_outline"
+                        android:textColor="@color/black"
                         />
 
                 </com.balysv.materialripple.MaterialRippleLayout>

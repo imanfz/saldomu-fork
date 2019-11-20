@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <include android:id="@+id/layout_no_data"
         layout="@layout/no_data"
         android:visibility="gone"/>
@@ -36,23 +35,23 @@
                 />
         </LinearLayout>
 
-        <ExpandableListView
-            android:id="@+id/expandableListView"
-            android:layout_width="match_parent"
-            android:dividerHeight="1dp"
-            android:layout_height="match_parent"
-            android:divider="@color/grey_300"
-            android:childDivider="@color/grey_300"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@color/white"
-            android:groupIndicator="@drawable/transparent"
-            android:layout_below="@+id/maxtopup_layout"
-            android:textIsSelectable="true"
-            android:visibility="gone">
+        <!--<ExpandableListView-->
+            <!--android:id="@+id/expandableListView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:dividerHeight="1dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:divider="@color/grey_300"-->
+            <!--android:childDivider="@color/grey_300"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginBottom="10dp"-->
+            <!--android:background="@color/white"-->
+            <!--android:groupIndicator="@drawable/transparent"-->
+            <!--android:layout_below="@+id/maxtopup_layout"-->
+            <!--android:textIsSelectable="true"-->
+            <!--android:visibility="gone">-->
 
-        </ExpandableListView>
+        <!--</ExpandableListView>-->
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"

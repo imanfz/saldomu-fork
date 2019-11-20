@@ -4,16 +4,16 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
@@ -25,12 +25,13 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.viewpagerindicator.TitlePageIndicator;
-import in.srain.cube.views.ptr.PtrClassicFrameLayout;
-import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.PtrHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
 
 /*
   Created by Administrator on 12/1/2014.
@@ -68,9 +69,9 @@ public class FragMainPage extends Fragment {
         final List<BaseFragmentMainPage> mList = new ArrayList<>();
 //        mList.add(new Home());
 
-        mList.add(new FragHomeAgent());
+//        mList.add(new FragHomeAgent());
         mList.add(new FragHomeNew());
-        mList.add(new MyHistory());
+//        mList.add(new MyHistory());
 //        mList.add(new TimeLine());
 //        mList.add(new Group());
 
@@ -102,8 +103,8 @@ public class FragMainPage extends Fragment {
         pager.setAdapter(adapternya);
         pager.setPageMargin(pageMargin);
         tabs.setViewPager(pager);
-        pager.setCurrentItem(1);
-        pager.setOffscreenPageLimit(3);
+        pager.setCurrentItem(0);
+        pager.setOffscreenPageLimit(1);
 
         setCurrentAdapternya(adapternya);
 
@@ -115,7 +116,7 @@ public class FragMainPage extends Fragment {
             @Override
             public void onPageSelected(int i) {
 //                updateFab(i);
-                ToggleFAB(!(i==0));
+                ToggleFAB(!(i==1));
             }
 
             @Override
@@ -157,14 +158,16 @@ public class FragMainPage extends Fragment {
             }
         });
 
+        tabs.setVisibility(View.GONE);
+
 
         ToggleFAB(false);
     }
 
     public void showDialogNotAgent()
     {
-        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_title),
-                getActivity().getString(R.string.level_dialog_message_agent), getActivity().getString(R.string.level_dialog_btn_ok),
+        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_agent),
+                getActivity().getString(R.string.level_dialog_agent1), getActivity().getString(R.string.level_dialog_btn_ok),
                 getActivity().getString(R.string.cancel), false);
         dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
             @Override

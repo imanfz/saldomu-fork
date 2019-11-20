@@ -31,6 +31,7 @@ public class DefineValue {
     public static String CASHOUT_TUNAI_TYPE = "7";
     public static String YES = "1";
     public static String Y = "Y";
+    public static String N = "N";
     public static String NO = "0";
     public static String SUCCESS = "S";
     public static String ONRECONCILED = "OR";
@@ -66,6 +67,8 @@ public class DefineValue {
     public static String ERROR_0017 = "0017" ;
     public static String ERROR_0126 = "0126" ;
     public static String ERROR_0127 = "0127" ;
+    public static String ERROR_9333 = "9333" ;
+    public static String ERROR_0066 = "0066" ;
     public static String SCASH = "SCASH" ;
     public static String PRIVATE = "1" ;
     public static String PUBLIC = "2" ;
@@ -215,8 +218,10 @@ public class DefineValue {
     public static String IS_ACTIVE = "isActive";
     public static String IS_ACTIVITY_FULL = "isActivityFull";
     public static String ACCESS_SECRET = "accessSecret";
+    public static String USER_PASSWORD = "userPassword";
     public static String NEW_PASSWORD = "newPassword";
     public static String CONFIRM_PASSWORD = "confirmPassword";
+    public static String CONFIRM_PAYFRIEND = "confirmPayfriend";
     public static String REGISTRATION = "registration";
     public static String CONTACT_ALIAS = "contactAlias";
     public static String CONF_PIN = "confPin";
@@ -226,6 +231,7 @@ public class DefineValue {
     public static String STATUS = "status";
     public static String REASON = "reason";
 	public static String BALANCE_AMOUNT = "balanceAmount";
+	public static String BALANCE_COLLECTOR_AMOUNT = "balanceCollectorAmount";
     public static String BALANCE_MAX_TOPUP = "balanceMaxTopup";
     public static String BALANCE_CCYID = "balaceCcyid";
     public static String BALANCE_REMAIN_LIMIT = "balanceRemainLimit";
@@ -292,6 +298,7 @@ public class DefineValue {
     public static String BILLER_TYPE_PLN_TKN = "tkn";
     public static String BILLER_TYPE_NON_TAG = "non";
     public static String BILLER_TYPE_PLN = "pln";
+    public static String BILLER_TYPE_EMON = "EMON";
     public static String VALUE_ITEM_DATA = "valueItemData";
     public static String IS_SHOW_DESCRIPTION = "isDescription";
     public static String IS_PLN = "isPLN";
@@ -312,6 +319,7 @@ public class DefineValue {
 
     public static String CATEGORY_ID    = "category_id";
     public static String CATEGORY_ID_CTA    = "category_id_cta";
+    public static String CATEGORY_ID_UPG    = "category_id_upg";
     public static String CATEGORY_NAME  = "category_name";
     public static String CATEGORY_CODE  = "category_code";
 
@@ -544,8 +552,75 @@ public class DefineValue {
     public static String QR_TYPE_FROM_DEFAULT_ACCOUNT = "QR_TYPE_FROM_DEFAULT_ACCOUNT";
     public static String QR_OBJ = "QR_OBJ";
     public static String DGI = "DGI";
+    public static String DGI_MEMBER_NAME= "dgi_member_name";
+    public static String DGI_ANCHOR_NAME= "dgi_anchor_name";
+    public static String DGI_COMM_NAME= "dgi_comm_name";
     public static String MOBILE_PHONE = "mobile_phone";
     public static String RESPONSE = "mobile_phone";
+    public static String COMM_CODE_DGI = "comm_code_dgi";
+    public static String PARAMS = "params";
+    public static String PAYMENT_TYPE = "payment_type";
+    public static String AGENT_TYPE = "agent_type";
+    public static String PAYMENT_TYPE_DESC= "payment_type_desc";
+    public static String INVOICE = "invoice";
+    public static String SCHEME_CODE = "scheme_code";
+    public static String AGENT_SCHEME_CODES= "agent_scheme_codes";
+    public static String MEMBER_SCHEME_CODES= "member_scheme_codes";
+    public static String IS_MEMBER_SHOP_DGI= "is_member_shop_dgi";
+    public static String IS_SEARCH_DGI= "is_search_dgi";
+    public static String DEVICE_NAME= "device_name";
+    public static String IS_MANUAL= "is_manual";
+    public static String IS_DORMANT= "is_dormant";
+    public static String ADDITIONAL_FEE= "additionalFee";
+    public static String ENABLED_ADDITIONAL_FEE= "enabledAdditionalFee";
+    public static String SG3= "sg3";
+    public static String IS_INAPP= "is_inapp";
+    public static String MEMBER_CODE_PG= "memberCodePG";
+    public static String COMM_CODE_PG= "commCodePG";
+    public static String COMM_NAME_PG= "commNamePG";
+    public static String ANCHOR_NAME_PG= "anchorNamePG";
+    public static String IS_AGENT_TRX_REQ= "isAgentTrxReq";
+
+    public static String TEMP_ICCID = "temp_iccid";
+    public static String TEMP_IMEI = "temp_imei";
+    public static String TEMP_IS_SENT = "temp_is_sent";
+    public static String LAST_SMS_SENT = "last_sms_sent";
+    public static String LAST_SMS_SENT_MILLIS = "last_sms_sent_millis";
+    public static String FCM_ENCRYPTED = "fcmEncrypted";
+    public static String FCM_ID = "fcmId";
+    public static String CATEGORY = "category";
+    public static String ANDROID = "ANDR";
+    public static String EXTRA_SIGNATURE = "extra_signature";
+    public static String SAME_BANNER = "sameBanner";
+    public static String DATA_BANNER = "dataBanner";
+    public static String P2P = "P2P";
+    public static String FAVORITE_CUSTOMER_ID = "FAVORITE_CUSTOMER_ID";
+    public static String COMM_UPGRADE_MEMBER = "commUpgradeMember";
+    public static String MEMBER_ID_CUST = "memberIdCust";
+    public static String NIK = "nik";
+    public static String MEMBER_CUST_NAME = "memberCustName";
+    public static String MEMBER_POB = "memberPOB";
+    public static String MEMBER_DOB = "memberDOB";
+    public static String MEMBER_GENDER = "memberGender";
+    public static String MEMBER_ADDRESS = "memberAddress";
+    public static String MEMBER_RT = "memberRT";
+    public static String MEMBER_RW = "memberRW";
+    public static String MEMBER_KELURAHAN = "memberKelurahan";
+    public static String MEMBER_KECAMATAN = "memberKecamatan";
+    public static String MEMBER_RELIGION = "memberReligion";
+    public static String MEMBER_STATUS = "memberStatus";
+    public static String MEMBER_OCUPATION= "memberOcupation";
+    public static String MEMBER_NATIONALITY = "memberNationality";
+    public static String CUST_ID_MEMBER = "custIdMember";
+    public static String BENEF_BANK_CODE= "benef_bank_code";
+    public static String MEMBER_CREATED= "member_created";
+    public static String PAYMENT_BANK = "paymentBank";
+    public static String LATITUDE_UPDATED = "latitudeUpdated";
+    public static String LONGITUDE_UPDATED = "longitudeUpdated";
+    public static String TXID_PG = "txIdPg";
+    public static String CT_CODE = "CT";
+    public static String BG_CODE = "BG";
+    public static String TS_CODE = "TS";
 
 }
 

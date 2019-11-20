@@ -2,6 +2,8 @@ package com.sgo.saldomu.adapter;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -9,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +20,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.stetho.common.StringUtil;
 import com.sgo.saldomu.Beans.HelpModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 
 import java.io.UnsupportedEncodingException;
@@ -37,14 +38,12 @@ public class HelpAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private ArrayList<HelpModel> data;
     private Context context;
-    private Activity activity;
 
 
     public HelpAdapter(Context context, ArrayList<HelpModel> _data, Activity activity) {
         mInflater = LayoutInflater.from(context);
         this.data = _data;
         this.context = context;
-        this.activity = activity;
     }
 
     @Override
@@ -69,14 +68,13 @@ public class HelpAdapter extends BaseAdapter {
         if (convertView == null) {
             view = mInflater.inflate(R.layout.list_help_center_item, parent, false);
             holder = new ViewHolder();
-            holder.name = (TextView) view.findViewById(R.id.help_name_value);
-            holder.phone = (TextView) view.findViewById(R.id.help_phone_value);
-            holder.mail = (TextView) view.findViewById(R.id.help_mail_value);
+            holder.name = view.findViewById(R.id.help_name_value);
+            holder.phone = view.findViewById(R.id.help_phone_value);
             holder.whatsapp = view.findViewById(R.id.help_phone_whatsapp_value);
 
-            holder.trPhone = (TableRow) view.findViewById(R.id.tr_phone);
-            holder.trMail = (TableRow) view.findViewById(R.id.tr_mail);
-            holder.trWhatsapp = (TableRow) view.findViewById(R.id.tr_whatsapp);
+            holder.phone_card_view = view.findViewById(R.id.phone_card_view);
+            holder.whatsup_card_view = view.findViewById(R.id.whatsup_card_view);
+            holder.tvCopy = view.findViewById(R.id.tv_copy);
 
             view.setTag(holder);
 
@@ -85,20 +83,14 @@ public class HelpAdapter extends BaseAdapter {
                 public void onClick(View view) {
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
                     callIntent.setData(Uri.parse("tel:"+ holder.phone.getText().toString()));
-                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        ActivityCompat.requestPermissions((Activity)activity, new String[]{Manifest.permission.CALL_PHONE}, 1);
-                    }
-                    else {
-                        context.startActivity(callIntent);
-                       }
+                    context.startActivity(callIntent);
+                }
+            });
 
+            holder.tvCopy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    copyRefNo(data.get(position).getPhone());
                 }
             });
 
@@ -115,29 +107,20 @@ public class HelpAdapter extends BaseAdapter {
         holder.name.setText(data.get(position).getName());
 
         String phone = data.get(position).getPhone();
-        String mail = data.get(position).getMail();
         String whatsappNo = data.get(position).getWhatsappPhone();
 
         if(phone.equals("")) {
-            holder.trPhone.setVisibility(View.GONE);
+            holder.phone_card_view.setVisibility(View.GONE);
         }
         else {
-            holder.trPhone.setVisibility(View.VISIBLE);
+            holder.phone_card_view.setVisibility(View.VISIBLE);
             holder.phone.setText(phone);
         }
 
-        if(mail.equals("")) {
-            holder.trMail.setVisibility(View.GONE);
-        }
-        else {
-            holder.trMail.setVisibility(View.VISIBLE);
-            holder.mail.setText(mail);
-        }
-
         if(whatsappNo.equals("")){
-            holder.trWhatsapp.setVisibility(View.GONE);
+            holder.whatsup_card_view.setVisibility(View.GONE);
         }else{
-            holder.trWhatsapp.setVisibility(View.VISIBLE);
+            holder.whatsup_card_view.setVisibility(View.VISIBLE);
             holder.whatsapp.setText(whatsappNo);
         }
         return view;
@@ -176,8 +159,15 @@ public class HelpAdapter extends BaseAdapter {
 
     }
 
+    private void copyRefNo(String text){
+        Toast.makeText(context,"Copy to clipboard",Toast.LENGTH_SHORT).show();
+        ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData = ClipData.newPlainText("asd", text);
+        clipboardManager.setPrimaryClip(clipData);
+    }
+
     private class ViewHolder {
-        public TextView name, phone, mail, whatsapp;
-        public TableRow trPhone, trMail, trWhatsapp;
+        public TextView name, phone, mail, whatsapp, tvCopy;
+        public CardView phone_card_view, whatsup_card_view;
     }
 }

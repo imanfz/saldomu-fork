@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout android:id="@+id/cashout_bottom_layout"
-        android:background="@color/windowBackgroundColor"
+        android:background="@color/white"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:padding="8dp"
@@ -21,7 +21,6 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_bk"
             android:layout_marginRight="8dp"
             app:mrl_rippleOverlay="true"
             app:mrl_rippleColor="@color/colorPrimaryDark"
@@ -34,11 +33,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/colorSecondaryDark"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:text="@string/kembali"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
+                android:background="@drawable/rounded_background_outline"
                 />
 
         </com.balysv.materialripple.MaterialRippleLayout>
@@ -46,7 +45,6 @@
         <com.balysv.materialripple.MaterialRippleLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_bk_orange"
             android:layout_weight="1"
             app:mrl_rippleOverlay="true"
             app:mrl_rippleColor="@color/colorPrimaryDark"
@@ -59,11 +57,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:gravity="center"
                 android:text="@string/sent"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
+                android:background="@drawable/rounded_background_blue"
                 />
 
         </com.balysv.materialripple.MaterialRippleLayout>
@@ -110,7 +108,7 @@
                 app:circlestep_current_outer_circle_color="@color/colorPrimaryDark"
                 app:circlestep_circle_color="@color/grey_500"
                 app:circlestep_circle_text_size="14sp"
-                app:circlestep_text_below_circle_size="14sp"
+                app:circlestep_text_below_circle_size="12sp"
                 app:circlestep_text_below_circle_color="@color/grey_800"/>
 
             <View
@@ -168,7 +166,7 @@
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="0.5"
-                    android:src="@drawable/icon_arrow" />
+                    android:src="@drawable/arrow" />
 
                 <TextView
                     android:id="@+id/bbscashout_value_benef"
@@ -275,6 +273,22 @@
 
                     <TextView
                         android:layout_weight="1"
+                        android:text="@string/additional_fee"
+                        android:textColor="@color/colorSecondaryDark"/>
+
+                    <TextView
+                        android:id="@+id/bbscashout_additional_fee"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/sheet_item_textsize"
+                        android:textColor="@color/colorSecondaryDark"/>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_weight="1"
                         android:text="@string/total_bayar"
                         android:textColor="@color/colorSecondaryDark"/>
 
@@ -339,6 +353,41 @@
                     android:text="@string/payfriends_otp"/>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="6dp"
+                android:orientation="horizontal">
+
+                <Switch
+                    android:id="@+id/favorite_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save_as_favorite_text_message"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/notes_edit_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Notes"
+                android:layout_marginRight="16dp"
+                android:visibility="gone"
+                android:inputType="text"
+                android:layout_marginLeft="16dp"
+                android:enabled="false"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

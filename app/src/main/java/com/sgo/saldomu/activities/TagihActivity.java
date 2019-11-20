@@ -1,26 +1,18 @@
 package com.sgo.saldomu.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 
-import com.activeandroid.util.Log;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
-import com.sgo.saldomu.fragments.FragListCommunitySCADM;
 import com.sgo.saldomu.fragments.FragTagihInput;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class TagihActivity extends BaseActivity {
@@ -28,6 +20,7 @@ public class TagihActivity extends BaseActivity {
     FragmentManager fragmentManager;
     Fragment mContent;
     Fragment newFragment = null;
+    private String memberCode,commCode,commName,anchorName, txIdPG;
 
     @Override
     protected int getLayoutResource() {
@@ -38,7 +31,15 @@ public class TagihActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        Intent intent = getIntent();
+        Boolean is_search = intent.getBooleanExtra(DefineValue.IS_SEARCH_DGI, false);
+        if (intent.hasExtra(DefineValue.MEMBER_CODE_PG)) {
+            memberCode = intent.getStringExtra(DefineValue.MEMBER_CODE_PG);
+            commCode = intent.getStringExtra(DefineValue.COMM_CODE_PG);
+            commName = intent.getStringExtra(DefineValue.COMM_NAME_PG);
+            anchorName = intent.getStringExtra(DefineValue.ANCHOR_NAME_PG);
+            txIdPG = intent.getStringExtra(DefineValue.TXID_PG);
+        }
         InitializeToolbar();
 
         if (findViewById(R.id.layout_tagih) != null) {
@@ -47,6 +48,16 @@ public class TagihActivity extends BaseActivity {
             }
 
             newFragment = new FragTagihInput();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(DefineValue.IS_SEARCH_DGI, is_search);
+            if (memberCode != null || commCode != null || commName!=null || anchorName!=null) {
+                bundle.putString(DefineValue.MEMBER_CODE_PG, memberCode);
+                bundle.putString(DefineValue.COMM_CODE_DGI, commCode);
+                bundle.putString(DefineValue.COMM_NAME_PG, commName);
+                bundle.putString(DefineValue.ANCHOR_NAME_PG, anchorName);
+                bundle.putString(DefineValue.TXID_PG, txIdPG);
+            }
+            newFragment.setArguments(bundle);
         }
 
         mContent = newFragment;
@@ -59,17 +70,18 @@ public class TagihActivity extends BaseActivity {
 
     }
 
-    public void InitializeToolbar(){
+    public void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_tagih_agent));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    getSupportFragmentManager().popBackStack();
+                } else finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -83,15 +95,14 @@ public class TagihActivity extends BaseActivity {
 
     public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
         ToggleKeyboard.hide_keyboard(this);
-        if(isBackstack){
+        if (isBackstack) {
             Timber.d("backstack");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.layout_tagih, mFragment, fragName)
                     .addToBackStack(null)
                     .commitAllowingStateLoss();
-        }
-        else {
+        } else {
             Timber.d("bukan backstack");
             getSupportFragmentManager()
                     .beginTransaction()
@@ -100,6 +111,10 @@ public class TagihActivity extends BaseActivity {
 
         }
         setActionBarTitle(fragName);
+    }
+
+    public void setResultActivity(int result) {
+        setResult(MainPage.RESULT_BALANCE);
     }
 
     @Override

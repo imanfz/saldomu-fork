@@ -5,17 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
+import com.sgo.saldomu.interfaces.ObjListeners;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import io.realm.Realm;
 import timber.log.Timber;
@@ -49,9 +49,9 @@ public class UpdateBBSCity extends IntentService {
 
     }
 
-    private void EndRealm(){
-        if(realm.isInTransaction())
-            realm.cancelTransaction();
+    private void EndRealm(Realm realm){
+//        if(realm.isInTransaction())
+//            realm.cancelTransaction();
 
         if(realm != null && !realm.isClosed())
             realm.close();
@@ -59,56 +59,50 @@ public class UpdateBBSCity extends IntentService {
 
     private void getListBBSCity(){
         try{
-            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_CITY, BuildConfig.SECRET_KEY);
-            Timber.d("isi params BBS city " +params.toString());
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_BBS_CITY,
+                    "");
 
-            MyApiClient.getBBSCity(this,true, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("Isi response get BBS city: "+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            insertToRealm(response.optJSONArray(WebParams.BBS_CITY));
-                        }else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_CITY, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("Isi response get BBS city: "+response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    insertToRealm(response.optJSONArray(WebParams.BBS_CITY));
+                                }else {
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onComplete() {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    Timber.w("Error Koneksi get BBS city:" + throwable.toString());
-                }
-            });
+                        }
+                    });
         }catch (Exception e){
             Log.d("httpclient:",e.getMessage());
         }
     }
 
     private void insertToRealm(JSONArray bbs_city) {
+
+        Realm realm = Realm.getDefaultInstance();
+
         if(bbs_city != null && bbs_city.length() > 0) {
+
             realm.beginTransaction();
+
             realm.delete(List_BBS_City.class);
 
             List_BBS_City list_bbs_city;
@@ -121,11 +115,18 @@ public class UpdateBBSCity extends IntentService {
                     realm.cancelTransaction();
                 }
             }
+
+            if(realm.isInTransaction())
+                realm.commitTransaction();
+
+            EndRealm(realm);
         }
 
-        if(realm.isInTransaction())
-            realm.commitTransaction();
-
-        EndRealm();
+//        realm.executeTransaction(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//
+//            }
+//        });
     }
 }

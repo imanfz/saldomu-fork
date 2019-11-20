@@ -41,8 +41,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -53,20 +51,22 @@ import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +81,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         AdapterView.OnItemClickListener, TextView.OnEditorActionListener, EasyPermissions.PermissionCallbacks,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener{
+        LocationListener {
 
     String memberId, memberDefaultAddress, countryName, provinceName, districtName, shopId, shopName, address, memberType, agentName, commName, postalCode, isMobility, emoMemberId;
     Realm myRealm;
@@ -112,29 +112,29 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        memberId            = getIntent().getStringExtra("memberId");
-        shopId              = getIntent().getStringExtra("shopId");
-        shopName            = getIntent().getStringExtra("shopName");
-        memberType          = getIntent().getStringExtra("memberType");
-        agentName           = getIntent().getStringExtra("memberName");
-        commName            = getIntent().getStringExtra("commName");
-        provinceName        = getIntent().getStringExtra("province");
-        districtName        = getIntent().getStringExtra("district");
-        address             = getIntent().getStringExtra("address");
-        isMobility          = getIntent().getStringExtra("isMobility");
+        memberId = getIntent().getStringExtra("memberId");
+        shopId = getIntent().getStringExtra("shopId");
+        shopName = getIntent().getStringExtra("shopName");
+        memberType = getIntent().getStringExtra("memberType");
+        agentName = getIntent().getStringExtra("memberName");
+        commName = getIntent().getStringExtra("commName");
+        provinceName = getIntent().getStringExtra("province");
+        districtName = getIntent().getStringExtra("district");
+        address = getIntent().getStringExtra("address");
+        isMobility = getIntent().getStringExtra("isMobility");
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        if ( sp.contains(DefineValue.MEMBER_ID) ) {
+        if (sp.contains(DefineValue.MEMBER_ID)) {
             emoMemberId = sp.getString(DefineValue.MEMBER_ID, "");
         } else {
             emoMemberId = "";
         }
 
-        sp                              = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            if ( !GlobalSetting.isLocationEnabled(this) ) {
+            if (!GlobalSetting.isLocationEnabled(this)) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(getString(R.string.alertbox_gps_warning))
                         .setCancelable(false)
@@ -166,25 +166,23 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         myRealm = Realm.getDefaultInstance();
         setActionBarIcon(R.drawable.ic_arrow_left);
-        memberDefaultAddress    = address +", "+ districtName + ", "+ provinceName;
-
-
+        memberDefaultAddress = address + ", " + districtName + ", " + provinceName;
 
 
         googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getApplicationContext(), R.layout.google_places_auto_complete_listview);
 
-        locationSearch = (CustomAutoCompleteTextViewWithRadioButton) findViewById(R.id.editText);
+        locationSearch = findViewById(R.id.editText);
         locationSearch.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
         locationSearch.setOnItemClickListener(this);
         locationSearch.setOnEditorActionListener(this);
 
         setActionBarTitle(getString(R.string.update_merchant_location) + " - " + shopName);
 
-        tvDetailMemberName  = (TextView) findViewById(R.id.tvDetailMemberName);
-        tvCommName          = (TextView) findViewById(R.id.tvCommName);
-        tvAddress           = (TextView) findViewById(R.id.tvAddress);
-        tvProvince          = (TextView) findViewById(R.id.tvProvince);
-        tvDistrict          = (TextView) findViewById(R.id.tvDistrict);
+        tvDetailMemberName = findViewById(R.id.tvDetailMemberName);
+        tvCommName = findViewById(R.id.tvCommName);
+        tvAddress = findViewById(R.id.tvAddress);
+        tvProvince = findViewById(R.id.tvProvince);
+        tvDistrict = findViewById(R.id.tvDistrict);
 
         tvDetailMemberName.setText(agentName);
         tvCommName.setText(commName);
@@ -193,14 +191,13 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         tvAddress.setText(address);
 
 
-
-        btnSubmit       = (Button) findViewById(R.id.btnSubmit);
-        btnLokasiGPS    = (Button) findViewById(R.id.btnLokasiGPS);
+        btnSubmit = findViewById(R.id.btnSubmit);
+        btnLokasiGPS = findViewById(R.id.btnLokasiGPS);
 
         btnSubmit.setOnClickListener(btnSubmitListener);
         btnLokasiGPS.setOnClickListener(btnLokasiGPSListener);
 
-        if ( isMobility.equals(DefineValue.STRING_YES) ) {
+        if (isMobility.equals(DefineValue.STRING_YES)) {
             btnLokasiGPS.setVisibility(View.GONE);
             locationSearch.setVisibility(View.GONE);
         }
@@ -223,13 +220,13 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             try {
                 selectedLat = lastLocation.getLatitude();
                 selectedLong = lastLocation.getLongitude();
-                setAdministrativeName();
+                setAdministrativeName(false);
                 mMap.clear();
 
                 recreateAllMarker();
 
                 locationSearch.clearFocus();
-            } catch ( Exception e ) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -240,51 +237,58 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         public void onClick(View v) {
             if (InetHandler.isNetworkAvailable(getApplicationContext())) {
 
-                Boolean hasError = false;
-                if ( isMobility.equals(DefineValue.STRING_YES) ) {
-                    if ( selectedLat == null )
-                    {
-                        hasError = true;
-                        DefinedDialog.showErrorDialog(BbsMemberLocationActivity.this, getString(R.string.err_empty_coordinate_message));
-                    }
+                if (postalCode == null) {
+                    setAdministrativeName(true);
                 } else {
-                    if ( selectedLat == null || countryName == null )
-                    {
-                        hasError = true;
-                        DefinedDialog.showErrorDialog(BbsMemberLocationActivity.this, getString(R.string.err_empty_coordinate_message));
-                    }
+                    proceed();
                 }
+            } else
+                DefinedDialog.showErrorDialog(getApplicationContext(), getString(R.string.inethandler_dialog_message));
+        }
+    };
 
-                if ( !hasError )
-                {
+    void proceed(){
+        Boolean hasError = false;
+        if (isMobility.equals(DefineValue.STRING_YES)) {
+            if (selectedLat == null) {
+                hasError = true;
+                DefinedDialog.showErrorDialog(BbsMemberLocationActivity.this, getString(R.string.err_empty_coordinate_message));
+            }
+        } else {
+            if (selectedLat == null || countryName == null) {
+                hasError = true;
+                DefinedDialog.showErrorDialog(BbsMemberLocationActivity.this, getString(R.string.err_empty_coordinate_message));
+            }
+        }
 
-                    progdialog              = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
+        if (!hasError) {
 
-                    String extraSignature = memberId + shopId + selectedLat + selectedLong;
-                    RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_MEMBER_LOCATION,
-                            userPhoneID, accessKey, extraSignature);
+            progdialog = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
 
-                    params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-                    params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                    params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                    params.put(WebParams.SHOP_ID, shopId);
-                    params.put(WebParams.MEMBER_ID, memberId);
+            String extraSignature = memberId + shopId + selectedLat + selectedLong;
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_MEMBER_LOCATION,
+                    extraSignature);
 
-                    if ( isMobility.equals(DefineValue.STRING_NO) ) {
-                        params.put(WebParams.DISTRICT, newDistrictName);
-                        params.put(WebParams.PROVINCE, provinceName);
-                        params.put(WebParams.COUNTRY, countryName.toUpperCase());
-                    }
-                    params.put(WebParams.LATITUDE, selectedLat);
-                    params.put(WebParams.LONGITUDE, selectedLong);
-                    params.put(WebParams.ZIP_CODE, postalCode);
-                    params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+            params.put(WebParams.SHOP_ID, shopId);
+            params.put(WebParams.MEMBER_ID, memberId);
 
-                    MyApiClient.updateMemberLocation(getApplication(), params, new JsonHttpResponseHandler() {
+            if (isMobility.equals(DefineValue.STRING_NO)) {
+                params.put(WebParams.DISTRICT, newDistrictName);
+                params.put(WebParams.PROVINCE, provinceName);
+                params.put(WebParams.COUNTRY, countryName.toUpperCase());
+            }
+            params.put(WebParams.LATITUDE, selectedLat);
+            params.put(WebParams.LONGITUDE, selectedLong);
+            params.put(WebParams.ZIP_CODE, postalCode);
+            params.put(WebParams.USER_ID, userPhoneID);
+
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_MEMBER_LOCATION, params,
+                    new ObjListeners() {
                         @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                            //progdialog.dismiss();
-
+                        public void onResponses(JSONObject response) {
                             try {
 
                                 String code = response.getString(
@@ -305,83 +309,9 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                     Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
                                     LocalBroadcastManager.getInstance(BbsMemberLocationActivity.this).sendBroadcast(i);
 
-                                    if ( isMobility.equals(DefineValue.STRING_YES) ) {
-                                        String extraSignature = memberId + shopId;
-                                        RequestParams params2 = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_SETUP_OPENING_HOUR,
-                                                userPhoneID, accessKey, extraSignature);
+                                    if (isMobility.equals(DefineValue.STRING_YES)) {
+                                        isMobility();
 
-
-                                        params2.put(WebParams.APP_ID, BuildConfig.APP_ID);
-                                        params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                                        params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                                        params2.put(WebParams.SHOP_ID, shopId);
-                                        params2.put(WebParams.MEMBER_ID, memberId);
-                                        params2.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_YES);
-                                        params2.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
-                                        params2.put(WebParams.USER_ID, userPhoneID);
-
-
-                                        MyApiClient.setupOpeningHour(BbsMemberLocationActivity.this, params2, new JsonHttpResponseHandler() {
-                                            @Override
-                                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                                progdialog.dismiss();
-                                                Timber.d("isi response sent request cash in:" + response.toString());
-
-                                                try {
-                                                    String code = response.getString(WebParams.ERROR_CODE);
-                                                    if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                                                        SecurePreferences.Editor mEditor = sp.edit();
-                                                        mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_YES);
-                                                        mEditor.apply();
-
-                                                        //bundle.putInt(DefineValue.INDEX, MainPage.LI);
-                                                        Intent intent = new Intent(BbsMemberLocationActivity.this, MainPage.class);
-                                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
-
-                                                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                                        //test.showDialoginActivity(getApplication(),message);
-                                                    } else {
-                                                        code = response.getString(WebParams.ERROR_MESSAGE);
-                                                        Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-                                                    }
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                                                super.onFailure(statusCode, headers, responseString, throwable);
-                                                failure(throwable);
-                                            }
-
-                                            @Override
-                                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                                super.onFailure(statusCode, headers, throwable, errorResponse);
-                                                failure(throwable);
-                                            }
-
-                                            @Override
-                                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                                                super.onFailure(statusCode, headers, throwable, errorResponse);
-                                                failure(throwable);
-                                            }
-
-                                            private void failure(Throwable throwable) {
-                                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                                else
-                                                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                                                if (progdialog.isShowing())
-                                                    progdialog.dismiss();
-
-                                                Timber.w("Error Koneksi sent request setup open hour:" + throwable.toString());
-                                            }
-                                        });
                                     } else {
 
                                         //redirect to Waktu Beroperasi
@@ -403,7 +333,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                         finish();
                                     }
 
-                                } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     progdialog.dismiss();
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -421,113 +351,168 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                         }
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                            super.onFailure(statusCode, headers, responseString, throwable);
-                            ifFailure(throwable);
+                        public void onError(Throwable throwable) {
+                            progdialog.dismiss();
                         }
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                            super.onFailure(statusCode, headers, throwable, errorResponse);
-                            ifFailure(throwable);
-                        }
-
-                        private void ifFailure(Throwable throwable) {
-                            if (MyApiClient.PROD_FAILURE_FLAG)
-                                Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
+                        public void onComplete() {
                             progdialog.dismiss();
-                            Timber.w("Error Koneksi updateMemberLocation:" + throwable.toString());
-
                         }
-
                     });
-                }
-            }
-            else DefinedDialog.showErrorDialog(getApplicationContext(), getString(R.string.inethandler_dialog_message));
         }
-    };
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-
     }
 
-    public void setAdministrativeName() {
-
-        MyApiClient.getGoogleAPIAddressByLatLng(this, selectedLat, selectedLong, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+    void isMobility() {
+        String extraSignature = memberId + shopId;
+        HashMap<String, Object> params2 = RetrofitService.getInstance().getSignature(MyApiClient.LINK_SETUP_OPENING_HOUR, extraSignature);
 
 
-                try {
+        params2.put(WebParams.APP_ID, BuildConfig.APP_ID);
+        params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+        params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+        params2.put(WebParams.SHOP_ID, shopId);
+        params2.put(WebParams.MEMBER_ID, memberId);
+        params2.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_YES);
+        params2.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
+        params2.put(WebParams.USER_ID, userPhoneID);
 
-                    String status = response.getString(WebParams.GMAP_API_STATUS);
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SETUP_OPENING_HOUR, params2,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
 
+                        Timber.d("isi response sent request cash in:" + response.toString());
 
+                        try {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                    if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
-                        ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_YES);
+                                mEditor.apply();
 
-                        for (HashMap<String, String> hashMapObject : gData) {
-                            for (String key : hashMapObject.keySet()) {
-                                switch(key) {
-                                    case "postal_code":
-                                        postalCode = hashMapObject.get(key);
-                                        break;
-                                    case "province":
-                                        provinceName = hashMapObject.get(key);
-                                        break;
-                                    case "district":
-                                        newDistrictName = hashMapObject.get(key);
-                                        break;
-                                    case "subdistrict":
-                                        break;
-                                    case "country":
-                                        countryName = hashMapObject.get(key);
-                                        break;
-                                }
+                                //bundle.putInt(DefineValue.INDEX, MainPage.LI);
+                                Intent intent = new Intent(BbsMemberLocationActivity.this, MainPage.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
 
-
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                //test.showDialoginActivity(getApplication(),message);
+                            } else {
+                                code = response.getString(WebParams.ERROR_MESSAGE);
+                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
 
                     }
 
+                    @Override
+                    public void onComplete() {
+                        if (progdialog.isShowing())
+                            progdialog.dismiss();
+                    }
+                });
+    }
 
+    public void setAdministrativeName(final boolean proceed) {
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+        progdialog = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+        HashMap<String, Object> query = MyApiClient.getInstance().googleQuery();
+        query.put("latlng", selectedLat + "," + selectedLong);
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+        RetrofitService.getInstance().QueryRequestSSL(
+                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, query,
+//                        + "&latlng=" + selectedLat + "," + selectedLong,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            String status = response.getString(WebParams.GMAP_API_STATUS);
 
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                            if (status.equals(DefineValue.GMAP_STRING_OK)) {
+                                ArrayList<HashMap<String, String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
 
+                                for (HashMap<String, String> hashMapObject : gData) {
+                                    for (String key : hashMapObject.keySet()) {
+                                        switch (key) {
+                                            case "postal_code":
+                                                postalCode = hashMapObject.get(key);
+                                                break;
+                                            case "province":
+                                                provinceName = hashMapObject.get(key);
+                                                break;
+                                            case "district":
+                                                newDistrictName = hashMapObject.get(key);
+                                                break;
+                                            case "subdistrict":
+                                                break;
+                                            case "country":
+                                                countryName = hashMapObject.get(key);
+                                                break;
+                                        }
+                                    }
+                                }
+                            }
 
-                Timber.w("Error Koneksi setAdministrativeName:" + throwable.toString());
+                            if (proceed)
+                                proceed();
 
-            }
-        });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        progdialog.dismiss();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        progdialog.dismiss();
+
+                    }
+                });
+
+//        MyApiClient.getGoogleAPIAddressByLatLng(this, selectedLat, selectedLong, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                super.onFailure(statusCode, headers, responseString, throwable);
+//                ifFailure(throwable);
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                super.onFailure(statusCode, headers, throwable, errorResponse);
+//                ifFailure(throwable);
+//            }
+//
+//            private void ifFailure(Throwable throwable) {
+//                if (MyApiClient.PROD_FAILURE_FLAG)
+//                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+//
+//
+//                Timber.w("Error Koneksi setAdministrativeName:" + throwable.toString());
+//
+//            }
+//        });
 
         //GoogleAPIUtils.get
 
@@ -570,15 +555,15 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
     public void onMapSearch(View view) {
 
-        locationSearch = (CustomAutoCompleteTextViewWithRadioButton) findViewById(R.id.editText);
+        locationSearch = findViewById(R.id.editText);
         locationSearch.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
         locationSearch.setOnItemClickListener(this);
         locationSearch.setOnEditorActionListener(this);
 
         String location = locationSearch.getText().toString();
         List<Address> addressList = null;
-        Double latitude        = defaultLat;
-        Double longitude       = defaultLong;
+        Double latitude = defaultLat;
+        Double longitude = defaultLong;
         mMap.clear();
 
         //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -591,19 +576,19 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             try {
                 addressList = geocoder.getFromLocationName(location, 1);
 
-                if ( addressList.size() > 0 ) {
+                if (addressList.size() > 0) {
                     Address address = addressList.get(0);
-                    latitude        = address.getLatitude();
-                    longitude       = address.getLongitude();
-                    selectedLat     = latitude;
-                    selectedLong    = longitude;
+                    latitude = address.getLatitude();
+                    longitude = address.getLongitude();
+                    selectedLat = latitude;
+                    selectedLong = longitude;
 
                     LatLng latLng = new LatLng(latitude, longitude);
                     mMap.addMarker(new MarkerOptions().position(latLng).title(location));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
-                    setAdministrativeName();
+                    setAdministrativeName(false);
                 } else {
                     LatLng latLng = new LatLng(latitude, longitude);
                     mMap.addMarker(new MarkerOptions().position(latLng).title(location));
@@ -634,12 +619,12 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         LatLng latLng;
         CameraPosition cameraPosition;
-        if (selectedLat != null || selectedLong != null ) {
+        if (selectedLat != null || selectedLong != null) {
 
-                latLng = new LatLng(selectedLat, selectedLong);
-                mMap.addMarker(new MarkerOptions().position(latLng).title(memberDefaultAddress));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            latLng = new LatLng(selectedLat, selectedLong);
+            mMap.addMarker(new MarkerOptions().position(latLng).title(memberDefaultAddress));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
 
             cameraPosition = new CameraPosition.Builder()
@@ -664,7 +649,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             });
 
         } else {
-            if ( defaultLat != null && defaultLong != null ) {
+            if (defaultLat != null && defaultLong != null) {
                 latLng = new LatLng(defaultLat, defaultLong);
                 mMap.addMarker(new MarkerOptions().position(latLng).title(memberDefaultAddress));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -694,9 +679,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         }
 
 
-
-
-        if ( isMobility.equals(DefineValue.STRING_NO) ) {
+        if (isMobility.equals(DefineValue.STRING_NO)) {
             // Setting onclick event listener for the map
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
@@ -731,18 +714,14 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             disabledBackPressed();
 
 
-
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void setMapCamera()
-    {
-        if ( selectedLat != null && selectedLong != null ) {
+    private void setMapCamera() {
+        if (selectedLat != null && selectedLong != null) {
             LatLng latLng = new LatLng(selectedLat, selectedLong);
-
-
 
 
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -752,7 +731,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     .target(latLng) // Center Set
                     .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
                     .build(); // Creates a CameraPosition from the builder
-            setAdministrativeName();
+            setAdministrativeName(false);
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
                 @Override
@@ -770,11 +749,9 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     }
 
     private void recreateAllMarker() {
-        if (mMap != null ) {
+        if (mMap != null) {
 
             setMapCamera();
-
-
 
         }
     }
@@ -782,14 +759,12 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         searchLocationString = locationSearch.getText().toString().trim();
-        try
-        {
+        try {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 
             List<Address> multiAddress = geocoder.getFromLocationName(searchLocationString, 1);
 
-            if(multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0)
-            {
+            if (multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0) {
 
                 Address singleAddress = multiAddress.get(0);
                 ArrayList<String> addressArray = new ArrayList<String>();
@@ -812,20 +787,14 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                 InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
-            }
-            else
-            {
+            } else {
 
             }
-        }
-        catch(IOException ioException)
-        {
+        } catch (IOException ioException) {
             // Catch network or other I/O problems.
             //errorMessage = "Catch : Network or other I/O problems - No geocoder available";
             Log.d("onIOException ", "Catch : Network or other I/O problems - No geocoder available");
-        }
-        catch(IllegalArgumentException illegalArgumentException)
-        {
+        } catch (IllegalArgumentException illegalArgumentException) {
             // Catch invalid latitude or longitude values.
             //errorMessage = "Catch : Invalid latitude or longitude values";
             //Log.d("IllegalArgumentException ", "Catch : Invalid latitude or longitude values");
@@ -890,8 +859,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             e.printStackTrace();
         }*/
 
-        if ( !GlobalSetting.isLocationEnabled(this) )
-        {
+        if (!GlobalSetting.isLocationEnabled(this)) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.alertbox_gps_warning))
                     .setCancelable(false)
@@ -952,17 +920,17 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         try {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
-            if ( lastLocation == null ){
+            if (lastLocation == null) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
             } else {
 
-                if ( defaultLat == null && defaultLong == null ) {
+                if (defaultLat == null && defaultLong == null) {
                     selectedLat = lastLocation.getLatitude();
                     selectedLong = lastLocation.getLongitude();
                 } else {
-                    if ( isMobility.equals(DefineValue.STRING_YES) ) {
-                        selectedLat     = defaultLat;
-                        selectedLong    = defaultLong;
+                    if (isMobility.equals(DefineValue.STRING_YES)) {
+                        selectedLat = defaultLat;
+                        selectedLong = defaultLong;
                     }
                 }
                 Timber.d("Location Found" + lastLocation.toString());
@@ -978,7 +946,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         } catch (SecurityException se) {
             se.printStackTrace();
         }
-        if (bundle!=null) {
+        if (bundle != null) {
             Timber.d(bundle.toString());
         }
     }
@@ -995,9 +963,9 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
     @Override
     public void onLocationChanged(Location location) {
-        lastLocation    = location;
-        defaultLat      = lastLocation.getLatitude();
-        defaultLong     = lastLocation.getLongitude();
+        lastLocation = location;
+        defaultLat = lastLocation.getLatitude();
+        defaultLong = lastLocation.getLongitude();
 
 
         if (mMap == null) {
@@ -1007,8 +975,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         }
     }
 
-    private boolean checkPlayServices()
-    {
+    private boolean checkPlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
         if (result != ConnectionResult.SUCCESS) {
@@ -1030,8 +997,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         mLocationRequest.setSmallestDisplacement(DefineValue.DISPLACEMENT);
     }
 
-    protected synchronized void buildGoogleApiClient()
-    {
+    protected synchronized void buildGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -1045,7 +1011,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         try {
             googleApiClient.disconnect();
-        } catch( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1057,8 +1023,8 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
     private void disabledBackPressed() {
         //kembali ke activity sebelumnya
-        if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
-            if ( !sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
+        if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
+            if (!sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO)) {
 
             } else {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1079,113 +1045,105 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     }
 
     private void searchLocationByDistrictProvince() {
-        progdialog2                      = DefinedDialog.CreateProgressDialog(this, "");
+        progdialog2 = DefinedDialog.CreateProgressDialog(this, "");
 
-            MyApiClient.getGoogleAPICoordinateByAddress(this, districtName+", "+provinceName, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        String query = "";
+        try {
+            query = URLEncoder.encode(districtName + ", " + provinceName, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HashMap<String, Object> _query = MyApiClient.getInstance().googleQuery();
+        _query.put("address", districtName + ", " + provinceName);
+
+        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, _query,
+//                        +"&address="+ query,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+
+                            String status = response.getString(WebParams.GMAP_API_STATUS);
 
 
-                    try {
-                        if ( progdialog2.isShowing())
-                            progdialog2.dismiss();
+                            if (status.equals(DefineValue.GMAP_STRING_OK)) {
+                                ArrayList<HashMap<String, String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
 
-                        String status = response.getString(WebParams.GMAP_API_STATUS);
+                                for (HashMap<String, String> hashMapObject : gData) {
+                                    for (String key : hashMapObject.keySet()) {
+                                        switch (key) {
+                                            case "latitude":
+                                                selectedLat = Double.valueOf(hashMapObject.get(key));
+                                                defaultLat = selectedLat;
+                                                break;
+                                            case "longitude":
+                                                selectedLong = Double.valueOf(hashMapObject.get(key));
+                                                defaultLong = selectedLong;
+                                                break;
+                                            case "postal_code":
+                                                postalCode = hashMapObject.get(key);
+                                                break;
+                                            case "province":
+                                                provinceName = hashMapObject.get(key);
+                                                break;
+                                            case "district":
+                                                newDistrictName = hashMapObject.get(key);
+                                                break;
+                                            case "subdistrict":
+                                                break;
+                                            case "country":
+                                                countryName = hashMapObject.get(key);
+                                                break;
+                                        }
 
 
-
-                        if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
-                            ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
-
-                            for (HashMap<String, String> hashMapObject : gData) {
-                                for (String key : hashMapObject.keySet()) {
-                                    switch(key) {
-                                        case "latitude":
-                                            selectedLat = Double.valueOf(hashMapObject.get(key));
-                                            defaultLat = selectedLat;
-                                            break;
-                                        case "longitude":
-                                            selectedLong = Double.valueOf(hashMapObject.get(key));
-                                            defaultLong = selectedLong;
-                                            break;
-                                        case "postal_code":
-                                            postalCode = hashMapObject.get(key);
-                                            break;
-                                        case "province":
-                                            provinceName = hashMapObject.get(key);
-                                            break;
-                                        case "district":
-                                            newDistrictName = hashMapObject.get(key);
-                                            break;
-                                        case "subdistrict":
-                                            break;
-                                        case "country":
-                                            countryName = hashMapObject.get(key);
-                                            break;
                                     }
+                                }
 
 
+                            } else {
+                                try {
+                                    selectedLat = lastLocation.getLatitude();
+                                    selectedLong = lastLocation.getLongitude();
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
 
+                            if (mMap == null) {
 
-
-                        } else {
-                            try {
-                                selectedLat = lastLocation.getLatitude();
-                                selectedLong = lastLocation.getLongitude();
-
-                            } catch ( Exception e ) {
-                                e.printStackTrace();
+                                ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                                        .getMapAsync(BbsMemberLocationActivity.this);
                             }
+
+                            setMapCamera();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
-                        if (mMap == null) {
-
-                            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                                    .getMapAsync(BbsMemberLocationActivity.this);
-                        }
-
-                        setMapCamera();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
+                    }
 
-                private void ifFailure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    progdialog2.dismiss();
-                    Timber.w("Error Koneksi searchLocationByDistrictProvince:" + throwable.toString());
-
-                }
-            });
-
-
+                    @Override
+                    public void onComplete() {
+                        if (progdialog2.isShowing())
+                            progdialog2.dismiss();
+                    }
+                });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ( requestCode == RC_GPS_REQUEST ) {
+        if (requestCode == RC_GPS_REQUEST) {
             //if ( requestCode == Activity.RESULT_OK ) {
-            if ( GlobalSetting.isLocationEnabled(this) ) {
+            if (GlobalSetting.isLocationEnabled(this)) {
                 runningApp();
             }
             //}
@@ -1203,104 +1161,98 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             googleApiClient.connect();
         }
 
-        if ( isMobility.equals(DefineValue.STRING_NO) ) {
-            progdialog                      = DefinedDialog.CreateProgressDialog(this, "");
-            MyApiClient.getGoogleAPICoordinateByAddress(this, memberDefaultAddress, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        if (isMobility.equals(DefineValue.STRING_NO)) {
+            progdialog = DefinedDialog.CreateProgressDialog(this, "");
+
+            String query = "";
+            try {
+                query = URLEncoder.encode(memberDefaultAddress, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            HashMap<String, Object> _query = MyApiClient.getInstance().googleQuery();
+            _query.put("address", memberDefaultAddress);
+
+            RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE_BASE, _query,
+//                            +"&address="+ query,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String status = response.getString(WebParams.GMAP_API_STATUS);
 
 
-                    try {
-                        if (progdialog.isShowing())
-                            progdialog.dismiss();
+                                if (status.equals(DefineValue.GMAP_STRING_OK)) {
+                                    ArrayList<HashMap<String, String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
 
-                        String status = response.getString(WebParams.GMAP_API_STATUS);
+                                    for (HashMap<String, String> hashMapObject : gData) {
+                                        for (String key : hashMapObject.keySet()) {
+                                            switch (key) {
+                                                case "latitude":
+                                                    selectedLat = Double.valueOf(hashMapObject.get(key));
+                                                    defaultLat = selectedLat;
+                                                    break;
+                                                case "longitude":
+                                                    selectedLong = Double.valueOf(hashMapObject.get(key));
+                                                    defaultLong = selectedLong;
+                                                    break;
+                                                case "postal_code":
+                                                    postalCode = hashMapObject.get(key);
+                                                    break;
+                                                case "province":
+                                                    provinceName = hashMapObject.get(key);
+                                                    break;
+                                                case "district":
+                                                    newDistrictName = hashMapObject.get(key);
+                                                    break;
+                                                case "subdistrict":
+                                                    break;
+                                                case "country":
+                                                    countryName = hashMapObject.get(key);
+                                                    break;
+                                            }
 
 
-                        if (status.equals(DefineValue.GMAP_STRING_OK)) {
-                            ArrayList<HashMap<String, String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
-
-                            for (HashMap<String, String> hashMapObject : gData) {
-                                for (String key : hashMapObject.keySet()) {
-                                    switch (key) {
-                                        case "latitude":
-                                            selectedLat = Double.valueOf(hashMapObject.get(key));
-                                            defaultLat = selectedLat;
-                                            break;
-                                        case "longitude":
-                                            selectedLong = Double.valueOf(hashMapObject.get(key));
-                                            defaultLong = selectedLong;
-                                            break;
-                                        case "postal_code":
-                                            postalCode = hashMapObject.get(key);
-                                            break;
-                                        case "province":
-                                            provinceName = hashMapObject.get(key);
-                                            break;
-                                        case "district":
-                                            newDistrictName = hashMapObject.get(key);
-                                            break;
-                                        case "subdistrict":
-                                            break;
-                                        case "country":
-                                            countryName = hashMapObject.get(key);
-                                            break;
+                                        }
                                     }
 
 
-                                }
-                            }
-
-
-                        } else {
+                                } else {
                             /*try {
                                 defaultLat = lastLocation.getLatitude();
                                 defaultLong = lastLocation.getLongitude();
                             } catch ( Exception e ) {
                                 e.printStackTrace();
                             }*/
-                            searchLocationByDistrictProvince();
+                                    searchLocationByDistrictProvince();
+                                }
+
+                                if (mMap == null) {
+
+                                    ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                                            .getMapAsync(BbsMemberLocationActivity.this);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                        if (mMap == null) {
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                                    .getMapAsync(BbsMemberLocationActivity.this);
                         }
 
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                private void ifFailure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    progdialog.dismiss();
-                    Timber.w("Error Koneksi getGoogleAPICoordinateByAddress oncreate:" + throwable.toString());
-
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
         } else {
 
         }
-
 
 
     }

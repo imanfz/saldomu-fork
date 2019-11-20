@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -11,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +23,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,13 +34,14 @@ import android.widget.Toast;
 
 import com.android.ex.chips.BaseRecipientAdapter;
 import com.android.ex.chips.RecipientEditTextView;
+import com.android.ex.chips.RecipientEntry;
 import com.android.ex.chips.recipientchip.DrawableRecipientChip;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.PayFriendsActivity;
 import com.sgo.saldomu.activities.PayFriendsConfirmTokenActivity;
 import com.sgo.saldomu.activities.ScanQRActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
@@ -45,23 +49,28 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.PayfriendDataTrfModel;
+import com.sgo.saldomu.models.retrofit.SentDataPayfriendModel;
 import com.sgo.saldomu.models.QrModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,13 +88,14 @@ public class FragPayFriends extends BaseFragment {
     private ImageView imgRecipients;
     private TextView txtName;
     private TextView txtNumberRecipients;
-    private Spinner sp_privacy;
+    //    private Spinner sp_privacy;
     private RecipientEditTextView phoneRetv;
     private Button btnGetOTP;
     private EditText etAmount;
     private EditText etMessage;
     private ImageButton btnScanQR;
     private List<String> listName;
+    private CheckBox saveCheckBox;
 
     private int privacy;
     private int max_member_trans;
@@ -103,6 +113,9 @@ public class FragPayFriends extends BaseFragment {
     public static final int REQUEST_QR_FROM_PAY_FRIENDS = 1001;
     private QrModel qrObj = new QrModel();
     private BaseRecipientAdapter adapter;
+    private List<String> phoneNumberList;
+    private String phoneNumberString;
+    private JSONArray phoneNumberJsonArr = new JSONArray();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -121,11 +134,10 @@ public class FragPayFriends extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_information:
-                if(!dialogI.isAdded())
-                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                if (!dialogI.isAdded())
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -140,7 +152,7 @@ public class FragPayFriends extends BaseFragment {
         authType = sp.getString(DefineValue.AUTHENTICATION_TYPE, "");
 
         dialogI = InformationDialog.newInstance(5);
-        dialogI.setTargetFragment(this,0);
+        dialogI.setTargetFragment(this, 0);
 
         imgProfile = v.findViewById(R.id.img_profile);
         imgRecipients = v.findViewById(R.id.img_recipients);
@@ -152,21 +164,21 @@ public class FragPayFriends extends BaseFragment {
         txtNumberRecipients = v.findViewById(R.id.payfriends_value_number_recipients);
         btnGetOTP = v.findViewById(R.id.btn_get_otp);
         btnScanQR = v.findViewById(R.id.btnScanQr);
-        if(authType.equalsIgnoreCase("PIN")) {
+
+        if (authType.equalsIgnoreCase("PIN")) {
             btnGetOTP.setText(R.string.next);
-        }
-        else if(authType.equalsIgnoreCase("OTP")) {
+        } else if (authType.equalsIgnoreCase("OTP")) {
 
             btnGetOTP.setText(R.string.submit);
         }
 
-        sp_privacy = v.findViewById(R.id.payfriend_privacy_spinner);
+//        sp_privacy = v.findViewById(R.id.payfriend_privacy_spinner);
 
-        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.privacy_list, android.R.layout.simple_spinner_item);
-        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_privacy.setAdapter(spinAdapter);
-        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
+//        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
+//                R.array.privacy_list, android.R.layout.simple_spinner_item);
+//        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        sp_privacy.setAdapter(spinAdapter);
+//        sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
 
 
         Bitmap bmRecipients = BitmapFactory.decodeResource(getResources(), R.drawable.grey_background);
@@ -191,7 +203,7 @@ public class FragPayFriends extends BaseFragment {
         etAmount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
+                if (hasFocus) {
                     setNumberRecipients();
                 }
             }
@@ -200,7 +212,7 @@ public class FragPayFriends extends BaseFragment {
         etMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     setNumberRecipients();
                 }
             }
@@ -210,12 +222,12 @@ public class FragPayFriends extends BaseFragment {
         phoneRetv.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Timber.d("before Text Change:"+s.toString());
+                Timber.d("before Text Change:" + s.toString());
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Timber.d("on Text Change:"+s.toString());
+                Timber.d("on Text Change:" + s.toString());
                 if (phoneRetv.hasFocus()) {
                     if (phoneRetv.getSortedRecipients().length == 0) {
                         txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
@@ -228,15 +240,15 @@ public class FragPayFriends extends BaseFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Timber.d("after Text Change:"+s.toString());
+                Timber.d("after Text Change:" + s.toString());
             }
         });
 
         bundle = this.getArguments();
-        if(bundle != null) {
-            final String name,phone;
+        if (bundle != null) {
+            final String name, phone;
 
-            if(bundle.containsKey(DefineValue.AMOUNT) && !bundle.getString(DefineValue.AMOUNT,null).isEmpty()){
+            if (bundle.containsKey(DefineValue.AMOUNT) && !bundle.getString(DefineValue.AMOUNT, null).isEmpty()) {
                 name = bundle.getString(DefineValue.CUST_NAME);
                 phone = bundle.getString(DefineValue.USERID_PHONE);
                 String amount = bundle.getString(DefineValue.AMOUNT);
@@ -245,12 +257,18 @@ public class FragPayFriends extends BaseFragment {
 
                 phoneRetv.setEnabled(false);
                 isNotification = true;
-            }
-            else {
+            } else {
                 name = bundle.getString("name");
                 phone = bundle.getString("phone");
 
             }
+
+            if (bundle.containsKey(DefineValue.FAVORITE_CUSTOMER_ID) && bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, null) != null){
+                phoneRetv.setText(bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID));
+                phoneRetv.requestFocus();
+            }
+
+
 
             phoneRetv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -265,7 +283,7 @@ public class FragPayFriends extends BaseFragment {
         }
     }
 
-    private void setNumberRecipients(){
+    private void setNumberRecipients() {
 
         if (phoneRetv.getSortedRecipients().length == 0) {
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
@@ -273,12 +291,12 @@ public class FragPayFriends extends BaseFragment {
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        if(phoneRetv.length() == 0)
+        if (phoneRetv.length() == 0)
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
         else
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
 
-        Timber.d("isi length recipients:"+String.valueOf(phoneRetv.getRecipients().length));
+        Timber.d("isi length recipients:" + String.valueOf(phoneRetv.getRecipients().length));
     }
 
 
@@ -290,11 +308,11 @@ public class FragPayFriends extends BaseFragment {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(s.toString().equals("0"))etAmount.setText("");
-            if(s.length() > 0 && s.charAt(0) == '0'){
+            if (s.toString().equals("0")) etAmount.setText("");
+            if (s.length() > 0 && s.charAt(0) == '0') {
                 int i = 0;
-                for (; i < s.length(); i++){
-                    if(s.charAt(i) != '0')break;
+                for (; i < s.length(); i++) {
+                    if (s.charAt(i) != '0') break;
                 }
                 etAmount.setText(s.toString().substring(i));
             }
@@ -310,8 +328,8 @@ public class FragPayFriends extends BaseFragment {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-            privacy = i+1;
-            if(phoneRetv.hasFocus()) {
+            privacy = i + 1;
+            if (phoneRetv.hasFocus()) {
                 phoneRetv.clearFocus();
 
             }
@@ -322,21 +340,21 @@ public class FragPayFriends extends BaseFragment {
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
 
-            if(phoneRetv.hasFocus()) {
+            if (phoneRetv.hasFocus()) {
                 phoneRetv.clearFocus();
             }
             setNumberRecipients();
         }
     };
 
-    private class TempObjectData{
+    private class TempObjectData {
 
         private String member_code_to;
         private String ccy_id;
         private String amount;
         private String name;
 
-        public TempObjectData(String _member_code_to, String _ccy_id, String _amount, String _name){
+        public TempObjectData(String _member_code_to, String _ccy_id, String _amount, String _name) {
             this.setMember_code_to(_member_code_to);
             this.setCcy_id(_ccy_id);
             this.setAmount(_amount);
@@ -390,7 +408,7 @@ public class FragPayFriends extends BaseFragment {
     private Button.OnClickListener btnGetOTPListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(InetHandler.isNetworkAvailable(getActivity())) {
+            if (InetHandler.isNetworkAvailable(getActivity())) {
                 if (inputValidation()) {
 
                     Timber.d("isi length recipients button:" + String.valueOf(phoneRetv.getRecipients().length));
@@ -410,6 +428,7 @@ public class FragPayFriends extends BaseFragment {
                     chips = new DrawableRecipientChip[phoneRetv.getSortedRecipients().length];
                     chips = phoneRetv.getSortedRecipients();
                     listName = new ArrayList<>();
+                    phoneNumberList = new ArrayList<>();
                     phoneRetv.clearFocus();
                     if (chips.length <= max_member_trans) {
                         for (DrawableRecipientChip chip : chips) {
@@ -422,7 +441,10 @@ public class FragPayFriends extends BaseFragment {
                             }
 
                             finalNumber = NoHPFormat.formatTo62(chip.getEntry().getDestination());
+                            Log.e("finalNumber : ", finalNumber);
                             listName.add(chip.getEntry().getDisplayName());
+                            phoneNumberList.add(finalName);
+                            phoneNumberJsonArr.put(finalNumber);
                             mTempObjectDataList.add(new TempObjectData(finalNumber, DefineValue.IDR, amount, finalName));
                         }
 
@@ -432,6 +454,10 @@ public class FragPayFriends extends BaseFragment {
                             final Gson gson = gsonBuilder.create();
                             String testJson = gson.toJson(mTempObjectDataList);
                             String nameJson = gson.toJson(listName);
+//                            phoneNumberString = gson.toJson(phoneNumberJsonArr);
+                            Log.e("phoneNumberJsonArr ", phoneNumberJsonArr.toString());
+                            phoneNumberString = phoneNumberJsonArr.toString();
+                            Log.e("phoneNumberJsonArr 2 ", phoneNumberString);
                             //  Timber.v("isi json build", testJson + numberJson);
                             sentData(message, testJson, nameJson);
                         } else {
@@ -443,8 +469,8 @@ public class FragPayFriends extends BaseFragment {
                         phoneRetv.setError(getString(R.string.payfriends_recipients_max_validation1) + " " + max_member_trans + " " + getString(R.string.payfriends_recipients_max_validation2));
                     }
                 }
-            }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -454,22 +480,26 @@ public class FragPayFriends extends BaseFragment {
         return m.find();
     }
 
-    private void sentData(String _message, String _data, final String _nameJson){
-        try{
+    private void sentData(String _message, String _data, final String _nameJson) {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
 
-            RequestParams params;
-            if(isNotification) {
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P_NOTIF,
-                        userPhoneID,accessKey, memberIDLogin);
-            }
-            else
-            {
+
+            HashMap<String, Object> params;
+            String url;
+            if (isNotification) {
+//                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P_NOTIF,
+//                        userPhoneID,accessKey, memberIDLogin);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_P2P_NOTIF, memberIDLogin);
+                url = MyApiClient.LINK_REQ_TOKEN_P2P_NOTIF;
+            } else {
                 extraSignature = memberIDLogin;
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P,
-                        userPhoneID,accessKey, extraSignature);
+//                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P,
+//                        userPhoneID,accessKey, extraSignature);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_P2P, extraSignature);
+                url = MyApiClient.LINK_REQ_TOKEN_P2P;
             }
 
             params.put(WebParams.MEMBER_ID, memberIDLogin);
@@ -478,123 +508,105 @@ public class FragPayFriends extends BaseFragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.PRIVACY, privacy);
-            if(isNotification){
+            if (isNotification) {
                 params.put(WebParams.REQUEST_ID, bundle.getString(DefineValue.REQUEST_ID));
                 params.put(WebParams.TRX_ID, bundle.getString(DefineValue.TRX));
             }
 
-            Timber.d("isi params sent req token p2p:"+params.toString());
+            Timber.d("isi params sent req token p2p:" + params.toString());
 
-            JsonHttpResponseHandler myHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
+            RetrofitService.getInstance().PostObjectRequest(url, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            try {
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response req token p2p:"+response.toString());
-                            JSONArray mArrayData = new JSONArray(response.getString(WebParams.DATA_TRANSFER));
-                            int isFailed=0 ;
-                            String msg = "";
-                            for(int i = 0 ; i < mArrayData.length() ; i++) {
-                                if(mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS).equals(DefineValue.FAILED)){
-                                    isFailed++ ;
-                                    msg = mArrayData.getJSONObject(i).getString(WebParams.MEMBER_REMARK);
-                                }
-                            }
-                            if(isFailed != mArrayData.length()){
-                                String dataTransfer = response.getString(WebParams.DATA_TRANSFER);
-                                showDialog(dataTransfer, _nameJson, response.getString(WebParams.MESSAGE), response.getString(WebParams.DATA_MAPPER));
-                            }
-                            else Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(),message);
-                        }
-                        else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            showDialogError(code);
-                        }
-                        else {
-                            Timber.d("isi error req token p2p:"+response.toString());
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            if(code.equals(ErrorDefinition.ERROR_CODE_DUPLICATED_RECIPIENT)){
-                                phoneRetv.requestFocus();
-                                phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
-                            }
-                            else if(code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)){
+                                SentDataPayfriendModel model = getGson().fromJson(object, SentDataPayfriendModel.class);
 
-                                String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance,getString(R.string.appname));
+                                String code = model.getError_code();
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    int isFailed = 0;
+                                    String msg = "";
 
-                                AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
-                                        message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
-                                dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent mI = new Intent(getActivity(),TopUpActivity.class);
-                                        mI.putExtra(DefineValue.IS_ACTIVITY_FULL,true);
-                                        getActivity().startActivityForResult(mI,MainPage.ACTIVITY_RESULT);
+                                    for (PayfriendDataTrfModel obj : model.getData_transfer()) {
+                                        if (obj.getMember_status().equals(DefineValue.FAILED)) {
+                                            isFailed++;
+                                            msg = obj.getMember_remark();
+                                        }
                                     }
-                                });
-                                dialog_frag.setTargetFragment(FragPayFriends.this, 0);
-                                dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                    if (isFailed != model.getData_transfer().size()) {
+                                        String dataTransfer = getGson().toJson(model.getData_transfer());
+                                        showDialog(dataTransfer, _nameJson, model.getMessage(), getGson().toJson(model.getData_mapper()));
+                                    } else
+                                        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getActivity(), message);
+                                } else if (code.equals(ErrorDefinition.WRONG_PIN_P2P)) {
+                                    code = model.getError_message();
+                                    showDialogError(code);
+                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + object.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                } else {
+                                    String code_msg = model.getError_message();
+                                    ;
+                                    if (code.equals(ErrorDefinition.ERROR_CODE_DUPLICATED_RECIPIENT)) {
+                                        phoneRetv.requestFocus();
+                                        phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
+                                    } else if (code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)) {
+
+                                        String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
+
+                                        AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
+                                                message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
+                                        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent mI = new Intent(getActivity(), TopUpActivity.class);
+                                                mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                                                getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
+                                            }
+                                        });
+                                        dialog_frag.setTargetFragment(FragPayFriends.this, 0);
+                                        dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                    } else {
+
+                                        Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                    }
+
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            else {
-                                Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
-                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
 
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi req token p2p:"+throwable.toString());
-                }
-            };
-
-            if(isNotification) {
-                Timber.d("masuk ke reqTokenP2P notif");
-                MyApiClient.sentReqTokenP2PNotif(getActivity(),params, myHandler);
-            }
-            else
-                MyApiClient.sentReqTokenP2P(getActivity(),params, myHandler );
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+                        @Override
+                        public void onComplete() {
+                            phoneNumberJsonArr = new JSONArray();
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void showDialogError(String message){
+    private void showDialogError(String message) {
         Dialog mdialog = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title), message,
                 new DefinedDialog.DialogButtonListener() {
                     @Override
@@ -607,7 +619,7 @@ public class FragPayFriends extends BaseFragment {
 
     private void showDialog(final String _data_transfer, final String _nameJson, final String _message, final String _data_mapper) {
         phoneRetv.setText(null);
-        if(authType.equalsIgnoreCase("OTP")) {
+        if (authType.equalsIgnoreCase("OTP")) {
             // Create custom dialog object
             final Dialog dialog = new Dialog(getActivity());
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -622,7 +634,7 @@ public class FragPayFriends extends BaseFragment {
 
             Message.setVisibility(View.VISIBLE);
             Title.setText(getString(R.string.payfriends_dialog_validation_title));
-            Message.setText(getString(R.string.appname)+" "+getString(R.string.dialog_token_message_sms));
+            Message.setText(getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms));
 
             //clear data in edit text
 
@@ -631,12 +643,17 @@ public class FragPayFriends extends BaseFragment {
                 @Override
                 public void onClick(View view) {
                     dialog.dismiss();
-                    Intent i = new Intent(getActivity(), PayFriendsConfirmTokenActivity.class);
+
+                    Intent i = new Intent(getActivity(), PayFriendsActivity.class);
+
                     i.putExtra(WebParams.DATA_TRANSFER, _data_transfer);
                     i.putExtra(WebParams.DATA, _nameJson);
                     i.putExtra(WebParams.MESSAGE, _message);
                     i.putExtra(DefineValue.TRANSACTION_TYPE, isNotification);
+                    i.putExtra(DefineValue.CONFIRM_PAYFRIEND, true);
                     i.putExtra(WebParams.DATA_MAPPER, _data_mapper);
+//                    i.putExtra(WebParams.CUSTOMER_ID, phoneNumberList.toString());
+                    i.putExtra(WebParams.CUSTOMER_ID, phoneNumberString);
 
                     switchActivity(i);
 
@@ -645,16 +662,18 @@ public class FragPayFriends extends BaseFragment {
             });
 
             dialog.show();
-        }
-        else if(authType.equalsIgnoreCase("PIN")) {
+        } else if (authType.equalsIgnoreCase("PIN")) {
             //clear data in edit text
 
-            Intent i = new Intent(getActivity(), PayFriendsConfirmTokenActivity.class);
+            Intent i = new Intent(getActivity(), PayFriendsActivity.class);
             i.putExtra(WebParams.DATA_TRANSFER, _data_transfer);
             i.putExtra(WebParams.DATA, _nameJson);
             i.putExtra(WebParams.MESSAGE, _message);
             i.putExtra(DefineValue.TRANSACTION_TYPE, isNotification);
+            i.putExtra(DefineValue.CONFIRM_PAYFRIEND, true);
             i.putExtra(WebParams.DATA_MAPPER, _data_mapper);
+//            i.putExtra(WebParams.CUSTOMER_ID, phoneNumberList.toString());
+            i.putExtra(WebParams.CUSTOMER_ID, phoneNumberString);
 
             switchActivity(i);
         }
@@ -666,7 +685,7 @@ public class FragPayFriends extends BaseFragment {
         phoneRetv.removeMoreChip();
         etAmount.setText("");
         etMessage.setText("");
-        sp_privacy.setSelection(0);
+//        sp_privacy.setSelection(0);
         phoneRetv.requestFocus();
         phoneRetv.clearFocus();
         etAmount.setEnabled(true);
@@ -676,51 +695,51 @@ public class FragPayFriends extends BaseFragment {
     }
 
 
-    private boolean inputValidation(){
-        if(phoneRetv.getText().toString().length()==0){
+    private boolean inputValidation() {
+        if (phoneRetv.getText().toString().length() == 0) {
             phoneRetv.requestFocus();
             phoneRetv.setError(getString(R.string.payfriends_recipients_validation));
             return false;
         }
-        if(phoneRetv.isFocused()){
+        if (phoneRetv.isFocused()) {
             phoneRetv.clearFocus();
         }
-        if(phoneRetv.getText().toString().charAt(0) == ' '){
+        if (phoneRetv.getText().toString().charAt(0) == ' ') {
             phoneRetv.requestFocus();
             phoneRetv.setError(getString(R.string.payfriends_recipients_validation));
             return false;
         }
-        if(etAmount.getText().toString().length()==0){
+        if (etAmount.getText().toString().length() == 0) {
             etAmount.requestFocus();
             etAmount.setError(getString(R.string.payfriends_amount_validation));
             return false;
-        }
-        else if(Long.parseLong(etAmount.getText().toString()) < 1){
+        } else if (Long.parseLong(etAmount.getText().toString()) < 1) {
             etAmount.requestFocus();
             etAmount.setError(getString(R.string.payfriends_amount_zero));
             return false;
         }
+
         return true;
     }
 
-    private void switchActivity(Intent mIntent){
+    private void switchActivity(Intent mIntent) {
         if (getActivity() == null)
             return;
 
         /*MainPage fca = (MainPage) getActivity();
         fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);*/
-        getActivity().startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
+        getActivity().startActivityForResult(mIntent, MainPage.REQUEST_FINISH);
     }
 
-    private void setImageProfPic(){
+    private void setImageProfPic() {
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
-        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
-        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
+        if (density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
+        else if (density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
         else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
 
-        Timber.wtf("url prof pic:"+_url_profpic);
+        Timber.wtf("url prof pic:" + _url_profpic);
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
@@ -731,34 +750,30 @@ public class FragPayFriends extends BaseFragment {
 //        else
 //            mPic= Picasso.with(getActivity());
 
-        if(_url_profpic != null && _url_profpic.isEmpty()){
+        if (_url_profpic != null && _url_profpic.isEmpty()) {
             GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, imgProfile);
-        }
-        else {
+        } else {
             GlideManager.sharedInstance().initializeGlide(getActivity(), _url_profpic, roundedImage, imgProfile);
         }
     }
 
 
-
-
-
     private void switchViewToScanQR() {
-        Intent intent = new Intent (getActivity(), ScanQRActivity.class);
+        Intent intent = new Intent(getActivity(), ScanQRActivity.class);
         intent.putExtra(DefineValue.TYPE, DefineValue.QR_FROM_PAY_FRIENDS);
-        startActivityForResult(intent,REQUEST_QR_FROM_PAY_FRIENDS);
+        startActivityForResult(intent, REQUEST_QR_FROM_PAY_FRIENDS);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode){
+        switch (requestCode) {
             case REQUEST_QR_FROM_PAY_FRIENDS:
-                if(resultCode == Activity.RESULT_OK){
-                    if(data != null){
-                         qrObj = data.getParcelableExtra(DefineValue.QR_OBJ);
-                         setBundleViewQR();
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data != null) {
+                        qrObj = data.getParcelableExtra(DefineValue.QR_OBJ);
+                        setBundleViewQR();
                     }
                 }
                 break;
@@ -768,9 +783,8 @@ public class FragPayFriends extends BaseFragment {
     }
 
     private void setBundleViewQR() {
-
-        Timber.d("Isi qrOBJ name:"+qrObj.getSourceName()+" id:"+qrObj.getSourceAcct()+" type:"+qrObj.getQrType());
-        phoneRetv.setText("+"+NoHPFormat.formatTo62(qrObj.getSourceAcct()));
+        Timber.d("Isi qrOBJ name:" + qrObj.getSourceName() + " id:" + qrObj.getSourceAcct() + " type:" + qrObj.getQrType());
+        phoneRetv.setText("+" + NoHPFormat.formatTo62(qrObj.getSourceAcct()));
         phoneRetv.requestFocus();
 
 

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/main_toolbar"
+        android:layout_margin="@dimen/margin_10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/KTP_title"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="@dimen/margin_10dp"
+                />
+            <ImageButton
+                android:layout_width="224dp"
+                android:layout_height="128dp"
+                android:layout_margin="@dimen/margin_10dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/camera_ktp"
+                android:id="@+id/camera_ktp_paspor"/>
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/KTP_and_cust_title"-->
+<!--                android:textSize="16sp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:layout_marginTop="15dp"-->
+<!--                />-->
+<!--            <ImageButton-->
+<!--                android:layout_width="224dp"-->
+<!--                android:layout_height="128dp"-->
+<!--                android:layout_margin="@dimen/margin_10dp"-->
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:background="@drawable/camera_selfie"-->
+<!--                android:id="@+id/camera_selfie_ktp_paspor"/>-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/sign_title"-->
+<!--                android:textSize="16sp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:layout_marginTop="15dp"-->
+<!--                />-->
+<!--            <ImageButton-->
+<!--                android:layout_width="224dp"-->
+<!--                android:layout_height="128dp"-->
+<!--                android:layout_margin="@dimen/margin_10dp"-->
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:background="@drawable/camera_ttd"-->
+<!--                android:id="@+id/camera_ttd"/>-->
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="@dimen/margin_10dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/rounded_background_blue"
+        android:saveEnabled="false"
+        android:text="Proses"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

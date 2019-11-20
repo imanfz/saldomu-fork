@@ -1,4 +1,4 @@
-package com.sgo.saldomu.Beans;
+package com.sgo.saldomu.models;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

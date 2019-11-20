@@ -1,6 +1,8 @@
 package com.sgo.saldomu.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -8,24 +10,32 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.PasswordValidator;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -53,24 +63,24 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent    = getIntent();
-        if(intent.hasExtra(DefineValue.IS_FIRST))
-            is_first_time  = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
+        Intent intent = getIntent();
+        if (intent.hasExtra(DefineValue.IS_FIRST))
+            is_first_time = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
 
         InitializeToolbar();
 
-        et_pass_current = (EditText) findViewById(R.id.current_pass_value);
-        et_pass_new = (EditText) findViewById(R.id.new_pass_value);
-        et_pass_retype = (EditText) findViewById(R.id.retype_new_pass_value);
-        cb_show_pass = (CheckBox) findViewById(R.id.cb_showPass_changepass);
-        btn_submit_changepass = (Button) findViewById(R.id.btn_submit_changePassword);
-        btn_batal_changepass = (Button) findViewById(R.id.btn_batal_changepass);
-        tv_firsttime_msg = (TextView) findViewById(R.id.changepass_firsttime_msg);
+        et_pass_current = findViewById(R.id.current_pass_value);
+        et_pass_new = findViewById(R.id.new_pass_value);
+        et_pass_retype = findViewById(R.id.retype_new_pass_value);
+        cb_show_pass = findViewById(R.id.cb_showPass_changepass);
+        btn_submit_changepass = findViewById(R.id.btn_submit_changePassword);
+        btn_batal_changepass = findViewById(R.id.btn_batal_changepass);
+        tv_firsttime_msg = findViewById(R.id.changepass_firsttime_msg);
 
         btn_submit_changepass.setOnClickListener(this);
         btn_batal_changepass.setOnClickListener(this);
         cb_show_pass.setOnCheckedChangeListener(showPassword);
-        if(is_first_time)tv_firsttime_msg.setVisibility(View.VISIBLE);
+        if (is_first_time) tv_firsttime_msg.setVisibility(View.VISIBLE);
 
         mPassValid = new PasswordValidator();
         lenght_auth_min = 5;
@@ -81,10 +91,10 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         return R.layout.activity_change_password;
     }
 
-    private void InitializeToolbar(){
-        if(is_first_time) disableHomeIcon();
+    private void InitializeToolbar() {
+        if (is_first_time) disableHomeIcon();
         else setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.changepass_ab_changepass));
+        setActionBarTitle(getString(R.string.menu_setting_change_pass));
     }
 
     @Override
@@ -98,7 +108,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(!is_first_time){
+                if (!is_first_time) {
                     setResult(MainPage.RESULT_NORMAL);
                     finish();
                 }
@@ -109,18 +119,18 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_submit_changePassword :
-                if(InetHandler.isNetworkAvailable(this)) {
+        switch (v.getId()) {
+            case R.id.btn_submit_changePassword:
+                if (InetHandler.isNetworkAvailable(this)) {
                     if (inputValidation()) {
                         sendChangePassword();
                     }
-                }
-                else DefinedDialog.showErrorDialog(this, getString(R.string.inethandler_dialog_message));
+                } else
+                    DefinedDialog.showErrorDialog(this, getString(R.string.inethandler_dialog_message));
                 break;
 
-            case R.id.btn_batal_changepass :
-                if(!is_first_time)
+            case R.id.btn_batal_changepass:
+                if (!is_first_time)
                     setResult(MainPage.RESULT_NORMAL);
                 else setResult(MainPage.RESULT_LOGOUT);
                 finish();
@@ -131,12 +141,11 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     private CheckBox.OnCheckedChangeListener showPassword = new CheckBox.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            if(!b){
+            if (!b) {
                 et_pass_new.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 et_pass_current.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 et_pass_retype.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            }
-            else {
+            } else {
                 et_pass_new.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                 et_pass_current.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                 et_pass_retype.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
@@ -144,16 +153,16 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         }
     };
 
-    private void sendChangePassword(){
-        try{
+    private void sendChangePassword() {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
-            extraSignature = memberIDLogin+et_pass_current.getText().toString()+et_pass_new.getText().toString();
+            extraSignature = memberIDLogin + et_pass_current.getText().toString() + et_pass_new.getText().toString();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CHANGE_PASSWORD,
-                    userPhoneID,accessKey, extraSignature);
-            params.put(WebParams.USER_ID,userPhoneID);
+            HashMap<String, Object> params = RetrofitService.getInstance()
+                    .getSignature(MyApiClient.LINK_CHANGE_PASSWORD, extraSignature);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.OLD_PASSWORD, RSA.opensslEncrypt(et_pass_current.getText().toString()));
             params.put(WebParams.NEW_PASSWORD, RSA.opensslEncrypt(et_pass_new.getText().toString()));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -161,84 +170,89 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
 
             Timber.d("isi params Change Password:" + params.toString());
 
-            MyApiClient.sentChangePassword(this, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CHANGE_PASSWORD, params
+                    , new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(object, jsonModel.class);
 
-                    progdialog.dismiss();
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response change password:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            //Toast.makeText(ChangePassword.this, sp.getString(CoreApp.IS_FIRST_TIME,""), Toast.LENGTH_LONG).show();
-                            Toast.makeText(ChangePassword.this, getString(R.string.changepass_toast_success), Toast.LENGTH_LONG).show();
+                            if (!model.getOn_error()) {
+
+                                String code = model.getError_code();
+
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    //Toast.makeText(ChangePassword.this, sp.getString(CoreApp.IS_FIRST_TIME,""), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ChangePassword.this, getString(R.string.changepass_toast_success), Toast.LENGTH_LONG).show();
 //                            sp.edit().putString(DefineValue.IS_FIRST_TIME, DefineValue.NO);
-                            sp.edit().putString(DefineValue.IS_CHANGED_PASS, DefineValue.STRING_YES).apply();
-                            finishChild();
+                                    sp.edit().putString(DefineValue.IS_CHANGED_PASS, DefineValue.STRING_YES).apply();
+                                    sp.edit().remove(DefineValue.USER_PASSWORD).apply();
+                                    finishChild();
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+//                                    Timber.d("isi response autologout:"+response.toString());
+//                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(ChangePassword.this, model.getError_message());
+                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(ChangePassword.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + object.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(ChangePassword.this, model.getError_message());
+                                }
+//                                else if(code.equals("0301")){
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(ChangePassword.this);
+//                                    builder.setTitle(getString(R.string.password_validation))
+//                                            .setMessage(getString(R.string.password_clue))
+//                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                                @Override
+//                                                public void onClick(DialogInterface dialog, int which) {
+//                                                    dialog.dismiss();
+//                                                }
+//                                            });
+//                                    AlertDialog dialog = builder.create();
+//                                    dialog.show();
+//                                }
+                                    else {
+//                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(ChangePassword.this, model.getError_message(), Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Toast.makeText(ChangePassword.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(ChangePassword.this,message);
-                        }
-                        else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(ChangePassword.this, code, Toast.LENGTH_LONG).show();
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(ChangePassword.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(ChangePassword.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    progdialog.dismiss();
-                    Timber.w("Error Koneksi change password:"+throwable.toString());
-                }
-            });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+                        @Override
+                        public void onComplete() {
+                            progdialog.dismiss();
+                        }
+                    } );
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void finishChild(){
-        if(is_first_time)
+    private void finishChild() {
+        if (is_first_time)
             setResult(MainPage.RESULT_FIRST_TIME);
         else
             setResult(MainPage.RESULT_NORMAL);
         this.finish();
     }
 
-    private boolean inputValidation(){
-        if(et_pass_current.getText().toString().length()==0){
+    private boolean inputValidation() {
+        if (et_pass_current.getText().toString().length() == 0) {
             et_pass_current.requestFocus();
             et_pass_current.setError(this.getString(R.string.changepass_edit_error_currentpass));
             return false;
-        }
-        else if(et_pass_new.getText().toString().length()==0){
+        } else if (et_pass_new.getText().toString().length() == 0) {
             et_pass_new.requestFocus();
             et_pass_new.setError(this.getString(R.string.changepass_edit_error_newpass));
             return false;
@@ -248,16 +262,15 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
 //            et_pass_new.setError(getString(validIdx));
 //            return false;
 //        }
-        else if(et_pass_new.getText().toString().length()<lenght_auth_min){
+        else if (et_pass_new.getText().toString().length() < 8 || et_pass_new.getText().toString().length() >20) {
             et_pass_new.requestFocus();
             et_pass_new.setError(this.getString(R.string.changepass_edit_error_newpasslength));
             return false;
-        }
-        else if(et_pass_retype.getText().toString().length()==0){
+        } else if (et_pass_retype.getText().toString().length() == 0) {
             et_pass_retype.requestFocus();
             et_pass_retype.setError(this.getString(R.string.changepass_edit_error_retypenewpass));
             return false;
-        } else if (!et_pass_retype.getText().toString().equals(et_pass_new.getText().toString())){
+        } else if (!et_pass_retype.getText().toString().equals(et_pass_new.getText().toString())) {
             et_pass_retype.requestFocus();
             et_pass_retype.setError(this.getString(R.string.changepass_edit_error_retypenewpass_confirm));
             return false;
@@ -267,6 +280,6 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onBackPressed() {
-        if(!is_first_time) super.onBackPressed();
+        if (!is_first_time) super.onBackPressed();
     }
 }

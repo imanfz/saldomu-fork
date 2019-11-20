@@ -17,8 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -31,16 +29,22 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
+import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import io.realm.Realm;
@@ -78,13 +82,13 @@ public class FragMerchantCategory extends Fragment {
         setupOpenHour   = getActivity().getIntent().getExtras().getString("setupOpenHour");
         categoryIds     = new ArrayList();
 
-        btnProses = (Button) v.findViewById(R.id.btn_proses);
+        btnProses = v.findViewById(R.id.btn_proses);
         btnProses.setOnClickListener(btnProsesListener);
 
         progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
         progdialog.show();
 
-        RequestParams params    = new RequestParams();
+        HashMap<String, Object> params = new HashMap<>();
         UUID rcUUID             = UUID.randomUUID();
         String  dtime           = DateTimeFormat.getCurrentDateTime();
 
@@ -100,59 +104,44 @@ public class FragMerchantCategory extends Fragment {
 
         params.put(WebParams.SIGNATURE, signature);
 
-        MyApiClient.getCategoryList(getActivity(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                progdialog.dismiss();
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CATEGORY_LIST, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                try {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                LinearLayout ll = getActivity().findViewById(R.id.formMerchantCategory);
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                        LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.formMerchantCategory);
+                                categories = response.getJSONArray("category");
 
-                        categories = response.getJSONArray("category");
+                                for(int i =0; i < categories.length(); i++) {
+                                    CheckBox cb = new CheckBox(getActivity());
+                                    JSONObject object = categories.getJSONObject(i);
+                                    cb.setText(object.getString("category_name"));
+                                    cb.setId(i);
+                                    ll.addView(cb);
+                                }
+                            } else {
+                                Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+                            }
 
-                        for(int i =0; i < categories.length(); i++) {
-                            CheckBox cb = new CheckBox(getActivity());
-                            JSONObject object = categories.getJSONObject(i);
-                            cb.setText(object.getString("category_name"));
-                            cb.setId(i);
-                            ll.addView(cb);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } else {
-                        Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //if (MyApiClient.PROD_FAILURE_FLAG)
-                //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                //else
-                Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                progdialog.dismiss();
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
+                    @Override
+                    public void onComplete() {
+                        progdialog.dismiss();
+                    }
+                });
 
     }
 
@@ -166,7 +155,7 @@ public class FragMerchantCategory extends Fragment {
         @Override
         public void onClick(View v) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
-                LinearLayout container = (LinearLayout) getActivity().findViewById(R.id.formMerchantCategory);
+                LinearLayout container = getActivity().findViewById(R.id.formMerchantCategory);
                 int countChecked = 0;
                 categoryIds = new ArrayList();
                 for (int i = 0; i < container.getChildCount(); i++) {
@@ -201,7 +190,7 @@ public class FragMerchantCategory extends Fragment {
 
 
                     progdialog.show();
-                    RequestParams params    = new RequestParams();
+                    HashMap<String, Object> params = new HashMap<>();
                     UUID rcUUID             = UUID.randomUUID();
                     String  dtime           = DateTimeFormat.getCurrentDateTime();
                     String categoryJSON     = new Gson().toJson(categoryIds);
@@ -219,17 +208,19 @@ public class FragMerchantCategory extends Fragment {
 
                     params.put(WebParams.SIGNATURE, signature);
 
-                    MyApiClient.registerCategoryShop(getActivity(), params, new JsonHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                            progdialog.dismiss();
 
-                            try {
+                    RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_BANK_ACCOUNT_DELETE, params,
+                            new ObjListeners() {
+                                @Override
+                                public void onResponses(JSONObject response) {
+                                    try {
+                                        Gson gson = new Gson();
+                                        jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
 
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                        String code = response.getString(WebParams.ERROR_CODE);
+                                        if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                    if ( setupOpenHour.equals(DefineValue.STRING_YES) ){
+                                            if ( setupOpenHour.equals(DefineValue.STRING_YES) ){
 //                                        Bundle args = new Bundle();
 //                                        args.putString(DefineValue.SHOP_ID, memberDetail.getShopId());
 //                                        args.putString(DefineValue.MEMBER_ID, memberDetail.getMemberId());
@@ -238,53 +229,47 @@ public class FragMerchantCategory extends Fragment {
 //                                        newFrag.setArguments(args);
 //                                        switchFragment(newFrag, getString(R.string.toolbar_title_setup_open_hour), true);
 
-                                        Intent intent=new Intent(getActivity(), BbsSetupOpenHourActivity.class);
-                                        intent.putExtra("memberId", memberId);
-                                        intent.putExtra("shopId", shopId);
-                                        intent.putExtra("flagApprove", flagApprove);
-                                        startActivity(intent);
+                                                Intent intent=new Intent(getActivity(), BbsSetupOpenHourActivity.class);
+                                                intent.putExtra("memberId", memberId);
+                                                intent.putExtra("shopId", shopId);
+                                                intent.putExtra("flagApprove", flagApprove);
+                                                startActivity(intent);
 
-                                    } else {
-                                        Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+                                            } else {
+                                                Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
 
-                                        Intent intent=new Intent(getActivity(),BbsMerchantCommunityList.class);
-                                        startActivity(intent);
+                                                Intent intent=new Intent(getActivity(),BbsMerchantCommunityList.class);
+                                                startActivity(intent);
+                                            }
+                                        }else if (code.equals(DefineValue.ERROR_9333)) {
+                                            Timber.d("isi response app data:" + model.getApp_data());
+                                            final AppDataModel appModel = model.getApp_data();
+                                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                            alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                        } else if (code.equals(DefineValue.ERROR_0066)) {
+                                            Timber.d("isi response maintenance:" + response.toString());
+                                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                            alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                        } else {
+                                            Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-                                } else {
-                                    Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
                                 }
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                                @Override
+                                public void onError(Throwable throwable) {
 
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                            super.onFailure(statusCode, headers, responseString, throwable);
-                            ifFailure(throwable);
-                        }
+                                }
 
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                            super.onFailure(statusCode, headers, throwable, errorResponse);
-                            ifFailure(throwable);
-                        }
-
-                        private void ifFailure(Throwable throwable) {
-                            //if (MyApiClient.PROD_FAILURE_FLAG)
-                            //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                            //else
-                            Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                            progdialog.dismiss();
-                            Timber.w("Error Koneksi login:" + throwable.toString());
-
-                        }
-
-                    });
+                                @Override
+                                public void onComplete() {
+                                    progdialog.dismiss();
+                                }
+                            });
                 }
-
 
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));

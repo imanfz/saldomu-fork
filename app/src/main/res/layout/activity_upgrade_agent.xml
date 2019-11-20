@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -13,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,6 +22,22 @@
             android:layout_marginRight="16dp"
             android:orientation="vertical"
             android:visibility="visible">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:layout_marginLeft="16dp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/margin_10dp"
+                android:text="@string/myprofile_text_birth_mother" />
+            <EditText
+                android:id="@+id/et_mothersname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="@dimen/margin_10dp"
+                android:layout_marginBottom="@dimen/margin_10dp"/>
 
             <RelativeLayout
                 android:id="@+id/layout_foto_siup"
@@ -162,6 +180,15 @@
                     android:progress="1" />
             </RelativeLayout>
 
+            <CheckBox
+                android:id="@+id/cb_termnsncond"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/terms_condition_upload_ktp"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
             <Button
                 android:id="@+id/button_proses"
@@ -170,6 +197,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="30dp"
                 android:background="@color/colorPrimaryDark"
+                android:enabled="false"
                 android:text="Proses"
                 android:textColor="@color/white" />
         </LinearLayout>

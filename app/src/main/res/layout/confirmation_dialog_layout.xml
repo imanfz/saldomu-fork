@@ -58,7 +58,7 @@
             android:layout_weight="0.5"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:src="@drawable/icon_arrow"/>
+            android:src="@drawable/arrow"/>
 
         <TextView
             android:id="@+id/confirmation_dialog_to"
@@ -195,7 +195,7 @@
     </TableLayout>
 
     <LinearLayout android:id="@+id/confirmation_dialog_button_layout"
-        android:background="@color/windowBackgroundColor"
+        android:background="@color/white"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:padding="8dp"
@@ -204,56 +204,59 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.balysv.materialripple.MaterialRippleLayout
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/card_bk"
-            android:layout_marginRight="8dp"
-            app:mrl_rippleOverlay="true"
-            app:mrl_rippleColor="@color/colorPrimaryDark"
-            app:mrl_rippleAlpha="0.2"
-            app:mrl_rippleDelayClick="false"
-            app:mrl_rippleHover="true"
-            >
+<!--        <com.balysv.materialripple.MaterialRippleLayout-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/card_bk"-->
+<!--            android:layout_marginRight="8dp"-->
+<!--            app:mrl_rippleOverlay="true"-->
+<!--            app:mrl_rippleColor="@color/colorPrimaryDark"-->
+<!--            app:mrl_rippleAlpha="0.2"-->
+<!--            app:mrl_rippleDelayClick="false"-->
+<!--            app:mrl_rippleHover="true"-->
+<!--            >-->
+
             <Button
+                android:layout_weight="1"
                 android:id="@+id/confirmation_dialog_back_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/colorSecondaryDark"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="@dimen/margin_5dp"
+                android:background="@drawable/rounded_background_outline"
                 android:gravity="center"
                 android:text="@string/cancel"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
-                />
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/black" />
 
-        </com.balysv.materialripple.MaterialRippleLayout>
+<!--        </com.balysv.materialripple.MaterialRippleLayout>-->
 
-        <com.balysv.materialripple.MaterialRippleLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/card_bk_orange"
-            android:layout_weight="1"
-            app:mrl_rippleOverlay="true"
-            app:mrl_rippleColor="@color/colorPrimaryDark"
-            app:mrl_rippleAlpha="0.2"
-            app:mrl_rippleDelayClick="false"
-            app:mrl_rippleHover="true"
-            >
+<!--        <com.balysv.materialripple.MaterialRippleLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/card_bk_blue"-->
+<!--            android:layout_weight="1"-->
+<!--            app:mrl_rippleOverlay="true"-->
+<!--            app:mrl_rippleColor="@color/colorPrimaryDark"-->
+<!--            app:mrl_rippleAlpha="0.2"-->
+<!--            app:mrl_rippleDelayClick="false"-->
+<!--            app:mrl_rippleHover="true"-->
+<!--            >-->
             <Button
                 android:id="@+id/confirmation_dialog_ok_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:gravity="center"
                 android:text="@string/ok"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
+                android:background="@drawable/rounded_background_blue"
+                android:layout_weight="1"
                 />
 
-        </com.balysv.materialripple.MaterialRippleLayout>
+<!--        </com.balysv.materialripple.MaterialRippleLayout>-->
 
     </LinearLayout>
 

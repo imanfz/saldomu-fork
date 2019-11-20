@@ -1,71 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical"
-                android:descendantFocusability="beforeDescendants"
-                android:focusableInTouchMode="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
-    <include android:id="@+id/main_toolbar"
-             layout="@layout/toolbar_main"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_toolbar"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/yellow_700"
+            android:src="@drawable/about_saldomu" />
 
 
-        <LinearLayout
-            android:orientation="vertical"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/main_toolbar"
-            android:background="@color/colorPrimaryDark">
-
-            <ImageView
-                android:background="@color/yellow_700"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/about_saldomu"/>
-
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                >
+            android:layout_height="match_parent">
 
             <LinearLayout
-                          android:layout_margin="5dp"
-                          android:orientation="vertical"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="vertical">
 
-                <TextView android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:textColor="@color/colorSecondaryWhiteFixed"
-                          android:textStyle="bold"
-                          android:textSize="@dimen/abc_text_size_medium_material"
-                          android:text="@string/about_apps"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_apps"
+                    android:textColor="@color/colorSecondaryWhiteFixed"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
 
-                <TextView android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:textColor="@color/grey_400"
-                          android:layout_marginBottom="10dp"
-                          android:text="@string/about_apps_desc"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/about_apps_desc"
+                    android:textColor="@color/grey_400" />
 
-                <TextView android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:textColor="@color/colorSecondaryWhiteFixed"
-                          android:textStyle="bold"
-                          android:textSize="@dimen/abc_text_size_medium_material"
-                          android:text="@string/about_apps_ver"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/about_apps_desc_2"
+                    android:textColor="@color/grey_400" />
 
-                <TextView android:id="@+id/version_detail"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:layout_marginBottom="10dp"
-                          android:textColor="@color/grey_400"
-                          android:text="@string/about_apps_ver_detail"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/about_apps_desc_pemberitahuan"
+                    android:textColor="@color/grey_400" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/about_apps_desc_pemberitahuan_1"
+                    android:textColor="@color/grey_400" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/about_apps_desc_pemberitahuan_2"
+                    android:textColor="@color/grey_400" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/about_apps_desc_pemberitahuan_3"
+                    android:textColor="@color/grey_400" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_apps_ver"
+                    android:textColor="@color/colorSecondaryWhiteFixed"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/version_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/about_apps_ver_detail"
+                    android:textColor="@color/grey_400" />
+
+                <TextView
+                    android:id="@+id/version_detail1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/about_apps_ver_detail1"
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 
-            </ScrollView>
-        </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <include
+        android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main" />
 </RelativeLayout>

@@ -1,7 +1,6 @@
 package com.sgo.saldomu.adapter;
 
 import android.content.Context;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +18,7 @@ import java.util.ArrayList;
 
 public class GridBbsMenu extends BaseAdapter {
 
-    public interface myInterface
-    {
+    public interface myInterface {
         void click();
     }
 
@@ -28,7 +26,7 @@ public class GridBbsMenu extends BaseAdapter {
     private final ArrayList<String> menuItems;
     private final int[] menuIcons;
 
-    public GridBbsMenu(Context c, ArrayList<String> menuItems, int[] menuIcons ) {
+    public GridBbsMenu(Context c, ArrayList<String> menuItems, int[] menuIcons) {
         mContext = c;
         this.menuIcons = menuIcons;
         this.menuItems = menuItems;
@@ -49,8 +47,7 @@ public class GridBbsMenu extends BaseAdapter {
         return 0;
     }
 
-    class ViewHolder
-    {
+    class ViewHolder {
         TextView tvMenuName;
         ImageView ivMenuIcon;
     }
@@ -61,12 +58,12 @@ public class GridBbsMenu extends BaseAdapter {
         GridBbsMenu.ViewHolder holder;
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        if(rootView == null) {
-            rootView                = inflater.inflate(R.layout.grid_bbs_menu, null);
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.grid_bbs_menu, null);
 
-            holder                  = new GridBbsMenu.ViewHolder();
-            holder.tvMenuName       = (TextView) rootView.findViewById(R.id.tvMenuName);
-            holder.ivMenuIcon       = (ImageView) rootView.findViewById(R.id.ivMenuIcon);
+            holder = new GridBbsMenu.ViewHolder();
+            holder.tvMenuName = rootView.findViewById(R.id.tvMenuName);
+            holder.ivMenuIcon = (ImageView) rootView.findViewById(R.id.ivMenuIcon);
 
             rootView.setTag(holder);
         } else {
@@ -74,8 +71,22 @@ public class GridBbsMenu extends BaseAdapter {
         }
 
         holder.tvMenuName.setText(menuItems.get(position));
-        holder.ivMenuIcon.setImageResource(menuIcons[position]);
+        holder.ivMenuIcon.setImageResource(getIcons(menuItems.get(position)));
 
         return rootView;
+    }
+
+    int getIcons(String item) {
+        switch (item) {
+            case "Tagih.id":
+                return R.drawable.tagih_id;
+            case "Pengaturan":
+                return R.drawable.ic_setting;
+            case "Dalam Proses":
+                return R.drawable.ic_location_on_black;
+            default:
+                return R.drawable.ic_tarik_tunai;
+
+        }
     }
 }

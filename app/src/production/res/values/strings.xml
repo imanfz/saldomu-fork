@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!--<string name="menu_setting_profile" translatable="false">Profil Saya</string>-->
+    <string name="menu_setting_info" translatable="false">FAQ</string>
+    <string name="menu_setting_change_pass" translatable="false">Ganti Kata Sandi</string>\
+    <string name="menu_setting_change_pin" translatable="false">Ganti PIN</string>
+    <string name="menu_setting_about" translatable="false">Tentang Aplikasi</string>
+</resources>

@@ -158,6 +158,7 @@ public class GeneralizeImage {
 //      you try the use the bitmap here, you will get null.
         options.inJustDecodeBounds = true;
         Bitmap bmp = BitmapFactory.decodeFile(stringUri, options);
+//        Bitmap bmp = BitmapFactory.decodeFile("/storage/emulated/0/Pictures/SquareCamera/IMG_20190628_094028", options);
 
         int actualHeight = options.outHeight;
         int actualWidth = options.outWidth;
@@ -198,6 +199,7 @@ public class GeneralizeImage {
         try {
 //          load the bitmap from its path
             bmp = BitmapFactory.decodeFile(stringUri, options);
+//            bmp = BitmapFactory.decodeFile("/storage/emulated/0/Pictures/SquareCamera/IMG_20190628_094028", options);
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
 

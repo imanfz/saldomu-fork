@@ -2,20 +2,29 @@ package com.sgo.saldomu.fcm;
 
 import android.content.Context;
 
-import com.loopj.android.http.RequestParams;
+import com.activeandroid.util.Log;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
-import com.sgo.saldomu.coreclass.SmartResponseHandler;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.FcmModel;
+import com.sgo.saldomu.securities.Md5;
 
-import org.apache.http.Header;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.prefs.Preferences;
 
 import timber.log.Timber;
 
@@ -28,30 +37,33 @@ public class FCMWebServiceLoader {
     private Context mContext;
     private LoaderListener loaderListener;
     private SecurePreferences sp;
+    private String token, tokenEncrypted;
 
-    public interface LoaderListener{
+    public interface LoaderListener {
         void onSuccessLoader();
+
         void onFailedLoader();
     }
 
-    public FCMWebServiceLoader(Context _context, LoaderListener listener){
+    public FCMWebServiceLoader(Context _context, LoaderListener listener) {
         this.mContext = _context;
         this.loaderListener = listener;
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
     }
 
-    public static FCMWebServiceLoader getInstance(Context _context){
-        return new FCMWebServiceLoader(_context,null);
+    public static FCMWebServiceLoader getInstance(Context _context) {
+        return new FCMWebServiceLoader(_context, null);
     }
 
-    public static FCMWebServiceLoader getInstance(Context _context, LoaderListener listener){
-        return new FCMWebServiceLoader(_context,listener);
+    public static FCMWebServiceLoader getInstance(Context _context, LoaderListener listener) {
+        return new FCMWebServiceLoader(_context, listener);
     }
 
-    private RequestParams setupSignatureParams(){
+    private HashMap<String, Object> setupSignatureParams() {
         String deviceID = DeviceUtils.getAndroidID();
-        String token = FCMManager.getTokenFCM();
-        RequestParams requestParams = MyApiClient.getSignatureWithParamsFCM(token,
+
+        token = sp.getString(DefineValue.FCM_ID, "");
+        HashMap<String, Object> requestParams = RetrofitService.getInstance().getSignatureWithParamsFCM(token,
                 deviceID, BuildConfig.APP_ID);
         requestParams.put(WebParams.DEVICE_ID, DeviceUtils.getAndroidID());
         requestParams.put(WebParams.GCM_ID, token);
@@ -67,48 +79,54 @@ public class FCMWebServiceLoader {
     }
 
     //Register Ulang fcm hanya isi userId dan email
-    public void sentTokenAtLogin(Boolean isSync, String userID, String email){
-        RequestParams requestParams = setupSignatureParams();
-        requestParams.put(WebParams.USER_ID,userID);
-        requestParams.put(WebParams.EMAIL,email);
-        sentTokenToServer(isSync,requestParams);
+    public void sentTokenAtLogin(Boolean isSync, String userID, String email) {
+        HashMap<String, Object> requestParams = setupSignatureParams();
+        requestParams.put(WebParams.USER_ID, userID);
+        requestParams.put(WebParams.EMAIL, email);
+        sentTokenToServer(isSync, requestParams);
     }
 
     //Register fcm permulaan buka aplikasi
-    public void sentTokenToServer(Boolean isSync){
-        RequestParams requestParams = setupSignatureParams();
-        sentTokenToServer(isSync,requestParams);
+    public void sentTokenToServer(Boolean isSync) {
+        HashMap<String, Object> requestParams = setupSignatureParams();
+        sentTokenToServer(isSync, requestParams);
     }
 
-    private void sentTokenToServer(Boolean isSync, RequestParams requestParams){
+    private void sentTokenToServer(Boolean isSync, HashMap<String, Object> requestParams) {
 
-        Timber.d("isi params reg token fcm to server : "+requestParams );
-        MyApiClient.sentReqTokenFCM(mContext,isSync,requestParams, new SmartResponseHandler() {
-            @Override
-            public void onSuccessResponse(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    Timber.d("isi response reg token fcm to server : "+response.toString() );
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                        CustomSecurePref.getInstance().insertString(DefineValue.FCM_SERVER_UUID,
-                                response.optString(WebParams.UID,""));
-                        if(loaderListener != null)
+        Timber.d("isi params reg token fcm to server : " + requestParams);
+
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REG_TOKEN_FCM, requestParams,
+                new ResponseListener() {
+                    @Override
+                    public void onResponses(JsonObject object) {
+                        try {
+                            Gson gson = new Gson();
+                            FcmModel model = gson.fromJson(object, FcmModel.class);
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                CustomSecurePref.getInstance().insertString(DefineValue.FCM_SERVER_UUID,
+                                        model.getUid());
+                                if (loaderListener != null)
+                                    loaderListener.onSuccessLoader();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (loaderListener != null)
+                                loaderListener.onFailedLoader();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        if (loaderListener != null)
                             loaderListener.onSuccessLoader();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    if(loaderListener != null)
-                        loaderListener.onFailedLoader();
-                }
-            }
 
-            @Override
-            public void onFailedResponse(Throwable throwable) {
-                Timber.d("isi failed reg token fcm to server : "+throwable.toString());
-                if(loaderListener != null)
-                    loaderListener.onSuccessLoader();
-            }
-        });
+                    @Override
+                    public void onComplete() {
 
+                    }
+                });
     }
 }

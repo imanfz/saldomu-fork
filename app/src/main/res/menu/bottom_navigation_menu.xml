@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_home"
+        android:title="@string/menu_item_title_home"
+        android:icon="@drawable/ic_home" />
+    <item
+        android:id="@+id/menu_transfer"
+        android:title="@string/transfer"
+        android:icon="@drawable/ic_transaction" />
+    <item
+        android:id="@+id/menu_help"
+        android:title="@string/menu_group_title_supports"
+        android:icon="@drawable/ic_call"/>
+    <item
+        android:id="@+id/menu_profile"
+        android:title="@string/profil"
+        android:icon="@drawable/ic_profile" />
+</menu>

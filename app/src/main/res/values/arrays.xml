@@ -23,20 +23,29 @@
     </string-array>
 
     <string-array name="myprofilelist_list_item">
-        <item>Profil</item>
-        <item>Ganti Password</item>
+        <item>@string/menu_setting_profile</item>
+        <item>@string/menu_setting_change_pass</item>
     </string-array>
 
     <string-array name="myprofilelist_list_item_pin">
-        <item>Profil</item>
-        <item>Ganti Password</item>
-        <item>Ganti PIN</item>
+        <item>@string/menu_setting_profile</item>
+        <item>@string/menu_setting_change_pass</item>
+        <item>@string/menu_setting_change_pin</item>
+        <item>@string/menu_setting_change_email</item>
+    </string-array>
+
+    <string-array name="myprofilelist_list_item_agen">
+        <item>@string/menu_setting_profile</item>
+        <item>@string/menu_setting_change_pass</item>
+        <item>@string/menu_setting_change_pin</item>
+        <item>@string/menu_setting_change_email</item>
+        <item>@string/menu_item_title_kelola</item>
     </string-array>
 
     <string-array name="home_vpi_title">
-        <item>AGEN</item>
+        <!--<item>AGEN</item>-->
         <item>BERANDA</item>
-        <item>RIWAYAT</item>
+        <!--<item>RIWAYAT</item>-->
         <!--<item>LINI WAKTU</item>-->
         <!--<item>GROUP</item>-->
     </string-array>
@@ -99,14 +108,14 @@
 
     <string-array name="report_list">
         <item>Transaksi</item>
-        <item>Transfer</item>
-        <item>Permintaan</item>
+        <!--<item>Transfer</item>-->
+        <!--<item>Permintaan</item>-->
     </string-array>
 
     <string-array name="report_list_agen">
         <item>Transaksi</item>
-        <item>Transfer</item>
-        <item>Permintaan</item>
+        <!--<item>Transfer</item>-->
+        <!--<item>Permintaan</item>-->
         <item>Fee</item>
     </string-array>
 
@@ -117,25 +126,42 @@
         <item>@color/green_700</item>
     </integer-array>
 
-    <string-array name="settings_list">
-        <item>Registrasi SMS Banking</item>
-        <item>Pengaturan Pembagian</item>
-        <item>Ganti Password</item>
-        <item>Tentang App</item>
+    <string-array name="settings_list_pin">
+        <item>@string/menu_setting_info</item>
+        <item>@string/privay_policy</item>
+        <!--<item>FAQ</item>-->
+
     </string-array>
 
-    <string-array name="settings_list_pin">
-        <item>Profil Saya</item>
-        <item>Ganti Password</item>
-        <item>Ganti PIN</item>
-        <item>Tentang App</item>
+    <string-array name="transfer_list">
+        <item>@string/p2p_transfer</item>
+        <item>@string/bank_transfer</item>
     </string-array>
-    <string-array name="settings_list_pin_2">
-        <item>Profil Saya</item>
-        <item>Registrasi SMS Banking</item>
-        <item>Ganti Password</item>
-        <item>Ganti PIN</item>
-        <item>Tentang App</item>
+
+    <string-array name="settings_isnot_lvl1">
+        <!--<item>Registrasi SMS Banking</item>-->
+    </string-array>
+
+    <string-array name="settings_is_agent">
+        <item>@string/menu_setting_change_pass</item>
+        <item>@string/menu_setting_change_pin</item>
+        <item>@string/menu_setting_change_email</item>
+        <item>@string/menu_setting_about</item>
+        <item>@string/menu_item_title_kelola</item>
+        <!--<item>Bahasa</item>-->
+
+    </string-array>
+    <string-array name="settings_is_member">
+        <item>@string/menu_setting_change_pass</item>
+        <item>@string/menu_setting_change_pin</item>
+        <item>@string/menu_setting_change_email</item>
+        <item>@string/menu_setting_about</item>
+
+    </string-array>
+    <string-array name="settings_list_info">
+        <item>@string/menu_item_title_info_harga</item>
+        <item>@string/menu_item_title_starterkit</item>
+        <item>@string/logout</item>
     </string-array>
 
     <string-array name="social_id_type">
@@ -150,16 +176,24 @@
         <item>LAINNYA</item>
     </string-array>
 
+    <string-array name="cancel_dgi_reason">
+        <item>Belum ada uang</item>
+        <item>Tidak ada orang di toko</item>
+        <item>Toko sedang tutup</item>
+        <item>Lainnya</item>
+    </string-array>
+
     <string-array name="gender_type">
-        <item>Pria</item>
-        <item>Wanita</item>
+        <item>-Pilih Jenis Kelamin-</item>
+        <item>Laki-laki</item>
+        <item>Perempuan</item>
     </string-array>
 
     <string-array name="list_tipe_notif">
-        <item>Pilih Tipe Notifikasi</item>
-        <item>EMAIL</item>
+        <!--<item>Pilih Tipe Notifikasi</item>-->
+        <!--<item>EMAIL</item>-->
         <item>SMS</item>
-        <item>EMAIL &amp; SMS</item>
+        <!--<item>EMAIL &amp; SMS</item>-->
     </string-array>
 
     <string-array name="list_cash_out">
@@ -193,29 +227,15 @@
     </string-array>
 
     <string-array name="list_bbs_agent">
-        <!--<item>@string/menu_item_title_tagih_agent</item>-->
-        <item>@string/cash_in</item>
-        <item>@string/cash_out</item>
         <item>@string/menu_item_title_trx_agent</item>
         <item>@string/title_bbs_list_account_bbs</item>
-        <!-- item>@string/transaction</item -->
-        <item>@string/menu_item_title_kelola</item>
-        <!-- item>@string/menu_item_title_list_approval</item -->
-        <!-- item>@string/menu_item_title_waktu_beroperasi</item -->
-        <!-- item>@string/menu_item_title_tutup_manual</item -->
         <item>@string/menu_item_title_onprogress_agent</item>
     </string-array>
 
     <integer-array name="list_icon_bbs_agent">
-        <!--<item>@drawable/tagih_id</item>-->
-        <item>@drawable/ic_tariktunai</item>
-        <item>@drawable/ic_tariktunai</item>
-        <item>@drawable/ic_tariktunai</item>
-        <!-- item>@drawable/ic_tariktunai</item -->
-        <item>@drawable/ic_tariktunai</item>
-        <!-- item>@drawable/ic_laporan</item -->
-        <item>@drawable/ic_belanja</item>
-        <item>@drawable/ic_location_on_black</item>
+        <item>@drawable/ic_permintaan_transaksi</item>
+        <item>@drawable/ic_rekening_saya</item>
+        <item>@drawable/ic_dalam_proses</item>
     </integer-array>
 
     <string-array name="list_bbs_member">
@@ -224,7 +244,7 @@
         <item>@string/title_rating_by_member</item -->
     </string-array>
     <integer-array name="list_icon_bbs_member">
-        <item>@drawable/ic_tariktunai</item>
+        <item>@drawable/ic_permintaan_transaksi</item>
         <!-- item>@drawable/ic_tariktunai</item>
         <item>@drawable/ic_tariktunai</item -->
     </integer-array>
@@ -239,19 +259,12 @@
 
 
     <string-array name="list_menu_frag_new_home">
-        <item>@string/newhome_title_topup</item>
+        <!--<item>@string/newhome_title_topup</item>-->
         <item>@string/menu_item_title_pay_friends</item>
         <item>@string/menu_item_title_ask_for_money</item>
         <item>@string/menu_item_title_buy</item>
         <item>@string/menu_item_title_report</item>
-        <item>@string/menu_item_title_scadm</item>
-    </string-array>
-    <string-array name="list_menu_frag_new_home_agent">
-        <!--<item>@string/cash_in</item>-->
-        <!--<item>@string/cash_out</item>-->
-        <!--<item>@string/menu_item_title_trx_agent</item>-->
-        <!--<item>@string/menu_item_title_onprogress_agent</item>-->
-        <item>@string/menu_item_title_tagih_agent</item>
+        <!--<item>@string/menu_item_title_scadm</item>-->
     </string-array>
     <string-array name="list_menu_frag_new_home_not_agent">
         <!--<item>@string/menu_item_search_agent_cta</item>-->
@@ -260,15 +273,15 @@
     </string-array>
 
     <integer-array name="list_menu_icon_frag_scadm">
-        <item>@drawable/ic_bayarteman1</item>
-        <item>@drawable/ic_tambahsaldo</item>
+        <item>@drawable/ic_transfer_saldo</item>
+        <item>@drawable/ic_topup</item>
         <item>@drawable/ic_belanja</item>
     </integer-array>
 
     <integer-array name="list_menu_icon_frag_new_home">
-        <item>@drawable/ic_tambahsaldo</item>
-        <item>@drawable/ic_bayarteman1</item>
-        <item>@drawable/ic_mintauang</item>
+        <!--<item>@drawable/ic_tambahsaldo</item>-->
+        <item>@drawable/ic_transfer_saldo</item>
+        <item>@drawable/ic_minta_saldo</item>
         <item>@drawable/ic_belanja</item>
         <item>@drawable/ic_laporan</item>
         <item>@drawable/ic_laporan</item>
@@ -283,7 +296,7 @@
     <integer-array name="list_menu_icon_frag_new_home_not_agent">
         <!--<item>@drawable/ic_location_on_black</item>-->
         <!--<item>@drawable/ic_location_on_black</item>-->
-        <item>@drawable/ic_tariktunai</item>
+        <item>@drawable/ic_tarik_tunai</item>
     </integer-array>
     <string-array name="list_bbs_setting_kelola">
         <item>@string/agent_name</item>
@@ -302,7 +315,7 @@
 
     <string-array name="list_bbs_setting">
         <!-- item>@string/setup_agent_open_hour</item -->
-        <item>@string/setup_tutup_manual</item>
+        <!--<item>@string/setup_tutup_manual</item>-->
     </string-array>
 
     <string-array name="list_denom_amount">
@@ -313,4 +326,41 @@
         <item>150000</item>
         <item>200000</item>
     </string-array>
+
+    <string-array name="item_pulsa">
+         <item>@string/menu_item_title_pulsa_agent</item>
+    </string-array>
+
+    <string-array name="item_bpjs">
+        <item>@string/newhome_bpjs</item>
+    </string-array>
+
+    <string-array name="item_emoney">
+        <item>@string/newhome_emoney</item>
+    </string-array>
+
+    <string-array name="item_tkn">
+        <item>@string/newhome_listrik_pln</item>
+    </string-array>
+
+    <string-array name="list_religion">
+        <item>-Pilih Agama-</item>
+        <item>ISLAM</item>
+        <item>KRISTEN PROTESTAN</item>
+        <item>KRISTEN KATOLIK</item>
+        <item>HINDU</item>
+        <item>BUDDHA</item>
+        <item>KHONGHUCU</item>
+    </string-array>
+
+    <string-array name="list_marital_status">
+        <item>BELUM KAWIN</item>
+        <item>KAWIN</item>
+    </string-array>
+
+    <string-array name="list_nationality">
+        <item>WNI</item>
+        <item>WNA</item>
+    </string-array>
+
 </resources>

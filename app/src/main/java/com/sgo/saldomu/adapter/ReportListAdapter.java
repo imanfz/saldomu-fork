@@ -13,20 +13,31 @@ import android.widget.TextView;
 import com.sgo.saldomu.Beans.ReportListModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.models.retrofit.GetReportDataModel;
+import com.sgo.saldomu.models.retrofit.ReportDataModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ReportListAdapter extends ArrayAdapter<ReportListModel>{
+public class ReportListAdapter extends ArrayAdapter<ReportDataModel>{
 
     private Context context;
     private int layoutResourceId;
     private ArrayList<ReportListModel> data = null;
+    List<ReportDataModel> report_data;
 
-    public ReportListAdapter(Context context, int resource, ArrayList<ReportListModel> objects) {
-        super(context, resource, objects);
+//    public ReportListAdapter(Context context, int resource, ArrayList<ReportListModel> objects) {
+//        super(context, resource, objects);
+//        this.layoutResourceId = resource;
+//        this.context = context;
+//        this.data = objects;
+//    }
+
+    public ReportListAdapter(Context context, int resource, List<ReportDataModel> report_data) {
+        super(context, resource, report_data);
         this.layoutResourceId = resource;
         this.context = context;
-        this.data = objects;
+        this.report_data = report_data;
     }
 
     @NonNull
@@ -41,12 +52,12 @@ public class ReportListAdapter extends ArrayAdapter<ReportListModel>{
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new ListHolder();
-            holder.tv_date = (TextView)row.findViewById(R.id.text_tgl_trans);
-            holder.tv_type = (TextView)row.findViewById(R.id.text_trans_type);
-            holder.tv_desc = (TextView)row.findViewById(R.id.description_value);
-            holder.tv_ccy = (TextView)row.findViewById(R.id.text_ccyID);
-            holder.tv_amount = (TextView)row.findViewById(R.id.text_amount);
-            holder.tv_remark = (TextView)row.findViewById(R.id.text_remark);
+            holder.tv_date = row.findViewById(R.id.text_tgl_trans);
+            holder.tv_type = row.findViewById(R.id.text_trans_type);
+            holder.tv_desc = row.findViewById(R.id.description_value);
+            holder.tv_ccy = row.findViewById(R.id.text_ccyID);
+            holder.tv_amount = row.findViewById(R.id.text_amount);
+            holder.tv_remark = row.findViewById(R.id.text_remark);
 
             row.setTag(holder);
         }
@@ -55,16 +66,21 @@ public class ReportListAdapter extends ArrayAdapter<ReportListModel>{
             holder = (ListHolder)row.getTag();
         }
 
-        ReportListModel itemnya = data.get(position);
+        ReportDataModel itemnya = report_data.get(position);
 
         holder.tv_date.setText(itemnya.getDatetime());
         holder.tv_type.setText(itemnya.getBuss_scheme_name());
-        holder.tv_desc.setText(itemnya.getAlias());
-        holder.tv_ccy.setText(itemnya.getCcyID());
+        holder.tv_desc.setText(itemnya.getTo_alias());
+        holder.tv_ccy.setText(itemnya.getCcy_id());
         holder.tv_amount.setText(CurrencyFormat.format(itemnya.getAmount()));
         holder.tv_remark.setText(itemnya.getRemark());
 
         return row;
+    }
+
+    @Override
+    public int getCount() {
+        return report_data.size();
     }
 
     class ListHolder

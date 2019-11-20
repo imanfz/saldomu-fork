@@ -3,6 +3,7 @@ package com.sgo.saldomu.utils;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -12,12 +13,18 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 
+import com.desmond.squarecamera.CameraActivity;
 import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.CameraViewActivity;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.GeneralizeImage;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -103,6 +110,7 @@ public class PickAndCameraUtil {
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
                 String timeStamp = DateTimeFormat.getCurrentDateTime();
                 String imageFileName = "JPEG_" + timeStamp + "_" + BuildConfig.APP_ID;
+//                String imageFileName = "IMG_" + timeStamp;
 
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.TITLE, imageFileName);
@@ -133,6 +141,7 @@ public class PickAndCameraUtil {
         // Create an image file name
         String timeStamp = DateTimeFormat.getCurrentDateTime();
         String imageFileName = "JPEG_" + timeStamp + "_" + BuildConfig.APP_ID;
+//        String imageFileName = "IMG_" + timeStamp;
         File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
@@ -141,7 +150,7 @@ public class PickAndCameraUtil {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
+        mCurrentPhotoPath =image.toString();
         return image;
     }
 

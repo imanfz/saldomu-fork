@@ -12,13 +12,13 @@ import android.view.Menu;
 import android.widget.Toast;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.ListBankTopUpFragment;
 import com.sgo.saldomu.fragments.SgoPlus_input;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import java.util.List;
 
@@ -52,18 +52,18 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
                 return;
             }
 
-            if(isTagihan) {
-                if (transaction_type != null && !transaction_type.isEmpty()) {
-                    if (transaction_type.equals(DefineValue.SMS_BANKING)) {
-                        initializeSMSBanking();
-                    }
-                }
-            }
-            else {
+//            if(isTagihan) {
+//                if (transaction_type != null && !transaction_type.isEmpty()) {
+//                    if (transaction_type.equals(DefineValue.SMS_BANKING)) {
+//                        initializeSMSBanking();
+//                    }
+//                }
+//            }
+//            else {
 
-                if(!is_full_activity && i.getStringExtra(DefineValue.PRODUCT_TYPE).equals(DefineValue.BANKLIST_TYPE_SMS))
-                    initializeSMSBanking();
-            }
+//                if(!is_full_activity && i.getStringExtra(DefineValue.PRODUCT_TYPE).equals(DefineValue.BANKLIST_TYPE_SMS))
+//                    initializeSMSBanking();
+//            }
 
             Fragment mFrag;
             Bundle mArgs = i.getExtras();
@@ -86,16 +86,16 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
         }
     }
 
-    private void initializeSMSBanking(){
-        isSMSBanking = true;
-        if(EasyPermissions.hasPermissions(this,Manifest.permission.READ_PHONE_STATE)){
-            initializeSmsClass();
-        }
-        else {
-            EasyPermissions.requestPermissions(this,getString(R.string.rational_readphonestate),
-                    RC_READ_PHONE_STATE,Manifest.permission.READ_PHONE_STATE);
-        }
-    }
+//    private void initializeSMSBanking(){
+//        isSMSBanking = true;
+//        if(EasyPermissions.hasPermissions(this,Manifest.permission.READ_PHONE_STATE)){
+//            initializeSmsClass();
+//        }
+//        else {
+//            EasyPermissions.requestPermissions(this,getString(R.string.rational_readphonestate),
+//                    RC_READ_PHONE_STATE,Manifest.permission.READ_PHONE_STATE);
+//        }
+//    }
 
     @Override
     protected void onResume() {
@@ -225,7 +225,7 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MyApiClient.CancelRequestWS(this,true);
+        RetrofitService.dispose();
     }
 
     public void setToolbarTitle(String _title) {

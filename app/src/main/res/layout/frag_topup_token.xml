@@ -253,7 +253,7 @@
             <com.balysv.materialripple.MaterialRippleLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/card_bk_orange"
+                    android:background="@drawable/card_bk_blue"
                     android:layout_gravity="center"
                     android:id="@+id/layout_btn_resend"
                     android:layout_marginRight="8dp"
@@ -281,7 +281,7 @@
             <com.balysv.materialripple.MaterialRippleLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/card_bk_orange"
+                    android:background="@drawable/card_bk_blue"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     app:mrl_rippleOverlay="true"
@@ -309,7 +309,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/card_bk"
             android:layout_marginRight="40dp"
             android:layout_marginLeft="40dp"
             app:mrl_rippleOverlay="true"
@@ -326,8 +325,8 @@
                 android:layout_gravity="center"
                 android:text="@string/cancel"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:background="@drawable/button_transparant"
-                android:textColor="@color/colorSecondaryDark"
+                android:background="@drawable/rounded_background_outline"
+                android:textColor="@color/black"
                 />
 
     </com.balysv.materialripple.MaterialRippleLayout>

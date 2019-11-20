@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_splash"
+    android:gravity="center">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:src="@drawable/sp_p2p"
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="#40639f"
+        android:text="Kirim Uang"
+        />
+    <TextView
+        android:layout_margin="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="#434953"
+        android:letterSpacing="0.02"
+        android:lineSpacingExtra="6sp"
+        android:gravity="center_horizontal"
+        android:text="Kirim uang ke sesama pengguna, teman, komunitas kapanpun kamu inginkan."
+        />
+</LinearLayout>
