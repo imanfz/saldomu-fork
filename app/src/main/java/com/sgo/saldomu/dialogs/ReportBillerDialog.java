@@ -215,7 +215,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
 
         if (buss_scheme_code != null || type != null) {
-            if (buss_scheme_code.equalsIgnoreCase("CTA")) {
+            if (buss_scheme_code.equalsIgnoreCase("CTA")||buss_scheme_code.equalsIgnoreCase("CTR")) {
                 if (type.equals(DefineValue.BBS_CASHIN)) {
                     stub.setLayoutResource(R.layout.layout_dialog_report_bbs_cashin);
                     View inflated = stub.inflate();

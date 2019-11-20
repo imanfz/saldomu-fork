@@ -1432,4 +1432,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="menu_title_ctr">Cash Collection</string>
     <string name="business_name">Nama Usaha</string>
     <string name="amount_deposit">Jumlah Setoran</string>
+    <string name="are_you_sure">Apakah Anda Yakin?</string>
 </resources>
