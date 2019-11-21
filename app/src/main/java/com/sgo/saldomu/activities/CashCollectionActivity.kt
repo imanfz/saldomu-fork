@@ -16,9 +16,8 @@ import timber.log.Timber
 
 class CashCollectionActivity : BaseActivity() {
 
-    internal lateinit var fragmentManager: FragmentManager
-    internal lateinit var mContent: Fragment
-    internal lateinit var newFragment: Fragment
+    private lateinit var fragmentManager: FragmentManager
+    private lateinit var newFragment: Fragment
     lateinit var bankCode: String
     lateinit var amount: String
 
@@ -26,10 +25,14 @@ class CashCollectionActivity : BaseActivity() {
         return R.layout.activity_cash_collection
     }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initialize()
+    }
 
-        InitializeToolbar()
+    fun initialize() {
+        actionBarTitle = getString(R.string.menu_title_ctr)
+        setActionBarIcon(R.drawable.ic_arrow_left)
 
         val intent = intent
         val is_search = intent.getBooleanExtra(DefineValue.IS_SEARCH_CTR, false)
@@ -38,34 +41,21 @@ class CashCollectionActivity : BaseActivity() {
             amount = intent.getStringExtra(DefineValue.AMOUNT)
         }
 
-        if (findViewById<View>(R.id.layout_cashcollection) != null) {
-            if (savedInstanceState != null) {
-                return
-            }
-
-            newFragment = FragCashCollection()
-            val bundle = Bundle()
-            bundle.putBoolean(DefineValue.IS_SEARCH_CTR, is_search)
-            if (is_search)
-            {
-                bundle.putString(DefineValue.BANK_CODE, bankCode)
-                bundle.putString(DefineValue.AMOUNT, amount)
-            }
-            newFragment.arguments = bundle
+        newFragment = FragCashCollection()
+        val bundle = Bundle()
+        bundle.putBoolean(DefineValue.IS_SEARCH_CTR, is_search)
+        if (is_search)
+        {
+            bundle.putString(DefineValue.BANK_CODE, bankCode)
+            bundle.putString(DefineValue.AMOUNT, amount)
         }
-
-        mContent = newFragment
+        newFragment.arguments = bundle
 
         fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.add(R.id.layout_cashcollection, newFragment)
         fragmentTransaction.commitAllowingStateLoss()
         setResult(MainPage.RESULT_NORMAL)
-    }
-
-    fun InitializeToolbar() {
-        setActionBarIcon(R.drawable.ic_arrow_left)
-        actionBarTitle = getString(R.string.menu_title_ctr)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -79,10 +69,6 @@ class CashCollectionActivity : BaseActivity() {
             }
             else -> return super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     fun switchContent(mFragment: Fragment, fragName: String, isBackstack: Boolean) {
@@ -109,11 +95,4 @@ class CashCollectionActivity : BaseActivity() {
         setResult(MainPage.RESULT_BALANCE)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
 }

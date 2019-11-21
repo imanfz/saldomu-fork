@@ -222,6 +222,7 @@ public class MyApiClient {
     public static String LINK_GLOBAL_BBS_INSERT_A2C;
     public static String LINK_BBS_LIST_MEMBER_A2C;
     public static String LINK_BBS_OTP_MEMBER_A2C;
+    public static String LINK_GLOBAL_BBS_INSERT_C2R;
 
     public static String LINK_BBS_LIST_COMMUNITY_ALL;
     public static String LINK_REG_TOKEN_FCM;
@@ -280,6 +281,7 @@ public class MyApiClient {
     public static String LINK_REQ_UPGRADE_MEMBER;
     public static String LINK_GET_BILLER_DENOM;
     public static String LINK_GET_ANCHOR_COMMUNITIES;
+    public static String LINK_INQUIRY_CUSTOMER_ACCT;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -408,6 +410,7 @@ public class MyApiClient {
 //        LINK_GLOBAL_BBS_COMM        = headaddressfinal + "GlobalBBSComm/Retrieve";
 //        LINK_GLOBAL_BBS_BANK_C2A    = headaddressfinal + "GlobalBBSBankC2A/Retrieve";
         LINK_GLOBAL_BBS_INSERT_C2A  = headaddressfinal + "GlobalBBSInsertC2A/Invoke";
+        LINK_GLOBAL_BBS_INSERT_C2R  = headaddressfinal + "GlobalBBSInsertC2R/Invoke";
 //        LINK_BBS_BANK_ACCOUNT       = headaddressfinal + "BBSBankAccount/Retrieve";
         LINK_BBS_BANK_ACCOUNT_DELETE = headaddressfinal + "DelBBSBankAcct/Invoke";
         LINK_BBS_BANK_REG_ACCT      = headaddressfinal + "BBSBankRegAcct/Retrieve";
@@ -485,6 +488,8 @@ public class MyApiClient {
         LINK_GET_BILLER_DENOM     = headaddressfinal + "BillerEspayNew/Retrieve";
 
         LINK_GET_ANCHOR_COMMUNITIES = headaddressfinal + "invoice/Getanchor/Communities";
+
+        LINK_INQUIRY_CUSTOMER_ACCT = headaddressfinal + "InquiryCustomerAcct/Invoke";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
