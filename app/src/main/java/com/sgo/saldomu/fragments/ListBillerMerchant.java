@@ -151,6 +151,10 @@ public class ListBillerMerchant extends ListFragment {
         mBI.setArguments(mArgs);
 
         String fragname = mBillerType.getBiller_type_name() + "-" + _comm_name;
+        if (_comm_name.contains("Emoney Mandiri")){
+            fragname = _comm_name;
+        }
+
 
         switchFragment(mBI, BillerActivity.FRAG_BIL_LIST_MERCHANT, fragname, true, BillerInput.TAG);
     }

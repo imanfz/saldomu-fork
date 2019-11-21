@@ -52,12 +52,45 @@
         </RadioGroup>
 
         <RelativeLayout
+            android:id="@+id/lyt_cekSaldo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="@dimen/margin_10dp"
+            android:paddingBottom="10dp"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tv_remindUpdateSaldo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Harap Cek dan Update saldo setelah \nmelakukan Top Up"
+                android:textSize="12sp"
+                android:layout_centerVertical="true"/>
+
+            <Button
+                android:id="@+id/btn_cekSaldo"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:background="@drawable/rounded_button_cek_saldo"
+                android:text="Cek Saldo"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_alignParentRight="true"
+                android:visibility="visible"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
-            android:paddingBottom="10dp">
+            android:paddingBottom="10dp"
+            android:clipToPadding="false">
 
             <TextView
                 android:id="@+id/billerinput_text_payment_remark"
@@ -66,7 +99,8 @@
                 android:paddingTop="10dp"
                 android:text="@string/billerinput_text_payment_remark"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/abc_text_size_medium_material" />
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:layout_below="@+id/btn_cekSaldo"/>
 
             <EditText
                 android:id="@+id/payment_remark_billerinput_value"
@@ -83,6 +117,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/billerinput_text_payment_remark"
                 android:layout_toRightOf="@id/payment_remark_billerinput_value"/>
+
+
         </RelativeLayout>
 
         <LinearLayout

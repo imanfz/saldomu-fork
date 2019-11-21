@@ -246,7 +246,7 @@ public class BillerDesciption extends BaseFragment {
         double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
         deAmount = String.valueOf(mAmount);
         tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(mAmount));
-        tv_total_value.setText(ccy_id + ". " + CurrencyFormat.format(amount));
+        tv_total_value.setText(ccy_id + ". " + CurrencyFormat.format(mAmount));
 //            }
 
         paymentData = new ArrayList<>();
@@ -465,10 +465,10 @@ public class BillerDesciption extends BaseFragment {
             if (cust_id.equalsIgnoreCase(""))
                 cust_id = userPhoneID;
 
-            extraSignature = biller_comm_id + "SLYEMN2000" + cust_id;
+            extraSignature = biller_comm_id + item_id + cust_id;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_BILLER, extraSignature);
-            params.put(WebParams.DENOM_ITEM_ID, "SLYEMN2000");
+            params.put(WebParams.DENOM_ITEM_ID, item_id);
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id);
             params.put(WebParams.COMM_ID, biller_comm_id);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -542,10 +542,10 @@ public class BillerDesciption extends BaseFragment {
             final String bank_code = mTempBank.getBank_code();
             final String product_code = mTempBank.getProduct_code();
 
-            extraSignature = tx_id + "SLYEMN2000" + biller_comm_id + product_code;
+            extraSignature = tx_id + item_id + biller_comm_id + product_code;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_PAYMENT_BILLER, extraSignature);
-            params.put(WebParams.DENOM_ITEM_ID, "SLYEMN2000");
+            params.put(WebParams.DENOM_ITEM_ID, item_id);
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id);
 
             params.put(WebParams.TX_ID, tx_id);
@@ -813,7 +813,8 @@ public class BillerDesciption extends BaseFragment {
         mArgs.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
         mArgs.putString(DefineValue.TX_ID, tx_id);
         mArgs.putString(DefineValue.CCY_ID, ccy_id);
-        mArgs.putString(DefineValue.AMOUNT, sentPaymentBillerModel.getAmount());
+        Double amount = Double.parseDouble(sentPaymentBillerModel.getAmount())-Double.parseDouble(sentPaymentBillerModel.getFee());
+        mArgs.putString(DefineValue.AMOUNT, amount.toString());
         mArgs.putString(DefineValue.ITEM_NAME, item_name);
         mArgs.putString(DefineValue.BILLER_COMM_ID, biller_comm_id);
         mArgs.putString(DefineValue.BILLER_NAME, biller_name);
@@ -826,7 +827,7 @@ public class BillerDesciption extends BaseFragment {
         mArgs.putString(DefineValue.CALLBACK_URL, callback_url);
         mArgs.putString(DefineValue.ITEM_ID, item_id);
         mArgs.putString(DefineValue.FEE, sentPaymentBillerModel.getFee());
-        double totalAmount = Double.parseDouble(amount) + Double.parseDouble(fee);
+        double totalAmount = amount + Double.parseDouble(fee);
         mArgs.putString(DefineValue.TOTAL_AMOUNT, sentPaymentBillerModel.getTotal_amount());
         mArgs.putString(DefineValue.PRODUCT_PAYMENT_TYPE, mTempBank.getProduct_type());
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
