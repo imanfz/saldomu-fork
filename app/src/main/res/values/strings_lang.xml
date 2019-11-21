@@ -190,7 +190,7 @@
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
-    <string name="menu_item_title_scadm">B2B</string>
+    <string name="menu_item_title_scadm">B2B Telco</string>
     <string name="menu_group_title_account">Akun</string>
     <string name="menu_item_title_my_profile">Profil Saya</string>
     <string name="menu_item_title_my_friends">Teman Saya</string>
@@ -1414,6 +1414,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
         Proses verifikasi maksimal 2x24 jam. Pastikan data yang dimasukkan benar. Kami akan memproses secara hukum.</string>
     <string name="prepaid_title">Voucher Pulsa Handphone</string>
     <string name="postpaid_title">Tagihan Pascabayar</string>
+    <string name="data_title">Paket Data Handphone</string>
+    <string name="pln_title">Voucher Token Listrik</string>
     <string name="token_listrik">Token Listrik</string>
     <string name="tagihan_listrik">Tagihan Listrik</string>
     <string name="please_wait">Harap Menunggu...</string>
@@ -1428,4 +1430,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="upgrade">U P G R A D E</string>
     <string name="terms_bank_acct">*wajib memiliki rekening Bank</string>
     <string name="resent_otp">Resent OTP</string>
+    <string name="menu_title_ctr">Cash Collection</string>
+    <string name="business_name">Nama Usaha</string>
+    <string name="amount_deposit">Jumlah Setoran</string>
+    <string name="are_you_sure">Apakah Anda Yakin?</string>
 </resources>

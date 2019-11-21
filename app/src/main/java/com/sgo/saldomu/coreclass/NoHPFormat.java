@@ -20,7 +20,7 @@ public class NoHPFormat {
                 mobileDestination = BuildConfig.SMS_CENTER_TSEL;
                 break;
             case "89":  //TRI
-                mobileDestination = BuildConfig.SMS_CENTER_TSEL;
+                mobileDestination = BuildConfig.SMS_CENTER_3;
                 break;
             case "01":  //INDOSAT
                 mobileDestination = BuildConfig.SMS_CENTER_IND;

@@ -44,9 +44,12 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.GetReportDataModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.ReportDataModel;
@@ -408,7 +411,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
                 params.put(WebParams.OFFSET, sp.getString(DefineValue.OFFSET, ""));
             }
-
+            Timber.d("isi param report : " + params);
             RetrofitService.getInstance().PostObjectRequest(url, params,
                     new ResponseListener() {
                         @Override
@@ -418,9 +421,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                 String code;
                                 JSONObject temp = new JSONObject(getGson().toJson(object));
 
-                                if (temp.optString("report_data", "").equals("")){
+                                if (temp.optString("report_data", "").equals("")) {
                                     code = "0003";
-                                }else {
+                                } else {
 
                                     reportListModel = getGson().fromJson(object, GetReportDataModel.class);
 
@@ -454,10 +457,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                             emptyLayout.setVisibility(View.GONE);
                                         }
 
-                                        if (report_type == REPORT_FEE){
+                                        if (report_type == REPORT_FEE) {
                                             SummaryFeeModel = new SummaryReportFeeModel();
                                             SummaryFeeModel.setTotal_transaction(reportListModel.getReport_data().size());
-                                            for (ReportDataModel model: reportListModel.getReport_data()) {
+                                            for (ReportDataModel model : reportListModel.getReport_data()) {
                                                 getSummaryFee(SummaryFeeModel, model);
                                             }
 
@@ -495,6 +498,15 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                         lv_report.setVisibility(View.GONE);
                                         emptyLayout.setVisibility(View.VISIBLE);
                                         NotifyDataChange();
+                                    } else if (code.equals(DefineValue.ERROR_9333)) {
+                                        Timber.d("isi response app data:" + reportListModel.getApp_data());
+                                        final AppDataModel appModel = reportListModel.getApp_data();
+                                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    } else if (code.equals(DefineValue.ERROR_0066)) {
+                                        Timber.d("isi response maintenance:" + object.toString());
+                                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                        alertDialogMaintenance.showDialogMaintenance(getActivity(), reportListModel.getError_message());
                                     } else {
                                         date_from = (Calendar) bak_date_from.clone();
                                         String dedate = getString(R.string.from) + " :\n" + date_from.get(Calendar.DAY_OF_MONTH) + "-" + (date_from.get(Calendar.MONTH) + 1) + "-" + date_from.get(Calendar.YEAR);
@@ -641,6 +653,15 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginMain(getActivity(), message);
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + object.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                 } else {
                                     String msg = model.getError_message();
 
@@ -705,9 +726,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 showReportEMODialog(response);
             } else if (_object.getBuss_scheme_code().equals("BDK")) {
                 showReportBDKDialog(response);
-            }else if (_object.getBuss_scheme_code().equals("DGI")) {
+            } else if (_object.getBuss_scheme_code().equals("DGI")) {
                 showReportCollectorDialog(response);
-            }else if (_object.getBuss_scheme_code().equals("SG3")) {
+            } else if (_object.getBuss_scheme_code().equals("SG3")) {
                 showReportSOFDialog(response);
             }
         }
@@ -1061,7 +1082,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.TX_ID, response.getTx_id());
         args.putString(DefineValue.USERID_PHONE, response.getMember_cust_id());
         args.putString(DefineValue.DENOM_DATA, response.getPayment_name());
-        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
+        double amount = Double.parseDouble(response.getTotal_amount()) -
+                Double.parseDouble(response.getAdmin_fee()) -
+                Double.parseDouble(response.getAdditional_fee());
+        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER);
         args.putString(DefineValue.PRODUCT_NAME, response.getProduct_name());
         args.putString(DefineValue.DESTINATION_REMARK, response.getPayment_remark());
@@ -1192,7 +1216,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
-        args.getString(DefineValue.TX_ID, args.getString(DefineValue.TX_ID) );
+        args.getString(DefineValue.TX_ID, args.getString(DefineValue.TX_ID));
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);

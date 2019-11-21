@@ -215,7 +215,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
 
         if (buss_scheme_code != null || type != null) {
-            if (buss_scheme_code.equalsIgnoreCase("CTA")) {
+            if (buss_scheme_code.equalsIgnoreCase("CTA")||buss_scheme_code.equalsIgnoreCase("CTR")) {
                 if (type.equals(DefineValue.BBS_CASHIN)) {
                     stub.setLayoutResource(R.layout.layout_dialog_report_bbs_cashin);
                     View inflated = stub.inflate();
@@ -256,7 +256,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                     if (args.getBoolean(DefineValue.IS_MEMBER_CTA) == true) {
                         tv_produk_agent.setVisibility(View.GONE);
-//                        tv_source_acc_name_value.setVisibility(View.GONE);
+                        tv_source_acc_name_value.setVisibility(View.GONE);
                         v_produk_agent.setVisibility(View.GONE);
                     }
 
@@ -451,7 +451,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
                 if (args.getString(DefineValue.BUSS_SCHEME_NAME).equalsIgnoreCase("Pembelian Paket Data")){
-                    tableLayoutDestination.setVisibility(View.VISIBLE);
+//                    tableLayoutDestination.setVisibility(View.VISIBLE);
                     tv_destinationValue.setText(args.getString(DefineValue.DESTINATION_REMARK));
                 }
 

@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.sgo.saldomu.Beans.DenomBankListData;
 import com.sgo.saldomu.Beans.DenomListModel;
 import com.sgo.saldomu.Beans.DenomOrderListModel;
@@ -31,8 +32,12 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DenomItemDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONArray;
@@ -44,7 +49,7 @@ import java.util.HashMap;
 
 import timber.log.Timber;
 
-public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.listener{
+public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.listener {
 
     View v;
     ArrayAdapter<String> bankProductAdapter;
@@ -61,13 +66,13 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     ArrayList<DenomBankListData> bankDataList;
     SCADMCommunityModel obj;
 
-    String memberCode,commCode, memberId, commId;
+    String memberCode, commCode, memberId, commId;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        v = inflater.inflate(R.layout.fragment_denom, container,false);
+        v = inflater.inflate(R.layout.fragment_denom, container, false);
         CommCodeTextview = v.findViewById(R.id.frag_denom_comm_code_field);
         CommNameTextview = v.findViewById(R.id.frag_denom_comm_name_field);
         MemberCodeTextview = v.findViewById(R.id.frag_denom_member_code_field);
@@ -85,7 +90,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
         itemList = new ArrayList<>();
         itemListString = new ArrayList<>();
-        itemListAdapter = new DenomItemListAdapter(getActivity(), itemList,this, false);
+        itemListAdapter = new DenomItemListAdapter(getActivity(), itemList, this, false);
 //        denomListSpinAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, itemListString);
 //        denomListSpinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -112,13 +117,13 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
         Bundle bundle = getArguments();
 
-        commCode = bundle.getString(DefineValue.COMMUNITY_CODE,"");
+        commCode = bundle.getString(DefineValue.COMMUNITY_CODE, "");
         commId = bundle.getString(DefineValue.COMMUNITY_ID, "");
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkInput()){
+                if (checkInput()) {
                     Fragment frag = new FragmentDenomConfirm();
 
                     Bundle bundle = new Bundle();
@@ -130,7 +135,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                     frag.setArguments(bundle);
 
                     SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
-                }else
+                } else
                     Toast.makeText(getActivity(), "Daftar denom kosong", Toast.LENGTH_SHORT).show();
             }
         });
@@ -138,9 +143,9 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         toogleDenomList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (itemListRv.getVisibility() == View.VISIBLE){
+                if (itemListRv.getVisibility() == View.VISIBLE) {
                     itemListRv.setVisibility(View.GONE);
-                }else itemListRv.setVisibility(View.VISIBLE);
+                } else itemListRv.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -152,10 +157,10 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         getBankProductList();
     }
 
-    boolean checkInput(){
+    boolean checkInput() {
 
-        for (DenomListModel obj: itemList) {
-            if (obj.getOrderList().size()>0) {
+        for (DenomListModel obj : itemList) {
+            if (obj.getOrderList().size() > 0) {
                 DataManager.getInstance().setItemList(itemList);
                 return true;
             }
@@ -164,8 +169,8 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         return false;
     }
 
-    void getBankProductList(){
-        try{
+    void getBankProductList() {
+        try {
 
             showProgressDialog();
 
@@ -175,7 +180,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
 
-            Timber.d("isi params sent get bank list denom:"+params.toString());
+            Timber.d("isi params sent get bank list denom:" + params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_BANK_DENOM_SCADM, params,
                     new ObjListeners() {
@@ -183,17 +188,19 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                         public void onResponses(JSONObject response) {
                             try {
 
-                                Timber.d("isi response get bank list denom:"+response.toString());
+                                Gson gson = new Gson();
+                                jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
+                                Timber.d("isi response get bank list denom:" + response.toString());
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                    if (bankProductList.size()>0) {
+                                    if (bankProductList.size() > 0) {
                                         bankProductList.clear();
                                         bankDataList.clear();
                                     }
 
                                     JSONArray bankArr = response.getJSONArray("bank");
-                                    for (int i=0; i<bankArr.length(); i++){
+                                    for (int i = 0; i < bankArr.length(); i++) {
                                         JSONObject bankObj = bankArr.getJSONObject(i);
                                         bankDataList.add(new DenomBankListData(bankObj));
                                         bankProductList.add(bankObj.optString("product_name"));
@@ -203,15 +210,23 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
                                     getDenomList();
 
-                                } else if(code.equals(WebParams.LOGOUT_CODE)){
-                                    Timber.d("isi response autologout:"+response.toString());
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(),message);
-                                }
-                                else {
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                } else {
                                     String msg = response.getString(WebParams.ERROR_MESSAGE);
-//                            showDialog(msg);
+//                            showDialogUpdate(msg);
                                 }
 
                             } catch (JSONException e) {
@@ -229,15 +244,15 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                             dismissProgressDialog();
                         }
                     });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:" + e.getMessage());
         }
 
     }
 
-    void getDenomList(){
-        try{
+    void getDenomList() {
+        try {
 
             extraSignature = obj.getMember_id_scadm();
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_LIST, extraSignature);
@@ -245,26 +260,28 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
 
-            Timber.d("isi params sent get denom list:"+params.toString());
+            Timber.d("isi params sent get denom list:" + params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_DENOM_LIST, params,
                     new ObjListeners() {
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                Gson gson = new Gson();
+                                jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
 
-                                Timber.d("isi response get denom list:"+response.toString());
+                                Timber.d("isi response get denom list:" + response.toString());
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                    if (itemList.size()>0) {
+                                    if (itemList.size() > 0) {
                                         itemList.clear();
                                         itemListString.clear();
                                     }
 
                                     JSONArray dataArr = response.getJSONArray("item");
 
-                                    for (int i=0; i<dataArr.length(); i++){
+                                    for (int i = 0; i < dataArr.length(); i++) {
                                         JSONObject dataObj = dataArr.getJSONObject(i);
                                         DenomListModel denomObj = new DenomListModel(dataObj);
 
@@ -276,15 +293,23 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 //                            denomListSpinAdapter.notifyDataSetChanged();
 
 
-                                } else if(code.equals(WebParams.LOGOUT_CODE)){
-                                    Timber.d("isi response autologout:"+response.toString());
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(),message);
-                                }
-                                else {
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    final AppDataModel appModel = model.getApp_data();
+                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                } else if (code.equals(DefineValue.ERROR_0066)) {
+                                    Timber.d("isi response maintenance:" + response.toString());
+                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                }else {
                                     String msg = response.getString(WebParams.ERROR_MESSAGE);
-//                            showDialog(msg);
+//                            showDialogUpdate(msg);
                                 }
 
                             } catch (JSONException e) {
@@ -302,9 +327,9 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                             dismissProgressDialog();
                         }
                     });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:" + e.getMessage());
         }
 
     }

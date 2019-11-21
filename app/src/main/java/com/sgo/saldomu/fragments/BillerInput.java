@@ -48,8 +48,7 @@ import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.utils.Converter;
-
-import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -322,7 +321,13 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_RMH));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
-        } else if (biller_type_code.equals(billerType[18]) || biller_type_code.equals(billerType[20])) {
+        } else if (biller_type_code.equals(billerType[18])) {
+            buy_type = _buy_type[0];
+            buy_code = BillerActivity.PURCHASE_TYPE;
+            generateRandomString(20);
+            tv_payment_remark.setVisibility(View.GONE);
+            et_payment_remark.setVisibility(View.GONE);
+        }else if (biller_type_code.equals(billerType[20])) {
             buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
@@ -468,9 +473,9 @@ public class BillerInput extends Fragment {
                 if (inputValidation()) {
                     if (biller_type_code.equals(billerType[0]))
                         final_payment_remark = NoHPFormat.formatTo62(String.valueOf(et_payment_remark.getText()));
-//                    else if (biller_type_code.equals(billerType[18])) {
-//                        final_payment_remark = sp.getString(DefineValue.USERID_PHONE, "");
-//                    }
+                    else if (biller_type_code.equals(billerType[18])) {
+                        final_payment_remark = generateRandomString(20);
+                    }
                     else
                         final_payment_remark = String.valueOf(et_payment_remark.getText());
                     showDialog(final_payment_remark);
@@ -528,9 +533,9 @@ public class BillerInput extends Fragment {
 //        if(biller_type_code.equalsIgnoreCase(billerType[17]))
 //            mArgs.putString(DefineValue.VALUE_ITEM_DATA, "1");
 
-        Fragment mFrag = new BillerDesciption();
+        Fragment mFrag = new BillerDesciption2();
         mFrag.setArguments(mArgs);
-        switchFragment(mFrag, BillerActivity.FRAG_BIL_INPUT, null, true, BillerDesciption.TAG);
+        switchFragment(mFrag, BillerActivity.FRAG_BIL_INPUT, null, true, BillerDesciption2.TAG);
 
     }
 
@@ -559,6 +564,18 @@ public class BillerInput extends Fragment {
         }
 
         return true;
+    }
+
+    public String generateRandomString(int length) {
+        String randomString = "";
+
+        final char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890".toCharArray();
+        final SecureRandom random = new SecureRandom();
+        for (int i = 0; i < length; i++) {
+            randomString = randomString + chars[random.nextInt(chars.length)];
+        }
+
+        return randomString;
     }
 
     @Override

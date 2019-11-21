@@ -87,12 +87,12 @@ public class MyApiClient {
     private static String LINK_REGISTRASI;
     private static String LINK_VALID_REGISTRASI;
     public static String LINK_LOGIN;
-    public static String LINK_LOGIN_temp;
     public static String LINK_VALID_TOPUP;
     public static String LINK_LIST_MEMBER;
     public static String LINK_REQ_TOKEN_SGOL;
     public static String LINK_RESEND_TOKEN_SGOL;
     public static String LINK_INSERT_TRANS_TOPUP;
+    public static String LINK_INSERT_TRANS_TOPUP_NEW;
     public static String LINK_SALDO;
     public static String LINK_SALDO_COLLECTOR;
     //public static final String LINK_BANK_LIST;
@@ -207,8 +207,8 @@ public class MyApiClient {
     public static String LINK_RESEND_TOKEN_LKD;
     public static String LINK_BBS_CITY;
     public static String LINK_BBS_BIRTH_PLACE;
-    public static String LINK_GLOBAL_BBS_COMM;
-    public static String LINK_GLOBAL_BBS_BANK_C2A;
+//    public static String LINK_GLOBAL_BBS_COMM;
+//    public static String LINK_GLOBAL_BBS_BANK_C2A;
     public static String LINK_GLOBAL_BBS_INSERT_C2A;
     public static String LINK_BBS_BANK_ACCOUNT;
     public static String LINK_BBS_BANK_ACCOUNT_DELETE;
@@ -222,6 +222,7 @@ public class MyApiClient {
     public static String LINK_GLOBAL_BBS_INSERT_A2C;
     public static String LINK_BBS_LIST_MEMBER_A2C;
     public static String LINK_BBS_OTP_MEMBER_A2C;
+    public static String LINK_GLOBAL_BBS_INSERT_C2R;
 
     public static String LINK_BBS_LIST_COMMUNITY_ALL;
     public static String LINK_REG_TOKEN_FCM;
@@ -279,6 +280,8 @@ public class MyApiClient {
     public static String LINK_EXEC_UPGRADE_MEMBER;
     public static String LINK_REQ_UPGRADE_MEMBER;
     public static String LINK_GET_BILLER_DENOM;
+    public static String LINK_GET_ANCHOR_COMMUNITIES;
+    public static String LINK_INQUIRY_CUSTOMER_ACCT;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -287,12 +290,12 @@ public class MyApiClient {
         LINK_REG_STEP3           = headaddressfinal + "RegStep3/Invoke";
         LINK_VALID_REGISTRASI    = headaddressfinal + "InsertCustomer/Invoke";
         LINK_LOGIN               = headaddressfinal + "MemberLogin/SignIn";
-        LINK_LOGIN_temp          = headaddressfinal + "MemberLoginTemp/SignIn";
         LINK_VALID_TOPUP         = headaddressfinal + "TopUp/Invoke";
         LINK_LIST_MEMBER         = headaddressfinal + "Member/Retrieve";
         LINK_REQ_TOKEN_SGOL      = headaddressfinal + "InquiryTrx/Retrieve";
         LINK_RESEND_TOKEN_SGOL   = headaddressfinal + "InquiryResendToken/Invoke";
         LINK_INSERT_TRANS_TOPUP  = headaddressfinal + "InsertTrx/Invoke";
+        LINK_INSERT_TRANS_TOPUP_NEW  = headaddressfinal + "InsertTrxNew/Invoke";
         LINK_SALDO               = headaddressfinal + "Balance/Retrieve";
         //LINK_BANK_LIST           = headaddressfinal + "BankList/Retrieve";
         LINK_BANK_LIST           = headaddressfinal + "BankMember/Retrieve";
@@ -404,10 +407,11 @@ public class MyApiClient {
 
         LINK_RESEND_TOKEN_LKD       = headaddressfinal + "ResendToken/Invoke";
         LINK_BBS_CITY               = headaddressfinal + "ServiceBBSCity/getAllBBSCity";
-        LINK_GLOBAL_BBS_COMM        = headaddressfinal + "GlobalBBSComm/Retrieve";
-        LINK_GLOBAL_BBS_BANK_C2A    = headaddressfinal + "GlobalBBSBankC2A/Retrieve";
+//        LINK_GLOBAL_BBS_COMM        = headaddressfinal + "GlobalBBSComm/Retrieve";
+//        LINK_GLOBAL_BBS_BANK_C2A    = headaddressfinal + "GlobalBBSBankC2A/Retrieve";
         LINK_GLOBAL_BBS_INSERT_C2A  = headaddressfinal + "GlobalBBSInsertC2A/Invoke";
-        LINK_BBS_BANK_ACCOUNT       = headaddressfinal + "BBSBankAccount/Retrieve";
+        LINK_GLOBAL_BBS_INSERT_C2R  = headaddressfinal + "GlobalBBSInsertC2R/Invoke";
+//        LINK_BBS_BANK_ACCOUNT       = headaddressfinal + "BBSBankAccount/Retrieve";
         LINK_BBS_BANK_ACCOUNT_DELETE = headaddressfinal + "DelBBSBankAcct/Invoke";
         LINK_BBS_BANK_REG_ACCT      = headaddressfinal + "BBSBankRegAcct/Retrieve";
         LINK_BBS_CONFIRM_ACCT       = headaddressfinal + "BBSConfirmAcct/Invoke";
@@ -416,7 +420,7 @@ public class MyApiClient {
         LINK_BBS_GLOBAL_COMM        = headaddressfinal + "GlobalComm/Retrieve";
         LINK_BBS_BIRTH_PLACE        = headaddressfinal + "ServiceBBSBirthPlace/Retrieve";
         LINK_TRX_STATUS_BBS         = headaddressfinal + "TrxBBSStatus/Retrieve";
-        LINK_GLOBAL_BBS_BANK_A2C    = headaddressfinal + "GlobalBBSBankA2C/Retrieve";
+//        LINK_GLOBAL_BBS_BANK_A2C    = headaddressfinal + "GlobalBBSBankA2C/Retrieve";
         LINK_GLOBAL_BBS_INSERT_A2C  = headaddressfinal + "GlobalBBSInsertA2C/Invoke";
         LINK_BBS_LIST_MEMBER_A2C    = headaddressfinal + "BBSListMemberATC/Retrieve";
         LINK_BBS_OTP_MEMBER_A2C     = headaddressfinal + "BBSOTPMemberATC/Invoke";
@@ -483,6 +487,9 @@ public class MyApiClient {
 
         LINK_GET_BILLER_DENOM     = headaddressfinal + "BillerEspayNew/Retrieve";
 
+        LINK_GET_ANCHOR_COMMUNITIES = headaddressfinal + "invoice/Getanchor/Communities";
+
+        LINK_INQUIRY_CUSTOMER_ACCT = headaddressfinal + "InquiryCustomerAcct/Invoke";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
@@ -532,7 +539,7 @@ public class MyApiClient {
     public static String URL_TERMS_PROD = "https://mobile.saldomu.com/static/pages/help/pin_terms_conditions_id_saldomu.html";
     public static String URL_TERMS_DEV = URL_HELP_DEV +"pin_terms_conditions_id_saldomu.html";
 
-    public static String LINK_SEARCH_AGENT = "http://116.90.162.173:59088/aod/SearchAgent/Retrieve";
+    public static String LINK_SEARCH_AGENT = headaodaddressfinal + "SearchAgentUpgrade/Retrieve";
     public static String LINK_CATEGORY_LIST = headaodaddressfinal + "Category/Retrieve";
     public static String LINK_MEMBER_SHOP_LIST = headaodaddressfinal + "Membershop/Retrieve";
     public static String LINK_MEMBER_SHOP_DETAIL = headaodaddressfinal + "Membershop/Detailmember";

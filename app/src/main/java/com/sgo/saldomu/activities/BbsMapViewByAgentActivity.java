@@ -54,10 +54,14 @@ import com.sgo.saldomu.coreclass.Singleton.InterfaceManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ConfirmDialogInterface;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.json.JSONArray;
@@ -511,7 +515,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                 }
                                 tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
 
-                                if (response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA)) {
+                                if (response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ||
+                                        response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTR)) {
                                     tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
                                 } else if (response.getString(WebParams.SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
                                     btnCancel.setVisibility(View.VISIBLE);
@@ -883,6 +888,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.KEY_VALUE, "");
         params.put(WebParams.SHOP_PHONE, userPhoneID);
         params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.LATITUDE, agentLatitude);
+        params.put(WebParams.LONGITUDE, agentLongitude);
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TRANSACTION_BY_AGENT, params,
                 new ObjListeners() {
@@ -912,9 +919,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                             bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
                                         } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.ATC)) {
                                             bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
-                                        }
-
-                                        if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
+                                        }else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
                                             Intent intent = new Intent(getApplicationContext(), TagihActivity.class);
                                             intent.putExtra(DefineValue.IS_SEARCH_DGI, true);
                                             if (response.getString(WebParams.COMM_CODE_PG) != null || response.getString(WebParams.MEMBER_CODE_PG) != null) {
@@ -922,11 +927,18 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                                 intent.putExtra(DefineValue.COMM_CODE_PG, response.getString(WebParams.COMM_CODE_PG));
                                                 intent.putExtra(DefineValue.COMM_NAME_PG, response.getString(WebParams.COMM_NAME_PG));
                                                 intent.putExtra(DefineValue.ANCHOR_NAME_PG, response.getString(WebParams.ANCHOR_NAME_PG));
+                                                intent.putExtra(DefineValue.TXID_PG, txId);
                                             }
                                             startActivity(intent);
                                             finish();
-
-                                        } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
+                                        } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.CTR)) {
+                                            Intent intent = new Intent(getApplicationContext(), CashCollectionActivity.class);
+                                            intent.putExtra(DefineValue.BANK_CODE, response.optString(WebParams.BANK_CODE));
+                                            intent.putExtra(DefineValue.IS_SEARCH_CTR, true);
+                                            intent.putExtra(DefineValue.AMOUNT, response.optString(WebParams.AMOUNT));
+                                            startActivity(intent);
+                                            finish();
+                                        }else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
                                             Intent intent = new Intent(getApplicationContext(), MainPage.class);
                                             startActivity(intent);
                                             finish();
@@ -1013,6 +1025,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     @Override
                     public void onResponses(JSONObject response) {
                         try {
+                            jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
 
                             String code = response.getString(WebParams.ERROR_CODE);
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);
@@ -1021,7 +1034,16 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                                 finish();
 
-                            } else {
+                            }  else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(BbsMapViewByAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(BbsMapViewByAgentActivity.this, model.getError_message());
+                            }else {
                                 Toast.makeText(BbsMapViewByAgentActivity.this, response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
                             }
 

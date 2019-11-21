@@ -57,8 +57,14 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.BankBillerItem;
+import com.sgo.saldomu.models.BillerItem;
+import com.sgo.saldomu.models.DenomDataItem;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.InqBillerModel;
 import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
@@ -119,9 +125,9 @@ public class BillerDesciption extends BaseFragment {
     private Spinner spin_payment_options;
     private List<String> paymentData;
     private ArrayAdapter<String> adapterPaymentOptions;
-    private Biller_Data_Model mBillerData;
-    private List<bank_biller_model> mListBankBiller;
-    private List<Denom_Data_Model> mListDenomData;
+    private BillerItem mBillerData;
+    private List<BankBillerItem> mListBankBiller;
+    private List<DenomDataItem> mListDenomData;
     private Realm realm;
     Boolean isPLN = false;
     String fee = "0", deAmount, enabledAdditionalFee;
@@ -156,7 +162,8 @@ public class BillerDesciption extends BaseFragment {
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);
 
-        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+//        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+        realm = Realm.getInstance(RealmManager.realmConfiguration);
 
         initializeData();
 
@@ -174,24 +181,25 @@ public class BillerDesciption extends BaseFragment {
 
         biller_comm_id = args.getString(DefineValue.COMMUNITY_ID);
         biller_name = args.getString(DefineValue.COMMUNITY_NAME, "");
-        mBillerData = realm.where(Biller_Data_Model.class).
+        mBillerData = realm.where(BillerItem.class).
                 equalTo(WebParams.COMM_ID, biller_comm_id).
                 equalTo(WebParams.COMM_NAME, biller_name).
                 findFirst();
 
-        mListBankBiller = realm.copyFromRealm(mBillerData.getBank_biller_models());
-        mListDenomData = realm.copyFromRealm(mBillerData.getDenom_data_models());
+        mListBankBiller = realm.copyFromRealm(mBillerData.getBankBiller());
+        mListDenomData = realm.copyFromRealm(mBillerData.getDenomData());
         shareType = args.getString(DefineValue.SHARE_TYPE, "");
         item_id = args.getString(DefineValue.ITEM_ID, "");
         if (item_id.equals(""))
-            item_id = mListDenomData.get(0).getItem_id();
+            item_id = mListDenomData.get(0).getItemId();
         cust_id = args.getString(DefineValue.CUST_ID, "");
         buy_type = args.getInt(DefineValue.BUY_TYPE, 0);
         biller_type_code = args.getString(DefineValue.BILLER_TYPE);
 
-        biller_comm_code = mBillerData.getComm_code();
-        biller_api_key = mBillerData.getApi_key();
-        callback_url = mBillerData.getCallback_url();
+        biller_comm_code = mBillerData.getCommCode();
+        biller_api_key = mBillerData.getApiKey();
+//        callback_url = mBillerData.getCallback_url();
+        callback_url = "";
 
         if (biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS) ||
                 biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_NON_TAG) ||
@@ -206,7 +214,6 @@ public class BillerDesciption extends BaseFragment {
 
         tv_item_name_value.setText(item_name);
         tv_id_cust.setText(cust_id);
-        tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(amount));
         View amount_layout = v.findViewById(R.id.billertoken_amount_layout);
         if (is_display_amount) {
             amount_layout.setVisibility(View.VISIBLE);
@@ -216,7 +223,7 @@ public class BillerDesciption extends BaseFragment {
             tv_biller_name_value.setText(biller_name);
             if (is_display_amount ) {
                 if (biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN_TKN) || biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_EMON))
-                initializeDescriptionLayout();
+                    initializeDescriptionLayout();
             }
         } else if (buy_type == BillerActivity.PAYMENT_TYPE) {
             layout_biller_name.setVisibility(View.GONE);
@@ -260,12 +267,12 @@ public class BillerDesciption extends BaseFragment {
             paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
 
             for (int i = 0; i < mListBankBiller.size(); i++) {
-                if (mListBankBiller.get(i).getProduct_code().equals(DefineValue.SCASH)) {
+                if (mListBankBiller.get(i).getProductCode().equals(DefineValue.SCASH)) {
                     paymentData.add(getString(R.string.appname));
 //                    tempDataPaymentName.add(getString(R.string.appname));
-                    mListBankBiller.get(i).setProduct_name(getString(R.string.appname));
+                    mListBankBiller.get(i).setProductName(getString(R.string.appname));
                 } else {
-                    tempDataPaymentName.add(mListBankBiller.get(i).getProduct_name());
+                    tempDataPaymentName.add(mListBankBiller.get(i).getProductName());
                 }
             }
             if (!tempDataPaymentName.isEmpty())
@@ -379,13 +386,13 @@ public class BillerDesciption extends BaseFragment {
 //                payment_name.equalsIgnoreCase("S-Cash");
 //            }
             for (i = 0; i < mListBankBiller.size(); i++) {
-                if (payment_name.equals(mListBankBiller.get(i).getProduct_name())) {
-                    mTempBank = new listBankModel(mListBankBiller.get(i).getBank_code(),
-                            mListBankBiller.get(i).getBank_name(),
-                            mListBankBiller.get(i).getProduct_code(),
-                            mListBankBiller.get(i).getProduct_name(),
-                            mListBankBiller.get(i).getProduct_type(),
-                            mListBankBiller.get(i).getProduct_h2h());
+                if (payment_name.equals(mListBankBiller.get(i).getProductName())) {
+                    mTempBank = new listBankModel(mListBankBiller.get(i).getBankCode(),
+                            mListBankBiller.get(i).getBankName(),
+                            mListBankBiller.get(i).getProductCode(),
+                            mListBankBiller.get(i).getProductName(),
+                            mListBankBiller.get(i).getProductType(),
+                            mListBankBiller.get(i).getProductH2h());
                 }
             }
         }
@@ -509,7 +516,16 @@ public class BillerDesciption extends BaseFragment {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            } else {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            }else {
                                 code = model.getError_code() + " : " + model.getError_message();
                                 if (isVisible()) {
 
@@ -598,6 +614,15 @@ public class BillerDesciption extends BaseFragment {
                                 String message = sentPaymentBillerModel.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + sentPaymentBillerModel.getApp_data());
+                                final AppDataModel appModel = sentPaymentBillerModel.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), sentPaymentBillerModel.getError_message());
                             } else {
                                 code = sentPaymentBillerModel.getError_code() + " : " + sentPaymentBillerModel.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -664,6 +689,15 @@ public class BillerDesciption extends BaseFragment {
                                 code = model.getError_message();
                                 showDialogError(code);
 
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                             } else {
                                 String code_msg = model.getError_message();
                                 switch (code) {
@@ -827,7 +861,6 @@ public class BillerDesciption extends BaseFragment {
         mArgs.putString(DefineValue.CALLBACK_URL, callback_url);
         mArgs.putString(DefineValue.ITEM_ID, item_id);
         mArgs.putString(DefineValue.FEE, sentPaymentBillerModel.getFee());
-        double totalAmount = amount + Double.parseDouble(fee);
         mArgs.putString(DefineValue.TOTAL_AMOUNT, sentPaymentBillerModel.getTotal_amount());
         mArgs.putString(DefineValue.PRODUCT_PAYMENT_TYPE, mTempBank.getProduct_type());
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
@@ -849,6 +882,7 @@ public class BillerDesciption extends BaseFragment {
 
         if (getIs_input_amount()) {
             String desired_amount = et_desired_amount.getText().toString();
+            double totalAmount = amount + Double.parseDouble(fee);
             totalAmount = Double.parseDouble(desired_amount) + Double.parseDouble(fee);
             mArgs.putString(DefineValue.AMOUNT_DESIRED, desired_amount);
             mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(totalAmount));

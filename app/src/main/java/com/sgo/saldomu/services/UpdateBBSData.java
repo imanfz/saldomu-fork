@@ -42,6 +42,7 @@ public class UpdateBBSData extends IntentService {
     final public static int FAILED = 10;
     final String CTA = "CTA";
     final String ATC = "ATC";
+    final String CTR = "CTR";
 
     SecurePreferences sp;
     private ResultReceiver localResultReceiver;
@@ -50,6 +51,7 @@ public class UpdateBBSData extends IntentService {
     String curr_date;
     boolean ctaState = false;
     boolean atcState = false;
+    boolean ctrState = false;
 
     public UpdateBBSData() {
         super("UpdateBBSData");
@@ -77,10 +79,17 @@ public class UpdateBBSData extends IntentService {
                 getBBSdata(ATC);
             else
                 atcState = true;
+
+            if (BBSDataManager.isDataCTRNotValid())
+                getBBSdata(CTR);
+            else
+                ctrState=true;
+
+
         } else
             Timber.d("user id atau access key kosong semua");
 
-        if (!ctaState && !atcState) {
+        if (!ctaState && !atcState && !ctrState) {
             sentFailed(null);
             setIsDataUpdated(false);
         } else {
@@ -107,6 +116,10 @@ public class UpdateBBSData extends IntentService {
 
     void setDateDataATC(String value) {
         sp.edit().putString(DefineValue.UPDATE_TIME_BBS_ATC_DATA, value).apply();
+    }
+
+    void setDateDataCTR(String value) {
+        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_CTR_DATA, value).apply();
     }
 
     boolean getMustUpdateBBSData() {
@@ -209,7 +222,10 @@ public class UpdateBBSData extends IntentService {
             if (scheme_code.equalsIgnoreCase(CTA)) {
                 ctaState = true;
                 setDateDataCTA(curr_date);
-            } else {
+            } else if (scheme_code.equalsIgnoreCase(CTR)) {
+                ctrState = true;
+                setDateDataCTR(curr_date);
+            }else {
                 atcState = true;
                 setDateDataATC(curr_date);
             }

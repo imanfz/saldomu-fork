@@ -21,16 +21,23 @@ class FavoriteActivity : BaseActivity() {
     fun startBillerActivity(model: FavoriteModel) {
         var intent = Intent(this, BillerActivity::class.java)
         intent.putExtra(DefineValue.BILLER_TYPE, model.product_type)
-        intent.putExtra(DefineValue.BILLER_NAME, model.item_name)
+        if (model.product_type == "DATA")
+            intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.data_title))
+        if (model.product_type == "PLS")
+            intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.prepaid_title))
+        if (model.product_type == "HP")
+            intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.postpaid_title))
+        if (model.product_type == "TKN"||model.product_type == "PLN")
+            intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.pln_title))
         intent.putExtra(DefineValue.COMMUNITY_ID, model.comm_id)
         intent.putExtra(DefineValue.ITEM_ID, model.item_id)
-        if (model.comm_name.contains("OVO")){
+        if (model.comm_name.contains("OVO")) {
             intent.putExtra(DefineValue.COMMUNITY_NAME, model.comm_name)
         } else {
             intent.putExtra(DefineValue.COMMUNITY_NAME, model.item_name)
         }
 
-        intent.putExtra(DefineValue.BILLER_TYPE, model.product_type)
+
         intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
 
         startActivity(intent)
@@ -85,13 +92,6 @@ class FavoriteActivity : BaseActivity() {
 
         // Give the TabLayout the ViewPager
         tab_layout.setupWithViewPager(viewPager)
-    }
-
-    private fun setDialog(show: Boolean) {
-        if (show)
-            dialog.show()
-        else
-            dialog.dismiss()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

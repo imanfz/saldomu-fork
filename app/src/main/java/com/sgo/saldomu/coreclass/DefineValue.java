@@ -67,6 +67,8 @@ public class DefineValue {
     public static String ERROR_0017 = "0017" ;
     public static String ERROR_0126 = "0126" ;
     public static String ERROR_0127 = "0127" ;
+    public static String ERROR_9333 = "9333" ;
+    public static String ERROR_0066 = "0066" ;
     public static String SCASH = "SCASH" ;
     public static String PRIVATE = "1" ;
     public static String PUBLIC = "2" ;
@@ -317,6 +319,7 @@ public class DefineValue {
 
     public static String CATEGORY_ID    = "category_id";
     public static String CATEGORY_ID_CTA    = "category_id_cta";
+    public static String CATEGORY_ID_UPG    = "category_id_upg";
     public static String CATEGORY_NAME  = "category_name";
     public static String CATEGORY_CODE  = "category_code";
 
@@ -349,6 +352,7 @@ public class DefineValue {
     public static String IS_JOIN_AGENT = "isJoinAgent";
     public static String ATC = "ATC";
     public static String CTA = "CTA";
+    public static String CTR = "CTR";
     public static String IS_UPDATE = "isUpdate";
     public static String BENEF_CITY = "benefCity";
     public static String BENEF_CITY_CODE = "benefCityCode";
@@ -438,6 +442,7 @@ public class DefineValue {
     public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
     public static String UPDATE_TIME_BBS_CTA_DATA = "updateTimeBBSDataCTA";
     public static String UPDATE_TIME_BBS_ATC_DATA = "updateTimeBBSDataATC";
+    public static String UPDATE_TIME_BBS_CTR_DATA = "updateTimeBBSDataCTR";
     public static String IS_UPDATING_BBS_DATA = "isUpdatingBBSData";
     public static String IS_BBS_DATA_UPDATED = "IsBBSDataUpdated";
     public static String IS_SUCCESS = "isSuccess";
@@ -612,6 +617,13 @@ public class DefineValue {
     public static String BENEF_BANK_CODE= "benef_bank_code";
     public static String MEMBER_CREATED= "member_created";
     public static String PAYMENT_BANK = "paymentBank";
+    public static String LATITUDE_UPDATED = "latitudeUpdated";
+    public static String LONGITUDE_UPDATED = "longitudeUpdated";
+    public static String TXID_PG = "txIdPg";
+    public static String CT_CODE = "CT";
+    public static String BG_CODE = "BG";
+    public static String TS_CODE = "TS";
+    public static String IS_SEARCH_CTR = "isSearchCTR";
 
 }
 

@@ -16,6 +16,8 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.dialogs.AlertDialogLogout
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.jsonModel
@@ -95,6 +97,7 @@ class SearchMemberToVerifyActivity : BaseActivity() {
                             val model = gson.fromJson(response, jsonModel::class.java)
 
                             var code = model.error_code
+                            val message = model.error_message
                             if (code == WebParams.SUCCESS_CODE) {
                                 val custName: String
                                 custName = response.get(WebParams.CUST_NAME).asString
@@ -131,10 +134,18 @@ class SearchMemberToVerifyActivity : BaseActivity() {
                                 tv_membername.setText(maskedName)
 
                             } else if (code == WebParams.LOGOUT_CODE) {
-                                val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(this@SearchMemberToVerifyActivity, message)
-                            } else {
+                            } else if (code == DefineValue.ERROR_9333) run {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(this@SearchMemberToVerifyActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            } else if (code == DefineValue.ERROR_0066) run {
+                                Timber.d("isi response maintenance:$response")
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(this@SearchMemberToVerifyActivity, model.error_message)
+                            }else {
                                 code = model.error_message
                                 Toast.makeText(this@SearchMemberToVerifyActivity, code, Toast.LENGTH_LONG).show()
                             }

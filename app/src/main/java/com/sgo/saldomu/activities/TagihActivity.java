@@ -20,7 +20,7 @@ public class TagihActivity extends BaseActivity {
     FragmentManager fragmentManager;
     Fragment mContent;
     Fragment newFragment = null;
-    private String memberCode,commCode,commName,anchorName;
+    private String memberCode,commCode,commName,anchorName, txIdPG;
 
     @Override
     protected int getLayoutResource() {
@@ -38,6 +38,7 @@ public class TagihActivity extends BaseActivity {
             commCode = intent.getStringExtra(DefineValue.COMM_CODE_PG);
             commName = intent.getStringExtra(DefineValue.COMM_NAME_PG);
             anchorName = intent.getStringExtra(DefineValue.ANCHOR_NAME_PG);
+            txIdPG = intent.getStringExtra(DefineValue.TXID_PG);
         }
         InitializeToolbar();
 
@@ -54,6 +55,7 @@ public class TagihActivity extends BaseActivity {
                 bundle.putString(DefineValue.COMM_CODE_DGI, commCode);
                 bundle.putString(DefineValue.COMM_NAME_PG, commName);
                 bundle.putString(DefineValue.ANCHOR_NAME_PG, anchorName);
+                bundle.putString(DefineValue.TXID_PG, txIdPG);
             }
             newFragment.setArguments(bundle);
         }

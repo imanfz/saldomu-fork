@@ -171,7 +171,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/billerinput_text_id_remark"
                     android:enabled="true"
-                    android:maxLength="32" />
+                    android:maxLength="32"
+                    android:inputType="number"/>
             </LinearLayout>
 
             <LinearLayout
@@ -281,6 +282,39 @@
                         android:textSize="@dimen/abc_text_size_medium_material"
                         android:textStyle="bold" />
                 </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/billerinput_layout_favorite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/save_as_favorite_text_message"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold" />
+
+                    <Switch
+                        android:id="@+id/favorite_switch"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/notes_edit_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Notes"
+                    android:visibility="gone"
+                    android:inputType="text"
+                    android:enabled="false"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
 
             <ScrollView

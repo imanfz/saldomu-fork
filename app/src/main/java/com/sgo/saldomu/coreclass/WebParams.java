@@ -593,5 +593,8 @@ public class WebParams {
     public static String SOURCE_BANK_CODE = "source_bank_code";
     public static String MEMBER_CREATED = "member_created";
     public static String FROM_AGENT = "from_agent";
+    public static String ERROR_9333 = "9333";
+    public static String ERROR_0066 = "0066";
+    public static String LOC_TX_ID = "loc_tx_id";
 
 }

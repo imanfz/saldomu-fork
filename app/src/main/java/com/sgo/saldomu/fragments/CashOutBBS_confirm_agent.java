@@ -34,10 +34,13 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
@@ -261,6 +264,15 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
                                 String message = response.getError_message();
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 tokenValue.setText("");
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + response.getApp_data());
+                                final AppDataModel appModel = response.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), response.getError_message());
                             } else {
 //                            btnSubmit.setEnabled(true);
 //                            String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -326,6 +338,15 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
                                 String message = response.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + response.getApp_data());
+                                final AppDataModel appModel = response.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), response.getError_message());
                             } else {
                                 Timber.d("isi error sentRetryToken:" + response.toString());
                                 String code_msg = response.getError_message();
@@ -400,6 +421,15 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
                                 String message = response.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + response.getApp_data());
+                                final AppDataModel appModel = response.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), response.getError_message());
                             } else {
                                 String msg = response.getError_message();
                                 showDialog(msg);
@@ -558,9 +588,7 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
         params.put(WebParams.TX_FAVORITE_TYPE, "BBS");
         params.put(WebParams.COMM_ID, comm_id);
         params.put(WebParams.NOTES, notesEditText.getText().toString());
-//        params.put(WebParams.BENEF_BANK_CODE, benef_bank_code);
         params.put(WebParams.BENEF_BANK_CODE, source_product_name);
-
         params.put(WebParams.SOURCE_BANK_CODE, tx_bank_code);
 
         Log.e("params ", params.toString());
@@ -570,12 +598,22 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
                     @Override
                     public void onResponses(JSONObject response) {
                         try {
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(response.toString(), jsonModel.class);
                             Log.e("onResponses ", response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            } else {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            }else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {

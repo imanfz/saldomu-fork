@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Point;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,7 +21,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,20 +61,22 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.UserProfileHandler;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.fcm.GooglePlayUtils;
+import com.sgo.saldomu.fragments.FragHelp;
 import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.FragTagihInput;
 import com.sgo.saldomu.fragments.FragmentProfileQr;
-import com.sgo.saldomu.fragments.FragHelp;
 import com.sgo.saldomu.fragments.ListTransfer;
-import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.GetMemberModel;
 import com.sgo.saldomu.models.retrofit.MemberDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
@@ -94,11 +94,9 @@ import com.sgo.saldomu.widgets.BaseFragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import io.realm.Realm;
 import timber.log.Timber;
@@ -128,6 +126,7 @@ public class MainPage extends BaseActivity {
 
     private final static int FIRST_SCREEN_LOGIN = 1;
     private final static int FIRST_SCREEN_INTRO = 2;
+    private final static int FIRST_SCREEN_SPLASHSCREEN = 3;
     private final static int REQCODE_PLAY_SERVICE = 312;
 
 
@@ -336,7 +335,11 @@ public class MainPage extends BaseActivity {
                         }
                     }
                 }
-                openFirstScreen(FIRST_SCREEN_INTRO);
+
+                if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
+                    openFirstScreen(FIRST_SCREEN_SPLASHSCREEN);
+                } else
+                    openFirstScreen(FIRST_SCREEN_INTRO);
             } else {
                 initializeLogin();
             }
@@ -377,7 +380,7 @@ public class MainPage extends BaseActivity {
         isForeground = true;
         agent = sp.getBoolean(DefineValue.IS_AGENT, false);
         UtilsLoader utilsLoader = new UtilsLoader(this, sp);
-        utilsLoader.getAppVersion();
+//        utilsLoader.getAppVersion();
         ActiveAndroid.initialize(this);
         InitializeNavDrawer();
         setupFab();
@@ -985,6 +988,17 @@ public class MainPage extends BaseActivity {
 
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginMain(MainPage.this, message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(MainPage.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + object.toString());
+
+                                Timber.d("isi response maintenance:" + object.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(MainPage.this, model.getError_message());
                             } else {
                                 Timber.d("Error ListMember comlist:" + model.getError_message());
                                 code = model.getError_message();
@@ -1104,6 +1118,9 @@ public class MainPage extends BaseActivity {
             case FIRST_SCREEN_INTRO:
                 i = new Intent(this, Introduction.class);
                 break;
+            case FIRST_SCREEN_SPLASHSCREEN:
+                i = new Intent(this, SplashScreen.class);
+                break;
             default:
                 i = new Intent(this, LoginActivity.class);
                 break;
@@ -1203,6 +1220,8 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.IS_POS);
         mEditor.remove(DefineValue.COMM_UPGRADE_MEMBER);
         mEditor.remove(DefineValue.MEMBER_CREATED);
+        mEditor.remove(DefineValue.LAST_CURRENT_LONGITUDE);
+        mEditor.remove(DefineValue.LAST_CURRENT_LATITUDE);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -1491,7 +1510,7 @@ public class MainPage extends BaseActivity {
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
         }
 
-        if (currentTab.equalsIgnoreCase(userNameLogin)){
+        if (currentTab.equalsIgnoreCase(userNameLogin)) {
             bottomNavigationView.setSelectedItemId(R.id.menu_home);
         }
 

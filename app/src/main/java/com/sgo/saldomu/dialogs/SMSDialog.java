@@ -44,6 +44,7 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.InqSMSModel;
 
 import java.util.Calendar;
@@ -412,6 +413,15 @@ public class SMSDialog extends DialogFragment {
                                             }
                                         }, 3000);
 
+                                    }else if (code.equals(DefineValue.ERROR_9333)) {
+                                        Timber.d("isi response app data:" + model.getApp_data());
+                                        final AppDataModel appModel = model.getApp_data();
+                                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    } else if (code.equals(DefineValue.ERROR_0066)) {
+                                        Timber.d("isi response maintenance:" + object.toString());
+                                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                        alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                     } else {
 //                                            if ()
 //                                idx_fail++;
