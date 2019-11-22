@@ -537,7 +537,6 @@ public class RetrofitService {
                             else
                                 Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
                         }
-
                         listener.onError(e);
                         listener.onComplete();
                     }
