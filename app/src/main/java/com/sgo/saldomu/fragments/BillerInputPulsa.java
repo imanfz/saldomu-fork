@@ -341,7 +341,6 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
 
                         }
                     }
-
                 }
             } else if (buy_type_detail.equalsIgnoreCase("PASCABAYAR")) {
                 for (int i = 0; i < billerItemList.size(); i++) {

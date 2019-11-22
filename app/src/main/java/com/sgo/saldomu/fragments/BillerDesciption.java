@@ -169,8 +169,6 @@ public class BillerDesciption extends BaseFragment {
 
         if (isAdded())
             sentInquiryBiller();
-
-
     }
 
     private void initializeData() {
@@ -255,7 +253,7 @@ public class BillerDesciption extends BaseFragment {
         double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
         deAmount = String.valueOf(mAmount);
         tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(mAmount));
-        tv_total_value.setText(ccy_id + ". " + CurrencyFormat.format(amount));
+        tv_total_value.setText(ccy_id + ". " + CurrencyFormat.format(mAmount));
 //            }
 
         paymentData = new ArrayList<>();
