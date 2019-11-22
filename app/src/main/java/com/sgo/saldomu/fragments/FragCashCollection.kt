@@ -131,22 +131,47 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INQUIRY_CUSTOMER_ACCT, params, object : ResponseListener {
             override fun onResponses(response: JsonObject?) {
+
                 Timber.d("isi response sent cust acct:$response")
                 cashCollectionModel = getGson().fromJson(response, CashCollectionModel::class.java)
-                tv_name.text = cashCollectionModel.customer_name
-                tv_business_name.text = cashCollectionModel.business_name
-                tv_address.text = cashCollectionModel.cust_address
+                when (cashCollectionModel.error_code) {
+                    WebParams.SUCCESS_CODE -> {
+                        divider_id.visibility=View.VISIBLE
+                        tv_name.text = cashCollectionModel.customer_name
+                        tv_business_name.text = cashCollectionModel.business_name
+                        tv_address.text = cashCollectionModel.cust_address
+                        accountListData.clear()
+                        var i = 0
+                        cashCollectionModel.accounts.forEach { result ->
+                            accountList.add(result)
+                            accountListData.add(accountList[i].acct_no)
+                            i++
+                        }
 
-                var i = 0
-                cashCollectionModel.accounts.forEach { result ->
-                    accountList.add(result)
-                    accountListData.add(accountList[i].acct_no)
-                    i++
+                        spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, accountListData)
+                        detail_cash_collection.visibility = View.VISIBLE
+                        layout_acc_amount.visibility = View.VISIBLE
+                    }
+                    WebParams.LOGOUT_CODE -> {
+                        val message = cashCollectionModel.error_message
+                        val test = AlertDialogLogout.getInstance()
+                        test.showDialoginMain(activity, message)
+                    }
+                    WebParams.ERROR_9333 -> {
+                        Timber.d("isi response app data:" + cashCollectionModel.app_data)
+                        val appModel = cashCollectionModel.app_data
+                        val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                        alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                    }
+                    WebParams.ERROR_0066 -> {
+                        val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                        alertDialogMaintenance.showDialogMaintenance(activity, cashCollectionModel.error_message)
+                    }
+                    else -> {
+                        val msg = cashCollectionModel.error_message
+                        showDialog(msg)
+                    }
                 }
-
-                spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, accountListData)
-                detail_cash_collection.visibility = View.VISIBLE
-                layout_acc_amount.visibility = View.VISIBLE
             }
 
             override fun onError(throwable: Throwable?) {
@@ -216,9 +241,34 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                 override fun onResponses(response: JsonObject?) {
                     Timber.d("response insert c2r : $response")
                     val model = getGson().fromJson<BBSTransModel>(response, BBSTransModel::class.java)
-                    txId = model.tx_id
-                    productCode = model.tx_product_code
-                    confirmToken()
+
+                    when (model.error_code) {
+                        WebParams.SUCCESS_CODE -> {
+                            txId = model.tx_id
+                            productCode = model.tx_product_code
+                            confirmToken()
+                        }
+                        WebParams.LOGOUT_CODE -> {
+                            val message = model.error_message
+                            val test = AlertDialogLogout.getInstance()
+                            test.showDialoginMain(activity, message)
+                        }
+                        WebParams.ERROR_9333 -> {
+                            Timber.d("isi response app data:" + model.app_data)
+                            val appModel = model.app_data
+                            val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                            alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                        }
+                        WebParams.ERROR_0066 -> {
+                            val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                            alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                        }
+                        else -> {
+                            val msg = model.error_message
+                            showDialog(msg)
+                        }
+                    }
+
                 }
 
                 override fun onError(throwable: Throwable?) {
@@ -600,11 +650,11 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
 
-        title_dialog.text = getString(R.string.error)
-        message_dialog.visibility = View.VISIBLE
-        message_dialog.text = msg
+        dialog.title_dialog.text = getString(R.string.error)
+        dialog.message_dialog.visibility = View.VISIBLE
+        dialog.message_dialog.text = msg
 
-        btn_dialog_notification_ok.setOnClickListener {
+        dialog.btn_dialog_notification_ok.setOnClickListener {
             dialog.dismiss()
         }
 

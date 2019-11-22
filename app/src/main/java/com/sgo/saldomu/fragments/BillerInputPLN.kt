@@ -788,12 +788,12 @@ class BillerInputPLN : BaseFragment() {
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
 
-        title_dialog.text = getString(R.string.smsBanking_dialog_validation_title)
-        title_dialog.text = resources.getString(R.string.regist1_notif_title_verification)
-        message_dialog.visibility = View.VISIBLE
-        message_dialog.text = getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
+        dialog.title_dialog.text = getString(R.string.smsBanking_dialog_validation_title)
+        dialog.title_dialog.text = resources.getString(R.string.regist1_notif_title_verification)
+        dialog.message_dialog.visibility = View.VISIBLE
+        dialog.message_dialog.text = getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
 
-        btn_dialog_notification_ok.setOnClickListener {
+        dialog.btn_dialog_notification_ok.setOnClickListener {
             changeToConfirmBiller(fee, merchantType, bankCode, productCode, -1)
             dialog.dismiss()
         }

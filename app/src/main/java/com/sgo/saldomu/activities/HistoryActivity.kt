@@ -243,7 +243,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         if (_object.buss_scheme_code == "BIL") {
             showReportEspayBillerDialog(sp.getString(DefineValue.USER_NAME, ""), response)
             //
-        } else if (_object.buss_scheme_code == "CTA") {
+        } else if (_object.buss_scheme_code == "CTA" || _object.buss_scheme_code == "CTR") {
             if (sp.getString(DefineValue.USERID_PHONE, "") == response.member_phone) {
                 showReportCTADialog(response)
             } else {

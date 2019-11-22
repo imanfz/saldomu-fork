@@ -41,7 +41,8 @@
             android:layout_height="1dp"
             android:layout_below="@id/layout_id_no"
             android:layout_margin="8dp"
-            android:background="@color/grey_300" />
+            android:background="@color/grey_300"
+            android:visibility="gone"/>
 
         <TableLayout
             android:id="@+id/detail_cash_collection"
@@ -169,11 +170,11 @@
             android:hint="@string/amount_deposit"
             android:inputType="number" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/et_amount_deposit"
-            android:background="@color/grey_300"/>
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:layout_below="@id/et_amount_deposit"-->
+<!--            android:background="@color/grey_300"/>-->
 
     </RelativeLayout>
 
