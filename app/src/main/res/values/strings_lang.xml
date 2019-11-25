@@ -76,7 +76,7 @@
     <string name="regist1_edithint_nohp"><font size="17">Nomor Handphone (ex. 08138255xxxx)</font></string>
     <string name="regist1_edithint_nama">Nama lengkap</string>
     <string name="regist1_edithint_email" translatable="false">Email</string>
-    <string name="regist1_edithint_referal" translatable="false">No. HP Referal</string>
+    <string name="regist1_edithint_referal" translatable="false">No. Referal</string>
     <string name="regist1_button_verifikasi">Verifikasi</string>
     <string name="regist1_validation_nohp">No HP dibutuhkan!</string>
     <string name="regist1_validation_length_nohp">Minimal 10 karakter!</string>
@@ -1430,8 +1430,11 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="upgrade">U P G R A D E</string>
     <string name="terms_bank_acct">*wajib memiliki rekening Bank</string>
     <string name="resent_otp">Resent OTP</string>
-    <string name="menu_title_ctr">Cash Collection</string>
+    <string name="menu_title_cash_collection">Cash Collection</string>
     <string name="business_name">Nama Usaha</string>
     <string name="amount_deposit">Jumlah Setoran</string>
     <string name="are_you_sure">Apakah Anda Yakin?</string>
+    <string name="other_acct">Rekening Lainnya</string>
+    <string name="agent_type_col">COL</string>
+    <string name="menu_item_title_collector_history">Riwayat Collector</string>
 </resources>

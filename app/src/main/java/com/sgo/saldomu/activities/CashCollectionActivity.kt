@@ -31,7 +31,7 @@ class CashCollectionActivity : BaseActivity() {
     }
 
     fun initialize() {
-        actionBarTitle = getString(R.string.menu_title_ctr)
+        actionBarTitle = getString(R.string.menu_title_cash_collection)
         setActionBarIcon(R.drawable.ic_arrow_left)
 
         val intent = intent

@@ -39,7 +39,7 @@ import timber.log.Timber
 class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private val CTR = "CTR"
-    private val SOURCE = "SOURCE"
+    private val BENEF = "BENEF"
     private var bankCode: String? = null
     private var customerId: String? = null
     private var accNo: String? = null
@@ -84,7 +84,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         bankCode = arguments!!.getString(DefineValue.BANK_CODE, "022")
 
         comm = realmBBS?.where(BBSCommModel::class.java)?.equalTo(WebParams.SCHEME_CODE, CTR)?.findFirst()
-        listbankBenef = realmBBS?.where(BBSBankModel::class.java)?.equalTo(WebParams.SCHEME_CODE, CTR)?.equalTo(WebParams.COMM_TYPE, SOURCE)?.findAll()
+        listbankBenef = realmBBS?.where(BBSBankModel::class.java)?.equalTo(WebParams.SCHEME_CODE, CTR)?.equalTo(WebParams.COMM_TYPE, BENEF)?.findAll()
         listbankSource = realmBBS?.where(BBSAccountACTModel::class.java)?.findAll()
 
         commId = comm?.comm_id
@@ -95,12 +95,11 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         sourceProductCode = listbankSource?.get(0)?.product_code
 
         benefProductType = listbankBenef?.get(0)?.product_type
-        benefProductCode = "022"
+        benefProductCode = listbankBenef?.get(0)?.product_code
 
         cityId = "KOTAJAKARTA"
+        initlayout()
 
-        detail_cash_collection.visibility = View.GONE
-        layout_acc_amount.visibility = View.GONE
         btn_search.setOnClickListener { searchMember() }
         spinner_no_acc.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -108,12 +107,22 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                accNo = accountList[position].acct_no
-                accName = accountList[position].acct_name
+                if (spinner_no_acc.getItemAtPosition(position).toString().equals("Rekening Lainnya")) {
+                    divider_acc.visibility = View.VISIBLE
+                    et_no_acct.visibility = View.VISIBLE
+                } else {
+                    accNo = accountList[position].acct_no
+                    accName = accountList[position].acct_name
+                }
             }
 
         }
         btn_submit.setOnClickListener { showDialogConfirmation() }
+    }
+
+    private fun initlayout() {
+        detail_cash_collection.visibility = View.GONE
+        layout_acc_amount.visibility = View.GONE
     }
 
     private fun searchMember() {
@@ -131,22 +140,55 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INQUIRY_CUSTOMER_ACCT, params, object : ResponseListener {
             override fun onResponses(response: JsonObject?) {
+
                 Timber.d("isi response sent cust acct:$response")
                 cashCollectionModel = getGson().fromJson(response, CashCollectionModel::class.java)
-                tv_name.text = cashCollectionModel.customer_name
-                tv_business_name.text = cashCollectionModel.business_name
-                tv_address.text = cashCollectionModel.cust_address
+                when (cashCollectionModel.error_code) {
+                    WebParams.SUCCESS_CODE -> {
 
-                var i = 0
-                cashCollectionModel.accounts.forEach { result ->
-                    accountList.add(result)
-                    accountListData.add(accountList[i].acct_no)
-                    i++
+                        divider_id.visibility = View.VISIBLE
+                        tv_name.text = cashCollectionModel.customer_name
+                        tv_business_name.text = cashCollectionModel.business_name
+                        tv_address.text = cashCollectionModel.cust_address
+                        accountListData.clear()
+                        var i = 0
+                        cashCollectionModel.accounts.forEach { result ->
+                            accountList.add(result)
+                            accountListData.add(accountList[i].acct_no)
+                            i++
+                        }
+                        if (accountList.size != 0) {
+                            accountListData.add(getString(R.string.other_acct))
+                            spinner_no_acc.visibility=View.VISIBLE
+                            spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, accountListData)
+                        } else {
+                            spinner_no_acc.visibility = View.GONE
+                            et_no_acct.visibility = View.VISIBLE
+                        }
+
+                        detail_cash_collection.visibility = View.VISIBLE
+                        layout_acc_amount.visibility = View.VISIBLE
+                    }
+                    WebParams.LOGOUT_CODE -> {
+                        val message = cashCollectionModel.error_message
+                        val test = AlertDialogLogout.getInstance()
+                        test.showDialoginMain(activity, message)
+                    }
+                    WebParams.ERROR_9333 -> {
+                        Timber.d("isi response app data:" + cashCollectionModel.app_data)
+                        val appModel = cashCollectionModel.app_data
+                        val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                        alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                    }
+                    WebParams.ERROR_0066 -> {
+                        val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                        alertDialogMaintenance.showDialogMaintenance(activity, cashCollectionModel.error_message)
+                    }
+                    else -> {
+                        val msg = cashCollectionModel.error_message
+                        showDialog(msg)
+                    }
                 }
-
-                spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, accountListData)
-                detail_cash_collection.visibility = View.VISIBLE
-                layout_acc_amount.visibility = View.VISIBLE
             }
 
             override fun onError(throwable: Throwable?) {
@@ -168,8 +210,15 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         dialog?.setTitle(getString(R.string.are_you_sure))
 
         amount = et_amount_deposit.text.toString()
-        dialog?.dialog_cash_collection_tv_name?.text = accName
-        dialog?.dialog_cash_collection_tv_acc_no?.text = accNo
+        if (et_no_acct.visibility == View.VISIBLE) {
+            dialog?.dialog_cash_collection_tv_acc_no?.text = et_no_acct.text
+        } else {
+            dialog?.dialog_cash_collection_tv_acc_no?.text = accNo
+        }
+        if (!accName.isNullOrEmpty()) {
+            dialog?.dialog_cash_collection_tv_name?.text = accName
+        } else
+            dialog?.dialog_cash_collection_tv_name?.text = tv_name.text.toString()
         if (amount == "")
             amount = "0"
         dialog?.dialog_cash_collection_tv_amount_deposit?.text = getString(R.string.rp_) + " " + CurrencyFormat.format(amount)
@@ -198,8 +247,13 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
             params[WebParams.BENEF_PRODUCT_CODE] = benefProductCode
             params[WebParams.BENEF_PRODUCT_TYPE] = benefProductType
-            params[WebParams.BENEF_PRODUCT_VALUE_CODE] = accNo
-            params[WebParams.BENEF_PRODUCT_VALUE_NAME] = accName
+            if (et_no_acct.visibility == View.GONE) {
+                params[WebParams.BENEF_PRODUCT_VALUE_CODE] = accNo
+                params[WebParams.BENEF_PRODUCT_VALUE_NAME] = accName
+            } else {
+                params[WebParams.BENEF_PRODUCT_VALUE_CODE] = et_no_acct.text.toString()
+                params[WebParams.BENEF_PRODUCT_VALUE_NAME] = tv_name.text.toString()
+            }
             params[WebParams.BENEF_PRODUCT_VALUE_CITY] = cityId
 
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
@@ -216,9 +270,35 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                 override fun onResponses(response: JsonObject?) {
                     Timber.d("response insert c2r : $response")
                     val model = getGson().fromJson<BBSTransModel>(response, BBSTransModel::class.java)
-                    txId = model.tx_id
-                    productCode = model.tx_product_code
-                    confirmToken()
+
+                    when (model.error_code) {
+                        WebParams.SUCCESS_CODE -> {
+                            txId = model.tx_id
+                            productCode = model.tx_product_code
+                            confirmToken()
+                        }
+                        WebParams.LOGOUT_CODE -> {
+                            val message = model.error_message
+                            val test = AlertDialogLogout.getInstance()
+                            test.showDialoginMain(activity, message)
+                        }
+                        WebParams.ERROR_9333 -> {
+                            Timber.d("isi response app data:" + model.app_data)
+                            val appModel = model.app_data
+                            val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                            alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                        }
+                        WebParams.ERROR_0066 -> {
+                            val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                            alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                        }
+                        else -> {
+                            val msg = model.error_message
+                            showDialog(msg)
+                            initlayout()
+                        }
+                    }
+
                 }
 
                 override fun onError(throwable: Throwable?) {
@@ -592,6 +672,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
     override fun onOkButton() {
         dialogReport.dismiss()
+        activity!!.finish()
     }
 
     private fun showDialog(msg: String?) {
@@ -600,11 +681,11 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
 
-        title_dialog.text = getString(R.string.error)
-        message_dialog.visibility = View.VISIBLE
-        message_dialog.text = msg
+        dialog.title_dialog.text = getString(R.string.error)
+        dialog.message_dialog.visibility = View.VISIBLE
+        dialog.message_dialog.text = msg
 
-        btn_dialog_notification_ok.setOnClickListener {
+        dialog.btn_dialog_notification_ok.setOnClickListener {
             dialog.dismiss()
         }
 
