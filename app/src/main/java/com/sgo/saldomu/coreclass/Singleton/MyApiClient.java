@@ -271,6 +271,7 @@ public class MyApiClient {
     public static String LINK_LIST_FILE;
     public static String LINK_DOWNLOAD_FILE;
     public static String LINK_HISTORY;
+    public static String LINK_HISTORY_COLLECTOR;
 
     public static String LINK_TRX_FAVORITE_LIST;
     public static String LINK_TRX_FAVORITE_SAVE;
@@ -475,6 +476,7 @@ public class MyApiClient {
         LINK_LIST_FILE              = headaddressfinal + "DownloadList/Retrieve";
         LINK_DOWNLOAD_FILE          = headaddressfinal + "DownloadRequest/Invoke";
         LINK_HISTORY                = headaddressfinal + "History/Retrieve";
+        LINK_HISTORY_COLLECTOR      = headaddressfinal + "HistoryCollector/Retrieve";
 
         LINK_TRX_FAVORITE_LIST      = headaddressfinal + "TrxFavorite/List";
         LINK_TRX_FAVORITE_SAVE      = headaddressfinal + "TrxFavorite/Save";

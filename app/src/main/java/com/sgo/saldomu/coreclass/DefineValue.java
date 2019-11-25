@@ -624,6 +624,8 @@ public class DefineValue {
     public static String BG_CODE = "BG";
     public static String TS_CODE = "TS";
     public static String IS_SEARCH_CTR = "isSearchCTR";
+    public static String AGENT_COL = "agentCOL";
+    public static String HISTORY_TITLE = "historyTitle";
 
 }
 

@@ -39,7 +39,7 @@ import timber.log.Timber
 class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private val CTR = "CTR"
-    private val SOURCE = "SOURCE"
+    private val BENEF = "BENEF"
     private var bankCode: String? = null
     private var customerId: String? = null
     private var accNo: String? = null
@@ -84,7 +84,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         bankCode = arguments!!.getString(DefineValue.BANK_CODE, "022")
 
         comm = realmBBS?.where(BBSCommModel::class.java)?.equalTo(WebParams.SCHEME_CODE, CTR)?.findFirst()
-        listbankBenef = realmBBS?.where(BBSBankModel::class.java)?.equalTo(WebParams.SCHEME_CODE, CTR)?.equalTo(WebParams.COMM_TYPE, SOURCE)?.findAll()
+        listbankBenef = realmBBS?.where(BBSBankModel::class.java)?.equalTo(WebParams.SCHEME_CODE, CTR)?.equalTo(WebParams.COMM_TYPE, BENEF)?.findAll()
         listbankSource = realmBBS?.where(BBSAccountACTModel::class.java)?.findAll()
 
         commId = comm?.comm_id
@@ -95,12 +95,11 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         sourceProductCode = listbankSource?.get(0)?.product_code
 
         benefProductType = listbankBenef?.get(0)?.product_type
-        benefProductCode = "022"
+        benefProductCode = listbankBenef?.get(0)?.product_code
 
         cityId = "KOTAJAKARTA"
+        initlayout()
 
-        detail_cash_collection.visibility = View.GONE
-        layout_acc_amount.visibility = View.GONE
         btn_search.setOnClickListener { searchMember() }
         spinner_no_acc.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -108,12 +107,22 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                accNo = accountList[position].acct_no
-                accName = accountList[position].acct_name
+                if (spinner_no_acc.getItemAtPosition(position).toString().equals("Rekening Lainnya")) {
+                    divider_acc.visibility = View.VISIBLE
+                    et_no_acct.visibility = View.VISIBLE
+                } else {
+                    accNo = accountList[position].acct_no
+                    accName = accountList[position].acct_name
+                }
             }
 
         }
         btn_submit.setOnClickListener { showDialogConfirmation() }
+    }
+
+    private fun initlayout() {
+        detail_cash_collection.visibility = View.GONE
+        layout_acc_amount.visibility = View.GONE
     }
 
     private fun searchMember() {
@@ -136,7 +145,8 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                 cashCollectionModel = getGson().fromJson(response, CashCollectionModel::class.java)
                 when (cashCollectionModel.error_code) {
                     WebParams.SUCCESS_CODE -> {
-                        divider_id.visibility=View.VISIBLE
+
+                        divider_id.visibility = View.VISIBLE
                         tv_name.text = cashCollectionModel.customer_name
                         tv_business_name.text = cashCollectionModel.business_name
                         tv_address.text = cashCollectionModel.cust_address
@@ -147,8 +157,15 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                             accountListData.add(accountList[i].acct_no)
                             i++
                         }
+                        if (accountList.size != 0) {
+                            accountListData.add(getString(R.string.other_acct))
+                            spinner_no_acc.visibility=View.VISIBLE
+                            spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, accountListData)
+                        } else {
+                            spinner_no_acc.visibility = View.GONE
+                            et_no_acct.visibility = View.VISIBLE
+                        }
 
-                        spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, accountListData)
                         detail_cash_collection.visibility = View.VISIBLE
                         layout_acc_amount.visibility = View.VISIBLE
                     }
@@ -193,8 +210,15 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         dialog?.setTitle(getString(R.string.are_you_sure))
 
         amount = et_amount_deposit.text.toString()
-        dialog?.dialog_cash_collection_tv_name?.text = accName
-        dialog?.dialog_cash_collection_tv_acc_no?.text = accNo
+        if (et_no_acct.visibility == View.VISIBLE) {
+            dialog?.dialog_cash_collection_tv_acc_no?.text = et_no_acct.text
+        } else {
+            dialog?.dialog_cash_collection_tv_acc_no?.text = accNo
+        }
+        if (!accName.isNullOrEmpty()) {
+            dialog?.dialog_cash_collection_tv_name?.text = accName
+        } else
+            dialog?.dialog_cash_collection_tv_name?.text = tv_name.text.toString()
         if (amount == "")
             amount = "0"
         dialog?.dialog_cash_collection_tv_amount_deposit?.text = getString(R.string.rp_) + " " + CurrencyFormat.format(amount)
@@ -223,8 +247,13 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
             params[WebParams.BENEF_PRODUCT_CODE] = benefProductCode
             params[WebParams.BENEF_PRODUCT_TYPE] = benefProductType
-            params[WebParams.BENEF_PRODUCT_VALUE_CODE] = accNo
-            params[WebParams.BENEF_PRODUCT_VALUE_NAME] = accName
+            if (et_no_acct.visibility == View.GONE) {
+                params[WebParams.BENEF_PRODUCT_VALUE_CODE] = accNo
+                params[WebParams.BENEF_PRODUCT_VALUE_NAME] = accName
+            } else {
+                params[WebParams.BENEF_PRODUCT_VALUE_CODE] = et_no_acct.text.toString()
+                params[WebParams.BENEF_PRODUCT_VALUE_NAME] = tv_name.text.toString()
+            }
             params[WebParams.BENEF_PRODUCT_VALUE_CITY] = cityId
 
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
@@ -266,6 +295,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                         else -> {
                             val msg = model.error_message
                             showDialog(msg)
+                            initlayout()
                         }
                     }
 
@@ -642,6 +672,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
     override fun onOkButton() {
         dialogReport.dismiss()
+        activity!!.finish()
     }
 
     private fun showDialog(msg: String?) {

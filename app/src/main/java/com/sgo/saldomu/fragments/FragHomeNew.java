@@ -491,6 +491,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     }
                 } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
                     Intent intent = new Intent(getActivity(), HistoryActivity.class);
+                    intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_collector_history));
                     startActivity(intent);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     Intent intent = new Intent(getActivity(), ActivitySCADM.class);
@@ -559,12 +560,17 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             dialogDormant();
                         } else
                             startActivity(new Intent(getActivity(), TagihActivity.class));
-                    }else if (menuItemName.equals(getString(R.string.menu_title_ctr))) {
+                    } else if (menuItemName.equals(getString(R.string.menu_title_cash_collection))) {
                         if (isDormant.equalsIgnoreCase("Y")) {
                             dialogDormant();
                         } else
                             startActivity(new Intent(getActivity(), CashCollectionActivity.class));
-                    } else {
+                    } else if (menuItemName.equals(getString(R.string.menu_item_title_collector_history))) {
+                        Intent intent = new Intent(getActivity(), HistoryActivity.class);
+                        intent.putExtra(DefineValue.AGENT_COL, true);
+                        intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_collector_history));
+                        startActivity(intent);
+                    }else {
                         posIdx = -1;
                     }
                 } else {
@@ -898,6 +904,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                 menuStrings.add(getResources().getString(R.string.menu_item_title_onprogress_agent));
                 menuDrawables.add(getResources().getDrawable(R.drawable.ic_dalam_proses));
+
+
             } else {
                 checkSchemeCodeMember();
 
@@ -986,14 +994,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     case "DGI":
                         menuStrings.add(getResources().getString(R.string.menu_item_title_tagih_agent));
                         menuDrawables.add(getResources().getDrawable(R.drawable.tagih_id));
+                        if (sp.getString(DefineValue.AGENT_TYPE, "").equalsIgnoreCase(getString(R.string.agent_type_col))) {
+                            menuStrings.add(getResources().getString(R.string.menu_item_title_collector_history));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.tagih_id));
+                        }
                         break;
                     case "UPG":
                         menuStrings.add(getResources().getString(R.string.menu_item_title_upgrade_member));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_upgrade));
                         break;
                     case "CTR":
-                        menuStrings.add(getResources().getString(R.string.menu_title_ctr));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_upgrade));
+                        menuStrings.add(getResources().getString(R.string.menu_title_cash_collection));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_cash_collection));
                         break;
                     case "BIL":
                         menuStrings.add(getResources().getString(R.string.menu_item_title_buy));

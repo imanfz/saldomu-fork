@@ -154,12 +154,28 @@
             android:id="@+id/spinner_no_acc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <View
+            android:id="@+id/divider_acc"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/spinner_no_acc"
+            android:background="@color/grey_300"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/et_no_acct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider_acc"
+            android:hint="@string/no_rekening"
+            android:inputType="number"
+            android:visibility="gone"/>
 
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@id/spinner_no_acc"
+            android:layout_below="@id/et_no_acct"
             android:background="@color/grey_300"/>
 
         <EditText
