@@ -4,23 +4,64 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
-    android:orientation="vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:background="@color/color_white">
+
+    <include android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main"/>
+
+    <RelativeLayout
+        android:id="@+id/lyt_gifNfc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/main_toolbar">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/gifNfc"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            android:background="@drawable/nfc_animate"
+            />
+
+        <TextView
+            android:id="@+id/tv_msgToTap1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tempelkan Kartu"
+            android:layout_below="@+id/gifNfc"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="-25dp"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/tv_msgToTap2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Harap tempelkan kartu anda untuk \nmelakukan cek saldo"
+            android:layout_below="@+id/tv_msgToTap1"
+            android:textSize="16dp"
+            android:layout_marginTop="10dp"
+            android:textAlignment="center" />
+
+    </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/lyt_emonCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_below="@id/main_toolbar"
+        android:visibility="gone">
 
         <RelativeLayout
             android:id="@+id/lyt_card"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_height="190dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="30dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="20dp"
             android:background="@drawable/rounded_card">
 
             <ImageView
@@ -34,7 +75,7 @@
 
             <ImageView
                 android:id="@+id/emoney"
-                android:layout_width="100dp"
+                android:layout_width="95dp"
                 android:layout_height="40dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="50dp"
@@ -75,7 +116,8 @@
                 android:padding="7dp"
                 android:text="Card Detail"
                 android:textColor="@color/color_white"
-                android:textStyle="italic" />
+                android:textStyle="italic"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
@@ -85,7 +127,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="25dp"
             android:text="Saldo Saat Ini"
-            android:textColor="@color/color_white"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp" />
 
         <TextView
@@ -94,7 +136,7 @@
             android:layout_height="19dp"
             android:layout_gravity="center"
             android:text="Rp. 0"
-            android:textColor="@color/color_white"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="14dp" />
 
 
