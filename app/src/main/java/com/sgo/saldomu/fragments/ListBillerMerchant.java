@@ -82,7 +82,7 @@ public class ListBillerMerchant extends ListFragment {
         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 3){
+                if (position == 0){
                         Intent intent = new Intent(getActivity(), NFCActivity.class);
                         startActivity(intent);
                 }else {
@@ -131,12 +131,13 @@ public class ListBillerMerchant extends ListFragment {
             mListBillerData = mBillerType.getBiller_data_models();
             setActionBarTitle(getString(R.string.biller_ab_title) + "-" + mBillerType.getBiller_type_name());
             _data.clear();
-            for (int i = 0; i < mListBillerData.size(); i++) {
-                _data.add(mListBillerData.get(i).getComm_name());
-            }
             if (billerTypeCode.equals("EMON") && nfcAdapter != null) {
                 _data.add("Cek Saldo Emoney");
             }
+            for (int i = 0; i < mListBillerData.size(); i++) {
+                _data.add(mListBillerData.get(i).getComm_name());
+            }
+
 
             adapter.notifyDataSetChanged();
         } else

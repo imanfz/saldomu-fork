@@ -21,7 +21,7 @@
             android:layout_width="350dp"
             android:layout_height="350dp"
             android:background="@drawable/nfc_animate"
-            />
+            android:layout_centerHorizontal="true"/>
 
         <TextView
             android:id="@+id/tv_msgToTap1"
