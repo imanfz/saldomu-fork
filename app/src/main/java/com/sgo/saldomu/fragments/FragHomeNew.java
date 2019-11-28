@@ -940,10 +940,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
                 }
 
-                if (mBillerTypeDataGame != null) {
-                    menuStrings.add(getResources().getString(R.string.newhome_game));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.game));
-                }
+//                if (mBillerTypeDataGame != null) {
+//                    menuStrings.add(getResources().getString(R.string.newhome_game));
+//                    menuDrawables.add(getResources().getDrawable(R.drawable.game));
+//                }
 
                 if (mBillerTypeDataVoucher != null) {
                     menuStrings.add(getResources().getString(R.string.newhome_voucher));
@@ -1036,10 +1036,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
                         }
 
-                        if (mBillerTypeDataGame != null) {
-                            menuStrings.add(getResources().getString(R.string.newhome_game));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.game));
-                        }
+//                        if (mBillerTypeDataGame != null) {
+//                            menuStrings.add(getResources().getString(R.string.newhome_game));
+//                            menuDrawables.add(getResources().getDrawable(R.drawable.game));
+//                        }
 
                         if (mBillerTypeDataVoucher != null) {
                             menuStrings.add(getResources().getString(R.string.newhome_voucher));
