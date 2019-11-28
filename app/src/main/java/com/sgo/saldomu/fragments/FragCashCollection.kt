@@ -31,6 +31,7 @@ import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
 import kotlinx.android.synthetic.main.dialog_cash_collection.*
 import kotlinx.android.synthetic.main.dialog_notification.*
+import kotlinx.android.synthetic.main.frag_biller_input_new.*
 import kotlinx.android.synthetic.main.frag_cash_collection.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -100,7 +101,12 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         cityId = "KOTAJAKARTA"
         initlayout()
 
-        btn_search.setOnClickListener { searchMember() }
+        btn_search.setOnClickListener {
+            if (inputValidation()) {
+                et_no_acct.visibility = View.GONE
+                searchMember()
+            }
+        }
         spinner_no_acc.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
@@ -151,6 +157,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                         tv_business_name.text = cashCollectionModel.business_name
                         tv_address.text = cashCollectionModel.cust_address
                         accountListData.clear()
+                        accountList.clear()
                         var i = 0
                         cashCollectionModel.accounts.forEach { result ->
                             accountList.add(result)
@@ -159,7 +166,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                         }
                         if (accountList.size != 0) {
                             accountListData.add(getString(R.string.other_acct))
-                            spinner_no_acc.visibility=View.VISIBLE
+                            spinner_no_acc.visibility = View.VISIBLE
                             spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, accountListData)
                         } else {
                             spinner_no_acc.visibility = View.GONE
@@ -168,6 +175,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
                         detail_cash_collection.visibility = View.VISIBLE
                         layout_acc_amount.visibility = View.VISIBLE
+                        btn_submit.visibility=View.VISIBLE
                     }
                     WebParams.LOGOUT_CODE -> {
                         val message = cashCollectionModel.error_message
@@ -673,6 +681,15 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
     override fun onOkButton() {
         dialogReport.dismiss()
         activity!!.finish()
+    }
+
+    private fun inputValidation(): Boolean {
+        if (et_id_member.text.length == 0) {
+            et_id_member.requestFocus()
+            et_id_member.error = getString(R.string.no_member_validation)
+            return false
+        }
+        return true
     }
 
     private fun showDialog(msg: String?) {

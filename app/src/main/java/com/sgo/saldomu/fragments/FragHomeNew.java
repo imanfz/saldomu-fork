@@ -996,7 +996,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         menuDrawables.add(getResources().getDrawable(R.drawable.tagih_id));
                         if (sp.getString(DefineValue.AGENT_TYPE, "").equalsIgnoreCase(getString(R.string.agent_type_col))) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_collector_history));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.tagih_id));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_history_collector));
                         }
                         break;
                     case "UPG":
@@ -1078,7 +1078,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         break;
                     case "CTR":
                         menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + obj.optString(WebParams.CATEGORY_NAME));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_setor_tunai));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_search_agent_ctr));
                         break;
                 }
             }
