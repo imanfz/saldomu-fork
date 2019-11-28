@@ -82,7 +82,7 @@ public class ListBillerMerchant extends ListFragment {
         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0){
+                if (position == 0 && nfcAdapter!=null){
                         Intent intent = new Intent(getActivity(), NFCActivity.class);
                         startActivity(intent);
                 }else {
