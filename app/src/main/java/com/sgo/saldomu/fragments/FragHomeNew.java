@@ -491,7 +491,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     }
                 } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
                     Intent intent = new Intent(getActivity(), HistoryActivity.class);
-                    intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_collector_history));
+                    intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_history_detail));
                     startActivity(intent);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     Intent intent = new Intent(getActivity(), ActivitySCADM.class);

@@ -919,7 +919,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                             bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
                                         } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.ATC)) {
                                             bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
-                                        }else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
+                                        }
+                                        if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
                                             Intent intent = new Intent(getApplicationContext(), TagihActivity.class);
                                             intent.putExtra(DefineValue.IS_SEARCH_DGI, true);
                                             if (response.getString(WebParams.COMM_CODE_PG) != null || response.getString(WebParams.MEMBER_CODE_PG) != null) {
