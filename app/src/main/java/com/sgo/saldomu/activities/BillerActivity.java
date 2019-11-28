@@ -233,6 +233,7 @@ public class BillerActivity extends BaseActivity {
             mArgs.putString(DefineValue.COMMUNITY_ID, mListBillerData.get(0).getComm_id());
             mArgs.putString(DefineValue.COMMUNITY_NAME, mListBillerData.get(0).getComm_name());
             mArgs.putString(DefineValue.BILLER_ITEM_ID, mListBillerData.get(0).getItem_id());
+            mArgs.putString(DefineValue.BILLER_COMM_CODE, mListBillerData.get(0).getComm_code());
 
             tag = BillerInput.TAG;
         } else {
