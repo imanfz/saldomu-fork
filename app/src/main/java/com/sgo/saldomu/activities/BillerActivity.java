@@ -203,8 +203,6 @@ public class BillerActivity extends BaseActivity {
                     Toast.makeText(this, getString(R.string.biller_empty_data), Toast.LENGTH_SHORT).show();
                     this.finish();
                 }
-
-
 //                if(!isEmptyBiller) {
 //                    progdialog = DefinedDialog.CreateProgressDialog(this, "");
 //                    isOneBiller = false;
@@ -217,7 +215,6 @@ public class BillerActivity extends BaseActivity {
             }
         }
     }
-
 
     @SuppressLint("NewApi")
     private void initializeListBiller() {

@@ -48,6 +48,7 @@ import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.utils.Converter;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -327,7 +328,7 @@ public class BillerInput extends Fragment {
             generateRandomString(20);
             tv_payment_remark.setVisibility(View.GONE);
             et_payment_remark.setVisibility(View.GONE);
-        }else if (biller_type_code.equals(billerType[20])) {
+        } else if (biller_type_code.equals(billerType[20])) {
             buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
@@ -380,6 +381,7 @@ public class BillerInput extends Fragment {
 
         if (mBillerData != null)
             mListDenomData = realm.copyFromRealm(mBillerData.getDenom_data_models());
+
     }
 
     private void initializeSpinnerDenom() {
@@ -475,8 +477,7 @@ public class BillerInput extends Fragment {
                         final_payment_remark = NoHPFormat.formatTo62(String.valueOf(et_payment_remark.getText()));
                     else if (biller_type_code.equals(billerType[18])) {
                         final_payment_remark = generateRandomString(20);
-                    }
-                    else
+                    } else
                         final_payment_remark = String.valueOf(et_payment_remark.getText());
                     showDialog(final_payment_remark);
                 }
@@ -539,7 +540,8 @@ public class BillerInput extends Fragment {
 
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
+    private void switchFragment(android.support.v4.app.Fragment i, String name, String
+            next_name, Boolean isBackstack, String tag) {
         if (getActivity() == null)
             return;
 
@@ -614,7 +616,7 @@ public class BillerInput extends Fragment {
 //        NfcManager manager = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
         nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
         if (biller_comm_code.equals("EMONEYSALDOMU")) {
-            if (nfcAdapter != null ) {
+            if (nfcAdapter != null) {
                 //Yes NFC available
                 lyt_cekSaldo.setVisibility(View.VISIBLE);
             }

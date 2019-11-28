@@ -8,14 +8,19 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import com.sgo.saldomu.R
 import com.sgo.saldomu.fragments.PopUpNFC
 import com.sgo.saldomu.utils.Converter
+import com.sgo.saldomu.widgets.BaseActivity
 import kotlinx.android.synthetic.main.activity_nfc.*
 
 @RequiresApi(Build.VERSION_CODES.KITKAT)
-class NFCActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
+class NFCActivity : BaseActivity(), NfcAdapter.ReaderCallback {
+
+    override fun getLayoutResource(): Int = R.layout.activity_nfc
 
     private var nfcAdapter: NfcAdapter? = null
 
@@ -44,8 +49,9 @@ class NFCActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_nfc)
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+//        setContentView(R.layout.activity_nfc)
+        InitializeToolbar()
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
 //        cardDetail.setOnClickListener {
 //            if (lyt_cardDetail.visibility == View.GONE) {
@@ -57,7 +63,23 @@ class NFCActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
 //        }
     }
 
+    private fun InitializeToolbar() {
+        setActionBarIcon(R.drawable.ic_arrow_left)
+        actionBarTitle = "Cek Saldo"
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.getItemId()) {
+            android.R.id.home -> {
+                if (fragmentManager!!.backStackEntryCount > 0)
+                    fragmentManager!!.popBackStack()
+                else
+                    finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     public override fun onPause() {
         super.onPause()
@@ -82,38 +104,15 @@ class NFCActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
 
     }
 
-
     override fun onTagDiscovered(tag: Tag?) {
 
         val isoDep = IsoDep.get(tag)
         isoDep.connect()
 
-        val selectEmoneyResponse = isoDep.transceive(Converter.hexStringToByteArray(
-                "00A40400080000000000000001"))
-        runOnUiThread {
-//            selectEmoneys.setText(Converter.toHex(selectEmoneyResponse))
-            Log.d("SELECT_RESPONSE : ", Converter.toHex(selectEmoneyResponse))
-            cardSelect = Converter.toHex(selectEmoneyResponse)
-        }
-
-        val cardAttirbuteResponse = isoDep.transceive(Converter.hexStringToByteArray(
-                "00F210000B"))
-        runOnUiThread {
-//            cardAttributes.setText(Converter.toHex(cardAttirbuteResponse))
-            Log.d("CARD_ATTRIBUTE : ", Converter.toHex(cardAttirbuteResponse))
-            cardAttribute = Converter.toHex(cardAttirbuteResponse)
-        }
-
-        runOnUiThread {
-//            cardUUID.text = Converter.toHex(tag!!.id)
-            Log.d("UUID : ", Converter.toHex(tag!!.id))
-            cardUid = Converter.toHex(tag!!.id)
-        }
-
         val cardInfoResponse = isoDep.transceive(Converter.hexStringToByteArray(
                 "00B300003F"))
         runOnUiThread {
-//            cardInfos.setText(Converter.toHex(cardInfoResponse))
+            //            cardInfos.setText(Converter.toHex(cardInfoResponse))
             Log.d("CARD_INFO : ", Converter.toHex(cardInfoResponse))
             cardInfo = Converter.toHex(cardInfoResponse)
             cardNumber.setText(cardInfo!!.substring(0, 16))
@@ -123,12 +122,39 @@ class NFCActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
         val lastBalanceResponse = isoDep.transceive(Converter.hexStringToByteArray(
                 "00B500000A"))
         runOnUiThread {
-//            lastBalances.setText(Converter.toHex(lastBalanceResponse))
+            //            lastBalances.setText(Converter.toHex(lastBalanceResponse))
             Log.d("LAST_BALANCE : ", Converter.toHex(lastBalanceResponse))
             cardBalance = Converter.toHex(lastBalanceResponse)
             cardBalanceResult.setText("RP. " + Converter.toLittleEndian(cardBalance!!.substring(0, 8)))
             Log.d("SALDO : ", Converter.toLittleEndian(cardBalance!!.substring(0, 8)).toString())
             saldo = Converter.toLittleEndian(cardBalance!!.substring(0, 8)).toString()
+        }
+
+        val selectEmoneyResponse = isoDep.transceive(Converter.hexStringToByteArray(
+                "00A40400080000000000000001"))
+        runOnUiThread {
+            //            selectEmoneys.setText(Converter.toHex(selectEmoneyResponse))
+            Log.d("SELECT_RESPONSE : ", Converter.toHex(selectEmoneyResponse))
+            cardSelect = Converter.toHex(selectEmoneyResponse)
+        }
+
+        val cardAttirbuteResponse = isoDep.transceive(Converter.hexStringToByteArray(
+                "00F210000B"))
+        runOnUiThread {
+            //            cardAttributes.setText(Converter.toHex(cardAttirbuteResponse))
+            Log.d("CARD_ATTRIBUTE : ", Converter.toHex(cardAttirbuteResponse))
+            cardAttribute = Converter.toHex(cardAttirbuteResponse)
+        }
+
+        runOnUiThread {
+            //            cardUUID.text = Converter.toHex(tag!!.id)
+            Log.d("UUID : ", Converter.toHex(tag!!.id))
+            cardUid = Converter.toHex(tag!!.id)
+        }
+
+        runOnUiThread{
+            lyt_gifNfc.visibility = View.GONE
+            lyt_emonCard.visibility = View.VISIBLE
         }
 
 //        runOnUiThread {
