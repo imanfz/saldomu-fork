@@ -382,6 +382,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                                         mEditor.putString(DefineValue.BBS_TX_ID, shopDetails.get(itemId).getTxId());
                                         mEditor.putDouble(DefineValue.AGENT_LATITUDE, currentLatitude);
                                         mEditor.putDouble(DefineValue.AGENT_LONGITUDE, currentLongitude);
+                                        mEditor.putString(DefineValue.CATEGORY_NAME, shopDetails.get(itemId).getCategoryName());
                                         mEditor.putString(DefineValue.KEY_CCY, response.getString(DefineValue.KEY_CCY));
                                         mEditor.putString(DefineValue.KEY_AMOUNT, response.getString(DefineValue.KEY_AMOUNT));
                                         mEditor.putString(DefineValue.KEY_ADDRESS, response.getString(DefineValue.KEY_ADDRESS));

@@ -1076,10 +1076,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         break;
                     case "BIL":
                         break;
-                    case "CTR":
-                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + obj.optString(WebParams.CATEGORY_NAME));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_search_agent_ctr));
-                        break;
+//                    case "CTR":
+//                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + obj.optString(WebParams.CATEGORY_NAME));
+//                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_search_agent_ctr));
+//                        break;
                 }
             }
         } catch (JSONException e) {

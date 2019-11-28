@@ -41,6 +41,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
     private val CTR = "CTR"
     private val BENEF = "BENEF"
+    private val SOURCE = "SOURCE"
     private var bankCode: String? = null
     private var customerId: String? = null
     private var accNo: String? = null
@@ -66,7 +67,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
     private var accountList = ArrayList<AccountsModel>()
     private var accountListData = ArrayList<String>()
     private var listbankBenef: List<BBSBankModel>? = null
-    private var listbankSource: List<BBSAccountACTModel>? = null
+    private var listbankSource: List<BBSBankModel>? = null
     private lateinit var viewLayout: View
     private var dialog: Dialog? = null
     private lateinit var dialogReport: ReportBillerDialog
@@ -86,7 +87,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
         comm = realmBBS?.where(BBSCommModel::class.java)?.equalTo(WebParams.SCHEME_CODE, CTR)?.findFirst()
         listbankBenef = realmBBS?.where(BBSBankModel::class.java)?.equalTo(WebParams.SCHEME_CODE, CTR)?.equalTo(WebParams.COMM_TYPE, BENEF)?.findAll()
-        listbankSource = realmBBS?.where(BBSAccountACTModel::class.java)?.findAll()
+        listbankSource = realmBBS?.where(BBSBankModel::class.java)?.equalTo(WebParams.SCHEME_CODE, CTR)?.equalTo(WebParams.COMM_TYPE, SOURCE)?.findAll()
 
         commId = comm?.comm_id
         commCode = comm?.comm_code
@@ -119,6 +120,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                 } else {
                     accNo = accountList[position].acct_no
                     accName = accountList[position].acct_name
+                    et_no_acct.visibility = View.GONE
                 }
             }
 

@@ -183,7 +183,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         initializeDataBBS(bbsSchemeCode);
 
         acMemberAcct = findViewById(R.id.acMemberAcct);
-        if (bbsSchemeCode.equals(CTA)) {
+        if (bbsSchemeCode.equals(CTA) || bbsSchemeCode.equals(CTR)) {
             acMemberAcct.setHint(getString(R.string.bbs_setor_ke) + " " + getString(R.string.label_bank_pelangggan));
         } else  {
             acMemberAcct.setHint(getString(R.string.bbs_tarik_dari) + " " + getString(R.string.label_bank_pelangggan));
