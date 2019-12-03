@@ -18,7 +18,6 @@ import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.dialogs.*
-import com.sgo.saldomu.entityRealm.BBSAccountACTModel
 import com.sgo.saldomu.entityRealm.BBSBankModel
 import com.sgo.saldomu.entityRealm.BBSCommModel
 import com.sgo.saldomu.interfaces.ObjListeners
@@ -31,7 +30,6 @@ import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
 import kotlinx.android.synthetic.main.dialog_cash_collection.*
 import kotlinx.android.synthetic.main.dialog_notification.*
-import kotlinx.android.synthetic.main.frag_biller_input_new.*
 import kotlinx.android.synthetic.main.frag_cash_collection.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -58,6 +56,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
     private var txId: String? = null
     private var productCode: String? = null
     private var memberId: String? = null
+    private var otp: String? = null
     private var isPIN: Boolean? = false
     private var attempt = 0
     private var failed = 0
@@ -177,7 +176,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
                         detail_cash_collection.visibility = View.VISIBLE
                         layout_acc_amount.visibility = View.VISIBLE
-                        btn_submit.visibility=View.VISIBLE
+                        btn_submit.visibility = View.VISIBLE
                     }
                     WebParams.LOGOUT_CODE -> {
                         val message = cashCollectionModel.error_message
@@ -285,7 +284,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                         WebParams.SUCCESS_CODE -> {
                             txId = model.tx_id
                             productCode = model.tx_product_code
-                            confirmToken()
+                            confirmPayment()
                         }
                         WebParams.LOGOUT_CODE -> {
                             val message = model.error_message
@@ -326,7 +325,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         }
     }
 
-    private fun confirmToken() {
+    private fun confirmPayment() {
         showProgressDialog()
 
         params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_PAYMENT_DGI)
@@ -404,7 +403,20 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                 var code = response.getString(WebParams.ERROR_CODE)
                                 Timber.d("isi response InquiryTrx topup scadm: $response")
                                 when (code) {
-                                    WebParams.SUCCESS_CODE -> inputPIN()
+                                    WebParams.SUCCESS_CODE -> {
+//                                        inputPIN()
+                                        dialog?.layout_otp_cashcollection?.visibility = View.VISIBLE
+
+                                        dialog?.dialog_cash_collection_btn_ok!!.setOnClickListener { view ->
+                                            if (!dialog?.et_otp_cashcollection?.text.isNullOrEmpty()) {
+                                                otp = dialog?.et_otp_cashcollection?.text.toString()
+                                                confirmTokenC2R()
+                                            } else {
+                                                dialog?.et_otp_cashcollection?.requestFocus()
+                                                dialog?.et_otp_cashcollection?.setError(getString(R.string.regist3_validation_otp))
+                                            }
+                                        }
+                                    }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
                                         val message = response.getString(WebParams.ERROR_MESSAGE)
@@ -432,6 +444,80 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                             } catch (e: JSONException) {
                                 e.printStackTrace()
                             }
+                        }
+
+                        override fun onError(throwable: Throwable) {
+
+                        }
+
+                        override fun onComplete() {
+                            dismissProgressDialog()
+                            btn_submit.isEnabled = true
+                        }
+                    })
+        } catch (e: Exception) {
+            Timber.d("httpclient:" + e.message)
+        }
+
+    }
+
+    private fun confirmTokenC2R() {
+        try {
+            showProgressDialog()
+
+            extraSignature = txId + commId + otp
+
+            params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOKEN_C2R, extraSignature)
+
+            params[WebParams.TX_ID] = txId
+            params[WebParams.USER_ID] = userPhoneID
+            params[WebParams.COMM_ID] = commId
+            params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(otp)
+
+            Timber.d("isi params confirmTokenC2R:$params")
+
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TOKEN_C2R, params,
+                    object : ObjListeners {
+                        override fun onResponses(response: JSONObject) = try {
+                            val model = getGson().fromJson(response.toString(), jsonModel::class.java)
+                            var code = response.getString(WebParams.ERROR_CODE)
+                            var msg = response.getString(WebParams.ERROR_MESSAGE)
+                            Timber.d("isi response confirmTokenC2R: $response")
+                            when (code) {
+                                WebParams.SUCCESS_CODE -> {
+                                    inputPIN()
+                                }
+                                WebParams.LOGOUT_CODE -> {
+                                    Timber.d("isi response autologout:$response")
+                                    val message = response.getString(WebParams.ERROR_MESSAGE)
+                                    val test = AlertDialogLogout.getInstance()
+                                    test.showDialoginActivity(activity, message)
+                                }
+                                DefineValue.ERROR_0061 -> {
+                                    Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
+                                }
+                                DefineValue.ERROR_0135 -> {
+                                    showDialog(msg)
+                                }
+                                DefineValue.ERROR_9333 -> {
+                                    Timber.d("isi response app data:" + model.app_data)
+                                    val appModel = model.app_data
+                                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                    alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                }
+                                DefineValue.ERROR_0066 -> {
+                                    Timber.d("isi response maintenance:$response")
+                                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                }
+                                else -> {
+                                    Timber.d("Error confirmTokenC2R:$response")
+
+                                    Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
                         }
 
                         override fun onError(throwable: Throwable) {

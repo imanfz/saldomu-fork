@@ -69,6 +69,8 @@ public class DefineValue {
     public static String ERROR_0127 = "0127" ;
     public static String ERROR_9333 = "9333" ;
     public static String ERROR_0066 = "0066" ;
+    public static String ERROR_0061 = "0061" ;
+    public static String ERROR_0135 = "0135" ;
     public static String SCASH = "SCASH" ;
     public static String PRIVATE = "1" ;
     public static String PUBLIC = "2" ;

@@ -283,6 +283,7 @@ public class MyApiClient {
     public static String LINK_GET_BILLER_DENOM;
     public static String LINK_GET_ANCHOR_COMMUNITIES;
     public static String LINK_INQUIRY_CUSTOMER_ACCT;
+    public static String LINK_CONFIRM_TOKEN_C2R;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -316,7 +317,7 @@ public class MyApiClient {
         LINK_REQ_TOKEN_BILLER    = headaddressfinal + "RequestBiller/Invoke";
         LINK_CONFIRM_BILLER      = headaddressfinal + "ConfirmTokenBiller/Invoke";
         LINK_RESENT_TOKEN_BILLER = headaddressfinal + "ResendToken/Invoke";
-        LINK_RETRY_TOKEN = headaddressfinal + "RetryToken/Invoke";
+        LINK_RETRY_TOKEN         = headaddressfinal + "RetryToken/Invoke";
         LINK_LIST_BANK_BILLER    = headaddressfinal + "BankBiller/Retrieve";
 
         LINK_UPLOAD_PROFILE_PIC  = headaddressfinal + "UploadProfPic/Submit";
@@ -487,11 +488,13 @@ public class MyApiClient {
         LINK_EXEC_UPGRADE_MEMBER    = headaddressfinal + "ExecUpgradeMember/Invoke";
         LINK_REQ_UPGRADE_MEMBER     = headaddressfinal + "InitiateUpgradeGold/Invoke";
 
-        LINK_GET_BILLER_DENOM     = headaddressfinal + "BillerEspayNew/Retrieve";
+        LINK_GET_BILLER_DENOM       = headaddressfinal + "BillerEspayNew/Retrieve";
 
         LINK_GET_ANCHOR_COMMUNITIES = headaddressfinal + "invoice/Getanchor/Communities";
 
-        LINK_INQUIRY_CUSTOMER_ACCT = headaddressfinal + "InquiryCustomerAcct/Invoke";
+        LINK_INQUIRY_CUSTOMER_ACCT  = headaddressfinal + "InquiryCustomerAcct/Invoke";
+
+        LINK_CONFIRM_TOKEN_C2R      = headaddressfinal + "ConfirmTokenCTR/Invoke";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
