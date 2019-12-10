@@ -12,8 +12,10 @@ import android.widget.*
 import com.google.gson.JsonObject
 import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.CashCollectionActivity
 import com.sgo.saldomu.activities.InsertPIN
 import com.sgo.saldomu.activities.MainPage
+import com.sgo.saldomu.activities.TagihActivity
 import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -37,6 +39,7 @@ import timber.log.Timber
 
 class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
+
     private val CTR = "CTR"
     private val BENEF = "BENEF"
     private val SOURCE = "SOURCE"
@@ -57,9 +60,9 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
     private var productCode: String? = null
     private var memberId: String? = null
     private var otp: String? = null
-    private var isPIN: Boolean? = false
-    private var attempt = 0
-    private var failed = 0
+    private var benefProductValueCode: String? = ""
+    private var benefProductValueName: String? = ""
+
 
     private var comm: BBSCommModel? = null
     private var realmBBS: Realm? = null
@@ -69,7 +72,6 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
     private var listbankSource: List<BBSBankModel>? = null
     private lateinit var viewLayout: View
     private var dialog: Dialog? = null
-    private lateinit var dialogReport: ReportBillerDialog
     private lateinit var cashCollectionModel: CashCollectionModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -92,8 +94,13 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         commCode = comm?.comm_code
         memberCode = comm?.member_code
 
-        sourceProductType = listbankSource?.get(0)?.product_type
-        sourceProductCode = listbankSource?.get(0)?.product_code
+//        sourceProductType = listbankSource?.get(0)?.product_type
+//        sourceProductCode = listbankSource?.get(0)?.product_code
+        sourceProductType = getString(R.string.EMO)
+        if (BuildConfig.FLAVOR.equals("development")) {
+            sourceProductCode = getString(R.string.EMOSALDOMU)
+        } else
+            sourceProductCode = getString(R.string.SALDOMU)
 
         benefProductType = listbankBenef?.get(0)?.product_type
         benefProductCode = listbankBenef?.get(0)?.product_code
@@ -124,7 +131,13 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
             }
 
         }
-        btn_submit.setOnClickListener { showDialogConfirmation() }
+
+        btn_submit.setOnClickListener {
+            if (inputValidation()){
+                amount = et_amount_deposit.text.toString()
+                sentInsertC2R()
+            }
+        }
     }
 
     private fun initlayout() {
@@ -211,33 +224,6 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         })
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun showDialogConfirmation() {
-        dialog = Dialog(context!!)
-        dialog?.setCancelable(false)
-        dialog?.setContentView(R.layout.dialog_cash_collection)
-        dialog?.setTitle(getString(R.string.are_you_sure))
-
-        amount = et_amount_deposit.text.toString()
-        if (et_no_acct.visibility == View.VISIBLE) {
-            dialog?.dialog_cash_collection_tv_acc_no?.text = et_no_acct.text
-        } else {
-            dialog?.dialog_cash_collection_tv_acc_no?.text = accNo
-        }
-        if (!accName.isNullOrEmpty()) {
-            dialog?.dialog_cash_collection_tv_name?.text = accName
-        } else
-            dialog?.dialog_cash_collection_tv_name?.text = tv_name.text.toString()
-        if (amount == "")
-            amount = "0"
-        dialog?.dialog_cash_collection_tv_amount_deposit?.text = getString(R.string.rp_) + " " + CurrencyFormat.format(amount)
-
-        dialog?.dialog_cash_collection_btn_cancel!!.setOnClickListener { view -> dialog?.dismiss() }
-        dialog?.dialog_cash_collection_btn_ok!!.setOnClickListener { view -> sentInsertC2R() }
-
-        dialog?.show()
-    }
-
     private fun sentInsertC2R() {
         try {
             showProgressDialog()
@@ -284,6 +270,8 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                         WebParams.SUCCESS_CODE -> {
                             txId = model.tx_id
                             productCode = model.tx_product_code
+                            benefProductValueCode = model.benef_product_value_code
+                            benefProductValueName = model.benef_product_value_name
                             confirmPayment()
                         }
                         WebParams.LOGOUT_CODE -> {
@@ -315,8 +303,6 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                 }
 
                 override fun onComplete() {
-                    dismissProgressDialog()
-                    dialog?.dismiss()
                 }
 
             })
@@ -326,7 +312,6 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
     }
 
     private fun confirmPayment() {
-        showProgressDialog()
 
         params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_PAYMENT_DGI)
 
@@ -375,7 +360,6 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                     }
 
                     override fun onComplete() {
-                        dismissProgressDialog()
                     }
                 })
     }
@@ -393,7 +377,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
             params[WebParams.COMM_CODE] = commCode
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_ID] = commIDLogin
-            Timber.d("isi params InquiryTrx topup scadm:$params")
+            Timber.d("isi params InquiryTrx cash collection:$params")
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
                     object : ObjListeners {
@@ -401,21 +385,28 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                             try {
                                 val model = getGson().fromJson(response.toString(), jsonModel::class.java)
                                 var code = response.getString(WebParams.ERROR_CODE)
-                                Timber.d("isi response InquiryTrx topup scadm: $response")
+                                Timber.d("isi response InquiryTrx cash collection: $response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
-//                                        inputPIN()
-                                        dialog?.layout_otp_cashcollection?.visibility = View.VISIBLE
+                                        dismissProgressDialog()
+                                        val newFrag = FragCashCollectionConfirm()
+                                        val bundle = Bundle()
 
-                                        dialog?.dialog_cash_collection_btn_ok!!.setOnClickListener { view ->
-                                            if (!dialog?.et_otp_cashcollection?.text.isNullOrEmpty()) {
-                                                otp = dialog?.et_otp_cashcollection?.text.toString()
-                                                confirmTokenC2R()
-                                            } else {
-                                                dialog?.et_otp_cashcollection?.requestFocus()
-                                                dialog?.et_otp_cashcollection?.setError(getString(R.string.regist3_validation_otp))
-                                            }
+                                        bundle.putString(DefineValue.TX_ID, txId)
+                                        bundle.putString(DefineValue.COMMUNITY_ID, commId)
+                                        bundle.putString(DefineValue.BENEF_PRODUCT_VALUE_CODE, benefProductValueCode)
+                                        bundle.putString(DefineValue.BENEF_PRODUCT_VALUE_NAME, benefProductValueName)
+                                        bundle.putString(DefineValue.COMMUNITY_CODE, commCode)
+                                        bundle.putString(DefineValue.MEMBER_CODE, memberCode)
+                                        bundle.putString(DefineValue.PRODUCT_CODE, productCode)
+                                        bundle.putString(DefineValue.AMOUNT, amount)
+
+                                        newFrag.arguments = bundle
+                                        if (activity == null) {
+                                            return
                                         }
+                                        val ftf = activity as CashCollectionActivity?
+                                        ftf!!.switchContent(newFrag, "Konfirmasi Cash Collection", true)
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
@@ -435,7 +426,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                         alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                                     }
                                     else -> {
-                                        Timber.d("Error resendTokenSGOL:$response")
+                                        Timber.d("Error inquirytrx cash collection:$response")
                                         code = response.getString(WebParams.ERROR_MESSAGE)
 
                                         Toast.makeText(activity, code, Toast.LENGTH_SHORT).show()
@@ -459,316 +450,6 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
             Timber.d("httpclient:" + e.message)
         }
 
-    }
-
-    private fun confirmTokenC2R() {
-        try {
-            showProgressDialog()
-
-            extraSignature = txId + commId + otp
-
-            params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOKEN_C2R, extraSignature)
-
-            params[WebParams.TX_ID] = txId
-            params[WebParams.USER_ID] = userPhoneID
-            params[WebParams.COMM_ID] = commId
-            params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(otp)
-
-            Timber.d("isi params confirmTokenC2R:$params")
-
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TOKEN_C2R, params,
-                    object : ObjListeners {
-                        override fun onResponses(response: JSONObject) = try {
-                            val model = getGson().fromJson(response.toString(), jsonModel::class.java)
-                            var code = response.getString(WebParams.ERROR_CODE)
-                            var msg = response.getString(WebParams.ERROR_MESSAGE)
-                            Timber.d("isi response confirmTokenC2R: $response")
-                            when (code) {
-                                WebParams.SUCCESS_CODE -> {
-                                    inputPIN()
-                                }
-                                WebParams.LOGOUT_CODE -> {
-                                    Timber.d("isi response autologout:$response")
-                                    val message = response.getString(WebParams.ERROR_MESSAGE)
-                                    val test = AlertDialogLogout.getInstance()
-                                    test.showDialoginActivity(activity, message)
-                                }
-                                DefineValue.ERROR_0061 -> {
-                                    Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
-                                }
-                                DefineValue.ERROR_0135 -> {
-                                    showDialog(msg)
-                                }
-                                DefineValue.ERROR_9333 -> {
-                                    Timber.d("isi response app data:" + model.app_data)
-                                    val appModel = model.app_data
-                                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                    alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                                }
-                                DefineValue.ERROR_0066 -> {
-                                    Timber.d("isi response maintenance:$response")
-                                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
-                                }
-                                else -> {
-                                    Timber.d("Error confirmTokenC2R:$response")
-
-                                    Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
-                        }
-
-                        override fun onError(throwable: Throwable) {
-
-                        }
-
-                        override fun onComplete() {
-                            dismissProgressDialog()
-                            btn_submit.isEnabled = true
-                        }
-                    })
-        } catch (e: Exception) {
-            Timber.d("httpclient:" + e.message)
-        }
-
-    }
-
-    private fun inputPIN() {
-        isPIN = true
-        UtilsLoader(activity, sp).getFailedPIN(userPhoneID, object : OnLoadDataListener {
-            override fun onSuccess(deData: Any) {
-
-            }
-
-            override fun onFail(message: Bundle) {
-
-            }
-
-            override fun onFailure(message: String) {
-
-            }
-        })
-
-        if (isPIN!!) {
-            callPINInput(-1)
-        }
-    }
-
-    private fun callPINInput(attempt: Int) {
-        val i = Intent(activity, InsertPIN::class.java)
-        if (attempt == 1)
-            i.putExtra(DefineValue.ATTEMPT, attempt)
-        startActivityForResult(i, MainPage.REQUEST_FINISH)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == MainPage.REQUEST_FINISH) {
-            if (resultCode == InsertPIN.RESULT_PIN_VALUE)
-                sentInsertTransTopUp(data?.getStringExtra(DefineValue.PIN_VALUE))
-        }
-    }
-
-    private fun sentInsertTransTopUp(tokenValue: String?) {
-        try {
-            showProgressDialog()
-
-            extraSignature = txId + commCode + productCode + tokenValue
-
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature)
-
-            params[WebParams.TX_ID] = txId
-            params[WebParams.PRODUCT_CODE] = productCode
-            params[WebParams.COMM_CODE] = commCode
-            params[WebParams.COMM_ID] = commId
-            params[WebParams.MEMBER_ID] = memberId
-            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncrypt(tokenValue)
-            params[WebParams.USER_ID] = userPhoneID
-
-            Timber.d("params insert trx : $params")
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
-                    object : ResponseListener {
-                        override fun onResponses(response: JsonObject) {
-                            val model = getGson().fromJson(response, FailedPinModel::class.java)
-
-                            var code = model.error_code
-                            if (code == WebParams.SUCCESS_CODE) {
-                                activity!!.setResult(MainPage.RESULT_BALANCE)
-
-                                getTrxStatus(sp.getString(DefineValue.USER_NAME, ""), txId, userPhoneID)
-
-                            } else if (code == WebParams.LOGOUT_CODE) {
-                                val message = model.error_message
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(activity, message)
-                            } else if (code == "0061") {
-                                val code_msg = model.error_message
-                                Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
-                            } else if (code == DefineValue.ERROR_9333) {
-                                Timber.d("isi response app data:" + model.app_data)
-                                val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            } else if (code == DefineValue.ERROR_0066) {
-                                Timber.d("isi response maintenance:$response")
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
-                            } else {
-                                val message = model.error_message
-                                if (isPIN!!) {
-                                    Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
-                                    //pin tidak sesuai errorcode 0097
-                                    if (code == "0097") {
-                                        val i = Intent(activity, InsertPIN::class.java)
-
-                                        attempt = model.failed_attempt
-                                        failed = model.max_failed
-
-                                        if (attempt != -1)
-                                            i.putExtra(DefineValue.ATTEMPT, failed - attempt)
-
-                                        startActivityForResult(i, MainPage.REQUEST_FINISH)
-                                    } else {
-                                        activity!!.setResult(MainPage.RESULT_BALANCE)
-                                        getTrxStatus(sp.getString(DefineValue.USER_NAME, ""), txId, userPhoneID)
-                                        //                                    onOkButton();
-                                    }
-                                } else {
-                                    activity!!.setResult(MainPage.RESULT_BALANCE)
-                                    getTrxStatus(sp.getString(DefineValue.USER_NAME, ""), txId, userPhoneID)
-                                }
-                            }
-                        }
-
-                        override fun onError(throwable: Throwable) {
-
-                        }
-
-                        override fun onComplete() {
-                            dismissProgressDialog()
-                            btn_submit.isEnabled = true
-                        }
-                    })
-        } catch (e: Exception) {
-            Timber.d("httpclient:" + e.message)
-        }
-    }
-
-    private fun getTrxStatus(userName: String?, txId: String?, userId: String?) {
-        try {
-            val progressDialog = DefinedDialog.CreateProgressDialog(activity, getString(R.string.check_status))
-            progressDialog.show()
-
-            extraSignature = txId + commCode
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_STATUS_BBS, extraSignature)
-            params[WebParams.TX_ID] = txId
-            params[WebParams.COMM_ID] = commId
-            params[WebParams.COMM_CODE] = commCode
-            params[WebParams.USER_ID] = userId
-
-            Timber.d("isi params sent get Trx Status bbs:$params")
-
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TRX_STATUS_BBS, params,
-                    object : ResponseListener {
-                        override fun onResponses(`object`: JsonObject) {
-                            val model = getGson().fromJson(`object`, GetTrxStatusReportModel::class.java)
-
-                            val code = model.error_code
-                            if (code == WebParams.SUCCESS_CODE || code == "0003") {
-                                showReportBillerDialog(userName, txId, userId, model)
-                            } else if (code == "0288") {
-                                val codeMsg = model.error_message
-                                Toast.makeText(activity, codeMsg, Toast.LENGTH_LONG).show()
-                            } else if (code == WebParams.LOGOUT_CODE) {
-                                val message = model.error_message
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(activity, message)
-                            } else if (code == DefineValue.ERROR_9333) {
-                                Timber.d("isi response app data:" + model.app_data)
-                                val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            } else if (code == DefineValue.ERROR_0066) {
-                                Timber.d("isi response maintenance:$`object`")
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
-                            } else {
-                                val msg = model.error_message
-                                showDialog(msg)
-                            }
-
-                        }
-
-                        override fun onError(throwable: Throwable) {
-
-                        }
-
-                        override fun onComplete() {
-                            if (progressDialog.isShowing)
-                                progressDialog.dismiss()
-                            btn_submit.isEnabled = true
-                        }
-                    })
-        } catch (e: Exception) {
-            Timber.d("httpclient:" + e.message)
-        }
-    }
-
-    private fun showReportBillerDialog(userName: String?, txId: String?, userId: String?, response: GetTrxStatusReportModel?) {
-        val args = Bundle()
-        dialogReport = ReportBillerDialog.newInstance(this)
-        args.putString(DefineValue.USER_NAME, userName)
-        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response?.created))
-        args.putString(DefineValue.TX_ID, txId)
-        args.putString(DefineValue.REPORT_TYPE, DefineValue.BBS_CASHIN)
-        args.putString(DefineValue.USERID_PHONE, userId)
-        args.putString(DefineValue.BANK_NAME, response?.tx_bank_name)
-        args.putString(DefineValue.BANK_PRODUCT, response?.product_name)
-        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response?.admin_fee))
-        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response?.tx_amount))
-        args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response?.additional_fee))
-        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response?.total_amount))
-
-        var txStat: Boolean? = false
-        val txStatus = response?.tx_status
-        when {
-            txStatus == DefineValue.SUCCESS -> {
-                txStat = true
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
-            }
-            txStatus == DefineValue.ONRECONCILED -> {
-                txStat = true
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
-            }
-            txStatus == DefineValue.SUSPECT -> args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-            txStatus != DefineValue.FAILED -> args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-            else -> args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
-        }
-        args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
-        if (!txStat) args.putString(DefineValue.TRX_REMARK, response?.tx_remark)
-        args.putString(DefineValue.MEMBER_NAME, response?.member_name)
-        args.putString(DefineValue.SOURCE_ACCT, response?.source_bank_name)
-        args.putString(DefineValue.SOURCE_ACCT_NO, response?.source_acct_no)
-        args.putString(DefineValue.SOURCE_ACCT_NAME, response?.source_acct_name)
-        args.putString(DefineValue.BANK_BENEF, response?.benef_bank_name)
-        args.putString(DefineValue.TYPE_BENEF, response?.benef_acct_type)
-        args.putString(DefineValue.NO_BENEF, response?.benef_acct_no)
-        args.putString(DefineValue.NAME_BENEF, response?.benef_acct_name)
-        args.putString(DefineValue.PRODUCT_NAME, response?.product_name)
-        args.putString(DefineValue.MEMBER_SHOP_PHONE, response?.member_shop_phone)
-        args.putString(DefineValue.BUSS_SCHEME_CODE, response?.buss_scheme_code)
-        args.putString(DefineValue.BUSS_SCHEME_NAME, response?.buss_scheme_name)
-        args.putString(DefineValue.BENEF_PRODUCT_CODE, benefProductCode)
-
-        dialogReport.arguments = args
-        dialogReport.show(activity!!.supportFragmentManager, ReportBillerDialog.TAG)
-    }
-
-    override fun onOkButton() {
-        dialogReport.dismiss()
-        activity!!.finish()
     }
 
     private fun inputValidation(): Boolean {
@@ -796,4 +477,10 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
         dialog.show()
     }
+
+    override fun onOkButton() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
 }

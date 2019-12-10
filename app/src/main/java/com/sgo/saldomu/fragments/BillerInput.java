@@ -84,7 +84,7 @@ public class BillerInput extends Fragment {
             "SPP",  // SPP   15
             "RMH",  //Perumahan  16
             "BPJS", //BILLER_TYPE_BPJS 17
-            "GAME", // Game 18
+            "GAPP", // Game 18
             "EMON", // Emoney 19
             "VCHR",// voucher 20
             "DATA" // data 21

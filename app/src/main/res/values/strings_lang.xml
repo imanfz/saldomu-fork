@@ -112,7 +112,7 @@
     <string name="reg2_notif_text_resend_token">Permintaan token baru sukses</string>
     <string name="reg2_notif_max_resend_token_empty">Kesempatan kirim token baru sudah habis</string>
     <string name="regist2_validation_token_invalid">Token salah!</string>
-    <string name="reg3_btn_text_resend_token_sms">Kirim ulang OTP ke sms</string>
+    <string name="reg3_btn_text_resend_token_sms">Kirim ulang kode OTP</string>
     <string name="regist3_validation_otp">Kode OTP dibutuhkan!</string>
     <string name="reg3_dialog_token_message_sms">Kode OTP sudah dikirim lewat sms. Mohon ditunggu.</string>
     <string name="reg3_notif_max_resend_token_empty">Anda sudah mencapai batas maksimal pengiriman OTP. Silahkan ulangi tahap registrasi beberapa saat lagi jika OTP belum diterima.</string>
@@ -1437,4 +1437,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="other_acct">Rekening Lainnya</string>
     <string name="agent_type_col">COL</string>
     <string name="menu_item_title_collector_history">Riwayat Collector</string>
+    <string name="EMO">EMO</string>
+    <string name="EMOSALDOMU">EMOSALDOMU</string>
+    <string name="SALDOMU">SALDOMU</string>
 </resources>

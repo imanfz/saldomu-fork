@@ -377,8 +377,10 @@ public class DefineValue {
     public static String SOURCE_PRODUCT_H2H = "sourceProductH2h";
     public static String SOURCE_PRODUCT_NAME = "sourceProductName";
     public static String BENEF_PRODUCT_CODE = "benefProductCode";
+    public static String BENEF_PRODUCT_VALUE_CODE = "benefProductValueCode";
     public static String BENEF_PRODUCT_TYPE = "benefProductType";
     public static String BENEF_PRODUCT_NAME = "benefProductName";
+    public static String BENEF_PRODUCT_VALUE_NAME = "benefProductValueName";
     public static String BENEF_PRODUCT_VALUE_TOKEN = "benefProductValueToken";
     public static String SOURCE_PRODUCT_VALUE_TOKEN = "sourceProductValueToken";
 

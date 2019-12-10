@@ -284,6 +284,7 @@ public class MyApiClient {
     public static String LINK_GET_ANCHOR_COMMUNITIES;
     public static String LINK_INQUIRY_CUSTOMER_ACCT;
     public static String LINK_CONFIRM_TOKEN_C2R;
+    public static String LINK_RESEND_TOKEN_C2R;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -495,6 +496,7 @@ public class MyApiClient {
         LINK_INQUIRY_CUSTOMER_ACCT  = headaddressfinal + "InquiryCustomerAcct/Invoke";
 
         LINK_CONFIRM_TOKEN_C2R      = headaddressfinal + "ConfirmTokenCTR/Invoke";
+        LINK_RESEND_TOKEN_C2R       = headaddressfinal + "ResendTokenCTR/Invoke";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
