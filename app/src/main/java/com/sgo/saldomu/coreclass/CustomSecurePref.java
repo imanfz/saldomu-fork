@@ -182,4 +182,15 @@ public class CustomSecurePref {
         mEdit.apply();
 
     }
+
+
+    public void setBoolean(String key, boolean value){
+        SecurePreferences.Editor edit = getmSecurePrefs().edit();
+        edit.putBoolean(key,value);
+        edit.apply();
+    }
+
+    public boolean getBoolean(String key){
+        return getmSecurePrefs().getBoolean(key, false);
+    }
 }

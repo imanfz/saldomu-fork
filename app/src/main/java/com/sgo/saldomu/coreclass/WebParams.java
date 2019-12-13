@@ -597,4 +597,7 @@ public class WebParams {
     public static String ERROR_0066 = "0066";
     public static String LOC_TX_ID = "loc_tx_id";
 
+    public final static String LANGUAGE_ID = "id";
+    public final static String LANGUAGE_EN = "en";
+
 }
