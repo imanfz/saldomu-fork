@@ -161,6 +161,7 @@
     <string-array name="settings_list_info">
         <item>@string/menu_item_title_info_harga</item>
         <item>@string/menu_item_title_starterkit</item>
+        <item>@string/menu_item_title_language</item>
         <item>@string/logout</item>
     </string-array>
 
