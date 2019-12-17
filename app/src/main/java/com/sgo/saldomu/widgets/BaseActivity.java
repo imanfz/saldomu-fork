@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,7 @@ import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.PermissionResult;
 import com.sgo.saldomu.receivers.FcmReceiver;
+import com.sgo.saldomu.utils.LocaleManager;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -287,5 +289,9 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
                 getProgDialog().dismiss();
     }
 
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        Timber.d("Logging attachBaseContext.....");
+        super.attachBaseContext(LocaleManager.setLocale(newBase));
+    }
 }
