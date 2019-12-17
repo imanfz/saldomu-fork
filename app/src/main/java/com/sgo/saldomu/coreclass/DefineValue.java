@@ -633,5 +633,9 @@ public class DefineValue {
     public static String HISTORY_TITLE = "historyTitle";
     public static String FORCE_CHANGE_PIN = "forceChangePin";
 
+    public static String IS_BAHASA = "is_bahasa";
+    public static String LANGUAGE_CODE_IND = "in";
+    public static String LANGUAGE_CODE_ENG = "en";
+
 }
 
