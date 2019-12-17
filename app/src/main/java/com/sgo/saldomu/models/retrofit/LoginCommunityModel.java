@@ -95,6 +95,12 @@ public class LoginCommunityModel {
     @SerializedName("member_created")
     @Expose
     private String member_created;
+    @SerializedName("company_type")
+    @Expose
+    private String company_type;
+    @SerializedName("force_change_pin")
+    @Expose
+    private String force_change_pin;
 
     public String getCommId() {
         return commId;
@@ -298,5 +304,21 @@ public class LoginCommunityModel {
 
     public String getMember_created() {
         return member_created;
+    }
+
+    public void setCompany_type(String company_type) {
+        this.company_type = company_type;
+    }
+
+    public String getCompany_type() {
+        return company_type;
+    }
+
+    public void setForce_change_pin(String force_change_pin) {
+        this.force_change_pin = force_change_pin;
+    }
+
+    public String getForce_change_pin() {
+        return force_change_pin;
     }
 }

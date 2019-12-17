@@ -154,6 +154,20 @@
                 android:textSize="@dimen/abc_text_size_small_material"
                 android:textStyle="bold"
                 android:visibility="visible" />
+            <Button
+                android:id="@+id/btn_forgetPin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/button_transparant"
+                android:text="@string/menuitem_title_forgot_pin"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/abc_text_size_small_material"
+                android:textStyle="bold"
+                android:visibility="visible" />
             <TextView
                 android:id="@+id/tv_privacypolicy"
                 android:layout_width="wrap_content"

@@ -567,6 +567,7 @@ public class DefineValue {
     public static String PARAMS = "params";
     public static String PAYMENT_TYPE = "payment_type";
     public static String AGENT_TYPE = "agent_type";
+    public static String COMPANY_TYPE = "company_type";
     public static String PAYMENT_TYPE_DESC= "payment_type_desc";
     public static String INVOICE = "invoice";
     public static String SCHEME_CODE = "scheme_code";
@@ -630,6 +631,7 @@ public class DefineValue {
     public static String IS_SEARCH_CTR = "isSearchCTR";
     public static String AGENT_COL = "agentCOL";
     public static String HISTORY_TITLE = "historyTitle";
+    public static String FORCE_CHANGE_PIN = "forceChangePin";
 
 }
 

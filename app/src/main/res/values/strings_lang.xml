@@ -286,6 +286,7 @@
     <string name="changepass_text_firsttime_msg">Sebelum menggunakan aplikasi, harap mengganti Kata Sandi anda untuk alasan keamanan.</string>
 
     <string name="forgotpass_text_title">Lupa Kata Sandi</string>
+    <string name="forgotpin_text_title">Lupa PIN</string>
     <string name="forgotpass_text_instruction">%1$s akan mengirimkan prosedur Lupa Kata Sandi. Pilih tipe notifikasi Lupa Kata Sandi yang akan diproses.</string>
     <string name="forgotpass_text_instruction3">Isi dengan nomor handphone anda yang terhubung dengan akun anda dan kata sandi yang baru.</string>
     <!--<string name="forgotpass_text_message_success">Ganti password berhasil. Silahkan cek email atau sms anda sesuai pilihan tipe notifikasi yang anda pilih.</string>-->
@@ -599,7 +600,7 @@
     <string name="rsb_edithint_token">xxxxxx</string>
     <string name="rsb_validation_dob">Tanggal Lahir dibutuhkan!</string>
     <string name="rsb_alert_dob">Tanggal lahir yang dimasukkan tidak sesuai dengan data akun, tolong masukkan tanggal lahir yang benar</string>
-    <string name="rsb_hint_dob">Tekan untuk mengatur DOB</string>
+    <string name="rsb_hint_dob">Tekan untuk mengatur Tanggal Lahir</string>
     <string name="rsb_hint_acc_no">Masukkan Nomor Akun</string>
     <string name="rsb_alert_acc_no">Nomor akun yang dimasukkan tidak sesuai dengan data akun, tolong masukkan nomor akun yang benar</string>
     <string name="rsb_validation_acc_no">Nomor Akun dibutuhkan!</string>
@@ -1440,4 +1441,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="EMO">EMO</string>
     <string name="EMOSALDOMU">EMOSALDOMU</string>
     <string name="SALDOMU">SALDOMU</string>
+    <string name="LP">LP</string>
+    <string name="LKD">LKD</string>
+    <string name="success_forgot_pin">PIN baru akan dikirimkan melalui SMS.</string>
 </resources>
