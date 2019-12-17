@@ -103,6 +103,7 @@ public class MyApiClient {
     public static String LINK_UPDATE_PROFILE;
     public static String LINK_CHANGE_PASSWORD;
     public static String LINK_FORGOT_PASSWORD;
+    public static String LINK_FORGOT_PIN;
     public static String LINK_MEMBER_PULSA;
     public static String LINK_USER_CONTACT_INSERT;
     public static String LINK_USER_CONTACT_UPDATE;
@@ -308,6 +309,7 @@ public class MyApiClient {
         LINK_UPDATE_PROFILE      = headaddressfinal + "UserProfile/Update";
         LINK_CHANGE_PASSWORD     = headaddressfinal + "ChangePassword/Invoke";
         LINK_FORGOT_PASSWORD     = headaddressfinal + "ForgotPassword/Invoke";
+        LINK_FORGOT_PIN          = headaddressfinal + "ForgotPIN/Invoke";
         LINK_MEMBER_PULSA        = headaddressfinal + "MemberPulsa/Retrieve";
         LINK_USER_CONTACT_INSERT = headaddressfinal + "UserContact/Insert";
         LINK_USER_CONTACT_UPDATE = headaddressfinal + "UserContact/Update";

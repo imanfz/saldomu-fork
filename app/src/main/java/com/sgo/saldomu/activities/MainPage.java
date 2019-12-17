@@ -1092,6 +1092,12 @@ public class MainPage extends BaseActivity {
 
     }
 
+    private void showChangePin() {
+        Intent i = new Intent(this, ChangePIN.class);
+        switchActivity(i, MainPage.ACTIVITY_RESULT);
+
+    }
+
     private void checkField() {
         if (sp.getString(DefineValue.IS_CHANGED_PASS, "").equals(DefineValue.STRING_NO)) {
             showChangePassword();
@@ -1099,6 +1105,8 @@ public class MainPage extends BaseActivity {
             showCreatePin();
         } else if (levelClass.isLevel1QAC() && sp.getString(DefineValue.IS_FIRST, "").equalsIgnoreCase(DefineValue.YES)) {
             showMyProfile();
+        }else if (sp.getString(DefineValue.FORCE_CHANGE_PIN, "").equalsIgnoreCase(DefineValue.STRING_YES)) {
+            showChangePin();
         }
 //        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
 //            showValidasiEmail();

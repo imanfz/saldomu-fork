@@ -69,6 +69,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
 
     private String userIDfinale = null, is_pos;
     private Button btnforgetPass;
+    private Button btnforgetPin;
     private Button btnRegister;
     private TextView btnPrivacyPolicy;
     private EditText userIDValue;
@@ -92,6 +93,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
         passLoginValue = v.findViewById(R.id.passLogin_value);
         btnLogin = v.findViewById(R.id.btn_login);
         btnforgetPass = v.findViewById(R.id.btn_forgetPass);
+        btnforgetPin = v.findViewById(R.id.btn_forgetPin);
         btnPrivacyPolicy = v.findViewById(R.id.tv_privacypolicy);
         btnRegister = v.findViewById(R.id.btn_register);
         image_spinner = v.findViewById(R.id.image_spinning_wheel);
@@ -176,6 +178,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
 
         btnLogin.setOnClickListener(this);
         btnforgetPass.setOnClickListener(this);
+        btnforgetPin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
         toogleViewPass.setOnClickListener(this);
         passLoginValue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -224,7 +227,6 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                 newFrag = new Regist1();
                 switchFragment(newFrag, "reg1", true);
                 break;
-
             case R.id.passLogin_toogle_view:
 //                toogleViewPass.setOnTouchListener((v1, event) -> {
 //                    switch ( event.getAction() ) {
@@ -246,6 +248,10 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
 //                    return true;
 //                });
 //                break;
+            case R.id.btn_forgetPin:
+                newFrag = new FragForgotPIN();
+                switchFragment(newFrag, "forgot pin", true);
+                break;
         }
 
     }
@@ -553,6 +559,8 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                         mEditor.putString(DefineValue.LENGTH_AUTH, commModel.getLengthAuth());
                         mEditor.putString(DefineValue.IS_HAVE_PIN, commModel.getIsHavePin());
                         mEditor.putString(DefineValue.AGENT_TYPE, commModel.getAgent_type());
+                        mEditor.putString(DefineValue.COMPANY_TYPE, commModel.getCompany_type());
+                        mEditor.putString(DefineValue.FORCE_CHANGE_PIN, commModel.getForce_change_pin());
                         mEditor.remove(DefineValue.SENDER_ID);
 
                         mEditor.putInt(DefineValue.LEVEL_VALUE, Integer.valueOf(commModel.getMemberLevel()));
