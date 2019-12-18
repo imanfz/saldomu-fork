@@ -8,7 +8,7 @@
     <string name="logout">Sign Out</string>
     <string name="load_dialog">Pemuatan…</string>
     <string name="sending_request_dialog">Mengirim permintaan…</string>
-    <string name="logout_toast_message">Keluar Berhasil</string>
+    <string name="logout_toast_message">Sign Out Successfully</string>
     <string name="text_strip" translatable="false">-</string>
     <string name="titik_dua" translatable="false">:</string>
     <string name="unknown">Unknown</string>
@@ -23,7 +23,7 @@
     <string name="up_indicator" translatable="false">{fa-sort-asc}</string>
     <string name="exempli_gratia" translatable="false">contoh</string>
     <string name="transaction">Transaction</string>
-    <string name="informasi_pelanggan">Informasi Pelanggan</string>
+    <string name="informasi_pelanggan">Customer Information</string>
     <string name="transaction_success">Transaksi Berhasil</string>
     <string name="transaction_pending">Transaksi Sedang di Proses</string>
     <string name="transaction_suspect">Transaksi Suspect</string>
@@ -32,11 +32,11 @@
     <string name="atm" translatable="false">ATM</string>
     <string name="pending">Sedang di Proses</string>
     <string name="paid">Terbayar</string>
-    <string name="failed">Gagal</string>
+    <string name="failed">Failed</string>
     <string name="suspect">Menggantung</string>
-    <string name="cancelled">Batal</string>
+    <string name="cancelled">Cancelled</string>
     <string name="error" translatable="false">Error</string>
-    <string name="share_options">Pilihan pembagian</string>
+    <string name="share_options">Share Options</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="load_more">Load More</string>
@@ -51,11 +51,11 @@
     </string>
     <string name="text_token_code">Kode Token</string>
     <string name="you">Anda</string>
-    <string name="done">Selesai</string>
-    <string name="data_not_found">Data Tidak Ditemukan</string>
+    <string name="done">Done</string>
+    <string name="data_not_found">Data Not Found</string>
     <string name="initialize">Inisialisasi</string>
-    <string name="sent">Kirim</string>
-    <string name="resend">Kirim Ulang</string>
+    <string name="sent">Sent</string>
+    <string name="resend">Resend</string>
 
     <string name="firstscreen_desc_background" translatable="false">background</string>
     <string name="firstscreen_button_daftar">DAFTAR</string>
@@ -69,7 +69,7 @@
     <string name="regist1_notif_message_sms">akan mengirimkan satu SMS berisi kode Token untuk proses
         aktivasi selanjutnya.
     </string>
-    <string name="regist1_title">Registrasi</string>
+    <string name="regist1_title">Registration</string>
     <string name="regist1_text_nohp">Nomor Handphone</string>
     <string name="regist1_text_nama">Name</string>
     <string name="regist1_text_email" translatable="false">Email</string>
@@ -95,7 +95,7 @@
     <string name="regist2_checkbox_showpin">Tampilkan PIN</string>
     <string name="regist2_text_ulangpin">Ketik ulang PIN</string>
     <string name="regist2_text_otp">Token</string>
-    <string name="regist2_edithint_otp">Silahkan masukkan kode Token</string>
+    <string name="regist2_edithint_otp">Please enter the Token code</string>
 
     <string name="regist2_validation_pass">Password dibutuhkan!</string>
     <string name="regist2_validation_pass_length">Password minimal 6 karakter!</string>
