@@ -175,7 +175,7 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
                                     Toast.makeText(ChangePIN.this, getString(R.string.changepin_toast_success), Toast.LENGTH_LONG).show();
                                     if (sp.getString(DefineValue.FORCE_CHANGE_PIN,"").equalsIgnoreCase(DefineValue.STRING_YES))
                                     {
-                                        sp.edit().putString(DefineValue.FORCE_CHANGE_PIN,DefineValue.STRING_YES).apply();
+                                        sp.edit().putString(DefineValue.FORCE_CHANGE_PIN,DefineValue.STRING_NO).apply();
                                     }
                                     finishChild();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
