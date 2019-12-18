@@ -217,15 +217,7 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <EditText
-                    android:id="@+id/et_additionalfee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:layout_marginTop="4dp"
-                    android:inputType="number"
-                    android:textColor="@color/colorSecondaryDark"
-                    android:textSize="@dimen/abc_text_size_medium_material" />
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -235,6 +227,15 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
+                <EditText
+                    android:id="@+id/et_additionalfee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_marginTop="4dp"
+                    android:inputType="number"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
 
             </LinearLayout>
 
