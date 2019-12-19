@@ -168,7 +168,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                     logo.setImageDrawable(getResources().getDrawable(R.drawable.logo_pos));
                     getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
                     userIDValue.setEnabled(true);
-                    userIDValue.setHint("No HP POS yang sudah terdaftar");
+                    userIDValue.setHint(getString(R.string.pos_hint));
                 }
             }
         } else if (sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
@@ -369,7 +369,9 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                         showDialog(getString(R.string.login_failed_attempt_3));
                     } else if (code.equals(DefineValue.ERROR_0018) || code.equals(DefineValue.ERROR_0017)) {
                         showDialog(getString(R.string.login_failed_inactive));
-                    } else if (code.equals(DefineValue.ERROR_0127)) {
+                    } else if (code.equals(DefineValue.ERROR_0042)) {
+                        showDialog(getString(R.string.wrong_userid_password));
+                    }else if (code.equals(DefineValue.ERROR_0127)) {
                         showDialog(getString(R.string.login_failed_dormant));
                     } else if (code.equals(DefineValue.ERROR_0004)) {
                         String msg = loginModel.getError_message();
