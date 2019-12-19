@@ -159,7 +159,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             val dialog = builder.create()
             dialog.show()
             return false
-        }else if (gender_spinner.selectedItem.equals("-Pilih Jenis Kelamin-")) {
+        }else if (gender_spinner.selectedItem.equals(getString(R.string.select_gender))) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.gender_validation))

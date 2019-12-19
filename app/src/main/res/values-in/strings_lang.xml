@@ -1451,4 +1451,33 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="acc_no">No. Akun</string>
     <string name="individu">Pribadi</string>
     <string name="friend">Teman</string>
+
+    <string name="name_according_to_id_card">Nama Sesuai KTP :</string>
+
+    <string name="input_nik">Masukan NIK</string>
+    <string name="full_name">Nama Lengkap</string>
+    <string name="input_full_name">Masukan Nama Lengkap</string>
+    <string name="place_of_birth">Tempat Lahir</string>
+    <string name="input_place_of_birth">Masukan Tempat Lahir</string>
+    <string name="date_of_birth">Tanggal Lahir</string>
+    <string name="input_date_of_birth">Masukan Tanggal Lahir</string>
+    <string name="input_address">Masukan Alamat</string>
+    <string name="input_rt">Masukan RT</string>
+    <string name="input_rw">Masukan RW</string>
+    <string name="religion">Agama</string>
+    <string name="job">Pekerjaan</string>
+    <string name="input_job">Masukan Pekerjaan</string>
+    <string name="marital_status">Status Perkawinan</string>
+    <string name="citizenship">kewarganegaraan</string>
+
+    <string name="urban_village">Kelurahan</string>
+    <string name="input_urban_village">Masukan Kelurahan</string>
+    <string name="sub_district">Kecamatan</string>
+    <string name="input_sub_district">Masukan Kecamatan</string>
+
+
+    <string name="select_gender">-Pilih Jenis Kelamin-</string>
+    <string name="male">Laki-laki</string>
+    <string name="female">Perempuan</string>
+
 </resources>

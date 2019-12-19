@@ -185,9 +185,9 @@
     </string-array>
 
     <string-array name="gender_type">
-        <item>-Pilih Jenis Kelamin-</item>
-        <item>Laki-laki</item>
-        <item>Perempuan</item>
+        <item>@string/select_gender</item>
+        <item>@string/male</item>
+        <item>@string/female</item>
     </string-array>
 
     <string-array name="list_tipe_notif">
