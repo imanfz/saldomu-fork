@@ -596,7 +596,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             for (int index = 0; index < jsonArray.length(); index++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(index);
                                 String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
-                                String categoryNameModified = "Panggil Agen " + objs;
+                                String categoryNameModified = getString(R.string.menu_item_search_agent_bbs) + " " + objs;
                                 if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
                                     if (isDormant.equalsIgnoreCase("Y")) {
                                         dialogDormant();
@@ -1067,11 +1067,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 String objs = obj.optString(WebParams.SCHEME_CODE, "");
                 switch (objs) {
                     case "ATC":
-                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + obj.optString(WebParams.CATEGORY_NAME));
+                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_in));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_tarik_tunai));
                         break;
                     case "CTA":
-                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + obj.optString(WebParams.CATEGORY_NAME));
+                        menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_out));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_setor_tunai));
                         break;
                     case "BIL":

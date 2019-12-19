@@ -168,6 +168,7 @@ class SearchAgentUpgradeActivity : BaseActivity(),
                                 override fun onCancel() {}
                             })
 
+                            if (markerCurrent != null) markerCurrent?.remove()
 
                             val markerOptions = MarkerOptions()
                                     .position(latLng)
@@ -214,6 +215,8 @@ class SearchAgentUpgradeActivity : BaseActivity(),
 
                     override fun onCancel() {}
                 })
+
+                if (markerCurrent != null) markerCurrent?.remove()
 
                 val markerOptions = MarkerOptions()
                         .position(latLng)
@@ -449,11 +452,11 @@ class SearchAgentUpgradeActivity : BaseActivity(),
         val builder = AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton("Yes") { dialog, id ->
+                .setPositiveButton(getString(R.string.yes)) { dialog, id ->
                     val ilocation = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                     startActivityForResult(ilocation, RC_GPS_REQUEST)
                 }
-                .setNegativeButton("No") { dialog, id ->
+                .setNegativeButton(getString(R.string.no)) { dialog, id ->
                     dialog.cancel()
                     startActivity(Intent(applicationContext, MainPage::class.java))
                 }

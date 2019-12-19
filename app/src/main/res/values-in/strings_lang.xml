@@ -1444,5 +1444,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="pos_hint">No HP POS yang sudah terdaftar</string>
     <string name="wrong_userid_password">User ID atau password salah</string>
 
-
+    <string name="call">Telepon</string>
+    <string name="direction">Petunjuk Arah</string>
+    <string name="customer">Nasabah</string>
+    <string name="come_to_nearest_agent">Silahkan datang ke Agent terdekat.</string>
 </resources>
