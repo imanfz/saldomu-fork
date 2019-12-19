@@ -53,7 +53,7 @@
     <string name="you">Anda</string>
     <string name="done">Done</string>
     <string name="data_not_found">Data Not Found</string>
-    <string name="initialize">Inisialisasi</string>
+    <string name="initialize">initialize</string>
     <string name="sent">Sent</string>
     <string name="resend">Resend</string>
 
@@ -74,7 +74,7 @@
     <string name="regist1_text_nama">Name</string>
     <string name="regist1_text_email" translatable="false">Email</string>
     <string name="regist1_edithint_nohp"><font size="17">Nomor Handphone (ex. 08138255xxxx)</font></string>
-    <string name="regist1_edithint_nama">Nama lengkap</string>
+    <string name="regist1_edithint_nama">Full Name</string>
     <string name="regist1_edithint_email" translatable="false">Email</string>
     <string name="regist1_edithint_referal" translatable="false">No. Referal</string>
     <string name="regist1_button_verifikasi">Verifikasi</string>
@@ -89,11 +89,11 @@
     <string name="regist2_notif_message_3">Silahkan gunakan Nomor Handphone dan Password Anda untuk masuk.</string>
     <string name="regist2_title">Registrasi</string>
     <string name="regist2_text_pass">Password</string>
-    <string name="regist2_edithint_pass">min. 6 karakter</string>
-    <string name="regist2_checkbox_showpass">Tampilkan Password</string>
-    <string name="regist2_text_ulangpass">Ketik ulang Password</string>
-    <string name="regist2_checkbox_showpin">Tampilkan PIN</string>
-    <string name="regist2_text_ulangpin">Ketik ulang PIN</string>
+    <string name="regist2_edithint_pass">min. 6 character</string>
+    <string name="regist2_checkbox_showpass">Show Password</string>
+    <string name="regist2_text_ulangpass">Retype Password</string>
+    <string name="regist2_checkbox_showpin">Show PIN</string>
+    <string name="regist2_text_ulangpin">Retype PIN</string>
     <string name="regist2_text_otp">Token</string>
     <string name="regist2_edithint_otp">Please enter the Token code</string>
 
@@ -132,10 +132,10 @@
     <string name="login_text_forgetpass_hide">Lupa Kata Sandi, silahkan kirim email ke\n supportmandiri@sgo.co.id</string>
     <string name="login_toast_loginsukses">Sign In Successful</string>
     <string name="login_validation_userID">Nomor handphone dibutuhkan !</string>
-    <string name="login_validation_pass">Kata Sandi dibutuhkan!</string>
+    <string name="login_validation_pass">Password required!</string>
     <string name="login_validation_comm">Maaf Anda belum terdaftar sebagai member.</string>
 
-    <string name="inethandler_dialog_message">Tidak ada koneksi internet atau koneksi internet bermasalah.</string>
+    <string name="inethandler_dialog_message">There is no internet connection</string>
 
     <string name="otpdialog_test_message">Masukkan kode OTP yang Anda dapatkan dari SMS untuk melanjutkan proses.</string>
     <string name="pindialog_title">KODE PIN</string>
@@ -146,7 +146,7 @@
     <string name="sgoplus_ab_title">SGO +</string>
     <string name="sgoplus_validation_jumlahSGOplus">Jumlah dibutuhkan!</string>
     <string name="sgoplus_text_bank">Bank</string>
-    <string name="sgoplus_text_productbank">Produk Bank</string>
+    <string name="sgoplus_text_productbank">Bank Products</string>
     <string name="sgoplus_text_amount">Jumlah</string>
     <string name="transaction_failed_tx_id">Transaksi Anda tidak bisa di proses.</string>
 
@@ -154,7 +154,7 @@
 
     <string name="atm_ab_title" translatable="false">ATM</string>
     <string name="smsBanking_ab_title" translatable="false">SMS Banking</string>
-    <string name="smsBanking_dialog_validation_title">Validasi Top Up</string>
+    <string name="smsBanking_dialog_validation_title">Top Up Validation</string>
 
     <string name="purchase_token_dialog_title">Pembelian </string>
     <string name="purchase_token_dialog_msg">Pembelian Berhasil !</string>
@@ -200,37 +200,37 @@
     <string name="menu_item_title_logout">Keluar</string>
     <string name="menu_item_add_by_contact">Tambah dari kontak</string>
     <string name="menu_item_add_by_qrcode">Tambah dari QRCode scan</string>
-    <string name="menu_item_add_by_sms">Tambah dari SMS</string>
-    <string name="menu_item_add_by_email">Tambah dari Email</string>
-    <string name="menu_item_add_by_nfc">Tambah dari NFC</string>
-    <string name="menu_item_contact_list">Daftar Kontak</string>
+    <string name="menu_item_add_by_sms">Add from SMS</string>
+    <string name="menu_item_add_by_email">Add from Email</string>
+    <string name="menu_item_add_by_nfc">Add from NFC</string>
+    <string name="menu_item_contact_list">Contact List</string>
     <string name="menu_item_timeline_detail">LINI WAKTU</string>
     <string name="menu_item_history_detail">History</string>
     <string name="menu_item_favorite">Favorite</string>
     <string name="menu_item_group_detail">Group</string>
     <string name="menu_item_share">Share</string>
     <string name="menu_item_bbs_register_location">Registrasi Toko Member</string>
-    <string name="menu_item_bbs_search_toko">Search Toko</string>
+    <string name="menu_item_bbs_search_toko">Search Shop</string>
     <string name="menu_item_search_agent">Panggil Agen</string>
-    <string name="menu_item_title_kelola">Pengaturan Agen</string>
-    <string name="menu_item_title_list_toko">Kelola Member</string>
-    <string name="menu_item_title_list_approval">Daftar Persetujuan</string>
-    <string name="menu_item_title_trx_agent">Permintaan Transaksi</string>
-    <string name="menu_item_title_onprogress_agent">Dalam Proses</string>
+    <string name="menu_item_title_kelola">Agent Settings</string>
+    <string name="menu_item_title_list_toko">Manage Members</string>
+    <string name="menu_item_title_list_approval">List of Approvals</string>
+    <string name="menu_item_title_trx_agent">Transaction Request</string>
+    <string name="menu_item_title_onprogress_agent">On Progress</string>
     <string name="menu_item_title_tagih_agent">Tagih.id</string>
-    <string name="menu_item_title_map_agent">Peta Agen</string>
-    <string name="menu_item_title_map_member">Peta Member</string>
-    <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
+    <string name="menu_item_title_map_agent">Agent Map</string>
+    <string name="menu_item_title_map_member">Member Map</string>
+    <string name="menu_item_title_waktu_beroperasi">Operating Time</string>
     <string name="menu_item_title_tutup_manual">Tutup Manual</string>
     <string name="topup_token_bank_name">Nama Bank</string>
     <string name="topup_token_bank_product">Produk Bank Tujuan</string>
     <string name="topup_token_bank_product_sumber">Produk Bank Sumber</string>
-    <string name="topup_token_fee">Biaya Admin</string>
+    <string name="topup_token_fee">Admin Fee</string>
     <string name="topup_token_total_fee">Total Jumlah</string>
     <string name="topup_token_bank_channel">Produk Bank</string>
     <string name="topup_token_phone_number">Nomor Handphone</string>
-    <string name="topup_token_amount">Jumlah</string>
-    <string name="topup_token_total_amount">Total Jumlah</string>
+    <string name="topup_token_amount">Amount</string>
+    <string name="topup_token_total_amount">Total Amount</string>
     <string name="description">Description</string>
     <string name="topup_dialog_not_registered">SMS Banking Belum Terdaftar</string>
     <string name="topup_not_registered">No Handphone SMS Banking %1$s Anda belum tersimpan di sistem kami. Klik Daftar untuk mendaftar.</string>
@@ -240,28 +240,28 @@
     <string name="listatm_item_expand_ins_3">Masukkan Nomor Akun</string>
     <string name="listatm_item_expand_ins_4">Masukkan Nominal Top Up (minimal Rp 10.001).</string>
 
-    <string name="myprofile_ab_title">Profil</string>
+    <string name="myprofile_ab_title">Profile</string>
     <string name="myprofile_text_date_click">Tekan untuk memilih tanggal</string>
     <string name="myprofile_text_name">Nama</string>
     <string name="myprofile_text_hp">No. HP</string>
-    <string name="myprofile_text_bod">Tanggal Lahir</string>
-    <string name="myprofile_text_pob">Tempat Lahir</string>
-    <string name="myprofile_text_address">Alamat</string>
-    <string name="myprofile_text_country">Negara</string>
-    <string name="myprofile_text_citizen">Warga Negara</string>
-    <string name="myprofile_text_birth_mother">Nama Ibu Kandung</string>
+    <string name="myprofile_text_bod">Date of birth</string>
+    <string name="myprofile_text_pob">Place of birth</string>
+    <string name="myprofile_text_address">Address</string>
+    <string name="myprofile_text_country">Country</string>
+    <string name="myprofile_text_citizen">Citizen</string>
+    <string name="myprofile_text_birth_mother">Biological mother's name</string>
     <string name="validation_text_birth_mother">Nama Ibu Kandung dibutuhkan!</string>
     <string name="myprofile_text_email" translatable="false">Email</string>
-    <string name="myprofile_text_gender">Jenis Kelamin</string>
+    <string name="myprofile_text_gender">Gender</string>
     <string name="myprofile_text_bio" translatable="false">Bio</string>
     <string name="myprofile_text_social_id">Sosial ID</string>
     <string name="myprofile_text_hobby">Hobi</string>
     <string name="myprofile_toast_update_success">Perbaharui Profil Berhasil</string>
     <string name="myprofile_toast_update_foto_success">Upload Foto Berhasil</string>
-    <string name="myprofile_spinner_default">Pilih Negara</string>
-    <string name="myprofile_validation_name">Nama dibutuhkan!</string>
-    <string name="myprofile_validation_email">Email dibutuhkan!</string>
-    <string name="myprofile_validation_address">Alamat dibutuhkan!</string>
+    <string name="myprofile_spinner_default">Select Country</string>
+    <string name="myprofile_validation_name">Name required!</string>
+    <string name="myprofile_validation_email">Email required!</string>
+    <string name="myprofile_validation_address">Address required!</string>
     <string name="myprofile_validation_socialid">Sosial ID dibutuhkan!</string>
     <string name="myprofile_validation_pob">Tempat Lahir dibutuhkan!</string>
     <string name="myprofile_validation_bom">Nama Ibu Kandung dibutuhkan!</string>
@@ -304,7 +304,7 @@
     <string name="sgoplusweb_ab_title" translatable="false">ESPAY</string>
     <string name="sgoplusweb_ab_title_saldomu" translatable="false">Saldomu</string>
 
-    <string name="forgetpass_dialog_title">Lupa Password</string>
+    <string name="forgetpass_dialog_title">Forgot Password</string>
     <string name="forgetpass_dialog_message">Silahkan cek inbox SMS Anda untuk proses mengganti Password selanjutnya.</string>
     <string name="forgetpass_edittext_validation">Nomor handphone dibutuhkan!</string>
 
@@ -331,7 +331,7 @@
     <string name="biller_ab_title">Biller</string>
     <string name="biller_empty_data">Data tidak tersedia</string>
 
-    <string name="biller_name">Nama</string>
+    <string name="biller_name">Name</string>
     <string name="mitra_name">Nama Mitra</string>
     <string name="billerinput_text_month">Bulan</string>
     <string name="billerinput_text_denom" translatable="false">Denom Retail</string>
@@ -383,7 +383,7 @@
     <string name="payfriends_amount" translatable="false">* contoh 200,000</string>
     <string name="payfriends_message">* maks. 30 karakter</string>
     <string name="payfriends_number_recipients">* Jumlah Penerima</string>
-    <string name="payfriends_otp">* maks. 10 karakter</string>
+    <string name="payfriends_otp">* max. 10 karakter</string>
     <string name="payfriends_ab_title_activity">Transfer Saldo</string>
     <string name="payfriends_recipients_validation">Nomor Penerima Dibutuhkan !</string>
     <string name="payfriends_recipients_alpha_validation">Nomor Penerima Tidak Valid !</string>
@@ -402,7 +402,7 @@
     <string name="askfriends_dialog_msg">Pesan minta uang sukses terkirim dengan detil berikut.</string>
     <string name="askfriends_dialog_text_recipient">Penerima</string>
     <string name="askfriends_dialog_text_amount">Amount</string>
-    <string name="askfriends_dialog_text_desc">Pesan</string>
+    <string name="askfriends_dialog_text_desc">Message</string>
     <string name="askfriends_predialog_title">Kirim Permintaan</string>
     <string name="askfriends_predialog_msg1">Apakah Anda yakin mengirim permintaan ke</string>
     <string name="askfriends_predialog_msg2">penerima ?</string>
@@ -431,8 +431,8 @@
     <string name="view_detail">Profil Detail</string>
 
     <string name="askformoney_text_recipients">Minta Saldo dari</string>
-    <string name="askformoney_text_amount">Jumlah</string>
-    <string name="askformoney_text_message">Pesan</string>
+    <string name="askformoney_text_amount">Amount</string>
+    <string name="askformoney_text_message">Message</string>
     <string name="askformoney_text_otp">Kode OTP</string>
     <string name="askformoney_hint_recipients">Masukkan penerima permintaan</string>
     <string name="askformoney_hint_amount">Input Amount jumlah</string>
@@ -441,11 +441,11 @@
     <string name="askformoney_amount">* ex 200,000</string>
     <string name="askformoney_message">* max. 50 character</string>
     <string name="askformoney_number_recipients">* Jumlah Penerima Permintaan</string>
-    <string name="askformoney_otp">* maks. 6 karakter</string>
+    <string name="askformoney_otp">* max. 6 character</string>
 
     <string name="changepin_ab_changepin">Ganti PIN</string>
     <string name="changepin_text_currentpin">PIN Berlaku</string>
-    <string name="changepin_text_newpin">PIN Baru</string>
+    <string name="changepin_text_newpin">New PIN</string>
     <string name="changepin_text_retypenewpin">Ketik Ulang PIN Baru</string>
     <string name="changepin_edit_error_currentpin">PIN dibutuhkan!</string>
     <string name="changepin_edit_error_newpin">PIN Baru dibutuhkan!</string>
@@ -456,13 +456,13 @@
     <string name="changepin_toast_success">Ganti PIN Berhasil</string>
     <string name="changepin_text_firsttime_msg">Sebelum menggunakan aplikasi, harap mengganti PIN Anda untuk alasan keamanan.</string>
 
-    <string name="input_pin">Masukkan PIN</string>
+    <string name="input_pin">Input PIN</string>
     <string name="mygroup_desc_create">Deskripsi Grup</string>
     <string name="mygroup_desc_create_group">* Tambah member dari daftar teman atau grup lain</string>
     <string name="mygroup_member_name_create">Nama Member</string>
     <string name="mygroup_hint_member_create">Masukkan nama member</string>
     <string name="mygroup_hint_group_create">Masukkan nama grup</string>
-    <string name="mygroup_hint_desc_create">Masukkan deskripsi grup</string>
+    <string name="mygroup_hint_desc_create">Input group description</string>
     <string name="mygroup_desc_editext_create">* alphanumeric (max 20 karakter)</string>
 
     <string name="main_paid">bayar</string>
@@ -1082,9 +1082,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="rationale_phone_call">This app needs access to your phone call.</string>
     <string name="rationale_location_phone_sms">This app needs access to your location, phone call and send sms.</string>
 
-    <string name="menu_item_search_agent_cta">Agen Setor Tunai</string>
-    <string name="menu_item_search_agent_atc">Agen Tarik Tunai</string>
-    <string name="menu_item_search_agent_bbs">Panggil Agen</string>
+    <string name="menu_item_search_agent_cta">Cash Deposit Agent</string>
+    <string name="menu_item_search_agent_atc">Cash Withdrawal Agent</string>
+    <string name="menu_item_search_agent_bbs">Call an Agent</string>
 
     <string name="setting_permission_location">Setting Lokasi</string>
     <string name="err_disallow_permission_location">Silakan aktifkan lokasi Anda</string>
@@ -1344,7 +1344,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="city">City</string>
     <string name="collector_balance">Collection Limit</string>
     <string name="address_hint">Masukkan Alamat disini</string>
-    <string name="city_hint">Masukkan Kota disini</string>
+    <string name="city_hint">Input City here</string>
     <string name="cancel_transaction_dgi">Transaksi Sukses Dibatalkan</string>
     <string name="password_validation">Validasi Password</string>
     <string name="terms_condition_upload_ktp">Dengan ini saya menyatakan bahwa dokumen yang saya unggah adalah benar keabsahannya
