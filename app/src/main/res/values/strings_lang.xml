@@ -144,7 +144,7 @@
     <string name="myprofilelist_ab_title">My Profile</string>
 
     <string name="sgoplus_ab_title">SGO +</string>
-    <string name="sgoplus_validation_jumlahSGOplus">Jumlah dibutuhkan!</string>
+    <string name="sgoplus_validation_jumlahSGOplus">Amount required!</string>
     <string name="sgoplus_text_bank">Bank</string>
     <string name="sgoplus_text_productbank">Bank Products</string>
     <string name="sgoplus_text_amount">Jumlah</string>
@@ -195,7 +195,7 @@
     <string name="menu_item_title_my_profile">My Profile</string>
     <string name="menu_item_title_my_friends">Teman Saya</string>
     <string name="menu_item_title_my_groups">My Group</string>
-    <string name="menu_item_title_bbs">Agen</string>
+    <string name="menu_item_title_bbs">Agent</string>
     <string name="menu_group_title_logout">Keluar</string>
     <string name="menu_item_title_logout">Keluar</string>
     <string name="menu_item_add_by_contact">Tambah dari kontak</string>
@@ -249,7 +249,7 @@
     <string name="myprofile_text_address">Address</string>
     <string name="myprofile_text_country">Country</string>
     <string name="myprofile_text_citizen">Citizen</string>
-    <string name="myprofile_text_birth_mother">Biological mother's name</string>
+    <string name="myprofile_text_birth_mother">Biological mother\'s name</string>
     <string name="validation_text_birth_mother">Nama Ibu Kandung dibutuhkan!</string>
     <string name="myprofile_text_email" translatable="false">Email</string>
     <string name="myprofile_text_gender">Gender</string>
@@ -271,22 +271,22 @@
         Pastikan tanggal lahir dan Nama ibu kandung diisi dengan data yang benar karena digunakan sebagai pengecekan kesamaan data saat lupa PIN.
     </string>
 
-    <string name="changepass_ab_changepass">Ganti Password</string>
-    <string name="changepass_text_currentpass">Kata Sandi Lama</string>
-    <string name="changepass_text_newpass">Kata Sandi Baru</string>
-    <string name="changepass_text_retypenewpass">Ketik Ulang Kata Sandi Baru</string>
-    <string name="password_clue">*Kata Sandi harus terdiri dari 8-20 karakter! Kata Sandi merupakan kombinasi dari huruf kapital, huruf kecil dan angka.</string>
+    <string name="changepass_ab_changepass">Change Password</string>
+    <string name="changepass_text_currentpass">Current Password</string>
+    <string name="changepass_text_newpass">New Passowrd</string>
+    <string name="changepass_text_retypenewpass">Retype New Password</string>
+    <string name="password_clue">*The password must be 8-20 characters long! Password is a combination of capital letters, lowercase letters and numbers.</string>
     <string name="changepass_edit_error_currentpass">Kata Sandi dibutuhkan!</string>
     <string name="changepass_edit_error_newpass">Kata Sandi Baru dibutuhkan!</string>
     <string name="changepass_edit_error_retypenewpass">Ketik Ulang Kata Sandi dibutuhkan!</string>
     <string name="changepass_edit_error_newpasslength">Kata Sandi harus terdiri dari 8-20 karakter!</string>
     <string name="changepass_edit_error_retypenewpass_confirm">Kata Sandi tidak cocok!</string>
-    <string name="changepass_checkbox_showpass">Tampilkan Kata Sandi</string>
-    <string name="changepass_toast_success">Ganti Kata Sandi Berhasil</string>
-    <string name="changepass_text_firsttime_msg">Sebelum menggunakan aplikasi, harap mengganti Kata Sandi anda untuk alasan keamanan.</string>
+    <string name="changepass_checkbox_showpass">Show Password</string>
+    <string name="changepass_toast_success">Change Password Successfully</string>
+    <string name="changepass_text_firsttime_msg">Before using the application, please change your password for security reasons.</string>
 
-    <string name="forgotpass_text_title">Lupa Kata Sandi</string>
-    <string name="forgotpin_text_title">Lupa PIN</string>
+    <string name="forgotpass_text_title">Forgot Password</string>
+    <string name="forgotpin_text_title">Forgot PIN</string>
     <string name="forgotpass_text_instruction">%1$s akan mengirimkan prosedur Lupa Kata Sandi. Pilih tipe notifikasi Lupa Kata Sandi yang akan diproses.</string>
 <!--    <string name="forgotpass_text_title">Forgot Password</string>-->
 <!--    <string name="forgotpass_text_instruction">%1$s will send the Forgot Password procedure. Select the type of Forgot Password notification that you want to process.</string>-->
@@ -308,7 +308,7 @@
     <string name="forgetpass_dialog_message">Silahkan cek inbox SMS Anda untuk proses mengganti Password selanjutnya.</string>
     <string name="forgetpass_edittext_validation">Nomor handphone dibutuhkan!</string>
 
-    <string name="mainpage_dialog_changepass_title">Ganti Password</string>
+    <string name="mainpage_dialog_changepass_title">Change Password</string>
     <string name="mainpage_dialog_changepass_msg">Apakah Anda ingin mengganti password ?</string>
 
     <string name="listevoucherhp_ab_title_ib" translatable="false">E-Voucher HP - Internet Banking</string>
@@ -329,7 +329,7 @@
     <string name="listcontact_text_loading">Melakukan Cek Kontak …</string>
 
     <string name="biller_ab_title">Biller</string>
-    <string name="biller_empty_data">Data tidak tersedia</string>
+    <string name="biller_empty_data">Data not available</string>
 
     <string name="biller_name">Name</string>
     <string name="mitra_name">Nama Mitra</string>
@@ -342,8 +342,8 @@
     <string name="billerinput_text_payment_remark_Emoney">Nomor Kartu</string>
     <string name="billerinput_text_payment_remark_Listrik">Nomor Meter</string>
     <string name="billerinput_text_payment_remark_CC">Nomor Kartu Kredit</string>
-    <string name="billerinput_text_payment_remark_PAM">Nomor Pelanggan</string>
-    <string name="billerinput_text_payment_remark_PST">Kode Pemesanan / Kode Pembayaran</string>
+    <string name="billerinput_text_payment_remark_PAM">Customer number</string>
+    <string name="billerinput_text_payment_remark_PST">Order Code / Payment Code</string>
     <string name="billerinput_text_payment_remark_RMH">ID Pelanggan / No Kontrak</string>
     <string name="billerinput_text_payment_remark_asuransi">Nomor Polis</string>
     <string name="billerinput_dialog_validation_title">Validasi</string>
@@ -367,21 +367,21 @@
     <string name="billertoken_text_item_name">Nama Produk</string>
     <string name="billertoken_text_payment_options">Payment Options</string>
     <string name="billertoken_text_payment_input_amount">Jumlah yang dibayarkan</string>
-    <string name="billertoken_validation_payment_input_amount">Jumlah dibutuhkan!</string>
+    <string name="billertoken_validation_payment_input_amount">Amount required!</string>
     <string name="billertoken_hint_payment_input_amount">Masukkan jumlah yang ingin dibayarkan</string>
 
     <string name="payfriends_text_recipients">Penerima</string>
     <string name="payfriends_text_amount_each">Jumlah untuk tiap penerima</string>
     <string name="payfriends_text_amount">Amount</string>
-    <string name="payfriends_text_fee">Biaya Admin</string>
+    <string name="payfriends_text_fee">Admin Fee</string>
     <string name="payfriends_text_message">Pesan</string>
-    <string name="save_as_favorite_text_message">Simpan Sebagai Favorite</string>
+    <string name="save_as_favorite_text_message">Save as Favorite</string>
     <string name="payfriends_text_otp">Kode OTP</string>
     <string name="payfriends_hint_recipients">Masukkan penerima</string>
     <string name="payfriends_hint_amount">Input Amount</string>
     <string name="payfriends_hint_message">Input message</string>
     <string name="payfriends_amount" translatable="false">* contoh 200,000</string>
-    <string name="payfriends_message">* maks. 30 karakter</string>
+    <string name="payfriends_message">* max. 30 karakter</string>
     <string name="payfriends_number_recipients">* Jumlah Penerima</string>
     <string name="payfriends_otp">* max. 10 karakter</string>
     <string name="payfriends_ab_title_activity">Transfer Saldo</string>
@@ -390,22 +390,22 @@
     <string name="payfriends_recipients_max_validation1">Maksimal Penerima</string>
     <string name="payfriends_recipients_max_validation2">Orang!</string>
     <string name="payfriends_recipients_duplicate_validation">Nomor penerima duplikasi!</string>
-    <string name="payfriends_amount_validation">Jumlah Dibutuhkan !</string>
+    <string name="payfriends_amount_validation">Amount Required !</string>
     <string name="payfriends_dialog_validation_title">Validasi Transfer Saldo</string>
-    <string name="payfriends_text_total_amount">Total Jumlah</string>
+    <string name="payfriends_text_total_amount">Total Amount</string>
     <string name="payfriends_text_error_recipient">Gagal transfer :</string>
     <string name="payfriends_amount_zero">Jumlah harus lebih besar dari nol</string>
     <string name="payfriends_notes_zero">Notes tidak boleh kosong</string>
 
     <string name="askfriends_btn_proses_request">Request Process</string>
-    <string name="askfriends_dialog_title">Permintaan Uang Sukses</string>
-    <string name="askfriends_dialog_msg">Pesan minta uang sukses terkirim dengan detil berikut.</string>
-    <string name="askfriends_dialog_text_recipient">Penerima</string>
+    <string name="askfriends_dialog_title">Request for Money Success</string>
+    <string name="askfriends_dialog_msg">A message asking for money to be sent successfully with the following details.</string>
+    <string name="askfriends_dialog_text_recipient">Recipient</string>
     <string name="askfriends_dialog_text_amount">Amount</string>
     <string name="askfriends_dialog_text_desc">Message</string>
-    <string name="askfriends_predialog_title">Kirim Permintaan</string>
-    <string name="askfriends_predialog_msg1">Apakah Anda yakin mengirim permintaan ke</string>
-    <string name="askfriends_predialog_msg2">penerima ?</string>
+    <string name="askfriends_predialog_title">Send Request</string>
+    <string name="askfriends_predialog_msg1">Are you sure you sent the request to</string>
+    <string name="askfriends_predialog_msg2">receiver ?</string>
 
     <string name="reportbiller_text_thank_you">Terima Kasih</string>
     <string name="reportbiller_text_amount_to_be_paid">Jumlah yang dibayarkan</string>
@@ -430,31 +430,31 @@
     <string name="desc_add_by_qrcode">*Posisikan barcode pada panel tampilan \ndan tahan posisinya</string>
     <string name="view_detail">Profil Detail</string>
 
-    <string name="askformoney_text_recipients">Minta Saldo dari</string>
+    <string name="askformoney_text_recipients">Request Balance from</string>
     <string name="askformoney_text_amount">Amount</string>
     <string name="askformoney_text_message">Message</string>
     <string name="askformoney_text_otp">Kode OTP</string>
     <string name="askformoney_hint_recipients">Masukkan penerima permintaan</string>
-    <string name="askformoney_hint_amount">Input Amount jumlah</string>
-    <string name="askformoney_hint_message">Masukkan pesan</string>
+    <string name="askformoney_hint_amount">Input Total Amount</string>
+    <string name="askformoney_hint_message">Input message</string>
     <string name="askformoney_hint_otp">Masukkan kode OTP yang telah dikirimkan ke nomor ponsel Anda</string>
     <string name="askformoney_amount">* ex 200,000</string>
     <string name="askformoney_message">* max. 50 character</string>
-    <string name="askformoney_number_recipients">* Jumlah Penerima Permintaan</string>
+    <string name="askformoney_number_recipients">* Number of Request Recipients</string>
     <string name="askformoney_otp">* max. 6 character</string>
 
-    <string name="changepin_ab_changepin">Ganti PIN</string>
-    <string name="changepin_text_currentpin">PIN Berlaku</string>
+    <string name="changepin_ab_changepin">Change PIN</string>
+    <string name="changepin_text_currentpin">Current PIN </string>
     <string name="changepin_text_newpin">New PIN</string>
-    <string name="changepin_text_retypenewpin">Ketik Ulang PIN Baru</string>
-    <string name="changepin_edit_error_currentpin">PIN dibutuhkan!</string>
-    <string name="changepin_edit_error_newpin">PIN Baru dibutuhkan!</string>
+    <string name="changepin_text_retypenewpin">Retype New PIN</string>
+    <string name="changepin_edit_error_currentpin">PIN required!</string>
+    <string name="changepin_edit_error_newpin">New PINrequired!</string>
     <string name="changepin_edit_error_retypenewpin">Ketik Ulang PIN dibutuhkan!</string>
-    <string name="changepin_edit_error_newpinlength">Minimal 6 karakter!</string>
-    <string name="changepin_edit_error_retypenewpin_confirm">PIN tidak cocok!</string>
-    <string name="changepin_checkbox_showpin">Tampilkan PIN</string>
-    <string name="changepin_toast_success">Ganti PIN Berhasil</string>
-    <string name="changepin_text_firsttime_msg">Sebelum menggunakan aplikasi, harap mengganti PIN Anda untuk alasan keamanan.</string>
+    <string name="changepin_edit_error_newpinlength">At least 6 characters!</string>
+    <string name="changepin_edit_error_retypenewpin_confirm">PIN does not match!</string>
+    <string name="changepin_checkbox_showpin">Show PIN</string>
+    <string name="changepin_toast_success">Change PIN Successfully</string>
+    <string name="changepin_text_firsttime_msg">Before using the application, please change your PIN for security reasons.</string>
 
     <string name="input_pin">Input PIN</string>
     <string name="mygroup_desc_create">Deskripsi Grup</string>
@@ -561,7 +561,7 @@
     <string name="instruct_topup_mandiri_online_10">Masukkan Deskripsi (opsional)</string>
     <string name="instruct_topup_mandiri_online_11">Pilih Lanjut</string>
 
-    <string name="about_apps">Tentang Aplikasi</string>
+    <string name="about_apps">About</string>
     <string name="about_apps_desc"><b>Saldomu</b> adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
     <string name="about_apps_desc_2">SALDOMU is registered as MANUFACTURER OF FINANCIAL TECHNOLOGY at Bank Indonesia Number 20/85/DKSP/Srt/B dated March 8, 2018.</string>
     <string name="about_apps_desc_pemberitahuan">Announcement :</string>
@@ -587,13 +587,13 @@
     <string name="menu_item_title_about">About</string>
     <string name="menu_item_title_search">Search</string>
 
-    <string name="title_about_app">Tentang Aplikasi</string>
+    <string name="title_about_app">About</string>
 
     <string name="help_center">Help Center</string>
     <string name="help_desc">Please choose a customer service based on the provider that you use to get the best service.</string>
 
     <string name="title_register_sms_banking">Registrasi SMS Banking</string>
-    <string name="rsb_register">Registrasi</string>
+    <string name="rsb_register">Registration</string>
     <string name="rsb_phone_number">Nomor Handphone</string>
     <string name="rsb_edithint_nohp" translatable="false">ex. 0813xxxxxxxx</string>
     <string name="rsb_confirm">Konfirmasi</string>
@@ -669,7 +669,7 @@
     <string name="text_claim">Klaim</string>
     <string name="alert_text_reject">Anda yakin ingin tolak ?</string>
     <string name="hint_text_remark">please type rejected message</string>
-    <string name="max_remark">* maks 50 karakter</string>
+    <string name="max_remark">* max 50 character</string>
     <string name="doing">Melakukan</string>
 
     <string name="cashout_bank_acc_no_text">No. Rekening Tujuan</string>
@@ -867,7 +867,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="list_shop_member">Daftar Toko Member</string>
     <string name="shop_member_detail">Member Detail</string>
     <string name="member_name">Nama Member</string>
-    <string name="shop_name">Nama Toko</string>
+    <string name="shop_name">Shop Name</string>
     <string name="merchant_category">Category</string>
 
     <string name="maintenance_message">The application cannot be accessed. Please try again later.</string>
@@ -936,8 +936,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="metode_pembayaran">Metode Pembayaran</string>
     <string name="rekening_bank_agent">Bank / E-Money Agen</string>
     <string name="produk_agent">Product Agent</string>
-    <string name="jumlah_transfer">Jumlah Transfer</string>
-    <string name="jumlah_transfer_hint">Jumlah transfer</string>
+    <string name="jumlah_transfer">Amount of Transfer</string>
+    <string name="jumlah_transfer_hint">Amount of Transfer</string>
     <string name="rekening_bank_tujuan">Rekening Agen</string>
     <string name="bank_emoney_tujuan">Bank / E-Money Tujuan</string>
     <string name="produk_pelanggan">Produk Pelanggan</string>
@@ -950,8 +950,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="nama_rekening_sumber">Nama Pemilik Bank / E-Money Sumber</string>
     <string name="nama_sumber">Source Name</string>
     <string name="no_rekening_tujuan">No. Rekening Tujuan</string>
-    <string name="no_tujuan">No. Tujuan</string>
-    <string name="no_rekening_tujuan_hint">Nomor rekening tujuan</string>
+    <string name="no_tujuan">Number Destination</string>
+    <string name="no_rekening_tujuan_hint">Destination account number</string>
     <string name="otp_hint">Masukkan kode OTP</string>
     <string name="token_hint">Masukkan kode Token</string>
     <string name="nama_rekening_tujuan">Nama pemilik Bank/E-Money Tujuan</string>
@@ -960,16 +960,16 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="kota_rekening_tujuan">Kota Tujuan</string>
     <string name="no_hp_pengirim">Nomor Handphone Pengirim</string>
     <string name="notif_no_hp_pengirim">Notif ke No. HP Pelanggan</string>
-    <string name="no_hp_pengirim_hint">Nomor Handphone Pelanggan</string>
-    <string name="number_destination">No Rekening Tujuan</string>
+    <string name="no_hp_pengirim_hint">Customer Mobile Number</string>
+    <string name="number_destination">Destination account number</string>
     <string name="number_destination_hint">Nomor rekening tujuan</string>
     <string name="number_hp_destination">No. Handphone Tujuan</string>
-    <string name="number_hp_member">No. Handphone Pelanggan</string>
-    <string name="number_hp_destination_hint">Nomor Handphone tujuan</string>
-    <string name="remark_hint">Pesan (opsional)</string>
-    <string name="additionalFee_hint">Biaya Tambahan (opsional)</string>
+    <string name="number_hp_member">Customer Mobile Number</string>
+    <string name="number_hp_destination_hint">Destination Mobile Number</string>
+    <string name="remark_hint">Message (opsional)</string>
+    <string name="additionalFee_hint">Addition Fee (opsional)</string>
     <string name="cash_in">Cash Deposit</string>
-    <string name="cash_out">Cash withdrawal</string>
+    <string name="cash_out">Cash Withdrawal</string>
     <string name="title_cash_out_member">Cash Withdrawal Confirmation</string>
     <string name="title_bbs_my_orders">My Orders</string>
     <string name="agent_name">Agent Name</string>
@@ -981,13 +981,13 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="update_bank_account">Perbaharui Bank Account</string>
     <string name="no_rekening_validation">Nomor Rekening Dibutuhkan !</string>
     <string name="nama_rekening_validation">Nama Rekening Dibutuhkan !</string>
-    <string name="title_bbs_list_account_bbs">Rekening Saya</string>
-    <string name="dialog_title_delete_bbs_acct">Hapus Akun</string>
+    <string name="title_bbs_list_account_bbs">My account</string>
+    <string name="dialog_title_delete_bbs_acct">Delete account</string>
     <string name="dialog_msg_delete_bbs_acct">Nama : %1$s\nNo : %2$s\nProduk : %3$s \n\nMasukan password anda untuk menghapus akun.</string>
     <string name="bbsreg_et_error_rekbenef">No Rekening Tujuan dibutuhkan !</string>
     <string name="bbsreg_et_error_namebenef">Nama Rekening dibutuhkan !</string>
     <string name="bbsreg_spin_error_citybenef">Kota Rekening dibutuhkan !</string>
-    <string name="bbsjoinagen_et_hint_agencode">Kode Agen dibutuhkan !</string>
+    <string name="bbsjoinagen_et_hint_agencode">Agent code required !</string>
     <string name="bbsjoinagent_dialog_title_success">Gabung Agen Sukses</string>
     <string name="bbsjoinagent_dialog_msg_success">Anda berhasil gabung agent dengan diskripsi : \n %1$s \n %2$s</string>
     <string name="bbsconfirmacct_dialog_success_title">Tambah Akun Sukses</string>
@@ -996,11 +996,11 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="bbsconfirmacct_dialog_success_msg_update">Perbaharui Akun %1$s dengan No %2$s berhasil diperbaharui.</string>
     <string name="no_hp_pengirim_validation">Nomor Handphone Pengirim Dibutuhkan !</string>
     <string name="community_empty">Tidak ada daftar komunitas</string>
-    <string name="remark">Pesan</string>
+    <string name="remark">Message</string>
     <string name="cobbs_kode_tarik_tunai">Kode Tarik Tunai</string>
     <string name="no_tcash">No. Handphone TCASH Agen</string>
-    <string name="no_member">No. Handphone Pelanggan</string>
-    <string name="no_member_hint">Masukkan nomor Handphone member</string>
+    <string name="no_member">Customer Mobile Number</string>
+    <string name="no_member_hint">Enter member mobile number</string>
     <string name="no_member_validation">Nomor Member Dibutuhkan !</string>
     <string name="no_rekening">No. Rekening</string>
     <string name="nomor_rekening">Account number</string>
@@ -1024,17 +1024,17 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="member">Member</string>
     <string name="kota_tujuan_hint">Kota rekening tujuan</string>
     <string name="jumlah">Amount</string>
-    <string name="informasi">Informasi Agen</string>
-    <string name="konfirmasi">Konfirmasi Pelanggan</string>
+    <string name="informasi">Agent Information</string>
+    <string name="konfirmasi">Customer Confirmation</string>
     <string name="konfirmasi_agen">Konfirmasi Agen</string>
-    <string name="rekening_agent_error_message">Rekening agent dibutuhkan</string>
-    <string name="rekening_member_error_message">Rekening member dibutuhkan</string>
-    <string name="konfirmasi_alert_text">Harap periksa terlebih dahulu sebelum transaksi ini di proses</string>
+    <string name="rekening_agent_error_message">Account agent required</string>
+    <string name="rekening_member_error_message">Member account required</string>
+    <string name="konfirmasi_alert_text">Please check before this transaction is processed</string>
     <string name="transaksi_status_info">Untuk informasi lebih lanjut, silahkan lihat riwayat transaksi</string>
     <string name="lanjut_transaksi">Lanjut Transaksi</string>
     <string name="ke_menu_utama">Ke Menu Utama</string>
     <string name="kembali">Back</string>
-    <string name="total_bayar">Total Bayar</string>
+    <string name="total_bayar">Total Pay</string>
     <string name="nominal_text">Nominal</string>
     <string name="jumlah_text">Amount</string>
     <string name="total">Total</string>
@@ -1049,7 +1049,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="cashoutmember_amount">Nominal</string>
     <string name="cashoutmember_fee">Biaya Admin</string>
     <string name="cashoutmember_total">Total Amount</string>
-    <string name="cashoutmember_text_otp">Kode OTP</string>
+    <string name="cashoutmember_text_otp">OTP Code</string>
     <string name="cashoutmember_otp">* maks. 4 karakter</string>
     <string name="cashoutmember_validation_otp">Token dibutuhkan!</string>
     <string name="cashoutmember_cancel_message">Anda yakin ingin membatalkan ?</string>
@@ -1065,12 +1065,12 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="agent_approve">Approve</string>
     <string name="agent_reject">Reject</string>
     <string name="agent_shop">Agent Shop ID</string>
-    <string name="user_id">No. Handphone pelanggan</string>
+    <string name="user_id">Customer mobile number</string>
     <string name="user_id_validation">Nomor Handphone member dibutuhkan !</string>
     <string name="city_not_found_message">Nama kota tidak ditemukan</string>
     <string name="city_empty_message">Kota tujuan harus diisi!</string>
-    <string name="eg_no_hp">(contoh: 08xxxxxxxx)</string>
-    <string name="eg_no_acct">(contoh: 01000xxxx)</string>
+    <string name="eg_no_hp">(example: 08xxxxxxxx)</string>
+    <string name="eg_no_acct">(example: 01000xxxx)</string>
     <string name="no_match_member_acct_message">Pilih rekening member yang tersedia</string>
     <string name="no_match_agent_acct_message">Pilih rekening agent yang tersedia</string>
     <string name="no_match_customer_acct_message">Pilih rekening pelanggan yang tersedia</string>
@@ -1097,8 +1097,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="alertbox_message_warning">Silakan aktifkan lokasi Anda untuk menggunakan aplikasi</string>
     <string name="alertbox_message_phone_permission_warning">Silakan berikan izin phone call, akses lokasi dan kirim SMS untuk menggunakan aplikasi</string>
     <string name="alertbox_message_location_phone_sms_permission_warning">Silakan berikan izin akses lokasi, phone call dan kirim SMS untuk menggunakan aplikasi</string>
-    <string name="alertbox_message_information">Data tidak ditemukan</string>
-    <string name="bbs_agent_search">Cari</string>
+    <string name="alertbox_message_information">Data not found</string>
+    <string name="bbs_agent_search">Search</string>
     <string name="alertbox_gps_warning">GPS belum aktif, apakah Anda mau mengaktifkan GPS Anda?</string>
     <string name="bbs_setting">Settings</string>
     <string name="setup_tutup_sekarang">Tutup Sekarang</string>
@@ -1152,21 +1152,21 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="err_notif_start_or_end_date_empty">Silakan isi tanggal mulai atau tanggal akhir terlebih dahulu</string>
     <string name="title_rating_by_member">Agen Review</string>
 
-    <string name="label_jumlah_amount">Berapa Jumlah yang akan ditransfer ?</string>
+    <string name="label_jumlah_amount">How much will be transferred?</string>
     <string name="label_transfer_ke">Transfer Ke</string>
-    <string name="label_bank_transfer_ke">Ke Bank / E-Money mana?</string>
-    <string name="label_rekening_transfer_ke">Nomor Rekening Tujuan</string>
-    <string name="label_transfer_dari_agent">Anda mau menggunakan Bank/E-Money apa ?</string>
+    <string name="label_bank_transfer_ke">Which Bank / E-money??</string>
+    <string name="label_rekening_transfer_ke">Destination Account Number</string>
+    <string name="label_transfer_dari_agent">What Bank / E-Money do you want to use?</string>
     <string name="label_no_hp_sender">Nomor Handphone Nasabah</string>
-    <string name="label_notif_sender">Notif ke Pelanggan</string>
+    <string name="label_notif_sender">Notifications to Customers</string>
     <string name="label_trx_description">Transaction Information</string>
 
     <string name="label_transfer_dari">Rekening Sumber</string>
     <string name="label_rekening_transfer_dari">Nomor Rekening Sumber</string>
 
     <string name="label_transfer_ke_agent">Bank / E-Money Agen</string>
-    <string name="label_transfer_dari_member_atc">Dari Bank / E-Money mana ?</string>
-    <string name="label_bank_pelangggan">Bank / E-Money Pelanggan</string>
+    <string name="label_transfer_dari_member_atc">Which Bank / E-money?</string>
+    <string name="label_bank_pelangggan">Bank / E-Money Customers</string>
 
     <string name="message_retry">Retry ?</string>
     <string name="message_bbs_error_service">Gagal update data. Cek kembali koneksi internet anda.</string>
@@ -1257,8 +1257,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="email_warning">Cek kembali email Anda, apakah alamat email tersebut sudah sesuai?</string>
     <string name="member_saldo_not_enough">Saldo Member tidak mencukupi, sehingga transaksi tidak dapat dilanjutkan.</string>
 
-    <string name="milik_agen">(Milik Agen)</string>
-    <string name="milik_pelanggan">(Milik Pelanggan)</string>
+    <string name="milik_agen">(Agent Owned)</string>
+    <string name="milik_pelanggan">(Customer Owned)</string>
 
     <string name="bbs_member_review_title">Silakan review pengalaman Anda dengan agen ini</string>
     <string name="bbs_rating_description">Give 1 star for bad service, 5 for good</string>
@@ -1316,20 +1316,20 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="lbl_member_lvl_agent">AGENT</string>
 
     <string name="lbl_need_help">Halo SaldoMu, </string>
-    <string name="mitra">Mitra</string>
-    <string name="mitra_default">Pilih Mitra</string>
-    <string name="error_input_tagih">Kode Toko dibutuhkan!</string>
-    <string name="error_input_community">Komunitas dibutuhkan!</string>
-    <string name="invoice_dgi_search">Cari Invoice</string>
-    <string name="invoice_dgi_payment">Bayar Invoice</string>
+    <string name="mitra">Partner</string>
+    <string name="mitra_default">Select Partner</string>
+    <string name="error_input_tagih">Store code required!</string>
+    <string name="error_input_community">Community dibutuhkan!</string>
+    <string name="invoice_dgi_search">Search Invoice</string>
+    <string name="invoice_dgi_payment">Pay Invoice</string>
     <string name="payment_type">Payment Type</string>
     <string name="reset">Reset</string>
     <string name="checkout">Check Out</string>
 
     <string name="preview_bank_name">Nama Bank</string>
     <string name="preview_bank_product">Produk Bank</string>
-    <string name="preview_amount">Jumlah</string>
-    <string name="preview_admin_fee">Biaya Admin</string>
+    <string name="preview_amount">Amount</string>
+    <string name="preview_admin_fee">Admin Fee</string>
     <string name="preview_total_amount">Total Amount</string>
     <string name="preview_tx_id">ID Transaksi</string>
     <string name="preview_comm_name">Nama Community</string>
@@ -1357,8 +1357,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="menu_setting_change_pin">Change PIN</string>
     <string name="menu_setting_about">About</string>
     <string name="menu_setting_change_email">Change Email</string>
-    <string name="current_email">Email yang terdaftar</string>
-    <string name="new_email">Email Baru</string>
+    <string name="current_email">Registered email</string>
+    <string name="new_email">New Email</string>
     <string name="level_dialog_agent">Belum Menjadi Agen?</string>
     <string name="level_dialog_agent1">Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini.</string>
     <string name="delete_item_favorite_dialog">Apakah Anda ingin menghapus favorite ini?</string>
@@ -1451,4 +1451,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="success_forgot_pin">PIN baru akan dikirimkan melalui SMS.</string>
     <string name="lbl_lang_ind">ID</string>
     <string name="lbl_lang_eng">EN</string>
+
+    <string name="example_bca">(example: BANK BCA)</string>
+    <string name="example_mandiri">(example: BANK MANDIRI)</string>
+    <string name="example_one_million">(example: 1.000.000)</string>
 </resources>

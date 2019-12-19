@@ -143,7 +143,7 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
         } else if (model.equals(getResources().getString(R.string.menu_setting_change_pin))) {
             i = new Intent(ActivityListSettings.this, ChangePIN.class);
             startActivity(i);
-        } else if (model.equals(getResources().getString(R.string.menu_setting_change_pin))) {
+        } else if (model.equals(getResources().getString(R.string.menu_setting_change_email))) {
             i = new Intent(ActivityListSettings.this, ChangeEmail.class);
             startActivity(i);
         } else if (model.equals(getResources().getString(R.string.about_apps))) {

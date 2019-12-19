@@ -191,7 +191,7 @@
                     android:textColor="@color/colorSecondaryDark"
                     android:textStyle="italic"
                     android:gravity="right"
-                    android:text="(contoh: 1.000.000)"/>
+                    android:text="@string/example_one_million"/>
 
                 <ViewStub
                     android:id="@+id/transaksi_stub"

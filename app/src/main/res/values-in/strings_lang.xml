@@ -1441,4 +1441,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="lbl_lang_ind">ID</string>
     <string name="lbl_lang_eng">EN</string>
+
+    <string name="example_bca">(contoh: BANK BCA)</string>
+    <string name="example_mandiri">(contoh: BANK MANDIRI)</string>
+    <string name="example_one_million">(contoh: 1.000.000)</string>
 </resources>
