@@ -459,7 +459,7 @@
     <string name="input_pin">Input PIN</string>
     <string name="mygroup_desc_create">Deskripsi Grup</string>
     <string name="mygroup_desc_create_group">* Tambah member dari daftar teman atau grup lain</string>
-    <string name="mygroup_member_name_create">Nama Member</string>
+    <string name="mygroup_member_name_create">Member Name</string>
     <string name="mygroup_hint_member_create">Masukkan nama member</string>
     <string name="mygroup_hint_group_create">Masukkan nama grup</string>
     <string name="mygroup_hint_desc_create">Input group description</string>
@@ -472,7 +472,7 @@
 
     <string name="pay">Bayar</string>
     <string name="add_to_group">Tambah ke Grup</string>
-    <string name="amount">Jumlah</string>
+    <string name="amount">Amount</string>
     <string name="fee">Biaya Admin</string>
     <string name="total_amount">Total Jumlah</string>
     <string name="block">Blok</string>
@@ -1088,8 +1088,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="setting_permission_location">Setting Lokasi</string>
     <string name="err_disallow_permission_location">Silakan aktifkan lokasi Anda</string>
-    <string name="bbs_trx_detail_agent"><![CDATA[<b>Detail Transaksi</b><br />Untuk Agen]]></string>
-    <string name="bbs_trx_detail_member"><![CDATA[<b>Detail Transaksi</b><br />Untuk Member]]></string>
+    <string name="bbs_trx_detail_agent"><![CDATA[<b>Transaction Details</b><br />For Agent]]></string>
+    <string name="bbs_trx_detail_member"><![CDATA[<b>Transaction Details</b><br />For Member]]></string>
 
     <string name="pulsaagent_spinner_choose_text">Pilih Operator</string>
     <string name="alertbox_title_warning">Warning</string>
@@ -1240,17 +1240,17 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="alertbox_set_agent_location_warning">Silakan set lokasi anda untuk aktifkan status Agent</string>
     <string name="alertbox_set_working_hour_warning">Silakan set waktu beroperasi untuk aktifkan status Agent</string>
-    <string name="tiba_di_lokasi">Tiba di Lokasi</string>
-    <string name="amount_count_trx">Jumlah Transaksi</string>
-    <string name="amount_total_trx">Total Nominal Transaksi</string>
-    <string name="history_trx">History Transaksi Member</string>
-    <string name="alert_message_disabled_agent_approval_backpressed">Pastikan Anda sudah bertemu dengan pelanggan, setelah itu baru klik tombol "Tiba di Lokasi"</string>
+    <string name="tiba_di_lokasi">Arrived at the location</string>
+    <string name="amount_count_trx">Number of Transactions</string>
+    <string name="amount_total_trx">Total Nominal Transaction</string>
+    <string name="history_trx">Member Transaction History</string>
+    <string name="alert_message_disabled_agent_approval_backpressed">Make sure you have met the customer, then click the "Arrive at location" button.</string>
     <string name="alert_message_disabled_member_cancel_backpressed">Apakah Anda mau membatalkan transaksi ini? Jika ya, maka Anda akan dikenakan penalti atas pembatalan tersebut.</string>
-    <string name="searching_onprogress_trx">Mencari Transaksi Dalam Proses</string>
-    <string name="bbs_note_meeting_point">Catatan Lokasi Pertemuan</string>
+    <string name="searching_onprogress_trx">Looking for Transactions In Process</string>
+    <string name="bbs_note_meeting_point">Meeting Location Notes</string>
     <string name="bbs_shop">Shop</string>
     <string name="bbs_you">Nasabah</string>
-    <string name="duration">Tiba dalam</string>
+    <string name="duration">Arrived in</string>
     <string name="bbs_agent_almost_arrive">Agen hampir tiba di lokasi pertemuan.</string>
     <string name="rational_readphonestate_readcontacts">Aplikasi membutuhkan akses ke perangkat mengecek status perangkat dan kontak</string>
     <string name="email_validation">Validasi Email</string>
@@ -1266,7 +1266,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="alertbox_set_rating_trx">Silakan pilih rating atas transaksi Anda</string>
     <string name="alertbox_thx_for_rating">Terima Kasih atas review Anda</string>
     <string name="alertbox_waiting_agent_approval">Silakan menunggu permintaan transaksi diterima oleh Agen</string>
-    <string name="bbs_setor_ke">Setor ke Rek.</string>
+    <string name="bbs_setor_ke">Deposit to Account</string>
     <string name="bbs_tarik_dari">Tarik dari Rek.</string>
     <string name="msg_notif_tidak_bisa_batal">Maaf. Transaksi Anda tidak dapat dibatalkan.</string>
     <string name="canceled_trx_reason">ALASAN BATAL</string>
@@ -1389,7 +1389,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="success_cancel_sof">Transaksi sudah dibatalkan!</string>
     <string name="transfer">Transfer</string>
     <string name="profil">Profile</string>
-    <string name="get_direction">Buka Petunjuk Arah</string>
+    <string name="get_direction">Open Directions</string>
     <string name="confirm_fingerprint">Confirm fingerprint to continue</string>
     <string name="enable_fingerprint_permission_text">Please enable the fingerprint permission</string>
     <string name="register_fingerprint_text">No fingerprint configured. Please register at least one fingerprint in your device\'s Settings</string>
