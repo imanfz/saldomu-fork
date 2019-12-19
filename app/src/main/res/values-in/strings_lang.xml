@@ -1480,4 +1480,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="male">Laki-laki</string>
     <string name="female">Perempuan</string>
 
+    <string name="call">Telepon</string>
+    <string name="direction">Petunjuk Arah</string>
+    <string name="customer">Nasabah</string>
+    <string name="come_to_nearest_agent">Silahkan datang ke Agent terdekat.</string>
 </resources>

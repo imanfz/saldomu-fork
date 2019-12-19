@@ -121,8 +121,8 @@ class UpgradeMemberActivity : BaseActivity() {
     }
 
     private fun dialogSuccess() {
-        var dialognya = DefinedDialog.MessageSearchAgent(this, this!!.getString(R.string.menu_item_title_upgrade_via_agent),
-                "Silahkan datang ke Agent terdekat.")
+        val dialognya = DefinedDialog.MessageSearchAgent(this, this.getString(R.string.menu_item_title_upgrade_via_agent),
+                getString(R.string.come_to_nearest_agent))
 
         dialognya.show()
     }
