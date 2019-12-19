@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 >
                 <TextView
-                    android:text="No Akun"
+                    android:text="@string/acc_no"
                     android:padding="3dip" />
                 <TextView
                     android:text=":"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 >
                 <TextView
-                    android:text="Nama Lengkap"
+                    android:text="@string/regist1_edithint_nama"
                     android:padding="3dip" />
                 <TextView
                     android:text=":"
@@ -62,7 +62,7 @@
                 android:id="@+id/listaccount_layout_city"
                 >
                 <TextView
-                    android:text="Kota"
+                    android:text="@string/city"
                     android:padding="3dip" />
                 <TextView
                     android:text=":"

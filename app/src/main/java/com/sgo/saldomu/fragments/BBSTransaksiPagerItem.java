@@ -46,6 +46,11 @@ public class BBSTransaksiPagerItem extends Fragment {
         String type = "",defaultAmount="", noHpPengirim="", defaultProductCode="";
         if(bundle != null) {
             title = bundle.getString(DefineValue.TRANSACTION,"");
+            if (title.equalsIgnoreCase("Tarik Tunai"))
+            {
+                title = "Cash Withdrawal";
+            }else
+                title = "Cash Deposit";
             isShowRegAccountMenu = false;
             if(bundle.containsKey(DefineValue.TYPE)) {
                 type = bundle.getString(DefineValue.TYPE);

@@ -102,21 +102,21 @@
     </string-array>
 
     <string-array name="privacy_list">
-        <item>Pribadi</item>
-        <item>Teman</item>
+        <item>@string/individu</item>
+        <item>@string/friend</item>
     </string-array>
 
     <string-array name="report_list">
-        <item>Transaksi</item>
+        <item>@string/transaction</item>
         <!--<item>Transfer</item>-->
         <!--<item>Permintaan</item>-->
     </string-array>
 
     <string-array name="report_list_agen">
-        <item>Transaksi</item>
+        <item>@string/transaction</item>
         <!--<item>Transfer</item>-->
         <!--<item>Permintaan</item>-->
-        <item>Fee</item>
+        <item>@string/fee</item>
     </string-array>
 
     <integer-array name="google_colors">
