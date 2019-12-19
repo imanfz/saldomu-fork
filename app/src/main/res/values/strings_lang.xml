@@ -188,7 +188,7 @@
     <string name="menu_item_title_beli">Beli</string>
     <string name="menu_item_title_cash_out">Bank Transfer via Cash Deposit</string>
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
-    <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
+    <string name="menu_item_title_pulsa_agent">Mobile Credit</string>
     <string name="menu_item_title_report">Report</string>
     <string name="menu_item_title_scadm">B2B Telco</string>
     <string name="menu_group_title_account">Account</string>
@@ -1019,8 +1019,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="shop_registration">Registrasi Toko</string>
     <string name="rekening_sumber">Rekening Sumber</string>
     <string name="bank_emoney_sumber">Bank / E-Money Sumber</string>
-    <string name="contoh_no_hp">Contoh (0888-xxxxxxx)</string>
-    <string name="contoh_name">Contoh (sutjipto)</string>
+    <string name="contoh_no_hp">Example (0888-xxxxxxx)</string>
+    <string name="contoh_name">Example (sutjipto)</string>
     <string name="hint_destination_city">Pilih Kota Rekening</string>
     <string name="rp.">Rp.</string>
     <string name="agen">Agen</string>
@@ -1045,9 +1045,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="pln_warn">For your convenience, please do not make any transaction between 11:45 - 00:45. Because your transaction cant be processed after that period of time.</string>
 
     <string name="cashoutmember_tx_id">ID Transaksi</string>
-    <string name="cashoutmember_created">Tanggal Transaksi</string>
+    <string name="cashoutmember_created">Transaction Date</string>
     <string name="cashoutmember_request_data">Request Data...</string>
-    <string name="cashoutmember_agent_name">Nama Agen</string>
+    <string name="cashoutmember_agent_name">Agent Name</string>
     <string name="cashoutmember_bank_product">Bank Produk</string>
     <string name="cashoutmember_agent_no">No. Handphone Agen</string>
     <string name="cashoutmember_amount">Nominal</string>
@@ -1377,7 +1377,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="newhome_game">Voucher Game</string>
     <string name="newhome_voucher">Voucher</string>
     <string name="newhome_pam">AIR PDAM</string>
-    <string name="newhome_data">Mobile Recharge</string>
+    <string name="newhome_data">Internet Data</string>
     <string name="pam">PAM</string>
     <string name="good_morning">Good Morning, </string>
     <string name="good_afternoon">Good Afternoon, </string>
@@ -1412,8 +1412,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="ktp_warn1">NIK harus 16 karakter</string>
     <string name="rt_validation">RT required!</string>
     <string name="rw_validation">RW required!</string>
-    <string name="urban_village_validation">Kelurahan dibutuhkan!</string>
-    <string name="sub_district_validation">Kecamatan dibutuhkan!</string>
+    <string name="urban_village_validation">Urban Village required!</string>
+    <string name="sub_district_validation">Sub-district required!</string>
     <string name="religion_validation">Religion required!</string>
     <string name="job_validation">Job required!</string>
     <string name="KTP_title">1. Foto KTP</string>
@@ -1431,9 +1431,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="gender_validation">Gender required!</string>
     <string name="empty_notification">Sepertinya kamu masih belum mendapatkan pesan atau melakukan transaksi.</string>
     <string name="cashout_dialog_message">This menu is not available for you.</string>
-    <string name="adress_detail">Alamat Lengkap</string>
+    <string name="adress_detail">Detail Address</string>
     <string name="location">Location</string>
-    <string name="set_location">Set Lokasi</string>
+    <string name="set_location">Set Location</string>
     <string name="change">Change</string>
     <string name="hint_amount">Input Total Amount</string>
     <string name="upgrade">U P G R A D E</string>
@@ -1490,6 +1490,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="sub_district">Sub-district</string>
     <string name="input_sub_district">Input Sub-district</string>
 
+
+    <string name="select_religion">-Select Religion-</string>
 
     <string name="select_gender">-Select Gender-</string>
     <string name="male">Male</string>

@@ -1475,7 +1475,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="sub_district">Kecamatan</string>
     <string name="input_sub_district">Masukan Kecamatan</string>
 
-
+    <string name="select_religion">-Pilih Agama-</string>
     <string name="select_gender">-Pilih Jenis Kelamin-</string>
     <string name="male">Laki-laki</string>
     <string name="female">Perempuan</string>

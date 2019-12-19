@@ -187,7 +187,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             sub_district_edit_text.requestFocus()
             sub_district_edit_text.setError(resources.getString(R.string.sub_district_validation))
             return false
-        } else if (religion_spinner.selectedItem.equals("-Pilih Agama-")) {
+        } else if (religion_spinner.selectedItem.equals(getString(R.string.select_religion))) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.religion_validation))
