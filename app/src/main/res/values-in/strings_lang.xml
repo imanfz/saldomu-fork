@@ -241,7 +241,7 @@
     <string name="listatm_item_expand_ins_4">Masukkan Nominal Top Up (minimal Rp 10.001).</string>
 
     <string name="myprofile_ab_title">Profil</string>
-    <string name="myprofile_text_date_click">Tekan untuk memilih tanggal</string>
+    <string name="myprofile_text_date_click">Tekan untuk memilih tanggal lahir</string>
     <string name="myprofile_text_name">Nama</string>
     <string name="myprofile_text_hp">No. HP</string>
     <string name="myprofile_text_bod">Tanggal Lahir</string>
@@ -1445,4 +1445,10 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="example_bca">(contoh: BANK BCA)</string>
     <string name="example_mandiri">(contoh: BANK MANDIRI)</string>
     <string name="example_one_million">(contoh: 1.000.000)</string>
+
+    <string name="pos_hint">No HP POS yang sudah terdaftar</string>
+    <string name="wrong_userid_password">User ID atau password salah</string>
+    <string name="acc_no">No. Akun</string>
+    <string name="individu">Pribadi</string>
+    <string name="friend">Teman</string>
 </resources>

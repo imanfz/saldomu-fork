@@ -44,8 +44,8 @@ public class SplashScreen extends AppIntro {
         setFlowAnimation();
         Button skipbtn = (Button) skipButton;
         Button donebtn = (Button) doneButton;
-        skipbtn.setText("Lewati");
-        donebtn.setText("Mulai");
+        skipbtn.setText(getString(R.string.skip));
+        donebtn.setText(getString(R.string.start_now));
 //        skipbtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 //        donebtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
