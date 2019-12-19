@@ -1443,6 +1443,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="lbl_lang_eng">EN</string>
     <string name="pos_hint">No HP POS yang sudah terdaftar</string>
     <string name="wrong_userid_password">User ID atau password salah</string>
+    <string name="acc_no">No. Akun</string>
+    <string name="individu">Pribadi</string>
+    <string name="friend">Teman</string>
 
     <string name="call">Telepon</string>
     <string name="direction">Petunjuk Arah</string>

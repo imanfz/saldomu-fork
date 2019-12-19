@@ -60,13 +60,13 @@ public class PopUpNFC extends DialogFragment {
             @Override
             public void onClick(View v) {
                 getDialog().dismiss();
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                    Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
-//                    startActivity(intent);
-//                } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
+                    startActivity(intent);
+                } else {
                     Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
                     startActivity(intent);
-//                }
+                }
             }
         });
     }
