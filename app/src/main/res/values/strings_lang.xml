@@ -46,8 +46,8 @@
     <string name="check_status">Cek Status Transaksi</string>
     <string name="otp_validation_lenght_1">Kode OTP minimal</string>
     <string name="otp_validation_lenght_2">karakter!</string>
-    <string name="dialog_token_message_sms">akan mengirimkan satu SMS berisi kode Token untuk proses
-        verifikasi selanjutnya.
+    <string name="dialog_token_message_sms">will send an SMS containing the Token code for the process
+         next verification.
     </string>
     <string name="text_token_code">Kode Token</string>
     <string name="you">Anda</string>
@@ -78,7 +78,7 @@
     <string name="regist1_edithint_email" translatable="false">Email</string>
     <string name="regist1_edithint_referal" translatable="false">No. Referal</string>
     <string name="regist1_button_verifikasi">Verifikasi</string>
-    <string name="regist1_validation_nohp">No HP dibutuhkan!</string>
+    <string name="regist1_validation_nohp">User phone required!</string>
     <string name="regist1_validation_length_nohp">Minimal 10 karakter!</string>
     <string name="regist1_validation_nama">Nama dibutuhkan!</string>
     <string name="regist1_validation_email_length">Email dibutuhkan!</string>
@@ -131,7 +131,7 @@
     <string name="login_text_forgetpass">Forgot Password</string>
     <string name="login_text_forgetpass_hide">Lupa Kata Sandi, silahkan kirim email ke\n supportmandiri@sgo.co.id</string>
     <string name="login_toast_loginsukses">Sign In Successful</string>
-    <string name="login_validation_userID">Nomor handphone dibutuhkan !</string>
+    <string name="login_validation_userID">User phone number require !</string>
     <string name="login_validation_pass">Password required!</string>
     <string name="login_validation_comm">Maaf Anda belum terdaftar sebagai member.</string>
 
@@ -241,7 +241,7 @@
     <string name="listatm_item_expand_ins_4">Masukkan Nominal Top Up (minimal Rp 10.001).</string>
 
     <string name="myprofile_ab_title">Profile</string>
-    <string name="myprofile_text_date_click">Tekan untuk memilih tanggal</string>
+    <string name="myprofile_text_date_click">Choose Date of Birth</string>
     <string name="myprofile_text_name">Nama</string>
     <string name="myprofile_text_hp">No. HP</string>
     <string name="myprofile_text_bod">Date of birth</string>
@@ -249,7 +249,7 @@
     <string name="myprofile_text_address">Address</string>
     <string name="myprofile_text_country">Country</string>
     <string name="myprofile_text_citizen">Citizen</string>
-    <string name="myprofile_text_birth_mother">Biological mother's name</string>
+    <string name="myprofile_text_birth_mother">Biological mother\'s name</string>
     <string name="validation_text_birth_mother">Nama Ibu Kandung dibutuhkan!</string>
     <string name="myprofile_text_email" translatable="false">Email</string>
     <string name="myprofile_text_gender">Gender</string>
@@ -285,15 +285,15 @@
     <string name="changepass_toast_success">Ganti Kata Sandi Berhasil</string>
     <string name="changepass_text_firsttime_msg">Sebelum menggunakan aplikasi, harap mengganti Kata Sandi anda untuk alasan keamanan.</string>
 
-    <string name="forgotpass_text_title">Lupa Kata Sandi</string>
-    <string name="forgotpin_text_title">Lupa PIN</string>
-    <string name="forgotpass_text_instruction">%1$s akan mengirimkan prosedur Lupa Kata Sandi. Pilih tipe notifikasi Lupa Kata Sandi yang akan diproses.</string>
+    <string name="forgotpass_text_title">Forgot Password</string>
+    <string name="forgotpin_text_title">Forgot PIN</string>
+    <string name="forgotpass_text_instruction">%1$s will send the Forgot Password procedure. Select the type of Forgot Password notification that you want to process.</string>
 <!--    <string name="forgotpass_text_title">Forgot Password</string>-->
 <!--    <string name="forgotpass_text_instruction">%1$s will send the Forgot Password procedure. Select the type of Forgot Password notification that you want to process.</string>-->
 
     <string name="forgotpass_text_instruction3">Isi dengan nomor handphone anda yang terhubung dengan akun anda dan kata sandi yang baru.</string>
     <!--<string name="forgotpass_text_message_success">Ganti password berhasil. Silahkan cek email atau sms anda sesuai pilihan tipe notifikasi yang anda pilih.</string>-->
-    <string name="forgotpass_text_message_success">Ganti Kata Sandi berhasil. Silahkan cek sms anda, sesuai pilihan tipe notifikasi yang anda pilih.</string>
+    <string name="forgotpass_text_message_success">Success Change Password. Please check your SMS, according to the type of notification you choose.</string>
     <string name="validation_minimal">Minimal</string>
     <string name="validation_character">karakter!</string>
 
@@ -494,7 +494,7 @@
     <string name="menuitem_title_listcontacs">Daftar Kontak</string>
     <string name="menuitem_title_filter" translatable="false">Filter</string>
     <string name="menuitem_title_information">Informasi</string>
-    <string name="menuitem_title_forgot_pin">Lupa PIN</string>
+    <string name="menuitem_title_forgot_pin">Forgot PIN</string>
     <string name="menuitem_title_refresh">Muat Ulang</string>
 
     <string name="report_item_text_trans_id">ID Transaksi :</string>
@@ -613,33 +613,33 @@
     <string name="validation_date">Tanggal datang kembali tidak boleh kurang tanggal hari ini</string>
     <string name="myprofile_validation_date_empty">Tanggal lahir tidak boleh kosong</string>
     <string name="validation_date_empty">Tanggal lahir tidak boleh kosong</string>
-    <string name="myprofile_dob_warning">*Pastikan bahwa tanggal lahir yang Anda pilih sudah sesuai dengan yang tertera pada KTP.</string>
-    <string name="myprofile_email_warning">*Pastikan bahwa alamat Email yang tercantum sudah sesuai dan dalam keadaan aktif, karena seluruh laporan transaksi Saldomu Anda akan dikirimkan ke alamat Email tersebut.</string>
+    <string name="myprofile_dob_warning">* Make sure that the date of birth that you choose is in accordance with what is stated on your ID Card.</string>
+    <string name="myprofile_email_warning">* Make sure that the email address listed is correct and active, because all your Saldomu transaction reports will be sent to that email address.</string>
     <string name="cashout_lkd_warning_1">*Pastikan bahwa No. Rekening yang Anda masukkan sudah benar.</string>
     <string name="cashout_lkd_warning_2">*Pastikan bahwa Nama Penerima yang Anda masukkan sudah benar.</string>
     <string name="myprofile_upload_photo_finish">Foto sudah berhasil diupload dan sedang menunggu Admin untuk verifikasi data.</string>
 
-    <string name="login_failed_attempt_title">Gagal Masuk</string>
-    <string name="login_failed_attempt_1">Anda punya %1$d kesempatan sebelum diblokir.</string>
-    <string name="login_failed_attempt_3">ID Anda sudah terblokir karena salah kata sandi melebihi batas toleransi, silahkan gunakan fitur "Lupa Kata Sandi" untuk melepas blokir.</string>
-    <string name="login_failed_inactive">ID Anda tidak aktif</string>
-    <string name="login_failed_dormant">ID Anda dormant</string>
-    <string name="login_failed_wrong_pass">Password Salah</string>
+    <string name="login_failed_attempt_title">Login Failed</string>
+    <string name="login_failed_attempt_1">You have% 1 $ d chance before it is blocked.</string>
+    <string name="login_failed_attempt_3">Your ID has been blocked because the password has exceeded the tolerance limit, please use the "Forgot Password" feature to unblock.</string>
+    <string name="login_failed_inactive">Your ID is not active</string>
+    <string name="login_failed_dormant">Your ID is dormant</string>
+    <string name="login_failed_wrong_pass">Wrong password</string>
     <string name="login_failed_wrong_id">Nomor Handphone tidak valid atau tidak terdaftar.</string>
 
-    <string name="termsncondition_checkbox_1">Dengan mengklik tombol ini, Anda setuju dengan</string>
+    <string name="termsncondition_checkbox_1">By clicking on this button, you agree to</string>
     <string name="termsncondition_checkbox_2"><u>Terms and Conditions.</u></string>
     <string name="termsncondition_title">Terms and Conditions.</string>
 
     <string name="error_message">Terjadi error saat menjalankan proses.</string>
     <string name="warning">Warning</string>
     <string name="confirmation">Confirmation</string>
-    <string name="exit_message">Apakah Anda yakin keluar dari aplikasi ?</string>
+    <string name="exit_message">Are you sure to exit the application?</string>
 
     <string name="myprofile_warning_message_firsttime">Apakah Anda yakin memproses data yang Anda isi?</string>
 
-    <string name="dialog_title_less_balance">Sisa Saldo Tidak Cukup.</string>
-    <string name="dialog_message_less_balance">Apakah Anda ingin mengisi saldo %1$s Anda ?</string>
+    <string name="dialog_title_less_balance">Insufficient Balance Remaining.</string>
+    <string name="dialog_message_less_balance">Do you want to top up your balance %1$s?</string>
 
     <string name="regist1_subtext_facebook">Masukan nomor telepon anda untuk melengkapi proses registrasi</string>
     <string name="payfriend_confirm_text_share">Bagikan :</string>
@@ -712,8 +712,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="payment">Payment</string>
     <string name="collection">Collection</string>
     <string name="or">or</string>
-    <string name="forgotpin">Lupa PIN</string>
-    <string name="forgotpin_message">Silahkan hubungi kami di</string>
+    <string name="forgotpin">Forgot PIN</string>
+    <string name="forgotpin_message">Contact Us at</string>
     <string name="forgotpin_message2">Customer Care.</string>
     <string name="blocked_pin_title">Pin di Blok</string>
 
@@ -964,8 +964,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="number_destination">No Rekening Tujuan</string>
     <string name="number_destination_hint">Nomor rekening tujuan</string>
     <string name="number_hp_destination">No. Handphone Tujuan</string>
-    <string name="number_hp_member">No. Handphone Pelanggan</string>
-    <string name="number_hp_destination_hint">Nomor Handphone tujuan</string>
+    <string name="number_hp_member">User phone</string>
+    <string name="number_hp_destination_hint">Destination phone number</string>
     <string name="remark_hint">Pesan (opsional)</string>
     <string name="additionalFee_hint">Biaya Tambahan (opsional)</string>
     <string name="cash_in">Cash Deposit</string>
@@ -981,8 +981,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="update_bank_account">Perbaharui Bank Account</string>
     <string name="no_rekening_validation">Nomor Rekening Dibutuhkan !</string>
     <string name="nama_rekening_validation">Nama Rekening Dibutuhkan !</string>
-    <string name="title_bbs_list_account_bbs">Rekening Saya</string>
-    <string name="dialog_title_delete_bbs_acct">Hapus Akun</string>
+    <string name="title_bbs_list_account_bbs">My Account</string>
+    <string name="dialog_title_delete_bbs_acct">Delete Account</string>
     <string name="dialog_msg_delete_bbs_acct">Nama : %1$s\nNo : %2$s\nProduk : %3$s \n\nMasukan password anda untuk menghapus akun.</string>
     <string name="bbsreg_et_error_rekbenef">No Rekening Tujuan dibutuhkan !</string>
     <string name="bbsreg_et_error_namebenef">Nama Rekening dibutuhkan !</string>
@@ -1234,7 +1234,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="message_join_lkd">Apakah anda ingin menjadi member Mandiri LKD untuk dapat melanjutkan transaksi Setor Tunai dan Tarik Tunai?</string>
     <string name="message_upgrade_agent">Apakah anda ingin upgrade menjadi agen?</string>
 
-    <string name="validation_pulsa">No. Hp tidak ditemukan</string>
+    <string name="validation_pulsa">Phone number not found</string>
     <string name="rational_readphonestate">Aplikasi membutuhkan akses untuk mengecek status perangkat</string>
     <string name="rational_sent_sms">Aplikasi membutuhkan akses untuk mengirimkan sms verifikasi</string>
 
@@ -1367,7 +1367,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="show_status">Show Status</string>
     <string name="member_status">Membership Status :</string>
     <string name="title_dialog_dormant">User ID Dormant</string>
-    <string name="message_dialog_dormant_">User ID Anda dalam status Dormant. Silahkan melakukan Tambah Saldo untuk mengaktifkan kembali User ID Anda.</string>
+    <string name="message_dialog_dormant_">Your User ID is in Dormant status. Please add balance to reactivate your User ID.</string>
     <string name="newhome_ovo">Voucher GRAB-OVO</string>
     <string name="newhome_emoney">E-Money</string>
     <string name="newhome_game">Voucher Game</string>
@@ -1451,4 +1451,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="success_forgot_pin">PIN baru akan dikirimkan melalui SMS.</string>
     <string name="lbl_lang_ind">ID</string>
     <string name="lbl_lang_eng">EN</string>
+    <string name="pos_hint">Registered POS user phone number</string>
+    <string name="wrong_userid_password">User ID and password not match</string>
 </resources>
