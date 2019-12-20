@@ -48,7 +48,7 @@
 
     <TableRow>
         <TextView
-            android:text="Nama"
+            android:text="@string/regist1_text_nama"
             android:layout_weight="0"
             android:padding="12dip" />
         <TextView
@@ -71,7 +71,7 @@
             android:id="@+id/tv_no_alias"
             android:layout_weight="0"
             android:padding="12dip"
-            android:text="No. Tujuan" />
+            android:text="@string/cashout_bank_acc_no_text" />
 
         <TextView
             android:id="@+id/dialog_report_trans_alias_no"
@@ -90,7 +90,7 @@
 
     <TableRow>
         <TextView
-            android:text="Nama Tujuan"
+            android:text="@string/cashout_bank_acc_name_text"
             android:layout_weight="0"
             android:padding="12dip"
             android:id="@+id/tv_nama_alias"/>

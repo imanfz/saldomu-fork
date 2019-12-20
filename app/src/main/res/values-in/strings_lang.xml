@@ -1451,4 +1451,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="direction">Petunjuk Arah</string>
     <string name="customer">Nasabah</string>
     <string name="come_to_nearest_agent">Silahkan datang ke Agent terdekat.</string>
+    <string name="community_code">Kode Komunitas</string>
+    <string name="customer_code">Kode Member</string>
+    <string name="send_money">Kirim Saldo</string>
+    <string name="source_account_no">No. Sumber</string>
+    <string name="source_account_name">Nama Sumber</string>
 </resources>

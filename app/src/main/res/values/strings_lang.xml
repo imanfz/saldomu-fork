@@ -332,7 +332,7 @@
     <string name="biller_empty_data">Data tidak tersedia</string>
 
     <string name="biller_name">Name</string>
-    <string name="mitra_name">Nama Mitra</string>
+    <string name="mitra_name">Anchor Name</string>
     <string name="billerinput_text_month">Bulan</string>
     <string name="billerinput_text_denom" translatable="false">Denom Retail</string>
     <string name="billerinput_text_dest_remark">Keterangan Tujuan</string>
@@ -472,9 +472,9 @@
 
     <string name="pay">Bayar</string>
     <string name="add_to_group">Tambah ke Grup</string>
-    <string name="amount">Jumlah</string>
+    <string name="amount">Amount</string>
     <string name="fee">Fee</string>
-    <string name="total_amount">Total Jumlah</string>
+    <string name="total_amount">Total Amount</string>
     <string name="block">Blok</string>
     <string name="delete">Hapus</string>
     <string name="friend_profile">Profil Teman</string>
@@ -805,7 +805,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="success_saved_gallery">Tersimpan di galeri</string>
     <string name="failed_save_gallery">Gagal simpan gambar di galeri</string>
     <string name="saving_gallery">Menyimpan di galeri...</string>
-    <string name="community">Komunitas</string>
+    <string name="community">Community</string>
     <string name="community_default">Pilih Komunitas</string>
     <string name="member_code">Member Code</string>
     <string name="shop_code">Store Code</string>
@@ -864,10 +864,10 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <!-- END agent_map_bbs_fragment -->
     <!-- aod -->
     <string name="err_agent_not_found">Agen tidak ditemukan</string>
-    <string name="list_shop_member">Daftar Toko Member</string>
+    <string name="list_shop_member">List Member Shop</string>
     <string name="shop_member_detail">Member Detail</string>
-    <string name="member_name">Nama Member</string>
-    <string name="shop_name">Nama Toko</string>
+    <string name="member_name">Member Name</string>
+    <string name="shop_name">Shop Name</string>
     <string name="merchant_category">Category</string>
 
     <string name="maintenance_message">The application cannot be accessed. Please try again later.</string>
@@ -936,26 +936,26 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="metode_pembayaran">Payment Method</string>
     <string name="rekening_bank_agent">Agent Bank / E-Money</string>
     <string name="produk_agent">Agent Product</string>
-    <string name="jumlah_transfer">Jumlah Transfer</string>
-    <string name="jumlah_transfer_hint">Jumlah transfer</string>
-    <string name="rekening_bank_tujuan">Rekening Agen</string>
-    <string name="bank_emoney_tujuan">Bank / E-Money Tujuan</string>
-    <string name="produk_pelanggan">Produk Pelanggan</string>
-    <string name="bank_emoney_agen">Bank / E-Money Agen</string>
-    <string name="rekening_bank_member">Rekening Member</string>
-    <string name="no_rekening_agen">No. Bank / E-Money Agen</string>
-    <string name="no_bank_emoney_sumber">No. Rekening Bank / E-Money Sumber</string>
-    <string name="no_sumber">No. Sumber</string>
-    <string name="nama_rekening_agen">Nama Agen</string>
+    <string name="jumlah_transfer">Transfer Amount</string>
+    <string name="jumlah_transfer_hint">Transfer Amount</string>
+    <string name="rekening_bank_tujuan">Agent Account</string>
+    <string name="bank_emoney_tujuan">Destination Bank / E-Money</string>
+    <string name="produk_pelanggan">Customer Product</string>
+    <string name="bank_emoney_agen">Agent Bank / E-Money</string>
+    <string name="rekening_bank_member">Customer Account</string>
+    <string name="no_rekening_agen">Agent Bank / E-Money No.</string>
+    <string name="no_bank_emoney_sumber">Source Bank / E-Money Account No.</string>
+    <string name="no_sumber">Source Number</string>
+    <string name="nama_rekening_agen">Agent Name</string>
     <string name="nama_rekening_sumber">Nama Pemilik Bank / E-Money Sumber</string>
     <string name="nama_sumber">Source Name</string>
     <string name="no_rekening_tujuan">No. Rekening Tujuan</string>
-    <string name="no_tujuan">No. Tujuan</string>
+    <string name="no_tujuan">Destination No.</string>
     <string name="no_rekening_tujuan_hint">Nomor rekening tujuan</string>
-    <string name="otp_hint">Input OTP Code</string>
-    <string name="token_hint">Masukkan kode Token</string>
+    <string name="otp_hint">Enter OTP Code</string>
+    <string name="token_hint">Enter Token</string>
     <string name="nama_rekening_tujuan">Nama pemilik Bank/E-Money Tujuan</string>
-    <string name="nama_rek_tujuan">Nama Tujuan</string>
+    <string name="nama_rek_tujuan">Destination Account Name</string>
     <string name="nama_rekening_tujuan_hint">Nama rekening tujuan</string>
     <string name="kota_rekening_tujuan">Kota Tujuan</string>
     <string name="no_hp_pengirim">Nomor Handphone Pengirim</string>
@@ -963,7 +963,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="no_hp_pengirim_hint">Nomor Handphone Pelanggan</string>
     <string name="number_destination">No Rekening Tujuan</string>
     <string name="number_destination_hint">Nomor rekening tujuan</string>
-    <string name="number_hp_destination">No. Handphone Tujuan</string>
+    <string name="number_hp_destination">Destination Phone No.</string>
     <string name="number_hp_member">User phone</string>
     <string name="number_hp_destination_hint">Destination phone number</string>
     <string name="remark_hint">Pesan (opsional)</string>
@@ -983,7 +983,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="nama_rekening_validation">Nama Rekening Dibutuhkan !</string>
     <string name="title_bbs_list_account_bbs">My Account</string>
     <string name="dialog_title_delete_bbs_acct">Delete Account</string>
-    <string name="dialog_msg_delete_bbs_acct">Nama : %1$s\nNo : %2$s\nProduk : %3$s \n\nMasukan password anda untuk menghapus akun.</string>
+    <string name="dialog_msg_delete_bbs_acct">Name : %1$s\nNo : %2$s\Product : %3$s \n\nEnter your password to delete account.</string>
     <string name="bbsreg_et_error_rekbenef">No Rekening Tujuan dibutuhkan !</string>
     <string name="bbsreg_et_error_namebenef">Nama Rekening dibutuhkan !</string>
     <string name="bbsreg_spin_error_citybenef">Kota Rekening dibutuhkan !</string>
@@ -1304,7 +1304,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="bank_product">Produk Bank</string>
     <string name="comm_code">Kode Komunitas</string>
     <string name="denom_item">Item Denom</string>
-    <string name="order_number">Nomor Order</string>
+    <string name="order_number">Order No.</string>
     <string name="lkd_benef_name">Nama Penyetor</string>
 
 
@@ -1383,9 +1383,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="privay_policy">Terms and Conditions</string>
     <string name="additional_fee">Additional Fee</string>
     <string name="payment_confirm">Konfirmasi Pembayaran</string>
-    <string name="merchant_name">Toko</string>
+    <string name="merchant_name">Merchant</string>
     <string name="transaction_id">ID Transaksi</string>
-    <string name="payment_remark">Pesan</string>
+    <string name="payment_remark">Message</string>
     <string name="success_cancel_sof">Transaksi sudah dibatalkan!</string>
     <string name="transfer">Transfer</string>
     <string name="profil">Profile</string>
@@ -1461,5 +1461,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="acc_no">Account No. </string>
     <string name="individu">Individu</string>
-    <string name="friend">Friend</string>
+    <string name="community_code">Community Code</string>
+    <string name="customer_code">Member Code</string>
+    <string name="send_money">Transfer</string>
+    <string name="source_account_no">Source Account no.</string>
+    <string name="source_account_name">Source Account Name</string>
 </resources>

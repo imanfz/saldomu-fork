@@ -29,7 +29,7 @@
         android:background="@color/grey_300"/>
     <TableRow>
         <TextView
-                android:text="@string/comm_code"
+                android:text="@string/community_code"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -135,7 +135,7 @@
 
     <TableRow>
         <TextView
-                android:text="@string/cashoutmember_bank_product"
+                android:text="@string/bank_product"
                 android:layout_span="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
