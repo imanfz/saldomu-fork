@@ -1513,5 +1513,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="effective_date">Effective date</string>
 
     <string name="cash_collection_confirmation">Cash Collection Confirmation</string>
+    <string name="keep_your_pin_confidential">Keep your PIN confidential</string>
 
 </resources>

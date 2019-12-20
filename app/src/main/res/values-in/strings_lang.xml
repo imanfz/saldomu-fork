@@ -1495,5 +1495,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="effective_date">Tanggal Efektif</string>
 
     <string name="cash_collection_confirmation">Konfirmasi Cash Collection</string>
+    <string name="keep_your_pin_confidential">Jaga kerahasiaan PIN anda</string>
 
 </resources>
