@@ -7,7 +7,7 @@
     <string name="cancel">Cancel</string>
     <string name="logout">Sign Out</string>
     <string name="load_dialog">Pemuatan…</string>
-    <string name="sending_request_dialog">Mengirim permintaan…</string>
+    <string name="sending_request_dialog">Sending Request…</string>
     <string name="logout_toast_message">Sign Out Successfully</string>
     <string name="text_strip" translatable="false">-</string>
     <string name="titik_dua" translatable="false">:</string>
@@ -144,7 +144,7 @@
     <string name="myprofilelist_ab_title">My Profile</string>
 
     <string name="sgoplus_ab_title">SGO +</string>
-    <string name="sgoplus_validation_jumlahSGOplus">Jumlah dibutuhkan!</string>
+    <string name="sgoplus_validation_jumlahSGOplus">Amount needed!</string>
     <string name="sgoplus_text_bank">Bank</string>
     <string name="sgoplus_text_productbank">Bank Products</string>
     <string name="sgoplus_text_amount">Jumlah</string>
@@ -211,7 +211,7 @@
     <string name="menu_item_share">Share</string>
     <string name="menu_item_bbs_register_location">Registrasi Toko Member</string>
     <string name="menu_item_bbs_search_toko">Search Shop</string>
-    <string name="menu_item_search_agent">Panggil Agen</string>
+    <string name="menu_item_search_agent">Call Agent</string>
     <string name="menu_item_title_kelola">Agent Settings</string>
     <string name="menu_item_title_list_toko">Manage Members</string>
     <string name="menu_item_title_list_approval">List of Approvals</string>
@@ -819,7 +819,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="header_desc_request_bbs_activity_label">Request for cash pickup and we will reach you within 30 minutes..</string>
     <string name="title_search_request_bbs_activity_label">Search Agent Based On :</string>
     <string name="current_location_request_bbs_activity_label">Current Location</string>
-    <string name="search_location_hint_request_bbs_activity_label">Di Sekitar Anda atau Masukkan Alamat</string>
+    <string name="search_location_hint_request_bbs_activity_label">Around You or Enter Address</string>
     <string name="title_info_request_bbs_activity_label">Information</string>
     <string name="list_info1_request_bbs_activity_label">Service is currently is available in Jakarta</string>
     <string name="list_info2_request_bbs_activity_label">For security you will receive an OTP to complete on the above mentioned number</string>
@@ -832,10 +832,10 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <!-- END progress_dialog_bbs -->
     <string name="maintenance">Maintenance</string>
     <!-- agent_profile_bbs -->
-    <string name="distance_agent_profile_bbs_label">Jarak : \u0020</string>
+    <string name="distance_agent_profile_bbs_label">Distance : \u0020</string>
     <string name="distance_measurement_agent_profile_bbs_label">\u0020</string>
     <string name="last_online_agent_profile_bbs_label">Last Online : \u0020</string>
-    <string name="last_trx_agent_label">Aktif Terakhir : </string>
+    <string name="last_trx_agent_label">Last Active : </string>
     <string name="cash_in_agent_profile_bbs_label">Nabung</string>
     <string name="cash_out_agent_profile_bbs_label">Cash Withdrawal</string>
     <string name="colon_agent_profile_bbs_label">:</string>
@@ -921,7 +921,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="setting_setup_shop_hour">Atur Jam Toko Buka</string>
     <string name="err_empty_shop_hour">Silakan isi jam toko</string>
     <string name="type_your_keyword">Type your keyword here</string>
-    <string name="search_agent">Panggil Agen</string>
+    <string name="search_agent">Search Agent</string>
     <string name="cari_alamat">Cari Berdasarkan Alamat</string>
     <string name="shop_list">Manage Member</string>
     <string name="list_approval">List Approval</string>
@@ -932,12 +932,14 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="atc">ATC</string>
     <string name="cta">CTA</string>
+
+    <string name="jumlah_transfer_hint">Amount of transfer</string>
     <string name="listatm_topup_deskripsi_fee">The balance topup amount that you enter is included with the Admin fee of %1$s</string>
     <string name="metode_pembayaran">Payment Method</string>
     <string name="rekening_bank_agent">Agent Bank / E-Money</string>
     <string name="produk_agent">Agent Product</string>
+
     <string name="jumlah_transfer">Transfer Amount</string>
-    <string name="jumlah_transfer_hint">Transfer Amount</string>
     <string name="rekening_bank_tujuan">Agent Account</string>
     <string name="bank_emoney_tujuan">Destination Bank / E-Money</string>
     <string name="produk_pelanggan">Customer Product</string>
@@ -947,6 +949,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="no_bank_emoney_sumber">Source Bank / E-Money Account No.</string>
     <string name="no_sumber">Source Number</string>
     <string name="nama_rekening_agen">Agent Name</string>
+
     <string name="nama_rekening_sumber">Nama Pemilik Bank / E-Money Sumber</string>
     <string name="nama_sumber">Source Name</string>
     <string name="no_rekening_tujuan">No. Rekening Tujuan</string>
@@ -1010,7 +1013,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="joinagentbbs_toast_empty_comm">Gagal melanjutkan proses. Daftar komunitas kosong.</string>
     <string name="no_account_cashout_bbs_message">Anda belum memiliki account untuk transaksi tarik tunai.
         Silahkan klik icon di atas untuk mendaftarkan account Anda.</string>
-    <string name="no_source_list_message">Tidak ada rekening member yang terdaftar</string>
+    <string name="no_source_list_message">There are no registered member accounts</string>
     <string name="registrasi_account">Registrasi Account</string>
     <string name="shop_registration">Registrasi Toko</string>
     <string name="rekening_sumber">Rekening Sumber</string>
@@ -1040,26 +1043,26 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="total">Total</string>
     <string name="pln_warn">For your convenience, please do not make any transaction between 11:45 - 00:45. Because your transaction cant be processed after that period of time.</string>
 
-    <string name="cashoutmember_tx_id">ID Transaksi</string>
-    <string name="cashoutmember_created">Tanggal Transaksi</string>
+    <string name="cashoutmember_tx_id">Transaction ID</string>
+    <string name="cashoutmember_created">Transaction date</string>
     <string name="cashoutmember_request_data">Request Data...</string>
-    <string name="cashoutmember_agent_name">Nama Agen</string>
-    <string name="cashoutmember_bank_product">Bank Produk</string>
-    <string name="cashoutmember_agent_no">No. Handphone Agen</string>
-    <string name="cashoutmember_amount">Nominal</string>
-    <string name="cashoutmember_fee">Biaya Admin</string>
+    <string name="cashoutmember_agent_name">Agent Name</string>
+    <string name="cashoutmember_bank_product">Product Bank</string>
+    <string name="cashoutmember_agent_no">Agent Mobile Number</string>
+    <string name="cashoutmember_amount">Amount</string>
+    <string name="cashoutmember_fee">Admin Fee</string>
     <string name="cashoutmember_total">Total Amount</string>
-    <string name="cashoutmember_text_otp">Kode OTP</string>
-    <string name="cashoutmember_otp">* maks. 4 karakter</string>
-    <string name="cashoutmember_validation_otp">Token dibutuhkan!</string>
-    <string name="cashoutmember_cancel_message">Anda yakin ingin membatalkan ?</string>
-    <string name="cashoutmember_text_cashoutcode">Kode Tarik Tunai</string>
-    <string name="cashoutmember_alert_no_tx">Silahkan hubungi agent terdekat</string>
+    <string name="cashoutmember_text_otp">OTP Code</string>
+    <string name="cashoutmember_otp">* max. 4 characters</string>
+    <string name="cashoutmember_validation_otp">Token needed!</string>
+    <string name="cashoutmember_cancel_message">Are you sure you want to cancel ?</string>
+    <string name="cashoutmember_text_cashoutcode">Cash Withdrawal Code</string>
+    <string name="cashoutmember_alert_no_tx">Please contact the nearest agent</string>
     <string name="newhome_bpjs">BPJS</string>
-    <string name="newhome_listrik_pln">PLN electricity</string>
+    <string name="newhome_listrik_pln">PLN</string>
     <string name="bbs_mobility_agent_to_member">Agent to Member</string>
     <string name="bbs_mobility_member_to_agent">Member to Agent</string>
-    <string name="bbs_mobility_both">Dua-duanya</string>
+    <string name="bbs_mobility_both">Both</string>
     <string name="bbs_agent_mobility">Mobility Agent</string>
 
     <string name="agent_approve">Approve</string>
@@ -1073,7 +1076,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="eg_no_acct">(contoh: 01000xxxx)</string>
     <string name="no_match_member_acct_message">Pilih rekening member yang tersedia</string>
     <string name="no_match_agent_acct_message">Pilih rekening agent yang tersedia</string>
-    <string name="no_match_customer_acct_message">Pilih rekening pelanggan yang tersedia</string>
+    <string name="no_match_customer_acct_message">Select an available customer account</string>
     <string name="no_rekening_source_cashout">Nomor Rekening Pelanggan</string>
     <string name="nama_tujuan">Nama Pemilik Rekening</string>
     <string name="msg_notif_batal_agen">Transaksi Anda dibatalkan. Silakan ulangi kembali. Terima Kasih</string>
@@ -1084,7 +1087,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="menu_item_search_agent_cta">Cash Deposit Agent</string>
     <string name="menu_item_search_agent_atc">Cash Withdrawal Agent</string>
-    <string name="menu_item_search_agent_bbs">Call an Agent</string>
+    <string name="menu_item_search_agent_bbs">Call Agent</string>
 
     <string name="setting_permission_location">Setting Lokasi</string>
     <string name="err_disallow_permission_location">Silakan aktifkan lokasi Anda</string>
@@ -1099,20 +1102,20 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="alertbox_message_location_phone_sms_permission_warning">Silakan berikan izin akses lokasi, phone call dan kirim SMS untuk menggunakan aplikasi</string>
     <string name="alertbox_message_information">Data tidak ditemukan</string>
     <string name="bbs_agent_search">Search</string>
-    <string name="alertbox_gps_warning">GPS belum aktif, apakah Anda mau mengaktifkan GPS Anda?</string>
+    <string name="alertbox_gps_warning">GPS is not active, do you want to activate your GPS?</string>
     <string name="bbs_setting">Settings</string>
     <string name="setup_tutup_sekarang">Tutup Sekarang</string>
     <string name="proses_update_success">Proses update berhasil</string>
-    <string name="alertbox_message_search_agent_not_found">Tidak ada agent terdekat yang ditemukan. &#13;\n&#13;\nSilahkan datangi lokasi agen terdekat untuk melakukan transaksi.&#13;\n&#13;\nApakah Anda ingin mencari agen terdekat lagi?</string>
-    <string name="alertbox_message_search_agent_fixed_not_found">Agen terdekat tidak ditemukan</string>
-    <string name="alertbox_message_search_agent_inprogress_trx">Permintaan transaksi tidak bisa dilanjutkan karena masih ada permintaan transaksi sebelumnya yang belum selesai</string>
+    <string name="alertbox_message_search_agent_not_found">No nearby agents found. &#13;\n&#13;\nPlease go to the nearest agent location to make a transaction.&#13;\n&#13;\nDo you want to find the nearest agent again?</string>
+    <string name="alertbox_message_search_agent_fixed_not_found">The nearest agent was not found</string>
+    <string name="alertbox_message_search_agent_inprogress_trx">Transaction requests cannot proceed because there are still unfinished previous transaction requests</string>
     <string name="search"> Search </string>
     <string name="waiting_approval_trx_agent">Menunggu persetujuan transaksi dari agen</string>
     <string name="message_notif_agent_approval">Mencari permintaan transaksi member</string>
-    <string name="message_notif_waiting_agent_approval">Mohon menunggu. Permintaan anda sudah dikirim ke agen.</string>
-    <string name="message_notif_cancel_trx">Pembatalan transaksi akan dikenakan biaya sebesar [CANCEL_FEE]. Apakah Anda yakin mau membatalkan transaksi ?</string>
+    <string name="message_notif_waiting_agent_approval">Please wait. Your request has been sent to the agent.</string>
+    <string name="message_notif_cancel_trx">Cancellation of the transaction will be charged a fee of [CANCEL_FEE]. Are you sure you want to cancel the transaction ?</string>
     <string name="message_notif_cancel_trx_by_agent">Apakah Anda yakin mau membatalkan transaksi ?</string>
-    <string name="set_online">Set Agen Online</string>
+    <string name="set_online">Set Agent Online</string>
     <string name="message_notif_not_registered_agent">Hubungi customer service untuk menyelesaikan pendaftaran agen Anda.</string>
     <string name="process_update_online_success">Proses ubah online berhasil</string>
     <string name="process_update_offline_success">Proses ubah offline berhasil</string>
@@ -1166,7 +1169,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="label_transfer_ke_agent">Bank / E-Money Agen</string>
     <string name="label_transfer_dari_member_atc">Dari Bank / E-Money mana ?</string>
-    <string name="label_bank_pelangggan">Bank / E-Money Pelanggan</string>
+    <string name="label_bank_pelangggan">Bank / E-Money Customers</string>
 
     <string name="message_retry">Retry ?</string>
     <string name="message_bbs_error_service">Gagal update data. Cek kembali koneksi internet anda.</string>
@@ -1240,16 +1243,16 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="alertbox_set_agent_location_warning">Silakan set lokasi anda untuk aktifkan status Agent</string>
     <string name="alertbox_set_working_hour_warning">Silakan set waktu beroperasi untuk aktifkan status Agent</string>
-    <string name="tiba_di_lokasi">Tiba di Lokasi</string>
-    <string name="amount_count_trx">Jumlah Transaksi</string>
+    <string name="tiba_di_lokasi">Arrive at Location</string>
+    <string name="amount_count_trx">Transaction Amount</string>
     <string name="amount_total_trx">Total Nominal Transaksi</string>
     <string name="history_trx">History Transaksi Member</string>
     <string name="alert_message_disabled_agent_approval_backpressed">Pastikan Anda sudah bertemu dengan pelanggan, setelah itu baru klik tombol "Tiba di Lokasi"</string>
     <string name="alert_message_disabled_member_cancel_backpressed">Apakah Anda mau membatalkan transaksi ini? Jika ya, maka Anda akan dikenakan penalti atas pembatalan tersebut.</string>
     <string name="searching_onprogress_trx">Mencari Transaksi Dalam Proses</string>
-    <string name="bbs_note_meeting_point">Catatan Lokasi Pertemuan</string>
+    <string name="bbs_note_meeting_point">Meeting Location Notes</string>
     <string name="bbs_shop">Shop</string>
-    <string name="bbs_you">Nasabah</string>
+    <string name="bbs_you">Customer</string>
     <string name="duration">Tiba dalam</string>
     <string name="bbs_agent_almost_arrive">Agen hampir tiba di lokasi pertemuan.</string>
     <string name="rational_readphonestate_readcontacts">Aplikasi membutuhkan akses ke perangkat mengecek status perangkat dan kontak</string>
@@ -1260,19 +1263,19 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="milik_agen">(Milik Agen)</string>
     <string name="milik_pelanggan">(Milik Pelanggan)</string>
 
-    <string name="bbs_member_review_title">Silakan review pengalaman Anda dengan agen ini</string>
+    <string name="bbs_member_review_title">Please review your experience with this agent</string>
     <string name="bbs_rating_description">Give 1 star for bad service, 5 for good</string>
-    <string name="err_rating_empty">Silakan pilih rating</string>
-    <string name="alertbox_set_rating_trx">Silakan pilih rating atas transaksi Anda</string>
-    <string name="alertbox_thx_for_rating">Terima Kasih atas review Anda</string>
-    <string name="alertbox_waiting_agent_approval">Silakan menunggu permintaan transaksi diterima oleh Agen</string>
-    <string name="bbs_setor_ke">Setor ke Rek.</string>
-    <string name="bbs_tarik_dari">Tarik dari Rek.</string>
-    <string name="msg_notif_tidak_bisa_batal">Maaf. Transaksi Anda tidak dapat dibatalkan.</string>
-    <string name="canceled_trx_reason">ALASAN BATAL</string>
-    <string name="err_empty_cancel_reason">Silakan isi alasan pembatalan</string>
-    <string name="txt_explanation_cancel_reason">contoh: respon agen terlalu lama</string>
-    <string name="notif_pelanggan">Notif Pelanggan</string>
+    <string name="err_rating_empty">Please choose a rating</string>
+    <string name="alertbox_set_rating_trx">Please choose a rating for your transaction</string>
+    <string name="alertbox_thx_for_rating">Thank you for your review</string>
+    <string name="alertbox_waiting_agent_approval">Please wait for the transaction request to be received by the agent</string>
+    <string name="bbs_setor_ke">Deposit to Acc.</string>
+    <string name="bbs_tarik_dari">Withdraw from Acc.</string>
+    <string name="msg_notif_tidak_bisa_batal">Sorry. Your transaction cannot be canceled.</string>
+    <string name="canceled_trx_reason">CANCELATION REASON</string>
+    <string name="err_empty_cancel_reason">Please fill in the reason for the cancellation</string>
+    <string name="txt_explanation_cancel_reason">Ex: Agent response takes too long</string>
+    <string name="notif_pelanggan">Customer Notification</string>
 
 
     <!--  DevicesList -->
