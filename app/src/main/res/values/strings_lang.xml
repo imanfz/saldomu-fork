@@ -620,7 +620,7 @@
     <string name="myprofile_upload_photo_finish">Foto sudah berhasil diupload dan sedang menunggu Admin untuk verifikasi data.</string>
 
     <string name="login_failed_attempt_title">Login Failed</string>
-    <string name="login_failed_attempt_1">You have% 1 $ d chance before it is blocked.</string>
+    <string name="login_failed_attempt_1">You have %1$d chance before it is blocked.</string>
     <string name="login_failed_attempt_3">Your ID has been blocked because the password has exceeded the tolerance limit, please use the "Forgot Password" feature to unblock.</string>
     <string name="login_failed_inactive">Your ID is not active</string>
     <string name="login_failed_dormant">Your ID is dormant</string>
@@ -1463,7 +1463,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="come_to_nearest_agent">Please come to the nearest Agent.</string>
 
     <string name="acc_no">Account No. </string>
-    <string name="individu">Individu</string>
+    <string name="individu">Personal</string>
+    <string name="friend">Friend</string>
     <string name="community_code">Community Code</string>
     <string name="customer_code">Member Code</string>
     <string name="send_money">Transfer</string>
