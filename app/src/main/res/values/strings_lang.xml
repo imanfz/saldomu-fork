@@ -21,17 +21,17 @@
     <string name="setting_icon_arrow" translatable="false">{fa-angle-double-right}</string>
     <string name="down_indicator" translatable="false">{fa-sort-desc}</string>
     <string name="up_indicator" translatable="false">{fa-sort-asc}</string>
-    <string name="exempli_gratia" translatable="false">contoh</string>
+    <string name="exempli_gratia">Example</string>
     <string name="transaction">Transaction</string>
     <string name="informasi_pelanggan">Customer Information</string>
-    <string name="transaction_success">Transaksi Berhasil</string>
-    <string name="transaction_pending">Transaksi Sedang di Proses</string>
-    <string name="transaction_suspect">Transaksi Suspect</string>
-    <string name="transaction_failed">Transaksi Gagal</string>
+    <string name="transaction_success">Transaction Success</string>
+    <string name="transaction_pending">Transaction On Progress</string>
+    <string name="transaction_suspect">Transaction Suspect</string>
+    <string name="transaction_failed">Transaction Failed</string>
     <string name="internal_error" translatable="false">Internal Error</string>
     <string name="atm" translatable="false">ATM</string>
-    <string name="pending">Sedang di Proses</string>
-    <string name="paid">Terbayar</string>
+    <string name="pending">On Progress</string>
+    <string name="paid">Paid</string>
     <string name="failed">Failed</string>
     <string name="suspect">Menggantung</string>
     <string name="cancelled">Cancelled</string>
@@ -112,7 +112,7 @@
     <string name="reg2_notif_text_resend_token">Permintaan token baru sukses</string>
     <string name="reg2_notif_max_resend_token_empty">Kesempatan kirim token baru sudah habis</string>
     <string name="regist2_validation_token_invalid">Token salah!</string>
-    <string name="reg3_btn_text_resend_token_sms">Kirim ulang kode OTP</string>
+    <string name="reg3_btn_text_resend_token_sms">Resend OTP Code</string>
     <string name="regist3_validation_otp">Kode OTP dibutuhkan!</string>
     <string name="reg3_dialog_token_message_sms">Kode OTP sudah dikirim lewat sms. Mohon ditunggu.</string>
     <string name="reg3_notif_max_resend_token_empty">Anda sudah mencapai batas maksimal pengiriman OTP. Silahkan ulangi tahap registrasi beberapa saat lagi jika OTP belum diterima.</string>
@@ -497,28 +497,28 @@
     <string name="menuitem_title_forgot_pin">Forgot PIN</string>
     <string name="menuitem_title_refresh">Muat Ulang</string>
 
-    <string name="report_item_text_trans_id">ID Transaksi :</string>
-    <string name="kode_otp">Kode Tarik Tunai :</string>
-    <string name="report_item_text_date_time">Tanggal dan Waktu : </string>
-    <string name="report_dialog_text_transaction_type">Tipe Transaksi</string>
-    <string name="report_dialog_text_community">Komunitas</string>
-    <string name="report_dialog_text_detail">Rincian</string>
-    <string name="report_dialog_token">Kode Tarik Tunai</string>
-    <string name="report_dialog_text_type">Tipe</string>
-    <string name="report_dialog_text_remark">Pesan</string>
-    <string name="report_dialog_text_userid">Nomor Handphone</string>
-    <string name="report_dialog_text_userid_agen">No. Handphone Agen</string>
-    <string name="report_dialog_text_hp_member">No. Handphone Member</string>
+    <string name="report_item_text_trans_id">Transaction ID :</string>
+    <string name="kode_otp">Cash Withdrawal Code :</string>
+    <string name="report_item_text_date_time">Date and Time : </string>
+    <string name="report_dialog_text_transaction_type">Transaction Type</string>
+    <string name="report_dialog_text_community">Community</string>
+    <string name="report_dialog_text_detail">Detail</string>
+    <string name="report_dialog_token">Cash withdrawal Code</string>
+    <string name="report_dialog_text_type">Type</string>
+    <string name="report_dialog_text_remark">Message</string>
+    <string name="report_dialog_text_userid">Phone No, </string>
+    <string name="report_dialog_text_userid_agen">Agent Phone No.</string>
+    <string name="report_dialog_text_hp_member">Member Phone No.</string>
     <string name="report_dialog_text_adminid">ID Admin</string>
     <string name="report_dialog_text_adminname">Nama Admin</string>
     <string name="report_dialog_text_status" translatable="false">Status</string>
-    <string name="report_dialog_text_reason">Alasan</string>
-    <string name="text_reason">Masukkan Alasan</string>
-    <string name="report_dialog_text_remark_destination">ID Tujuan</string>
+    <string name="report_dialog_text_reason">Reason</string>
+    <string name="text_reason">Enter Reason</string>
+    <string name="report_dialog_text_remark_destination">Destination ID</string>
     <string name="report_filter_button_on">Filter On</string>
     <string name="report_filter_button_off">Filter Off</string>
-    <string name="report_transaction_type">Jenis Transaksi</string>
-    <string name="report_bank_product">Produk Bank</string>
+    <string name="report_transaction_type">Transaction Type</string>
+    <string name="report_bank_product">Bank Product</string>
 
     <string name="header_monthly_limit">Monthly Transaction Limit :</string>
     <string name="header_daily_limit">Daily Transaction Limit</string>
@@ -527,39 +527,39 @@
     <string name="next">Next</string>
     <string name="get_otp">Kirim OTP</string>
 
-    <string name="listatm_topup_danamon_1">Pilih menu Pembayaran > menu Lainnya > menu Virtual Account</string>
-    <string name="listatm_topup_danamon_2">Masukkan Kode Perusahaan:9628</string>
-    <string name="listatm_topup_danamon_3">Masukkan 16 digit Nomor Virtual Account</string>
+    <string name="listatm_topup_danamon_1">Select the Payment menu > Otherd > Virtual Account</string>
+    <string name="listatm_topup_danamon_2">Enter Company Code : 9628</string>
+    <string name="listatm_topup_danamon_3">Enter the 16 digit Virtual Account Number</string>
 
-    <string name="listatm_topup_maybank_1">Masukkan kartu ATM Maybank dan PIN Anda</string>
-    <string name="listatm_topup_maybank_2">Pilih Virtual Account</string>
+    <string name="listatm_topup_maybank_1">Enter your Maybank ATM card and PIN</string>
+    <string name="listatm_topup_maybank_2">Select Virtual Account</string>
 
-    <string name="listatm_topup_cimb_1">Pilih menu Transfer > Rekening CIMB Niaga/Rekening Ponsel Lain > Rekening CIMB Niaga Lain</string>
-    <string name="listatm_topup_cimb_2">Masukkan Kode Perusahaan:8079</string>
+    <string name="listatm_topup_cimb_1">Select Transfer > CIMB Niaga Account / Rekening Ponsel Account > Other CIMB Niaga Account</string>
+    <string name="listatm_topup_cimb_2">Enter Company Code : 8079</string>
 
-    <string name="listatm_topup_ins_1">Pilih Menu Transfer</string>
-    <string name="listatm_topup_ins_2">Pilih Transfer ke </string>
-    <string name="listatm_topup_ins_3">Masukkan Nominal Top Up (minimal Rp 10.001).</string>
-    <string name="listatm_topup_ins_4">Masukkan Nomor Akun</string>
-    <string name="listatm_topup_ins_5">Pilih YES/OK untuk menyetujui transaksi</string>
+    <string name="listatm_topup_ins_1">Select Transfer Menu</string>
+    <string name="listatm_topup_ins_2">Select Transfer to </string>
+    <string name="listatm_topup_ins_3">Enter the Top Up Amount (minimum IDR 10,001).</string>
+    <string name="listatm_topup_ins_4">Enter Account Number</string>
+    <string name="listatm_topup_ins_5">Select YES/OK to approve the transaction</string>
 
-    <string name="listatm_topup_other_ins_1">Pilih Menu Transfer</string>
-    <string name="listatm_topup_other_ins_2">Pilih Transfer \nke Bank Lain </string>
-    <string name="listatm_topup_other_ins_3">Masukkan Kode Bank \n+ Nomor Akun</string>
-    <string name="listatm_topup_other_ins_4">Masukkan Nominal TOP UP (minimal Rp 10.001).</string>
-    <string name="listatm_topup_other_ins_5">Pilih YES/OK untuk menyetujui transaksi</string>
+    <string name="listatm_topup_other_ins_1">Select Transfer Menu</string>
+    <string name="listatm_topup_other_ins_2">Select Other \nke Bank Transfer</string>
+    <string name="listatm_topup_other_ins_3">Enter Bank Code \n+ Account Number</string>
+    <string name="listatm_topup_other_ins_4">Enter the Top Up Amount (minimum IDR 10,001).</string>
+    <string name="listatm_topup_other_ins_5">Select YES/OK to approve the transaction</string>
 
-    <string name="instruct_topup_mandiri_online_1">Buka aplikasi Mandiri Online</string>
-    <string name="instruct_topup_mandiri_online_2">Lakukan login dengan akun Mandiri Online</string>
-    <string name="instruct_topup_mandiri_online_3">Pilih menu <b>Bayar</b></string>
-    <string name="instruct_topup_mandiri_online_4">Pilih menu <b>Buat Pembayaran Baru</b></string>
-    <string name="instruct_topup_mandiri_online_5">Pilih menu <b>Multipayment</b></string>
-    <string name="instruct_topup_mandiri_online_6">Pilih Rekening Sumber </string>
-    <string name="instruct_topup_mandiri_online_7">Pilih penyedia jasa <b>Top Up Saldomu</b></string>
-    <string name="instruct_topup_mandiri_online_8">Masukkan Nomor Akun</string>
-    <string name="instruct_topup_mandiri_online_9">Masukkan Nominal Top up (minimal Rp 10.001).</string>
-    <string name="instruct_topup_mandiri_online_10">Masukkan Deskripsi (opsional)</string>
-    <string name="instruct_topup_mandiri_online_11">Pilih Lanjut</string>
+    <string name="instruct_topup_mandiri_online_1">Open Mandiri Online Application</string>
+    <string name="instruct_topup_mandiri_online_2">Login with Mandiri Online account</string>
+    <string name="instruct_topup_mandiri_online_3">Select Menu <b>Payment</b></string>
+    <string name="instruct_topup_mandiri_online_4">Select menu <b>New Payment</b></string>
+    <string name="instruct_topup_mandiri_online_5">Select menu <b>Multipayment</b></string>
+    <string name="instruct_topup_mandiri_online_6">Select Source Account</string>
+    <string name="instruct_topup_mandiri_online_7">Select a service provider <b>Top Up Saldomu</b></string>
+    <string name="instruct_topup_mandiri_online_8">Enter Account No.</string>
+    <string name="instruct_topup_mandiri_online_9">Enter the Top Up Amount (minimum IDR 10,001).</string>
+    <string name="instruct_topup_mandiri_online_10">Enter Description (optional)</string>
+    <string name="instruct_topup_mandiri_online_11">Select Next</string>
 
     <string name="about_apps">Tentang Aplikasi</string>
     <string name="about_apps_desc"><b>Saldomu</b> adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
@@ -787,8 +787,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="hint_comment_timeline">Komentar...</string>
     <string name="updating">Updating...</string>
-    <string name="other_atm">ATM Lainnya</string>
-    <string name="other_bank">Bank Lainnya</string>
+    <string name="other_atm">Other ATM</string>
+    <string name="other_bank">Other Bank</string>
     <string name="success">Success</string>
     <string name="preview_detail_tagihan">Detil tagihan yang dibayar</string>
     <string name="show">Lihat</string>
@@ -932,12 +932,13 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="atc">ATC</string>
     <string name="cta">CTA</string>
-    <string name="listatm_topup_deskripsi_fee">Jumlah topup Saldo yang anda masukan, sudah termasuk dengan biaya Admin sebesar %1$s</string>
-    <string name="metode_pembayaran">Metode Pembayaran</string>
-    <string name="rekening_bank_agent">Bank / E-Money Agen</string>
-    <string name="produk_agent">Product Agent</string>
+
     <string name="jumlah_transfer">Amount of Transfer</string>
     <string name="jumlah_transfer_hint">Amount of transfer</string>
+    <string name="listatm_topup_deskripsi_fee">The balance topup amount that you enter is included with the Admin fee of %1$s</string>
+    <string name="metode_pembayaran">Payment Method</string>
+    <string name="rekening_bank_agent">Agent Bank / E-Money</string>
+    <string name="produk_agent">Agent Product</string>
     <string name="rekening_bank_tujuan">Rekening Agen</string>
     <string name="bank_emoney_tujuan">Bank / E-Money Tujuan</string>
     <string name="produk_pelanggan">Produk Pelanggan</string>
@@ -952,7 +953,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="no_rekening_tujuan">No. Rekening Tujuan</string>
     <string name="no_tujuan">No. Tujuan</string>
     <string name="no_rekening_tujuan_hint">Nomor rekening tujuan</string>
-    <string name="otp_hint">Masukkan kode OTP</string>
+    <string name="otp_hint">Input OTP Code</string>
     <string name="token_hint">Masukkan kode Token</string>
     <string name="nama_rekening_tujuan">Nama pemilik Bank/E-Money Tujuan</string>
     <string name="nama_rek_tujuan">Nama Tujuan</string>
@@ -1193,36 +1194,36 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="ganti_alamat_email">Change email address</string>
     <string name="change_email_text">Input new Email</string>
 
-    <string name="ins_atm_bca_simtoolkit_1">Pilih m-BCA</string>
-    <string name="ins_atm_bca_simtoolkit_2">Pilih m-Payment</string>
-    <string name="ins_atm_bca_simtoolkit_3">Pilih Lainnya</string>
-    <string name="ins_atm_bca_simtoolkit_4">Ketik TVA</string>
-    <string name="ins_atm_bca_simtoolkit_5">Masukan PIN</string>
-    <string name="ins_atm_bca_simtoolkit_6">Cek info customer</string>
-    <string name="ins_atm_bca_simtoolkit_7">Akan terkirim SMS notifikasi jika sukses</string>
-    <string name="ins_atm_bca_klikbca_1">Pilih Transfer Dana</string>
-    <string name="ins_atm_bca_klikbca_2">Pilih BCA Virtual Account</string>
-    <string name="ins_atm_bca_klikbca_3">Isi no. Virtual Account dengan</string>
-    <string name="ins_atm_bca_klikbca_4">Masukkan respon Key BCA Appli 1</string>
-    <string name="ins_atm_bca_klikbca_5">Akan muncul notifikasi  transfer sukses</string>
-    <string name="ins_atm_bca_mbca_1">Pilih m-Transfer</string>
-    <string name="ins_atm_bca_mbca_2">Pilih BCA Virtual Account</string>
+    <string name="ins_atm_bca_simtoolkit_1">Select m-BCA</string>
+    <string name="ins_atm_bca_simtoolkit_2">Select m-Payment</string>
+    <string name="ins_atm_bca_simtoolkit_3">Select Other menu</string>
+    <string name="ins_atm_bca_simtoolkit_4">Input TVA</string>
+    <string name="ins_atm_bca_simtoolkit_5">Input PIN</string>
+    <string name="ins_atm_bca_simtoolkit_6">Check Customer Info</string>
+    <string name="ins_atm_bca_simtoolkit_7">Notification SMS will be sent after transaction Success</string>
+    <string name="ins_atm_bca_klikbca_1">Select Transfer</string>
+    <string name="ins_atm_bca_klikbca_2">Select BCA Virtual Account</string>
+    <string name="ins_atm_bca_klikbca_3">Input Virtual Account number with</string>
+    <string name="ins_atm_bca_klikbca_4">Input Key BCA Appli 1 response</string>
+    <string name="ins_atm_bca_klikbca_5">A successful transfer notification will appear</string>
+    <string name="ins_atm_bca_mbca_1">Select m-Transfer</string>
+    <string name="ins_atm_bca_mbca_2">Select BCA Virtual Account</string>
     <string name="ins_atm_bca_mbca_3">Klik OK</string>
-    <string name="ins_atm_bca_mbca_4">Akan muncul notifikasi sukses dari aplikasi m-BCA</string>
+    <string name="ins_atm_bca_mbca_4">A successful transfer notification will appear from m-BCA</string>
 
-    <string name="listatm_topup_mandiri_1">Pilih Menu Bayar/Beli</string>
-    <string name="listatm_topup_mandiri_2">Pilih Lainnya > Lainnya > multi Payment</string>
-    <string name="listatm_topup_mandiri_3">Masukan Kode Perusahaan Top Up Saldomu : 89898</string>
-    <string name="listatm_topup_mandiri_5">Masukkan Nominal Top Up (minimal Rp 10.001).</string>
-    <string name="listatm_topup_mandiri_4">Masukkan Nomor Akun</string>
-    <string name="listatm_topup_mandiri_6">Masukkan angka : 1</string>
-    <string name="listatm_topup_mandiri_7">Pilih YA untuk menyetujui transaksi</string>
+    <string name="listatm_topup_mandiri_1">Select the Pay / Buy Menu</string>
+    <string name="listatm_topup_mandiri_2">Select Others > Others > multi Payment</string>
+    <string name="listatm_topup_mandiri_3">Input Top Up Saldomu Company Code : 89898</string>
+    <string name="listatm_topup_mandiri_5">Input Top Up Amount (minimal Rp 10.001).</string>
+    <string name="listatm_topup_mandiri_4">Input Account Number</string>
+    <string name="listatm_topup_mandiri_6">Input number : 1</string>
+    <string name="listatm_topup_mandiri_7">Select Yes to agreed the transaction</string>
 
-    <string name="listatm_topup_bri_1">Pilih Menu Transaksi Lain</string>
-    <string name="listatm_topup_bri_2">Pilih Lainnya > Lainnya > Briva</string>
-    <string name="listatm_topup_bri_3">Masukan Nomor Briva</string>
-    <string name="listatm_topup_bri_4">Pilih YA</string>
-    <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP (minimal Rp 10.001).</string>
+    <string name="listatm_topup_bri_1">Select Other Transaction</string>
+    <string name="listatm_topup_bri_2">Select Others > Others > Briva</string>
+    <string name="listatm_topup_bri_3">Input Briva Code</string>
+    <string name="listatm_topup_bri_4">Select YES</string>
+    <string name="listatm_topup_bri_5">Input Top Up Amount (minimal Rp 10.001).</string>
 
     <string name="join_lkd">Join Member Mandiri LKD</string>
     <string name="c2a_lkd">Setor Tunai Mandiri LKD</string>
