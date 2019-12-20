@@ -19,7 +19,7 @@
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="#40639f"
-        android:text="Selamat Datang"
+        android:text="@string/welcome"
         />
     <TextView
         android:layout_margin="12dp"
@@ -32,6 +32,6 @@
         android:letterSpacing="0.02"
         android:lineSpacingExtra="6sp"
         android:gravity="center_horizontal"
-        android:text="Terima kasih telah mendownload aplikasi kami! Nikmati fitur - fitur yang di sediakan oleh SALDOMU."
+        android:text="@string/thank_you_for_download"
         />
 </LinearLayout>

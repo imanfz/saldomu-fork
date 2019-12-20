@@ -44,11 +44,9 @@
     <string name="scash" translatable="false">S-Cash</string>
     <string name="application_name" translatable="false">PIN</string>
     <string name="check_status">Check Transaction Status</string>
-    <string name="otp_validation_lenght_1">Minimal OTP code</string>
+    <string name="otp_validation_lenght_1">Min OTP code </string>
     <string name="otp_validation_lenght_2">character!</string>
-    <string name="dialog_token_message_sms">will send an SMS containing the Token code for the process
-    next verification.
-</string>
+    <string name="dialog_token_message_sms">will send an SMS containing the Token code for the process next verification. </string>
     <string name="text_token_code">Token Code</string>
     <string name="you">You</string>
     <string name="done">Done</string>
@@ -58,33 +56,33 @@
     <string name="resend">Resend</string>
 
     <string name="firstscreen_desc_background" translatable="false">background</string>
-    <string name="firstscreen_button_daftar">list</string>
-    <string name="firstscreen_button_login">login</string>
+    <string name="firstscreen_button_daftar">REGISTER</string>
+    <string name="firstscreen_button_login">LOG IN</string>
 
     <string name="regist1_notif_title">Registration Successful</string>
-    <string name="regist1_notif_title_registered">Mobile Number Registered</string>
-    <string name="regist1_notif_message_registered">Please use your mobile number and password to enter.</string>
-    <string name="regist1_notif_title_verification">Verification Succeeded</string>
-    <string name="regist1_notif_message_email">Please kindly check out your inbox for the activation.</string>
-    <string name="regist1_notif_message_sms">we will send you a verification message code for the activation   </string>
+    <string name="regist1_notif_title_registered">Registered Mobile Number</string>
+    <string name="regist1_notif_message_registered">Please use your mobile phone number and password to log in. </string>
+    <string name="regist1_notif_title_verification">Verification Success</string>
+    <string name="regist1_notif_message_email">Please check your email inbox for the next activation process.</string>
+    <string name="regist1_notif_message_sms">will send an SMS containing the Token code for the process next activation.</string>
     <string name="regist1_title">Registration</string>
-    <string name="regist1_text_nohp">Phone number</string>
+    <string name="regist1_text_nohp">Mobile Phone Number</string>
     <string name="regist1_text_nama">Name</string>
     <string name="regist1_text_email" translatable="false">Email</string>
-    <string name="regist1_edithint_nohp"><font size="17">Phone number (ex. 08138255xxxx)</font></string>
+    <string name="regist1_edithint_nohp"><font size="17">Mobile Phone Number (ex. 08138255xxxx)</font></string>
     <string name="regist1_edithint_nama">Full Name</string>
     <string name="regist1_edithint_email" translatable="false">Email</string>
-    <string name="regist1_edithint_referal" translatable="false">Referral number</string>
+    <string name="regist1_edithint_referal" translatable="false">Referal Number</string>
     <string name="regist1_button_verifikasi">Verification</string>
     <string name="regist1_validation_nohp">User phone required!</string>
-    <string name="regist1_validation_length_nohp">Minimal 10 character!</string>
-    <string name="regist1_validation_nama">Name  is required!</string>
-    <string name="regist1_validation_email_length">Email is required!</string>
-    <string name="regist1_validation_email">Invalid email!</string>
+    <string name="regist1_validation_length_nohp">10 characters minimum!</string>
+    <string name="regist1_validation_nama">Name needed!</string>
+    <string name="regist1_validation_email_length">Email needed!</string>
+    <string name="regist1_validation_email">Not Email format!</string>
 
-    <string name="regist2_notif_title">Registration is completed</string>
-    <string name="regist2_notif_message_1">Your phone number is::</string>
-    <string name="regist2_notif_message_3">Please use your phone number and passcode to login.</string>
+    <string name="regist2_notif_title">Registration Successful</string>
+    <string name="regist2_notif_message_1">Your mobile phone number is:</string>
+    <string name="regist2_notif_message_3">Please use your mobile phone number and password to log in.</string>
     <string name="regist2_title">Registration</string>
     <string name="regist2_text_pass">Password</string>
     <string name="regist2_edithint_pass">min. 6 character</string>
@@ -122,6 +120,7 @@
     <string name="login_edithint_id">Your phone number has been registered</string>
     <string name="edittext_hint_id">Enter your phone number</string>
     <string name="userid_hint_otp">Please enter your phone number</string>
+
     <string name="login_text_pass">Password</string>
     <string name="login_edithint_pass">Password</string>
     <string name="login_button_login">Sign In</string>
@@ -146,7 +145,8 @@
     <string name="sgoplus_text_bank">Bank</string>
     <string name="sgoplus_text_productbank">Bank Products</string>
     <string name="sgoplus_text_amount">Amount</string>
-    <string name="transaction_failed_tx_id">Your transaction can not be processed.</string>
+
+    <string name="transaction_failed_tx_id">Your transaction cannot be processed.</string>
 
     <string name="internetBanking_ab_title" translatable="false">Internet Banking</string>
 
@@ -1472,6 +1472,14 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="acc_no">Account No. </string>
     <string name="individu">Individual</string>
     <string name="friend">Friend</string>
+
+    <string name="welcome">Welcome</string>
+    <string name="thank_you_for_download">Thank you for downloading our application! Enjoy the features provided by SALDOMU.</string>
+    <string name="send_money_desc">Send money to fellow users, friends, communities whenever you want.</string>
+    <string name="cash_in_desc">If saving is constrained by distance, come or look for SALDOMU agents around you. You can easily save money to the account you want to go.</string>
+    <string name="cash_out_desc">A wide network of agents in the area and around you, cash withdrawals can be easier anywhere you want.</string>
+    <string name="buy_pay">Buy &amp; Pay</string>
+    <string name="buy_pay_desc">You also meet your daily needs such as buying credit, electricity tokens, installments and much more.</string>
 
     <string name="name_according_to_id_card">Name according to ID Card :</string>
 

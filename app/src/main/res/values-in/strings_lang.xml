@@ -1488,6 +1488,14 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="customer">Nasabah</string>
     <string name="come_to_nearest_agent">Silahkan datang ke Agent terdekat.</string>
 
+    <string name="welcome">Selamat Datang</string>
+    <string name="thank_you_for_download">Terima kasih telah mendownload aplikasi kami! Nikmati fitur - fitur yang di sediakan oleh SALDOMU.</string>
+    <string name="send_money_desc">Kirim uang ke sesama pengguna, teman, komunitas kapanpun kamu inginkan.</string>
+    <string name="cash_in_desc">Jika menabung terkendala jarak, datang atau cari agen SALDOMU disekitar kamu. Kamu dapat dengan mudah menabung ke rekening yang yang kamu tuju.</string>
+    <string name="cash_out_desc">Jaringan agen yang luas di daerah dan disekitar kamu, tarik tunai lebih mudah bisa dimana saja  kapan saja kamu mau.</string>
+    <string name="buy_pay">Beli &amp; Bayar</string>
+    <string name="buy_pay_desc">Kamu juga memenuhi kebutuhan harianmu seperti beli pulsa, token listrik, angsuran dan masih banyak lagi.</string>
+
     <string name="remaining_amount">Jumlah Sisa</string>
     <string name="partial">Sebagian</string>
     <string name="invoice_number">Faktur Nomor</string>
