@@ -944,9 +944,9 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="jumlah_transfer_hint">Amount of Transfer</string>
     <string name="rekening_bank_tujuan">Rekening Agen</string>
     <string name="bank_emoney_tujuan">Bank / E-Money Tujuan</string>
-    <string name="produk_pelanggan">Produk Pelanggan</string>
-    <string name="bank_emoney_agen">Bank / E-Money Agen</string>
-    <string name="rekening_bank_member">Rekening Member</string>
+    <string name="produk_pelanggan">Customer Products</string>
+    <string name="bank_emoney_agen">Bank / E-Money Agent</string>
+    <string name="rekening_bank_member">Member Account</string>
     <string name="no_rekening_agen">No. Bank / E-Money Agen</string>
     <string name="no_bank_emoney_sumber">No. Rekening Bank / E-Money Sumber</string>
     <string name="no_sumber">No. Sumber</string>
@@ -960,9 +960,9 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="token_hint">Input Token Code</string>
     <string name="nama_rekening_tujuan">Nama pemilik Bank/E-Money Tujuan</string>
     <string name="nama_rek_tujuan">Destination Name</string>
-    <string name="nama_rekening_tujuan_hint">Nama rekening tujuan</string>
+    <string name="nama_rekening_tujuan_hint">Name of destination account</string>
     <string name="kota_rekening_tujuan">Destination City</string>
-    <string name="no_hp_pengirim">Nomor Handphone Pengirim</string>
+    <string name="no_hp_pengirim">Sender\'s Mobile Number</string>
     <string name="notif_no_hp_pengirim">Notif ke No. HP Pelanggan</string>
     <string name="no_hp_pengirim_hint">Customer Mobile Number</string>
     <string name="number_destination">Destination account number</string>
@@ -972,8 +972,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="number_hp_destination_hint">Destination Mobile Number</string>
     <string name="remark_hint">Message (opsional)</string>
     <string name="additionalFee_hint">Addition Fee (opsional)</string>
-    <string name="cash_in">Cash Deposit</string>
-    <string name="cash_out">Cash Out</string>
+    <string name="cash_in">Setor Tunai</string>
+    <string name="cash_out">Tarik Tunai</string>
     <string name="title_cash_out_member">Cash Out Confirmation</string>
     <string name="title_bbs_my_orders">My Orders</string>
     <string name="agent_name">Agent Name</string>
