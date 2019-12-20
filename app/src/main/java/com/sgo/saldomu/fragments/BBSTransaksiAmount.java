@@ -309,11 +309,11 @@ public class BBSTransaksiAmount extends Fragment {
 //                            .findFirst();
 //
 //                }else {
-//                    bbsBankModel = realmBBS.where(BBSBankModel.class).
-//                            equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
-//                            equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
-//                            .equalTo(BBSBankModel.COMM_TYPE, DefineValue.BENEF)
-//                            .findFirst();
+                    bbsBankModel = realmBBS.where(BBSBankModel.class).
+                            equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
+                            equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
+                            .equalTo(BBSBankModel.COMM_TYPE, DefineValue.BENEF)
+                            .findFirst();
 //                }
 
                 if ( bbsBankModel != null ) {
