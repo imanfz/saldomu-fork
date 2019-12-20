@@ -28,7 +28,7 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                android:text="Batal"
+                android:text="@string/cancel"
                 tools:ignore="ButtonStyle"
                 android:textColor="@android:color/white"
                 android:background="@color/colorPrimary" />
@@ -38,7 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                android:text="Hapus"
+                android:text="@string/delete"
                 tools:ignore="ButtonStyle"
                 android:textColor="@android:color/white"
                 android:background="@color/colorPrimary" />
@@ -48,7 +48,7 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                android:text="Proses"
+                android:text="@string/proses"
                 tools:ignore="ButtonStyle"
                 android:textColor="@android:color/white"
                 android:background="@color/colorPrimary" />

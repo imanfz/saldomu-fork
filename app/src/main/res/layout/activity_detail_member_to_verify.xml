@@ -84,7 +84,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/rounded_background_blue"
         android:saveEnabled="false"
-        android:text="Proses"
+        android:text="@string/proses"
         android:textColor="@color/white" />
 
 </RelativeLayout>

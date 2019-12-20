@@ -406,7 +406,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                             return
                                         }
                                         val ftf = activity as CashCollectionActivity?
-                                        ftf!!.switchContent(newFrag, "Konfirmasi Cash Collection", true)
+                                        ftf!!.switchContent(newFrag, getString(R.string.cash_collection_confirmation), true)
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")

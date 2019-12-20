@@ -1480,8 +1480,20 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="male">Laki-laki</string>
     <string name="female">Perempuan</string>
 
+    <string name="single">BELUM KAWIN</string>
+    <string name="married">KAWIN</string>
+
     <string name="call">Telepon</string>
     <string name="direction">Petunjuk Arah</string>
     <string name="customer">Nasabah</string>
     <string name="come_to_nearest_agent">Silahkan datang ke Agent terdekat.</string>
+
+    <string name="remaining_amount">Jumlah Sisa</string>
+    <string name="partial">Sebagian</string>
+    <string name="invoice_number">Faktur Nomor</string>
+    <string name="payment_remark_2">Keterangan Pembayaran</string>
+    <string name="effective_date">Tanggal Efektif</string>
+
+    <string name="cash_collection_confirmation">Konfirmasi Cash Collection</string>
+
 </resources>
