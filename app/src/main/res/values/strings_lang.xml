@@ -497,6 +497,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="menuitem_title_filter" translatable="false">Filter</string>
     <string name="menuitem_title_information">Information</string>
     <string name="menuitem_title_forgot_pin">Forgot PIN</string>
+
     <string name="menuitem_title_refresh">Reload</string>
 
     <string name="report_item_text_trans_id">Transaction ID:</string>
@@ -516,6 +517,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="report_dialog_text_status" translatable="false">Status</string>
     <string name="report_dialog_text_reason">Reason</string>
     <string name="text_reason">Enter the reason</string>
+
     <string name="report_dialog_text_remark_destination">Destination ID</string>
     <string name="report_filter_button_on">Filter On</string>
     <string name="report_filter_button_off">Filter Off</string>
@@ -565,6 +567,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
 
     <string name="about_apps">About</string>
     <string name="about_apps_desc"><b>Your Balance</b> is a financial application with features <b><i>social media</i></b>. Because banking is a part of your social life.</string>
+
     <string name="about_apps_desc_2">SALDOMU is registered as MANUFACTURER OF FINANCIAL TECHNOLOGY at Bank Indonesia Number 20/85/DKSP/Srt/B dated March 8, 2018.</string>
     <string name="about_apps_desc_pemberitahuan">Announcement :</string>
     <string name="about_apps_desc_pemberitahuan_1">1. SALDOMU is only distributed through the Play Store and App Store by PT Mitra Pembayaran Elektronik.</string>
