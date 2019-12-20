@@ -96,8 +96,8 @@ public class ConfirmationDialog extends DialogFragment {
                 nameTextview.setText(name);
             }
             destinationTextview.setText(destinationUserID);
-            tv_left.setText("Milik Agen");
-            tv_right.setText("Milik Pelanggan");
+            tv_left.setText(getString(R.string.milik_agen));
+            tv_right.setText(getString(R.string.milik_pelanggan));
         }
         else
             destinationTextview.setText(destinationUserID);

@@ -30,7 +30,7 @@
         android:textColor="@color/colorSecondaryDark"
         android:textStyle="italic"
         android:gravity="right"
-        android:text="(contoh: BANK BCA)"/>
+        android:text="@string/example_bca"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -60,7 +60,7 @@
             android:textColor="@color/colorSecondaryDark"
             android:textStyle="italic"
             android:gravity="right"
-            android:text="(contoh: 08xxxxxxxx)"/>
+            android:text="@string/eg_no_hp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -112,5 +112,5 @@
         android:textColor="@color/colorSecondaryDark"
         android:textStyle="italic"
         android:gravity="right"
-        android:text="(Maks. 50 karakter)"/>
+        android:text="@string/askformoney_message"/>
 </LinearLayout>
