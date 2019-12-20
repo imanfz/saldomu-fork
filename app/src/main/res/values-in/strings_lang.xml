@@ -1441,11 +1441,47 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="lbl_lang_ind">ID</string>
     <string name="lbl_lang_eng">EN</string>
+
+    <string name="example_bca">(contoh: BANK BCA)</string>
+    <string name="example_mandiri">(contoh: BANK MANDIRI)</string>
+    <string name="example_one_million">(contoh: 1.000.000)</string>
+
     <string name="pos_hint">No HP POS yang sudah terdaftar</string>
     <string name="wrong_userid_password">User ID atau password salah</string>
     <string name="acc_no">No. Akun</string>
     <string name="individu">Pribadi</string>
     <string name="friend">Teman</string>
+
+    <string name="name_according_to_id_card">Nama Sesuai KTP :</string>
+
+    <string name="input_nik">Masukan NIK</string>
+    <string name="full_name">Nama Lengkap</string>
+    <string name="input_full_name">Masukan Nama Lengkap</string>
+    <string name="place_of_birth">Tempat Lahir</string>
+    <string name="input_place_of_birth">Masukan Tempat Lahir</string>
+    <string name="date_of_birth">Tanggal Lahir</string>
+    <string name="input_date_of_birth">Masukan Tanggal Lahir</string>
+    <string name="input_address">Masukan Alamat</string>
+    <string name="input_rt">Masukan RT</string>
+    <string name="input_rw">Masukan RW</string>
+    <string name="religion">Agama</string>
+    <string name="job">Pekerjaan</string>
+    <string name="input_job">Masukan Pekerjaan</string>
+    <string name="marital_status">Status Perkawinan</string>
+    <string name="citizenship">kewarganegaraan</string>
+
+    <string name="urban_village">Kelurahan</string>
+    <string name="input_urban_village">Masukan Kelurahan</string>
+    <string name="sub_district">Kecamatan</string>
+    <string name="input_sub_district">Masukan Kecamatan</string>
+
+    <string name="select_religion">-Pilih Agama-</string>
+    <string name="select_gender">-Pilih Jenis Kelamin-</string>
+    <string name="male">Laki-laki</string>
+    <string name="female">Perempuan</string>
+
+    <string name="single">BELUM KAWIN</string>
+    <string name="married">KAWIN</string>
 
     <string name="call">Telepon</string>
     <string name="direction">Petunjuk Arah</string>
@@ -1454,10 +1490,24 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="welcome">Selamat Datang</string>
     <string name="thank_you_for_download">Terima kasih telah mendownload aplikasi kami! Nikmati fitur - fitur yang di sediakan oleh SALDOMU.</string>
-    <string name="send_money">Kirim Uang</string>
     <string name="send_money_desc">Kirim uang ke sesama pengguna, teman, komunitas kapanpun kamu inginkan.</string>
     <string name="cash_in_desc">Jika menabung terkendala jarak, datang atau cari agen SALDOMU disekitar kamu. Kamu dapat dengan mudah menabung ke rekening yang yang kamu tuju.</string>
     <string name="cash_out_desc">Jaringan agen yang luas di daerah dan disekitar kamu, tarik tunai lebih mudah bisa dimana saja  kapan saja kamu mau.</string>
     <string name="buy_pay">Beli &amp; Bayar</string>
     <string name="buy_pay_desc">Kamu juga memenuhi kebutuhan harianmu seperti beli pulsa, token listrik, angsuran dan masih banyak lagi.</string>
+
+    <string name="remaining_amount">Jumlah Sisa</string>
+    <string name="partial">Sebagian</string>
+    <string name="invoice_number">Faktur Nomor</string>
+    <string name="payment_remark_2">Keterangan Pembayaran</string>
+    <string name="effective_date">Tanggal Efektif</string>
+
+    <string name="cash_collection_confirmation">Konfirmasi Cash Collection</string>
+    <string name="keep_your_pin_confidential">Jaga kerahasiaan PIN anda</string>
+
+    <string name="community_code">Kode Komunitas</string>
+    <string name="customer_code">Kode Member</string>
+    <string name="send_money">Kirim Saldo</string>
+    <string name="source_account_no">No. Sumber</string>
+    <string name="source_account_name">Nama Sumber</string>
 </resources>

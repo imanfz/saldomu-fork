@@ -115,7 +115,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue = "", comm_id, city_id, amount,
             transaksi, no_benef, name_benef, city_name, no_source, benef_product_value_token, source_product_value_token, key_code,
-            noHPMemberLocation = "", message, lkd_product_code, enabledAdditionalFee;
+            noHPMemberLocation = "", message, lkd_product_code, enabledAdditionalFee ="";
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
@@ -264,7 +264,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 etAdditionalFee = cashin_layout.findViewById(R.id.et_additionalfee);
                 additionalFee_layout = cashin_layout.findViewById(R.id.additionalFeecashin_layout);
 
-                if (enabledAdditionalFee.equals("Y"))
+                if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y"))
                 {
                     additionalFee_layout.setVisibility(View.VISIBLE);
                 }else
@@ -303,7 +303,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 etAdditionalFee = cashout_layout.findViewById(R.id.et_additionalfee);
                 additionalFee_layout = cashout_layout.findViewById(R.id.additionalFeecashin_layout);
 
-                if (enabledAdditionalFee.equals("Y"))
+                if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y"))
                 {
                     additionalFee_layout.setVisibility(View.VISIBLE);
                 }else

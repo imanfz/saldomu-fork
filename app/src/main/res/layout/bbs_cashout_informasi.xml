@@ -38,7 +38,7 @@
         android:textColor="@color/colorSecondaryDark"
         android:textStyle="italic"
         android:gravity="right"
-        android:text="(contoh: BANK BCA)"/>
+        android:text="@string/example_bca"/>
 
     <EditText
         android:visibility="gone"
@@ -99,5 +99,5 @@
         android:textColor="@color/colorSecondaryDark"
         android:textStyle="italic"
         android:gravity="right"
-        android:text="(Maks. 50 karakter)"/>
+        android:text="@string/max_remark"/>
 </LinearLayout>

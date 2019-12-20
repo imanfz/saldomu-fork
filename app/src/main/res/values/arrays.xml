@@ -185,7 +185,7 @@
     </string-array>
 
     <string-array name="gender_type">
-        <item>-Pilih Jenis Kelamin-</item>
+        <item>@string/select_gender</item>
         <item>Laki-laki</item>
         <item>Perempuan</item>
     </string-array>
@@ -345,7 +345,7 @@
     </string-array>
 
     <string-array name="list_religion">
-        <item>-Pilih Agama-</item>
+        <item>@string/select_religion</item>
         <item>ISLAM</item>
         <item>KRISTEN PROTESTAN</item>
         <item>KRISTEN KATOLIK</item>

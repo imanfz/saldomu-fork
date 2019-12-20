@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_horizontal"
-                android:text="Jaga kerahasiaan PIN anda"
+                android:text="@string/keep_your_pin_confidential"
                 android:textStyle="italic"/>
             <FrameLayout
 

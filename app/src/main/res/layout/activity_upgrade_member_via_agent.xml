@@ -43,7 +43,7 @@
                     android:id="@+id/nik_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan NIK"
+                    android:hint="@string/input_nik"
                     android:inputType="number"
                     android:maxLength="16"
                     android:textSize="@dimen/abc_text_size_medium_material" />
@@ -58,7 +58,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nama Lengkap"
+                    android:text="@string/full_name"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -67,7 +67,7 @@
                     android:id="@+id/fullname_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Nama Lengkap"
+                    android:hint="@string/input_full_name"
                     android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
@@ -82,7 +82,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tempat Lahir"
+                    android:text="@string/place_of_birth"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -91,7 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/birth_place_list"
-                    android:hint="Masukkan Tempat Lahir"
+                    android:hint="@string/input_place_of_birth"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="20dp" />
             </LinearLayout>
@@ -107,7 +107,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tanggal Lahir"
+                    android:text="@string/date_of_birth"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:layout_marginBottom="@dimen/margin_10dp"
@@ -118,7 +118,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:hint="Masukan Tanggal Lahir"
+                    android:hint="@string/input_date_of_birth"
                     android:maxLength="30"
                     android:layout_marginBottom="8dp"
                     android:textSize="@dimen/abc_text_size_medium_material" />
@@ -155,7 +155,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Alamat"
+                    android:text="@string/myprofile_text_address"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -164,7 +164,7 @@
                     android:id="@+id/address_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Alamat"
+                    android:hint="@string/input_address"
                     android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
@@ -188,7 +188,7 @@
                     android:id="@+id/rt_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan RT "
+                    android:hint="@string/input_rt"
                     android:maxLength="3"
                     android:inputType="number"
                     android:textSize="@dimen/abc_text_size_medium_material" />
@@ -213,7 +213,7 @@
                     android:id="@+id/rw_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan RW"
+                    android:hint="@string/input_rw"
                     android:maxLength="3"
                     android:inputType="number"
                     android:textSize="@dimen/abc_text_size_medium_material" />
@@ -229,7 +229,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kelurahan"
+                    android:text="@string/urban_village"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -238,7 +238,7 @@
                     android:id="@+id/urban_village_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Kelurahan"
+                    android:hint="@string/input_urban_village"
                     android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
@@ -252,7 +252,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kecamatan"
+                    android:text="@string/sub_district"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -261,7 +261,7 @@
                     android:id="@+id/sub_district_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Kecamatan"
+                    android:hint="@string/input_sub_district"
                     android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
@@ -276,7 +276,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Agama"
+                    android:text="@string/religion"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -298,7 +298,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Status Perkawinan"
+                    android:text="@string/marital_status"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -319,7 +319,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pekerjaan"
+                    android:text="@string/job"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -328,7 +328,7 @@
                     android:id="@+id/job_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Pekerjaan"
+                    android:hint="@string/input_job"
                     android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
@@ -342,7 +342,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kewarganegaraan"
+                    android:text="@string/citizenship"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
