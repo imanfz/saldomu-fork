@@ -264,7 +264,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 etAdditionalFee = cashin_layout.findViewById(R.id.et_additionalfee);
                 additionalFee_layout = cashin_layout.findViewById(R.id.additionalFeecashin_layout);
 
-                if (enabledAdditionalFee.equals("Y"))
+                if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y"))
                 {
                     additionalFee_layout.setVisibility(View.VISIBLE);
                 }else
@@ -303,7 +303,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 etAdditionalFee = cashout_layout.findViewById(R.id.et_additionalfee);
                 additionalFee_layout = cashout_layout.findViewById(R.id.additionalFeecashin_layout);
 
-                if (enabledAdditionalFee.equals("Y"))
+                if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y"))
                 {
                     additionalFee_layout.setVisibility(View.VISIBLE);
                 }else

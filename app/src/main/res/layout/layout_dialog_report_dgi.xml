@@ -213,7 +213,7 @@
             <TextView
                 android:layout_weight="1"
                 android:padding="3dip"
-                android:text="@string/sgoplus_text_amount" />
+                android:text="@string/amount" />
 
             <TextView
                 android:id="@+id/dialog_reportbiller_amount_value"

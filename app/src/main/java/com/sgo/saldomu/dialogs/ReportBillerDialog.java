@@ -404,8 +404,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_total_amount.setText(total_amount);
 
                 if (buss_scheme_code.equalsIgnoreCase("TOP")) {
-                    tv_user_id.setText("Kode Komunitas");
-                    tv_nama.setText("Kode Member");
+                    tv_user_id.setText(getString(R.string.community_code));
+                    tv_nama.setText(getString(R.string.customer_code));
                     tv_useerid_value.setText(args.getString(DefineValue.COMMUNITY_CODE));
                     tv_name_value.setText(args.getString(DefineValue.MEMBER_CODE));
                 }
@@ -553,7 +553,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 mTableLayout.setVisibility(View.VISIBLE);
 
                 inflated.setVisibility(View.VISIBLE);
-                tv_report_type.setText("Kirim Saldo");
+                tv_report_type.setText(getString(R.string.send_money));
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
                 tv_name_value.setText(args.getString(DefineValue.USER_NAME));
 //                tv_recipients_value.setText(args.getString(DefineValue.RECIPIENTS));
@@ -642,8 +642,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 String detail = args.getString(DefineValue.BUSS_SCHEME_NAME, "");
 
-                tv_no.setText("No. Sumber");
-                tv_nama.setText("Nama Sumber");
+                tv_no.setText(getString(R.string.source_account_no));
+                tv_nama.setText(getString(R.string.source_account_name));
                 tv_nama_tujuan.setText(args.getString(DefineValue.PAYMENT_NAME, ""));
                 tv_no_tujuan.setText(args.getString(DefineValue.PAYMENT_PHONE, ""));
                 tv_user_id.setText(args.getString(DefineValue.MEMBER_PHONE, ""));

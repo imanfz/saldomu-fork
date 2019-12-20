@@ -205,7 +205,7 @@
 
         <TableRow>
             <TextView
-                android:text="@string/sgoplus_text_amount"
+                android:text="@string/amount"
                 android:layout_weight="1"
                 android:padding="3dip" />
             <TextView

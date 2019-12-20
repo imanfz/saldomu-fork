@@ -1497,4 +1497,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="cash_collection_confirmation">Konfirmasi Cash Collection</string>
     <string name="keep_your_pin_confidential">Jaga kerahasiaan PIN anda</string>
 
+    <string name="community_code">Kode Komunitas</string>
+    <string name="customer_code">Kode Member</string>
+    <string name="send_money">Kirim Saldo</string>
+    <string name="source_account_no">No. Sumber</string>
+    <string name="source_account_name">Nama Sumber</string>
 </resources>

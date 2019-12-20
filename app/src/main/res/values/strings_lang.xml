@@ -986,6 +986,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="no_rekening_validation">Account number is required !</string>
     <string name="nama_rekening_validation">Account name is required !</string>
     <string name="title_bbs_list_account_bbs">My Account</string>
+
     <string name="dialog_title_delete_bbs_acct">Delete account</string>
     <string name="dialog_msg_delete_bbs_acct">Name : %1$s\nNo : %2$s\nProduct : %3$s \n\nInput your password to delete the account.</string>
     <string name="bbsreg_et_error_rekbenef">Destination Account Number is required !</string>
@@ -1311,7 +1312,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="order_number">Order Number</string>
     <string name="lkd_benef_name">Benef Name</string>
 
-
     <string name="lbl_profil_saya">My Profile</string>
     <string name="lbl_qr_saya">My QR</string>
     <string name="lbl_member_saya">My Status</string>
@@ -1514,5 +1514,11 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="cash_collection_confirmation">Cash Collection Confirmation</string>
     <string name="keep_your_pin_confidential">Keep your PIN confidential</string>
+
+    <string name="community_code">Community Code</string>
+    <string name="customer_code">Member Code</string>
+    <string name="send_money">Transfer</string>
+    <string name="source_account_no">Source Account no.</string>
+    <string name="source_account_name">Source Account Name</string>
 
 </resources>
