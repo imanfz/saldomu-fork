@@ -33,7 +33,7 @@
     <string name="pending">On Progress</string>
     <string name="paid">Paid</string>
     <string name="failed">Failed</string>
-    <string name="suspect">Menggantung</string>
+    <string name="suspect">Suspect</string>
     <string name="cancelled">Cancelled</string>
     <string name="error" translatable="false">Error</string>
     <string name="share_options">Share Options</string>
@@ -43,9 +43,9 @@
     <string name="empty">Empty</string>
     <string name="scash" translatable="false">S-Cash</string>
     <string name="application_name" translatable="false">PIN</string>
-    <string name="check_status">Cek Status Transaksi</string>
-    <string name="otp_validation_lenght_1">Kode OTP minimal</string>
-    <string name="otp_validation_lenght_2">karakter!</string>
+    <string name="check_status">Check Transaction Status</string>
+    <string name="otp_validation_lenght_1">Min OTP code </string>
+    <string name="otp_validation_lenght_2">character!</string>
     <string name="dialog_token_message_sms">will send an SMS containing the Token code for the process
          next verification.
     </string>
@@ -58,36 +58,34 @@
     <string name="resend">Resend</string>
 
     <string name="firstscreen_desc_background" translatable="false">background</string>
-    <string name="firstscreen_button_daftar">DAFTAR</string>
-    <string name="firstscreen_button_login">MASUK</string>
+    <string name="firstscreen_button_daftar">REGISTER</string>
+    <string name="firstscreen_button_login">LOG IN</string>
 
-    <string name="regist1_notif_title">Registrasi Sukses</string>
-    <string name="regist1_notif_title_registered">Nomor Handphone sudah Terdaftar</string>
-    <string name="regist1_notif_message_registered">Silahkan gunakan Nomor Handphone dan Password Anda untuk masuk. </string>
-    <string name="regist1_notif_title_verification">Verifikasi Sukses</string>
-    <string name="regist1_notif_message_email">Silahkan cek inbox Email Anda untuk proses aktivasi selanjutnya.</string>
-    <string name="regist1_notif_message_sms">akan mengirimkan satu SMS berisi kode Token untuk proses
-        aktivasi selanjutnya.
-    </string>
+    <string name="regist1_notif_title">Registration Successful</string>
+    <string name="regist1_notif_title_registered">Registered Mobile Number</string>
+    <string name="regist1_notif_message_registered">Please use your mobile phone number and password to log in. </string>
+    <string name="regist1_notif_title_verification">Verification Success</string>
+    <string name="regist1_notif_message_email">Please check your email inbox for the next activation process.</string>
+    <string name="regist1_notif_message_sms">will send an SMS containing the Token code for the process next activation.</string>
     <string name="regist1_title">Registration</string>
-    <string name="regist1_text_nohp">Nomor Handphone</string>
+    <string name="regist1_text_nohp">Mobile Phone Number</string>
     <string name="regist1_text_nama">Name</string>
     <string name="regist1_text_email" translatable="false">Email</string>
-    <string name="regist1_edithint_nohp"><font size="17">Nomor Handphone (ex. 08138255xxxx)</font></string>
+    <string name="regist1_edithint_nohp"><font size="17">Mobile Phone Number (ex. 08138255xxxx)</font></string>
     <string name="regist1_edithint_nama">Full Name</string>
     <string name="regist1_edithint_email" translatable="false">Email</string>
-    <string name="regist1_edithint_referal" translatable="false">No. Referal</string>
-    <string name="regist1_button_verifikasi">Verifikasi</string>
+    <string name="regist1_edithint_referal" translatable="false">Referal Number</string>
+    <string name="regist1_button_verifikasi">Verification</string>
     <string name="regist1_validation_nohp">User phone required!</string>
-    <string name="regist1_validation_length_nohp">Minimal 10 karakter!</string>
-    <string name="regist1_validation_nama">Nama dibutuhkan!</string>
-    <string name="regist1_validation_email_length">Email dibutuhkan!</string>
-    <string name="regist1_validation_email">Bukan format Email!</string>
+    <string name="regist1_validation_length_nohp">10 characters minimum!</string>
+    <string name="regist1_validation_nama">Name needed!</string>
+    <string name="regist1_validation_email_length">Email needed!</string>
+    <string name="regist1_validation_email">Not Email format!</string>
 
-    <string name="regist2_notif_title">Registrasi Sukses</string>
-    <string name="regist2_notif_message_1">Nomor handphone Anda adalah:</string>
-    <string name="regist2_notif_message_3">Silahkan gunakan Nomor Handphone dan Password Anda untuk masuk.</string>
-    <string name="regist2_title">Registrasi</string>
+    <string name="regist2_notif_title">Registration Successful</string>
+    <string name="regist2_notif_message_1">Your mobile phone number is:</string>
+    <string name="regist2_notif_message_3">Please use your mobile phone number and password to log in.</string>
+    <string name="regist2_title">Registration</string>
     <string name="regist2_text_pass">Password</string>
     <string name="regist2_edithint_pass">min. 6 character</string>
     <string name="regist2_checkbox_showpass">Show Password</string>
@@ -97,47 +95,47 @@
     <string name="regist2_text_otp">Token</string>
     <string name="regist2_edithint_otp">Please enter the Token code</string>
 
-    <string name="regist2_validation_pass">Password dibutuhkan!</string>
-    <string name="regist2_validation_pass_length">Password minimal 6 karakter!</string>
-    <string name="regist2_validation_confirmpass">Ketik ulang Password dibutuhkan!</string>
-    <string name="regist2_validation_confirmpass_pass">Ketik ulang Password tidak sama dengan Password!</string>
-    <string name="regist2_validation_otp">Token dibutuhkan!</string>
-    <string name="reg2_activation_code">Kode Aktivasi</string>
-    <string name="reg2_hint_token_code">Kode Token</string>
-    <string name="reg2_btn_text_resend_token_sms">Kirim ulang token ke sms</string>
-    <string name="reg2_btn_text_resend_token_tcash">Kirim ulang token T-Cash</string>
-    <string name="reg2_btn_text_resend_token_email">Kirim ulang token ke email</string>
-    <string name="reg2_dialog_token_message_sms">Kode token sudah dikirim lewat sms. Mohon ditunggu.</string>
-    <string name="reg2_dialog_token_message_email">Kode token sudah dikirim lewat email. Mohon ditunggu.</string>
-    <string name="reg2_notif_text_resend_token">Permintaan token baru sukses</string>
-    <string name="reg2_notif_max_resend_token_empty">Kesempatan kirim token baru sudah habis</string>
-    <string name="regist2_validation_token_invalid">Token salah!</string>
+    <string name="regist2_validation_pass">Password needed!</string>
+    <string name="regist2_validation_pass_length">min. 6 character!</string>
+    <string name="regist2_validation_confirmpass">Re-type Password required!</string>
+    <string name="regist2_validation_confirmpass_pass">Retype Password is not match as Password!</string>
+    <string name="regist2_validation_otp">Token needed!</string>
+    <string name="reg2_activation_code">Activation Code</string>
+    <string name="reg2_hint_token_code">Token Code</string>
+    <string name="reg2_btn_text_resend_token_sms">Resend token to sms</string>
+    <string name="reg2_btn_text_resend_token_tcash">Resend token to T-Cash</string>
+    <string name="reg2_btn_text_resend_token_email">Resend token to email</string>
+    <string name="reg2_dialog_token_message_sms">Token code has been sent via sms. Please wait.</string>
+    <string name="reg2_dialog_token_message_email">The token code has been sent by email. Please wait.</string>
+    <string name="reg2_notif_text_resend_token">New token request successful</string>
+    <string name="reg2_notif_max_resend_token_empty">The chance to send a new token has run out</string>
+    <string name="regist2_validation_token_invalid">Invalid Token!</string>
     <string name="reg3_btn_text_resend_token_sms">Resend OTP Code</string>
-    <string name="regist3_validation_otp">Kode OTP dibutuhkan!</string>
-    <string name="reg3_dialog_token_message_sms">Kode OTP sudah dikirim lewat sms. Mohon ditunggu.</string>
-    <string name="reg3_notif_max_resend_token_empty">Anda sudah mencapai batas maksimal pengiriman OTP. Silahkan ulangi tahap registrasi beberapa saat lagi jika OTP belum diterima.</string>
-    <string name="reg3_cancel_message">Anda yakin ingin membatalkan proses pendaftaran?</string>
-    <string name="btnresend_text_try_again_after">Coba lagi setelah %1$s</string>
+    <string name="regist3_validation_otp">OTP code needed!</string>
+    <string name="reg3_dialog_token_message_sms">OTP code has been sent via sms. Please wait.</string>
+    <string name="reg3_notif_max_resend_token_empty">You have reached the maximum OTP sending limit. Please repeat the registration process in a few moments if the OTP has not been received.</string>
+    <string name="reg3_cancel_message">Are you sure you want to cancel the registration process?</string>
+    <string name="btnresend_text_try_again_after">Try again after %1$s</string>
 
     <string name="login_title">MASUK</string>
     <string name="login_text_id" translatable="false">ID</string>
     <string name="login_edithint_id">Your registered mobile number</string>
-    <string name="edittext_hint_id">Masukkan No. HP</string>
-    <string name="userid_hint_otp">Masukkan No. HP Anda</string>
+    <string name="edittext_hint_id">Enter Mobile Phone Number</string>
+    <string name="userid_hint_otp">Enter your Mobile Phone Number</string>
     <string name="login_text_pass">Password</string>
     <string name="login_edithint_pass">Password</string>
     <string name="login_button_login">Sign In</string>
     <string name="login_text_forgetpin">Lupa PIN, silahkan menghubungi\ncall center di 0813–3335–5541</string>
     <string name="login_text_forgetpass">Forgot Password</string>
-    <string name="login_text_forgetpass_hide">Lupa Kata Sandi, silahkan kirim email ke\n supportmandiri@sgo.co.id</string>
+    <string name="login_text_forgetpass_hide">Forgot Password, please send an email to\n supportmandiri@sgo.co.id</string>
     <string name="login_toast_loginsukses">Sign In Successful</string>
     <string name="login_validation_userID">User phone number require !</string>
     <string name="login_validation_pass">Password required!</string>
-    <string name="login_validation_comm">Maaf Anda belum terdaftar sebagai member.</string>
+    <string name="login_validation_comm">Sorry, you are not yet registered as a member.</string>
 
     <string name="inethandler_dialog_message">There is no internet connection</string>
 
-    <string name="otpdialog_test_message">Masukkan kode OTP yang Anda dapatkan dari SMS untuk melanjutkan proses.</string>
+    <string name="otpdialog_test_message">Enter the OTP code you got from the SMS to continue the process.</string>
     <string name="pindialog_title">KODE PIN</string>
     <string name="pindialog_text_message">Masukkan kode PIN yang Anda gunakan untuk melanjutkan proses.</string>
     <string name="pindialog_edittext_hint">Kode PIN</string>
@@ -147,8 +145,8 @@
     <string name="sgoplus_validation_jumlahSGOplus">Amount needed!</string>
     <string name="sgoplus_text_bank">Bank</string>
     <string name="sgoplus_text_productbank">Bank Products</string>
-    <string name="sgoplus_text_amount">Jumlah</string>
-    <string name="transaction_failed_tx_id">Transaksi Anda tidak bisa di proses.</string>
+    <string name="sgoplus_text_amount">Amount</string>
+    <string name="transaction_failed_tx_id">Your transaction cannot be processed.</string>
 
     <string name="internetBanking_ab_title" translatable="false">Internet Banking</string>
 
@@ -166,10 +164,10 @@
 
     <string name="toolbar_title_purchase">Biller</string>
     <string name="toolbar_title_pay_friends">Transfer Saldo</string>
-    <string name="toolbar_title_topup" translatable="false">Tambah Saldo</string>
+    <string name="toolbar_title_topup" translatable="false">Top Up</string>
     <string name="toolbar_title_evoucherhp">Beli E-Voucher HP</string>
     <string name="toolbar_title_pulsa_agent">Recharge Voucher</string>
-    <string name="toolbar_title_myfriends">Teman Saya</string>
+    <string name="toolbar_title_myfriends">My Friend</string>
     <string name="toolbar_title_mygroup">My Group</string>
     <string name="showcase">Check out the\nNotification Action View</string>
     <string name="header_menu_balance">Balance : </string>
@@ -1461,6 +1459,15 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="come_to_nearest_agent">Please come to the nearest Agent.</string>
 
     <string name="acc_no">Account No. </string>
-    <string name="individu">Individu</string>
+    <string name="individu">Individual</string>
     <string name="friend">Friend</string>
+
+    <string name="welcome">Welcome</string>
+    <string name="thank_you_for_download">Thank you for downloading our application! Enjoy the features provided by SALDOMU.</string>
+    <string name="send_money">Send money</string>
+    <string name="send_money_desc">Send money to fellow users, friends, communities whenever you want.</string>
+    <string name="cash_in_desc">If saving is constrained by distance, come or look for SALDOMU agents around you. You can easily save money to the account you want to go.</string>
+    <string name="cash_out_desc">A wide network of agents in the area and around you, cash withdrawals can be easier anywhere you want.</string>
+    <string name="buy_pay">Buy &amp; Pay</string>
+    <string name="buy_pay_desc">You also meet your daily needs such as buying credit, electricity tokens, installments and much more.</string>
 </resources>
