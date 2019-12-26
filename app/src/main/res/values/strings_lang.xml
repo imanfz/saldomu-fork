@@ -823,7 +823,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="header_desc_request_bbs_activity_label">Request for cash pickup and we will reach you within 30 minutes..</string>
     <string name="title_search_request_bbs_activity_label">Search Agent Based On :</string>
     <string name="current_location_request_bbs_activity_label">Current Location</string>
-    <string name="search_location_hint_request_bbs_activity_label">Di Sekitar Anda atau Masukkan Alamat</string>
+    <string name="search_location_hint_request_bbs_activity_label">Around you or input address</string>
     <string name="title_info_request_bbs_activity_label">Information</string>
     <string name="list_info1_request_bbs_activity_label">Service is currently is available in Jakarta</string>
     <string name="list_info2_request_bbs_activity_label">For security you will receive an OTP to complete on the above mentioned number</string>
@@ -1159,7 +1159,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="label_jumlah_amount">How much will be transferred?</string>
     <string name="label_transfer_ke">Transfer Ke</string>
-    <string name="label_bank_transfer_ke">Which Bank / E-money??</string>
+    <string name="label_bank_transfer_ke">Which Bank / E-money?</string>
     <string name="label_rekening_transfer_ke">Destination Account Number</string>
     <string name="label_transfer_dari_agent">What Bank / E-Money do you want to use?</string>
     <string name="label_no_hp_sender">Customer’s ohone number</string>
