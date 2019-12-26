@@ -1093,9 +1093,17 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
             setMember(listBankBenefCTR);
         } else {
-            listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
-                    .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
-                    .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE).findAll();
+            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
+                listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
+                        .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
+                        .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE)
+                        .equalTo(WebParams.PRODUCT_NAME, "EMO SALDOMU")
+                        .findAll();
+            } else {
+                listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
+                        .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
+                        .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE).findAll();
+            }
             if (listbankSource == null) {
                 Toast.makeText(this, getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
             }

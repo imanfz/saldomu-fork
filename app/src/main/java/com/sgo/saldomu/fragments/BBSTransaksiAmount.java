@@ -2,6 +2,7 @@ package com.sgo.saldomu.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -62,7 +63,7 @@ import timber.log.Timber;
  */
 
 public class BBSTransaksiAmount extends Fragment {
-    public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiAmount";
+    public final static String TAG = "BBSTransaksiAmount";
 
     private View v, inputForm, emptyLayout, cityLayout, nameLayout;
     private TextView tvTitle;
@@ -222,8 +223,6 @@ public class BBSTransaksiAmount extends Fragment {
 
             initializeDataBBS(CTA);
 
-            isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.LKD));
-
             if (isAgentLKD) {
                 if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
                     defaultProductCode = getString(R.string.EMOSALDOMU);
@@ -298,20 +297,11 @@ public class BBSTransaksiAmount extends Fragment {
 //
 //                }else {
 
-                if (sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "").equalsIgnoreCase("")){
-                    bbsBankModel = realmBBS.where(BBSBankModel.class)
-                            .equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
+                    bbsBankModel = realmBBS.where(BBSBankModel.class).
+                            equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
                             equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
                             .equalTo(BBSBankModel.COMM_TYPE, DefineValue.BENEF)
-                            .equalTo(BBSBankModel.PRODUCT_NAME, "")
                             .findFirst();
-                }
-
-                bbsBankModel = realmBBS.where(BBSBankModel.class).
-                        equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
-                        equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
-                        .equalTo(BBSBankModel.COMM_TYPE, DefineValue.BENEF)
-                        .findFirst();
 //                }
 
                 if (bbsBankModel != null) {
@@ -675,9 +665,17 @@ public class BBSTransaksiAmount extends Fragment {
             setBBSCity();
             setMember(listbankBenef);
         } else {
-            listbankSource = realmBBS.where(BBSBankModel.class)
-                    .equalTo(WebParams.SCHEME_CODE, ATC)
-                    .equalTo(WebParams.COMM_TYPE, SOURCE).findAll();
+            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
+                listbankSource = realmBBS.where(BBSBankModel.class)
+                        .equalTo(WebParams.SCHEME_CODE, ATC)
+                        .equalTo(WebParams.COMM_TYPE, SOURCE)
+                        .equalTo(WebParams.PRODUCT_NAME, "EMO SALDOMU").findAll();
+            } else {
+                listbankSource = realmBBS.where(BBSBankModel.class)
+                        .equalTo(WebParams.SCHEME_CODE, ATC)
+                        .equalTo(WebParams.COMM_TYPE, SOURCE).findAll();
+            }
+
             if (listbankSource == null) {
                 Toast.makeText(getActivity(), getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
                 emptyLayout.setVisibility(View.VISIBLE);
