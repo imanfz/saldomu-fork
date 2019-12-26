@@ -297,6 +297,16 @@ public class BBSTransaksiAmount extends Fragment {
 //                            .findFirst();
 //
 //                }else {
+
+                if (sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "").equalsIgnoreCase("")){
+                    bbsBankModel = realmBBS.where(BBSBankModel.class)
+                            .equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
+                            equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
+                            .equalTo(BBSBankModel.COMM_TYPE, DefineValue.BENEF)
+                            .equalTo(BBSBankModel.PRODUCT_NAME, "")
+                            .findFirst();
+                }
+
                 bbsBankModel = realmBBS.where(BBSBankModel.class).
                         equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
                         equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
