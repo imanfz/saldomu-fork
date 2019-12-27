@@ -177,7 +177,7 @@ public class BBSTransaksiAmount extends Fragment {
         ViewStub stub = v.findViewById(R.id.transaksi_stub);
         tvTitle.setText(transaksi);
         emptyLayout.setVisibility(View.GONE);
-
+        isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD");
         if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
             if (type.equalsIgnoreCase(DefineValue.BBS_CASHIN)) {
                 if (!defaultAmount.equals("")) {
@@ -222,19 +222,6 @@ public class BBSTransaksiAmount extends Fragment {
             adapterMember = new SimpleAdapter(getActivity().getBaseContext(), aListMember, R.layout.bbs_autocomplete_layout, from, to);
 
             initializeDataBBS(CTA);
-
-            if (isAgentLKD) {
-                if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
-                    defaultProductCode = getString(R.string.EMOSALDOMU);
-                } else
-                    defaultProductCode = getString(R.string.SALDOMU);
-                actv_rekening_member.setText(defaultProductCode);
-                actv_rekening_member.setEnabled(false);
-            } else {
-                actv_rekening_member.setText(defaultProductCode);
-                actv_rekening_member.requestFocus();
-            }
-
         } else {
             if (type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)) {
                 if (!defaultAmount.equals("")) {
@@ -270,10 +257,16 @@ public class BBSTransaksiAmount extends Fragment {
             adapterMember = new SimpleAdapter(getActivity().getBaseContext(), aListMember, R.layout.bbs_autocomplete_layout, from, to);
 
             initializeDataBBS(ATC);
-
-            actv_rekening_member.setText(defaultProductCode);
-            actv_rekening_member.requestFocus();
         }
+
+//        if (isAgentLKD) {
+//            actv_rekening_member.setText(defaultProductCode);
+//            actv_rekening_member.setEnabled(false);
+//        } else {
+//            actv_rekening_member.setText(defaultProductCode);
+//            actv_rekening_member.requestFocus();
+//        }
+
         actv_rekening_member.setAdapter(adapterMember);
         actv_rekening_member.addTextChangedListener(textWatcher);
         btnBack.setOnClickListener(backListener);
@@ -297,11 +290,11 @@ public class BBSTransaksiAmount extends Fragment {
 //
 //                }else {
 
-                    bbsBankModel = realmBBS.where(BBSBankModel.class).
-                            equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
-                            equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
-                            .equalTo(BBSBankModel.COMM_TYPE, DefineValue.BENEF)
-                            .findFirst();
+                bbsBankModel = realmBBS.where(BBSBankModel.class).
+                        equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
+                        equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
+                        .equalTo(BBSBankModel.COMM_TYPE, DefineValue.BENEF)
+                        .findFirst();
 //                }
 
                 if (bbsBankModel != null) {
@@ -658,18 +651,30 @@ public class BBSTransaksiAmount extends Fragment {
         comm = realmBBS.where(BBSCommModel.class)
                 .equalTo(WebParams.SCHEME_CODE, schemeCode).findFirst();
 
+        if (BuildConfig.FLAVOR.equalsIgnoreCase("development"))
+            defaultProductCode = "EMO SALDOMU";
+        else
+            defaultProductCode = getString(R.string.SALDOMU);
+
         if (schemeCode.equalsIgnoreCase(CTA)) {
-            listbankBenef = realmBBS.where(BBSBankModel.class)
-                    .equalTo(WebParams.SCHEME_CODE, CTA)
-                    .equalTo(WebParams.COMM_TYPE, BENEF).findAll();
+            if (isAgentLKD){
+                listbankBenef = realmBBS.where(BBSBankModel.class)
+                        .equalTo(WebParams.SCHEME_CODE, CTA)
+                        .equalTo(WebParams.COMM_TYPE, BENEF)
+                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll();
+            } else {
+                listbankBenef = realmBBS.where(BBSBankModel.class)
+                        .equalTo(WebParams.SCHEME_CODE, CTA)
+                        .equalTo(WebParams.COMM_TYPE, BENEF).findAll();
+            }
             setBBSCity();
             setMember(listbankBenef);
         } else {
-            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
+            if (isAgentLKD) {
                 listbankSource = realmBBS.where(BBSBankModel.class)
                         .equalTo(WebParams.SCHEME_CODE, ATC)
                         .equalTo(WebParams.COMM_TYPE, SOURCE)
-                        .equalTo(WebParams.PRODUCT_NAME, "EMO SALDOMU").findAll();
+                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll();
             } else {
                 listbankSource = realmBBS.where(BBSBankModel.class)
                         .equalTo(WebParams.SCHEME_CODE, ATC)
