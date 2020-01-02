@@ -3,24 +3,15 @@ package com.sgo.saldomu.activities;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.adapter.SettingsAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.utils.LocaleManager;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -142,6 +133,9 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
             startActivity(i);
         } else if (model.equals(getResources().getString(R.string.menu_setting_change_pin))) {
             i = new Intent(ActivityListSettings.this, ChangePIN.class);
+            startActivity(i);
+        } else if (model.equals(getResources().getString(R.string.forgotpin))) {
+            i = new Intent(ActivityListSettings.this, ForgotPin.class);
             startActivity(i);
         } else if (model.equals(getResources().getString(R.string.menu_setting_change_email))) {
             i = new Intent(ActivityListSettings.this, ChangeEmail.class);

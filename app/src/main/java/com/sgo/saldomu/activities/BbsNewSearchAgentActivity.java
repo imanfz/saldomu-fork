@@ -99,7 +99,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
-    private String categoryId, categoryName, bbsSchemeCode;
+    private String categoryId, categoryName, bbsSchemeCode, defaultProductCode;
     private Intent intentData;
     ProgressDialog progdialog, progDialog;
     private Boolean showHideLayoutNote = false, isZoomedAlready = false;
@@ -1082,10 +1082,23 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
     private void initializeDataBBS(String schemeCode) {
 
+
+        if (BuildConfig.FLAVOR.equalsIgnoreCase("development"))
+            defaultProductCode = "EMO SALDOMU";
+        else
+            defaultProductCode = getString(R.string.SALDOMU);
+
         if (schemeCode.equalsIgnoreCase(DefineValue.CTA)) {
-            listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
-                    .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
-                    .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
+            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
+                listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
+                        .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
+                        .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF)
+                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll();
+            }else{
+                listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
+                        .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
+                        .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
+            }
             setMember(listbankBenef);
         } else if (schemeCode.equalsIgnoreCase(DefineValue.CTR)) {
             listBankBenefCTR = realmBBSMemberBank.where(BBSBankModel.class)
@@ -1097,7 +1110,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
                         .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
                         .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE)
-                        .equalTo(WebParams.PRODUCT_NAME, "EMO SALDOMU")
+                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode)
                         .findAll();
             } else {
                 listbankSource = realmBBSMemberBank.where(BBSBankModel.class)

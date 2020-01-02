@@ -145,6 +145,7 @@
     <string-array name="settings_is_agent">
         <item>@string/menu_setting_change_pass</item>
         <item>@string/menu_setting_change_pin</item>
+        <item>@string/forgotpin</item>
         <item>@string/menu_setting_change_email</item>
         <item>@string/menu_setting_about</item>
         <item>@string/menu_item_title_kelola</item>
@@ -154,6 +155,7 @@
     <string-array name="settings_is_member">
         <item>@string/menu_setting_change_pass</item>
         <item>@string/menu_setting_change_pin</item>
+        <item>@string/forgotpin</item>
         <item>@string/menu_setting_change_email</item>
         <item>@string/menu_setting_about</item>
 
