@@ -143,7 +143,11 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             fullname_edit_text.requestFocus()
             fullname_edit_text.setError(resources.getString(R.string.myprofile_validation_name))
             return false
-        } else if (!locLists.contains(birth_place_list.getText().toString())) run {
+        } else if (mothersname_edit_text.getText().toString().length == 0) {
+            mothersname_edit_text.requestFocus()
+            mothersname_edit_text.setError(resources.getString(R.string.myprofile_validation_mothers_name))
+            return false
+        }else if (!locLists.contains(birth_place_list.getText().toString())) run {
             birth_place_list.requestFocus()
             birth_place_list.setError("Nama kota tidak ditemukan!")
             return false
