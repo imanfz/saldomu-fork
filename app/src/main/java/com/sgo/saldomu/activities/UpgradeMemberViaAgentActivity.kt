@@ -73,6 +73,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
                 intent.putExtra(DefineValue.MEMBER_STATUS, status_spinner.selectedItem.toString())
                 intent.putExtra(DefineValue.MEMBER_OCUPATION, job_edit_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_NATIONALITY, nationality_spinner.selectedItem.toString())
+                intent.putExtra(DefineValue.MEMBER_MOTHERS_NAME, mothersname_edit_text.text.toString())
                 startActivity(intent)
                 finish()
             }
