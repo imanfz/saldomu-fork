@@ -126,6 +126,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             params[WebParams.CUST_OCCUPATION] = intent.getStringExtra(DefineValue.MEMBER_OCUPATION)
             params[WebParams.CUST_NATIONALITY] = intent.getStringExtra(DefineValue.MEMBER_NATIONALITY)
             params[WebParams.CUST_GENDER] = intent.getStringExtra(DefineValue.MEMBER_GENDER)
+            params[WebParams.MOTHER_NAME] = intent.getStringExtra(DefineValue.MEMBER_MOTHERS_NAME)
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_ID] = MyApiClient.COMM_ID
             params[WebParams.IS_REGISTER] = "Y"

@@ -258,6 +258,7 @@
     <string name="myprofile_toast_update_foto_success">Photo Uploaded</string>
     <string name="myprofile_spinner_default">Select Country</string>
     <string name="myprofile_validation_name">Name required!</string>
+    <string name="myprofile_validation_mothers_name">Mother\'s Name required!</string>
     <string name="myprofile_validation_email">Email required!</string>
     <string name="myprofile_validation_address">Address required!</string>
     <string name="myprofile_validation_socialid">Social ID required!</string>
@@ -1485,6 +1486,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="input_nik">Input NIK</string>
     <string name="full_name">Full Name</string>
+    <string name="mothers_name">Mother\'s Name</string>
+    <string name="hint_mothers_name">Input Mother\'s Name</string>
     <string name="input_full_name">Input Full Name</string>
     <string name="place_of_birth">Place of Birth</string>
     <string name="input_place_of_birth">Input Place of Birth</string>
