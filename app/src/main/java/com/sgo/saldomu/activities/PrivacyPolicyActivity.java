@@ -57,7 +57,7 @@ public class PrivacyPolicyActivity extends BaseActivity {
 
     private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.sgoplusweb_ab_title_saldomu));
+        setActionBarTitle(getString(R.string.privacy_policy));
     }
 
     private void loadUrl(String url) {

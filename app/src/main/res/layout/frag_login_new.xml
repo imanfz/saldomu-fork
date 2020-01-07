@@ -174,7 +174,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_transparant"
-                android:text="@string/privay_policy"
+                android:text="@string/privacy_policy"
                 android:textColor="@color/colorPrimary"
                 android:textSize="10sp"
                 android:visibility="visible" />
