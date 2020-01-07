@@ -260,6 +260,7 @@
     <string name="myprofile_toast_update_foto_success">Upload Foto Berhasil</string>
     <string name="myprofile_spinner_default">Pilih Negara</string>
     <string name="myprofile_validation_name">Nama dibutuhkan!</string>
+    <string name="myprofile_validation_mothers_name">Nama Ibu Kandung dibutuhkan!</string>
     <string name="myprofile_validation_email">Email dibutuhkan!</string>
     <string name="myprofile_validation_address">Alamat dibutuhkan!</string>
     <string name="myprofile_validation_socialid">Sosial ID dibutuhkan!</string>
@@ -1456,7 +1457,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="input_nik">Masukan NIK</string>
     <string name="full_name">Nama Lengkap</string>
+    <string name="mothers_name">Nama Ibu Kandung</string>
     <string name="input_full_name">Masukan Nama Lengkap</string>
+    <string name="hint_mothers_name">Masukan Nama Ibu Kandung</string>
     <string name="place_of_birth">Tempat Lahir</string>
     <string name="input_place_of_birth">Masukan Tempat Lahir</string>
     <string name="date_of_birth">Tanggal Lahir</string>
