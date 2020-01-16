@@ -1074,6 +1074,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             params.put(WebParams.BBS_MOBILITY, mobility);
             params.put(WebParams.BBS_NOTE, bbsNote);
             params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.SHOP_TYPE, sp.getString(DefineValue.COMPANY_TYPE,""));
 
             params.put(WebParams.PRODUCT_CODE, bbsProductCode);
             params.put(WebParams.PRODUCT_NAME, bbsProductName);
