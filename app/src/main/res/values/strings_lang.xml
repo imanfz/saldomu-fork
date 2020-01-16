@@ -1532,5 +1532,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="source_account_no">Source Account no.</string>
     <string name="source_account_name">Source Account Name</string>
     <string name="source_income">Source Income</string>
+    <string name="pin_blocked">Your PIN is blocked. Use "Forgot Pin" to unblock.</string>
 
 </resources>

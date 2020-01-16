@@ -31,6 +31,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CreatePIN;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.PasswordRegisterActivity;
+import com.sgo.saldomu.activities.PrivacyPolicyActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -140,8 +141,8 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
         tv_termsnconditions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TermsNConditionWeb mfrag = new TermsNConditionWeb();
-                switchFragment(mfrag, getString(R.string.termsncondition_title), true);
+                Intent i = new Intent(getActivity(), PrivacyPolicyActivity.class);
+                startActivity(i);
             }
         });
 
