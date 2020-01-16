@@ -147,7 +147,7 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
             i = new Intent(ActivityListSettings.this, BBSActivity.class);
             i.putExtra(DefineValue.INDEX, BBSActivity.BBSKELOLA);
             startActivity(i);
-        } else if (model.equals(getResources().getString(R.string.privay_policy))) {
+        } else if (model.equals(getResources().getString(R.string.privacy_policy))) {
             i = new Intent(ActivityListSettings.this, PrivacyPolicyActivity.class);
             startActivity(i);
         } else if (model.equals(getResources().getString(R.string.menu_item_title_info_harga))) {

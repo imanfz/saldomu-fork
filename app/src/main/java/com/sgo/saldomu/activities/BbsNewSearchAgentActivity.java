@@ -611,6 +611,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         params.put(WebParams.LONGITUDE, tempLongitude);
         params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
         params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.SHOP_TYPE, sp.getString(DefineValue.COMPANY_TYPE,""));
         Timber.d("Params new search agent :" + params);
 
         //Start

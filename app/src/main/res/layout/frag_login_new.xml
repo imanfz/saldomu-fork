@@ -174,7 +174,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_transparant"
-                android:text="@string/privay_policy"
+                android:text="@string/privacy_policy"
                 android:textColor="@color/colorPrimary"
                 android:textSize="10sp"
                 android:visibility="visible" />
@@ -195,6 +195,15 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="@string/about_apps_desc_2"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="12sp" />
 
             <TextView
                 android:layout_width="match_parent"
