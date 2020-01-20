@@ -128,7 +128,7 @@
 
     <string-array name="settings_list_pin">
         <item>@string/menu_setting_info</item>
-        <item>@string/privacy_policy</item>
+        <item>@string/terms_and_condition</item>
         <!--<item>FAQ</item>-->
 
     </string-array>

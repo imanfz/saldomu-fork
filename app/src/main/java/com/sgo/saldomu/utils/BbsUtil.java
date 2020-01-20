@@ -57,6 +57,8 @@ public class BbsUtil {
                 hm.put("flag", Integer.toString(R.drawable.standard_chartered));
             else if(bankMember.get(i).getProduct_code().toLowerCase().contains("019"))
                 hm.put("flag", Integer.toString(R.drawable.panin));
+            else if(bankMember.get(i).getProduct_code().toLowerCase().contains("046"))
+                hm.put("flag", Integer.toString(R.drawable.icon_bank_dbs));
             else
                 hm.put("flag", Integer.toString(R.drawable.ic_square_gate_one));
             mapIcons.add(hm);

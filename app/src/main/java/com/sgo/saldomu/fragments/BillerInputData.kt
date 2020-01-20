@@ -131,15 +131,15 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         initLayout()
         initEditTextListener()
         initRealm()
-        if (_data.isEmpty()) {
+//        if (_data.isEmpty()) {
             getBillerDenom()
-        } else {
+//        } else {
             if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
                 billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
                 checkOperator()
                 showChoosePayment()
             }
-        }
+//        }
 
         favorite_switch.setOnCheckedChangeListener { buttonView, isChecked ->
             notes_edit_text.visibility = if (isChecked) View.VISIBLE else View.GONE

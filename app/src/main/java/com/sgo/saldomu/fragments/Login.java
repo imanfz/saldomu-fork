@@ -2,7 +2,6 @@ package com.sgo.saldomu.fragments;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
@@ -11,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +30,7 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.PrivacyPolicyActivity;
+import com.sgo.saldomu.activities.TermsAndCondition;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -196,7 +194,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
         btnPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(), PrivacyPolicyActivity.class);
+                Intent i = new Intent(getActivity(), TermsAndCondition.class);
                 startActivity(i);
             }
         });
