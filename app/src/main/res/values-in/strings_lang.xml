@@ -1377,7 +1377,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="good_evening">Selamat Sore, </string>
     <string name="good_night">Selamat Malam, </string>
     <string name="topup">TAMBAH SALDO</string>
-    <string name="privacy_policy">Syarat dan Ketentuan</string>
+    <string name="terms_and_condition">Syarat dan Ketentuan</string>
     <string name="additional_fee">Biaya Tambahan</string>
     <string name="payment_confirm">Konfirmasi Pembayaran</string>
     <string name="merchant_name">Toko</string>
@@ -1514,4 +1514,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="source_account_no">No. Sumber</string>
     <string name="source_account_name">Nama Sumber</string>
     <string name="source_income">Sumber Dana</string>
+    <string name="pin_blocked">PIN Anda terblokir. Silahkan gunakan menu "Lupa Pin" untuk membukanya.</string>
 </resources>

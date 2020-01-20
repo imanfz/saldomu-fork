@@ -210,14 +210,16 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         Button btnDialogOK = dialog.findViewById(R.id.btn_dialog_notification_ok);
         ProgressBar progDialog = dialog.findViewById(R.id.progressBarDialogNotif);
         TextView Title = dialog.findViewById(R.id.title_dialog);
-        TextView Message = dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
+        Message.setVisibility(View.VISIBLE);
 
 
         Title.setText(getResources().getString(R.string.forgotpin));
-        Message.setVisibility(View.GONE);
-        Message.setText(getString(R.string.forgotpin_message)+" "+
-                getString(R.string.appname)+" "+
-                getString(R.string.forgotpin_message2));
+//        Message.setVisibility(View.GONE);
+        Message.setText(getString(R.string.pin_blocked));
+//        Message.setText(getString(R.string.forgotpin_message)+" "+
+//                getString(R.string.appname)+" "+
+//                getString(R.string.forgotpin_message2));
 
         progDialog.setIndeterminate(true);
         progDialog.setVisibility(View.VISIBLE);

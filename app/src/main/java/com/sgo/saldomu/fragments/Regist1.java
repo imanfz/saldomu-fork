@@ -1,14 +1,10 @@
 package com.sgo.saldomu.fragments;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,6 +27,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CreatePIN;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.PasswordRegisterActivity;
+import com.sgo.saldomu.activities.TermsAndCondition;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -43,7 +40,6 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.CreatePassModel;
@@ -140,8 +136,8 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
         tv_termsnconditions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TermsNConditionWeb mfrag = new TermsNConditionWeb();
-                switchFragment(mfrag, getString(R.string.termsncondition_title), true);
+                Intent i = new Intent(getActivity(), TermsAndCondition.class);
+                startActivity(i);
             }
         });
 

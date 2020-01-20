@@ -221,10 +221,10 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         initLayout();
         initRealm();
         initPrefixListener();
-        if (_data.isEmpty())
-        {
+//        if (_data.isEmpty())
+//        {
             getBillerDenom();
-        }else {
+//        }else {
             if (args.getString(DefineValue.CUST_ID, "") != "") {
                 et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
                 checkOperator();
@@ -232,7 +232,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                     showChoosePayment();
                 }
             }
-        }
+//        }
 
         favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             notesEditText.setVisibility(isChecked ? View.VISIBLE : View.GONE);

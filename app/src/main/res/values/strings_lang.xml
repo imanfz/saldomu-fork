@@ -1385,7 +1385,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="good_evening">Good Evening, </string>
     <string name="good_night">Good Night, </string>
     <string name="topup">TOP UP</string>
-    <string name="privacy_policy">Terms and Conditions</string>
+    <string name="terms_and_condition">Terms and Conditions</string>
     <string name="additional_fee">Additional Fee</string>
     <string name="payment_confirm">Payment Confirmation</string>
     <string name="merchant_name">Merchant</string>
@@ -1532,5 +1532,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="source_account_no">Source Account no.</string>
     <string name="source_account_name">Source Account Name</string>
     <string name="source_income">Source Income</string>
+    <string name="pin_blocked">Your PIN is blocked. Use "Forgot Pin" to unblock.</string>
 
 </resources>

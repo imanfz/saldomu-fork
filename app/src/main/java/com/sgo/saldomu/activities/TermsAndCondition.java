@@ -5,7 +5,6 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,12 +29,12 @@ import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
 
-public class PrivacyPolicyActivity extends BaseActivity {
+public class TermsAndCondition extends BaseActivity {
     private WebView webview_privacypolicy;
     SecurePreferences sp;
     private ProgressBar progbar;
     private Boolean isDisconnected;
-    private String domainPrivacyPolicy= "http://saldomu.com/index.php/privasi-kebijakan/";
+    private String domainPrivacyPolicy= "http://saldomu.com/index.php/syarat-ketentuan/";
 
     @Override
     protected int getLayoutResource() {
@@ -57,7 +56,7 @@ public class PrivacyPolicyActivity extends BaseActivity {
 
     private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.privacy_policy));
+        setActionBarTitle(getString(R.string.terms_and_condition));
     }
 
     private void loadUrl(String url) {
@@ -96,7 +95,7 @@ public class PrivacyPolicyActivity extends BaseActivity {
             }
 
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                Toast.makeText(PrivacyPolicyActivity.this, description, Toast.LENGTH_SHORT).show();
+                Toast.makeText(TermsAndCondition.this, description, Toast.LENGTH_SHORT).show();
                 isDisconnected = true;
 
             }
