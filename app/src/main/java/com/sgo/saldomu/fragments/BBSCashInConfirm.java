@@ -1116,7 +1116,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         params.put(WebParams.COMM_ID, comm_id);
         params.put(WebParams.NOTES, notesEditText.getText().toString());
         params.put(WebParams.BENEF_BANK_CODE, benef_product_code);
-
         params.put(WebParams.SOURCE_BANK_CODE, tx_bank_code);
 
         Log.e("params ", params.toString());
