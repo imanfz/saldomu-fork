@@ -18,6 +18,7 @@ import android.widget.ListView;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.NFCActivity;
@@ -83,11 +84,10 @@ public class ListBillerMerchant extends ListFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if (position ==  mListBillerData.size() && nfcAdapter != null){
+                if (position == mListBillerData.size() && nfcAdapter != null) {
                     Intent intent = new Intent(getActivity(), NFCActivity.class);
                     startActivity(intent);
-                }
-                else {
+                } else {
                     onListItemClick(listView1, view, position, id);
                 }
             }
@@ -137,9 +137,10 @@ public class ListBillerMerchant extends ListFragment {
             for (int i = 0; i < mListBillerData.size(); i++) {
                 _data.add(mListBillerData.get(i).getComm_name());
             }
-            if (billerTypeCode.equals("EMON") && nfcAdapter != null) {
-                _data.add("Cek Saldo Emoney");
-            }
+            if (BuildConfig.FLAVOR.equalsIgnoreCase("production"))
+                if (billerTypeCode.equals("EMON") && nfcAdapter != null) {
+                    _data.add("Cek Saldo Emoney");
+                }
 
             adapter.notifyDataSetChanged();
         } else
