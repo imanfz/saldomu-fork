@@ -219,19 +219,19 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         radioGroup.setOnCheckedChangeListener(radioListener);
 
         initLayout();
-        initRealm();
+//        initRealm();
         initPrefixListener();
 //        if (_data.isEmpty())
 //        {
-            getBillerDenom();
+        getBillerDenom();
 //        }else {
-            if (args.getString(DefineValue.CUST_ID, "") != "") {
-                et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
-                checkOperator();
-                if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
-                    showChoosePayment();
-                }
+        if (args.getString(DefineValue.CUST_ID, "") != "") {
+            et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
+            checkOperator();
+            if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
+                showChoosePayment();
             }
+        }
 //        }
 
         favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -707,7 +707,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
 
     private void showDialog() {
 
-        Bundle mArgs = getArguments();
+        Bundle mArgs = new Bundle();
 
         if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
             mArgs.putString(DefineValue.CUST_ID, cust_id);
@@ -1106,9 +1106,11 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                     }
 
                     billerItemList.addAll(response.getBiller());
+
                     realm2.copyToRealmOrUpdate(response.getBiller());
                     if (args.getString(DefineValue.CUST_ID, "") != "") {
                         et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
+
                         checkOperator();
                         if (buy_type_detail.equalsIgnoreCase("PRABAYAR")) {
                             showChoosePayment();
@@ -1117,7 +1119,6 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                 } else {
                     Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }
-
                 if (response2.getErrorCode().equals(WebParams.SUCCESS_CODE)) {
                     realm2.copyToRealmOrUpdate(response2.getBiller());
                 } else {
