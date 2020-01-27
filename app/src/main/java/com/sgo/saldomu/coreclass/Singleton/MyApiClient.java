@@ -286,6 +286,11 @@ public class MyApiClient {
     public static String LINK_INQUIRY_CUSTOMER_ACCT;
     public static String LINK_CONFIRM_TOKEN_C2R;
     public static String LINK_RESEND_TOKEN_C2R;
+    public static String CHEK_CARD_BALANCE;
+    public static String UPDATE_CARD_BALANCE;
+    public static String CONFIRM_CARD_BALANCE;
+
+
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -448,6 +453,7 @@ public class MyApiClient {
         LINK_BBS_SEND_DATA_LKD      = headaddressfinal +"BBSTrxCustomer/Submit";
         LINK_BBS_MANDIRI_LKD        = headaddressfinal +"RegAgentLKD/Invoke";
 
+
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 //        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";
 
@@ -499,6 +505,11 @@ public class MyApiClient {
 
         LINK_CONFIRM_TOKEN_C2R      = headaddressfinal + "ConfirmTokenCTR/Invoke";
         LINK_RESEND_TOKEN_C2R       = headaddressfinal + "ResendTokenCTR/Invoke";
+
+        //NFC
+        CHEK_CARD_BALANCE = headaddressfinal + "CheckCardBalance/Invoke";
+        UPDATE_CARD_BALANCE = headaddressfinal + "UpdateCardBalance/Invoke";
+        CONFIRM_CARD_BALANCE = headaddressfinal + "ConfirmUpdateCardBalance/Invoke";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());

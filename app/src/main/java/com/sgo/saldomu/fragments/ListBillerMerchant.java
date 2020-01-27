@@ -18,13 +18,14 @@ import android.widget.ListView;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
+//import com.sgo.saldomu.activities.NFCActivity;
 import com.sgo.saldomu.activities.NFCActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.PrefixOperatorValidator;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 
@@ -137,9 +138,12 @@ public class ListBillerMerchant extends ListFragment {
             for (int i = 0; i < mListBillerData.size(); i++) {
                 _data.add(mListBillerData.get(i).getComm_name());
             }
-            if (billerTypeCode.equals("EMON") && nfcAdapter != null) {
-                _data.add("Cek Saldo Emoney");
+            if(BuildConfig.FLAVOR.equalsIgnoreCase("porduction")){
+                if (billerTypeCode.equals("EMON") && nfcAdapter != null) {
+                    _data.add("Cek Saldo Emoney");
+                }
             }
+
 
             adapter.notifyDataSetChanged();
         } else
