@@ -48,6 +48,7 @@ import com.sgo.saldomu.activities.HistoryActivity;
 import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.ReportActivity;
+import com.sgo.saldomu.activities.SearchAgentUpgradeActivity;
 import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
@@ -589,6 +590,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             dialogDormant();
                         } else
                             posIdx = BBSActivity.BBSMYORDERS;
+                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_search_agent)))
+                        if (isDormant.equalsIgnoreCase("Y")) {
+                            dialogDormant();
+                        } else{
+                            Intent intent = new Intent(getActivity(), SearchAgentUpgradeActivity.class);
+                            intent.putExtra(DefineValue.TYPE, "ALL");
+                            startActivity(intent);
+                        }
                     else {
 //                        posIdx = -1;
                         try {
@@ -907,7 +916,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
 
             } else {
-                checkSchemeCodeMember();
+//                checkSchemeCodeMember();
+                menuStrings.add(getResources().getString(R.string.title_search_agent));
+                menuDrawables.add(getResources().getDrawable(R.drawable.ic_search_agent));
+
 
                 menuStrings.add(getResources().getString(R.string.title_cash_out_member));
                 menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));

@@ -692,7 +692,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="cashout_bank_name_text">Bank Name</string>
     <string name="cashout_ccy_text">Currency</string>
     <string name="cashout_fee_text">Admin Fee</string>
-    <string name="additional_fee_cash">Additional Fee (paid Cash directly to Agent)</string>
+    <string name="additional_fee_cash">Service Charge (paid Cash directly to Agent)</string>
     <string name="cashout_total_text">Total Amount</string>
     <string name="cashout_validation_otp">Token required!</string>
 
@@ -972,7 +972,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="number_hp_member">Customer Mobile Number</string>
     <string name="number_hp_destination_hint">Destination Mobile Number</string>
     <string name="remark_hint">Message (opsional)</string>
-    <string name="additionalFee_hint">Addition Fee (opsional)</string>
+    <string name="additionalFee_hint">Service Charge (opsional)</string>
     <string name="cash_in">Setor Tunai</string>
     <string name="cash_out">Tarik Tunai</string>
     <string name="title_cash_out_member">Cash Out Confirmation</string>
@@ -1386,7 +1386,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="good_night">Good Night, </string>
     <string name="topup">TOP UP</string>
     <string name="terms_and_condition">Terms and Conditions</string>
-    <string name="additional_fee">Additional Fee</string>
+    <string name="additional_fee">Service Charge</string>
     <string name="payment_confirm">Payment Confirmation</string>
     <string name="merchant_name">Merchant</string>
     <string name="transaction_id">Transaction ID</string>
@@ -1533,5 +1533,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="source_account_name">Source Account Name</string>
     <string name="source_income">Source Income</string>
     <string name="pin_blocked">Your PIN is blocked. Use "Forgot Pin" to unblock.</string>
+    <string name="title_search_agent">Search Agent</string>
 
 </resources>
