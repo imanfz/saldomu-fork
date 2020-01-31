@@ -1,5 +1,9 @@
 package com.sgo.saldomu.activities;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
@@ -24,17 +28,24 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.CheckCardBalanceModel;
 import com.sgo.saldomu.models.retrofit.UpdateCardModel;
 import com.sgo.saldomu.utils.Converter;
+import com.sgo.saldomu.utils.NFCManager;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.HashMap;
 
 import timber.log.Timber;
+
+import static org.apache.commons.io.Charsets.UTF_16BE;
 
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallback {
 
     private NfcAdapter nfcAdapter;
+    private NFCManager nfcMger;
+    private NdefMessage mMessage = null;
+    Tag currentTag;
 
     private String cardSelect;
     private String cardAttribute;
@@ -57,6 +68,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
     private String pendingAmountPlus;
     private String CounterCard;
     private String PinEmoney;
+    private IsoDep isoDep;
 
     Boolean updateFlag = false;
 
@@ -64,6 +76,9 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
     private RelativeLayout lyt_gifNfc;
     private LinearLayout lyt_emonCard;
 
+    public final static String TYPE_OLD_APPLET = "0";
+    public final static String TYPE_NEW_APPLET = "1";
+    private String cardMessage = "";
 
 
     @Override
@@ -76,11 +91,24 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
         super.onCreate(savedInstanceState);
         InitializeToolbar();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+//        nfcMger = new NFCManager(this);
 
         cardNumber = findViewById(R.id.cardNumber);
         cardBalanceResult = findViewById(R.id.cardBalanceResult);
         lyt_gifNfc = findViewById(R.id.lyt_gifNfc);
         lyt_emonCard = findViewById(R.id.lyt_emonCard);
+
+        byte[] PENDAMOUNT = Converter.Companion.intToLittleEndian1("70000");
+        Log.d("ISI PENDING AMOUNT4 : ", (Converter.Companion.toHex(PENDAMOUNT)));
+
+        byte [] PENDAMOUNTS = Converter.Companion.intToByteArray(70000);
+        Log.d("ISI PENDING AMOUNT5 : ", (Converter.Companion.toHex(PENDAMOUNTS)));
+
+        int zzz = Converter.Companion.littleEndianToBigEndian(70000);
+        byte[] xxx = Converter.Companion.hexStringToByteArray(String.valueOf(zzz));
+        Log.d("ISI PENDING AMOUNT5 : ", Converter.Companion.toHex(xxx));
+
+
     }
 
     private void InitializeToolbar() {
@@ -119,84 +147,83 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
         } else {
             //                Toast.makeText(getActivity(), "Device Tidak Memiliki NFC", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
     public void onTagDiscovered(Tag tag) {
-        IsoDep isoDep = IsoDep.get(tag);
+        isoDep = IsoDep.get(tag);
         try {
             isoDep.connect();
 
             byte[] selectEmoneyResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                     "00A40400080000000000000001"));
+            byte[] cardAttirbuteResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00F210000B"));
+            byte[] cardInfoResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00B300003F"));
+            byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00B500000A"));
+
+            byte[] getDataNewApplet = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00E50000462207191611130000000000000000000000000000C34DE2F5C542FA570000000000000000000000000000000000000007A40B0000000000000000000000000000000000000000"));
+
+//            byte[] getDataNewApplet1 = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+//                    "00E50000463001201510570000000000000000000000000000CEBA8F65CA5B2403000000000000000000000000000000000000701101000000000000000000000000000000000000000000"));
+
+            byte[] getCertificate = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00E0000000"));
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Log.d("SELECT_RESPONSE : ", Converter.Companion.toHex(selectEmoneyResponse));
                     cardSelect = Converter.Companion.toHex(selectEmoneyResponse);
-                }
-            });
 
-            byte[] cardAttirbuteResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
-                    "00F210000B"));
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
                     Log.d("CARD_ATTRIBUTE : ", Converter.Companion.toHex(cardAttirbuteResponse));
                     cardAttribute = Converter.Companion.toHex(cardAttirbuteResponse);
-                }
-            });
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
                     Log.d("UUID : ", Converter.Companion.toHex(tag.getId()));
                     cardUid = Converter.Companion.toHex(tag.getId());
-                }
-            });
 
-            byte[] cardInfoResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
-                    "00B300003F"));
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
                     Log.d("CARD_INFO : ", Converter.Companion.toHex(cardInfoResponse));
                     cardInfo = Converter.Companion.toHex(cardInfoResponse);
                     cardNumber.setText(cardInfo.substring(0, 16));
                     numberCard = cardInfo.substring(0, 16);
-                }
-            });
-
-
-            byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
-                    "00B500000A"));
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
 
                     Log.d("LAST_BALANCE : ", Converter.Companion.toHex(lastBalanceResponse));
                     cardBalance = Converter.Companion.toHex(lastBalanceResponse);
                     cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
                     Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
                     saldo = String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
-                }
-            });
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+                    Log.d("TAG : ", tag.getId().toString());
+
+                    Log.d("getDataNewApplet : ", Converter.Companion.toHex(getDataNewApplet));
+
+                    Log.d("getCertificate : ", Converter.Companion.toHex(getCertificate));
+
+
+                    Log.d("ISI PENDING AMOUNT1 : ", String.valueOf(Converter.Companion.littleEndianToBigEndian(70000))/*(Converter.Companion.toLittleEndian("70000"))*/);
+
+                    Log.d("ISI PENDING AMOUNT2 : ", String.valueOf(Converter.Companion.littleEndianToBigEndian2(70000))/*(Converter.Companion.toLittleEndian("70000"))*/);
+
+                    Log.d("ISI PENDING AMOUNT3 : ", Converter.Companion.hexToLittleEndianHexString("70000"));/*(Converter.Companion.toLittleEndian("70000"))*/
+//
+                    byte[] PENDAMOUNT = Converter.Companion.intToLittleEndian1("70000");
+                    Log.d("ISI PENDING AMOUNT4 : ", (Converter.Companion.toHex(PENDAMOUNT)));/*(Converter.Companion.toLittleEndian("70000"))*/
+                    /*(Converter.Companion.toLittleEndian("70000"))*/
+
+
+//                    Log.d("ISI DATA : ", Converter.Companion.toHex(getDataNewApplet1));/*(Converter.Companion.toLittleEndian("70000"))*/
+
                     lyt_gifNfc.setVisibility(View.GONE);
                     lyt_emonCard.setVisibility(View.VISIBLE);
+
+
+                    getCheckCardBalance2();
                 }
             });
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    getCheckCardBalance();
-                }
-            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -225,13 +252,14 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                         @Override
                         public void onResponses(JsonObject object) {
                             CheckCardBalanceModel model = getGson().fromJson(object, CheckCardBalanceModel.class);
-
                             String code = model.getErrorCode();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 Toast.makeText(getBaseContext(), "CHEK CARD BALACE BERHASIL", Toast.LENGTH_SHORT).show();
                                 session = model.getSession();
                                 updateCardKey = model.getUpdateCardKey();
-                                getUpdateCardBalance();
+                                getUpdateOldCard(cardInfo);
+
+//                                mMessage = nfcMger.createTextMessage("00C70000308015313D7B9C19CA60B79FE900A49AA5F8AFAC36168D647A5894E264114F558121BA4F91A6D2F3CCAE33CB8A8725471C");
 
                             } else {
                                 code = model.getErrorCode() + " : " + model.getErrorMessage();
@@ -254,7 +282,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
         }
     }
 
-    private void getUpdateCardBalance() {
+    private void getUpdateOldCard(String msg) {
         try {
             showProgressDialog();
 
@@ -271,7 +299,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
             params.put(WebParams.CARD_UUID, cardUid);
             params.put(WebParams.UPDATE_CARD_KEY, updateCardKey);
             params.put(WebParams.SESSION, session);
-            params.put(WebParams.MESSAGE, cardInfo);
+            params.put(WebParams.MESSAGE, msg);
 
             Timber.d("isi params UpdateCardBalance:" + params.toString());
 
@@ -285,13 +313,95 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                             String code = model.getErrorCode();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 Toast.makeText(getBaseContext(), "UPDATE CARD BALACE BERHASIL", Toast.LENGTH_SHORT).show();
-                                getConfirmCardBalance();
-                                Timber.d("LOGING NEW MESSAGE");
 
-//                                if(updateFlag == false){
-//                                    getUpdateCardBalance(model.getMessage().toString());
-//                                    updateFlag = true;
-//                                }
+                                try {
+                                    byte[] messageAPDU = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                                            model.getMessage()));
+
+                                    Log.d("MESSAGE TO APDU : ", Converter.Companion.toHex(messageAPDU));
+                                    if (model.getFlagFinish().equals("0")) {
+                                        getUpdateOldCard(Converter.Companion.toHex(messageAPDU));
+                                    } else {
+                                        Toast.makeText(getBaseContext(), "FLAG FINISH SUDAH 1", Toast.LENGTH_SHORT).show();
+                                        getConfirmCardBalance();
+                                        byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                                                "00B500000A"));
+                                        cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8)));
+                                        Log.d("SALDO BARU : ", String.valueOf(Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8))));
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                code = model.getErrorCode() + " : " + model.getErrorMessage();
+                                Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            getFragmentManager().popBackStack();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            dismissProgressDialog();
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
+    }
+
+    private void getUpdateNewCard(String msg) {
+        try {
+            showProgressDialog();
+
+            extraSignature = numberCard;
+
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.UPDATE_CARD_BALANCE, extraSignature);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.ORDER_ID, numberCard);
+            params.put(WebParams.TX_ID, "BIL15663768983V9LL");
+            params.put(WebParams.CARD_BALANCE, saldo);
+            params.put(WebParams.CARD_ATTRIBUTE, cardAttribute);
+            params.put(WebParams.CARD_INFO, cardInfo);
+            params.put(WebParams.CARD_UUID, cardUid);
+            params.put(WebParams.UPDATE_CARD_KEY, updateCardKey);
+            params.put(WebParams.SESSION, session);
+            params.put(WebParams.MESSAGE, msg);
+
+            Timber.d("isi params UpdateCardBalance:" + params.toString());
+
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.UPDATE_CARD_BALANCE, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            UpdateCardModel model = getGson().fromJson(object, UpdateCardModel.class);
+                            Timber.d("isi response UpdateCardBalance:" + model);
+
+                            String code = model.getErrorCode();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                Toast.makeText(getBaseContext(), "UPDATE CARD BALACE BERHASIL", Toast.LENGTH_SHORT).show();
+
+                                try {
+                                    byte[] messageAPDU = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                                            model.getMessage()));
+
+                                    Log.d("MESSAGE TO APDU : ", Converter.Companion.toHex(messageAPDU));
+                                    if (model.getFlagFinish().equals("0")) {
+                                        getUpdateOldCard(Converter.Companion.toHex(messageAPDU));
+                                    } else {
+                                        Toast.makeText(getBaseContext(), "FLAG FINISH SUDAH 1", Toast.LENGTH_SHORT).show();
+                                        byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                                                "00B500000A"));
+                                        cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8)));
+                                        Log.d("SALDO BARU : ", String.valueOf(Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8))));
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             } else {
                                 code = model.getErrorCode() + " : " + model.getErrorMessage();
                                 Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
@@ -343,7 +453,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                             String code = model.getErrorCode();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                Toast.makeText(getBaseContext(), "CONFIRM CARD BALACE BERHASIL", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(), "CONFIRM CARD BERHASIL", Toast.LENGTH_SHORT).show();
 
                             } else {
                                 code = model.getErrorCode() + " : " + model.getErrorMessage();
@@ -365,4 +475,229 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
             Timber.d("httpclient:" + e.getMessage());
         }
     }
+
+
+    private String getData(String session, String institutionReff, String source, String pendingAmount, String merchantDat) {
+
+
+        String date = "310120041057"; // from 01-04-2019 11:54:57 ddmmyyhhmmss
+        String counterCard = "0000000000000000"; // Constant
+        String pin = "000000000000"; // constant
+        String reffData = session;
+        String instutionRef = institutionReff;
+        String sourceAccount = source;
+        String merchantData = merchantDat;
+//        String pendAmount = Converter.Companion.toHex(convertToBigEndian(pendingAmount));
+//        String pendAmount = pendingAmount;
+        byte [] PENDAMOUNTS = Converter.Companion.intToByteArray(Integer.parseInt(pendingAmount));
+        Log.d("ISI PENDING AMOUNT5 : ", (Converter.Companion.toHex(PENDAMOUNTS)));
+//        String pendAmount = Converter.Companion.toHex(Converter.Companion.intToByteArray(Integer.parseInt(pendingAmount)));
+
+
+        Log.d("ISI PENDING AMOUNT : ", Converter.Companion.toHex(PENDAMOUNTS));
+
+        String data = date + counterCard + pin + reffData + instutionRef + sourceAccount + Converter.Companion.toHex(PENDAMOUNTS) + merchantData;
+
+
+//        Integer dataByte = String.valueOf(Converter.Companion.intToByteArray(Integer.parseInt(data))).length() / 2;
+
+//        String LC = getLC(dataByte);
+//        int LC = Converter.Companion.toHex(dataByte).length() / 2;
+        Log.d("LC & Data:", "DATA: " + data );
+
+
+        String temp = "00E50000" + "46" /*hardcode*/ + data;
+
+        Log.d("","ISI DATA : " + temp);
+
+
+        return temp;
+    }
+
+    private void getCheckCardBalance2() {
+        try {
+            showProgressDialog();
+
+            extraSignature = numberCard;
+
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.CHEK_CARD_BALANCE, extraSignature);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.ORDER_ID, numberCard);
+            params.put(WebParams.TX_ID, "BIL15663768983V9LL");
+            params.put(WebParams.CARD_BALANCE, saldo);
+            params.put(WebParams.CARD_ATTRIBUTE, cardAttribute);
+            params.put(WebParams.CARD_INFO, cardInfo);
+            params.put(WebParams.CARD_UUID, cardUid);
+
+            Timber.d("isi params ChekCardBalance:" + params.toString());
+
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.CHEK_CARD_BALANCE, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            CheckCardBalanceModel model = getGson().fromJson(object, CheckCardBalanceModel.class);
+
+                            String code = model.getErrorCode();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                Toast.makeText(getBaseContext(), "CHEK CARD BALACE BERHASIL", Toast.LENGTH_SHORT).show();
+                                session = model.getSession();
+                                updateCardKey = model.getUpdateCardKey();
+                                appletType = model.getAppletType();
+
+
+                                if (!model.getPendingAmount().equals("0")
+                                        && appletType.equals(TYPE_NEW_APPLET)) { // new applet
+
+                                    String getData = getData(model.getSession(), model.getInstitutionReff(), model.getSourceOfAccount(),
+                                            model.getPendingAmount(), model.getMerchantData());
+//                                    String getData = "00E50000462207191611130000000000000000000000000000C34DE2F5C542FA570000000000000000000000000000000000000007A40B0000000000000000000000000000000000000000";
+                                    Timber.d("getData: " + getData);
+
+                                    try {
+//
+                                        byte[] getDataByte = isoDep.transceive(Converter.Companion.hexStringToByteArray(getData));
+                                        String getDataWith9000 = Converter.Companion.toHex(getDataByte);
+                                        String getDataString = getDataWith9000.substring(0, getDataWith9000.length() - 4);
+                                        Log.d("GET_DATA : ", getDataWith9000);
+                                        Log.d("CARD_MESSAGE : ", getDataString);
+
+                                        String tempCert = "00E0000000";
+                                        byte[] certificateByte = isoDep.transceive(Converter.Companion.hexStringToByteArray(tempCert));
+//                                        String certificate = Converter.Companion.toHex(certificateByte);
+
+                                        String crtWith9000 = Converter.Companion.toHex(certificateByte);
+                                        String getCrt = crtWith9000.substring(0, crtWith9000.length() - 4);
+                                        Log.d("GET_CERTI : ", crtWith9000);
+                                        Log.d("CARD_CERTIFICATE : ", getCrt);
+
+                                        cardMessage = getDataString + getCrt; // 149byte getData + 248byte getCertificate (without 9000)
+
+                                        Log.d("CARD_MESAE : ", cardMessage);
+//
+//
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+
+                                        return;
+                                    }
+
+
+                                }
+
+                                if (appletType.equals(TYPE_OLD_APPLET)) {
+                                    getUpdateCardBalance2(cardInfo);
+                                } else {
+                                    getUpdateCardBalance2(cardMessage);
+                                }
+
+
+                            } else {
+                                code = model.getErrorCode() + " : " + model.getErrorMessage();
+                                Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            getFragmentManager().popBackStack();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            dismissProgressDialog();
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
+    }
+
+    private void getUpdateCardBalance2(String card) {
+        try {
+            showProgressDialog();
+
+
+            extraSignature = numberCard;
+
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.UPDATE_CARD_BALANCE, extraSignature);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.ORDER_ID, numberCard);
+            params.put(WebParams.TX_ID, "BIL15663768983V9LL");
+            params.put(WebParams.CARD_BALANCE, saldo);
+            params.put(WebParams.CARD_ATTRIBUTE, cardAttribute);
+            params.put(WebParams.CARD_INFO, cardInfo);
+            params.put(WebParams.CARD_UUID, cardUid);
+            params.put(WebParams.UPDATE_CARD_KEY, updateCardKey);
+            params.put(WebParams.SESSION, session);
+            params.put(WebParams.MESSAGE, card);
+
+
+            Timber.d("isi params UpdateCardBalance:" + params.toString());
+
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.UPDATE_CARD_BALANCE, params,
+                    new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            UpdateCardModel model = getGson().fromJson(object, UpdateCardModel.class);
+                            Timber.d("isi response UpdateCardBalance:" + model);
+
+                            String code = model.getErrorCode();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                Toast.makeText(getBaseContext(), "UPDATE CARD BALACE BERHASIL", Toast.LENGTH_SHORT).show();
+//                                getConfirmCardBalance();
+                                Timber.d("LOGING NEW MESSAGE");
+
+                                if (model.getFlagFinish().equals("0")) {
+                                    getUpdateCardBalance2(model.getMessage().toString());
+                                    updateFlag = true;
+                                } else {
+
+                                    try {
+
+                                        String tagMessage = String.valueOf(model.getMessage());
+                                        byte[] msgByte = isoDep.transceive(Converter.Companion.hexStringToByteArray(tagMessage));
+                                        String msg = Converter.Companion.toHex(msgByte);
+                                        Log.d("Written to msg : ", msg);
+
+                                        /// flow confirm ();
+
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+
+                                        return;
+                                    }
+                                }
+                            } else {
+                                code = model.getErrorCode() + " : " + model.getErrorMessage();
+                                Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            getFragmentManager().popBackStack();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            dismissProgressDialog();
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
+    }
+
+
+
+    private byte[] convertToBigEndian(String text) {
+        byte[] temp = text.getBytes(UTF_16BE);
+        Timber.d("isi tex:" + text + " converted to big endian:" + temp.toString());
+        return temp;
+    }
+
+
+
 }

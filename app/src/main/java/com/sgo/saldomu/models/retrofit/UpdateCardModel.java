@@ -11,7 +11,7 @@ public class UpdateCardModel {
 
 	@SerializedName("mitra_code")
 	@Expose
-	private Object mitraCode;
+	private String mitraCode;
 
 	@SerializedName("update_card_key")
 	@Expose
@@ -19,7 +19,7 @@ public class UpdateCardModel {
 
 	@SerializedName("card_attribute")
 	@Expose
-	private Object cardAttribute;
+	private String cardAttribute;
 
 	@SerializedName("error_code")
 	@Expose
@@ -27,31 +27,31 @@ public class UpdateCardModel {
 
 	@SerializedName("message")
 	@Expose
-	private Object message;
+	private String message;
 
 	@SerializedName("card_info")
 	@Expose
-	private Object cardInfo;
+	private String cardInfo;
 
 	@SerializedName("flag_finish")
 	@Expose
-	private Object flagFinish;
+	private String flagFinish;
 
 	@SerializedName("applet_type")
 	@Expose
-	private Object appletType;
+	private String appletType;
 
 	@SerializedName("merchant_type")
 	@Expose
-	private Object merchantType;
+	private String merchantType;
 
 	@SerializedName("card_balance")
 	@Expose
-	private Object cardBalance;
+	private String cardBalance;
 
 	@SerializedName("card_uuid")
 	@Expose
-	private Object cardUuid;
+	private String cardUuid;
 
 	public void setErrorMessage(String errorMessage){
 		this.errorMessage = errorMessage;
@@ -61,11 +61,11 @@ public class UpdateCardModel {
 		return errorMessage;
 	}
 
-	public void setMitraCode(Object mitraCode){
+	public void setMitraCode(String mitraCode){
 		this.mitraCode = mitraCode;
 	}
 
-	public Object getMitraCode(){
+	public String getMitraCode(){
 		return mitraCode;
 	}
 
@@ -77,11 +77,11 @@ public class UpdateCardModel {
 		return updateCardKey;
 	}
 
-	public void setCardAttribute(Object cardAttribute){
+	public void setCardAttribute(String cardAttribute){
 		this.cardAttribute = cardAttribute;
 	}
 
-	public Object getCardAttribute(){
+	public String getCardAttribute(){
 		return cardAttribute;
 	}
 
@@ -93,59 +93,59 @@ public class UpdateCardModel {
 		return errorCode;
 	}
 
-	public void setMessage(Object message){
+	public void setMessage(String message){
 		this.message = message;
 	}
 
-	public Object getMessage(){
+	public String getMessage(){
 		return message;
 	}
 
-	public void setCardInfo(Object cardInfo){
+	public void setCardInfo(String cardInfo){
 		this.cardInfo = cardInfo;
 	}
 
-	public Object getCardInfo(){
+	public String getCardInfo(){
 		return cardInfo;
 	}
 
-	public void setFlagFinish(Object flagFinish){
+	public void setFlagFinish(String flagFinish){
 		this.flagFinish = flagFinish;
 	}
 
-	public Object getFlagFinish(){
+	public String getFlagFinish(){
 		return flagFinish;
 	}
 
-	public void setAppletType(Object appletType){
+	public void setAppletType(String appletType){
 		this.appletType = appletType;
 	}
 
-	public Object getAppletType(){
+	public String getAppletType(){
 		return appletType;
 	}
 
-	public void setMerchantType(Object merchantType){
+	public void setMerchantType(String merchantType){
 		this.merchantType = merchantType;
 	}
 
-	public Object getMerchantType(){
+	public String getMerchantType(){
 		return merchantType;
 	}
 
-	public void setCardBalance(Object cardBalance){
+	public void setCardBalance(String cardBalance){
 		this.cardBalance = cardBalance;
 	}
 
-	public Object getCardBalance(){
+	public String getCardBalance(){
 		return cardBalance;
 	}
 
-	public void setCardUuid(Object cardUuid){
+	public void setCardUuid(String cardUuid){
 		this.cardUuid = cardUuid;
 	}
 
-	public Object getCardUuid(){
+	public String getCardUuid(){
 		return cardUuid;
 	}
 
