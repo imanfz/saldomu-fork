@@ -328,6 +328,8 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                                 "00B500000A"));
                                         cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8)));
                                         Log.d("SALDO BARU : ", String.valueOf(Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8))));
+
+                                        dismissProgressDialog();
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -335,6 +337,9 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                             } else {
                                 code = model.getErrorCode() + " : " + model.getErrorMessage();
                                 Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
+                                dismissProgressDialog();
+                                getFragmentManager().popBackStack();
+
                             }
                         }
 
@@ -345,7 +350,6 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                         @Override
                         public void onComplete() {
-                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
@@ -415,6 +419,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                         @Override
                         public void onComplete() {
+
                             dismissProgressDialog();
                         }
                     });
@@ -573,7 +578,6 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                                         cardMessage = getDataString + getCrt; // 149byte getData + 248byte getCertificate (without 9000)
 
-                                        Log.d("CARD_MESAE : ", cardMessage);
 //
 //
                                     } catch (IOException e) {
@@ -581,12 +585,10 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                                         return;
                                     }
-
-
                                 }
 
                                 if (appletType.equals(TYPE_OLD_APPLET)) {
-                                    getUpdateCardBalance2(cardInfo);
+                                    getUpdateOldCard(cardInfo);
                                 } else {
                                     getUpdateCardBalance2(cardMessage);
                                 }
@@ -595,6 +597,9 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                             } else {
                                 code = model.getErrorCode() + " : " + model.getErrorMessage();
                                 Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
+                                dismissProgressDialog();
+                                getFragmentManager().popBackStack();
+
                             }
                         }
 
@@ -605,6 +610,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                         @Override
                         public void onComplete() {
+
                             dismissProgressDialog();
                         }
                     });
@@ -661,7 +667,15 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                         String msg = Converter.Companion.toHex(msgByte);
                                         Log.d("Written to msg : ", msg);
 
-                                        /// flow confirm ();
+
+                                        getConfirmCardBalance();
+//                                        Log.d("CARD_MESAE : ", cardMessage);
+                                        byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                                                "00B500000A"));
+                                        cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8)));
+                                        Log.d("SALDO BARU : ", String.valueOf(Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8))));
+
+                                        dismissProgressDialog();                                        /// flow confirm ();
 
                                     } catch (IOException e) {
                                         e.printStackTrace();
@@ -672,6 +686,9 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                             } else {
                                 code = model.getErrorCode() + " : " + model.getErrorMessage();
                                 Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
+
+                                dismissProgressDialog();
+                                getFragmentManager().popBackStack();
                             }
                         }
 
@@ -682,7 +699,8 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                         @Override
                         public void onComplete() {
-                            dismissProgressDialog();
+//                            dismissProgressDialog();
+
                         }
                     });
         } catch (Exception e) {
