@@ -613,16 +613,20 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
         super.onResume();
 
 //        NfcManager manager = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
-        nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
 
-        nfcAdapter.enableReaderMode(getActivity(), this,
-                NfcAdapter.FLAG_READER_NFC_A |
-                NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK, null);
-        if (biller_comm_code.equals("EMONEYSALDOMU")) {
-            if (nfcAdapter != null) {
-                //Yes NFC available
-                lyt_cekSaldo.setVisibility(View.VISIBLE);
+        if(nfcAdapter!= null){
+            nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
+
+            nfcAdapter.enableReaderMode(getActivity(), this,
+                    NfcAdapter.FLAG_READER_NFC_A |
+                            NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK, null);
+            if (biller_comm_code.equals("EMONEYSALDOMU")) {
+                if (nfcAdapter != null) {
+                    //Yes NFC available
+                    lyt_cekSaldo.setVisibility(View.VISIBLE);
+                }
             }
+
         }
 
     }
