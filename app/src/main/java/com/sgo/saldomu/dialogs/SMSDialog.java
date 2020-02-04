@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -82,6 +83,7 @@ public class SMSDialog extends DialogFragment {
 
     public SMSDialog() {
     }
+
     public Handler getHandler() {
         if (handler == null)
             handler = new Handler();
@@ -107,8 +109,8 @@ public class SMSDialog extends DialogFragment {
 
     public DialogButtonListener deListener;
 
-    public static SMSDialog newDialog(String date, boolean flag, DialogButtonListener _listener){
-        SMSDialog dialog=new SMSDialog();
+    public static SMSDialog newDialog(String date, boolean flag, DialogButtonListener _listener) {
+        SMSDialog dialog = new SMSDialog();
         dialog.dateTime = date;
         dialog.deListener = _listener;
         dialog.flag = flag;
@@ -118,7 +120,7 @@ public class SMSDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        v=inflater.inflate(R.layout.dialog_sms_notification,container,false);
+        v = inflater.inflate(R.layout.dialog_sms_notification, container, false);
         img_view = v.findViewById(R.id.dialog_pic_msg);
         progBar = v.findViewById(R.id.dialog_probar_inquiry);
         progText = v.findViewById(R.id.dialog_duration_inquiry);
@@ -274,7 +276,7 @@ public class SMSDialog extends DialogFragment {
 
 
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
-        Timber.i("isi timestamp : "+timeStamp);
+        Timber.i("isi timestamp : " + timeStamp);
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("fcmData"));
@@ -297,13 +299,12 @@ public class SMSDialog extends DialogFragment {
             progBar.setVisibility(View.GONE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 img_view.setImageDrawable(getActivity().getDrawable(R.drawable.phone_sms_icon_success));
-            }
-            else {
+            } else {
                 img_view.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.phone_sms_icon_success));
             }
             cdTimer.cancel();
 
-            if(handler == null)
+            if (handler == null)
                 handler = new Handler();
 
             handler.postDelayed(new Runnable() {
@@ -341,29 +342,30 @@ public class SMSDialog extends DialogFragment {
     public void sentSms() {
         if (!isStop) {
             String msg;
-            Timber.d("jalanin sentSMSVerify "+ICCIDDevice);
+            Timber.d("jalanin sentSMSVerify " + ICCIDDevice);
             String mobileNetworkCode = NoHPFormat.getMNC(ICCIDDevice);
-            String mobileDestination    = NoHPFormat.getSMSVerifyDestination(mobileNetworkCode);
-            String fcmEncrypted    = sp.getString(DefineValue.FCM_ENCRYPTED,"");
-            Timber.d("ICC ID: "+ICCIDDevice+ ", Network Code : "+ mobileNetworkCode + ", mobile Dest : " + mobileDestination);
+            String mobileDestination = NoHPFormat.getSMSVerifyDestination(mobileNetworkCode);
+            String fcmEncrypted = sp.getString(DefineValue.FCM_ENCRYPTED, "");
+            Timber.d("ICC ID: " + ICCIDDevice + ", Network Code : " + mobileNetworkCode + ", mobile Dest : " + mobileDestination);
 
 
 //            smsClass.sendSMSVerify(mobileDestination, imeiDevice, ICCIDDevice, timeStamp, dateTime, smsVerifyListener);
-            if (!sp.getString(DefineValue.FCM_ID,"").isEmpty()) {
+            if (!sp.getString(DefineValue.FCM_ID, "").isEmpty()) {
                 msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime + "_" + fcmEncrypted;
-            }else {
+            } else {
                 msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime;
-            }Uri uri=Uri.parse("smsto:"+mobileDestination);
-            Intent intent=new Intent(Intent.ACTION_SENDTO,uri);
-            intent.putExtra("sms_body",msg);
-            startActivityForResult(intent,REQUEST_SMS);
+            }
+            Uri uri = Uri.parse("smsto:" + mobileDestination);
+            Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+            intent.putExtra("sms_body", msg);
+            startActivityForResult(intent, REQUEST_SMS);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==REQUEST_SMS){
+        if (requestCode == REQUEST_SMS) {
             sentInquirySMS();
         }
     }
@@ -393,6 +395,7 @@ public class SMSDialog extends DialogFragment {
                                     final InqSMSModel model = gson.fromJson(object, InqSMSModel.class);
 
                                     String code = model.getError_code();
+                                    Timber.d("isi response inquiry sms:" + object.toString());
 
                                     if (code.equals(WebParams.SUCCESS_CODE)) {
                                         isStop = true;
@@ -413,7 +416,7 @@ public class SMSDialog extends DialogFragment {
                                             }
                                         }, 3000);
 
-                                    }else if (code.equals(DefineValue.ERROR_9333)) {
+                                    } else if (code.equals(DefineValue.ERROR_9333)) {
                                         Timber.d("isi response app data:" + model.getApp_data());
                                         final AppDataModel appModel = model.getApp_data();
                                         AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -448,7 +451,7 @@ public class SMSDialog extends DialogFragment {
                                 public void onComplete() {
 
                                 }
-                            } );
+                            });
                 }
             } else {
                 tvMessage.setText(getActivity().getString(R.string.dialog_sms_msg3));
@@ -491,7 +494,6 @@ public class SMSDialog extends DialogFragment {
 
         dismiss();
     }
-
 
 
     public void setListener(DialogButtonListener dialogButtonListener) {

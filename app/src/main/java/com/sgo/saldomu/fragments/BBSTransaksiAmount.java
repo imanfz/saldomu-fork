@@ -77,12 +77,13 @@ public class BBSTransaksiAmount extends Fragment {
     private String ATC = "ATC";
     private String SOURCE = "SOURCE";
     private String BENEF = "BENEF";
+    private String companyType;
     private CustomAutoCompleteTextViewWithIcon actv_rekening_member;
     private List<HashMap<String, String>> aListMember;
     private SimpleAdapter adapterMember;
     private List<BBSBankModel> listbankSource, listbankBenef;
     private EditText etNoAcct, etNameAcct, etNoOTPC2A;
-    private TextView tvEgNo;
+    private TextView tvEgNo, tvDestination, tvBankExample, tvSource;
     private ImageView spinwheelCity;
     private AutoCompleteTextView spBenefCity;
     private Animation frameAnimation;
@@ -107,6 +108,8 @@ public class BBSTransaksiAmount extends Fragment {
         realmBBS = Realm.getInstance(RealmManager.BBSConfiguration);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        companyType = sp.getString(DefineValue.COMPANY_TYPE,"");
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -204,11 +207,20 @@ public class BBSTransaksiAmount extends Fragment {
             spBenefCity = cashin_layout.findViewById(R.id.bbscashin_value_city_benef);
             spinwheelCity = cashin_layout.findViewById(R.id.spinning_wheel_bbscashin_city);
             layoutBankBenefCTA = cashin_layout.findViewById(R.id.layout_bank_benef_cashin);
+            tvDestination = cashin_layout.findViewById(R.id.tv_destination);
+            tvBankExample = cashin_layout.findViewById(R.id.textView7);
             frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
             frameAnimation.setRepeatCount(Animation.INFINITE);
 
-//            etNoAcct.setText(getArguments().getString(DefineValue.FAVORITE_CUSTOMER_ID,""));
             etNoAcct.setText(getArguments().getString(DefineValue.FAVORITE_CUSTOMER_ID, ""));
+
+            if(companyType.equalsIgnoreCase(getString(R.string.LKD)))
+            {
+                tvDestination.setText(getString(R.string.label_bank_transfer_ke_emoney));
+                tvBankExample.setVisibility(View.INVISIBLE);
+                actv_rekening_member.setHint(getString(R.string.label_bank_pelangggan_lkd));
+                etNoAcct.setHint(R.string.number_hp_destination_hint);
+            }
 
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};
@@ -241,8 +253,17 @@ public class BBSTransaksiAmount extends Fragment {
 
             actv_rekening_member = cashout_layout.findViewById(R.id.rekening_member_value);
             etNoAcct = cashout_layout.findViewById(R.id.no_tujuan_value);
+            tvSource = cashout_layout.findViewById(R.id.tv_source);
+            tvBankExample = cashout_layout.findViewById(R.id.tv_bank_example);
 
             etNoAcct.setText(getArguments().getString(DefineValue.FAVORITE_CUSTOMER_ID, ""));
+
+            if(companyType.equalsIgnoreCase(getString(R.string.LKD)))
+            {
+                tvSource.setText(getString(R.string.label_transfer_dari_member_atc_lkd));
+                tvBankExample.setVisibility(View.INVISIBLE);
+                actv_rekening_member.setHint(getString(R.string.label_bank_pelangggan_lkd));
+            }
 
 
             // Keys used in Hashmap
@@ -424,7 +445,7 @@ public class BBSTransaksiAmount extends Fragment {
                         benef_product_code = listbankBenef.get(position).getProduct_code();
                         enabledAdditionalFee = listbankBenef.get(position).getEnabled_additional_fee();
 //                        }
-                        if (benef_product_type.equalsIgnoreCase(DefineValue.EMO) && !benef_product_code.equalsIgnoreCase("MANDIRILKD")) {
+                        if ((benef_product_type.equalsIgnoreCase(DefineValue.EMO) && !benef_product_code.equalsIgnoreCase("MANDIRILKD")) ){
 //                            cityLayout.setVisibility(View.GONE);
                             etNoAcct.setHint(R.string.number_hp_destination_hint);
                             tvEgNo.setText(getString(R.string.eg_no_hp));
