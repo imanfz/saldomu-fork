@@ -1161,8 +1161,10 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="label_jumlah_amount">How much will be transferred?</string>
     <string name="label_transfer_ke">Transfer Ke</string>
     <string name="label_bank_transfer_ke">Which Bank / E-money?</string>
+    <string name="label_bank_transfer_ke_emoney">Which E-money?</string>
     <string name="label_rekening_transfer_ke">Destination Account Number</string>
     <string name="label_transfer_dari_agent">What Bank / E-Money do you want to use?</string>
+    <string name="label_transfer_dari_agent_lkd">E-Money Agent</string>
     <string name="label_no_hp_sender">Customer’s ohone number</string>
     <string name="label_notif_sender">Notifications to Customers</string>
     <string name="label_trx_description">Transaction Information</string>
@@ -1172,7 +1174,9 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="label_transfer_ke_agent">Bank / E-Money Agen</string>
     <string name="label_transfer_dari_member_atc">Which Bank / E-money?</string>
+    <string name="label_transfer_dari_member_atc_lkd">Which E-money?</string>
     <string name="label_bank_pelangggan">Bank / E-Money Customers</string>
+    <string name="label_bank_pelangggan_lkd"> E-Money Customer</string>
 
     <string name="message_retry">Retry ?</string>
     <string name="message_bbs_error_service">Failed to update data. Check your internet connection again.</string>
@@ -1534,5 +1538,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="source_income">Source Income</string>
     <string name="pin_blocked">Your PIN is blocked. Use "Forgot Pin" to unblock.</string>
     <string name="title_search_agent">Search Agent</string>
-
+    <string name="lkd">LKD</string>
 </resources>

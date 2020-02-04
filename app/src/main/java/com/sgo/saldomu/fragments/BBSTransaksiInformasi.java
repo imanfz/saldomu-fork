@@ -92,7 +92,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     private View v, bbs_informasi_form, emptyCashoutBenefLayout;
 
     private Activity act;
-    private TextView tvTitle;
+    private TextView tvTitle, tvSource, tvDestination;
     private CustomAutoCompleteTextViewWithIcon actv_rekening_cta;
     private Spinner sp_rekening_act;
     private List<HashMap<String, String>> aListAgent;
@@ -115,7 +115,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue = "", comm_id, city_id, amount,
             transaksi, no_benef, name_benef, city_name, no_source, benef_product_value_token, source_product_value_token, key_code,
-            noHPMemberLocation = "", message, lkd_product_code, enabledAdditionalFee ="";
+            noHPMemberLocation = "", message, lkd_product_code, enabledAdditionalFee ="", companyType;
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
@@ -182,6 +182,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         super.onActivityCreated(savedInstanceState);
 
         act = getActivity();
+
+        companyType = sp.getString(DefineValue.COMPANY_TYPE,"");
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -263,6 +265,13 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 etRemark = cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
                 etAdditionalFee = cashin_layout.findViewById(R.id.et_additionalfee);
                 additionalFee_layout = cashin_layout.findViewById(R.id.additionalFeecashin_layout);
+                tvSource = cashin_layout.findViewById(R.id.tv_source);
+
+                if (companyType.equalsIgnoreCase(getString(R.string.LKD)))
+                {
+                    tvSource.setText(R.string.label_transfer_dari_agent_lkd);
+                    actv_rekening_cta.setHint(R.string.label_transfer_dari_agent_lkd);
+                }
 
                 if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y"))
                 {
@@ -302,7 +311,12 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 etOTP = cashout_layout.findViewById(R.id.no_OTP_cashout);
                 etAdditionalFee = cashout_layout.findViewById(R.id.et_additionalfee);
                 additionalFee_layout = cashout_layout.findViewById(R.id.additionalFeecashin_layout);
+                tvDestination = cashout_layout.findViewById(R.id.tv_destination);
 
+                if (companyType.equalsIgnoreCase(getString(R.string.LKD)))
+                {
+                    tvDestination.setText(R.string.label_transfer_dari_agent_lkd);
+                }
                 if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y"))
                 {
                     additionalFee_layout.setVisibility(View.VISIBLE);

@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
@@ -32,6 +33,8 @@ import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
+
+import static com.activeandroid.Cache.getContext;
 
 /**
  * Created by yuddistirakiki on 5/18/16.
@@ -307,7 +310,9 @@ public class SMSclass {
     public String getDeviceIMEI(){
         String imei = "";
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            imei = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(mContext);
             if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED ) {
                 List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();

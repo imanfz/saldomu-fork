@@ -97,7 +97,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         Button skipbtn = (Button) skipButton;
         Button donebtn = (Button) doneButton;
         skipbtn.setText(getString(R.string.start_now));
-        donebtn.setText("POS");
+        donebtn.setText("");
 //        skipbtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 //        donebtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 

@@ -1152,6 +1152,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="label_jumlah_amount">Berapa Jumlah yang akan ditransfer ?</string>
     <string name="label_transfer_ke">Transfer Ke</string>
     <string name="label_bank_transfer_ke">Ke Bank / E-Money mana?</string>
+    <string name="label_bank_transfer_ke_emoney">E-money? mana</string>
     <string name="label_rekening_transfer_ke">Nomor Rekening Tujuan</string>
     <string name="label_transfer_dari_agent">Anda mau menggunakan Bank/E-Money apa ?</string>
     <string name="label_no_hp_sender">Nomor Handphone Nasabah</string>
@@ -1163,7 +1164,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="label_transfer_ke_agent">Bank / E-Money Agen</string>
     <string name="label_transfer_dari_member_atc">Dari Bank / E-Money mana ?</string>
+    <string name="label_transfer_dari_member_atc_lkd">Dari E-Money mana ?</string>
     <string name="label_bank_pelangggan">Bank / E-Money Pelanggan</string>
+    <string name="label_bank_pelangggan_lkd">E-Money Pelanggan</string>
 
     <string name="message_retry">Coba lagi ?</string>
     <string name="message_bbs_error_service">Gagal update data. Cek kembali koneksi internet anda.</string>
@@ -1516,4 +1519,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="source_income">Sumber Dana</string>
     <string name="pin_blocked">PIN Anda terblokir. Silahkan gunakan menu "Lupa Pin" untuk membukanya.</string>
     <string name="title_search_agent">Cari Agen</string>
+    <string name="lkd">LKD</string>
 </resources>
