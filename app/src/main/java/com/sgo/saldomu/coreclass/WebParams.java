@@ -609,5 +609,8 @@ public class WebParams {
     public final static String CARD_UUID = "card_uuid";
     public final static String UPDATE_CARD_KEY = "update_card_key";
     public final static String SESSION = "session";
+    public final static String CARD_NO = "card_no";
+    public final static String MITRA_CODE = "mitra_code";
+
 
 }
