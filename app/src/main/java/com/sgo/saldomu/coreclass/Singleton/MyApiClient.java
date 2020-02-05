@@ -289,6 +289,8 @@ public class MyApiClient {
     public static String CHEK_CARD_BALANCE;
     public static String UPDATE_CARD_BALANCE;
     public static String CONFIRM_CARD_BALANCE;
+    public static String REVERSE_UPDATE_REPEAT;
+    public static String REVERSE_UPDATE;
 
 
 
@@ -510,6 +512,8 @@ public class MyApiClient {
         CHEK_CARD_BALANCE = headaddressfinal + "CheckCardBalance/Invoke";
         UPDATE_CARD_BALANCE = headaddressfinal + "UpdateCardBalance/Invoke";
         CONFIRM_CARD_BALANCE = headaddressfinal + "ConfirmUpdateCardBalance/Invoke";
+        REVERSE_UPDATE = headaddressfinal + "ReverseUpdateCardBalance/Invoke";
+        REVERSE_UPDATE_REPEAT = headaddressfinal + "ReverseUpdateCardRepeat/Balance/Invoke";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
