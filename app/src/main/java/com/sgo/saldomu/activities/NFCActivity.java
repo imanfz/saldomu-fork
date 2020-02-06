@@ -627,6 +627,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                 if (model.getFlagFinish().equals("0")) {
                                     try {
                                         byte[] msgFromReversal = isoDep.transceive(Converter.Companion.hexStringToByteArray(model.getMessage()));
+                                        Log.d("NFCACTIVITY", "MESSAGE REPONSE TRANSCEIVE : " + Converter.Companion.toHex(msgFromReversal));
                                         getReversalUpdateCard(Converter.Companion.toHex(msgFromReversal), model.getMitraCode(), model.getMerchantType());
                                     } catch (IOException e) {
                                         e.printStackTrace();
