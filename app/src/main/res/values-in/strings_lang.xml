@@ -1152,7 +1152,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="label_jumlah_amount">Berapa Jumlah yang akan ditransfer ?</string>
     <string name="label_transfer_ke">Transfer Ke</string>
     <string name="label_bank_transfer_ke">Ke Bank / E-Money mana?</string>
-    <string name="label_bank_transfer_ke_emoney">E-money? mana</string>
+    <string name="label_bank_transfer_ke_emoney">E-money mana?</string>
     <string name="label_rekening_transfer_ke">Nomor Rekening Tujuan</string>
     <string name="label_transfer_dari_agent">Anda mau menggunakan Bank/E-Money apa ?</string>
     <string name="label_no_hp_sender">Nomor Handphone Nasabah</string>

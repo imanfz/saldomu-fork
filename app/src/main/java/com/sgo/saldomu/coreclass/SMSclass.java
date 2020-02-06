@@ -311,7 +311,7 @@ public class SMSclass {
         String imei = "";
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            imei = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+            imei = Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(mContext);
             if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED ) {

@@ -206,17 +206,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
             Timber.e(key, data.get(key));
             msg.putString(key, data.get(key));
         }
-//
-//
-//        pref = getSharedPreferences("UPDATE_INSTANCE", MODE_PRIVATE);
-//        edit = pref.edit();
-//        Intent backIntent;
-//        Intent intent = null;
-//        PendingIntent pendingIntent = null;
-//        backIntent = new Intent(getApplicationContext(), MainActivity.class);
-//        backIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        SharedPreferences sp;
-//        Editor editor;
 
         if (msg.containsKey("model_notif") && msg.getString("model_notif") != null) {
 

@@ -115,12 +115,13 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue = "", comm_id, city_id, amount,
             transaksi, no_benef, name_benef, city_name, no_source, benef_product_value_token, source_product_value_token, key_code,
-            noHPMemberLocation = "", message, lkd_product_code, enabledAdditionalFee ="", companyType;
+            noHPMemberLocation = "", message, lkd_product_code, enabledAdditionalFee = "", defaultProductName = "";
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
     private Boolean TCASHValidation = false, MandiriLKDValidation = false, code_success = false;
     private LinearLayout additionalFee_layout;
+    private Boolean isAgentLKD = false;
 
     public interface ActionListener {
         void ChangeActivityFromCashInput(Intent data);
@@ -183,7 +184,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
         act = getActivity();
 
-        companyType = sp.getString(DefineValue.COMPANY_TYPE,"");
+        isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.LKD));
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -223,6 +224,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                     city_id = bundle.getString(DefineValue.ACCT_CITY_CODE);
                     city_name = bundle.getString(DefineValue.ACCT_CITY_NAME);
                 }
+
+
             } else {
                 String cashOut = sp.getString(DefineValue.CASH_OUT_HISTORY_TEMP, "");
                 Gson gson1 = new Gson();
@@ -267,16 +270,14 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 additionalFee_layout = cashin_layout.findViewById(R.id.additionalFeecashin_layout);
                 tvSource = cashin_layout.findViewById(R.id.tv_source);
 
-                if (companyType.equalsIgnoreCase(getString(R.string.LKD)))
-                {
+                if (isAgentLKD) {
                     tvSource.setText(R.string.label_transfer_dari_agent_lkd);
                     actv_rekening_cta.setHint(R.string.label_transfer_dari_agent_lkd);
                 }
 
-                if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y"))
-                {
+                if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y")) {
                     additionalFee_layout.setVisibility(View.VISIBLE);
-                }else
+                } else
                     additionalFee_layout.setVisibility(View.GONE);
 
                 if (!key_code.equals("")) {
@@ -303,6 +304,13 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 setAgent(listbankSource);
                 actv_rekening_cta.setAdapter(adapterAgent);
                 actv_rekening_cta.addTextChangedListener(textWatcher);
+                if (isAgentLKD) {
+                    if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
+                        defaultProductName = "EMO SALDOMU";
+                    } else
+                        defaultProductName = "SALDOMU";
+                    actv_rekening_cta.setText(defaultProductName);
+                }
             } else {
                 stub.setLayoutResource(R.layout.bbs_cashout_informasi);
                 View cashout_layout = stub.inflate();
@@ -313,14 +321,12 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 additionalFee_layout = cashout_layout.findViewById(R.id.additionalFeecashin_layout);
                 tvDestination = cashout_layout.findViewById(R.id.tv_destination);
 
-                if (companyType.equalsIgnoreCase(getString(R.string.LKD)))
-                {
+                if (isAgentLKD) {
                     tvDestination.setText(R.string.label_transfer_dari_agent_lkd);
                 }
-                if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y"))
-                {
+                if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y")) {
                     additionalFee_layout.setVisibility(View.VISIBLE);
-                }else
+                } else
                     additionalFee_layout.setVisibility(View.GONE);
 
                 String[] from = {"flag", "txt"};
@@ -375,11 +381,17 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             for (int i = 0; i < aListAgent.size(); i++) {
                 if (nameAcct.equalsIgnoreCase(aListAgent.get(i).get("txt"))) {
                     position = i;
-                    source_product_code = listbankSource.get(position).getProduct_code();
-                    source_product_type = listbankSource.get(position).getProduct_type();
-                    source_product_h2h = listbankSource.get(position).getProduct_h2h();
-                    source_product_name = listbankSource.get(position).getProduct_name();
-                    source_product_name = listbankSource.get(position).getProduct_name();
+                    if (isAgentLKD) {
+                        source_product_code = listbankSource.get(0).getProduct_code();
+                        source_product_type = listbankSource.get(0).getProduct_type();
+                        source_product_h2h = listbankSource.get(0).getProduct_h2h();
+                        source_product_name = listbankSource.get(0).getProduct_name();
+                    } else {
+                        source_product_code = listbankSource.get(position).getProduct_code();
+                        source_product_type = listbankSource.get(position).getProduct_type();
+                        source_product_h2h = listbankSource.get(position).getProduct_h2h();
+                        source_product_name = listbankSource.get(position).getProduct_name();
+                    }
                     break;
                 }
             }
@@ -395,10 +407,15 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     Spinner.OnItemSelectedListener spAgentListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            benef_product_code = listbankBenef.get(position).getProduct_code();
-            benef_product_type = listbankBenef.get(position).getProduct_type();
-            benef_product_name = listbankBenef.get(position).getProduct_name();
-
+            if (isAgentLKD) {
+                benef_product_code = listbankBenef.get(0).getProduct_code();
+                benef_product_type = listbankBenef.get(0).getProduct_type();
+                benef_product_name = listbankBenef.get(0).getProduct_name();
+            } else {
+                benef_product_code = listbankBenef.get(position).getProduct_code();
+                benef_product_type = listbankBenef.get(position).getProduct_type();
+                benef_product_name = listbankBenef.get(position).getProduct_name();
+            }
             if (benef_product_code.equalsIgnoreCase("tcash") || benef_product_code.equalsIgnoreCase("MANDIRILKD"))
                 etOTP.setVisibility(View.VISIBLE);
             else etOTP.setVisibility(View.GONE);
@@ -441,7 +458,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 //                                    RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
 //                        }
 //                    } else {
-                        SubmitAction(true);
+                    SubmitAction(true);
 //                    }
                 } else {
 //                    btnNext.setEnabled(false);
@@ -573,6 +590,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     }
 
     private void setBankDataSourceCTA() {
+
         listbankSource = realmBBS.where(BBSBankModel.class)
                 .equalTo(WebParams.SCHEME_CODE, CTA)
                 .equalTo(WebParams.COMM_TYPE, SOURCE).findAll();
@@ -613,7 +631,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             params.put(WebParams.PAYMENT_REMARK, etRemark.getText().toString());
             params.put(WebParams.MEMBER_SHOP_PHONE, etNoHp.getText().toString());
             params.put(WebParams.USER_COMM_CODE, BuildConfig.COMM_CODE_BBS_ATC);
-            if (additionalFee_layout.getVisibility()==View.VISIBLE) {
+            if (additionalFee_layout.getVisibility() == View.VISIBLE) {
                 params.put(WebParams.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
             }
             String aodTxId = sp.getString(DefineValue.AOD_TX_ID, "");
@@ -622,8 +640,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             }
 
 
-            params.put(WebParams.LATITUDE, sp.getDouble(DefineValue.LATITUDE_UPDATED,0.0));
-            params.put(WebParams.LONGITUDE, sp.getDouble(DefineValue.LONGITUDE_UPDATED,0.0));
+            params.put(WebParams.LATITUDE, sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0));
+            params.put(WebParams.LONGITUDE, sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0));
 
             Log.d("params insert c2a", params.toString());
 
@@ -695,16 +713,15 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
 
                                         if (isSimExist)
-                                            smsDialog.show(getFragmentManager(),"");
+                                            smsDialog.show(getFragmentManager(), "");
                                     } else if (source_product_h2h.equalsIgnoreCase("Y") && source_product_type.equalsIgnoreCase(DefineValue.EMO)) {
                                         if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("tcash")
                                                 && !source_product_code.equalsIgnoreCase("MANDIRILKD")) {
-                                        sentDataReqToken(model);
+                                            sentDataReqToken(model);
 //                                            changeToDataMandiriLKD(model.getTx_id(), model.getTx_product_code(), model.getTx_product_name(), model.getTx_bank_code(),
 //                                                    model.getAmount(), model.getAdmin_fee(), model.getTotal_amount(), model.getTx_bank_name(),
 //                                                    model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name());
-                                        }else
-                                        {
+                                        } else {
 //                                            changeToConfirmCashIn(model);
                                             sentDataReqToken(model);
                                         }
@@ -717,12 +734,12 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 //                                                model.getMax_resend_token(), model.getBenef_acct_no(), model.getBenef_acct_name(), model.getBenef_product_value_code());
                                     }
 
-                                }else if (code.equals("0295")) {
+                                } else if (code.equals("0295")) {
                                     showDialogLimit();
                                 } else if (code.equals("0296")) {
                                     lkd_product_code = model.getLkd_product_code();
                                     dialogJoinLKD();
-                                }else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
@@ -735,7 +752,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
                                     String code_msg = model.getError_message();
                                     Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
 
@@ -870,7 +887,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
-                                }  else if (code.equals(DefineValue.ERROR_9333)) {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:" + model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
                                     AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -879,7 +896,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
                                     Timber.d("isi error send data member mandiri LKD:" + response.toString());
                                     String code_msg = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
@@ -932,7 +949,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
             params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.PAYMENT_REMARK, etRemark.getText().toString());
-            if (additionalFee_layout.getVisibility()==View.VISIBLE) {
+            if (additionalFee_layout.getVisibility() == View.VISIBLE) {
                 params.put(WebParams.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
             }
 
@@ -942,8 +959,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             }
 
             params.put(WebParams.CUSTOMER_ID, noHPMemberLocation);
-            params.put(WebParams.LATITUDE, sp.getDouble(DefineValue.LATITUDE_UPDATED,0.0));
-            params.put(WebParams.LONGITUDE, sp.getDouble(DefineValue.LONGITUDE_UPDATED,0.0));
+            params.put(WebParams.LATITUDE, sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0));
+            params.put(WebParams.LONGITUDE, sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0));
 
             Log.d("params insert a2c", params.toString());
 
@@ -969,7 +986,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), model.getError_message());
-                            }else if (code.equals("0296")) {
+                            } else if (code.equals("0296")) {
                                 message = model.getError_message();
                                 lkd_product_code = model.getLkd_product_code();
                                 dialogJoinLKD();
@@ -982,7 +999,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                            } else {
                                 Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                             }
                         }
@@ -1036,18 +1053,19 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                 if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                                     if (isSMSBanking)
                                         showDialog(model);
-                                    else if (benef_product_code.equalsIgnoreCase("MANDIRILKD"))
-                                    {
+                                    else if (benef_product_code.equalsIgnoreCase("MANDIRILKD")) {
                                         dialogBenefLKD(A2CModel.getTx_id(), A2CModel.getTx_product_code(), A2CModel.getTx_product_name(), A2CModel.getTx_bank_code(),
                                                 A2CModel.getAmount(), A2CModel.getAdmin_fee(), A2CModel.getTotal_amount(), A2CModel.getTx_bank_name(),
                                                 A2CModel.getMax_resend_token(), A2CModel.getBenef_acct_no(), A2CModel.getBenef_product_value_name(), A2CModel.getBenef_product_value_code());
-                                    }
-                                    else {
-//                                        changeToConfirmCashIn(A2CModel);
-                                        isOwner = true;
-                                        changeToDataMandiriLKD(A2CModel.getTx_id(), A2CModel.getTx_product_code(), A2CModel.getTx_product_name(), A2CModel.getTx_bank_code(),
-                                                A2CModel.getAmount(), A2CModel.getAdmin_fee(), A2CModel.getTotal_amount(), A2CModel.getTx_bank_name(),
-                                                A2CModel.getMax_resend_token(), A2CModel.getBenef_acct_no(), A2CModel.getBenef_product_value_name(), A2CModel.getBenef_product_value_code(), isOwner);
+                                    } else {
+                                        if (!isAgentLKD) {
+                                            isOwner = true;
+                                            changeToDataMandiriLKD(A2CModel.getTx_id(), A2CModel.getTx_product_code(), A2CModel.getTx_product_name(), A2CModel.getTx_bank_code(),
+                                                    A2CModel.getAmount(), A2CModel.getAdmin_fee(), A2CModel.getTotal_amount(), A2CModel.getTx_bank_name(),
+                                                    A2CModel.getMax_resend_token(), A2CModel.getBenef_acct_no(), A2CModel.getBenef_product_value_name(), A2CModel.getBenef_product_value_code(), isOwner);
+
+                                        } else
+                                            changeToConfirmCashIn(A2CModel);
                                     }
                                 } else {
                                     changeToConfirmCashout(A2CModel, A2CModel.getTx_product_code());
@@ -1055,7 +1073,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), model.getError_message());
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -1082,7 +1100,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                         AlertDialog dialog = builder.create();
                                         dialog.show();
                                     } else {
-                                        String message_dialog = "\""+ "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
+                                        String message_dialog = "\"" + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
                                         AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
                                                 message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
                                         dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
