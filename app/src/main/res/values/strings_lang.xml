@@ -164,7 +164,7 @@
 
     <string name="toolbar_title_purchase">Biller</string>
     <string name="toolbar_title_pay_friends">Transfer Balance</string>
-    <string name="toolbar_title_topup" translatable="false">add balance</string>
+    <string name="toolbar_title_topup" translatable="false">Top Up</string>
     <string name="toolbar_title_evoucherhp">Purchase E-Voucher HP</string>
     <string name="toolbar_title_pulsa_agent">Recharge Voucher</string>
     <string name="toolbar_title_myfriends">My Friends</string>

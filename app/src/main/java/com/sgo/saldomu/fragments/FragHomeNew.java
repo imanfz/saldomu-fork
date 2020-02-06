@@ -600,31 +600,31 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         }
                     else {
 //                        posIdx = -1;
-                        try {
-                            JSONArray jsonArray = new JSONArray(memberSchemeCode);
-                            for (int index = 0; index < jsonArray.length(); index++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(index);
-                                String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
-                                String categoryNameModified = getString(R.string.menu_item_search_agent_bbs) + " " + objs;
-                                if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
-                                    if (isDormant.equalsIgnoreCase("Y")) {
-                                        dialogDormant();
-                                    } else {
-                                        Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
-                                        i.putExtra(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
-                                        sp.edit().putString(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
-                                        i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
-                                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                                        i.putExtra(DefineValue.AMOUNT, "");
-                                        i.putExtra(DefineValue.BBS_SCHEME_CODE, jsonObject.optString(WebParams.SCHEME_CODE));
-                                        switchActivity(i, MainPage.ACTIVITY_RESULT);
-                                        break;
-                                    }
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            JSONArray jsonArray = new JSONArray(memberSchemeCode);
+//                            for (int index = 0; index < jsonArray.length(); index++) {
+//                                JSONObject jsonObject = jsonArray.getJSONObject(index);
+//                                String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
+//                                String categoryNameModified = getString(R.string.menu_item_search_agent_bbs) + " " + objs;
+//                                if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
+//                                    if (isDormant.equalsIgnoreCase("Y")) {
+//                                        dialogDormant();
+//                                    } else {
+//                                        Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
+//                                        i.putExtra(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
+//                                        sp.edit().putString(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
+//                                        i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
+//                                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+//                                        i.putExtra(DefineValue.AMOUNT, "");
+//                                        i.putExtra(DefineValue.BBS_SCHEME_CODE, jsonObject.optString(WebParams.SCHEME_CODE));
+//                                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+//                                        break;
+//                                    }
+//                                }
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
                     }
                 }
                 if (posIdx != -1) {

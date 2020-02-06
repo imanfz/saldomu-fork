@@ -191,6 +191,7 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
             mBun.putString(DefineValue.PRODUCT_CODE, model.getProduct_code());
             mBun.putString(DefineValue.PRODUCT_TYPE, model.getProduct_type());
             mBun.putString(DefineValue.PRODUCT_H2H, model.getProduct_h2h());
+            mBun.putString(DefineValue.FEE, model.getFee());
             mFrag.setArguments(mBun);
             if (model.getProduct_type().equals(DefineValue.BANKLIST_TYPE_SMS)) {
                 if (!levelClass.isLevel1QAC()) {
@@ -207,6 +208,7 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
             i.putExtra(DefineValue.PRODUCT_CODE, model.getProduct_code());
             i.putExtra(DefineValue.PRODUCT_TYPE, model.getProduct_type());
             i.putExtra(DefineValue.PRODUCT_H2H, model.getProduct_h2h());
+            i.putExtra(DefineValue.FEE, model.getFee());
             if (model.getProduct_type().equals(DefineValue.BANKLIST_TYPE_SMS)) {
                 if (!levelClass.isLevel1QAC()) {
                     switchActivity(i);

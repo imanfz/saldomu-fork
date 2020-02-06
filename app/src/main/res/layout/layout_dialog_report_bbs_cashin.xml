@@ -96,7 +96,8 @@
         android:background="@color/grey_300"
         android:id="@+id/view_produkAgen"/>
 
-    <TableRow>
+    <TableRow
+        android:visibility="gone">
         <TextView
             android:text="@string/number_hp_member"
             android:layout_span="2"
@@ -116,7 +117,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_margin="8dp"
-        android:background="@color/grey_300"/>
+        android:background="@color/grey_300"
+        android:visibility="gone"/>
 
     <TableRow>
         <TextView
