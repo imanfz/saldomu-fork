@@ -92,7 +92,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     private View v, bbs_informasi_form, emptyCashoutBenefLayout;
 
     private Activity act;
-    private TextView tvTitle, tvSource, tvDestination;
+    private TextView tvTitle, tvSource, tvDestination, tvExample;
     private CustomAutoCompleteTextViewWithIcon actv_rekening_cta;
     private Spinner sp_rekening_act;
     private List<HashMap<String, String>> aListAgent;
@@ -269,10 +269,12 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 etAdditionalFee = cashin_layout.findViewById(R.id.et_additionalfee);
                 additionalFee_layout = cashin_layout.findViewById(R.id.additionalFeecashin_layout);
                 tvSource = cashin_layout.findViewById(R.id.tv_source);
+                tvExample = cashin_layout.findViewById(R.id.tv_bank_example);
 
                 if (isAgentLKD) {
                     tvSource.setText(R.string.label_transfer_dari_agent_lkd);
                     actv_rekening_cta.setHint(R.string.label_transfer_dari_agent_lkd);
+                    tvExample.setText("");
                 }
 
                 if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y")) {
@@ -320,9 +322,11 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 etAdditionalFee = cashout_layout.findViewById(R.id.et_additionalfee);
                 additionalFee_layout = cashout_layout.findViewById(R.id.additionalFeecashin_layout);
                 tvDestination = cashout_layout.findViewById(R.id.tv_destination);
+                tvExample = cashout_layout.findViewById(R.id.tv_bank_example);
 
                 if (isAgentLKD) {
                     tvDestination.setText(R.string.label_transfer_dari_agent_lkd);
+                    tvExample.setText("");
                 }
                 if (enabledAdditionalFee != null && enabledAdditionalFee.equals("Y")) {
                     additionalFee_layout.setVisibility(View.VISIBLE);
@@ -1497,11 +1501,11 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 actv_rekening_cta.setError(getString(R.string.rekening_agent_error_message));
                 return false;
             } else actv_rekening_cta.setError(null);
-            if (etNoHp.getText().toString().length() == 0) {
-                etNoHp.requestFocus();
-                etNoHp.setError(getString(R.string.no_hp_pengirim_validation));
-                return false;
-            }
+//            if (etNoHp.getText().toString().length() == 0) {
+//                etNoHp.requestFocus();
+//                etNoHp.setError(getString(R.string.no_hp_pengirim_validation));
+//                return false;
+//            }
             if (source_product_code.equals("")) {
                 Toast.makeText(act, getString(R.string.no_match_agent_acct_message), Toast.LENGTH_LONG).show();
                 return false;

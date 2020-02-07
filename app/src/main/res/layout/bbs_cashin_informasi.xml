@@ -31,7 +31,8 @@
         android:textColor="@color/colorSecondaryDark"
         android:textStyle="italic"
         android:gravity="right"
-        android:text="@string/example_bca"/>
+        android:text="@string/example_bca"
+        android:id="@+id/tv_bank_example"/>
 
     <TextView
         android:layout_width="match_parent"

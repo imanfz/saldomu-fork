@@ -114,7 +114,10 @@
             android:id="@+id/lyt_no_VA"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
+            android:padding="6dp"
+            android:layout_gravity="left"
             android:layout_marginLeft="28dp"
+            android:background="@color/colorSecondaryWhite"
             android:layout_height="wrap_content">
 
             <TextView
@@ -139,7 +142,15 @@
                 android:layout_marginLeft="7dp"/>
 
         </LinearLayout>
-
+        <TextView
+            android:id="@+id/fee_deskripsi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:text="asd"
+            />
         <LinearLayout android:layout_width="wrap_content"
             android:orientation="horizontal"
             android:padding="6dp"
@@ -175,7 +186,8 @@
         <LinearLayout android:layout_width="wrap_content"
             android:orientation="horizontal"
             android:padding="6dp"
-            android:layout_gravity="center"
+            android:layout_gravity="left"
+            android:layout_marginLeft="26dp"
             android:background="@color/colorSecondaryWhite"
             android:layout_height="wrap_content">
             <TextView

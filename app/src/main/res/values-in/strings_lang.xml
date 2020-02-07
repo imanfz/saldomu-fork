@@ -952,6 +952,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="otp_hint">Masukkan kode OTP</string>
     <string name="token_hint">Masukkan kode Token</string>
     <string name="nama_rekening_tujuan">Nama pemilik Bank/E-Money Tujuan</string>
+    <string name="nama_rekening_tujuan_lkd">Nama pemilik E-Money Tujuan</string>
     <string name="nama_rek_tujuan">Nama Tujuan</string>
     <string name="nama_rekening_tujuan_hint">Nama rekening tujuan</string>
     <string name="kota_rekening_tujuan">Kota Tujuan</string>

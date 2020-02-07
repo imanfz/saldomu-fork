@@ -284,6 +284,7 @@
 
                     <TextView
                         android:layout_weight="1"
+                        android:id="@+id/tvbenefname"
                         android:text="@string/nama_rekening_tujuan"
                         android:textColor="@color/colorSecondaryDark"/>
 

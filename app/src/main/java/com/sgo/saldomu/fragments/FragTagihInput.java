@@ -56,7 +56,7 @@ public class FragTagihInput extends BaseFragment {
     SecurePreferences sp;
     EditText et_memberCode;
     Button btn_submit, btn_cancel, btn_regShop;
-    Boolean is_search = false;
+    Boolean is_search = false, isAgentLKD = false;
     View v;
     TextView tv_saldo_collector;
     private ArrayAdapter<String> mitraAdapter;
@@ -93,6 +93,8 @@ public class FragTagihInput extends BaseFragment {
         }
 
         sp = CustomSecurePref.getInstance().getSecurePrefsInstance();
+
+        isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE,"").equalsIgnoreCase(getString(R.string.LKD));
 
         getBalanceCollector();
 
@@ -227,6 +229,10 @@ public class FragTagihInput extends BaseFragment {
         if (is_search) {
             btn_cancel.setVisibility(View.VISIBLE);
             et_memberCode.setText(memberCode);
+        }
+
+        if (isAgentLKD){
+            btn_regShop.setVisibility(View.GONE);
         }
 
         mitraNameArrayList.clear();

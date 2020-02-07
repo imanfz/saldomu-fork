@@ -1230,6 +1230,7 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.MEMBER_CREATED);
         mEditor.remove(DefineValue.LAST_CURRENT_LONGITUDE);
         mEditor.remove(DefineValue.LAST_CURRENT_LATITUDE);
+        mEditor.remove(DefineValue.COMPANY_TYPE);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();

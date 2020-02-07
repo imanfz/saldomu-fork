@@ -76,7 +76,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     private TextView tvTitle;
     private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
     private TextView tvSourceAcct, tvBankBenef, tvBenefCity, tvAmount, tvNoBenefAcct,
-            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor, tvOTP, tvAdditionalFee;
+            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor, tvOTP, tvAdditionalFee, tvbenefname;
     private TableRow tbNameBenef;
     private EditText tokenValue, noHpTCASH;
     private Button btnSubmit, btnResend, btnBack;
@@ -91,7 +91,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     private int failed;
     private SMSclass smSclass;
     private ActionListener actionListener;
-    private Boolean finishTransaction = false, retryToken = false;
+    private Boolean finishTransaction = false, retryToken = false, isAgentLKD = false;
     ArrayList<String> name = new ArrayList<String>();
     private Switch favoriteSwitch;
     private EditText notesEditText;
@@ -133,6 +133,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.LKD));
 
         CircleStepView mCircleStepView = v.findViewById(R.id.circle_step_view);
         mCircleStepView.setTextBelowCircle("", "", getString(R.string.konfirmasi_agen));
@@ -165,6 +166,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         tvAdditionalFee = v.findViewById(R.id.bbscashin_confirm_additionalFee);
         favoriteSwitch = v.findViewById(R.id.favorite_switch);
         notesEditText = v.findViewById(R.id.notes_edit_text);
+        tvbenefname = v.findViewById(R.id.tvbenefname);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -204,6 +206,11 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             if (!bundle.containsKey(DefineValue.MAX_RESEND))
                 max_token_resend = Integer.parseInt(bundle.getString(DefineValue.MAX_RESEND, "3"));
+
+            if (isAgentLKD)
+            {
+                tvbenefname.setText(getString(R.string.nama_rekening_tujuan_lkd));
+            }
 
             tvTitle.setText(transaksi);
             tvAmount.setText(CurrencyFormat.format(amount));
