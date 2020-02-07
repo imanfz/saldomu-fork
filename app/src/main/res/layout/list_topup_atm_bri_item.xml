@@ -134,6 +134,14 @@
                     android:layout_gravity="center"
                     android:textIsSelectable="true"
                     />
+
+                <ImageView
+                    android:id="@+id/iv_copyButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_content_copy"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="7dp"/>
             </LinearLayout>
             <TextView
                 android:id="@+id/fee_deskripsi"

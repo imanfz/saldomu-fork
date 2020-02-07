@@ -110,7 +110,7 @@ class FavoriteActivity : BaseActivity() {
     inner class FavoritePagerAdapter(fm: FragmentManager, private val context: Context) : FragmentStatePagerAdapter(fm) {
         private val PAGE_COUNTagent = 3
         private val PAGE_COUNT = 2
-        private val tabTitlesAgent = arrayOf("Biller", "Transfer", "Setor Dan Tarik")
+        private val tabTitlesAgent = arrayOf("Biller", "Setor Dan Tarik", "Transfer")
         private val tabTitles = arrayOf("Biller", "Transfer")
         private val bilFragment: FavoriteFragment = FavoriteFragment().newInstance("BIL")
         private val bbsFragment: FavoriteFragment = FavoriteFragment().newInstance("BBS")
@@ -124,27 +124,26 @@ class FavoriteActivity : BaseActivity() {
                 return PAGE_COUNT
         }
 
-//        override fun getItem(position : Int): Fragment {
-//            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//            if (isAgent){
-//                when(position) {
-//                    0 -> bilFragment
-//                    1 -> bbsFragment
-//                    else -> trfFragment
-//                }
-//            }else{
-//                when(position) {
-//                    0 -> bilFragment
-//                    else -> trfFragment
-//                }
-//            }
-//        }
-
-        override fun getItem(position: Int): Fragment = when (position) {
-            0 -> bilFragment
-            1 -> trfFragment
-            else -> bbsFragment
+        override fun getItem(position: Int): Fragment {
+            if (isAgent) {
+                when (position) {
+                    0 -> return bilFragment
+                    1 -> return bbsFragment
+                    else -> return trfFragment
+                }
+            } else {
+                when (position) {
+                    0 -> return bilFragment
+                    else -> return trfFragment
+                }
+            }
         }
+
+//        override fun getItem(position: Int): Fragment = when (position) {
+//            0 -> bilFragment
+//            1 -> trfFragment
+//            else -> bbsFragment
+//        }
 
         override fun getPageTitle(position: Int): CharSequence {
             // Generate title based on item position

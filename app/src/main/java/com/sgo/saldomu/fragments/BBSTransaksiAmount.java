@@ -289,14 +289,14 @@ public class BBSTransaksiAmount extends Fragment {
         btnProses.setOnClickListener(prosesListener);
 
         if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+            if (isAgentLKD)
+            {
+                if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
+                    defaultProductCode = getString(R.string.EMOSALDOMU);
+                } else
+                    defaultProductCode = getString(R.string.SALDOMU);
+            }
             if (!defaultProductCode.equals("")) {
-
-                if (isAgentLKD) {
-                    if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
-                        defaultProductCode = getString(R.string.EMOSALDOMU);
-                    } else
-                        defaultProductCode = getString(R.string.SALDOMU);
-                }
 
                 bbsBankModel = realmBBS.where(BBSBankModel.class).
                         equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
@@ -324,13 +324,14 @@ public class BBSTransaksiAmount extends Fragment {
         }
 
         if (transaksi.equalsIgnoreCase(getString(R.string.cash_out))) {
+            if (isAgentLKD)
+            {
+                if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
+                    defaultProductCode = getString(R.string.EMOSALDOMU);
+                } else
+                    defaultProductCode = getString(R.string.SALDOMU);
+            }
             if (!defaultProductCode.equals("")) {
-                if (isAgentLKD) {
-                    if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
-                        defaultProductCode = getString(R.string.EMOSALDOMU);
-                    } else
-                        defaultProductCode = getString(R.string.SALDOMU);
-                }
                 bbsBankModel = realmBBS.where(BBSBankModel.class).
                         equalTo(BBSBankModel.SCHEME_CODE, DefineValue.ATC).
                         equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
@@ -669,11 +670,14 @@ public class BBSTransaksiAmount extends Fragment {
     private void initializeDataBBS(String schemeCode) {
         comm = realmBBS.where(BBSCommModel.class)
                 .equalTo(WebParams.SCHEME_CODE, schemeCode).findFirst();
+        if (isAgentLKD)
+        {
+            if (BuildConfig.FLAVOR.equalsIgnoreCase("development"))
+                defaultProductCode = "EMO SALDOMU";
+            else
+                defaultProductCode = getString(R.string.SALDOMU);
+        }
 
-        if (BuildConfig.FLAVOR.equalsIgnoreCase("development"))
-            defaultProductCode = "EMO SALDOMU";
-        else
-            defaultProductCode = getString(R.string.SALDOMU);
 
         if (schemeCode.equalsIgnoreCase(CTA)) {
             if (isAgentLKD) {

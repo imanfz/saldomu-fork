@@ -223,7 +223,7 @@
     <string name="topup_token_bank_name">Bank Name</string>
     <string name="topup_token_bank_product">Destination Bank Product</string>
     <string name="topup_token_bank_product_sumber">Bank Source Product</string>
-    <string name="topup_token_fee">Admin Fees</string>
+    <string name="topup_token_fee">Admin Fee</string>
     <string name="topup_token_total_fee">Total Amount</string>
     <string name="topup_token_bank_channel">Bank Products</string>
     <string name="topup_token_phone_number">Phone number</string>
@@ -770,7 +770,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="toast_msg_wait_claim">Your Balance (Rp. %1$s) will decrease if your friend has joined and do the\'Claim\' </string>
 
     <string name="dialog_sms_title">Mobile Number Verification</string>
-    <string name="dialog_sms_msg">Send the SMS that appears after clicking the OK button. SMS fees will be charged according to the operator rate. Make sure you have enough credit and the number registered is the number that is installed in your SIM1 slot.</string>
+    <string name="dialog_sms_msg">Send the SMS that appears after clicking the OK button. SMS fee will be charged according to the operator rate. Make sure you have enough credit and the number registered is the number that is installed in your SIM1 slot.</string>
     <string name="dialog_sms_msg2">Verifying data…</string>
     <string name="dialog_sms_msg3">Verification of Mobile Number to the server failed. \ And Do you want to repeat the verification process?</string>
     <string name="dialog_sms_msg4">Mobile Number verification to the server success.</string>
@@ -784,7 +784,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="dialog_p2p_color_help_title">Recipient Indicator Colour</string>
 
     <string name="dialog_p2p_color_success_msg">The recipient is ready to accept balance transfers.</string>
-    <string name="dialog_p2p_color_failed_msg">The recipient failed and not able to accept the balance transfered due to some reason (the recipient has a maximum balance limit, the recipient is dormant, suspended, or inactive).</string>
+    <string name="dialog_p2p_color_failed_msg">The recipient failed and not able to accept the balance transfered due to some reason (the recipient has a maximum balance limit, the recipient is dormant, closed, or inactive).</string>
     <string name="dialog_p2p_color_nonmember_msg">The recipient has not registered as a member. The balance amount will be received when the recipient has registered as a member.</string>
 
     <string name="dialog_p2p_nonmember_title">Invite your friends to join %1$s ?</string>
@@ -959,7 +959,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="no_rekening_tujuan_hint">Destination account number</string>
     <string name="otp_hint">Input OTP Code</string>
     <string name="token_hint">Input Token Code</string>
-    <string name="nama_rekening_tujuan">Nama pemilik Bank/E-Money Tujuan</string>
+    <string name="nama_rekening_tujuan">Bank/E-Money Beneficiary Name</string>
+    <string name="nama_rekening_tujuan_lkd">E-Money Beneficiary Name</string>
     <string name="nama_rek_tujuan">Destination Name</string>
     <string name="nama_rekening_tujuan_hint">Name of destination account</string>
     <string name="kota_rekening_tujuan">Destination City</string>
@@ -1220,7 +1221,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="ins_atm_bca_mbca_3">Click OK</string>
     <string name="ins_atm_bca_mbca_4">Notification success will be appear</string>
 
-    <string name="listatm_topup_mandiri_1">Click Menu Pay/Buyi</string>
+    <string name="listatm_topup_mandiri_1">Click Menu Pay/Buy</string>
     <string name="listatm_topup_mandiri_2">Click Other> Others > multi Payment</string>
     <string name="listatm_topup_mandiri_3">Enter your Top Up Company Code : 89898</string>
     <string name="listatm_topup_mandiri_5">Input Nominal Top Up (minimal Rp 10.001).</string>
@@ -1424,8 +1425,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="KTP_title">1. KTP Photo</string>
     <string name="KTP_and_cust_title">2. Take a Picture with KTP</string>
     <string name="sign_title">3.  Signature Photo</string>
-    <string name="success_upgrade_member_via_agent">Confirmation of prospective Gold member data will be verified by your Saldomu team.
-    The verification process is a maximum of 2x24 hours. Make sure the data entered is correct. We will proceed legally.</string>
+    <string name="success_upgrade_member_via_agent">Confirmation of prospective Gold member data will be verified by Saldomu team.
+    The maximum of verificaction process are 2x24 hours. Make sure the data entered is correct. We will proceed legally.</string>
     <string name="prepaid_title">Voucher Pulsa Handphone</string>
     <string name="postpaid_title">Tagihan Pascabayar</string>
     <string name="data_title">Paket Data Handphone</string>
