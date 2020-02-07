@@ -109,11 +109,11 @@
                 android:textSize="@dimen/text_size_small_material" />
         </LinearLayout>
 
-        <LinearLayout android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/lyt_no_VA"
+            android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="6dp"
-            android:layout_gravity="center"
-            android:background="@color/colorSecondaryWhite"
+            android:layout_marginLeft="28dp"
             android:layout_height="wrap_content">
 
             <TextView
@@ -122,12 +122,21 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size_small_material"
                 android:textStyle="italic"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="4dp"
+                android:padding="@dimen/margin_5dp"
                 android:textColor="@color/grey_1000b"
                 android:layout_gravity="center"
                 android:textIsSelectable="true"
-                />
+                android:background="@color/colorSecondaryWhite"
+                android:text="4476600111043518"/>
+
+            <ImageView
+                android:id="@+id/iv_copyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_content_copy"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="7dp"/>
+
         </LinearLayout>
 
         <LinearLayout android:layout_width="wrap_content"
