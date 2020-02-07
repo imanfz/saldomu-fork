@@ -144,7 +144,8 @@
             <LinearLayout android:layout_width="wrap_content"
                 android:orientation="horizontal"
                 android:padding="6dp"
-                android:layout_gravity="center"
+                android:layout_gravity="left"
+                android:layout_marginLeft="28dp"
                 android:background="@color/colorSecondaryWhite"
                 android:layout_height="wrap_content">
 
@@ -161,7 +162,15 @@
                     android:textIsSelectable="true"
                     />
             </LinearLayout>
-
+            <TextView
+                android:id="@+id/fee_deskripsi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="28dp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:text="asd"
+                />
             <LinearLayout android:layout_width="wrap_content"
                 android:orientation="horizontal"
                 android:padding="6dp"
@@ -194,33 +203,35 @@
                     />
             </LinearLayout>
 
-            <LinearLayout android:layout_width="wrap_content"
-                android:orientation="horizontal"
-                android:padding="6dp"
-                android:layout_gravity="center"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:layout_gravity="left"
+                android:layout_marginLeft="26dp"
                 android:background="@color/colorSecondaryWhite"
-                android:layout_height="wrap_content">
+                android:orientation="horizontal"
+                android:padding="6dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_small_material"
-                    android:text="@string/exempli_gratia"
-                    android:textStyle="italic"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
+                    android:text="@string/exempli_gratia"
                     android:textColor="@color/grey_1000b"
-                    android:layout_gravity="center"
-                    />
+                    android:textSize="@dimen/text_size_small_material"
+                    android:textStyle="italic" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_small_material"
-                    android:text="50000"
-                    android:textStyle="italic"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginLeft="4dp"
-                    android:textColor="@color/grey_1000b"
                     android:layout_gravity="center"
-                    />
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="10dp"
+                    android:text="50000"
+                    android:textColor="@color/grey_1000b"
+                    android:textSize="@dimen/text_size_small_material"
+                    android:textStyle="italic" />
             </LinearLayout>
 
 
@@ -285,6 +296,7 @@
                     android:text="@string/listatm_topup_mandiri_7"
                     android:layout_gravity="center"
                     />
+
             </LinearLayout>
 
         </LinearLayout>

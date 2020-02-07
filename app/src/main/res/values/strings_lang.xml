@@ -482,7 +482,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="delete">Delete</string>
     <string name="friend_profile">Friend’s Profile</string>
     <string name="socialbanking_id" translatable="false">socialbanking ID : </string>
-    <string name="phone_number">Mobile Phone nNumber : </string>
+    <string name="phone_number">Mobile Phone Number : </string>
     <string name="phone">Mobile Phone Number</string>
     <string name="email" translatable="false">email : </string>
     <string name="submit">Submit</string>
@@ -1411,7 +1411,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="prepaid">Prepaid</string>
     <string name="postpaid">Postpaid</string>
     <string name="upload_doc">Complete your document below:</string>
-    <string name="p2p_transfer">Intra Saldomu</string>
+    <string name="p2p_transfer">Within Saldomu</string>
     <string name="bank_transfer">Bank Account</string>
     <string name="ktp_warn">NIK is required.</string>
     <string name="ktp_warn1">NIK must be 16 characters</string>

@@ -129,7 +129,8 @@
             android:background="@drawable/rounded_background_outline"
             android:text="@string/rsb_register"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/colorPrimary"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <View

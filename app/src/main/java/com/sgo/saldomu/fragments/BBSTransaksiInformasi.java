@@ -1497,11 +1497,11 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 actv_rekening_cta.setError(getString(R.string.rekening_agent_error_message));
                 return false;
             } else actv_rekening_cta.setError(null);
-            if (etNoHp.getText().toString().length() == 0) {
-                etNoHp.requestFocus();
-                etNoHp.setError(getString(R.string.no_hp_pengirim_validation));
-                return false;
-            }
+//            if (etNoHp.getText().toString().length() == 0) {
+//                etNoHp.requestFocus();
+//                etNoHp.setError(getString(R.string.no_hp_pengirim_validation));
+//                return false;
+//            }
             if (source_product_code.equals("")) {
                 Toast.makeText(act, getString(R.string.no_match_agent_acct_message), Toast.LENGTH_LONG).show();
                 return false;

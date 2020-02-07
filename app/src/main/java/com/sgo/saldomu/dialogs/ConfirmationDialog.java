@@ -89,7 +89,7 @@ public class ConfirmationDialog extends DialogFragment {
         toTextview.setText(toUserID);
 
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-            notifPelangganLayout.setVisibility(View.VISIBLE);
+//            notifPelangganLayout.setVisibility(View.VISIBLE);
             notifPelangganTextview.setText(notifPelanggan);
             if(!name.equals("")){
                 nameLayout.setVisibility(View.VISIBLE);
