@@ -1444,7 +1444,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="hint_amount">Input Total Amount</string>
     <string name="upgrade">U P G R A D E</string>
     <string name="terms_bank_acct">*must have a bank account</string>
-    <string name="resent_otp">Resent OTP</string>
+    <string name="resent_otp">Resend OTP</string>
     <string name="menu_title_cash_collection">Cash Collection</string>
     <string name="business_name">Business Name</string>
     <string name="amount_deposit">Amount</string>
