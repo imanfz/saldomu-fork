@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -238,6 +239,7 @@ public class FragCancelTransactionDGI extends BaseFragment {
                         try {
                             dismissProgressDialog();
 
+                            Gson gson = new Gson();
                             jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                             Timber.d("response cancel search DGI : " + response.toString());
                             String code = response.getString(WebParams.ERROR_CODE);
