@@ -130,7 +130,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
         initLayout()
         initEditTextListener()
-        initRealm()
+//        initRealm()
 //        if (_data.isEmpty()) {
             getBillerDenom()
 //        } else {
@@ -218,7 +218,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                         biller_comm_name = billerItemList.get(i).commName
                         biller_item_id = billerItemList.get(i).itemId
 
-                        initializeSpinnerDenom()
+                        initializeSpinnerDenom(i)
                     }
                 }
 
@@ -283,10 +283,10 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         })
     }
 
-    private fun initializeSpinnerDenom() {
+    private fun initializeSpinnerDenom(indexBiller: Int) {
         mDenomData = BillerItem()
-        mDenomData = realm2?.where(BillerItem::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.findFirst()
-        mListDenomData = realm2?.copyFromRealm(mDenomData?.denomData)
+        mDenomData = billerItemList.get(indexBiller);
+        mListDenomData = billerItemList.get(indexBiller).denomData
 
         if (mListDenomData!!.isNotEmpty()) {
             denomData = ArrayList()
@@ -319,8 +319,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
 
         mBillerData = BillerItem()
-        mBillerData = realm2?.where(BillerItem::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.findFirst()
-        mListBankBiller = realm2?.copyFromRealm(mBillerData?.bankBiller)
+        mBillerData = billerItemList.get(indexBiller)
+        mListBankBiller = billerItemList.get(indexBiller).bankBiller
 
         biller_comm_code = mBillerData?.commCode
         biller_api_key = mBillerData?.apiKey
@@ -394,7 +394,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                 billerinput_et_id_remark.text.length > 15) {
             billerinput_et_id_remark.requestFocus()
             billerinput_et_id_remark.error = getString(R.string.regist1_validation_nohp)
-            initializeSpinnerDenom()
+            //leo
+//            initializeSpinnerDenom()
             return false
         }
         if (item_name == null) {

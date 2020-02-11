@@ -83,6 +83,7 @@ public class FragTagihInput extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             is_search = bundle.getBoolean(DefineValue.IS_SEARCH_DGI, false);
+            Timber.d("is_search : ", is_search.toString());
             if (bundle.containsKey(DefineValue.ANCHOR_NAME_PG)) {
                 commCodePG = bundle.getString(DefineValue.COMM_CODE_PG, "");
                 commNamePG = bundle.getString(DefineValue.COMM_NAME_PG, "");
@@ -226,7 +227,8 @@ public class FragTagihInput extends BaseFragment {
         tv_saldo_collector = v.findViewById(R.id.tv_saldoCollector);
         ll_komunitas = v.findViewById(R.id.ll_komunitas);
 
-        if (is_search) {
+        if (is_search==true) {
+            Timber.d("is_search initialize");
             btn_cancel.setVisibility(View.VISIBLE);
             et_memberCode.setText(memberCode);
         }
