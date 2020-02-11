@@ -319,26 +319,30 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                 for (int i = 0; i < _data.size(); i++) {
                     Timber.d("_data" + _data.get(i));
                     if (_data != null) {
+                        String a = _data.get(i).toLowerCase();
+                        String b = BillerIdNumber.prefix_name.toLowerCase();
                         if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
                             biller_comm_id = Objects.requireNonNull(billerItemList.get(i)).getCommId();
                             biller_comm_name = Objects.requireNonNull(billerItemList.get(i)).getCommName();
                             biller_item_id = Objects.requireNonNull(billerItemList.get(i)).getItemId();
 
-                            mDenomData = new BillerItem();
-                            mDenomData = realm2.where(BillerItem.class).
-                                    equalTo(WebParams.COMM_ID, biller_comm_id).
-                                    equalTo(WebParams.COMM_NAME, biller_comm_name).
-                                    equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
-                                    findFirst();
+                            //leo
+//                            mDenomData = new BillerItem();
+//                            mDenomData = realm2.where(BillerItem.class).
+//                                    equalTo(WebParams.COMM_ID, biller_comm_id).
+//                                    equalTo(WebParams.COMM_NAME, biller_comm_name).
+//                                    equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
+//                                    findFirst();
+//
+//                            if (mDenomData == null) {
+//                                mListDenomData = new ArrayList<>();
+//                            } else {
+//                                mListDenomData = realm2.copyFromRealm(mDenomData.getDenomData());
+//
+//                                initializeSpinnerDenom();
+//                            }
 
-                            if (mDenomData == null) {
-                                mListDenomData = new ArrayList<>();
-                            } else {
-                                mListDenomData = realm2.copyFromRealm(mDenomData.getDenomData());
-
-                                initializeSpinnerDenom();
-                            }
-
+                            initializeSpinnerDenom(i);
                         }
                     }
                 }
@@ -380,7 +384,84 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         }
     }
 
-    private void initializeSpinnerDenom() {
+    //leo
+//    private void initializeSpinnerDenom() {
+//        if (mListDenomData.size() > 0) {
+//            _denomData = new ArrayList<>();
+//            adapterDenom = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, _denomData);
+//            adapterDenom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            spin_denom.setAdapter(adapterDenom);
+//            spin_denom.setOnItemSelectedListener(spinnerDenomListener);
+//
+//            spin_denom.setVisibility(View.GONE);
+//
+//            Thread deproses = new Thread() {
+//                @Override
+//                public void run() {
+//                    _denomData.clear();
+//                    _denomData.add(getString(R.string.billerinput_text_spinner_default_pulsa));
+//                    for (int i = 0; i < mListDenomData.size(); i++) {
+//                        _denomData.add(mListDenomData.get(i).getItemName());
+//                    }
+//
+//                    getActivity().runOnUiThread(() -> {
+//                        spin_denom.setVisibility(View.VISIBLE);
+//                        adapterDenom.notifyDataSetChanged();
+//                    });
+//                }
+//            };
+//            deproses.run();
+//
+//        } else {
+//            denom_item_id = mBillerData.getItemId();
+//        }
+//
+//        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
+//                R.array.privacy_list, android.R.layout.simple_spinner_item);
+//        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        mBillerData = new BillerItem();
+//        mBillerData = realm2.where(BillerItem.class).equalTo(WebParams.COMM_ID, biller_comm_id).equalTo(WebParams.COMM_NAME, biller_comm_name).findFirst();
+//        mListBankBiller = realm2.copyFromRealm(mBillerData.getBankBiller());
+//        biller_comm_code = mBillerData.getCommCode();
+//        biller_api_key = mBillerData.getApiKey();
+////        callback_url = mBillerData.getCallback_url();
+//        if (!billerItemList.isEmpty()) {
+//            paymentData = new ArrayList<>();
+//            adapterPaymentOptions = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, paymentData);
+//            adapterPaymentOptions.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            spin_payment_options.setAdapter(adapterPaymentOptions);
+//            spin_payment_options.setOnItemSelectedListener(spinnerPaymentListener);
+//
+//            if (isVisible()) {
+//                ArrayList<String> tempDataPaymentName = new ArrayList<>();
+//                paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
+//
+//                for (int i = 0; i < mListBankBiller.size(); i++) {
+//                    if (mListBankBiller.get(i).getProductCode().equals(DefineValue.SCASH)) {
+//                        paymentData.add(getString(R.string.appname));
+//                        mListBankBiller.get(i).setProductName(getString(R.string.appname));
+//                    } else {
+//                        tempDataPaymentName.add(mListBankBiller.get(i).getProductName());
+//                    }
+//                }
+//                if (!tempDataPaymentName.isEmpty())
+//                    Collections.sort(tempDataPaymentName);
+//
+//                paymentData.addAll(tempDataPaymentName);
+//                adapterPaymentOptions.notifyDataSetChanged();
+//
+//                spin_payment_options.setSelection(1); //set metode pembayaran jadi saldomu
+//            }
+//        } else {
+//            biller_item_id = mBillerData.getItemId();
+//        }
+//    }
+
+    private void initializeSpinnerDenom(int indexData) {
+        mListDenomData = billerItemList.get(indexData).getDenomData();
+        mListBankBiller = billerItemList.get(indexData).getBankBiller();
+
         if (mListDenomData.size() > 0) {
             _denomData = new ArrayList<>();
             adapterDenom = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, _denomData);
@@ -415,12 +496,10 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                 R.array.privacy_list, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        mBillerData = new BillerItem();
-        mBillerData = realm2.where(BillerItem.class).equalTo(WebParams.COMM_ID, biller_comm_id).equalTo(WebParams.COMM_NAME, biller_comm_name).findFirst();
-        mListBankBiller = realm2.copyFromRealm(mBillerData.getBankBiller());
-        biller_comm_code = mBillerData.getCommCode();
-        biller_api_key = mBillerData.getApiKey();
-//        callback_url = mBillerData.getCallback_url();
+        mBillerData = billerItemList.get(indexData);
+        mListBankBiller = billerItemList.get(indexData).getBankBiller();
+        biller_comm_code = billerItemList.get(indexData).getCommCode();
+        biller_api_key =billerItemList.get(indexData).getApiKey();
         if (!billerItemList.isEmpty()) {
             paymentData = new ArrayList<>();
             adapterPaymentOptions = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, paymentData);
@@ -661,7 +740,8 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         if (et_payment_remark.getText().toString().length() == 0 || et_payment_remark.getText().toString().equals("0") || et_payment_remark.length() == 1) {
             et_payment_remark.requestFocus();
             et_payment_remark.setError(this.getString(R.string.regist1_validation_nohp));
-            initializeSpinnerDenom();
+            //leo
+//            initializeSpinnerDenom();
             return false;
         }
         if (buy_type_detail.equalsIgnoreCase("PRABAYAR"))

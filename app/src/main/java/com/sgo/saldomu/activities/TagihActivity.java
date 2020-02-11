@@ -33,6 +33,7 @@ public class TagihActivity extends BaseActivity {
 
         Intent intent = getIntent();
         Boolean is_search = intent.getBooleanExtra(DefineValue.IS_SEARCH_DGI, false);
+        Timber.d("is search tagih activity : ", is_search.toString());
         if (intent.hasExtra(DefineValue.MEMBER_CODE_PG)) {
             memberCode = intent.getStringExtra(DefineValue.MEMBER_CODE_PG);
             commCode = intent.getStringExtra(DefineValue.COMM_CODE_PG);

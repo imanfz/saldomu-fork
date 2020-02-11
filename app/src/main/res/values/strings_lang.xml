@@ -52,7 +52,7 @@
     <string name="done">Done</string>
     <string name="data_not_found">Data Not Found</string>
     <string name="initialize">initialize</string>
-    <string name="sent">Sent</string>
+    <string name="sent">Send</string>
     <string name="resend">Resend</string>
 
     <string name="firstscreen_desc_background" translatable="false">background</string>
@@ -770,7 +770,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="toast_msg_wait_claim">Your Balance (Rp. %1$s) will decrease if your friend has joined and do the\'Claim\' </string>
 
     <string name="dialog_sms_title">Mobile Number Verification</string>
-    <string name="dialog_sms_msg">Send the SMS that appears after clicking the OK button. SMS fee will be charged according to the operator rate. Make sure you have enough credit and the number registered is the number that is installed in your SIM1 slot.</string>
+    <string name="dialog_sms_msg">Send the SMS that appears after clicking the OK button. SMS fee will be charged according to the operator rate. Make sure you have enough credit.</string>
     <string name="dialog_sms_msg2">Verifying data…</string>
     <string name="dialog_sms_msg3">Verification of Mobile Number to the server failed. \ And Do you want to repeat the verification process?</string>
     <string name="dialog_sms_msg4">Mobile Number verification to the server success.</string>
@@ -1540,4 +1540,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="pin_blocked">Your PIN is blocked. Use "Forgot Pin" to unblock.</string>
     <string name="title_search_agent">Search Agent</string>
     <string name="lkd">LKD</string>
+    <string name="DGI">DGI</string>
 </resources>
