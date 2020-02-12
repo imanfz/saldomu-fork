@@ -3,7 +3,7 @@ package com.sgo.saldomu.models.retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UpdateCardModel {
+public class ReverseUpdateCardModel{
 
 	@SerializedName("error_message")
 	@Expose
@@ -17,6 +17,10 @@ public class UpdateCardModel {
 	@Expose
 	private String updateCardKey;
 
+	@SerializedName("card_no")
+	@Expose
+	private Object cardNo;
+
 	@SerializedName("card_attribute")
 	@Expose
 	private String cardAttribute;
@@ -29,9 +33,9 @@ public class UpdateCardModel {
 	@Expose
 	private String message;
 
-	@SerializedName("card_info")
+	@SerializedName("reverse_card_key")
 	@Expose
-	private String cardInfo;
+	private String reverseCardKey;
 
 	@SerializedName("flag_finish")
 	@Expose
@@ -41,10 +45,6 @@ public class UpdateCardModel {
 	@Expose
 	private String appletType;
 
-	@SerializedName("merchant_type")
-	@Expose
-	private String merchantType;
-
 	@SerializedName("card_balance")
 	@Expose
 	private String cardBalance;
@@ -52,18 +52,6 @@ public class UpdateCardModel {
 	@SerializedName("card_uuid")
 	@Expose
 	private String cardUuid;
-
-	@SerializedName("reverse_card_key")
-	@Expose
-	private String reverseCardKey;
-
-	public String getReverseCardKey() {
-		return reverseCardKey;
-	}
-
-	public void setReverseCardKey(String reverseCardKey) {
-		this.reverseCardKey = reverseCardKey;
-	}
 
 	public void setErrorMessage(String errorMessage){
 		this.errorMessage = errorMessage;
@@ -87,6 +75,14 @@ public class UpdateCardModel {
 
 	public String getUpdateCardKey(){
 		return updateCardKey;
+	}
+
+	public void setCardNo(Object cardNo){
+		this.cardNo = cardNo;
+	}
+
+	public Object getCardNo(){
+		return cardNo;
 	}
 
 	public void setCardAttribute(String cardAttribute){
@@ -113,12 +109,12 @@ public class UpdateCardModel {
 		return message;
 	}
 
-	public void setCardInfo(String cardInfo){
-		this.cardInfo = cardInfo;
+	public void setReverseCardKey(String reverseCardKey){
+		this.reverseCardKey = reverseCardKey;
 	}
 
-	public String getCardInfo(){
-		return cardInfo;
+	public String getReverseCardKey(){
+		return reverseCardKey;
 	}
 
 	public void setFlagFinish(String flagFinish){
@@ -135,14 +131,6 @@ public class UpdateCardModel {
 
 	public String getAppletType(){
 		return appletType;
-	}
-
-	public void setMerchantType(String merchantType){
-		this.merchantType = merchantType;
-	}
-
-	public String getMerchantType(){
-		return merchantType;
 	}
 
 	public void setCardBalance(String cardBalance){
@@ -164,17 +152,17 @@ public class UpdateCardModel {
 	@Override
  	public String toString(){
 		return 
-			"UpdateCardModel{" +
+			"ReverseUpdateCardModel{" + 
 			"error_message = '" + errorMessage + '\'' + 
 			",mitra_code = '" + mitraCode + '\'' + 
 			",update_card_key = '" + updateCardKey + '\'' + 
+			",card_no = '" + cardNo + '\'' + 
 			",card_attribute = '" + cardAttribute + '\'' + 
 			",error_code = '" + errorCode + '\'' + 
 			",message = '" + message + '\'' + 
-			",card_info = '" + cardInfo + '\'' + 
+			",reverse_card_key = '" + reverseCardKey + '\'' + 
 			",flag_finish = '" + flagFinish + '\'' + 
 			",applet_type = '" + appletType + '\'' + 
-			",merchant_type = '" + merchantType + '\'' + 
 			",card_balance = '" + cardBalance + '\'' + 
 			",card_uuid = '" + cardUuid + '\'' + 
 			"}";

@@ -19,6 +19,7 @@ import com.sgo.saldomu.coreclass.CoreApp;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.OkHttpTLSSocketFactory;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -334,6 +335,7 @@ public class RetrofitService {
         HashMap<String, Object> params = new HashMap<>();
         params.put(WebParams.RC_UUID, uuidnya);
         params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
         params.put(WebParams.SIGNATURE, hash);
         params.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
 

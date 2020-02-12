@@ -611,6 +611,7 @@ public class WebParams {
     public final static String SESSION = "session";
     public final static String CARD_NO = "card_no";
     public final static String MITRA_CODE = "mitra_code";
+    public final static String REVERSE_CARD_KEY = "reverse_card_key";
 
 
 }
