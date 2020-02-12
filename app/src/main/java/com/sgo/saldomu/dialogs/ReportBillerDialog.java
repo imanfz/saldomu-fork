@@ -208,11 +208,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             layout_txId.setVisibility(View.GONE);
         }
 
-        tv_date_value.setText(args.getString(DefineValue.DATE_TIME));
+        tv_date_value.setText(args.getString(DefineValue.DATE_TIME) /*"05-02-2020 10:42:17"*/);
         tv_txid_value.setText(args.getString(DefineValue.TX_ID));
 
         trx_id = args.getString(DefineValue.TX_ID);
-
 
         if (buss_scheme_code != null || type != null) {
             if (buss_scheme_code.equalsIgnoreCase("CTA")||buss_scheme_code.equalsIgnoreCase("CTR")) {

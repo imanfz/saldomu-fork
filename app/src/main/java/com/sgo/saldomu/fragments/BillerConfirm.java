@@ -401,6 +401,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
+
             if (InetHandler.isNetworkAvailable(getActivity())) {
 
                 if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
@@ -422,6 +423,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
                     changeToSgoPlus(tx_id, _amount, bank_code, product_code, fee);
                 } else {
                     if (isPIN) {
+                        Toast.makeText(getActivity(), "Timeout From Service Provider", Toast.LENGTH_LONG).show();
                         CallPINinput(attempt);
                         btn_submit.setEnabled(true);
                     } else {

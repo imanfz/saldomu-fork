@@ -16,7 +16,8 @@
             android:layout_margin="3dp"
             android:animateLayoutChanges="true"
             android:background="@color/grey_1000w"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"

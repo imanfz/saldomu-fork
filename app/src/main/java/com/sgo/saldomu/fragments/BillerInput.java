@@ -30,6 +30,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
@@ -296,7 +297,9 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
             buy_code = BillerActivity.PURCHASE_TYPE;
             if (biller_comm_code.equals("EMONEYSALDOMU")) {
                 tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Emoney));
-                et_payment_remark.setText("6032984008386579");
+                et_payment_remark.setText("");
+//                6032984084668361
+//                Toast.makeText(getActivity(), "Kartu Anda Diblock Sementara Karena Masih Memiliki Transaksi Pending", Toast.LENGTH_LONG).show();
                 et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(16)});
                 btn_cekSaldo.setVisibility(View.VISIBLE);
             } else {

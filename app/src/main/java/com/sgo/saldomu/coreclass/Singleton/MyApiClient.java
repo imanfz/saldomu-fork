@@ -513,7 +513,7 @@ public class MyApiClient {
         UPDATE_CARD_BALANCE = headaddressfinal + "UpdateCardBalance/Invoke";
         CONFIRM_CARD_BALANCE = headaddressfinal + "ConfirmUpdateCardBalance/Invoke";
         REVERSE_UPDATE = headaddressfinal + "ReverseUpdateCardBalance/Invoke";
-        REVERSE_UPDATE_REPEAT = headaddressfinal + "ReverseUpdateCardRepeat/Balance/Invoke";
+        REVERSE_UPDATE_REPEAT = headaddressfinal + "ReverseUpdateCardRepeatBalance/Invoke";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
