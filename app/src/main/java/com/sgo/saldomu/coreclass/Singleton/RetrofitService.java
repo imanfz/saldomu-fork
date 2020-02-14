@@ -336,7 +336,7 @@ public class RetrofitService {
         params.put(WebParams.RC_DTIME, dtime);
         params.put(WebParams.SIGNATURE, hash);
         params.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
-        params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
+//        params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
 
         return params;
     }
@@ -358,7 +358,7 @@ public class RetrofitService {
         params.put(WebParams.RQ_DTIME, dtime);
         params.put(WebParams.SIGNATURE, hash);
         params.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
-        params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
+//        params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
 
         return params;
     }
@@ -386,13 +386,13 @@ public class RetrofitService {
                 hash);
         RequestBody req4 = RequestBody.create(MediaType.parse("text/plain"),
                 BuildConfig.VERSION_NAME);
-        RequestBody req5 = RequestBody.create(MediaType.parse("text/plain"),
-                DefineValue.ANDROID);
+//        RequestBody req5 = RequestBody.create(MediaType.parse("text/plain"),
+//                DefineValue.ANDROID);
         params.put(WebParams.RC_UUID, req1);
         params.put(WebParams.RC_DTIME, req2);
         params.put(WebParams.SIGNATURE, req3);
         params.put(WebParams.PACKAGE_VERSION, req4);
-        params.put(WebParams.CLIENT_APP, req5);
+//        params.put(WebParams.CLIENT_APP, req5);
 
         return params;
     }
