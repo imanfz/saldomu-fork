@@ -591,6 +591,10 @@ public class MyApiClient {
     public static String CCY_VALUE = "IDR";
     public static String DEV_MEMBER_ID_PULSA_RETAIL = "EFENDI1421144347BPFIM";
     public static String PROD_MEMBER_ID_PULSA_RETAIL = "EFENDI1421205049F0018";
+    public static String URL_INFO_HARGA_DEV = "\"http://192.168.86.55:20080/misc/biller/index/\"";
+    public static String URL_INFO_HARGA_PROD = "https://go.saldomu.com/misc/biller/index/\"";
+    public static String domainSgoPlusDev = "\"https://sandbox-kit.espay.id/\"";
+    public static String domainSgoPlusProd = "\"https://kit.espay.id/\"";
 
     public static UUID getUUID(){
         return UUID.randomUUID();
