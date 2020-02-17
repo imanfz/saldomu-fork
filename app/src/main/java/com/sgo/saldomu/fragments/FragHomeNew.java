@@ -239,7 +239,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                                         ShopCategory shopCategory = new ShopCategory();
                                         shopCategory.setCategoryId(obj.getCategory_id());
-                                        if (shopCategory.getCategoryId().contains("SETOR"))
+                                        if (obj.getCategory_name().contains("Setor"))
                                             mEditor.putString(DefineValue.CATEGORY_ID_CTA, shopCategory.getCategoryId());
                                         if (obj.getCategory_name().contains("Upgrade"))
                                             mEditor.putString(DefineValue.CATEGORY_ID_UPG, shopCategory.getCategoryId());
@@ -290,9 +290,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
         btn_topup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(), TopUpActivity.class);
-                i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else {
+                    Intent i = new Intent(getActivity(), TopUpActivity.class);
+                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                }
             }
         });
 
@@ -571,7 +575,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         intent.putExtra(DefineValue.AGENT_COL, true);
                         intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_collector_history));
                         startActivity(intent);
-                    }else {
+                    } else {
                         posIdx = -1;
                     }
                 } else {
@@ -593,7 +597,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     else if (menuItemName.equalsIgnoreCase(getString(R.string.title_search_agent)))
                         if (isDormant.equalsIgnoreCase("Y")) {
                             dialogDormant();
-                        } else{
+                        } else {
                             Intent intent = new Intent(getActivity(), SearchAgentUpgradeActivity.class);
                             intent.putExtra(DefineValue.TYPE, "ALL");
                             startActivity(intent);
@@ -1349,9 +1353,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 new DefinedDialog.DialogButtonListener() {
                     @Override
                     public void onClickButton(View v, boolean isLongClick) {
-                        Intent i = new Intent(getActivity(), TopUpActivity.class);
-                        i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+//                        Intent i = new Intent(getActivity(), TopUpActivity.class);
+//                        i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+//                        switchActivity(i, MainPage.ACTIVITY_RESULT);
                     }
                 }
         );

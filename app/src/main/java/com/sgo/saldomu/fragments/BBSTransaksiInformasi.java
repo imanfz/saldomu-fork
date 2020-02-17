@@ -1201,6 +1201,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.MAX_RESEND, model.getMax_resend_token());
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
+        mArgs.putString(DefineValue.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
         if (TCASHValidation != null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
         if (MandiriLKDValidation != null)
