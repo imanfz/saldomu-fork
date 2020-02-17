@@ -595,6 +595,7 @@ public class MyApiClient {
     public static String URL_INFO_HARGA_PROD = "https://go.saldomu.com/misc/biller/index/\"";
     public static String domainSgoPlusDev = "\"https://sandbox-kit.espay.id/\"";
     public static String domainSgoPlusProd = "\"https://kit.espay.id/\"";
+    public static String domainPrivacyPolicy = "\"http://saldomu.com/index.php/syarat-ketentuan/\"";
 
     public static UUID getUUID(){
         return UUID.randomUUID();
