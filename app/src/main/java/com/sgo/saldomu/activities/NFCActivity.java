@@ -43,9 +43,6 @@ import static org.apache.commons.io.Charsets.UTF_16BE;
 public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallback {
 
     private NfcAdapter nfcAdapter;
-    private NFCManager nfcMger;
-    private NdefMessage mMessage = null;
-    Tag currentTag;
 
     private String cardSelect;
     private String cardAttribute;
@@ -69,8 +66,13 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
     private String CounterCard;
     private String PinEmoney;
     private IsoDep isoDep;
-
-    Boolean updateFlag = false;
+    private String cardMessage = "";
+    private String mitraCode;
+    private String merchantType;
+    private String reverse_card_key;
+    private boolean reversalSuccess = false;
+    private Boolean updateFlag = false;
+    private Boolean cardShifted = false;
 
     private TextView cardNumber, cardBalanceResult;
     private RelativeLayout lyt_gifNfc;
@@ -78,10 +80,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
     public final static String TYPE_OLD_APPLET = "0";
     public final static String TYPE_NEW_APPLET = "1";
-    private String cardMessage = "";
-    private String mitraCode;
-    private String merchantType;
-    private String reverse_card_key;
+
 
 
     @Override
@@ -154,12 +153,6 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
             byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                     "00B500000A"));
 
-//            byte[] getDataNewApplet = isoDep.transceive(Converter.Companion.hexStringToByteArray(
-//                    "00E50000462207191611130000000000000000000000000000C34DE2F5C542FA570000000000000000000000000000000000000007A40B0000000000000000000000000000000000000000"));
-//
-//            byte[] getCertificate = isoDep.transceive(Converter.Companion.hexStringToByteArray(
-//                    "00E0000000"));
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -183,14 +176,14 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                     Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
                     saldo = String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
 
-//                    Log.d("getDataNewApplet : ", Converter.Companion.toHex(getDataNewApplet));
-//
-//                    Log.d("getCertificate : ", Converter.Companion.toHex(getCertificate));
-
                     lyt_gifNfc.setVisibility(View.GONE);
                     lyt_emonCard.setVisibility(View.VISIBLE);
 
-                    getCheckCardBalance2();
+                    if (cardShifted == true){
+                        getReversalUpdateCard();
+                    }else {
+                        getCheckCardBalance2();
+                    }
                 }
             });
 
@@ -267,9 +260,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                             model.getPendingAmount(), model.getMerchantData());
 //                                    String getData = "00E50000462207191611130000000000000000000000000000C34DE2F5C542FA570000000000000000000000000000000000000007A40B0000000000000000000000000000000000000000";
                                     Timber.d("getData: " + getData);
-
                                     try {
-//
                                         byte[] getDataByte = isoDep.transceive(Converter.Companion.hexStringToByteArray(getData));
                                         String getDataWith9000 = Converter.Companion.toHex(getDataByte);
                                         String getDataString = getDataWith9000.substring(0, getDataWith9000.length() - 4);
@@ -287,11 +278,11 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                                         cardMessage = getDataString + getCrt; // 149byte getData + 248byte getCertificate (without 9000)
 
-//
-//
                                     } catch (IOException e) {
                                         e.printStackTrace();
-
+                                        Timber.d("Kartu Geser......." + e.getMessage());
+                                        dismissProgressDialog();
+                                        Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
                                 }
@@ -307,7 +298,6 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                 Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
                                 dismissProgressDialog();
                                 getFragmentManager().popBackStack();
-
                             }
                         }
 
@@ -318,8 +308,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                         @Override
                         public void onComplete() {
-
-                            dismissProgressDialog();
+//                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
@@ -357,17 +346,18 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                             String code = model.getErrorCode();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                Toast.makeText(getBaseContext(), "UPDATE CARD BALACE BERHASIL", Toast.LENGTH_SHORT).show();
-
+//                                Toast.makeText(getBaseContext(), "UPDATE CARD BALACE BERHASIL", Toast.LENGTH_SHORT).show();
                                 try {
                                     byte[] messageAPDU = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                                             model.getMessage()));
 
                                     Log.d("MESSAGE TO APDU : ", Converter.Companion.toHex(messageAPDU));
                                     if (model.getFlagFinish().equals("0")) {
-//                                        getUpdateOldCard(Converter.Companion.toHex(messageAPDU));
-                                        getReversalUpdateCard();
-
+                                        if (reversalSuccess == false){
+                                            getReversalUpdateCard();
+                                        }else{
+                                            getUpdateOldCard(Converter.Companion.toHex(messageAPDU));
+                                        }
                                     } else {
                                         Toast.makeText(getBaseContext(), "FLAG FINISH SUDAH 1", Toast.LENGTH_SHORT).show();
                                         getConfirmCardBalance();
@@ -380,28 +370,36 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
+                                    Timber.d("Kartu Geser......." + e.getMessage());
+                                    dismissProgressDialog();
+                                    Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+                                    cardShifted = true;
+//                                    getReversalUpdateCard();
+                                    return;
                                 }
-                            } else {
+                            } else if(code.equals("0031")){ //Tidak Ada Pending Saldo.................
                                 code = model.getErrorCode() + " : " + model.getErrorMessage();
                                 Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
 
-//                                getReversalUpdateCard();
+                                dismissProgressDialog();
+                                getFragmentManager().popBackStack();
 
-//                                return;
-//                                dismissProgressDialog();
-//                                getFragmentManager().popBackStack();
-
+                            } else {
+                                code = model.getErrorCode() + " : " + model.getErrorMessage();
+                                Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
+                                getReversalUpdateCard();
                             }
                         }
 
                         @Override
                         public void onError(Throwable throwable) {
                             getFragmentManager().popBackStack();
+                            Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+                            cardShifted = true;
                         }
 
                         @Override
-                        public void onComplete() {
-                        }
+                        public void onComplete() {}
                     });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
@@ -444,7 +442,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                 Timber.d("LOGING NEW MESSAGE");
 
                                 if (model.getFlagFinish().equals("0")) {
-                                    getUpdateNewCard(model.getMessage().toString());
+                                    getUpdateNewCard(model.getMessage());
                                     updateFlag = true;
                                 } else {
                                     try {
@@ -583,9 +581,8 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                             String code = model.getErrorCode();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                Toast.makeText(getBaseContext(), "REVERSAL CARD BALACE BERHASIL", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getBaseContext(), "REVERSAL CARD BALACE BERHASIL", Toast.LENGTH_SHORT).show();
                                 reverse_card_key = model.getReverseCardKey();
-
 
                                 if (model.getFlagFinish().equals("0")) {
                                     try {
@@ -594,6 +591,10 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                         getReversalUpdateRepeat(Converter.Companion.toHex(msgFromReversal));
                                     } catch (IOException e) {
                                         e.printStackTrace();
+                                        dismissProgressDialog();
+                                        Timber.d("Kartu Geser......." + e.getMessage());
+                                        Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+                                        cardShifted = true;
                                     }
                                 }else {
 //                                    Toast.makeText(getBaseContext(), "FLAG REVERSAL = 1", Toast.LENGTH_LONG).show();
@@ -601,7 +602,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                             } else {
                                 code = model.getErrorCode() + " : " + model.getErrorMessage();
                                 Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
-
+//                                getReversalUpdateCard();
                                 dismissProgressDialog();
                                 getFragmentManager().popBackStack();
                             }
@@ -610,21 +611,22 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                         @Override
                         public void onError(Throwable throwable) {
                             getFragmentManager().popBackStack();
+//                            getReversalUpdateCard();
                         }
 
                         @Override
-                        public void onComplete() {
-//                            dismissProgressDialog();
-
-                        }
+                        public void onComplete() {}
                     });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
+            Timber.d("Kartu Geser......." + e.getMessage());
+            dismissProgressDialog();
+            Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+            cardShifted = true;
         }
     }
 
     private void getReversalUpdateRepeat(String msgReversal) {
-
         try {
             showProgressDialog();
 
@@ -658,35 +660,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 Toast.makeText(getBaseContext(), "REVERSAL CARD REPEAT BERHASIL", Toast.LENGTH_SHORT).show();
                                 Timber.d("Message dari ReversCardRepeat : " + model.getMessage());
-////                                getConfirmCardBalance();
-//                                Timber.d("LOGING NEW MESSAGE");
-//
-//                                if (model.getFlagFinish().equals("0")) {
-//                                    getUpdateNewCard(model.getMessage().toString());
-//                                    updateFlag = true;
-//                                } else {
-//                                    try {
-//
-//                                        String tagMessage = String.valueOf(model.getMessage());
-//                                        byte[] msgByte = isoDep.transceive(Converter.Companion.hexStringToByteArray(tagMessage));
-//                                        String msg = Converter.Companion.toHex(msgByte);
-//                                        Log.d("Written to msg : ", msg);
-//
-//
-//                                        getConfirmCardBalance();
-////                                        Log.d("CARD_MESAE : ", cardMessage);
-//                                        byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
-//                                                "00B500000A"));
-//                                        cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8)));
-//                                        Log.d("SALDO BARU : ", String.valueOf(Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8))));
-//
-//                                        dismissProgressDialog();                                        /// flow confirm ();
-//                                    } catch (IOException e) {
-//                                        e.printStackTrace();
-//
-//                                        return;
-//                                    }
-//                                }
+
                                 if (model.getFlagFinish().equals("0")) {
                                     try {
                                         byte[] msgFromReversal = isoDep.transceive(Converter.Companion.hexStringToByteArray(model.getMessage()));
@@ -694,9 +668,23 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                         getReversalUpdateRepeat(Converter.Companion.toHex(msgFromReversal));
                                     } catch (IOException e) {
                                         e.printStackTrace();
+                                        Timber.d("Kartu Geser......." + e.getMessage());
+                                        dismissProgressDialog();
+                                        Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+                                        cardShifted = true;
                                     }
                                 }else {
                                     Toast.makeText(getBaseContext(), "FLAG REVERSAL = 1", Toast.LENGTH_LONG).show();
+
+                                    reversalSuccess = true;
+                                    cardShifted = false;
+
+                                    getCheckCardBalance2();
+//                                    if (appletType.equals(TYPE_OLD_APPLET)) {
+//                                        getUpdateOldCard(cardInfo);
+//                                    } else {
+//                                        getUpdateNewCard(cardMessage);
+//                                    }
                                 }
                             } else {
                                 code = model.getErrorCode() + " : " + model.getErrorMessage();
@@ -714,8 +702,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                         @Override
                         public void onComplete() {
-                            dismissProgressDialog();
-
+//                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
