@@ -239,7 +239,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                                         ShopCategory shopCategory = new ShopCategory();
                                         shopCategory.setCategoryId(obj.getCategory_id());
-                                        if (shopCategory.getCategoryId().contains("SETOR"))
+                                        if (obj.getCategory_name().contains("Setor"))
                                             mEditor.putString(DefineValue.CATEGORY_ID_CTA, shopCategory.getCategoryId());
                                         if (obj.getCategory_name().contains("Upgrade"))
                                             mEditor.putString(DefineValue.CATEGORY_ID_UPG, shopCategory.getCategoryId());
