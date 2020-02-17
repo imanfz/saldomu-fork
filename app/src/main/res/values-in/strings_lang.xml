@@ -1228,6 +1228,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="join_lkd">Join Member Mandiri LKD</string>
     <string name="c2a_lkd">Setor Tunai Mandiri LKD</string>
     <string name="upgrade_member">Upgrade Keanggotaan</string>
+    <string name="data_customer">Data Pelanggan</string>
     <string name="upgrade_agent">Upgrade Agen</string>
     <string name="data_member_basic">Data Member Basic</string>
     <string name="data_verified_member">Data Verified Member</string>
