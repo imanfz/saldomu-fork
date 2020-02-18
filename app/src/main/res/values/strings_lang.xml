@@ -1379,7 +1379,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="member_status">Membership Status :</string>
     <string name="title_dialog_dormant">User ID Dormant</string>
     <string name="message_dialog_dormant_">Your User ID is in Dormant status. Please contact Support to reactivate your User ID.</string>
-    <string name="message_dialog_dormant_">Your User ID is in Dormant status. Please contact Support to reactivate your User ID.</string>
     <string name="newhome_ovo">Voucher GRAB-OVO</string>
     <string name="newhome_emoney">E-Money</string>
     <string name="newhome_game">Voucher Game</string>
