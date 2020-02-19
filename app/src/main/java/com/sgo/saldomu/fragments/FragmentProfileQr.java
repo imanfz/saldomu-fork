@@ -390,9 +390,11 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     };
 
     private void showDialogMessage() {
+//        final Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), this.getString(R.string.upgrade_dialog_finish_title),
+//                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
+//                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
         final Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), this.getString(R.string.upgrade_dialog_finish_title),
-                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                this.getString(R.string.level_dialog_waiting),
                 (v, isLongClick) -> {
 
                 }
