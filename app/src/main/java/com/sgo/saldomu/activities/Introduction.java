@@ -25,6 +25,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
@@ -86,7 +87,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
 //            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
 //        } else
-            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
+        addSlide(IntroPage.newInstance(R.layout.intro_fragment));
 
 
         sp.edit().remove(DefineValue.SENDER_ID).commit();
@@ -117,10 +118,11 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             donebtn.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Intent i = new Intent(Introduction.this, LoginActivity.class);
-                    i.putExtra(DefineValue.USER_IS_NEW, -2);
-                    startActivity(i);
-                    Introduction.this.finish();
+//                    Intent i = new Intent(Introduction.this, LoginActivity.class);
+//                    i.putExtra(DefineValue.USER_IS_NEW, -2);
+//                    startActivity(i);
+                    Intent i = new Intent(Introduction.this, InsertPIN.class);
+                    startActivityForResult(i, MainPage.REQUEST_FINISH);
                     return false;
                 }
             });
@@ -443,5 +445,47 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
             return biccid && bimei && temp_is_sent && ddate;
         } else return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MainPage.REQUEST_FINISH)
+            if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
+                String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
+                pinLogin(value_pin);
+            }
+    }
+
+    private void pinLogin(String value_pin) {
+        showProgLoading("", true);
+        SMSclass smsClass = new SMSclass(this);
+        String imeiDevice = smsClass.getDeviceIMEI();
+        extraSignature = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "") + value_pin;
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_PIN_LOGIN, extraSignature);
+        params.put(WebParams.USER_ID, sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
+        params.put(WebParams.USER_PIN, value_pin);
+        params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+        params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
+        params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
+        params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
+        params.put(WebParams.IS_POS, sp.getString(DefineValue.IS_POS, ""));
+        params.put(WebParams.IMEI, imeiDevice);
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_PIN_LOGIN, params, new ResponseListener() {
+            @Override
+            public void onResponses(JsonObject response) {
+                Timber.d("isi response pin login:" + response);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                Timber.d("isi error pin login:" + throwable);
+            }
+
+            @Override
+            public void onComplete() {
+                showProgLoading("", false);
+            }
+        });
     }
 }
