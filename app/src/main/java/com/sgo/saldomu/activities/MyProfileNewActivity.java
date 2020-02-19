@@ -525,7 +525,8 @@ public class MyProfileNewActivity extends BaseActivity {
     public void camera_dialog() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(this, perms)) {
-            final String[] items = {"Choose from Gallery", "Take a Photo"};
+            //final String[] items = {"Choose from Gallery", "Take a Photo"};
+            final String[] items = {"Take a Photo"};
 
             android.app.AlertDialog.Builder a = new android.app.AlertDialog.Builder(MyProfileNewActivity.this);
             a.setCancelable(true);
@@ -1070,9 +1071,11 @@ public class MyProfileNewActivity extends BaseActivity {
     }
 
     private void DialogWaitingUpgradeAgent() {
+//        Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
+//                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
+//                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
         Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
-                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                this.getString(R.string.level_dialog_waiting),
                 new DefinedDialog.DialogButtonListener() {
                     @Override
                     public void onClickButton(View v, boolean isLongClick) {

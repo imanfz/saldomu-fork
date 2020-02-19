@@ -218,7 +218,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="12dp"
-                            android:text="Foto KTP / Paspor"
+                            android:text="Foto KTP"
                             android:textColor="@color/grey_1000b"
                             android:textSize="16dp"
                             android:id="@+id/tv_foto_ktp_paspor"/>
@@ -268,7 +268,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="12dp"
-                            android:text="Foto Selfie dengan KTP / Paspor"
+                            android:text="Foto Selfie dengan KTP"
                             android:textColor="@color/grey_1000b"
                             android:textSize="16dp" />
 
