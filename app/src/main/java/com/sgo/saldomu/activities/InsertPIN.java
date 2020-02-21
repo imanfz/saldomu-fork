@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -49,7 +50,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
     String valuePin;
     Boolean IsForgotPassword;
     Fragment toShow;
-    TextView tv_attempt ;
+    TextView tv_attempt;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,14 +61,14 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
             tv_attempt = v.findViewById(R.id.pin_tries_value);
         }
         Timber.d("masuk UtilsLoader");
-        String userId  = sp.getString(DefineValue.USERID_PHONE,"");
-        if(userId.isEmpty())
-            userId = getIntent().getExtras().getString(DefineValue.USERID_PHONE,"");
+        String userId = sp.getString(DefineValue.USERID_PHONE, "");
+        if (userId.isEmpty())
+            userId = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
 
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
 
-        if (flagLogin.equalsIgnoreCase(DefineValue.STRING_NO)){
-            new UtilsLoader(this,sp).getFailedPINNo(userId, new OnLoadDataListener() {
+        if (flagLogin.equalsIgnoreCase(DefineValue.STRING_NO)) {
+            new UtilsLoader(this, sp).getFailedPINNo(userId, new OnLoadDataListener() {
                 @Override
                 public void onSuccess(Object deData) {
                     String _dedata = String.valueOf(deData);
@@ -84,8 +85,8 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
                 }
             });
-        }else {
-            new UtilsLoader(this,sp).getFailedPIN(userId, new OnLoadDataListener() {
+        } else {
+            new UtilsLoader(this, sp).getFailedPIN(userId, new OnLoadDataListener() {
                 @Override
                 public void onSuccess(Object deData) {
                     String _dedata = String.valueOf(deData);
@@ -107,10 +108,10 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         InitializeToolbar();
 
         final Boolean is_md5 = getIntent().getBooleanExtra(DefineValue.IS_MD5, false);
-        IsForgotPassword = getIntent().getBooleanExtra(DefineValue.IS_FORGOT_PASSWORD,false);
-        final int attempt = getIntent().getIntExtra(DefineValue.ATTEMPT,0);
+        IsForgotPassword = getIntent().getBooleanExtra(DefineValue.IS_FORGOT_PASSWORD, false);
+        final int attempt = getIntent().getIntExtra(DefineValue.ATTEMPT, 0);
 
-        if(attempt != 0){
+        if (attempt != 0) {
             setTextAttempt(String.valueOf(attempt));
         }
 
@@ -119,17 +120,17 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
                     @Override
                     public boolean isValid(String input) {
 //                        return PinHelper.doesMatchDefaultPin(getApplicationContext(), input);
-                        Timber.d("pin yg di confirm "+input);
+                        Timber.d("pin yg di confirm " + input);
                         valuePin = input;
                         SecurePreferences.Editor mEditor = sp.edit();
                         Intent i = new Intent();
                         mEditor.putString(DefineValue.PIN_CODE, RSA.opensslEncrypt(input));
-                        if(is_md5)
-                            i.putExtra(DefineValue.PIN_VALUE,RSA.opensslEncrypt(input));
+                        if (is_md5)
+                            i.putExtra(DefineValue.PIN_VALUE, RSA.opensslEncrypt(input));
                         else
-                            i.putExtra(DefineValue.PIN_VALUE,input);
+                            i.putExtra(DefineValue.PIN_VALUE, input);
                         mEditor.apply();
-                        setResult(RESULT_PIN_VALUE,i);
+                        setResult(RESULT_PIN_VALUE, i);
                         finish();
                         return true;
                     }
@@ -144,13 +145,13 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     }
 
-    private void setTextAttempt(String attempt){
-        if(attempt == null || attempt.isEmpty())
+    private void setTextAttempt(String attempt) {
+        if (attempt == null || attempt.isEmpty())
             attempt = "0";
 
-        String attempt_text = getString(R.string.login_failed_attempt_1,Integer.valueOf(attempt));
+        String attempt_text = getString(R.string.login_failed_attempt_1, Integer.valueOf(attempt));
         tv_attempt.setText(attempt_text);
-        if(attempt.equalsIgnoreCase("1"))
+        if (attempt.equalsIgnoreCase("1"))
             tv_attempt.setVisibility(View.VISIBLE);
         else
             tv_attempt.setVisibility(View.GONE);
@@ -161,14 +162,14 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         return R.layout.insert_pin;
     }
 
-    public void InitializeToolbar(){
+    public void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.input_pin));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(IsForgotPassword)
+        if (IsForgotPassword)
             getMenuInflater().inflate(R.menu.forgot_pin, menu);
         super.onCreateOptionsMenu(menu);
         return true;
@@ -198,7 +199,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     }
 
-    void showDialogForgotPin(){
+    void showDialogForgotPin() {
         // Create custom dialog object
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -223,7 +224,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
         progDialog.setIndeterminate(true);
         progDialog.setVisibility(View.VISIBLE);
-        getHelpPin(progDialog,Message);
+        getHelpPin(progDialog, Message);
 
         btnDialogOK.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,10 +236,10 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         dialog.show();
     }
 
-    public void getHelpPin(final ProgressBar progDialog, final TextView Message){
-        try{
+    public void getHelpPin(final ProgressBar progDialog, final TextView Message) {
+        try {
 
-            HashMap<String, Object>  params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_HELP_PIN, "");
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_HELP_PIN, "");
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_HELP_PIN, params,
                     new ObjListeners() {
@@ -279,8 +280,8 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
                             Message.setVisibility(View.VISIBLE);
                         }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient" + e.getMessage());
         }
     }
 
