@@ -355,6 +355,7 @@ public class WebParams {
     public static String CATEGORY_ID = "category_id";
     public static String CATEGORY_NAME = "category_name";
     public static String IMEI = "imei";
+    public static String IMEI_ID = "imei_id";
     public static String ICCID = "iccid";
     public static String SENT = "sent";
     public static String SENDER_ID = "sender_id";

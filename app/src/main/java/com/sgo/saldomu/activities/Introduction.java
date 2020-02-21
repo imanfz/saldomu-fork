@@ -7,21 +7,20 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.paolorotolo.appintro.AppIntro;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -33,12 +32,15 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
-import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fragments.IntroPage;
-
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
-import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
+import com.sgo.saldomu.models.retrofit.LoginModel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -46,7 +48,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -68,6 +69,9 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
     private String timeDate, timeStamp, fcm_id, fcmId_encrypted;
     private SecurePreferences sp;
+    protected Gson gson;
+    JsonParser jsonParser;
+    private Bundle argsBundleNextLogin = new Bundle();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
@@ -118,11 +122,10 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             donebtn.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-//                    Intent i = new Intent(Introduction.this, LoginActivity.class);
-//                    i.putExtra(DefineValue.USER_IS_NEW, -2);
-//                    startActivity(i);
-                    Intent i = new Intent(Introduction.this, InsertPIN.class);
-                    startActivityForResult(i, MainPage.REQUEST_FINISH);
+                    Intent i = new Intent(Introduction.this, LoginActivity.class);
+                    i.putExtra(DefineValue.USER_IS_NEW, -2);
+                    startActivity(i);
+                    Introduction.this.finish();
                     return false;
                 }
             });
@@ -159,7 +162,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //            }
             sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
-                openLogin(-2);
+                Intent i = new Intent(Introduction.this, InsertPIN.class);
+                startActivityForResult(i, MainPage.REQUEST_FINISH);
             } else if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
                 sendFCM();
             } else
@@ -458,28 +462,48 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     }
 
     private void pinLogin(String value_pin) {
-        showProgLoading("", true);
+        showProgLoading("Sending Data", true);
         SMSclass smsClass = new SMSclass(this);
         String imeiDevice = smsClass.getDeviceIMEI();
         extraSignature = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "") + value_pin;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_PIN_LOGIN, extraSignature);
+        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
         params.put(WebParams.USER_ID, sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
-        params.put(WebParams.USER_PIN, value_pin);
-        params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+        params.put(WebParams.USER_PIN, sp.getString(DefineValue.PIN_CODE, ""));
+        params.put(WebParams.RC_DATETIME, DateTimeFormat.getCurrentDateTime());
         params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
         params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
         params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
-        params.put(WebParams.IS_POS, sp.getString(DefineValue.IS_POS, ""));
-        params.put(WebParams.IMEI, imeiDevice);
-        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_PIN_LOGIN, params, new ResponseListener() {
+        params.put(WebParams.IS_POS, sp.getString(DefineValue.IS_POS, "N"));
+        params.put(WebParams.IMEI_ID, imeiDevice);
+        Timber.d("isi param pin login:" + params);
+
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_PIN_LOGIN, params, new ObjListeners() {
             @Override
-            public void onResponses(JsonObject response) {
-                Timber.d("isi response pin login:" + response);
+            public void onResponses(JSONObject response) {
+                try {
+                    String errorCode = response.getString(WebParams.ERROR_CODE);
+                    if (errorCode.equals(WebParams.SUCCESS_CODE)) {
+                        LoginModel loginModel = getGson().fromJson(response.toString(), LoginModel.class);
+
+                        Toast.makeText(getApplicationContext(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
+                        setLoginProfile(loginModel);
+                    } else if (errorCode.equals("0324")) {
+                        InitializeSmsDialog();
+                    } else {
+                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
             public void onError(Throwable throwable) {
-                Timber.d("isi error pin login:" + throwable);
+                if (MyApiClient.PROD_FAILURE_FLAG)
+                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -487,5 +511,157 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                 showProgLoading("", false);
             }
         });
+    }
+
+    protected Gson getGson() {
+        if (gson == null) {
+            gson = new Gson();
+        }
+        return gson;
+    }
+
+    private void setLoginProfile(LoginModel model) {
+
+        try {
+            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+            SecurePreferences.Editor mEditor = prefs.edit();
+            String userId = model.getUserId();
+            String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, "");
+
+            if (prefs.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").equals(userId)) {
+                mEditor.putString(DefineValue.CONTACT_FIRST_TIME, prevContactFT);
+                mEditor.putString(DefineValue.BALANCE_AMOUNT, prefs.getString(DefineValue.PREVIOUS_BALANCE, "0"));
+                mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER, true);
+            } else {
+                if (prevContactFT.equals(DefineValue.NO)) {
+                    myFriendModel.deleteAll();
+                    mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
+                }
+                mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
+                mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER, false);
+                BBSDataManager.resetBBSData();
+            }
+
+            mEditor.putString(DefineValue.USERID_PHONE, userId);
+            mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_YES);
+            mEditor.putString(DefineValue.USER_NAME, model.getUserName());
+            mEditor.putString(DefineValue.CUST_ID, model.getCustId());
+            mEditor.putString(DefineValue.CUST_NAME, model.getCustName());
+            mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, model.getIs_member_shop_dgi());
+
+            mEditor.putString(DefineValue.PROFILE_DOB, model.getDateOfBirth());
+            mEditor.putString(DefineValue.PROFILE_ADDRESS, model.getAddress());
+            mEditor.putString(DefineValue.PROFILE_BIO, model.getBio());
+            mEditor.putString(DefineValue.PROFILE_COUNTRY, model.getCountry());
+            mEditor.putString(DefineValue.PROFILE_EMAIL, model.getEmail());
+            mEditor.putString(DefineValue.PROFILE_FULL_NAME, model.getFullName());
+            mEditor.putString(DefineValue.PROFILE_SOCIAL_ID, model.getSocialId());
+            mEditor.putString(DefineValue.PROFILE_HOBBY, model.getHobby());
+            mEditor.putString(DefineValue.PROFILE_POB, model.getBirthPlace());
+            mEditor.putString(DefineValue.PROFILE_GENDER, model.getGender());
+            mEditor.putString(DefineValue.PROFILE_ID_TYPE, model.getIdtype());
+            mEditor.putString(DefineValue.PROFILE_VERIFIED, model.getVerified());
+            mEditor.putString(DefineValue.PROFILE_BOM, model.getMotherName());
+
+            mEditor.putString(DefineValue.LIST_ID_TYPES, getGson().toJson(model.getIdTypes()));
+
+            mEditor.putString(DefineValue.IS_FIRST, model.getUserIsNew());
+            mEditor.putString(DefineValue.IS_CHANGED_PASS, model.getChangedPass());
+
+            mEditor.putString(DefineValue.IMG_URL, model.getImgUrl());
+            mEditor.putString(DefineValue.IMG_SMALL_URL, model.getImgSmallUrl());
+            mEditor.putString(DefineValue.IMG_MEDIUM_URL, model.getImgMediumUrl());
+            mEditor.putString(DefineValue.IMG_LARGE_URL, model.getImgLargeUrl());
+
+            mEditor.putString(DefineValue.ACCESS_KEY, model.getAccessKey());
+            mEditor.putString(DefineValue.ACCESS_SECRET, model.getAccessSecret());
+
+            mEditor.putString(DefineValue.LINK_APP, model.getSocialSignature());
+            mEditor.putString(DefineValue.IS_DORMANT, model.getIs_dormant());
+
+            if (Integer.valueOf(model.getIsRegistered()) == 0)
+                mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
+            else
+                mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, true);
+
+            if (!model.getCommunity().isEmpty()) {
+                mEditor.putInt(DefineValue.COMMUNITY_LENGTH, model.getCommunity().size());
+                for (int i = 0; i < model.getCommunity().size(); i++) {
+                    LoginCommunityModel commModel = model.getCommunity().get(i);
+                    if (commModel.getCommId().equals(MyApiClient.COMM_ID)) {
+                        mEditor.putString(DefineValue.COMMUNITY_ID, commModel.getCommId());
+                        mEditor.putString(DefineValue.CALLBACK_URL_TOPUP, commModel.getCallbackUrl());
+                        mEditor.putString(DefineValue.API_KEY_TOPUP, commModel.getApiKey());
+                        mEditor.putString(DefineValue.COMMUNITY_CODE, commModel.getCommCode());
+                        mEditor.putString(DefineValue.COMMUNITY_NAME, commModel.getCommName());
+                        mEditor.putString(DefineValue.BUSS_SCHEME_CODE, commModel.getBussSchemeCode());
+                        mEditor.putString(DefineValue.AUTHENTICATION_TYPE, commModel.getAuthenticationType());
+                        mEditor.putString(DefineValue.LENGTH_AUTH, commModel.getLengthAuth());
+                        mEditor.putString(DefineValue.IS_HAVE_PIN, commModel.getIsHavePin());
+                        mEditor.putString(DefineValue.AGENT_TYPE, commModel.getAgent_type());
+                        mEditor.putString(DefineValue.COMPANY_TYPE, commModel.getCompany_type());
+                        mEditor.putString(DefineValue.FORCE_CHANGE_PIN, commModel.getForce_change_pin());
+                        mEditor.remove(DefineValue.SENDER_ID);
+
+                        mEditor.putInt(DefineValue.LEVEL_VALUE, Integer.valueOf(commModel.getMemberLevel()));
+                        if (commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES)) {
+
+                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, true);
+                        } else
+                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
+
+                        mEditor.putString(DefineValue.IS_NEW_BULK, commModel.getIsNewBulk());
+
+                        mEditor.putBoolean(DefineValue.IS_AGENT, commModel.getIsAgent() > 0);
+
+                        String arrJson = toJson(commModel.getAgent_scheme_codes()).toString();
+                        mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
+                        mEditor.putString(DefineValue.IS_AGENT_TRX_REQ, commModel.getIs_agent_trx_request());
+                        mEditor.putString(DefineValue.COMM_UPGRADE_MEMBER, commModel.getComm_upgrade_member());
+                        mEditor.putString(DefineValue.MEMBER_CREATED, commModel.getMember_created());
+
+                        break;
+                    }
+                }
+            }
+
+            if (!model.getShopIdAgent().equals("")) {
+                mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
+                mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
+                mEditor.putString(DefineValue.SHOP_AGENT_DATA, getGson().toJson(model.getShopIdAgent()));
+            }
+
+            if (model.getSettings() != null) {
+                mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, Integer.valueOf(model.getSettings().get(0).getMaxMemberTransfer()));
+
+            }
+
+            mEditor.apply();
+
+            changeActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected JsonElement toJson(Object model) {
+        return getJsonParser().parse(getGson().toJson(model));
+    }
+
+    protected JsonParser getJsonParser() {
+        if (jsonParser == null) {
+            jsonParser = new JsonParser();
+        }
+        return jsonParser;
+    }
+
+    private void changeActivity() {
+        Intent i = new Intent(Introduction.this, MainPage.class);
+        if (argsBundleNextLogin != null)
+            i.putExtras(argsBundleNextLogin);
+
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(i);
     }
 }

@@ -63,7 +63,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         Timber.d("masuk UtilsLoader");
         String userId = sp.getString(DefineValue.USERID_PHONE, "");
         if (userId.isEmpty())
-            userId = sp.getString(DefineValue.SENDER_ID, "");
+            userId = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
 
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
 
