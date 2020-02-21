@@ -134,7 +134,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:background="@drawable/button_transparant"
-                android:text="@string/login_text_forgetpass_hide"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_size_small_material"
                 android:textStyle="bold"

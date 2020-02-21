@@ -126,7 +126,6 @@
     <string name="login_button_login">Sign In</string>
     <string name="login_text_forgetpin">Fogot Password, Please call center at 0813–3335–5541</string>
     <string name="login_text_forgetpass">Forgot Password</string>
-    <string name="login_text_forgetpass_hide">Forgot Password, Please send an email to\n supportmandiri@sgo.co.id</string>
     <string name="login_toast_loginsukses">Sign In Successful</string>
     <string name="login_validation_userID">User phone number is required!</string>
     <string name="login_validation_pass">Password required!</string>
