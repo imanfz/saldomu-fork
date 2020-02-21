@@ -1009,7 +1009,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         break;
                     case "DGI":
                         menuStrings.add(getResources().getString(R.string.menu_item_title_tagih_agent));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.tagih_id));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
                         if (sp.getString(DefineValue.AGENT_TYPE, "").equalsIgnoreCase(getString(R.string.agent_type_col))) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_collector_history));
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_history_collector));

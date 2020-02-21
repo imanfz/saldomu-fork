@@ -214,7 +214,7 @@
     <string name="menu_item_title_list_approval">List of Approvals</string>
     <string name="menu_item_title_trx_agent">Transaction Request</string>
     <string name="menu_item_title_onprogress_agent">On Progress</string>
-    <string name="menu_item_title_tagih_agent">Tagih.id</string>
+    <string name="menu_item_title_tagih_agent">Tagihan</string>
     <string name="menu_item_title_map_agent">Agent Map</string>
     <string name="menu_item_title_map_member">Member Map</string>
     <string name="menu_item_title_waktu_beroperasi">Operating Time</string>
@@ -620,7 +620,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="validation_date_empty">Date of birth can’t be empty</string>
     <string name="myprofile_dob_warning">* Make sure that the date of birth that you choose is in accordance with what is stated on your ID Card.</string>
     <string name="myprofile_email_warning">* Make sure that the email address listed is correct and active, because all your Saldomu transaction reports will be sent to that email address.</string>
-    <string name="cashout_lkd_warning_1">*Make sure that account number entered is correct.</string>
+    <string name="cashout_lkd_warning_1">*Make sure that owner of account number entered is same with your Saldomu name.</string>
     <string name="cashout_lkd_warning_2">*Make sure that the Recipient Name entered is correct..</string>
     <string name="myprofile_upload_photo_finish">Photo has been uploaded and waiting for the verification data by admin.</string>
 
@@ -706,6 +706,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="level_dialog_btn_ok">Upgrade Now</string>
 
     <string name="level_title">Membership upgrade registration</string>
+    <string name="level_dialog_waiting">Please wait for your upgrade request to be approved.</string>
     <string name="level_message_notavailable">Do you want to upgrade to be a Gold member to be able to transfer your balance to another user, request balance and balance limit upgrade to Rp 10.000.000.</string>
     <string name="level_dialog_finish_title">Upgrade data has entered the queue</string>
     <string name="upgrade_agent_dialog_finish_title">Upgrade data to be an agent has entered the queue</string>
@@ -1237,6 +1238,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="join_lkd">Join Member Mandiri LKD</string>
     <string name="c2a_lkd">LKD Mandiri Cash Deposit</string>
     <string name="upgrade_member">Upgrade Membership</string>
+    <string name="data_customer">Member Profile</string>
     <string name="upgrade_agent">Upgrade Agent</string>
     <string name="data_member_basic">Basic Data Member</string>
     <string name="data_verified_member">Data Verified Member</string>

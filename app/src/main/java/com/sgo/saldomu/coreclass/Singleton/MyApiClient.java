@@ -67,9 +67,9 @@ public class MyApiClient {
         return singleton;
     }
 
-    public static Boolean PROD_FAILURE_FLAG = true;
-    public static Boolean IS_PROD = BuildConfig.IS_PROD_DOMAIN;
-    public static Boolean PROD_FLAG_ADDRESS = BuildConfig.IS_PROD_DOMAIN;
+    public static Boolean PROD_FAILURE_FLAG     = true;
+    public static Boolean IS_PROD               = BuildConfig.IS_PROD_DOMAIN;
+    public static Boolean PROD_FLAG_ADDRESS     = BuildConfig.IS_PROD_DOMAIN;
     public static Boolean IS_INTERNET_BANKING;
     public static String COMM_ID;
     public static String COMM_ID_PULSA;
@@ -77,7 +77,7 @@ public class MyApiClient {
 
 //    public static final String headaddressDEV = "http://116.90.162.173:18080/akardaya/";
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
-    public static String headaddressfinal = BuildConfig.HEAD_ADDRESSS+"saldomu/";
+    public static String headaddressfinal       = BuildConfig.HEAD_ADDRESSS+"saldomu/";
 
     public static String headaodaddressfinal    = BuildConfig.HEAD_ADDRESSS+"saldomu/agentlocation/";
     public static String urlMNotif              = BuildConfig.URL_MNOTIF;
@@ -439,7 +439,7 @@ public class MyApiClient {
         LINK_GET_PREVIEW_COMMUNITY_SCADM      = headaddressfinal + "scadm/JoinCommunity/Preview";
         LINK_CONFIRM_COMMUNITY_SCADM          = headaddressfinal + "scadm/JoinCommunity/Save";
         LINK_GET_LIST_BANK_TOPUP_SCADM        = headaddressfinal +"scadm/ListBank/Topup";
-        LINK_CONFIRM_TOPUP_SCADM    = headaddressfinal +"scadm/Topup/Invoke";
+        LINK_CONFIRM_TOPUP_SCADM              = headaddressfinal +"scadm/Topup/Invoke";
         LINK_CONFIRM_TOPUP_SCADM_NEW          = headaddressfinal +"scadm/ReqTopup/Invoke";
         LINK_GET_LIST_BANK_DENOM_SCADM        = headaddressfinal +"scadm/ListBank/Denom";
         LINK_GET_DENOM_LIST         = headaddressfinal +"scadm/ListDenom/Retrieve";
@@ -541,61 +541,61 @@ public class MyApiClient {
 
     public static String URL_HELP_DEV = "https://mobile-dev.saldomu.com/static/pages/help/";
     public static String URL_FAQ;
-    public static String URL_FAQ_PROD = "https://mobile.saldomu.com/static/pages/help/pin_faq_saldomu.html";
-    public static String URL_FAQ_DEV = URL_HELP_DEV +"pin_faq_saldomu.html";
+    public static String URL_FAQ_PROD           = "https://mobile.saldomu.com/static/pages/help/pin_faq_saldomu.html";
+    public static String URL_FAQ_DEV            = URL_HELP_DEV +"pin_faq_saldomu.html";
 
     public static String URL_TERMS;
-    public static String URL_TERMS_PROD = "https://mobile.saldomu.com/static/pages/help/pin_terms_conditions_id_saldomu.html";
-    public static String URL_TERMS_DEV = URL_HELP_DEV +"pin_terms_conditions_id_saldomu.html";
+    public static String URL_TERMS_PROD         = "https://mobile.saldomu.com/static/pages/help/pin_terms_conditions_id_saldomu.html";
+    public static String URL_TERMS_DEV          = URL_HELP_DEV +"pin_terms_conditions_id_saldomu.html";
 
-    public static String LINK_SEARCH_AGENT_UPG = headaodaddressfinal + "SearchAgentUpgrade/Retrieve";
-    public static String LINK_SEARCH_AGENT = headaodaddressfinal + "Search/NearestAgent";
-    public static String LINK_CATEGORY_LIST = headaodaddressfinal + "Category/Retrieve";
-    public static String LINK_MEMBER_SHOP_LIST = headaodaddressfinal + "Membershop/Retrieve";
-    public static String LINK_MEMBER_SHOP_DETAIL = headaodaddressfinal + "Membershop/Detailmember";
-    public static String LINK_UPDATE_MEMBER_LOCATION = headaodaddressfinal + "Manage/UpdateMemberLocation";
-    public static String LINK_REGISTER_CATEGORY_SHOP = headaodaddressfinal + "Category/Registercategoryshop";
-    public static String LINK_SETUP_OPENING_HOUR = headaodaddressfinal + "Manage/Insertopenhour";
-    public static String LINK_SEARCH_TOKO = headaodaddressfinal + "Agent/Retrieve";
-    public static String LINK_REGISTER_OPEN_CLOSE_TOKO = headaodaddressfinal + "Membershop/Registeropenclosed";
-    public static String LINK_UPDATE_CLOSE_SHOP_TODAY = headaodaddressfinal + "Manage/UpdateClosedShopToday";
-    public static String LINK_GOOGLE_MAP_API_ROUTE = "https://maps.googleapis.com/maps/api/directions/json";
-    public static String LINK_TRANSACTION_AGENT = headaodaddressfinal + "Transaction/Retrieve";
+    public static String LINK_SEARCH_AGENT_UPG  = headaodaddressfinal + "SearchAgentUpgrade/Retrieve";
+    public static String LINK_SEARCH_AGENT      = headaodaddressfinal + "Search/NearestAgent";
+    public static String LINK_CATEGORY_LIST     = headaodaddressfinal + "Category/Retrieve";
+    public static String LINK_MEMBER_SHOP_LIST  = headaodaddressfinal + "Membershop/Retrieve";
+    public static String LINK_MEMBER_SHOP_DETAIL        = headaodaddressfinal + "Membershop/Detailmember";
+    public static String LINK_UPDATE_MEMBER_LOCATION    = headaodaddressfinal + "Manage/UpdateMemberLocation";
+    public static String LINK_REGISTER_CATEGORY_SHOP    = headaodaddressfinal + "Category/Registercategoryshop";
+    public static String LINK_SETUP_OPENING_HOUR        = headaodaddressfinal + "Manage/Insertopenhour";
+    public static String LINK_SEARCH_TOKO       = headaodaddressfinal + "Agent/Retrieve";
+    public static String LINK_REGISTER_OPEN_CLOSE_TOKO  = headaodaddressfinal + "Membershop/Registeropenclosed";
+    public static String LINK_UPDATE_CLOSE_SHOP_TODAY   = headaodaddressfinal + "Manage/UpdateClosedShopToday";
+    public static String LINK_GOOGLE_MAP_API_ROUTE      = "https://maps.googleapis.com/maps/api/directions/json";
+    public static String LINK_TRANSACTION_AGENT         = headaodaddressfinal + "Transaction/Retrieve";
     public static String LINK_UPDATE_APPROVAL_TRX_AGENT = headaodaddressfinal + "Transaction/Updatetransaction";
-    public static String LINK_UPDATE_LOCATION_AGENT = headaodaddressfinal + "Transaction/Updateagent";
-    public static String LINK_UPDATE_LOCATION_MEMBER = headaodaddressfinal + "Transaction/Updatemember";
-    public static String LINK_CHECK_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Checktransaction";
+    public static String LINK_UPDATE_LOCATION_AGENT     = headaodaddressfinal + "Transaction/Updateagent";
+    public static String LINK_UPDATE_LOCATION_MEMBER    = headaodaddressfinal + "Transaction/Updatemember";
+    public static String LINK_CHECK_TRANSACTION_MEMBER  = headaodaddressfinal + "Transaction/Checktransaction";
     public static String LINK_CONFIRM_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Confirmtransaction";
     public static String LINK_CANCEL_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Canceltransaction";
-    public static String LINK_UPDATE_LOCATION = headaodaddressfinal + "Location/Update";
-    public static String LINK_BBS_NEW_SEARCH_AGENT = headaodaddressfinal + "Search/Agent";
+    public static String LINK_UPDATE_LOCATION           = headaodaddressfinal + "Location/Update";
+    public static String LINK_BBS_NEW_SEARCH_AGENT      = headaodaddressfinal + "Search/Agent";
     public static String LINK_CONFIRM_TRANSACTION_BY_AGENT = headaodaddressfinal + "Transaction/Confirmtransactionbyagent";
-    public static String LINK_TRX_ONPROGRESS_BY_AGENT = headaodaddressfinal + "Report/Onprogressagent";
-    public static String LINK_UPDATE_FEEDBACK = headaodaddressfinal + "Transaction/Updatefeedback";
-    public static String LINK_CANCEL_SEARCH_AGENT = headaodaddressfinal + "Transaction/Cancelsearchagent";
+    public static String LINK_TRX_ONPROGRESS_BY_AGENT   = headaodaddressfinal + "Report/Onprogressagent";
+    public static String LINK_UPDATE_FEEDBACK           = headaodaddressfinal + "Transaction/Updatefeedback";
+    public static String LINK_CANCEL_SEARCH_AGENT       = headaodaddressfinal + "Transaction/Cancelsearchagent";
 
     private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
     public static Boolean FLAG_SIG = true;
-    public static String COMM_ID_DEV = "EMOSALDOMU1500439694RS6DD"; //dev
-    public static String COMM_ID_TAGIH_DEV = "TAGIHSALDO1540982049APLC2"; //dev tagih
-    public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
+    public static String COMM_ID_DEV        = "EMOSALDOMU1500439694RS6DD"; //dev
+    public static String COMM_ID_TAGIH_DEV  = "TAGIHSALDO1540982049APLC2"; //dev tagih
+    public static String COMM_ID_PULSA_DEV  = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
     public static String COMM_ID_PULSA_PROD = "DAPHAH14992553291VINB"; //prod pulsa agent
     public static String COMM_ID_TAGIH_PROD = "TAGIHSALDO15435070661GSQN"; //prod pulsa agent
-    public static String COMM_ID_PROD = "SALDOMU1503988580RFVBK";  //prod
+    public static String COMM_ID_PROD       = "SALDOMU1503988580RFVBK";  //prod
 
     public static String INCOMINGSMS_INFOBIP = "+6281350058801";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
 
     public static String APP_ID = BuildConfig.APP_ID;
-    public static String CCY_VALUE = "IDR";
-    public static String DEV_MEMBER_ID_PULSA_RETAIL = "EFENDI1421144347BPFIM";
-    public static String PROD_MEMBER_ID_PULSA_RETAIL = "EFENDI1421205049F0018";
-    public static String URL_INFO_HARGA_DEV = "\"http://192.168.86.55:20080/misc/biller/index/\"";
-    public static String URL_INFO_HARGA_PROD = "https://go.saldomu.com/misc/biller/index/\"";
-    public static String domainSgoPlusDev = "\"https://sandbox-kit.espay.id/\"";
-    public static String domainSgoPlusProd = "\"https://kit.espay.id/\"";
-    public static String domainPrivacyPolicy = "\"http://saldomu.com/index.php/syarat-ketentuan/\"";
+    public static String CCY_VALUE                      = "IDR";
+    public static String DEV_MEMBER_ID_PULSA_RETAIL     = "EFENDI1421144347BPFIM";
+    public static String PROD_MEMBER_ID_PULSA_RETAIL    = "EFENDI1421205049F0018";
+    public static String URL_INFO_HARGA_DEV             = "\"http://192.168.86.55:20080/misc/biller/index/\"";
+    public static String URL_INFO_HARGA_PROD            = "https://go.saldomu.com/misc/biller/index/\"";
+    public static String domainSgoPlusDev               = "\"https://sandbox-kit.espay.id/\"";
+    public static String domainSgoPlusProd              = "\"https://kit.espay.id/\"";
+    public static String domainPrivacyPolicy            = "\"http://saldomu.com/index.php/syarat-ketentuan/\"";
 
     public static UUID getUUID(){
         return UUID.randomUUID();

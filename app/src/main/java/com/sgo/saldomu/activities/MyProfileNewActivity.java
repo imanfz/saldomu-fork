@@ -414,7 +414,7 @@ public class MyProfileNewActivity extends BaseActivity {
         else {
             setActionBarIcon(R.drawable.ic_arrow_left);
         }
-        setActionBarTitle(getString(R.string.upgrade_member));
+        setActionBarTitle(getString(R.string.data_customer));
     }
 
     @Override
@@ -525,7 +525,8 @@ public class MyProfileNewActivity extends BaseActivity {
     public void camera_dialog() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(this, perms)) {
-            final String[] items = {"Choose from Gallery", "Take a Photo"};
+            //final String[] items = {"Choose from Gallery", "Take a Photo"};
+            final String[] items = {"Take a Photo"};
 
             android.app.AlertDialog.Builder a = new android.app.AlertDialog.Builder(MyProfileNewActivity.this);
             a.setCancelable(true);
@@ -534,15 +535,16 @@ public class MyProfileNewActivity extends BaseActivity {
                     new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {
+//                            if (which == 0) {
+//                                if (set_result_photo == RESULT_CAMERA_KTP) {
+//                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_KTP);
+//                                } else if (set_result_photo == RESULT_SELFIE) {
+//                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SELFIE);
+//                                } else if (set_result_photo == RESULT_CAMERA_TTD) {
+//                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_TTD);
+//                                }
+//                            } else
                             if (which == 0) {
-                                if (set_result_photo == RESULT_CAMERA_KTP) {
-                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_KTP);
-                                } else if (set_result_photo == RESULT_SELFIE) {
-                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SELFIE);
-                                } else if (set_result_photo == RESULT_CAMERA_TTD) {
-                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_TTD);
-                                }
-                            } else if (which == 1) {
                                 if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
                                     CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
                                 } else {
@@ -716,7 +718,7 @@ public class MyProfileNewActivity extends BaseActivity {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(MyProfileNewActivity.this, message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -1041,7 +1043,7 @@ public class MyProfileNewActivity extends BaseActivity {
                             Timber.d("isi response maintenance:" + object.toString());
                             AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                             alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
-                        }else {
+                        } else {
                             Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
 
 
@@ -1070,9 +1072,11 @@ public class MyProfileNewActivity extends BaseActivity {
     }
 
     private void DialogWaitingUpgradeAgent() {
+//        Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
+//                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
+//                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
         Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
-                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                this.getString(R.string.level_dialog_waiting),
                 new DefinedDialog.DialogButtonListener() {
                     @Override
                     public void onClickButton(View v, boolean isLongClick) {
@@ -1180,7 +1184,7 @@ public class MyProfileNewActivity extends BaseActivity {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
-                            }else {
+                            } else {
                                 code = model.getError_message();
 
                                 Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
@@ -1244,7 +1248,7 @@ public class MyProfileNewActivity extends BaseActivity {
 //                                Timber.d("isi response autologout:"+response.toString());
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(MyProfileNewActivity.this, message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -1333,7 +1337,8 @@ public class MyProfileNewActivity extends BaseActivity {
 
                             Log.e("getBankCashout", object.get("bank_cashout").toString());
 
-                            Type type = new TypeToken<List<BankCashoutModel>>() {}.getType();
+                            Type type = new TypeToken<List<BankCashoutModel>>() {
+                            }.getType();
                             Gson gson2 = new Gson();
                             listBankCashOut = gson2.fromJson(object.get("bank_cashout"), type);
 
