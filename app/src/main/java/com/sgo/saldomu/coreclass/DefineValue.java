@@ -614,6 +614,8 @@ public class DefineValue {
     public static String MEMBER_RW = "memberRW";
     public static String MEMBER_KELURAHAN = "memberKelurahan";
     public static String MEMBER_KECAMATAN = "memberKecamatan";
+    public static String MEMBER_KABUPATEN = "memberKabupaten";
+    public static String MEMBER_PROVINSI = "memberProvinsi";
     public static String MEMBER_RELIGION = "memberReligion";
     public static String MEMBER_STATUS = "memberStatus";
     public static String MEMBER_OCUPATION= "memberOcupation";

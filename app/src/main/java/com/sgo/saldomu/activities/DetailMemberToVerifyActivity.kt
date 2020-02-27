@@ -121,6 +121,8 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             params[WebParams.CUST_RW] = intent.getStringExtra(DefineValue.MEMBER_RW)
             params[WebParams.CUST_KELURAHAN] = intent.getStringExtra(DefineValue.MEMBER_KELURAHAN)
             params[WebParams.CUST_KECAMATAN] = intent.getStringExtra(DefineValue.MEMBER_KECAMATAN)
+            params[WebParams.CUST_KABUPATEN] = intent.getStringExtra(DefineValue.MEMBER_KABUPATEN)
+            params[WebParams.CUST_PROVINSI] = intent.getStringExtra(DefineValue.MEMBER_PROVINSI)
             params[WebParams.CUST_RELIGION] = intent.getStringExtra(DefineValue.MEMBER_RELIGION)
             params[WebParams.CUST_MARRIAGE_STATUS] = intent.getStringExtra(DefineValue.MEMBER_STATUS)
             params[WebParams.CUST_OCCUPATION] = intent.getStringExtra(DefineValue.MEMBER_OCUPATION)

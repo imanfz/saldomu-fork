@@ -244,29 +244,48 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/urban_village"
+                    android:text="@string/province"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/urban_village_edit_text"
-                    android:layout_width="fill_parent"
+                <Spinner
+                    android:id="@+id/province_spinner"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/input_urban_village"
-                    android:maxLength="30"
-                    android:textSize="@dimen/abc_text_size_medium_material" />
+                    android:layout_gravity="center_horizontal"
+                    android:spinnerMode="dropdown"
+                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/district"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/city_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:spinnerMode="dropdown"
+                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -281,15 +300,38 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/sub_district_edit_text"
-                    android:layout_width="fill_parent"
+                <Spinner
+                    android:id="@+id/sub_district_spinner"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/input_sub_district"
-                    android:maxLength="30"
-                    android:textSize="@dimen/abc_text_size_medium_material" />
+                    android:layout_gravity="center_horizontal"
+                    android:spinnerMode="dropdown"
+                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/linearLayout10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/urban_village"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/urban_village_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:spinnerMode="dropdown"
+                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearLayout12"
