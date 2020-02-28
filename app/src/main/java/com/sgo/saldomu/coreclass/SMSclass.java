@@ -82,7 +82,7 @@ public class SMSclass {
 
     public static IntentFilter simStateIntentFilter = new IntentFilter("android.intent.action.SIM_STATE_CHANGED");
 
-    public SMSclass(Context _context) {
+    public  SMSclass(Context _context) {
         this(_context, null);
     }
 

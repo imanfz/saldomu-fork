@@ -34,7 +34,6 @@ public class TermsAndCondition extends BaseActivity {
     SecurePreferences sp;
     private ProgressBar progbar;
     private Boolean isDisconnected;
-    private String domainPrivacyPolicy= "http://saldomu.com/index.php/syarat-ketentuan/";
 
     @Override
     protected int getLayoutResource() {
@@ -51,7 +50,7 @@ public class TermsAndCondition extends BaseActivity {
 
         isDisconnected = !InetHandler.isNetworkAvailable(this);
 
-        loadUrl(domainPrivacyPolicy);
+        loadUrl(MyApiClient.domainPrivacyPolicy);
     }
 
     private void InitializeToolbar(){
@@ -143,7 +142,7 @@ public class TermsAndCondition extends BaseActivity {
                 return true;
             case R.id.action_refresh:
                 if(webview_privacypolicy != null) {
-                    webview_privacypolicy.loadUrl(domainPrivacyPolicy);
+                    webview_privacypolicy.loadUrl(MyApiClient.domainPrivacyPolicy);
                     invalidateOptionsMenu();
                 }
                 return true;

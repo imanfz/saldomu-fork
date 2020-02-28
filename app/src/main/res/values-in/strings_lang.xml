@@ -16,7 +16,7 @@
     <string name="save">Simpan</string>
     <string name="close">Tutup</string>
     <string name="currency" translatable="false">Rp.</string>
-    <string name="text_copyright" translatable="false">Copyright &#169; 2016. All Rights Reserved.</string>
+    <string name="text_copyright" translatable="false">Copyright &#169; 2019. All Rights Reserved.</string>
     <string name="text_copyright2" translatable="false">Copyright &#169; 2014 Square Gate One.All Rights Reserved.</string>
     <string name="setting_icon_arrow" translatable="false">{fa-angle-double-right}</string>
     <string name="down_indicator" translatable="false">{fa-sort-desc}</string>
@@ -129,7 +129,6 @@
     <string name="login_button_login">Masuk</string>
     <string name="login_text_forgetpin">Lupa PIN, silahkan menghubungi\ncall center di 0813–3335–5541</string>
     <string name="login_text_forgetpass">Lupa Kata Sandi</string>
-    <string name="login_text_forgetpass_hide">Lupa Kata Sandi, silahkan kirim email ke\n supportmandiri@sgo.co.id</string>
     <string name="login_toast_loginsukses">Masuk Berhasil</string>
     <string name="login_validation_userID">Nomor handphone dibutuhkan !</string>
     <string name="login_validation_pass">Kata Sandi dibutuhkan!</string>
@@ -217,7 +216,7 @@
     <string name="menu_item_title_list_approval">Daftar Persetujuan</string>
     <string name="menu_item_title_trx_agent">Permintaan Transaksi</string>
     <string name="menu_item_title_onprogress_agent">Dalam Proses</string>
-    <string name="menu_item_title_tagih_agent">Tagih.id</string>
+    <string name="menu_item_title_tagih_agent">Tagihan</string>
     <string name="menu_item_title_map_agent">Peta Agen</string>
     <string name="menu_item_title_map_member">Peta Member</string>
     <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
@@ -612,7 +611,7 @@
     <string name="validation_date_empty">Tanggal lahir tidak boleh kosong</string>
     <string name="myprofile_dob_warning">*Pastikan bahwa tanggal lahir yang Anda pilih sudah sesuai dengan yang tertera pada KTP.</string>
     <string name="myprofile_email_warning">*Pastikan bahwa alamat Email yang tercantum sudah sesuai dan dalam keadaan aktif, karena seluruh laporan transaksi Saldomu Anda akan dikirimkan ke alamat Email tersebut.</string>
-    <string name="cashout_lkd_warning_1">*Pastikan bahwa No. Rekening yang Anda masukkan sudah benar.</string>
+    <string name="cashout_lkd_warning_1">*Pastikan bahwa Nama Pemilik dari No. rekening yang Anda masukan sama dengan nama pengguna Saldomu Anda.</string>
     <string name="cashout_lkd_warning_2">*Pastikan bahwa Nama Penerima yang Anda masukkan sudah benar.</string>
     <string name="myprofile_upload_photo_finish">Foto sudah berhasil diupload dan sedang menunggu Admin untuk verifikasi data.</string>
 
@@ -740,6 +739,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="webview_err_too_many_req">Terlalu Banyak Request ke Server</string>
 
     <string name="max_topup_allowed">Maksimal Isi Ulang</string>
+    <string name="level_dialog_waiting">Silahkan menunggu permohonan upgrade keanggotaan anda untuk disetujui.</string>
     <string name="level_dialog_finish_message">Silahkan lakukan konfirmasi pembaharuan keanggotaan anda dengan membawa Kartu Identitas sesuai dengan yang didaftarkan ke</string>
     <string name="level_dialog_finish_message_2">atau silahkan hubungi</string>
     <string name="level_dialog_finish_message_auto">Anda telah berhasil melakukan pembaharuan keanggotaan anda.</string>
@@ -1228,6 +1228,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="join_lkd">Join Member Mandiri LKD</string>
     <string name="c2a_lkd">Setor Tunai Mandiri LKD</string>
     <string name="upgrade_member">Upgrade Keanggotaan</string>
+    <string name="data_customer">Data Pelanggan</string>
     <string name="upgrade_agent">Upgrade Agen</string>
     <string name="data_member_basic">Data Member Basic</string>
     <string name="data_verified_member">Data Verified Member</string>
@@ -1522,4 +1523,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="title_search_agent">Cari Agen</string>
     <string name="lkd">LKD</string>
     <string name="DGI">DGI</string>
+    <string name="wrong_sms_format">Format SMS Salah.</string>
+    <string name="topup_remark">Proses tambah saldo membutuhkan waktu maks. 5 menit.</string>
 </resources>

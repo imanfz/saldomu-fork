@@ -346,6 +346,7 @@ public class FragListInvoiceTagih extends BaseFragment {
 
             paymentTypeAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_text_primary_dark, paymentTypeArr);
             sp_payment_type.setAdapter(paymentTypeAdapter);
+            sp_payment_type.setEnabled(false);
 
             initializePaymentType();
 
