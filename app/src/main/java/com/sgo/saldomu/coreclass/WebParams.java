@@ -585,6 +585,8 @@ public class WebParams {
     public static String CUST_RW = "cust_rw";
     public static String CUST_KELURAHAN = "cust_kelurahan";
     public static String CUST_KECAMATAN = "cust_kecamatan";
+    public static String CUST_KABUPATEN = "cust_kabupaten";
+    public static String CUST_PROVINSI = "cust_provinsi";
     public static String CUST_RELIGION = "cust_religion";
     public static String CUST_MARRIAGE_STATUS = "cust_marriage_status";
     public static String CUST_OCCUPATION = "cust_occupation";

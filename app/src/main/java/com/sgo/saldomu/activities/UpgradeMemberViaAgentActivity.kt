@@ -3,10 +3,11 @@ package com.sgo.saldomu.activities
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.sgo.saldomu.Beans.CustomAdapterModel
 import com.sgo.saldomu.R
@@ -17,9 +18,9 @@ import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place
 import com.sgo.saldomu.widgets.BaseActivity
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.*
-import timber.log.Timber
+import org.json.JSONArray
+import org.json.JSONObject
 import java.text.DateFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -31,6 +32,23 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
     internal lateinit var adapters: ArrayAdapter<String>
     var memberDOB: String = ""
     private lateinit var fromFormat: DateFormat
+
+    var provincesName: String = String()
+    var kabupatenName: String = String()
+    var kecamatanName: String = String()
+    var kelurahanName: String = String()
+    val provincesList: ArrayList<String> = arrayListOf()
+    var provincesObject = JSONObject()
+    var provincesArray = JSONArray()
+    val kabupatenList: ArrayList<String> = arrayListOf()
+    var kabupatenObject = JSONObject()
+    var kabupatenArray = JSONArray()
+    val kecamatanList: ArrayList<String> = arrayListOf()
+    var kecamatanObject = JSONObject()
+    var kecamatanArray = JSONArray()
+    val kelurahanList: ArrayList<String> = arrayListOf()
+    var kelurahanObject = JSONObject()
+    var kelurahanArray = JSONArray()
 
     override fun getLayoutResource(): Int {
         return R.layout.activity_upgrade_member_via_agent
@@ -48,6 +66,8 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
         initPOBSpinner()
 
         initGenderSpinner()
+
+        initProvinceSpinner()
 
         initReligionSpinner()
 
@@ -67,8 +87,10 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
                 intent.putExtra(DefineValue.MEMBER_ADDRESS, address_edit_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_RT, rt_edit_text.text.toString())
                 intent.putExtra(DefineValue.MEMBER_RW, rw_edit_text.text.toString())
-                intent.putExtra(DefineValue.MEMBER_KELURAHAN, urban_village_edit_text.text.toString())
-                intent.putExtra(DefineValue.MEMBER_KECAMATAN, sub_district_edit_text.text.toString())
+                intent.putExtra(DefineValue.MEMBER_KELURAHAN, kelurahanName)
+                intent.putExtra(DefineValue.MEMBER_KECAMATAN, kecamatanName)
+                intent.putExtra(DefineValue.MEMBER_KABUPATEN, kabupatenName)
+                intent.putExtra(DefineValue.MEMBER_PROVINSI, provincesName)
                 intent.putExtra(DefineValue.MEMBER_RELIGION, religion_spinner.selectedItem.toString())
                 intent.putExtra(DefineValue.MEMBER_STATUS, status_spinner.selectedItem.toString())
                 intent.putExtra(DefineValue.MEMBER_OCUPATION, job_edit_text.text.toString())
@@ -87,37 +109,166 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
         val genderAdapter = ArrayAdapter.createFromResource(this,
                 R.array.gender_type, android.R.layout.simple_spinner_item)
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        gender_spinner.setAdapter(genderAdapter)
+        gender_spinner.adapter = genderAdapter
+    }
+
+    private fun initProvinceSpinner(){
+        val jsonString =
+                applicationContext.assets.open("province.txt").bufferedReader()
+                        .use { it.readText() }
+        val jsonObject = JSONObject(jsonString)
+
+        provincesArray = jsonObject.getJSONArray("provinces")
+        for (i in 0 until provincesArray.length()) {
+            provincesObject = JSONObject(provincesArray[i].toString())
+            provincesList.add(provincesObject.optString("nama_provinsi"))
+        }
+
+        val provincesAdapter =
+                ArrayAdapter(applicationContext, android.R.layout.simple_spinner_dropdown_item, provincesList)
+
+        province_spinner.adapter = provincesAdapter
+        province_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+            ) {
+                kabupatenList.clear()
+                provincesObject = JSONObject(provincesArray[position].toString())
+                provincesName = provincesObject.optString("nama_provinsi")
+                kabupatenArray = provincesObject.getJSONArray("kabs")
+                for (i in 0 until kabupatenArray.length()) {
+                    kabupatenObject = JSONObject(kabupatenArray[i].toString())
+                    kabupatenList.add(kabupatenObject.optString("nama_kot_kab"))
+                }
+
+                val kabupatenAdapter =
+                        ArrayAdapter(
+                                applicationContext,
+                                android.R.layout.simple_spinner_dropdown_item,
+                                kabupatenList
+                        )
+
+                city_spinner.adapter = kabupatenAdapter
+            }
+
+        }
+
+        city_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+            ) {
+                kecamatanList.clear()
+                kabupatenObject = JSONObject(kabupatenArray[position].toString())
+                kabupatenName = kabupatenObject.optString("nama_kot_kab")
+                kecamatanArray = kabupatenObject.getJSONArray("kecamatans")
+                for (i in 0 until kecamatanArray.length()) {
+                    kecamatanObject = JSONObject(kecamatanArray[i].toString())
+                    kecamatanList.add(kecamatanObject.optString("nama_kecamatan"))
+                }
+
+                val kecamatanAdapter =
+                        ArrayAdapter(
+                                applicationContext,
+                                android.R.layout.simple_spinner_dropdown_item,
+                                kecamatanList
+                        )
+
+                sub_district_spinner.adapter = kecamatanAdapter
+            }
+
+        }
+
+        sub_district_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+            ) {
+                kelurahanList.clear()
+                kecamatanObject = JSONObject(kecamatanArray[position].toString())
+                kecamatanName = kecamatanObject.optString("nama_kecamatan")
+                kelurahanArray = kecamatanObject.getJSONArray("kelurahan")
+                for (i in 0 until kelurahanArray.length()) {
+                    kelurahanObject = JSONObject(kelurahanArray[i].toString())
+                    kelurahanList.add(kelurahanObject.optString("nama_lur_des"))
+                }
+
+                val kelurahanAdapter =
+                        ArrayAdapter(
+                                applicationContext,
+                                android.R.layout.simple_spinner_dropdown_item,
+                                kelurahanList
+                        )
+
+                urban_village_spinner.adapter = kelurahanAdapter
+            }
+
+        }
+        urban_village_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+            ) {
+                kelurahanObject = JSONObject(kelurahanArray[position].toString())
+                kelurahanName = kelurahanObject.optString("nama_lur_des")
+            }
+
+        }
     }
 
     private fun initNationalitySpinner() {
         val nationalityAdapter = ArrayAdapter.createFromResource(this,
                 R.array.list_nationality, android.R.layout.simple_spinner_item)
         nationalityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        nationality_spinner.setAdapter(nationalityAdapter)
+        nationality_spinner.adapter = nationalityAdapter
     }
 
     private fun initStatusSpinner() {
         val statusAdapter = ArrayAdapter.createFromResource(this,
                 R.array.list_marital_status, android.R.layout.simple_spinner_item)
         statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        status_spinner.setAdapter(statusAdapter)
+        status_spinner.adapter = statusAdapter
     }
 
     private fun initReligionSpinner() {
         val religionAdapter = ArrayAdapter.createFromResource(this,
                 R.array.list_religion, android.R.layout.simple_spinner_item)
         religionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        religion_spinner.setAdapter(religionAdapter)
+        religion_spinner.adapter = religionAdapter
     }
 
     private fun initPOBSpinner() {
-        locList = ArrayList<CustomAdapterModel>()
-        locLists = ArrayList<String>()
+        locList = ArrayList()
+        locLists = ArrayList()
         adapter = CustomAutoCompleteAdapter(this, locList, android.R.layout.simple_spinner_dropdown_item)
-        adapters = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, locLists)
+        adapters = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, locLists)
         birth_place_list.setAdapter(adapters)
-        birth_place_list.setThreshold(2)
+        birth_place_list.threshold = 2
 
         val realm = Realm.getInstance(RealmManager.BBSConfiguration)
         val results = realm.where(List_BBS_Birth_Place::class.java).findAll()
@@ -132,31 +283,31 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
     }
 
     private fun inputValidation(): Boolean {
-        if (nik_edit_text.getText().toString().length == 0) {
+        if (nik_edit_text.text.toString().length == 0) {
             nik_edit_text.requestFocus()
-            nik_edit_text.setError(resources.getString(R.string.ktp_warn))
+            nik_edit_text.error = resources.getString(R.string.ktp_warn)
             return false
-        } else if (nik_edit_text.getText().toString().length != 16) {
+        } else if (nik_edit_text.text.toString().length != 16) {
             nik_edit_text.requestFocus()
-            nik_edit_text.setError(resources.getString(R.string.ktp_warn1))
+            nik_edit_text.error = resources.getString(R.string.ktp_warn1)
             return false
-        } else if (fullname_edit_text.getText().toString().length == 0) {
+        } else if (fullname_edit_text.text.toString().length == 0) {
             fullname_edit_text.requestFocus()
-            fullname_edit_text.setError(resources.getString(R.string.myprofile_validation_name))
+            fullname_edit_text.error = resources.getString(R.string.myprofile_validation_name)
             return false
-        } else if (mothersname_edit_text.getText().toString().length == 0) {
+        } else if (mothersname_edit_text.text.toString().length == 0) {
             mothersname_edit_text.requestFocus()
-            mothersname_edit_text.setError(resources.getString(R.string.myprofile_validation_mothers_name))
+            mothersname_edit_text.error = resources.getString(R.string.myprofile_validation_mothers_name)
             return false
-        }else if (!locLists.contains(birth_place_list.getText().toString())) run {
+        }else if (!locLists.contains(birth_place_list.text.toString())) run {
             birth_place_list.requestFocus()
-            birth_place_list.setError("Nama kota tidak ditemukan!")
+            birth_place_list.error = "Nama kota tidak ditemukan!"
             return false
-        } else if (birth_place_list.getText().toString().trim({ it <= ' ' }).length == 0) run {
-            birth_place_list.setError("Kota kosong")
+        } else if (birth_place_list.text.toString().trim({ it <= ' ' }).length == 0) run {
+            birth_place_list.error = "Kota kosong"
             birth_place_list.requestFocus()
             return false
-        }else if (birthday_text_view.getText().toString().length==0) {
+        }else if (birthday_text_view.text.toString().length==0) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date_empty))
@@ -172,25 +323,17 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             val dialog = builder.create()
             dialog.show()
             return false
-        } else if (address_edit_text.getText().toString().length == 0) {
+        } else if (address_edit_text.text.toString().length == 0) {
             address_edit_text.requestFocus()
-            address_edit_text.setError(resources.getString(R.string.myprofile_validation_address))
+            address_edit_text.error = resources.getString(R.string.myprofile_validation_address)
             return false
-        } else if (rt_edit_text.getText().toString().length == 0) {
+        } else if (rt_edit_text.text.toString().length == 0) {
             rt_edit_text.requestFocus()
-            rt_edit_text.setError(resources.getString(R.string.rt_validation))
+            rt_edit_text.error = resources.getString(R.string.rt_validation)
             return false
-        } else if (rw_edit_text.getText().toString().length == 0) {
+        } else if (rw_edit_text.text.toString().length == 0) {
             rw_edit_text.requestFocus()
-            rw_edit_text.setError(resources.getString(R.string.rw_validation))
-            return false
-        } else if (urban_village_edit_text.getText().toString().length == 0) {
-            urban_village_edit_text.requestFocus()
-            urban_village_edit_text.setError(resources.getString(R.string.urban_village_validation))
-            return false
-        } else if (sub_district_edit_text.getText().toString().length == 0) {
-            sub_district_edit_text.requestFocus()
-            sub_district_edit_text.setError(resources.getString(R.string.sub_district_validation))
+            rw_edit_text.error = resources.getString(R.string.rw_validation)
             return false
         } else if (religion_spinner.selectedItem.equals(getString(R.string.select_religion))) {
             val builder = AlertDialog.Builder(this)
@@ -200,9 +343,9 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             val dialog = builder.create()
             dialog.show()
             return false
-        } else if (job_edit_text.getText().toString().length == 0) {
+        } else if (job_edit_text.text.toString().length == 0) {
             job_edit_text.requestFocus()
-            job_edit_text.setError(resources.getString(R.string.job_validation))
+            job_edit_text.error = resources.getString(R.string.job_validation)
             return false
         }
         return true
@@ -217,10 +360,10 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
 
         val datePickerDialog =
                 DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                    var calendar : Calendar = Calendar.getInstance()
+                    val calendar : Calendar = Calendar.getInstance()
                     calendar.set(year, monthOfYear, dayOfMonth )
 
-                    var monthdisplay = monthOfYear+1
+                    val monthdisplay = monthOfYear+1
 
                     birthday_text_view.text = "$dayOfMonth - $monthdisplay - $year"
                     fromFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ID", "INDONESIA"))
