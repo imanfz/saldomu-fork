@@ -26,6 +26,7 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -38,6 +39,7 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
 import com.sgo.saldomu.models.retrofit.LoginModel;
+import com.sgo.saldomu.securities.Md5;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,7 +69,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     private String[] perms;
     private ProgressDialog progdialog;
 
-    private String timeDate, timeStamp, fcm_id, fcmId_encrypted;
+    private String timeDate, timeStamp, fcm_id, msg, msgFinal, imeiDevice;
     private SecurePreferences sp;
     protected Gson gson;
     JsonParser jsonParser;
@@ -95,8 +97,6 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
 
         sp.edit().remove(DefineValue.SENDER_ID).commit();
-        timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
-        timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
 
         setFlowAnimation();
         Button skipbtn = (Button) skipButton;
@@ -252,14 +252,15 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     }
 
     private void sendFCM() {
+        getSMSContent();
         fcm_id = sp.getString(DefineValue.FCM_ID, "");
-        fcmId_encrypted = sp.getString(DefineValue.FCM_ENCRYPTED, "");
         showProgLoading("", true);
         try {
             HashMap<String, Object> params = RetrofitService
                     .getInstance().getSignatureSecretKey(MyApiClient.LINK_FCM, "");
             params.put(WebParams.FCM_ID, fcm_id);
-            params.put(WebParams.REFERENCE_ID, fcmId_encrypted);
+            params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
+            params.put(WebParams.REFERENCE_ID, sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED,""));
             Timber.d("isi params fcm:" + params.toString());
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_FCM, params, new ResponseListener() {
                 @Override
@@ -475,7 +476,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
         params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
         params.put(WebParams.IS_POS, sp.getString(DefineValue.IS_POS, "N"));
-        params.put(WebParams.IMEI_ID, imeiDevice);
+        params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
         Timber.d("isi param pin login:" + params);
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_PIN_LOGIN, params, new ObjListeners() {
@@ -511,6 +512,23 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                 showProgLoading("", false);
             }
         });
+    }
+
+    private void getSMSContent() {
+        String SMS_VERIFY = "REG EMO " + MyApiClient.COMM_ID;
+        SMSclass smSclass = new SMSclass(getApplicationContext());
+        timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
+        timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
+        imeiDevice = smSclass.getDeviceIMEI();
+        String ICCIDDevice = smSclass.getDeviceICCID();
+        Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
+        msg = (SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + timeDate + "_").toUpperCase();
+        String msg_hashed = Md5.hashMd5(msg).toUpperCase();
+        msgFinal = msg + msg_hashed;
+        Timber.wtf("content sms: " + msgFinal);
+
+        sp.edit().putString(DefineValue.SMS_CONTENT, msg).apply();
+        sp.edit().putString(DefineValue.SMS_CONTENT_ENCRYPTED, msg_hashed).apply();
     }
 
     protected Gson getGson() {

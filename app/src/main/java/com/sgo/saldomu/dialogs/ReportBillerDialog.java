@@ -203,9 +203,15 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         TextView tv_txid_value = view.findViewById(R.id.dialog_reportbiller_tx_id);
         TextView tv_trans_remark = view.findViewById(R.id.dialog_report_transaction_remark);
         TextView tv_trans_remark_sub = view.findViewById(R.id.dialog_report_transaction_remark_sub);
+        TextView tv_trans_remark_topup = view.findViewById(R.id.dialog_report_transaction_remark_topup);
 
         if (buss_scheme_code.equals("P2P") || type.equals(DefineValue.PAYFRIENDS)) {
             layout_txId.setVisibility(View.GONE);
+        }
+
+        if (buss_scheme_code.equalsIgnoreCase("TOP"))
+        {
+            tv_trans_remark_topup.setVisibility(View.VISIBLE);
         }
 
         tv_date_value.setText(args.getString(DefineValue.DATE_TIME));

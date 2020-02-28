@@ -214,19 +214,20 @@ public class MainPage extends BaseActivity {
                 return true;
             case R.id.menu_transfer:
                 currentTab = getString(R.string.transfer);
-                if (isDormant.equalsIgnoreCase("Y")) {
-                    dialogDormant();
-                } else {
-                    if (levelClass.isLevel1QAC()) {
-                        levelClass.showDialogLevel();
-                    } else {
-//                        i = new Intent(MainPage.this, ActivityListTransfer.class);
-//                        switchActivity(i, MainPage.ACTIVITY_RESULT);
-                        Fragment fragmentTransfer = new ListTransfer();
-                        switchContent(fragmentTransfer, getString(R.string.transfer));
-                        return true;
-                    }
-                }
+                dialogUnavailable();
+//                if (isDormant.equalsIgnoreCase("Y")) {
+//                    dialogDormant();
+//                } else {
+//                    if (levelClass.isLevel1QAC()) {
+//                        levelClass.showDialogLevel();
+//                    } else {
+////                        i = new Intent(MainPage.this, ActivityListTransfer.class);
+////                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+//                        Fragment fragmentTransfer = new ListTransfer();
+//                        switchContent(fragmentTransfer, getString(R.string.transfer));
+//                        return true;
+//                    }
+//                }
                 return true;
             case R.id.menu_help:
 //                i = new Intent(MainPage.this, ContactActivity.class);
@@ -253,6 +254,15 @@ public class MainPage extends BaseActivity {
 //                    Intent i = new Intent(MainPage.this, TopUpActivity.class);
 //                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
 //                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                }
+        );
+
+        dialognya.show();
+    }
+    private void dialogUnavailable() {
+        Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.alertbox_title_information),
+                getString(R.string.cashout_dialog_message),
+                (v, isLongClick) -> {
                 }
         );
 
@@ -1231,6 +1241,9 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.LAST_CURRENT_LONGITUDE);
         mEditor.remove(DefineValue.LAST_CURRENT_LATITUDE);
         mEditor.remove(DefineValue.COMPANY_TYPE);
+        mEditor.remove(DefineValue.SMS_CONTENT);
+        mEditor.remove(DefineValue.SMS_CONTENT_ENCRYPTED);
+        mEditor.remove(DefineValue.PROFILE_DOB);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -1617,4 +1630,6 @@ public class MainPage extends BaseActivity {
     private void callAgentShopService() {
         AgentShopService.getAgentShop(MainPage.this);
     }
+
+
 }

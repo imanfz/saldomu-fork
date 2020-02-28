@@ -637,6 +637,8 @@ public class DefineValue {
     public static String LANGUAGE_CODE_IND = "in";
     public static String LANGUAGE_CODE_ENG = "en";
     public static String MEMBER_MOTHERS_NAME = "memberMothersName";
+    public static String SMS_CONTENT = "smsContent";
+    public static String SMS_CONTENT_ENCRYPTED = "smsContentEncrypted";
 
 }
 

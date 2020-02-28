@@ -16,7 +16,7 @@
     <string name="save">Simpan</string>
     <string name="close">Tutup</string>
     <string name="currency" translatable="false">Rp.</string>
-    <string name="text_copyright" translatable="false">Copyright &#169; 2016. All Rights Reserved.</string>
+    <string name="text_copyright" translatable="false">Copyright &#169; 2019. All Rights Reserved.</string>
     <string name="text_copyright2" translatable="false">Copyright &#169; 2014 Square Gate One.All Rights Reserved.</string>
     <string name="setting_icon_arrow" translatable="false">{fa-angle-double-right}</string>
     <string name="down_indicator" translatable="false">{fa-sort-desc}</string>
@@ -1523,4 +1523,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="title_search_agent">Cari Agen</string>
     <string name="lkd">LKD</string>
     <string name="DGI">DGI</string>
+    <string name="wrong_sms_format">Format SMS Salah.</string>
+    <string name="topup_remark">Proses tambah saldo membutuhkan waktu maks. 5 menit.</string>
 </resources>

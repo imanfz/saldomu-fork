@@ -38,6 +38,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
@@ -65,7 +66,7 @@ import static android.content.Context.FINGERPRINT_SERVICE;
 //public class Login extends BaseFragment implements View.OnClickListener {
 public class Login extends BaseFragment implements View.OnClickListener, FingerprintDialog.FingerprintDialogListener {
 
-    private String userIDfinale = null, is_pos;
+    private String userIDfinale = null, is_pos, imeiIdDevice;
     private Button btnforgetPass;
     private Button btnforgetPin;
     private Button btnRegister;
@@ -115,6 +116,9 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
+
+        SMSclass smSclass = new SMSclass(getActivity());
+        imeiIdDevice = smSclass.getDeviceIMEI();
 
         Bundle m = getArguments();
 
@@ -297,10 +301,10 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
             } else {
                 params.put(WebParams.PASSWORD_LOGIN, RSA.opensslEncrypt(passLoginValue.getText().toString()));
             }
-//            params.put(WebParams.PASSWORD_LOGIN, encrypted_password);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
             params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
+            params.put(WebParams.IMEI_ID, imeiIdDevice.toUpperCase());
             if (checkIsPOS())
                 params.put(WebParams.IS_POS, is_pos);
             if (sp.getString(DefineValue.FCM_ID, "") != null)

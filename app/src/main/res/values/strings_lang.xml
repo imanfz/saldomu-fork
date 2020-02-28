@@ -16,7 +16,7 @@
     <string name="save">Save</string>
     <string name="close">Close</string>
     <string name="currency" translatable="false">Rp.</string>
-    <string name="text_copyright" translatable="false">Copyright &#169; 2016. All Rights Reserved.</string>
+    <string name="text_copyright" translatable="false">Copyright &#169; 2019. All Rights Reserved.</string>
     <string name="text_copyright2" translatable="false">Copyright &#169; 2014 Square Gate One.All Rights Reserved.</string>
     <string name="setting_icon_arrow" translatable="false">{fa-angle-double-right}</string>
     <string name="down_indicator" translatable="false">{fa-sort-desc}</string>
@@ -1062,7 +1062,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="cashoutmember_cancel_message">Are you sure you want to cancel ?</string>
     <string name="cashoutmember_text_cashoutcode">Cash Out Code</string>
     <string name="cashoutmember_alert_no_tx">Please contact the nearest agent</string>
-    <string name="newhome_bpjs">BPJS</string>
+    <string name="newhome_bpjs">BPJS Kesehatan</string>
     <string name="newhome_listrik_pln">PLN Electricity</string>
     <string name="bbs_mobility_agent_to_member">Agent to Member</string>
     <string name="bbs_mobility_member_to_agent">Member to Agent</string>
@@ -1542,4 +1542,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="title_search_agent">Search Agent</string>
     <string name="lkd">LKD</string>
     <string name="DGI">DGI</string>
+    <string name="wrong_sms_format">Format SMS Invalid.</string>
+    <string name="topup_remark">Top Up Process takes max. 5 minutes.</string>
 </resources>
