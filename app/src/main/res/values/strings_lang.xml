@@ -1543,4 +1543,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="title_search_agent">Search Agent</string>
     <string name="lkd">LKD</string>
     <string name="DGI">DGI</string>
+    <string name="no_notif">You have no notification yet.</string>
 </resources>

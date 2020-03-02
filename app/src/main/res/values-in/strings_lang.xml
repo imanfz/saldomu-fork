@@ -1524,4 +1524,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="title_search_agent">Cari Agen</string>
     <string name="lkd">LKD</string>
     <string name="DGI">DGI</string>
+    <string name="no_notif">Notifikasi kamu kosong.</string>
 </resources>

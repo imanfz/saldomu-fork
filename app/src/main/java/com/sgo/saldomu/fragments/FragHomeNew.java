@@ -594,41 +594,41 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             dialogDormant();
                         } else
                             posIdx = BBSActivity.BBSMYORDERS;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_search_agent)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else {
-                            Intent intent = new Intent(getActivity(), SearchAgentUpgradeActivity.class);
-                            intent.putExtra(DefineValue.TYPE, "ALL");
-                            startActivity(intent);
-                        }
-                    else {
-//                        posIdx = -1;
-//                        try {
-//                            JSONArray jsonArray = new JSONArray(memberSchemeCode);
-//                            for (int index = 0; index < jsonArray.length(); index++) {
-//                                JSONObject jsonObject = jsonArray.getJSONObject(index);
-//                                String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
-//                                String categoryNameModified = getString(R.string.menu_item_search_agent_bbs) + " " + objs;
-//                                if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
-//                                    if (isDormant.equalsIgnoreCase("Y")) {
-//                                        dialogDormant();
-//                                    } else {
-//                                        Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
-//                                        i.putExtra(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
-//                                        sp.edit().putString(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
-//                                        i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
-//                                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-//                                        i.putExtra(DefineValue.AMOUNT, "");
-//                                        i.putExtra(DefineValue.BBS_SCHEME_CODE, jsonObject.optString(WebParams.SCHEME_CODE));
-//                                        switchActivity(i, MainPage.ACTIVITY_RESULT);
-//                                        break;
-//                                    }
-//                                }
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
+//                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_search_agent)))
+//                        if (isDormant.equalsIgnoreCase("Y")) {
+//                            dialogDormant();
+//                        } else {
+//                            Intent intent = new Intent(getActivity(), SearchAgentUpgradeActivity.class);
+//                            intent.putExtra(DefineValue.TYPE, "ALL");
+//                            startActivity(intent);
 //                        }
+                    else {
+                        posIdx = -1;
+                        try {
+                            JSONArray jsonArray = new JSONArray(memberSchemeCode);
+                            for (int index = 0; index < jsonArray.length(); index++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(index);
+                                String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
+                                String categoryNameModified = getString(R.string.menu_item_search_agent_bbs) + " " + objs;
+                                if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
+                                    if (isDormant.equalsIgnoreCase("Y")) {
+                                        dialogDormant();
+                                    } else {
+                                        Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
+                                        i.putExtra(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
+                                        sp.edit().putString(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
+                                        i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
+                                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                                        i.putExtra(DefineValue.AMOUNT, "");
+                                        i.putExtra(DefineValue.BBS_SCHEME_CODE, jsonObject.optString(WebParams.SCHEME_CODE));
+                                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                                        break;
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 if (posIdx != -1) {
@@ -920,9 +920,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
 
             } else {
-//                checkSchemeCodeMember();
-                menuStrings.add(getResources().getString(R.string.title_search_agent));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_search_agent));
+                checkSchemeCodeMember();
+//                menuStrings.add(getResources().getString(R.string.title_search_agent));
+//                menuDrawables.add(getResources().getDrawable(R.drawable.ic_search_agent));
 
 
                 menuStrings.add(getResources().getString(R.string.title_cash_out_member));
