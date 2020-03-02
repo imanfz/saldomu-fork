@@ -312,7 +312,7 @@ public class SMSDialog extends DialogFragment {
                 public void run() {
 //                    saveData(new JSONObject());
                 }
-            }, 3000);
+            }, 10000);
 
             cdTimer.cancel();
         }
@@ -414,7 +414,7 @@ public class SMSDialog extends DialogFragment {
                                             public void run() {
                                                 saveData(model);
                                             }
-                                        }, 3000);
+                                        }, 10000);
 
                                     } else if (code.equals(DefineValue.ERROR_9333)) {
                                         Timber.d("isi response app data:" + model.getApp_data());
@@ -433,7 +433,7 @@ public class SMSDialog extends DialogFragment {
                                             public void run() {
                                                 sentInquirySMS();
                                             }
-                                        }, 3000);
+                                        }, 10000);
                                     }
                                 }
 
@@ -444,7 +444,7 @@ public class SMSDialog extends DialogFragment {
                                         public void run() {
                                             sentInquirySMS();
                                         }
-                                    }, 3000);
+                                    }, 10000);
                                 }
 
                                 @Override
