@@ -623,7 +623,7 @@
     <string name="login_failed_wrong_pass">Password Salah</string>
     <string name="login_failed_wrong_id">Nomor Handphone tidak valid atau tidak terdaftar.</string>
 
-    <string name="termsncondition_checkbox_1">Dengan mengklik tombol ini, Anda setuju dengan</string>
+    <string name="termsncondition_checkbox_1">Dengan mengklik tombol ini, Anda setuju dengan Syarat dan Ketentuan.</string>
     <string name="termsncondition_checkbox_2"><u>Syarat dan Ketentuan.</u></string>
     <string name="termsncondition_title">Syarat dan Ketentuan.</string>
 

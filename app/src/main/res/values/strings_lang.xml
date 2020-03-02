@@ -632,7 +632,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="login_failed_wrong_pass">Wrong password</string>
     <string name="login_failed_wrong_id">Invalid phone number or not registered.</string>
 
-    <string name="termsncondition_checkbox_1">By clicking on this button, you agree to</string>
+    <string name="termsncondition_checkbox_1">By clicking on this button, you agree to Terms and Conditions.</string>
     <string name="termsncondition_checkbox_2"><u>Terms and Conditions.</u></string>
     <string name="termsncondition_title">Terms and Conditions.</string>
 
