@@ -1544,4 +1544,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="DGI">DGI</string>
     <string name="wrong_sms_format">Format SMS Invalid.</string>
     <string name="topup_remark">Top Up Process takes max. 5 minutes.</string>
+    <string name="no_notif">You have no notification yet.</string>
 </resources>

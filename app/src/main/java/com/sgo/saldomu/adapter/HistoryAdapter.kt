@@ -46,10 +46,10 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
 
         val model = itemList.elementAt(position)
         if (model.history_type=="I") {
-            holder.amountText.text = "+ Rp. " + CurrencyFormat.format(model.amount)
+            holder.amountText.text = "+ Rp. " + CurrencyFormat.format1(model.amount)
             holder.amountText.setTextColor(ContextCompat.getColor(context, R.color.green_A700))
         } else {
-            holder.amountText.text = "- Rp. " + CurrencyFormat.format(model.amount)
+            holder.amountText.text = "- Rp. " + CurrencyFormat.format1(model.amount)
             holder.amountText.setTextColor(ContextCompat.getColor(context, R.color.red))
         }
 

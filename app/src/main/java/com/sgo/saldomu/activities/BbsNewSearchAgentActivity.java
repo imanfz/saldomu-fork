@@ -1090,16 +1090,16 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
             defaultProductCode = getString(R.string.SALDOMU);
 
         if (schemeCode.equalsIgnoreCase(DefineValue.CTA)) {
-            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
-                listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
-                        .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
-                        .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF)
-                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll();
-            }else{
+//            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
+//                listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
+//                        .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
+//                        .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF)
+//                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll();
+//            }else{
                 listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
                         .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
                         .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
-            }
+//            }
             setMember(listbankBenef);
         } else if (schemeCode.equalsIgnoreCase(DefineValue.CTR)) {
             listBankBenefCTR = realmBBSMemberBank.where(BBSBankModel.class)
@@ -1107,17 +1107,17 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
             setMember(listBankBenefCTR);
         } else {
-            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
-                listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
-                        .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
-                        .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE)
-                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode)
-                        .findAll();
-            } else {
+//            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
+//                listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
+//                        .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
+//                        .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE)
+//                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode)
+//                        .findAll();
+//            } else {
                 listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
                         .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
                         .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE).findAll();
-            }
+//            }
             if (listbankSource == null) {
                 Toast.makeText(this, getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
             }

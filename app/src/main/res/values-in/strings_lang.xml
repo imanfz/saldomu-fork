@@ -1525,4 +1525,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="DGI">DGI</string>
     <string name="wrong_sms_format">Format SMS Salah.</string>
     <string name="topup_remark">Proses tambah saldo membutuhkan waktu maks. 5 menit.</string>
+    <string name="no_notif">Notifikasi kamu kosong.</string>
 </resources>
