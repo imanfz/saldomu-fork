@@ -594,14 +594,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             dialogDormant();
                         } else
                             posIdx = BBSActivity.BBSMYORDERS;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_search_agent)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else {
-                            Intent intent = new Intent(getActivity(), SearchAgentUpgradeActivity.class);
-                            intent.putExtra(DefineValue.TYPE, "ALL");
-                            startActivity(intent);
-                        }
+//                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_search_agent)))
+//                        if (isDormant.equalsIgnoreCase("Y")) {
+//                            dialogDormant();
+//                        } else {
+//                            Intent intent = new Intent(getActivity(), SearchAgentUpgradeActivity.class);
+//                            intent.putExtra(DefineValue.TYPE, "ALL");
+//                            startActivity(intent);
+//                        }
+
                     else {
                         posIdx = -1;
                         try {
@@ -609,12 +610,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             for (int index = 0; index < jsonArray.length(); index++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(index);
                                 String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
-
                                 if (objs.equals("Tarik Tunai"))
                                     objs = getString(R.string.cash_in);
                                 if (objs.equals("Setor Tunai"))
                                     objs = getString(R.string.cash_out);
-
                                 String categoryNameModified = getString(R.string.menu_item_search_agent_bbs) + " " + objs;
                                 if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
                                     if (isDormant.equalsIgnoreCase("Y")) {

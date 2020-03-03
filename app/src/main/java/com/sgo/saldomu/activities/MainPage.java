@@ -214,7 +214,12 @@ public class MainPage extends BaseActivity {
                 return true;
             case R.id.menu_transfer:
                 currentTab = getString(R.string.transfer);
-                dialogUnavailable();
+                if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp))) {
+                        Fragment fragmentTransfer = new ListTransfer();
+                        switchContent(fragmentTransfer, getString(R.string.transfer));
+                        return true;
+                } else
+                    dialogUnavailable();
 //                if (isDormant.equalsIgnoreCase("Y")) {
 //                    dialogDormant();
 //                } else {
@@ -259,6 +264,7 @@ public class MainPage extends BaseActivity {
 
         dialognya.show();
     }
+
     private void dialogUnavailable() {
         Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.alertbox_title_information),
                 getString(R.string.cashout_dialog_message),
@@ -1115,7 +1121,7 @@ public class MainPage extends BaseActivity {
             showCreatePin();
         } else if (levelClass.isLevel1QAC() && sp.getString(DefineValue.IS_FIRST, "").equalsIgnoreCase(DefineValue.YES)) {
             showMyProfile();
-        }else if (sp.getString(DefineValue.FORCE_CHANGE_PIN, "").equalsIgnoreCase(DefineValue.STRING_YES)) {
+        } else if (sp.getString(DefineValue.FORCE_CHANGE_PIN, "").equalsIgnoreCase(DefineValue.STRING_YES)) {
             showChangePin();
         }
 //        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
