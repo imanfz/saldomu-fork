@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.dialogs.TNCDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.CreatePassModel;
@@ -63,7 +65,6 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     EditText namaValue, emailValue, noHPValue, referalValue;
     Button btnLanjut;
     String flag_change_pwd, flag_change_pin, pass, confPass;
-    CheckBox cb_terms;
     View v;
     final int RC_READ_SMS = 10;
     Fragment mFragment;
@@ -93,27 +94,17 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        openTNC();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         namaValue = getActivity().findViewById(R.id.name_value);
         emailValue = getActivity().findViewById(R.id.email_value);
         noHPValue = getActivity().findViewById(R.id.noHP_value);
-        cb_terms = v.findViewById(R.id.cb_termsncondition);
+
         referalValue = v.findViewById(R.id.referal_value);
 
         btnLanjut = getActivity().findViewById(R.id.btn_reg1_verification);
         btnLanjut.setOnClickListener(btnNextClickListener);
-
-        cb_terms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    btnLanjut.setEnabled(true);
-                else
-                    btnLanjut.setEnabled(false);
-            }
-        });
 
 //        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.READ_PHONE_STATE)) {
 //            if (isSimExists()) {
@@ -131,15 +122,6 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
 
         noHPValue.requestFocus();
         ToggleKeyboard.show_keyboard(getActivity());
-
-        TextView tv_termsnconditions = v.findViewById(R.id.tv_termsncondition);
-        tv_termsnconditions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), TermsAndCondition.class);
-                startActivity(i);
-            }
-        });
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
@@ -171,6 +153,11 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
         }
 
 
+    }
+
+    private void openTNC() {
+        DialogFragment dialog = TNCDialog.newDialog(dialog1 -> dialog1.dismiss());
+        dialog.show(getActivity().getSupportFragmentManager(), "Dialog");
     }
 
     @Override

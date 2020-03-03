@@ -130,22 +130,6 @@
             android:textColor="@color/yellow_200"
             android:textStyle="italic" />
 
-        <CheckBox
-            android:id="@+id/cb_termsncondition"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/termsncondition_checkbox_1" />
-
-        <TextView
-            android:id="@+id/tv_termsncondition"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:clickable="true"
-            android:text="@string/termsncondition_checkbox_2"
-            android:textColor="@color/white" />
-
         <EditText
             android:id="@+id/referal_value"
             android:layout_width="match_parent"
