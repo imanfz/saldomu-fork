@@ -1541,7 +1541,9 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="pin_blocked">Your PIN is blocked. Use "Forgot Pin" to unblock.</string>
     <string name="title_search_agent">Search Agent</string>
     <string name="lkd">LKD</string>
+    <string name="lp">LP</string>
     <string name="DGI">DGI</string>
     <string name="wrong_sms_format">Format SMS Invalid.</string>
     <string name="topup_remark">Top Up Process takes max. 5 minutes.</string>
+    <string name="no_notif">You have no notification yet.</string>
 </resources>
