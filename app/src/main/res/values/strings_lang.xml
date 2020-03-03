@@ -632,7 +632,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="login_failed_wrong_pass">Wrong password</string>
     <string name="login_failed_wrong_id">Invalid phone number or not registered.</string>
 
-    <string name="termsncondition_checkbox_1">By clicking on this button, you agree to</string>
+    <string name="termsncondition_checkbox_1">By clicking on this button, you agree to Terms and Conditions.</string>
     <string name="termsncondition_checkbox_2"><u>Terms and Conditions.</u></string>
     <string name="termsncondition_title">Terms and Conditions.</string>
 
@@ -979,7 +979,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="title_cash_out_member">Cash Out Confirmation</string>
     <string name="title_bbs_my_orders">My Orders</string>
     <string name="agent_name">Agent Name</string>
-    <string name="agent_name_hint">Masukkan nama agent yang diinginkan</string>
+    <string name="agent_name_hint">Input your agent name</string>
     <string name="auto_generate">Auto-generate</string>
     <string name="join_agent">Agent Registration</string>
     <string name="tipe_account">Account Type</string>
@@ -1045,7 +1045,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="nominal_text">Nominal</string>
     <string name="jumlah_text">Amount</string>
     <string name="total">Total</string>
-    <string name="pln_warn">For your convenience, please do not make any transaction between 11:45 – 00:45. Because your transaction can\'t be processed after that period of time.</string>
+    <string name="pln_warn">For your convenience, please do not make any transaction between 11:45 pm – 00:45 am. Because your transaction can\'t be processed after that period of time.</string>
 
     <string name="cashoutmember_tx_id">Transaction ID</string>
     <string name="cashoutmember_created">Transaction Date</string>
@@ -1091,7 +1091,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="menu_item_search_agent_cta">Cash Deposit Agent</string>
     <string name="menu_item_search_agent_atc">Cash Withdrawal Agent</string>
-    <string name="menu_item_search_agent_bbs">Call the Agent</string>
+    <string name="menu_item_search_agent_bbs">Call Agent</string>
 
     <string name="setting_permission_location">Setting Location</string>
     <string name="err_disallow_permission_location">Please turn on your location</string>

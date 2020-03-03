@@ -602,6 +602,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //                            intent.putExtra(DefineValue.TYPE, "ALL");
 //                            startActivity(intent);
 //                        }
+
                     else {
                         posIdx = -1;
                         try {
@@ -609,6 +610,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             for (int index = 0; index < jsonArray.length(); index++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(index);
                                 String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
+                                if (objs.equals("Tarik Tunai"))
+                                    objs = getString(R.string.cash_in);
+                                if (objs.equals("Setor Tunai"))
+                                    objs = getString(R.string.cash_out);
                                 String categoryNameModified = getString(R.string.menu_item_search_agent_bbs) + " " + objs;
                                 if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
                                     if (isDormant.equalsIgnoreCase("Y")) {
@@ -617,7 +622,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                         Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
                                         i.putExtra(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
                                         sp.edit().putString(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
-                                        i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
+//                                        i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
+                                        i.putExtra(DefineValue.CATEGORY_NAME, objs);
                                         i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
                                         i.putExtra(DefineValue.AMOUNT, "");
                                         i.putExtra(DefineValue.BBS_SCHEME_CODE, jsonObject.optString(WebParams.SCHEME_CODE));

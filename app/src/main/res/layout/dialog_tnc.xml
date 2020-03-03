@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <WebView
+            android:layout_weight="0.3"
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            />
+        <CheckBox
+            android:id="@+id/cb_termsncondition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/termsncondition_checkbox_1" />
+        <Button
+            android:id="@+id/btn_ok"
+            android:background="@drawable/rounded_background_blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/ok"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar_web"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+</RelativeLayout>
