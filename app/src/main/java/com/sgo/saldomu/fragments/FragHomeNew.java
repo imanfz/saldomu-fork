@@ -387,8 +387,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         if (getLvlClass().isLevel1QAC()) {
                             getLvlClass().showDialogLevel();
                         } else {
-                            Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
-                            switchActivity(i, MainPage.ACTIVITY_RESULT);
+                            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp))) {
+                                Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
+                                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                            } else {
+                                dialogUnavailable();
+                            }
                         }
                     }
                 }
@@ -1375,5 +1379,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         MainPage fca = (MainPage) getActivity();
         fca.switchContent(i, name);
+    }
+
+    private void dialogUnavailable() {
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.alertbox_title_information),
+                getString(R.string.cashout_dialog_message),
+                (v, isLongClick) -> {
+                }
+        );
+
+        dialognya.show();
     }
 }
