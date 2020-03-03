@@ -36,7 +36,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="PIN (Personal Identification Number) digunakan sebagai otorisasi pada saat Anda melakukan transaksi."
+                        android:text="@string/pin_desc"
                         android:textStyle="italic"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"/>
@@ -68,7 +68,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center_horizontal"
-                        android:text="Jaga kerahasiaan PIN anda"
+                        android:text="@string/keep_your_pin_confidential"
                         android:textStyle="italic"/>
                     <FrameLayout
 

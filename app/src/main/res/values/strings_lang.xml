@@ -1421,6 +1421,12 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="rw_validation">RW is required!</string>
     <string name="urban_village_validation">Urban Village required!</string>
     <string name="sub_district_validation">Sub-district required!</string>
+    <string name="district_validation">District required!</string>
+    <string name="province_validation">Province required!</string>
+    <string name="urban_village_not_found_message">Urban Village name not found</string>
+    <string name="sub_district_not_found_message">Sub-district name not found</string>
+    <string name="district_not_found_message">District name not found</string>
+    <string name="province_not_found_message">Province name not found</string>
     <string name="religion_validation">Religion required!</string>
     <string name="job_validation">Job required!</string>
     <string name="KTP_title">1. KTP Photo</string>
@@ -1436,7 +1442,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="tagihan_listrik">Electricity Bills</string>
     <string name="please_wait">Please Wait…</string>
     <string name="gender_validation">Gender required!</string>
-    <string name="empty_notification">Looks like you still haven\'t gotten a message or done a transaction</string>
+    <string name="empty_notification">Notification Empty</string>
+    <string name="empty_notification_message">Looks like you still haven\'t gotten a message or done a transaction</string>
     <string name="cashout_dialog_message">This menu is not available for you.</string>
     <string name="adress_detail">Detail Address</string>
     <string name="location">Location</string>
@@ -1512,7 +1519,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="input_urban_village">Input Urban Village</string>
     <string name="sub_district">Sub-district</string>
     <string name="input_sub_district">Input Sub-district</string>
-
+    <string name="input_district">Input District</string>
+    <string name="input_province">Input Province</string>
 
     <string name="select_religion">-Select Religion-</string>
 
@@ -1530,6 +1538,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="effective_date">Effective date</string>
 
     <string name="cash_collection_confirmation">Cash Collection Confirmation</string>
+    <string name="pin_desc">The PIN (Personal Identification Number) is used as an authorization when you do a transaction.</string>
     <string name="keep_your_pin_confidential">Keep your PIN confidential</string>
 
     <string name="community_code">Community Code</string>
