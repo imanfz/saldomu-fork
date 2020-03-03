@@ -1522,6 +1522,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="pin_blocked">PIN Anda terblokir. Silahkan gunakan menu "Lupa Pin" untuk membukanya.</string>
     <string name="title_search_agent">Cari Agen</string>
     <string name="lkd">LKD</string>
+    <string name="lp">LP</string>
     <string name="DGI">DGI</string>
     <string name="wrong_sms_format">Format SMS Salah.</string>
     <string name="topup_remark">Proses tambah saldo membutuhkan waktu maks. 5 menit.</string>
