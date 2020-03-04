@@ -63,7 +63,7 @@
 
     <string name="regist1_notif_title">Registrasi Sukses</string>
     <string name="regist1_notif_title_registered">Nomor Handphone sudah Terdaftar</string>
-    <string name="regist1_notif_message_registered">Silahkan gunakan Nomor Handphone dan Password Anda untuk masuk. </string>
+    <string name="regist1_notif_message_registered">Silahkan gunakan Nomor Handphone dan Kata Sandi Anda untuk masuk. </string>
     <string name="regist1_notif_title_verification">Verifikasi Sukses</string>
     <string name="regist1_notif_message_email">Silahkan cek inbox Email Anda untuk proses aktivasi selanjutnya.</string>
     <string name="regist1_notif_message_sms">akan mengirimkan satu SMS berisi kode Token untuk proses
@@ -86,21 +86,21 @@
 
     <string name="regist2_notif_title">Registrasi Sukses</string>
     <string name="regist2_notif_message_1">Nomor handphone Anda adalah:</string>
-    <string name="regist2_notif_message_3">Silahkan gunakan Nomor Handphone dan Password Anda untuk masuk.</string>
+    <string name="regist2_notif_message_3">Silahkan gunakan Nomor Handphone dan Kata Sandi Anda untuk masuk.</string>
     <string name="regist2_title">Registrasi</string>
-    <string name="regist2_text_pass">Password</string>
+    <string name="regist2_text_pass">Kata Sandi</string>
     <string name="regist2_edithint_pass">min. 6 karakter</string>
-    <string name="regist2_checkbox_showpass">Tampilkan Password</string>
-    <string name="regist2_text_ulangpass">Ketik ulang Password</string>
+    <string name="regist2_checkbox_showpass">Tampilkan Kata Sandi</string>
+    <string name="regist2_text_ulangpass">Ketik ulang kata sandi</string>
     <string name="regist2_checkbox_showpin">Tampilkan PIN</string>
     <string name="regist2_text_ulangpin">Ketik ulang PIN</string>
     <string name="regist2_text_otp">Token</string>
     <string name="regist2_edithint_otp">Silahkan masukkan kode Token</string>
 
-    <string name="regist2_validation_pass">Password dibutuhkan!</string>
-    <string name="regist2_validation_pass_length">Password minimal 6 karakter!</string>
-    <string name="regist2_validation_confirmpass">Ketik ulang Password dibutuhkan!</string>
-    <string name="regist2_validation_confirmpass_pass">Ketik ulang Password tidak sama dengan Password!</string>
+    <string name="regist2_validation_pass">Kata sandi dibutuhkan!</string>
+    <string name="regist2_validation_pass_length">Kata sandi minimal 6 karakter!</string>
+    <string name="regist2_validation_confirmpass">Ketik ulang kata sandi dibutuhkan!</string>
+    <string name="regist2_validation_confirmpass_pass">Ketik ulang kata sandi tidak sama dengan kata sandi sebelumnya!</string>
     <string name="regist2_validation_otp">Token dibutuhkan!</string>
     <string name="reg2_activation_code">Kode Aktivasi</string>
     <string name="reg2_hint_token_code">Kode Token</string>
@@ -271,7 +271,7 @@
         Pastikan tanggal lahir dan Nama ibu kandung diisi dengan data yang benar karena digunakan sebagai pengecekan kesamaan data saat lupa PIN.
     </string>
 
-    <string name="changepass_ab_changepass">Ganti Password</string>
+    <string name="changepass_ab_changepass">Ganti KataSandi</string>
     <string name="changepass_text_currentpass">Kata Sandi Lama</string>
     <string name="changepass_text_newpass">Kata Sandi Baru</string>
     <string name="changepass_text_retypenewpass">Ketik Ulang Kata Sandi Baru</string>
@@ -300,12 +300,12 @@
     <string name="sgoplusweb_ab_title" translatable="false">ESPAY</string>
     <string name="sgoplusweb_ab_title_saldomu" translatable="false">Saldomu</string>
 
-    <string name="forgetpass_dialog_title">Lupa Password</string>
-    <string name="forgetpass_dialog_message">Silahkan cek inbox SMS Anda untuk proses mengganti Password selanjutnya.</string>
+    <string name="forgetpass_dialog_title">Lupa Kata Sandi</string>
+    <string name="forgetpass_dialog_message">Silahkan cek inbox SMS Anda untuk proses mengganti kata sandi selanjutnya.</string>
     <string name="forgetpass_edittext_validation">Nomor handphone dibutuhkan!</string>
 
-    <string name="mainpage_dialog_changepass_title">Ganti Password</string>
-    <string name="mainpage_dialog_changepass_msg">Apakah Anda ingin mengganti password ?</string>
+    <string name="mainpage_dialog_changepass_title">Ganti Kata Sandi</string>
+    <string name="mainpage_dialog_changepass_msg">Apakah Anda ingin mengganti kata sandi ?</string>
 
     <string name="listevoucherhp_ab_title_ib" translatable="false">E-Voucher HP - Internet Banking</string>
     <string name="listevoucherhp_ab_title_sb" translatable="false">E-Voucher HP - SMS Banking</string>
@@ -620,7 +620,7 @@
     <string name="login_failed_attempt_3">ID Anda sudah terblokir karena salah kata sandi melebihi batas toleransi, silahkan gunakan fitur "Lupa Kata Sandi" untuk melepas blokir.</string>
     <string name="login_failed_inactive">ID Anda tidak aktif</string>
     <string name="login_failed_dormant">ID Anda dormant</string>
-    <string name="login_failed_wrong_pass">Password Salah</string>
+    <string name="login_failed_wrong_pass">Kata Sandi Salah</string>
     <string name="login_failed_wrong_id">Nomor Handphone tidak valid atau tidak terdaftar.</string>
 
     <string name="termsncondition_checkbox_1">Dengan mengklik tombol ini, Anda setuju dengan Syarat dan Ketentuan.</string>
@@ -729,7 +729,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="cashoutagen_nodata_message">Untuk menggunakan fitur ini silahkan datang ke :</string>
     <string name="request">Permintaan</string>
 
-    <string name="changepass_ab_createpass">Buat Password</string>
+    <string name="changepass_ab_createpass">Buat Kata Sandi</string>
     <string name="password_valid_lowcase">Huruf Kecil dibutuhkan!</string>
     <string name="password_valid_upcase">Huruf Kapital dibutuhkan!</string>
     <string name="password_valid_number">Angka dibutuhkan!</string>
@@ -981,7 +981,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="nama_rekening_validation">Nama Rekening Dibutuhkan !</string>
     <string name="title_bbs_list_account_bbs">Rekening Saya</string>
     <string name="dialog_title_delete_bbs_acct">Hapus Akun</string>
-    <string name="dialog_msg_delete_bbs_acct">Nama : %1$s\nNo : %2$s\nProduk : %3$s \n\nMasukan password anda untuk menghapus akun.</string>
+    <string name="dialog_msg_delete_bbs_acct">Nama : %1$s\nNo : %2$s\nProduk : %3$s \n\nMasukan kata sandi anda untuk menghapus akun.</string>
     <string name="bbsreg_et_error_rekbenef">No Rekening Tujuan dibutuhkan !</string>
     <string name="bbsreg_et_error_namebenef">Nama Rekening dibutuhkan !</string>
     <string name="bbsreg_spin_error_citybenef">Kota Rekening dibutuhkan !</string>
@@ -1348,7 +1348,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="address_hint">Masukkan Alamat disini</string>
     <string name="city_hint">Masukkan Kota disini</string>
     <string name="cancel_transaction_dgi">Transaksi Sukses Dibatalkan</string>
-    <string name="password_validation">Validasi Password</string>
+    <string name="password_validation">Validasi Kata Sandi</string>
     <string name="terms_condition_upload_ktp">Dengan ini saya menyatakan bahwa dokumen yang saya unggah adalah benar keabsahannya
         dan saya akan bertanggung jawab serta bersedia di hukum sesuai hukum yang berlaku jika di kemudian hari ditemukan ketidaksesuaian.</string>
 
@@ -1392,14 +1392,14 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="transfer">Transfer</string>
     <string name="profil">Profil</string>
     <string name="get_direction">Buka Petunjuk Arah</string>
-    <string name="confirm_fingerprint">Confirm fingerprint to continue</string>
-    <string name="enable_fingerprint_permission_text">Please enable the fingerprint permission</string>
-    <string name="register_fingerprint_text">No fingerprint configured. Please register at least one fingerprint in your device\'s Settings</string>
-    <string name="enable_lockscreen_security_text">Please enable lockscreen security in your device\'\s Settings</string>
-    <string name="fingerprint_success">Fingerprint recognized</string>
-    <string name="fingerprint_failed">Fingerprint not recognized. Try again.</string>
-    <string name="fingerprint_attempt">Fingerprint authentication failed</string>
-    <string name="fingerprint_use_password_text">Tap here to use password</string>
+    <string name="confirm_fingerprint">Konfirmasi sidik jari untuk melanjutkan</string>
+    <string name="enable_fingerprint_permission_text">Tolong aktifkan akses sidik jari</string>
+    <string name="register_fingerprint_text">Tidak ada sidik jari yang terdaftar. Tolong daftarkan sidik jari anda pada pengaturan perangkat</string>
+    <string name="enable_lockscreen_security_text">Tolong aktifkan sidik jari pada pengaturan perangkat</string>
+    <string name="fingerprint_success">Sidik jari dikenali</string>
+    <string name="fingerprint_failed">Sidik jari tidak dikenali. Coba lagi.</string>
+    <string name="fingerprint_attempt">Otentikasi sidik jari gagal</string>
+    <string name="fingerprint_use_password_text">Tekan disini untuk menggunakan kata sandi</string>
     <string name="dialog_download_title">File Starter Kit</string>
     <string name="prepaid">Prabayar</string>
     <string name="postpaid">Pascabayar</string>
@@ -1456,7 +1456,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="example_one_million">(contoh: 1.000.000)</string>
 
     <string name="pos_hint">No HP POS yang sudah terdaftar</string>
-    <string name="wrong_userid_password">User ID atau password salah</string>
+    <string name="wrong_userid_password">User ID atau kata sandi salah</string>
     <string name="acc_no">No. Akun</string>
     <string name="individu">Pribadi</string>
     <string name="friend">Teman</string>
