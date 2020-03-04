@@ -1412,6 +1412,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="rw_validation">RW dibutuhkan!</string>
     <string name="urban_village_validation">Kelurahan dibutuhkan!</string>
     <string name="sub_district_validation">Kecamatan dibutuhkan!</string>
+    <string name="district_validation">Kabupaten dibutuhkan!</string>
+    <string name="province_validation">Provinsi dibutuhkan!</string>
     <string name="religion_validation">Agama dibutuhkan!</string>
     <string name="job_validation">Pekerjaan dibutuhkan!</string>
     <string name="KTP_title">1. Foto KTP</string>
@@ -1427,7 +1429,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="tagihan_listrik">Tagihan Listrik</string>
     <string name="please_wait">Harap Menunggu...</string>
     <string name="gender_validation">Jenis Kelamin dibutuhkan!</string>
-    <string name="empty_notification">Sepertinya kamu masih belum mendapatkan pesan atau melakukan transaksi.</string>
+    <string name="empty_notification">Notifikasi Kosong</string>
+    <string name="empty_notification_message">Sepertinya kamu masih belum mendapatkan pesan atau melakukan transaksi.</string>
     <string name="cashout_dialog_message">Menu ini tidak tersedia untuk Anda.</string>
     <string name="adress_detail">Alamat Lengkap</string>
     <string name="location">Lokasi</string>
@@ -1482,6 +1485,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="input_urban_village">Masukan Kelurahan</string>
     <string name="sub_district">Kecamatan</string>
     <string name="input_sub_district">Masukan Kecamatan</string>
+    <string name="input_district">Masukan Kabupaten</string>
+    <string name="input_province">Masukan Provinsi</string>
 
     <string name="select_religion">-Pilih Agama-</string>
     <string name="select_gender">-Pilih Jenis Kelamin-</string>
@@ -1511,6 +1516,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="effective_date">Tanggal Efektif</string>
 
     <string name="cash_collection_confirmation">Konfirmasi Cash Collection</string>
+    <string name="pin_desc">PIN (Personal Identification Number) digunakan sebagai otorisasi pada saat Anda melakukan transaksi.</string>
     <string name="keep_your_pin_confidential">Jaga kerahasiaan PIN anda</string>
 
     <string name="community_code">Kode Komunitas</string>

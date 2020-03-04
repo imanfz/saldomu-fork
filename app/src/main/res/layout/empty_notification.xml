@@ -31,7 +31,7 @@
         android:letterSpacing="0.03"
         android:lineSpacingExtra="3.8sp"
         android:gravity="center_horizontal"
-        android:text="@string/empty_notification"
+        android:text="@string/empty_notification_message"
         />
 
     <Button android:id="@+id/btnRefresh"
