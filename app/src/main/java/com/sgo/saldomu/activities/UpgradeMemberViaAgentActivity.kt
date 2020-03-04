@@ -3,9 +3,12 @@ package com.sgo.saldomu.activities
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.MenuItem
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.sgo.saldomu.Beans.CustomAdapterModel
@@ -56,9 +59,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Thread {
-            runOnUiThread { initialize() }
-        }
+        initialize()
     }
 
     private fun initialize() {
