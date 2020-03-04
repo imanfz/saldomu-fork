@@ -49,6 +49,11 @@ public class HistoryModel extends jsonModel{
     private
     String buss_scheme_code;
 
+    @SerializedName("end_balance")
+    @Expose
+    private
+    String end_balance;
+
     public String getAmount() {
         return amount;
     }
@@ -83,5 +88,9 @@ public class HistoryModel extends jsonModel{
 
     public String getBuss_scheme_code() {
         return buss_scheme_code;
+    }
+
+    public String getEnd_balance() {
+        return end_balance;
     }
 }
