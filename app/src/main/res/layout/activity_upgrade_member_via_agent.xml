@@ -115,9 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/birth_place_list"
-                    android:hint="@string/input_place_of_birth"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="20dp" />
+                    android:hint="@string/input_place_of_birth" />
             </LinearLayout>
 
             <LinearLayout
@@ -256,13 +254,12 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/province_spinner"
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:spinnerMode="dropdown"
-                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
+                    android:id="@+id/province_auto_text"
+                    android:hint="@string/input_province" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -278,13 +275,12 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/city_spinner"
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:spinnerMode="dropdown"
-                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
+                    android:id="@+id/district_auto_text"
+                    android:hint="@string/input_district" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -300,13 +296,12 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/sub_district_spinner"
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:spinnerMode="dropdown"
-                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
+                    android:id="@+id/sub_district_auto_text"
+                    android:hint="@string/input_sub_district" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -324,13 +319,12 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/urban_village_spinner"
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:spinnerMode="dropdown"
-                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
+                    android:id="@+id/urban_village_auto_text"
+                    android:hint="@string/input_urban_village" />
+
             </LinearLayout>
 
             <LinearLayout

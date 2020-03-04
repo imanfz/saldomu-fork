@@ -151,7 +151,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="30dp"
                     android:background="@drawable/rounded_background_blue"
-                    android:text="Selanjutnya"
+                    android:text="@string/next"
                     android:textColor="@color/white" />
             </LinearLayout>
 

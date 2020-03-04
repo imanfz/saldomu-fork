@@ -252,7 +252,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
 //                break;
             case R.id.btn_forgetPin:
                 newFrag = new FragForgotPIN();
-                switchFragment(newFrag, "forgot pin", true);
+                switchFragment(newFrag, getString(R.string.forgotpin), true);
                 break;
         }
 

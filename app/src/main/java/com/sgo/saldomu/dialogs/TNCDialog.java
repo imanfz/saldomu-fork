@@ -72,7 +72,7 @@ public class TNCDialog extends DialogFragment {
         buttonOK.setOnClickListener(v1 -> listener.onSubmit(this));
 
         if (InetHandler.isNetworkAvailable(getActivity()))
-            loadUrl(MyApiClient.URL_TERMS);
+            loadUrl(MyApiClient.domainPrivacyPolicy);
         else
             Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
 
@@ -102,13 +102,14 @@ public class TNCDialog extends DialogFragment {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                webView.loadUrl("javascript:(function () {document.getElementsByTagName('body')[0].style.marginBottom = '0'})()");
+                view.loadUrl("javascript:(function () {document.getElementsByTagName('body')[0].style.marginBottom = '0'})()");
                 super.onPageFinished(view, url);
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Timber.d("isi url tombol-tombolnya:" + url);
+                view.loadUrl(url);
                 return true;
             }
 
