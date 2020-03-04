@@ -176,7 +176,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_transparant"
-                android:enabled="false"
                 android:gravity="center"
                 android:text="@string/regist1_button_verifikasi"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
