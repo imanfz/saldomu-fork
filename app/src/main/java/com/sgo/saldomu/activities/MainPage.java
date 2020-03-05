@@ -87,6 +87,7 @@ import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.services.UpdateBBSBirthPlace;
 import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
+import com.sgo.saldomu.utils.LocaleManager;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.BaseFragment;
@@ -1143,6 +1144,11 @@ public class MainPage extends BaseActivity {
                 i = new Intent(this, Introduction.class);
                 break;
             case FIRST_SCREEN_SPLASHSCREEN:
+                if (LocaleManager.getLocale(getResources()).getLanguage().equals("in")) {
+                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
+                } else {
+                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, false);
+                }
                 i = new Intent(this, SplashScreen.class);
                 break;
             default:
@@ -1398,8 +1404,8 @@ public class MainPage extends BaseActivity {
 
     private void showLogoutDialog() {
         AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
-        alertbox.setTitle("Warning");
-        alertbox.setMessage("Exit Application?");
+        alertbox.setTitle(getString(R.string.warning));
+        alertbox.setMessage(getString(R.string.exit_message));
         alertbox.setPositiveButton("OK", (arg0, arg1) -> switchLogout());
         alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
         });

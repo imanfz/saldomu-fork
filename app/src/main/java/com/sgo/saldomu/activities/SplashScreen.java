@@ -1,5 +1,6 @@
 package com.sgo.saldomu.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,9 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.fragments.IntroPage;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.utils.LocaleManager;
+
+import timber.log.Timber;
 
 public class SplashScreen extends AppIntro {
     private SecurePreferences sp;
@@ -79,5 +83,19 @@ public class SplashScreen extends AppIntro {
     @Override
     public void onSlideChanged() {
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        Timber.d("Logging attachBaseContext.....");
+        //Timber.d("is Firt time : " + sp.getString(DefineValue.IS_FIRST, ""));
+
+//        if (sp.getString(DefineValue.IS_FIRST, "").equalsIgnoreCase(DefineValue.YES)) {
+//            if (LocaleManager.getLocale(getResources()).getLanguage().equals("id")) {
+//                CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
+//            }
+//        }
+
+        super.attachBaseContext(LocaleManager.setLocale(newBase));
     }
 }
