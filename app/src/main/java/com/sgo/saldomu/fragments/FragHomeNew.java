@@ -615,9 +615,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 JSONObject jsonObject = jsonArray.getJSONObject(index);
                                 String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
                                 if (objs.equals("Tarik Tunai"))
-                                    objs = getString(R.string.cash_in);
-                                if (objs.equals("Setor Tunai"))
                                     objs = getString(R.string.cash_out);
+                                if (objs.equals("Setor Tunai"))
+                                    objs = getString(R.string.cash_in);
                                 String categoryNameModified = getString(R.string.menu_item_search_agent_bbs) + " " + objs;
                                 if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
                                     if (isDormant.equalsIgnoreCase("Y")) {
