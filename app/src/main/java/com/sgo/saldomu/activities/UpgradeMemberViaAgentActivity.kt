@@ -3,12 +3,10 @@ package com.sgo.saldomu.activities
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.AttributeSet
+import android.os.Handler
 import android.view.MenuItem
-import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.sgo.saldomu.Beans.CustomAdapterModel
@@ -70,7 +68,18 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
 
         initGenderSpinner()
 
-        initProvinceSpinner()
+        val handler = Handler()
+        val runnable = Runnable {
+            initProvinceSpinner()
+        }
+        showProgressDialog()
+        val swipeTimer = Timer()
+        swipeTimer.schedule(object : TimerTask() {
+            override fun run() {
+                handler.post(runnable)
+                swipeTimer.cancel()
+            }
+        }, 1000)
 
         initReligionSpinner()
 
@@ -128,7 +137,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
         }
 
         val provincesAdapter =
-                ArrayAdapter(applicationContext, android.R.layout.simple_spinner_dropdown_item, provincesList)
+                ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, provincesList)
 
         province_auto_text.setAdapter(provincesAdapter)
         province_auto_text.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
@@ -145,7 +154,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
 
                     val kabupatenAdapter =
                             ArrayAdapter(
-                                    applicationContext,
+                                    this,
                                     android.R.layout.simple_spinner_dropdown_item,
                                     kabupatenList
                             )
@@ -169,7 +178,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
 
                     val kecamatanAdapter =
                             ArrayAdapter(
-                                    applicationContext,
+                                    this,
                                     android.R.layout.simple_spinner_dropdown_item,
                                     kecamatanList
                             )
@@ -193,7 +202,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
 
                     val kelurahanAdapter =
                             ArrayAdapter(
-                                    applicationContext,
+                                    this,
                                     android.R.layout.simple_spinner_dropdown_item,
                                     kelurahanList
                             )
@@ -215,6 +224,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             Timber.e("kec : $kecamatanName")
             Timber.e("kel : $kelurahanName")
         }
+        dismissProgressDialog()
     }
 
     private fun initNationalitySpinner() {
