@@ -32,7 +32,7 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import timber.log.Timber;
 
 public class TNCDialog extends DialogFragment {
-    Button buttonOK;
+    Button buttonOK, buttonCancel;
     WebView webView;
     LinearLayout layout;
     ProgressBar progressBar;
@@ -40,6 +40,7 @@ public class TNCDialog extends DialogFragment {
 
     public interface OnTapItemListener {
         void onSubmit(DialogFragment dialog);
+        void onCancel(DialogFragment dialog);
     }
 
     public static TNCDialog newDialog(OnTapItemListener listener) {
@@ -56,6 +57,7 @@ public class TNCDialog extends DialogFragment {
 
         View v = inflater.inflate(R.layout.dialog_tnc, container, false);
         buttonOK = v.findViewById(R.id.btn_ok);
+        buttonCancel = v.findViewById(R.id.btn_cancel);
         webView = v.findViewById(R.id.webView);
         layout = v.findViewById(R.id.content_layout);
         progressBar = v.findViewById(R.id.progress_bar_web);
@@ -70,6 +72,7 @@ public class TNCDialog extends DialogFragment {
         });
 
         buttonOK.setOnClickListener(v1 -> listener.onSubmit(this));
+        buttonCancel.setOnClickListener(v1 -> listener.onCancel(this));
 
         if (InetHandler.isNetworkAvailable(getActivity()))
             loadUrl(MyApiClient.domainPrivacyPolicy);
