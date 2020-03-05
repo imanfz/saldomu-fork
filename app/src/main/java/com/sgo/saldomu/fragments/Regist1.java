@@ -26,6 +26,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CreatePIN;
+import com.sgo.saldomu.activities.Introduction;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.PasswordRegisterActivity;
 import com.sgo.saldomu.activities.TermsAndCondition;
@@ -156,7 +157,19 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     }
 
     private void openTNC() {
-        DialogFragment dialog = TNCDialog.newDialog(dialog1 -> dialog1.dismiss());
+        DialogFragment dialog = TNCDialog.newDialog(new TNCDialog.OnTapItemListener() {
+
+            @Override
+            public void onSubmit(DialogFragment dialog) {
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onCancel(DialogFragment dialog) {
+                startActivity(new Intent(getActivity(), Introduction.class));
+                getActivity().finish();
+            }
+        });
         dialog.show(getActivity().getSupportFragmentManager(), "Dialog");
     }
 
@@ -184,9 +197,9 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Timber.d("isi regist 1 requestCode:" + String.valueOf(requestCode));
+        Timber.d("isi regist 1 requestCode:" + requestCode);
         if (requestCode == LoginActivity.ACTIVITY_RESULT) {
-            Timber.d("isi regist 1 resultcode:" + String.valueOf(resultCode));
+            Timber.d("isi regist 1 resultcode:" + resultCode);
             if (resultCode == LoginActivity.RESULT_PIN) {
                 Timber.d("isi regist 1 authtype:" + authType);
 
