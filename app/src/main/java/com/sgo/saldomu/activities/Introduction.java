@@ -165,6 +165,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 Intent i = new Intent(Introduction.this, InsertPIN.class);
+                i.putExtra(DefineValue.IS_FORGOT_PASSWORD,true);
                 startActivityForResult(i, MainPage.REQUEST_FINISH);
             } else if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
                 sendFCM();
@@ -492,6 +493,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                         Toast.makeText(getApplicationContext(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
                         setLoginProfile(loginModel);
                     } else if (errorCode.equals("0324")) {
+                        sp.edit().remove(DefineValue.PREVIOUS_LOGIN_USER_ID).apply();
+                        getSMSContent();
                         InitializeSmsDialog();
                     } else {
                         Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
@@ -520,6 +523,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         String SMS_VERIFY = "REG EMO " + MyApiClient.COMM_ID;
         SMSclass smSclass = new SMSclass(getApplicationContext());
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
+        sp.edit().putString(DefineValue.TIMESTAMP, timeStamp).apply();
         timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
         imeiDevice = smSclass.getDeviceIMEI();
         String ICCIDDevice = smSclass.getDeviceICCID();

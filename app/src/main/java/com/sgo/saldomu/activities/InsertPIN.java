@@ -183,7 +183,9 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
                 finish();
                 return true;
             case R.id.action_forgot_pin:
-                showDialogForgotPin();
+//                showDialogForgotPin();
+                Intent i = new Intent(getApplicationContext(), ForgotPin.class);
+                startActivity(i);
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -300,7 +300,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="evoucher_edithint_nohp" translatable="false">ex. 08138255xxxx</string>
 
     <string name="sgoplusweb_ab_title" translatable="false">ESPAY</string>
-    <string name="sgoplusweb_ab_title_saldomu" translatable="false">Your Balance</string>
+    <string name="sgoplusweb_ab_title_saldomu" translatable="false">Saldomu</string>
 
     <string name="forgetpass_dialog_title">Forgot Password</string>
     <string name="forgetpass_dialog_message">Please check your SMS inbox for the next password change process.</string>
