@@ -2,6 +2,7 @@ package com.sgo.saldomu.activities;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -40,6 +41,7 @@ import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
 import com.sgo.saldomu.models.retrofit.LoginModel;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.utils.LocaleManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -681,5 +683,11 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(i);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        Timber.d("Logging attachBaseContext.....");
+        super.attachBaseContext(LocaleManager.setLocale(newBase));
     }
 }
