@@ -1060,7 +1060,8 @@ public class MyProfileNewActivity extends BaseActivity {
                     @Override
                     public void onClickButton(View v, boolean isLongClick) {
                         finish();
-                        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;;
+                        Intent i = new Intent(getApplicationContext(),MainPage.class);
+                        startActivityForResult(i, MainPage.REQUEST_FINISH);
                     }
                 }
         );
