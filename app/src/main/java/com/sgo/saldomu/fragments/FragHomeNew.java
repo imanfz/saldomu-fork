@@ -384,16 +384,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();
                     } else {
-                        if (getLvlClass().isLevel1QAC()) {
-                            getLvlClass().showDialogLevel();
-                        } else {
+//                        if (getLvlClass().isLevel1QAC()) {
+//                            getLvlClass().showDialogLevel();
+//                        } else {
                             if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp))) {
                                 Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
                                 switchActivity(i, MainPage.ACTIVITY_RESULT);
                             } else {
                                 dialogUnavailable();
                             }
-                        }
+//                        }
                     }
                 }
                 // upgrade Member AGENT

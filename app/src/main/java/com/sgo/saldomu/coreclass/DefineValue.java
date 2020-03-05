@@ -641,6 +641,7 @@ public class DefineValue {
     public static String MEMBER_MOTHERS_NAME = "memberMothersName";
     public static String SMS_CONTENT = "smsContent";
     public static String SMS_CONTENT_ENCRYPTED = "smsContentEncrypted";
+    public static String TIMESTAMP = "timeStamp";
 
 }
 

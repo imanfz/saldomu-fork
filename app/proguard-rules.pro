@@ -75,6 +75,17 @@
 
 -keep class com.sgo.saldomu.services.BalanceService { *; }
 -keep class io.codetail.animation.arcanimator.** { *; }
+
+#Add @RealmModule to the class definition.
+-keep @interface io.realm.annotations.RealmModule { *; }
+-keep class io.realm.annotations.RealmModule { *; }
+-keep class io.realm.annotations.RealmModule
+-keep @io.realm.annotations.RealmModule class *
+-keep class io.realm.internal.Keep
+-keep @io.realm.internal.Keep class *
+-dontwarn javax.
+-dontwarn io.realm.**
+
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames class * {
     native <methods>;
@@ -127,4 +138,4 @@
 -dontwarn com.squareup.okhttp3.**
 -dontwarn javax.annotation.**
 
-#-ignorewarnings -keep class * { public private *; }
+-ignorewarnings -keep class * { public private *; }

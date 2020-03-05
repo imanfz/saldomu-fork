@@ -78,7 +78,7 @@ public class SMSDialog extends DialogFragment {
     private SMSclass.SMS_VERIFY_LISTENER smsVerifyListener;
     private Handler handler;
     private int idx_fail;
-    private boolean isRetry=false, flag;
+    private boolean isRetry = false, flag;
     SecurePreferences sp;
     View v;
 
@@ -277,7 +277,7 @@ public class SMSDialog extends DialogFragment {
 //        dateTime = DateTimeFormat.getCurrentDateTimeMillis();
 
 
-        timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
+//        timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
         Timber.i("isi timestamp : " + timeStamp);
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
@@ -344,23 +344,25 @@ public class SMSDialog extends DialogFragment {
     public void sentSms() {
         if (!isStop) {
             SMS_VERIFY = "REG EMO " + MyApiClient.COMM_ID;
-            timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
+//            if (!sp.getString(DefineValue.TIMESTAMP, "").isEmpty()) {
+                timeStamp = sp.getString(DefineValue.TIMESTAMP, "");
+//            } else
             dateTime = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
             Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
             Timber.d("jalanin sentSMSVerify " + ICCIDDevice);
             String mobileNetworkCode = NoHPFormat.getMNC(ICCIDDevice);
             String mobileDestination = NoHPFormat.getSMSVerifyDestination(mobileNetworkCode);
-            if (isRetry)
-            {
+            if (isRetry) {
+                timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
                 msg = SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + dateTime + "_";
                 msgFinal = msg.toUpperCase() + Md5.hashMd5(msg).toUpperCase();
-            }else {
-                msgFinal = sp.getString(DefineValue.SMS_CONTENT,"")+sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED,"");
+            } else {
+                msgFinal = sp.getString(DefineValue.SMS_CONTENT, "") + sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED, "");
             }
             Uri uri = Uri.parse("smsto:" + mobileDestination);
             Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
             intent.putExtra("sms_body", msgFinal);
-            Timber.d("content sms : " +msgFinal);
+            Timber.d("content sms : " + msgFinal);
             startActivityForResult(intent, REQUEST_SMS);
         }
     }
@@ -369,7 +371,40 @@ public class SMSDialog extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SMS) {
-            sentInquirySMS();
+            regFCM();
+//            sentInquirySMS();
+        }
+    }
+
+    private void regFCM()
+    {
+        try {
+            HashMap<String, Object> params = RetrofitService
+                    .getInstance().getSignatureSecretKey(MyApiClient.LINK_FCM, "");
+            params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
+            params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID,""));
+            params.put(WebParams.REFERENCE_ID, sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED,""));
+            Timber.d("isi params fcm:" + params.toString());
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_FCM, params, new ResponseListener() {
+                @Override
+                public void onResponses(JsonObject object) {
+                    Timber.d("isi response fcm:" + object);
+
+                    sentInquirySMS();
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    Timber.d("isi error fcm:" + throwable);
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -386,7 +421,7 @@ public class SMSDialog extends DialogFragment {
                     params.put(WebParams.IMEI, imeiDevice);
                     params.put(WebParams.ICCID, ICCIDDevice);
                     params.put(WebParams.SENT, timeStamp);
-                    params.put(WebParams.REFERENCE_ID, sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED,""));
+                    params.put(WebParams.REFERENCE_ID, sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED, ""));
 
                     Timber.d("isi params inquiry sms:" + params.toString());
 
@@ -401,6 +436,8 @@ public class SMSDialog extends DialogFragment {
                                     String code = model.getError_code();
                                     Timber.d("isi response inquiry sms:" + object.toString());
 
+                                    sp.edit().remove(DefineValue.TIMESTAMP).apply();
+
                                     if (code.equals(WebParams.SUCCESS_CODE)) {
                                         isStop = true;
                                         tvMessage.setText(getActivity().getString(R.string.dialog_sms_msg4));
@@ -413,6 +450,8 @@ public class SMSDialog extends DialogFragment {
                                         }
                                         cdTimer.cancel();
 
+
+
                                         getHandler().postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
@@ -420,7 +459,7 @@ public class SMSDialog extends DialogFragment {
                                             }
                                         }, 10000);
 
-                                    }else if (code.equals(DefineValue.ERROR_0004)) {
+                                    } else if (code.equals(DefineValue.ERROR_0004)) {
                                         cdTimer.cancel();
                                         tvMessage.setText(getActivity().getString(R.string.wrong_sms_format));
                                         progText.setVisibility(View.GONE);
@@ -464,7 +503,7 @@ public class SMSDialog extends DialogFragment {
 
                                 @Override
                                 public void onComplete() {
-                                    isRetry=true;
+                                    isRetry = true;
                                 }
                             });
                 }
@@ -509,10 +548,17 @@ public class SMSDialog extends DialogFragment {
         deListener.onSuccess(model.getSender_id());
 
         dismiss();
+
     }
 
 
     public void setListener(DialogButtonListener dialogButtonListener) {
         this.deListener = dialogButtonListener;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
     }
 }

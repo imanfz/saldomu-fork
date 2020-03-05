@@ -673,6 +673,7 @@ public class MyProfileNewActivity extends BaseActivity {
                                 sp.edit().putString(DefineValue.IS_NEW_BULK, "N");
                                 setLoginProfile(model);
                                 Toast.makeText(MyProfileNewActivity.this, getString(R.string.myprofile_toast_update_success), Toast.LENGTH_LONG).show();
+                                sp.edit().putString(DefineValue.IS_FIRST, DefineValue.NO).apply();
 //                                    Timber.d("isi response Update Profile:"+ response.toString());
 //                                if (levelClass.isLevel1QAC()) {
 //                                    android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
