@@ -1,6 +1,7 @@
 package com.sgo.saldomu.activities;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +9,11 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.paolorotolo.appintro.AppIntro;
@@ -32,15 +36,20 @@ import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
 import com.sgo.saldomu.fragments.IntroPage;
+import com.sgo.saldomu.fragments.Regist1;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
 import com.sgo.saldomu.models.retrofit.LoginModel;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.utils.LocaleManager;
 
 import org.json.JSONException;
@@ -146,7 +155,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                     getString(R.string.rational_readphonestate_readcontacts),
                     RC_READPHONESTATE_GETACCOUNT_PERM, perms);
         }
-
+        SMSclass smsClass = new SMSclass(this);
+        imeiDevice = smsClass.getDeviceIMEI();
     }
 
     private Button.OnClickListener VerifyListener = new Button.OnClickListener() {
@@ -165,7 +175,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 Intent i = new Intent(Introduction.this, InsertPIN.class);
-                i.putExtra(DefineValue.IS_FORGOT_PASSWORD,true);
+                i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
+                i.putExtra(DefineValue.FOR_LOGIN, true);
                 startActivityForResult(i, MainPage.REQUEST_FINISH);
             } else if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
                 sendFCM();
@@ -263,7 +274,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                     .getInstance().getSignatureSecretKey(MyApiClient.LINK_FCM, "");
             params.put(WebParams.FCM_ID, fcm_id);
             params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
-            params.put(WebParams.REFERENCE_ID, sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED,""));
+            params.put(WebParams.REFERENCE_ID, sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED, ""));
             Timber.d("isi params fcm:" + params.toString());
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_FCM, params, new ResponseListener() {
                 @Override
@@ -458,17 +469,19 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MainPage.REQUEST_FINISH)
+        if (requestCode == MainPage.REQUEST_FINISH) {
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
                 pinLogin(value_pin);
             }
+            if (resultCode == InsertPIN.RESULT_FINGERPRINT_LOGIN) {
+                fingerprintLogin();
+            }
+        }
     }
 
     private void pinLogin(String value_pin) {
         showProgLoading("Sending Data", true);
-        SMSclass smsClass = new SMSclass(this);
-        String imeiDevice = smsClass.getDeviceIMEI();
         extraSignature = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "") + value_pin;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_PIN_LOGIN, extraSignature);
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -510,6 +523,87 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                     Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onComplete() {
+                showProgLoading("", false);
+            }
+        });
+    }
+
+    private void fingerprintLogin() {
+        showProgLoading("Sending Data", true);
+        extraSignature = sp.getString(DefineValue.EXTRA_SIGNATURE, "");
+        String userID = NoHPFormat.formatTo62(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_LOGIN, extraSignature);
+        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+        params.put(WebParams.USER_ID, userID);
+        params.put(WebParams.PASSWORD_LOGIN, sp.getString(DefineValue.USER_PASSWORD, ""));
+        params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+        params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
+        params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
+        params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
+        params.put(WebParams.IS_POS, "N");
+        if (sp.getString(DefineValue.FCM_ID, "") != null)
+            params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
+
+        Timber.d("isi params login:" + params.toString());
+
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN, params, new ResponseListener() {
+            @Override
+            public void onResponses(JsonObject response) {
+                LoginModel loginModel = getGson().fromJson(response.toString(), LoginModel.class);
+                String code = loginModel.getError_code();
+
+                if (code.equalsIgnoreCase(WebParams.SUCCESS_CODE)) {
+                    sp.edit().putString(DefineValue.IS_POS, "N").commit();
+                    sp.edit().putString(DefineValue.EXTRA_SIGNATURE, extraSignature).commit();
+                    Toast.makeText(Introduction.this, getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
+                    setLoginProfile(loginModel);
+                } else if (code.equals(DefineValue.ERROR_0042)) {
+                    String message;
+                    int failed = Integer.valueOf(loginModel.getFailedAttempt());
+                    int max = Integer.valueOf(loginModel.getMaxFailed());
+
+                    if (max - failed == 0) {
+                        message = getString(R.string.login_failed_attempt_3);
+                    } else {
+                        message = getString(R.string.login_failed_attempt_1, max - failed);
+                    }
+
+                    showDialog(message);
+                } else if (code.equals(DefineValue.ERROR_0126)) {
+                    showDialog(getString(R.string.login_failed_attempt_3));
+                } else if (code.equals(DefineValue.ERROR_0018) || code.equals(DefineValue.ERROR_0017)) {
+                    showDialog(getString(R.string.login_failed_inactive));
+                } else if (code.equals(DefineValue.ERROR_0127)) {
+                    showDialog(getString(R.string.login_failed_dormant));
+                } else if (code.equals(DefineValue.ERROR_0004)) {
+                    String msg = loginModel.getError_message();
+                    if (msg != null && !msg.isEmpty()) {
+                        showDialog(msg);
+                    } else
+                        showDialog(getString(R.string.login_failed_wrong_pass));
+                } else if (code.equals(DefineValue.ERROR_0002)) {
+                    showDialog(getString(R.string.login_failed_wrong_id));
+                } else if (code.equals(DefineValue.ERROR_9333)) {
+                    Timber.d("isi response app data:" + loginModel.getApp_data());
+                    final AppDataModel appModel = loginModel.getApp_data();
+                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                    alertDialogUpdateApp.showDialogUpdate(Introduction.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                } else if (code.equals(DefineValue.ERROR_0066)) {
+                    Timber.d("isi response maintenance:" + response.toString());
+                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                    alertDialogMaintenance.showDialogMaintenance(Introduction.this, loginModel.getError_message());
+                } else {
+                    Toast.makeText(Introduction.this, loginModel.getError_message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
             }
 
             @Override
@@ -693,5 +787,47 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     protected void attachBaseContext(Context newBase) {
         Timber.d("Logging attachBaseContext.....");
         super.attachBaseContext(LocaleManager.setLocale(newBase));
+    }
+
+    private void showDialog(String message) {
+        // Create custom dialog object
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        // Include dialog.xml file
+        dialog.setContentView(R.layout.dialog_notification);
+
+        // set values for custom dialog components - text, image and button
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
+
+        Message.setVisibility(View.VISIBLE);
+        Title.setText(getString(R.string.login_failed_attempt_title));
+        Message.setText(message);
+
+
+        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private boolean checkCommunity(List<LoginCommunityModel> model) {
+        if (model != null) {
+            for (int i = 0; i < model.size(); i++) {
+                if (model.get(i).getCommId().equals(MyApiClient.COMM_ID)) {
+                    Timber.w("check comm id yg bener: " + model.get(i).getCommId());
+                    return true;
+                }
+            }
+        }
+
+        Toast.makeText(getApplicationContext(), getString(R.string.login_validation_comm), Toast.LENGTH_LONG).show();
+        return false;
     }
 }

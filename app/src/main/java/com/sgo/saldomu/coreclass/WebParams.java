@@ -602,6 +602,7 @@ public class WebParams {
     public static String LOC_TX_ID = "loc_tx_id";
 
     public static String SHOP_TYPE = "shop_type";
+    public static String LANG = "lang";
 
     public final static String LANGUAGE_ID = "id";
     public final static String LANGUAGE_EN = "en";

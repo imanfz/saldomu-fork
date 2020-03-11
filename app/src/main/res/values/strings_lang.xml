@@ -1408,7 +1408,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="fingerprint_success">Fingerprint recognized</string>
     <string name="fingerprint_failed">Fingerprint not recognized. Try again.</string>
     <string name="fingerprint_attempt">Fingerprint authentication failed</string>
-    <string name="fingerprint_use_password_text">Tap here to use password</string>
+    <string name="fingerprint_use_password_text">Tap here to use pin</string>
     <string name="dialog_download_title">File Starter Kit</string>
     <string name="prepaid">Prepaid</string>
     <string name="postpaid">Postpaid</string>

@@ -54,6 +54,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -63,6 +64,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     public static final String TAG = "reportBiller Dialog";
     private static final int RC_REQUEST_WRITE_EXTERNAL_STORAGE = 102;
     private static final int RC_REQUEST_WRITE_EXTERNAL_STORAGE_AND_PRINT = 112;
+    private static final String SALDO_AGEN = "SALDO AGEN";
 
     private OnDialogOkCallback callback;
     private Boolean isActivity = false;
@@ -209,8 +211,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             layout_txId.setVisibility(View.GONE);
         }
 
-        if (buss_scheme_code.equalsIgnoreCase("TOP"))
-        {
+        if (buss_scheme_code.equalsIgnoreCase("TOP")) {
             tv_trans_remark_topup.setVisibility(View.VISIBLE);
         }
 
@@ -221,7 +222,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
 
         if (buss_scheme_code != null || type != null) {
-            if (buss_scheme_code.equalsIgnoreCase("CTA")||buss_scheme_code.equalsIgnoreCase("CTR")) {
+            if (buss_scheme_code.equalsIgnoreCase("CTA") || buss_scheme_code.equalsIgnoreCase("CTR")) {
                 if (type.equals(DefineValue.BBS_CASHIN)) {
                     stub.setLayoutResource(R.layout.layout_dialog_report_bbs_cashin);
                     View inflated = stub.inflate();
@@ -273,7 +274,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_member_shop_phone.setText(args.getString(DefineValue.MEMBER_SHOP_PHONE));
                     tv_benef_acc_no_value.setText(args.getString(DefineValue.NO_BENEF));
                     tv_benef_acc_name_value.setText(args.getString(DefineValue.NAME_BENEF));
-                    tv_benef_bank_name_value.setText(args.getString(DefineValue.BANK_BENEF));
+                    String bankBenef = args.getString(DefineValue.BANK_BENEF);
+                    if (bankBenef != null && bankBenef.toLowerCase().contains("saldomu"))
+                        bankBenef = SALDO_AGEN;
+                    tv_benef_bank_name_value.setText(bankBenef);
                     tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
                     tv_fee_value.setText(args.getString(DefineValue.FEE));
                     tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
@@ -314,8 +318,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     if (args.getBoolean(DefineValue.IS_REPORT) == false && !args.getString(DefineValue.OTP_MEMBER).isEmpty()) {
                         tv_kode.setVisibility(View.VISIBLE);
                         tv_token_value.setVisibility(View.VISIBLE);
-                    }else if(args.getBoolean(DefineValue.IS_REPORT)== true && !args.getString(DefineValue.TOKEN_ID).isEmpty())
-                    {
+                    } else if (args.getBoolean(DefineValue.IS_REPORT) == true && !args.getString(DefineValue.TOKEN_ID).isEmpty()) {
                         tv_kode.setVisibility(View.VISIBLE);
                         tv_token_value.setVisibility(View.VISIBLE);
                         tv_token_value.setText(args.getString(DefineValue.TOKEN_ID));
@@ -360,7 +363,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_transaction_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                     tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
                     tv_name_value.setText(args.getString(DefineValue.USER_NAME));
-                    tv_benef_bank_name_value.setText(args.getString(DefineValue.BANK_BENEF));
+                    String bankBenef = args.getString(DefineValue.BANK_BENEF);
+                    if (bankBenef != null && bankBenef.toLowerCase().contains("saldomu"))
+                        bankBenef = SALDO_AGEN;
+                    tv_benef_bank_name_value.setText(bankBenef);
                     tv_member_shop_phone.setText(args.getString(DefineValue.MEMBER_SHOP_PHONE));
                     tv_source_bank_name_value.setText(args.getString(DefineValue.SOURCE_ACCT));
 
@@ -441,7 +447,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_additionalFeeValue = inflated.findViewById(R.id.dialog_reportbiller_additionalfee_value);
                 TextView tv_destinationValue = inflated.findViewById(R.id.dialog_reportbiller_destination_value);
                 View viewAdditional = inflated.findViewById(R.id.view_additionalFee);
-                TableLayout tableLayoutDestination=inflated.findViewById(R.id.billertoken_layout_destination);
+                TableLayout tableLayoutDestination = inflated.findViewById(R.id.billertoken_layout_destination);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
@@ -456,13 +462,12 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_total_amount_text.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
-                if (args.getString(DefineValue.BUSS_SCHEME_NAME).equalsIgnoreCase("Pembelian Paket Data")){
+                if (args.getString(DefineValue.BUSS_SCHEME_NAME).equalsIgnoreCase("Pembelian Paket Data")) {
 //                    tableLayoutDestination.setVisibility(View.VISIBLE);
                     tv_destinationValue.setText(args.getString(DefineValue.DESTINATION_REMARK));
                 }
 
-                if (isAgent)
-                {
+                if (isAgent) {
                     viewAdditional.setVisibility(View.VISIBLE);
                     tv_additionalFee.setVisibility(View.VISIBLE);
                     tv_additionalFeeValue.setVisibility(View.VISIBLE);
@@ -688,7 +693,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_nominal_value.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee_value.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
-            }else if (buss_scheme_code.equals("BDK")){
+            } else if (buss_scheme_code.equals("BDK")) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_denom);
                 View inflated = stub.inflate();
                 inflated.setVisibility(View.VISIBLE);
@@ -717,8 +722,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_amount.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee.setText(args.getString(DefineValue.FEE));
                 tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
-            }else if(buss_scheme_code.equalsIgnoreCase("DGI"))
-            {
+            } else if (buss_scheme_code.equalsIgnoreCase("DGI")) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_dgi);
                 View inflated = stub.inflate();
                 inflated.setVisibility(View.VISIBLE);
@@ -733,11 +737,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_fee = inflated.findViewById(R.id.dialog_reportbiller_fee_value);
                 TextView tv_total_amount = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
 
-                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME,""));
-                tv_agent_name.setText(args.getString(DefineValue.USER_NAME,""));
-                tv_mitra_name.setText(args.getString(DefineValue.DGI_ANCHOR_NAME,""));
-                tv_community_name.setText(args.getString(DefineValue.DGI_COMM_NAME,""));
-                tv_shop_name.setText(args.getString(DefineValue.DGI_MEMBER_NAME,""));
+                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME, ""));
+                tv_agent_name.setText(args.getString(DefineValue.USER_NAME, ""));
+                tv_mitra_name.setText(args.getString(DefineValue.DGI_ANCHOR_NAME, ""));
+                tv_community_name.setText(args.getString(DefineValue.DGI_COMM_NAME, ""));
+                tv_shop_name.setText(args.getString(DefineValue.DGI_MEMBER_NAME, ""));
                 tv_payment_type.setText(args.getString(DefineValue.PAYMENT_TYPE_DESC, ""));
                 tv_amount.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee.setText(args.getString(DefineValue.FEE));
@@ -755,8 +759,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }
-            }else if(buss_scheme_code.equalsIgnoreCase("SG3"))
-            {
+            } else if (buss_scheme_code.equalsIgnoreCase("SG3")) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_sof);
                 View inflated = stub.inflate();
                 inflated.setVisibility(View.VISIBLE);
@@ -768,9 +771,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_fee = inflated.findViewById(R.id.dialog_reportbiller_fee_value);
                 TextView tv_total_amount = inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
 
-                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME,""));
-                tv_comm_name.setText(args.getString(DefineValue.COMMUNITY_NAME,""));
-                tv_payment_remark.setText(args.getString(DefineValue.REMARK,""));
+                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME, ""));
+                tv_comm_name.setText(args.getString(DefineValue.COMMUNITY_NAME, ""));
+                tv_payment_remark.setText(args.getString(DefineValue.REMARK, ""));
                 tv_amount.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee.setText(args.getString(DefineValue.FEE));
                 tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
@@ -915,8 +918,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             int length = jsonArray.length();
             List<String> tempList = new ArrayList<>();
 
-            for (int i=0; i<length; i++)
-            {
+            for (int i = 0; i < length; i++) {
                 String tempData = jsonArray.getString(i);
                 tempList.add(tempData);
             }

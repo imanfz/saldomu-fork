@@ -1399,7 +1399,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="fingerprint_success">Sidik jari dikenali</string>
     <string name="fingerprint_failed">Sidik jari tidak dikenali. Coba lagi.</string>
     <string name="fingerprint_attempt">Otentikasi sidik jari gagal</string>
-    <string name="fingerprint_use_password_text">Tekan disini untuk menggunakan kata sandi</string>
+    <string name="fingerprint_use_password_text">Tekan disini untuk menggunakan pin</string>
     <string name="dialog_download_title">File Starter Kit</string>
     <string name="prepaid">Prabayar</string>
     <string name="postpaid">Pascabayar</string>

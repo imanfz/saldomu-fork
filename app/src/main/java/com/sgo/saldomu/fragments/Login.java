@@ -9,6 +9,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -64,7 +65,7 @@ import static android.content.Context.FINGERPRINT_SERVICE;
  * Created by Administrator on 7/10/2014.
  */
 //public class Login extends BaseFragment implements View.OnClickListener {
-public class Login extends BaseFragment implements View.OnClickListener, FingerprintDialog.FingerprintDialogListener {
+public class Login extends BaseFragment implements View.OnClickListener {
 
     private String userIDfinale = null, is_pos, imeiIdDevice;
     private Button btnforgetPass;
@@ -152,8 +153,12 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                         } else if (sp.getString(DefineValue.USER_PASSWORD, "") != "") {
                             // Create and show the dialog.
                             isFingerprint = false;
-                            FingerprintDialog fingerprintDialog = new FingerprintDialog();
-                            fingerprintDialog.setTargetFragment(Login.this, 300);
+                            DialogFragment fingerprintDialog = FingerprintDialog.newDialog(result -> {
+                                isFingerprint = result;
+                                if (isFingerprint)
+                                    sentDatas();
+                            });
+//                            fingerprintDialog.setTargetFragment(Login.this, 300);
                             fingerprintDialog.setCancelable(false);
                             fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
                         }
@@ -264,13 +269,6 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
         return false;
     }
 
-    @Override
-    public void onFinishFingerprintDialog(boolean result) {
-        isFingerprint = result;
-        if (isFingerprint)
-            sentDatas();
-    }
-
     private void sentDatas() {
         ToggleKeyboard toggleKeyboard = new ToggleKeyboard();
         toggleKeyboard.hide_keyboard(getActivity());
@@ -372,7 +370,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                         showDialog(getString(R.string.login_failed_inactive));
                     } else if (code.equals(DefineValue.ERROR_0042)) {
                         showDialog(getString(R.string.wrong_userid_password));
-                    }else if (code.equals(DefineValue.ERROR_0127)) {
+                    } else if (code.equals(DefineValue.ERROR_0127)) {
                         showDialog(getString(R.string.login_failed_dormant));
                     } else if (code.equals(DefineValue.ERROR_0004)) {
                         String msg = loginModel.getError_message();
