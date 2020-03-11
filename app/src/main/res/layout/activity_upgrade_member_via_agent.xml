@@ -414,6 +414,250 @@
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/layout_upgrade_online"
+                android:visibility="gone"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layout_foto_ktp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:text="@string/KTP_title"
+                        android:textColor="@color/grey_1000b"
+                        android:textSize="16dp"
+                        android:id="@+id/tv_foto_ktp_paspor"/>
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="96dp"
+                        android:layout_below="@+id/tv_foto_ktp_paspor"
+                        android:id="@+id/camera_ktp_paspor"
+                        android:layout_centerInParent="true"
+                        android:onClick="camera_ktp_paspor_dialog"
+                        android:background="@drawable/ktp_new"/>
+
+                    <TextView
+                        android:id="@+id/tv_respon_reject_ktp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/camera_ktp_paspor"
+                        android:textColor="@color/red"
+                        android:gravity="left"/>
+                    <TextView
+                        android:id="@+id/tv_pb1_myprofileactivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_respon_reject_ktp"
+                        android:textColor="@color/grey_1000b"
+                        android:gravity="right"/>
+                    <ProgressBar
+                        android:id="@+id/pb1_myprofileactivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_pb1_myprofileactivity"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:minWidth="200dp"
+                        android:progress="1"
+                        android:max="100"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layout_selfie">
+
+                    <TextView
+                        android:id="@+id/tv_selfie_ktp_paspor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:text="@string/KTP_and_cust_title"
+                        android:textColor="@color/grey_1000b"
+                        android:textSize="16dp" />
+
+                    <ImageButton
+                        android:id="@+id/camera_selfie_ktp_paspor"
+                        android:layout_width="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_height="96dp"
+                        android:scaleType="centerCrop"
+                        android:layout_below="@+id/tv_selfie_ktp_paspor"
+                        android:onClick="selfie_ktp_paspor_dialog"
+                        android:background="@drawable/selfie_with_ktp_new" />
+
+                    <TextView
+                        android:id="@+id/tv_respon_reject_selfie"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/camera_selfie_ktp_paspor"
+                        android:textColor="@color/red"
+                        android:gravity="left"/>
+                    <TextView
+                        android:id="@+id/tv_pb2_myprofileactivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/camera_selfie_ktp_paspor"
+                        android:textColor="@color/grey_1000b"
+                        android:gravity="right"/>
+                    <ProgressBar
+                        android:id="@+id/pb2_myprofileactivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_pb2_myprofileactivity"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:minWidth="200dp"
+                        android:progress="1"
+                        android:max="100"
+                        />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layout_ttd">
+
+                    <TextView
+                        android:id="@+id/tv_ttd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:text="@string/sign_title"
+                        android:textColor="@color/grey_1000b"
+                        android:textSize="16dp" />
+
+                    <ImageButton
+                        android:id="@+id/camera_ttd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="96dp"
+                        android:layout_below="@+id/tv_ttd"
+                        android:onClick="camera_ttd_dialog"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/new_signature" />
+
+                    <TextView
+                        android:id="@+id/tv_respon_reject_ttd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/camera_ttd"
+                        android:textColor="@color/red"
+                        android:gravity="left"/>
+                    <TextView
+                        android:id="@+id/tv_pb3_myprofileactivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/camera_ttd"
+                        android:textColor="@color/grey_1000b"
+                        android:gravity="right"/>
+                    <ProgressBar
+                        android:id="@+id/pb3_myprofileactivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_pb3_myprofileactivity"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:minWidth="200dp"
+                        android:progress="1"
+                        android:max="100"
+                        />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sgoplus_text_bank"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_medium_material"
+                            android:textStyle="bold" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/spinning_wheel_bank_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:src="@drawable/default_spinner"
+                                android:visibility="invisible" />
+
+                            <Spinner
+                                android:id="@+id/spinner_nameBank"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:visibility="visible" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_rekening"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_medium_material"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/bank_acc_no"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/cashout_bank_acc_no_hint"
+                            android:inputType="number"
+                            android:maxLength="15"
+                            android:paddingLeft="10dp"
+                            android:textSize="@dimen/abc_text_size_medium_material" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10sp"
+                            android:text="@string/cashout_lkd_warning_1"
+                            android:textColor="@color/red"
+                            android:textSize="12sp"
+                            android:textStyle="italic" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/terms_condition_upload_ktp"
+                    android:textColor="@color/black"
+                    android:id="@+id/cb_termnsncond"
+                    android:textStyle="italic"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="16dp"
+                    />
+            </LinearLayout>
+
             <Button
                 android:id="@+id/submit_button"
                 android:layout_width="300dp"

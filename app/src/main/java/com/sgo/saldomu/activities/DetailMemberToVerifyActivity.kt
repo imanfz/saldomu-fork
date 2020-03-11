@@ -80,7 +80,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
 
         pickAndCameraUtil = PickAndCameraUtil(this)
 
-        camera_ktp_paspor.setOnClickListener {
+        camera_ktp_paspor_via_agent.setOnClickListener {
             set_result_photo = RESULT_CAMERA_KTP
             camera_dialog()
         }
@@ -225,7 +225,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                         val path = CameraActivity.getResult(data)
                         ImageCompressionAsyncTask(KTP_TYPE).execute(path)
                     } else {
-                        camera_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
+                        camera_ktp_paspor_via_agent.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
                         Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
                     }
                 }
@@ -324,7 +324,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                 Toast.makeText(this@DetailMemberToVerifyActivity, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show()
 
                 if (flag == KTP_TYPE) {
-                    camera_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
+                    camera_ktp_paspor_via_agent.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
                 }
 //                else if (flag == CUST_AND_KTP_TYPE) {
 //                    camera_selfie_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
@@ -350,7 +350,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
         override fun onPostExecute(file: File) {
             when (type) {
                 KTP_TYPE -> {
-                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_ktp_paspor)
+                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_ktp_paspor_via_agent)
                     ktp = file
                     uploadFileToServer(ktp!!, KTP_TYPE)
                 }
