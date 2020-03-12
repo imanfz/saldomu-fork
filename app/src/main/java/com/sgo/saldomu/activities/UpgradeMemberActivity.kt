@@ -45,7 +45,7 @@ class UpgradeMemberActivity : BaseActivity() {
             if (sp.getString(DefineValue.COMM_UPGRADE_MEMBER, "").equals("A")) {
                 DialogCantUpgrade()
             } else
-                startActivity(Intent(this, MyProfileNewActivity::class.java))
+                startActivity(Intent(this, UpgradeMemberViaOnline::class.java))
         }
 
         upgrade_via_agent_button.setOnClickListener {
