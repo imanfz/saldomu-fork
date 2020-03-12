@@ -1,6 +1,8 @@
 package com.sgo.saldomu.activities
 
+import android.Manifest
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -28,6 +30,8 @@ import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.BankCashoutModel
 import com.sgo.saldomu.models.retrofit.jsonModel
+import com.sgo.saldomu.utils.PickAndCameraUtil
+import com.sgo.saldomu.utils.camera.CameraActivity
 import com.sgo.saldomu.widgets.BaseActivity
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.*
@@ -42,11 +46,15 @@ import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.status_s
 import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.sub_district_auto_text
 import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.submit_button
 import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.urban_village_auto_text
+import kotlinx.android.synthetic.main.frag_cash_collection.*
 import org.json.JSONArray
 import org.json.JSONObject
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 
 class UpgradeMemberViaOnline : BaseActivity() {
@@ -55,15 +63,20 @@ class UpgradeMemberViaOnline : BaseActivity() {
     internal lateinit var locLists: MutableList<String>
     internal lateinit var adapter: CustomAutoCompleteAdapter
     internal lateinit var adapters: ArrayAdapter<String>
-    private lateinit var toFormat: DateFormat
-    private lateinit var toFormat2: DateFormat
     private var dedate: String? = null
     private var date_dob: String? = null
+    private lateinit var dobFormat: DateFormat
     private lateinit var fromFormat: DateFormat
     internal lateinit var cb_termsncond: CheckBox
     internal lateinit var bankAdapter: BankCashoutAdapter
     internal var listBankCashOut: List<BankCashoutModel> = ArrayList()
     private var bankCode = ""
+    private var set_result_photo: Int? = null
+    private val RESULT_CAMERA_KTP = 201
+    private val RESULT_SELFIE = 202
+    private val RESULT_CAMERA_TTD = 203
+    private val RC_CAMERA_STORAGE = 14
+    private var pickAndCameraUtil: PickAndCameraUtil? = null
 
     var provincesName: String = String()
     var kabupatenName: String = String()
@@ -96,7 +109,9 @@ class UpgradeMemberViaOnline : BaseActivity() {
         setActionBarIcon(R.drawable.ic_arrow_left)
         actionBarTitle = getString(R.string.menu_item_title_upgrade_online)
 
-        layout_upgrade_online.visibility==View.VISIBLE
+        layout_upgrade_online.visibility = View.VISIBLE
+
+        pickAndCameraUtil = PickAndCameraUtil(this)
 
         initData()
 
@@ -124,6 +139,8 @@ class UpgradeMemberViaOnline : BaseActivity() {
         initStatusSpinner()
 
         initNationalitySpinner()
+
+        camera_ktp_paspor.setOnClickListener { cameraKTPListener() }
 
         submit_button.setOnClickListener {
             if (inputValidation()) {
@@ -189,7 +206,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
             urban_village_auto_text.requestFocus()
             urban_village_auto_text.error = resources.getString(R.string.urban_village_validation)
             return false
-        }  else if (gender_spinner.selectedItem.equals(getString(R.string.select_gender))) {
+        } else if (gender_spinner.selectedItem.equals(getString(R.string.select_gender))) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.gender_validation))
@@ -379,31 +396,34 @@ class UpgradeMemberViaOnline : BaseActivity() {
     private fun initData() {
         dedate = sp.getString(DefineValue.PROFILE_DOB, "")
 
-        if (dedate != "") {
-            val c = Calendar.getInstance()
 
-            try {
-                c.time = fromFormat.parse(dedate)
-                dedate = toFormat!!.format(fromFormat.parse(dedate))
-                date_dob = fromFormat.format(toFormat2!!.parse(dedate))
-            } catch (e: ParseException) {
-                e.printStackTrace()
-            }
+        fromFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ID", "INDONESIA"))
+        dobFormat = SimpleDateFormat("dd-MM-yyyy", Locale("ID", "INDONESIA"))
 
-            birthday_text_view.setText(dedate)
-            birthday_text_view.isEnabled == false
+        try {
+            birthday_text_view.setText(dobFormat.format(fromFormat.parse(sp.getString(DefineValue.PROFILE_DOB, ""))))
+            birthday_text_view.isEnabled = false
+        } catch (e: ParseException) {
+            e.printStackTrace()
         }
+
 
         getBankCashout()
     }
 
-    private fun initBankSpinner()
-    {
-        spinner_nameBank.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            for (i in 0 until listBankCashOut.size) {
-                val model = listBankCashOut[i]
+    private fun initBankSpinner() {
+        bankAdapter = BankCashoutAdapter(this, android.R.layout.simple_spinner_item)
+        spinner_nameBank.setAdapter(bankAdapter)
+        spinner_nameBank.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val model = listBankCashOut[position]
                 bankCode = model.bank_code
             }
+
         }
     }
 
@@ -451,6 +471,30 @@ class UpgradeMemberViaOnline : BaseActivity() {
         } catch (e: Exception) {
             Timber.d("httpclient:" + e.message)
         }
+    }
 
+    private fun cameraKTPListener() {
+        Timber.d("Masuk ke setImageCameraKTP")
+        set_result_photo = RESULT_CAMERA_KTP
+        camera_dialog()
+    }
+
+    fun camera_dialog() {
+        val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+        if (EasyPermissions.hasPermissions(this, *perms)) {
+            set_result_photo?.let {
+                CameraActivity.openCertificateCamera(this, CameraActivity.TYPE_COMPANY_PORTRAIT)
+//                pickAndCameraUtil.runCamera(it)
+            }
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
+                    RC_CAMERA_STORAGE, *perms)
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 }

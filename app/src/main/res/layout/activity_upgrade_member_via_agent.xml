@@ -422,6 +422,11 @@
                 android:visibility="gone"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_marginBottom="10dp"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
