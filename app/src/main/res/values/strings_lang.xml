@@ -569,7 +569,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="about_apps">About</string>
     <string name="about_apps_desc"><b>Your Balance</b> is a financial application with features <b><i>social media</i></b>. Because banking is a part of your social life.</string>
 
-    <string name="about_apps_desc_2">SALDOMU is registered as MANUFACTURER OF FINANCIAL TECHNOLOGY at Bank Indonesia Number 20/85/DKSP/Srt/B dated March 8, 2018.</string>
+    <string name="about_apps_desc_2">SALDOMU is registered as FINANCIAL TECHNOLOGY at Bank Indonesia Number 20/85/DKSP/Srt/B dated March 8, 2018.</string>
     <string name="about_apps_desc_pemberitahuan">Announcement :</string>
     <string name="about_apps_desc_pemberitahuan_1">1. SALDOMU is only distributed through the Play Store and App Store by PT Mitra Pembayaran Elektronik.</string>
     <string name="about_apps_desc_pemberitahuan_2">2. Please DO NOT log in other media besides the official application to avoid any type of fraud in the name of SALDOMU. </string>
@@ -587,7 +587,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="menu_group_title_supports">Support</string>
     <string name="menu_item_title_setting">Settings</string>
     <string name="menu_item_title_help">Contact</string>
-    <string name="menu_item_title_info_harga">Information Price </string>
+    <string name="menu_item_title_info_harga">Price Information</string>
     <string name="menu_item_title_starterkit">Starter Kit</string>
     <string name="menu_item_title_language">Language</string>
     <string name="menu_item_title_about">About</string>
