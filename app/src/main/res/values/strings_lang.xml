@@ -171,6 +171,7 @@
     <string name="showcase">Check out the\nNotification Action View</string>
     <string name="header_menu_balance">Balance : </string>
     <string name="balance">Balance</string>
+    <string name="agent_balance">Agent Balance</string>
 
     <string name="menu_group_title_main_menu">Main Menu</string>
     <string name="menu_item_title_home">Home</string>
@@ -1555,4 +1556,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="wrong_sms_format">Format SMS Invalid.</string>
     <string name="topup_remark">Top Up Process takes max. 5 minutes.</string>
     <string name="no_notif">You have no notification yet.</string>
+    <string name="confirmation_code">Confirmation Code</string>
+    <string name="hint_confirmation_code">Input confirmation code</string>
+    <string name="resend_confirmation_code">Resend confirmation code</string>
 </resources>

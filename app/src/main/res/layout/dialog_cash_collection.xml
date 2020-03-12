@@ -78,20 +78,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/payfriends_text_otp"
+            android:text="@string/confirmation_code"
             android:textColor="@color/black"
             android:textStyle="bold"/>
         <EditText
             android:id="@+id/et_otp_cashcollection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/otp_hint"
+            android:hint="@string/hint_confirmation_code"
             android:textColor="@color/black"
             android:inputType="number|numberPassword"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/reg3_btn_text_resend_token_sms"
+            android:text="@string/resend_confirmation_code"
             android:gravity="right"
             android:textColor="@color/red"
             android:textStyle="italic"

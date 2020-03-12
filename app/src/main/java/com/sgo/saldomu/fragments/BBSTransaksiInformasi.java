@@ -308,10 +308,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 actv_rekening_cta.setAdapter(adapterAgent);
                 actv_rekening_cta.addTextChangedListener(textWatcher);
                 if (isAgentLKD) {
-                    if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
-                        defaultProductName = "EMO SALDOMU";
-                    } else
-                        defaultProductName = "SALDOMU";
+                    defaultProductName = SALDO_AGEN;
                     actv_rekening_cta.setText(defaultProductName);
                 }
             } else {
@@ -400,9 +397,6 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                     break;
                 }
             }
-            if (benef_product_name.toLowerCase().contains("saldomu"))
-                benef_product_name = SALDO_AGEN;
-
         }
 
         @Override
