@@ -150,10 +150,17 @@
         android:layout_below="@id/layout_id"
         android:background="@drawable/rounded_background_white">
 
+        <TextView
+            android:id="@+id/tv_no_rek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_rekening"/>
+
         <Spinner
             android:id="@+id/spinner_no_acc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_no_rek"/>
         <View
             android:id="@+id/divider_acc"
             android:layout_width="match_parent"

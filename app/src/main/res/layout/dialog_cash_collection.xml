@@ -95,7 +95,8 @@
             android:gravity="right"
             android:textColor="@color/red"
             android:textStyle="italic"
-            android:id="@+id/tv_resend_otp"/>
+            android:id="@+id/tv_resend_otp"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <LinearLayout

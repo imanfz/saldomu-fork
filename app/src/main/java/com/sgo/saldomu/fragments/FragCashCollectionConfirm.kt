@@ -191,10 +191,10 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                                     countResend = response.opt(WebParams.COUNT_RESEND) as Int
                                     maxResend = response.opt(WebParams.MAX_RESEND) as Int
                                     if (countResend == 3) {
-                                        tv_resend_otp.isEnabled == false
+                                        !tv_resend_otp.isEnabled
                                         tv_resend_otp.setTextColor(resources.getColor(R.color.colorSecondaryDark))
                                     }
-                                    tv_resend_otp.text = getString(R.string.resend_confirmation_code) + "(" + countResend + "/" + maxResend +")"
+                                    tv_resend_otp.text = getString(R.string.resend_confirmation_code) + "(" + countResend + "/" + maxResend + ")"
                                 }
                                 WebParams.LOGOUT_CODE -> {
                                     Timber.d("isi response autologout:$response")
@@ -496,7 +496,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         dialog.message_dialog.text = msg
 
         dialog.btn_dialog_notification_ok.setOnClickListener {
-//            dialog.dismiss()
+            //            dialog.dismiss()
             activity!!.finish()
         }
 

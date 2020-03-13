@@ -181,7 +181,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                         if (accountList.size != 0) {
                             accountListData.add(getString(R.string.other_acct))
                             spinner_no_acc.visibility = View.VISIBLE
-                            spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, accountListData)
+                            spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_dropdown_item, accountListData)
                         } else {
                             spinner_no_acc.visibility = View.GONE
                             et_no_acct.visibility = View.VISIBLE
@@ -303,6 +303,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                 }
 
                 override fun onComplete() {
+                    dismissProgressDialog()
                 }
 
             })
