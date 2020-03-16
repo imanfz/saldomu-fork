@@ -14,9 +14,9 @@ import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +26,11 @@ import android.widget.TextView;
 
 import com.sgo.saldomu.FingerprintHandler;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.fragments.Login;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -47,28 +47,38 @@ import static android.content.Context.FINGERPRINT_SERVICE;
 import static android.content.Context.KEYGUARD_SERVICE;
 import static android.support.v4.content.ContextCompat.getDrawable;
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class FingerprintDialog extends DialogFragment {
     View v;
     private Cipher cipher;
     private KeyStore keyStore;
     private KeyGenerator keyGenerator;
+    private Key key;
     private FingerprintManager.CryptoObject cryptoObject;
     private FingerprintManager fingerprintManager;
     private KeyguardManager keyguardManager;
     private FingerprintHandler helper;
-    private TextView tv_status, tv_usepassword;
+    private TextView tv_status, tv_use_pin;
     private ImageView iv_finger;
     private static final String KEY_NAME = "saldomuFingerprint";
     private int attempt;
     private FingerprintDialogListener listener;
 
-    public interface FingerprintDialogListener{
+
+    public interface FingerprintDialogListener {
         void onFinishFingerprintDialog(boolean result);
     }
+
+    public static FingerprintDialog newDialog(FingerprintDialogListener listener) {
+        FingerprintDialog dialog = new FingerprintDialog();
+        dialog.listener = listener;
+        return dialog;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v=inflater.inflate(R.layout.dialog_fingerprint,container,false);
+        v = inflater.inflate(R.layout.dialog_fingerprint, container, false);
         return v;
     }
 
@@ -76,37 +86,22 @@ public class FingerprintDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        tv_status=v.findViewById(R.id.tv_error_finger);
-        tv_usepassword=v.findViewById(R.id.tv_usepassword);
-        iv_finger=v.findViewById(R.id.iv_finger);
-        listener=(FingerprintDialogListener)getTargetFragment();
+        tv_status = v.findViewById(R.id.tv_error_finger);
+        tv_use_pin = v.findViewById(R.id.tv_usepin);
+        iv_finger = v.findViewById(R.id.iv_finger);
+//        listener = (FingerprintDialogListener) getTargetFragment();
 
-        tv_usepassword.setOnClickListener(v -> {
+        tv_use_pin.setOnClickListener(v -> {
             listener.onFinishFingerprintDialog(false);
             getDialog().dismiss();
         });
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //Get an instance of KeyguardManager and FingerprintManager//
             keyguardManager = (KeyguardManager) getActivity().getSystemService(KEYGUARD_SERVICE);
-            fingerprintManager=(FingerprintManager) getActivity().getSystemService(FINGERPRINT_SERVICE);
+            fingerprintManager = (FingerprintManager) getActivity().getSystemService(FINGERPRINT_SERVICE);
 
-            //Check whether the user has granted your app the USE_FINGERPRINT permission//
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                // If your app doesn't have this permission, then display the following text//
-                tv_status.setText(getString(R.string.enable_fingerprint_permission_text));
-            }
-
-            //Check that the user has registered at least one fingerprint//
-            if (!fingerprintManager.hasEnrolledFingerprints()) {
-                // If the user hasn’t configured any fingerprints, then display the following message//
-                tv_status.setText(getString(R.string.register_fingerprint_text));
-            }
-
-            //Check that the lockscreen is secured//
-            if (!keyguardManager.isKeyguardSecure()) {
-                // If the user hasn’t secured their lockscreen with a PIN password or pattern, then display the following text//
-                tv_status.setText(getString(R.string.enable_lockscreen_security_text));
-            } else {
+            if (fingerprintEnabled()) {
                 try {
                     generateKey();
                 } catch (FingerprintException e) {
@@ -125,11 +120,33 @@ public class FingerprintDialog extends DialogFragment {
             }
         }
     }
+
+    public boolean fingerprintEnabled() {
+        if (!fingerprintManager.isHardwareDetected()) {
+            // Device doesn't support fingerprint authentication
+            return false;
+        } else if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            tv_status.setText(getString(R.string.enable_fingerprint_permission_text));
+            return false;
+        } else if (!keyguardManager.isKeyguardSecure()) {
+            tv_status.setText(getString(R.string.enable_lockscreen_security_text));
+            return false;
+        } else if (!fingerprintManager.hasEnrolledFingerprints()) {
+            tv_status.setText(getString(R.string.register_fingerprint_text));
+            // User hasn't enrolled any fingerprints to authenticate with
+            return false;
+        } else {
+            // Everything is ready for fingerprint authentication
+            return true;
+        }
+    }
+
     private class FingerprintException extends Exception {
         public FingerprintException(Exception e) {
             super(e);
         }
     }
+
     @TargetApi(Build.VERSION_CODES.M)
     private void generateKey() throws FingerprintException {
         try {
@@ -213,20 +230,22 @@ public class FingerprintDialog extends DialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        helper.stopListening();
+        if (fingerprintEnabled())
+            helper.stopListening();
     }
-    public void setStatusSuccess(){
+
+    public void setStatusSuccess() {
 //        iv_finger.setImageDrawable(getDrawable(getActivity(), R.drawable.ic_check));
-        iv_finger.setBackground(getDrawable(getActivity(),R.drawable.ic_fingerprint_success));
+        iv_finger.setBackground(getDrawable(getActivity(), R.drawable.ic_fingerprint_success));
         tv_status.setText(getString(R.string.fingerprint_success));
 
 
         // Setelah 1 detik dialog didismiss dan arahin ke halaman utama
-        final Handler handler  = new Handler();
+        final Handler handler = new Handler();
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if(getDialog().isShowing())
+                if (getDialog().isShowing())
                     getDialog().dismiss();
                 listener.onFinishFingerprintDialog(true);
 //                ActivityLogin activityLogin = (ActivityLogin) getActivity();
@@ -236,24 +255,24 @@ public class FingerprintDialog extends DialogFragment {
         handler.postDelayed(runnable, 1000);
     }
 
-    public void setStatusFailed(){
+    public void setStatusFailed() {
 //        iv_finger.setImageDrawable(getDrawable(getActivity(),R.drawable.ic_priority_high));
         attempt++;
-        iv_finger.setBackground(getDrawable(getActivity(),R.drawable.ic_fingerprint_failed));
-        if (attempt==1)
-            tv_status.setText(getString(R.string.fingerprint_attempt)+" ("+attempt+")");
-        if (attempt==2)
-            tv_status.setText(getString(R.string.fingerprint_attempt)+" ("+attempt+")");
-        if (attempt==3)
-            tv_status.setText(getString(R.string.fingerprint_attempt)+" ("+attempt+")");
-        if (attempt==4)
-            tv_status.setText(getString(R.string.fingerprint_attempt)+" ("+attempt+")");
-        if (attempt==5){
-            final Handler handler  = new Handler();
+        iv_finger.setBackground(getDrawable(getActivity(), R.drawable.ic_fingerprint_failed));
+        if (attempt == 1)
+            tv_status.setText(getString(R.string.fingerprint_attempt) + " (" + attempt + ")");
+        if (attempt == 2)
+            tv_status.setText(getString(R.string.fingerprint_attempt) + " (" + attempt + ")");
+        if (attempt == 3)
+            tv_status.setText(getString(R.string.fingerprint_attempt) + " (" + attempt + ")");
+        if (attempt == 4)
+            tv_status.setText(getString(R.string.fingerprint_attempt) + " (" + attempt + ")");
+        if (attempt == 5) {
+            final Handler handler = new Handler();
             final Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    if(getDialog().isShowing())
+                    if (getDialog().isShowing())
                         getDialog().dismiss();
                     listener.onFinishFingerprintDialog(false);
 //                ActivityLogin activityLogin = (ActivityLogin) getActivity();
@@ -264,13 +283,13 @@ public class FingerprintDialog extends DialogFragment {
         }
     }
 
-    public void setStatusError(String message){
-        iv_finger.setBackground(getDrawable(getActivity(),R.drawable.ic_fingerprint_failed));
+    public void setStatusError(String message) {
+        iv_finger.setBackground(getDrawable(getActivity(), R.drawable.ic_fingerprint_failed));
         tv_status.setText(message);
     }
 
-    public void setStatusHelp(String message){
-        iv_finger.setBackground(getDrawable(getActivity(),R.drawable.ic_fingerprint_failed));
+    public void setStatusHelp(String message) {
+        iv_finger.setBackground(getDrawable(getActivity(), R.drawable.ic_fingerprint_failed));
         tv_status.setText(message);
     }
 }

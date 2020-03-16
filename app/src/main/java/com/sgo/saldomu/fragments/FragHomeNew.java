@@ -97,6 +97,7 @@ import timber.log.Timber;
 public class FragHomeNew extends BaseFragmentMainPage {
     GridView GridView;
     Button btn_beli, btn_topup;
+    TextView tv_balance;
     TextView tv_saldo;
     EditText input;
     TextView tv_pulsa;
@@ -164,6 +165,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         v = inflater.inflate(R.layout.frag_home_new, container, false);
 
         GridView = v.findViewById(R.id.grid);
+        tv_balance = v.findViewById(R.id.tv_balance);
         tv_saldo = v.findViewById(R.id.tv_saldo);
         swSettingOnline = v.findViewById(R.id.swSettingOnline);
         llAgentDetail = v.findViewById(R.id.llAgentDetail);
@@ -687,6 +689,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             getPromoList();
         else
             populateBanner();
+        if (isAgent)
+            tv_balance.setText(getString(R.string.agent_balance));
     }
 
     private void getRealmData() {

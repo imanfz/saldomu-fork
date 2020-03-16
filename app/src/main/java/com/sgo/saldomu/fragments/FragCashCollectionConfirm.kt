@@ -74,7 +74,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         dialog_cash_collection_tv_name.setText(benefProductValueName)
         dialog_cash_collection_tv_acc_no.setText(benefProductValueCode)
         dialog_cash_collection_tv_amount_deposit.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(amount))
-        tv_resend_otp.text = getString(R.string.reg3_btn_text_resend_token_sms) + "(" + countResend + "/3)"
+        tv_resend_otp.text = getString(R.string.resend_confirmation_code) + "(" + countResend + "/3)"
 
         dialog_cash_collection_btn_ok.setOnClickListener {
             if (inputValidation()) {
@@ -191,10 +191,10 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                                     countResend = response.opt(WebParams.COUNT_RESEND) as Int
                                     maxResend = response.opt(WebParams.MAX_RESEND) as Int
                                     if (countResend == 3) {
-                                        tv_resend_otp.isEnabled == false
+                                        !tv_resend_otp.isEnabled
                                         tv_resend_otp.setTextColor(resources.getColor(R.color.colorSecondaryDark))
                                     }
-                                    tv_resend_otp.text = getString(R.string.reg3_btn_text_resend_token_sms) + "(" + countResend + "/" + maxResend +")"
+                                    tv_resend_otp.text = getString(R.string.resend_confirmation_code) + "(" + countResend + "/" + maxResend + ")"
                                 }
                                 WebParams.LOGOUT_CODE -> {
                                     Timber.d("isi response autologout:$response")
@@ -496,7 +496,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         dialog.message_dialog.text = msg
 
         dialog.btn_dialog_notification_ok.setOnClickListener {
-//            dialog.dismiss()
+            //            dialog.dismiss()
             activity!!.finish()
         }
 

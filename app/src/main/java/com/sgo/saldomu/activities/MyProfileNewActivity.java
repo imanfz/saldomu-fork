@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,8 +48,6 @@ import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.BankCashoutModel;
-import com.sgo.saldomu.models.retrofit.ContactDataModel;
-import com.sgo.saldomu.models.retrofit.GetHelpModel;
 import com.sgo.saldomu.models.retrofit.SentExecCustModel;
 import com.sgo.saldomu.models.retrofit.UpdateProfileModel;
 import com.sgo.saldomu.models.retrofit.UploadFotoModel;
@@ -240,8 +237,8 @@ public class MyProfileNewActivity extends BaseActivity {
         et_nama = v.findViewById(R.id.myprofile_value_name);
         et_email = v.findViewById(R.id.myprofile_value_email);
         et_acctNo = v.findViewById(R.id.bank_acc_no);
-        cameraKTP = v.findViewById(R.id.camera_ktp_paspor);
-        selfieKTP = v.findViewById(R.id.camera_selfie_ktp_paspor);
+        cameraKTP = v.findViewById(R.id.camera_ktp);
+        selfieKTP = v.findViewById(R.id.camera_selfie_ktp);
         cameraTTD = v.findViewById(R.id.camera_ttd);
         sp_bank = v.findViewById(R.id.spinner_nameBank);
         btn1 = v.findViewById(R.id.button1);
@@ -830,19 +827,19 @@ public class MyProfileNewActivity extends BaseActivity {
     public Boolean ValidationPhoto() {
         if (layoutKTP.getVisibility() == View.VISIBLE) {
             if (ktp == null) {
-                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto KTP tidak boleh kosong!");
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, getString(R.string.ktp_photo));
                 return false;
             }
         }
         if (layoutSelfie.getVisibility() == View.VISIBLE) {
             if (selfie == null) {
-                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Selfie dengan KTP tidak boleh kosong!");
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, getString(R.string.selfie_ktp_photo));
                 return false;
             }
         }
         if (layoutTTD.getVisibility() == View.VISIBLE) {
             if (ttd == null) {
-                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Tanda Tangan tidak boleh kosong!");
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, getString(R.string.ttd_photo));
                 return false;
             }
         }

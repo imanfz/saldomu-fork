@@ -173,6 +173,7 @@
     <string name="showcase">Check out the\nNotification Action View</string>
     <string name="header_menu_balance">Saldo : </string>
     <string name="balance">Saldo</string>
+    <string name="agent_balance">Saldo Agen</string>
 
     <string name="menu_group_title_main_menu">Menu Utama</string>
     <string name="menu_item_title_home">Beranda</string>
@@ -1399,7 +1400,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="fingerprint_success">Sidik jari dikenali</string>
     <string name="fingerprint_failed">Sidik jari tidak dikenali. Coba lagi.</string>
     <string name="fingerprint_attempt">Otentikasi sidik jari gagal</string>
-    <string name="fingerprint_use_password_text">Tekan disini untuk menggunakan kata sandi</string>
+    <string name="fingerprint_use_password_text">Tekan disini untuk menggunakan pin</string>
     <string name="dialog_download_title">File Starter Kit</string>
     <string name="prepaid">Prabayar</string>
     <string name="postpaid">Pascabayar</string>
@@ -1533,4 +1534,10 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="wrong_sms_format">Format SMS Salah.</string>
     <string name="topup_remark">Proses tambah saldo membutuhkan waktu maks. 5 menit.</string>
     <string name="no_notif">Notifikasi kamu kosong.</string>
+    <string name="confirmation_code">Kode Konfirmasi</string>
+    <string name="hint_confirmation_code">Masukkan kode konfirmasi</string>
+    <string name="resend_confirmation_code">Kirim ulang kode konfirmasi</string>
+    <string name="ktp_photo">Foto KTP tidak boleh kosong!</string>
+    <string name="selfie_ktp_photo">Foto Selfie dengan KTP tidak boleh kosong!</string>
+    <string name="ttd_photo">Foto Tanda Tangan tidak boleh kosong!</string>
 </resources>

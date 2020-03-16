@@ -87,6 +87,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         , ConfirmationDialog.clickListener {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiInformasi";
     private final String MANDIRISMS = "MANDIRISMS";
+    private final String SALDO_AGEN = "SALDO AGEN";
     private static final int RC_READ_PHONE_STATE = 122;
     private static final int RC_SEND_SMS = 123;
     private View v, bbs_informasi_form, emptyCashoutBenefLayout;
@@ -307,10 +308,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 actv_rekening_cta.setAdapter(adapterAgent);
                 actv_rekening_cta.addTextChangedListener(textWatcher);
                 if (isAgentLKD) {
-                    if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
-                        defaultProductName = "EMO SALDOMU";
-                    } else
-                        defaultProductName = "SALDOMU";
+                    defaultProductName = SALDO_AGEN;
                     actv_rekening_cta.setText(defaultProductName);
                 }
             } else {
@@ -399,7 +397,6 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                     break;
                 }
             }
-
         }
 
         @Override
@@ -423,6 +420,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             if (benef_product_code.equalsIgnoreCase("tcash") || benef_product_code.equalsIgnoreCase("MANDIRILKD"))
                 etOTP.setVisibility(View.VISIBLE);
             else etOTP.setVisibility(View.GONE);
+            if (benef_product_name.toLowerCase().contains("saldomu"))
+                benef_product_name = SALDO_AGEN;
         }
 
         @Override
@@ -509,7 +508,10 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
         for (int i = 0; i < bankAgen.size(); i++) {
             HashMap<String, String> hm = new HashMap<>();
-            hm.put("txt", bankAgen.get(i).getProduct_name());
+            if (bankAgen.get(i).getProduct_name().toLowerCase().contains("saldomu"))
+                hm.put("txt", SALDO_AGEN);
+            else
+                hm.put("txt", bankAgen.get(i).getProduct_name());
 
             if (bankAgen.get(i).getProduct_name().toLowerCase().contains("mandiri"))
                 hm.put("flag", Integer.toString(R.drawable.logo_mandiri_bank_small));
@@ -551,7 +553,10 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
         for (int i = 0; i < bankAgen.size(); i++) {
             HashMap<String, String> hm = new HashMap<>();
-            hm.put("txt", bankAgen.get(i).getProduct_name());
+            if (bankAgen.get(i).getProduct_name().toLowerCase().contains("saldomu"))
+                hm.put("txt", SALDO_AGEN);
+            else
+                hm.put("txt", bankAgen.get(i).getProduct_name());
 
             if (bankAgen.get(i).getProduct_name().toLowerCase().contains("mandiri"))
                 hm.put("flag", Integer.toString(R.drawable.logo_mandiri_bank_small));

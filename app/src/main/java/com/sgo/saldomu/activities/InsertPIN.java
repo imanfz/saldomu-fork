@@ -1,9 +1,14 @@
 package com.sgo.saldomu.activities;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +17,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
@@ -20,6 +26,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.FingerprintDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
@@ -34,7 +41,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -45,12 +51,14 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     public static final int RESULT_PIN_VALUE = 302;
     public static final int RESULT_CANCEL_ORDER = 303;
+    public static final int RESULT_FINGERPRINT_LOGIN = 304;
 
     SecurePreferences sp;
     String valuePin;
     Boolean IsForgotPassword;
     Fragment toShow;
     TextView tv_attempt;
+    FingerprintManager fingerprintManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +76,29 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
 
         if (flagLogin.equalsIgnoreCase(DefineValue.STRING_NO)) {
+            if (getIntent().getBooleanExtra(DefineValue.FOR_LOGIN, false)) {
+                if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+                        try {
+                            if (fingerprintManager.isHardwareDetected() ||
+                                    (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED)
+                                    || fingerprintManager.hasEnrolledFingerprints()) {
+                                FingerprintDialog fingerprintDialog = FingerprintDialog.newDialog(result -> {
+                                    if (result){
+                                        setResult(RESULT_FINGERPRINT_LOGIN);
+                                        finish();
+                                    }
+                                });
+                                fingerprintDialog.setCancelable(false);
+                                fingerprintDialog.show(getSupportFragmentManager(), "FingerprintDialog");
+                            }
+                        } catch (NullPointerException e) {
+                            Timber.e(e.getMessage());
+                        }
+                    }
+                }
+            }
             new UtilsLoader(this, sp).getFailedPINNo(userId, new OnLoadDataListener() {
                 @Override
                 public void onSuccess(Object deData) {
