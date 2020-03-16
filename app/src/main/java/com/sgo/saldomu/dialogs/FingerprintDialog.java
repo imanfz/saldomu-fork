@@ -30,6 +30,7 @@ import com.sgo.saldomu.R;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -52,6 +53,7 @@ public class FingerprintDialog extends DialogFragment {
     private Cipher cipher;
     private KeyStore keyStore;
     private KeyGenerator keyGenerator;
+    private Key key;
     private FingerprintManager.CryptoObject cryptoObject;
     private FingerprintManager fingerprintManager;
     private KeyguardManager keyguardManager;
@@ -99,23 +101,7 @@ public class FingerprintDialog extends DialogFragment {
             keyguardManager = (KeyguardManager) getActivity().getSystemService(KEYGUARD_SERVICE);
             fingerprintManager = (FingerprintManager) getActivity().getSystemService(FINGERPRINT_SERVICE);
 
-            //Check whether the user has granted your app the USE_FINGERPRINT permission//
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                // If your app doesn't have this permission, then display the following text//
-                tv_status.setText(getString(R.string.enable_fingerprint_permission_text));
-            }
-
-            //Check that the user has registered at least one fingerprint//
-            if (!fingerprintManager.hasEnrolledFingerprints()) {
-                // If the user hasn’t configured any fingerprints, then display the following message//
-                tv_status.setText(getString(R.string.register_fingerprint_text));
-            }
-
-            //Check that the lockscreen is secured//
-            if (!keyguardManager.isKeyguardSecure()) {
-                // If the user hasn’t secured their lockscreen with a PIN password or pattern, then display the following text//
-                tv_status.setText(getString(R.string.enable_lockscreen_security_text));
-            } else {
+            if (fingerprintEnabled()) {
                 try {
                     generateKey();
                 } catch (FingerprintException e) {
@@ -132,6 +118,26 @@ public class FingerprintDialog extends DialogFragment {
                     helper.startAuth(fingerprintManager, cryptoObject);
                 }
             }
+        }
+    }
+
+    public boolean fingerprintEnabled() {
+        if (!fingerprintManager.isHardwareDetected()) {
+            // Device doesn't support fingerprint authentication
+            return false;
+        } else if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            tv_status.setText(getString(R.string.enable_fingerprint_permission_text));
+            return false;
+        } else if (!keyguardManager.isKeyguardSecure()) {
+            tv_status.setText(getString(R.string.enable_lockscreen_security_text));
+            return false;
+        } else if (!fingerprintManager.hasEnrolledFingerprints()) {
+            tv_status.setText(getString(R.string.register_fingerprint_text));
+            // User hasn't enrolled any fingerprints to authenticate with
+            return false;
+        } else {
+            // Everything is ready for fingerprint authentication
+            return true;
         }
     }
 
@@ -224,7 +230,8 @@ public class FingerprintDialog extends DialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        helper.stopListening();
+        if (fingerprintEnabled())
+            helper.stopListening();
     }
 
     public void setStatusSuccess() {

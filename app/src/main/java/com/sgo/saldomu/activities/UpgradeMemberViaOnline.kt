@@ -2,8 +2,6 @@ package com.sgo.saldomu.activities
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -23,8 +21,6 @@ import com.sgo.saldomu.coreclass.RealmManager
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
-import com.sgo.saldomu.dialogs.AlertDialogMaintenance
-import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place
 import com.sgo.saldomu.interfaces.ResponseListener
@@ -35,23 +31,11 @@ import com.sgo.saldomu.utils.camera.CameraActivity
 import com.sgo.saldomu.widgets.BaseActivity
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.*
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.birth_place_list
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.birthday_text_view
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.district_auto_text
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.gender_spinner
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.nationality_spinner
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.province_auto_text
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.religion_spinner
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.status_spinner
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.sub_district_auto_text
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.submit_button
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.urban_village_auto_text
-import kotlinx.android.synthetic.main.frag_cash_collection.*
 import org.json.JSONArray
 import org.json.JSONObject
-import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
+import java.io.File
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -95,6 +79,9 @@ class UpgradeMemberViaOnline : BaseActivity() {
     var kelurahanObject = JSONObject()
     var kelurahanArray = JSONArray()
 
+    var ktp: File? = null
+    var selfie: File? = null
+    var ttd: File? = null
 
     override fun getLayoutResource(): Int {
         return R.layout.activity_upgrade_member_via_agent
@@ -140,7 +127,11 @@ class UpgradeMemberViaOnline : BaseActivity() {
 
         initNationalitySpinner()
 
-        camera_ktp_paspor.setOnClickListener { cameraKTPListener() }
+        camera_ktp.setOnClickListener { cameraKTPListener() }
+
+        camera_selfie_ktp.setOnClickListener { cameraSelfieListener() }
+
+        camera_ttd.setOnClickListener { cameraTTDListener() }
 
         submit_button.setOnClickListener {
             if (inputValidation()) {
@@ -474,12 +465,21 @@ class UpgradeMemberViaOnline : BaseActivity() {
     }
 
     private fun cameraKTPListener() {
-        Timber.d("Masuk ke setImageCameraKTP")
         set_result_photo = RESULT_CAMERA_KTP
-        camera_dialog()
+        cameraDialog()
     }
 
-    fun camera_dialog() {
+    private fun cameraSelfieListener() {
+        set_result_photo = RESULT_SELFIE
+        cameraDialog()
+    }
+
+    private fun cameraTTDListener() {
+        set_result_photo = RESULT_CAMERA_TTD
+        cameraDialog()
+    }
+
+    fun cameraDialog() {
         val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
         if (EasyPermissions.hasPermissions(this, *perms)) {
             set_result_photo?.let {

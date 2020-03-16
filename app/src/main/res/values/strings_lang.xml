@@ -1010,7 +1010,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="no_member">Customer Mobile Number</string>
     <string name="no_member_hint">Enter member mobile number</string>
     <string name="no_member_validation">Member Number Is Required !</string>
-    <string name="no_rekening">No. Rekening</string>
+    <string name="no_rekening">Account number</string>
     <string name="nomor_rekening">Account number</string>
     <string name="no_rekening_hint">Enter account number</string>
     <string name="required">Required !</string>
@@ -1559,4 +1559,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="confirmation_code">Confirmation Code</string>
     <string name="hint_confirmation_code">Input confirmation code</string>
     <string name="resend_confirmation_code">Resend confirmation code</string>
+    <string name="ktp_photo">KTP Photo is required!</string>
+    <string name="selfie_ktp_photo">Selfie with KTP Photo is required!</string>
+    <string name="ttd_photo">Signature Photo is required!</string>
 </resources>
