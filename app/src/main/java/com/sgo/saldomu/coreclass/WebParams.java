@@ -599,6 +599,7 @@ public class WebParams {
     public static String FROM_AGENT = "from_agent";
     public static String ERROR_9333 = "9333";
     public static String ERROR_0066 = "0066";
+    public static String ERROR_0003 = "0003";
     public static String LOC_TX_ID = "loc_tx_id";
 
     public static String SHOP_TYPE = "shop_type";

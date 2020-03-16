@@ -328,25 +328,25 @@ public class Login extends BaseFragment implements View.OnClickListener {
                     String code = loginModel.getError_code();
 
                     if (code.equalsIgnoreCase(WebParams.SUCCESS_CODE)) {
-                        String unregist_member = loginModel.getCommunity().get(0).getUnregisterMember();
+//                        String unregist_member = loginModel.getCommunity().get(0).getUnregisterMember();
                         sp.edit().putString(DefineValue.IS_POS, is_pos).commit();
                         sp.edit().putString(DefineValue.EXTRA_SIGNATURE, extraSignature).commit();
                         if (!isFingerprint)
                             sp.edit().putString(DefineValue.USER_PASSWORD, RSA.opensslEncrypt(passLoginValue.getText().toString())).commit();
-                        if (checkCommunity(loginModel.getCommunity())) {
-                            if (unregist_member.equals("N")) {
+//                        if (checkCommunity(loginModel.getCommunity())) {
+//                            if (unregist_member.equals("N")) {
                                 Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
                                 setLoginProfile(loginModel);
 
-                            } else {
-                                Bundle bundle = new Bundle();
-                                bundle.putString(DefineValue.USER_ID, userIDValue.getText().toString());
-                                bundle.putBoolean(DefineValue.IS_UNREGISTER_MEMBER, true);
-                                Fragment newFrag = new Regist1();
-                                newFrag.setArguments(bundle);
-                                switchFragment(newFrag, "reg1", true);
-                            }
-                        }
+//                            } else {
+//                                Bundle bundle = new Bundle();
+//                                bundle.putString(DefineValue.USER_ID, userIDValue.getText().toString());
+//                                bundle.putBoolean(DefineValue.IS_UNREGISTER_MEMBER, true);
+//                                Fragment newFrag = new Regist1();
+//                                newFrag.setArguments(bundle);
+//                                switchFragment(newFrag, "reg1", true);
+//                            }
+//                        }
                     } else if (code.equals(DefineValue.ERROR_0042)) {
 
                         String message;
@@ -550,7 +550,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 for (int i = 0; i < model.getCommunity().size(); i++) {
                     LoginCommunityModel commModel = model.getCommunity().get(i);
                     if (commModel.getCommId().equals(MyApiClient.COMM_ID)) {
-                        mEditor.putString(DefineValue.COMMUNITY_ID, commModel.getCommId());
+                        mEditor.putString(DefineValue.COMMUNITY_ID, MyApiClient.COMM_ID);
                         mEditor.putString(DefineValue.CALLBACK_URL_TOPUP, commModel.getCallbackUrl());
                         mEditor.putString(DefineValue.API_KEY_TOPUP, commModel.getApiKey());
                         mEditor.putString(DefineValue.COMMUNITY_CODE, commModel.getCommCode());
