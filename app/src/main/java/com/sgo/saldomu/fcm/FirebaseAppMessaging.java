@@ -66,6 +66,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Timber.d("From: " + remoteMessage.getFrom());
 
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
 
@@ -86,7 +88,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                 String jsonOptions = remoteMessage.getData().get(DefineValue.FCM_OPTIONS);
 
                 if (modelNotif == MEMBER_RATING_TRX) {
-                    sp = CustomSecurePref.getInstance().getmSecurePrefs();
                     flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
                     if (flagLogin == null)
                         flagLogin = DefineValue.STRING_NO;
@@ -113,34 +114,36 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                 }
                 if (modelNotif == VERIFY_ACC) {
 
-                    sp = CustomSecurePref.getInstance().getmSecurePrefs();
-                    try {
-                        JSONArray jsonObj = new JSONArray(jsonOptions);
-                        JSONObject jsonObj2 = jsonObj.getJSONObject(0);
-                        jsonObj2.put("model_notif", modelNotif);
+                    if (sp.getBoolean(DefineValue.IS_INQUIRY_SMS, false) == true) {
+                        try {
+                            JSONArray jsonObj = new JSONArray(jsonOptions);
+                            JSONObject jsonObj2 = jsonObj.getJSONObject(0);
+                            jsonObj2.put("model_notif", modelNotif);
 
-                        SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.SENDER_ID, jsonObj2.getString(WebParams.USER_ID));
-                        mEditor.apply();
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            mEditor.putString(DefineValue.SENDER_ID, jsonObj2.getString(WebParams.USER_ID));
+                            mEditor.apply();
 
-                        if (flagLogin == null)
-                            flagLogin = DefineValue.STRING_NO;
+                            if (flagLogin == null)
+                                flagLogin = DefineValue.STRING_NO;
 
-                        if (flagLogin.equals(DefineValue.STRING_YES)) {
+                            if (flagLogin.equals(DefineValue.STRING_YES)) {
 
-                        } else {
-                            Intent broadcast = new Intent(this, LoginActivity.class);
-                            broadcast.setAction(DefineValue.INTENT_ACTION_FCM_DATA);
-                            broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
-                            broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
-                            broadcast.putExtra(DefineValue.USER_ID, sp.getString(DefineValue.SENDER_ID,""));
-                            broadcast.putExtra(DefineValue.USER_IS_NEW, Integer.parseInt(jsonObj2.getString(WebParams.IS_NEW_USER)));
-                            broadcast.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(broadcast);
+                            } else {
+                                Intent broadcast = new Intent(this, LoginActivity.class);
+                                broadcast.setAction(DefineValue.INTENT_ACTION_FCM_DATA);
+                                broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
+                                broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
+                                broadcast.putExtra(DefineValue.USER_ID, sp.getString(DefineValue.SENDER_ID, ""));
+                                broadcast.putExtra(DefineValue.USER_IS_NEW, Integer.parseInt(jsonObj2.getString(WebParams.IS_NEW_USER)));
+                                broadcast.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(broadcast);
+                            }
+
+
+                        } catch (JSONException e) {
+                            Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
                         }
-
-                    } catch (JSONException e) {
-                        Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
                     }
                 }
             }

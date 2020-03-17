@@ -1101,15 +1101,7 @@ public class MyProfileNewActivity extends BaseActivity {
             params.put(WebParams.CUST_CONTACT_EMAIL, et_email.getText().toString());
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.IS_REGISTER, "Y");
-
-//            final String dob = nowCalendar.get(Calendar.YEAR)+"-"+ (nowCalendar.get(Calendar.MONTH)+1) +"-"+nowCalendar.get(Calendar.DAY_OF_MONTH);
             params.put(WebParams.CUST_BIRTH_DATE, date_dob);
-
-//            final String gender;
-//            if(sp_gender.getSelectedItemPosition()==0)
-//                gender = gender_value[0];
-//            else
-//                gender = gender_value[1];
             params.put(WebParams.CUST_GENDER, "");
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
