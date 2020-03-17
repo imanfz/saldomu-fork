@@ -1067,7 +1067,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="user_id">No. Handphone pelanggan</string>
     <string name="user_id_validation">Nomor Handphone member dibutuhkan !</string>
     <string name="city_not_found_message">Nama kota tidak ditemukan</string>
-    <string name="city_empty_message">Kota tujuan harus diisi!</string>
+    <string name="city_empty_message">Kota harus diisi!</string>
+    <string name="destination_city_empty_message">Kota tujuan harus diisi!</string>
     <string name="eg_no_hp">(contoh: 08xxxxxxxx)</string>
     <string name="eg_no_acct">(contoh: 01000xxxx)</string>
     <string name="no_match_member_acct_message">Pilih rekening member yang tersedia</string>

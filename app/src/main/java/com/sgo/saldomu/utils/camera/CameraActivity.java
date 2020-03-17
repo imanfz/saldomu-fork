@@ -219,8 +219,8 @@ public class CameraActivity extends Activity implements View.OnClickListener {
                                         (int) ((bottom - top) * (float) bitmap.getHeight()), mat, true);
                             } else {
                                 cropBitmap = Bitmap.createBitmap(bitmap,
-                                        (int) ((left+0.085f) * (float) bitmap.getWidth()),
-                                        (int) ((top-0.09f) * (float) bitmap.getHeight()),
+                                        (int) ((left) * (float) bitmap.getWidth()),
+                                        (int) ((top) * (float) bitmap.getHeight()),
                                         (int) ((right - left - 0.12f) * (float) bitmap.getWidth()),
                                         (int) ((bottom - top + 0.1f) * (float) bitmap.getHeight()));
                             }
