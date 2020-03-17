@@ -16,7 +16,7 @@
         android:layout_alignParentRight="true">
 
         <TextView
-            android:id="@+id/amount_text"
+            android:id="@+id/endbalance_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -52,7 +52,7 @@
         android:layout_marginBottom="@dimen/margin_10dp">
 
         <TextView
-            android:id="@+id/endbalance_text"
+            android:id="@+id/amount_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

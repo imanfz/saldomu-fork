@@ -313,7 +313,7 @@ public class FragCashOut extends BaseFragment {
                                     String code_msg = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                     builder.setMessage(code_msg)
-                                            .setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
+                                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     dialog.dismiss();

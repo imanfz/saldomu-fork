@@ -643,6 +643,7 @@ public class DefineValue {
     public static String SMS_CONTENT_ENCRYPTED = "smsContentEncrypted";
     public static String TIMESTAMP = "timeStamp";
     public static String FOR_LOGIN = "for_login";
+    public static String IS_INQUIRY_SMS = "is_inquiry_sms";
 
 }
 
