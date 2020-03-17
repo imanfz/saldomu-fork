@@ -1076,7 +1076,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="user_id">Customer mobile number</string>
     <string name="user_id_validation">Member\'s mobile number is required !</string>
     <string name="city_not_found_message">City name not found</string>
-    <string name="city_empty_message">Destination city can\’t empty!</string>
+    <string name="city_empty_message">City can\’t empty!</string>
+    <string name="destination_city_empty_message">Destination city can\’t empty!</string>
     <string name="eg_no_hp">(example: 08xxxxxxxx)</string>
     <string name="eg_no_acct">(example: 01000xxxx)</string>
     <string name="no_match_member_acct_message">Select the available member account</string>

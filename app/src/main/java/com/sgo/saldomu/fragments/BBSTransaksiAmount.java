@@ -2,13 +2,11 @@ package com.sgo.saldomu.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -800,7 +798,7 @@ public class BBSTransaksiAmount extends Fragment {
 
                 if (autocomplete_text.equals("")) {
                     spBenefCity.requestFocus();
-                    spBenefCity.setError(getString(R.string.city_empty_message));
+                    spBenefCity.setError(getString(R.string.destination_city_empty_message));
                     return false;
                 } else if (!list_name_bbs_cities.contains(autocomplete_text)) {
 
