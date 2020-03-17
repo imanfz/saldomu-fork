@@ -36,7 +36,7 @@ android {
 
     defaultConfig {
         applicationId "com.sgo.saldomu"
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -136,7 +136,7 @@ android {
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 78
+            versionCode = 79
             versionName "4.1"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }

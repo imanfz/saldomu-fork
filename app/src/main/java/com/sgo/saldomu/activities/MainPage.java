@@ -438,9 +438,7 @@ public class MainPage extends BaseActivity {
 
         String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
         if (!notifDataNextLogin.equals("")) {
-
             changeActivityNextLogin(notifDataNextLogin);
-
         }
 //        }
 //        else {
@@ -881,7 +879,7 @@ public class MainPage extends BaseActivity {
             String cust_id = sp.getString(DefineValue.CUST_ID, "");
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_MEMBER, MyApiClient.COMM_ID_PULSA);
-            params.put(WebParams.COMM_ID, commIDLogin);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
@@ -998,7 +996,7 @@ public class MainPage extends BaseActivity {
                                 mEditor.apply();
 
 
-                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            } else if (code.equals(WebParams.LOGOUT_CODE) || code.equals(WebParams.ERROR_0003)) {
                                 Timber.d("isi response autologout:" + model.getError_message());
 
                                 String message = model.getError_message();
@@ -1011,8 +1009,6 @@ public class MainPage extends BaseActivity {
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
                                 alertDialogUpdateApp.showDialogUpdate(MainPage.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(MainPage.this, model.getError_message());
