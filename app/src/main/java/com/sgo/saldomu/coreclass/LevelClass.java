@@ -15,6 +15,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.UpgradeMemberActivity;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
@@ -78,7 +79,7 @@ public class LevelClass {
             dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Intent mI = new Intent(getActivity(), MyProfileNewActivity.class);
+                    Intent mI = new Intent(getActivity(), UpgradeMemberActivity.class);
                     getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
                 }
             });

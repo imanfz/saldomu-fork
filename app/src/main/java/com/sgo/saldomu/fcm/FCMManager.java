@@ -24,6 +24,7 @@ import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
+import com.sgo.saldomu.activities.UpgradeMemberViaOnline;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -350,7 +351,7 @@ public class FCMManager {
                             sp.edit().putString(DefineValue.REMARK_TTD,remark_ttd).apply();
                             sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
 
-                            i = new Intent(mContext, MyProfileNewActivity.class);
+                            i = new Intent(mContext, UpgradeMemberViaOnline.class);
                         }
                         catch (JSONException e)
                         {

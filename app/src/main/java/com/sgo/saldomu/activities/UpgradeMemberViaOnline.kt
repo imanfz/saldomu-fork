@@ -99,6 +99,51 @@ class UpgradeMemberViaOnline : BaseActivity() {
     private val KTP_TYPE = 1
     private val SELFIE_TYPE = 2
     private val TTD_TYPE = 3
+    private var reject_KTP:String? = null
+    private var reject_selfie:String? = null
+    private var reject_ttd:String? = null
+    private var respon_reject_ktp:String? = null
+    private var respon_reject_selfie:String? = null
+    private var respon_reject_ttd: String? = null
+
+    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        super.onSaveInstanceState(savedInstanceState)
+            savedInstanceState.putBoolean("isVerifiedMember", true)
+            if (ktp != null) {
+                savedInstanceState.putSerializable("KTP", ktp)
+            }
+            if (selfie != null) {
+                savedInstanceState.putSerializable("selfieKtp", selfie)
+            }
+            if (ttd != null) {
+                savedInstanceState.putSerializable("TTD", ttd)
+            }
+
+    }
+
+    public override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        ktp = savedInstanceState.getSerializable("KTP") as File
+        selfie = savedInstanceState.getSerializable("selfieKtp") as File
+        ttd = savedInstanceState.getSerializable("TTD") as File
+
+            if (ktp != null) {
+                Timber.d("ktp :$ktp")
+                GlideManager.sharedInstance().initializeGlideProfile(this, ktp, camera_ktp)
+                uploadFileToServer(ktp!!, KTP_TYPE)
+            }
+
+            if (selfie != null) {
+                GlideManager.sharedInstance().initializeGlideProfile(this, selfie, camera_selfie_ktp)
+                uploadFileToServer(selfie!!, SELFIE_TYPE)
+            }
+
+            if (ttd != null) {
+                GlideManager.sharedInstance().initializeGlideProfile(this, ttd, camera_ttd)
+                uploadFileToServer(ttd!!, TTD_TYPE)
+            }
+
+    }
 
     override fun getLayoutResource(): Int {
         return R.layout.activity_upgrade_member_via_agent
@@ -525,6 +570,33 @@ class UpgradeMemberViaOnline : BaseActivity() {
         value_email.setText(sp.getString(DefineValue.PROFILE_EMAIL, ""))
         value_email.isEnabled = false
         getBankCashout()
+
+        reject_KTP = sp.getString(DefineValue.REJECT_KTP, "N")
+        reject_selfie = sp.getString(DefineValue.REJECT_FOTO, "N")
+        reject_ttd = sp.getString(DefineValue.REJECT_TTD, "N")
+        respon_reject_ktp = sp.getString(DefineValue.REMARK_KTP, "")
+        respon_reject_selfie = sp.getString(DefineValue.REMARK_FOTO, "")
+        respon_reject_ttd = sp.getString(DefineValue.REMARK_TTD, "")
+
+        if (reject_KTP == "Y" || reject_selfie == "Y" || reject_ttd == "Y") {
+            if (reject_KTP == "Y") {
+                camera_ktp.setEnabled(true)
+                tv_respon_reject_ktp.setText("Alasan : $respon_reject_ktp")
+            } else
+                layout_foto_ktp.setVisibility(View.GONE)
+
+            if (reject_selfie == "Y") {
+                camera_ktp.setEnabled(true)
+                tv_respon_reject_selfie.text = "Alasan : $respon_reject_selfie"
+            } else
+                layout_selfie.setVisibility(View.GONE)
+
+            if (reject_ttd == "Y") {
+                camera_ttd.setEnabled(true)
+                tv_respon_reject_ttd.text = "Alasan : $respon_reject_ttd"
+            } else
+                layout_ttd.setVisibility(View.GONE)
+        }
     }
 
     private fun initBankSpinner() {

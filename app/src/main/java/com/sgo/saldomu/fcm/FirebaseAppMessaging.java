@@ -28,6 +28,7 @@ import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
+import com.sgo.saldomu.activities.UpgradeMemberViaOnline;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -547,9 +548,9 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             sp.edit().putString(DefineValue.REMARK_TTD, remark_ttd).apply();
                             sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
 
-                            intent = new Intent(this, MyProfileNewActivity.class);
+                            intent = new Intent(this, UpgradeMemberViaOnline.class);
 
-                            stackBuilder.addParentStack(MyProfileNewActivity.class);
+                            stackBuilder.addParentStack(UpgradeMemberViaOnline.class);
                             stackBuilder.addNextIntent(intent);
 
                             contentIntent =
