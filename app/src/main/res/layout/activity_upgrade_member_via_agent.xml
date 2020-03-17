@@ -455,17 +455,17 @@
                         android:textColor="@color/red"
                         android:gravity="left"/>
                     <TextView
-                        android:id="@+id/tv_pb1_myprofileactivity"
+                        android:id="@+id/tv_pb1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_respon_reject_ktp"
                         android:textColor="@color/grey_1000b"
                         android:gravity="right"/>
                     <ProgressBar
-                        android:id="@+id/pb1_myprofileactivity"
+                        android:id="@+id/pb1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_pb1_myprofileactivity"
+                        android:layout_below="@id/tv_pb1"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:minWidth="200dp"
                         android:progress="1"
@@ -505,17 +505,17 @@
                         android:textColor="@color/red"
                         android:gravity="left"/>
                     <TextView
-                        android:id="@+id/tv_pb2_myprofileactivity"
+                        android:id="@+id/tv_pb2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/camera_selfie_ktp"
                         android:textColor="@color/grey_1000b"
                         android:gravity="right"/>
                     <ProgressBar
-                        android:id="@+id/pb2_myprofileactivity"
+                        android:id="@+id/pb2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_pb2_myprofileactivity"
+                        android:layout_below="@id/tv_pb2"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:minWidth="200dp"
                         android:progress="1"
@@ -553,17 +553,17 @@
                         android:textColor="@color/red"
                         android:gravity="left"/>
                     <TextView
-                        android:id="@+id/tv_pb3_myprofileactivity"
+                        android:id="@+id/tv_pb3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/camera_ttd"
                         android:textColor="@color/grey_1000b"
                         android:gravity="right"/>
                     <ProgressBar
-                        android:id="@+id/pb3_myprofileactivity"
+                        android:id="@+id/pb3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_pb3_myprofileactivity"
+                        android:layout_below="@id/tv_pb3"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:minWidth="200dp"
                         android:progress="1"
@@ -633,7 +633,7 @@
                             android:hint="@string/cashout_bank_acc_no_hint"
                             android:inputType="number"
                             android:maxLength="15"
-                            android:paddingLeft="10dp"
+                            android:paddingStart="10dp"
                             android:textSize="@dimen/abc_text_size_medium_material" />
 
                         <TextView
@@ -644,6 +644,36 @@
                             android:textColor="@color/red"
                             android:textSize="12sp"
                             android:textStyle="italic" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/myprofile_text_email"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_medium_material"
+                            android:textStyle="bold" />
+
+                        <com.sgo.saldomu.coreclass.CustomEditText
+                            android:id="@+id/value_email"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:inputType="textEmailAddress"
+                            android:textSize="@dimen/abc_text_size_medium_material" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/myprofile_email_warning"
+                            android:textColor="@color/red"
+                            android:textStyle="italic"
+                            android:textSize="12sp"
+                            android:paddingBottom="10sp"/>
                     </LinearLayout>
                 </LinearLayout>
 
