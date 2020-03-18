@@ -55,7 +55,7 @@
             android:padding="10dp"
             android:enabled="true"
             android:text="@string/myprofile_text_date_click"
-            android:textColor="@color/grey_1000b" />
+            android:textColor="@color/grey_1000w" />
 
         <com.balysv.materialripple.MaterialRippleLayout
             android:layout_width="match_parent"
