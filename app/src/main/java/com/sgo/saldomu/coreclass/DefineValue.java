@@ -645,5 +645,7 @@ public class DefineValue {
     public static String FOR_LOGIN = "for_login";
     public static String IS_INQUIRY_SMS = "is_inquiry_sms";
 
+    public static String RESET_PIN = "reset_pin";
+
 }
 

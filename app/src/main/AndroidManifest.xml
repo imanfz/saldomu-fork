@@ -24,8 +24,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-    <!-- <uses-permission android:name="android.permission.RECEIVE_SMS" /> -->
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" /> <!-- <uses-permission android:name="android.permission.RECEIVE_SMS" /> -->
     <!-- <uses-permission android:name="android.permission.SEND_SMS" /> -->
     <!-- <uses-permission android:name="android.permission.READ_SMS" /> -->
     <!-- <uses-permission android:name="android.permission.WRITE_SMS" /> -->
@@ -50,7 +49,8 @@
         android:theme="@style/Theme.MyTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:label,allowBackup,theme">
-        <activity android:name=".activities.ForgotPin"></activity>
+        <activity android:name=".activities.OTPActivity"></activity>
+        <activity android:name=".activities.ForgotPin" />
         <activity
             android:name=".CameraViewActivity"
             android:screenOrientation="portrait" /> <!-- <activity android:name="com.desmond.squarecamera.CameraActivity" /> -->

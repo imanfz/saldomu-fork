@@ -287,6 +287,9 @@ public class MyApiClient {
     public static String LINK_INQUIRY_CUSTOMER_ACCT;
     public static String LINK_CONFIRM_TOKEN_C2R;
     public static String LINK_RESEND_TOKEN_C2R;
+    public static String LINK_REQUEST_RESET_PIN;
+    public static String LINK_VALIDATE_OTP_RESET_PIN;
+    public static String LINK_CONFIRM_RESET_PIN;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -501,6 +504,10 @@ public class MyApiClient {
 
         LINK_CONFIRM_TOKEN_C2R      = headaddressfinal + "ConfirmTokenCTR/Invoke";
         LINK_RESEND_TOKEN_C2R       = headaddressfinal + "ResendTokenCTR/Invoke";
+
+        LINK_REQUEST_RESET_PIN       = headaddressfinal + "RequestResetPIN/Invoke";
+        LINK_VALIDATE_OTP_RESET_PIN  = headaddressfinal + "ValidateOTPResetPIN/Invoke";
+        LINK_CONFIRM_RESET_PIN       = headaddressfinal + "ConfirmResetPIN/Invoke";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
