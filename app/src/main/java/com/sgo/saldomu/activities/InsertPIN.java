@@ -5,10 +5,13 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -202,6 +205,12 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
     public boolean onCreateOptionsMenu(Menu menu) {
         if (IsForgotPassword)
             getMenuInflater().inflate(R.menu.forgot_pin, menu);
+        for(int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(Color.WHITE), 0,     spanString.length(), 0); //fix the color to white
+            item.setTitle(spanString);
+        }
         super.onCreateOptionsMenu(menu);
         return true;
     }
