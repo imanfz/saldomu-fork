@@ -51,6 +51,10 @@ class ForgotPin : BaseActivity() {
         if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")!!.isNotEmpty() && sp.getString(DefineValue.IS_POS, "N").equals("N", ignoreCase = true)) {
             et_userid.setText(NoHPFormat.formatTo08(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")))
             et_userid.isEnabled = false
+        } else if (sp.getString(DefineValue.CURR_USERID,"").isNotEmpty())
+        {
+            et_userid.setText(NoHPFormat.formatTo08(sp.getString(DefineValue.CURR_USERID, "")))
+            et_userid.isEnabled = false
         }
 
         fromFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ID", "INDONESIA"))
@@ -255,6 +259,9 @@ class ForgotPin : BaseActivity() {
                             WebParams.SUCCESS_CODE -> {
                                 val i = Intent(applicationContext, OTPActivity::class.java)
                                 i.putExtra(DefineValue.PROFILE_DOB,date_dob)
+                                i.putExtra(DefineValue.USER_EMAIL,response.getString(WebParams.USER_EMAIL))
+                                i.putExtra(DefineValue.CURR_USERID,et_userid.text.toString())
+                                sp.edit().remove(DefineValue.CURR_USERID).apply()
                                 startActivity(i)
                                 finish()
                             }

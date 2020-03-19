@@ -1564,7 +1564,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="selfie_ktp_photo">Selfie with KTP Photo is required!</string>
     <string name="ttd_photo">Signature Photo is required!</string>
 
-    <string name="otp_sent_to_email">Enter the OTP code sent to the email</string>
+    <string name="otp_sent_to_email">Enter the verification code sent to the email</string>
     <string name="announce_otp">Announcement :</string>
     <string name="announce_otp_1">1. Please always maintain the confidentiality of your PASSWORD, PIN and OTP code, and do not provide such data to anyone, including those on behalf of PT Mitra Pembayaran Elektronik or SALDOMU.</string>
     <string name="announce_otp_2">2. SALDOMU is only distributed through Google Play by PT Mitra Pembayaran Elektronik.</string>

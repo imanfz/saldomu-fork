@@ -252,13 +252,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
                     isTexted = false;
                     break;
                 }
-//                    return true;
-//                });
-//                break;
-            case R.id.btn_forgetPin:
-                newFrag = new FragForgotPIN();
-                switchFragment(newFrag, getString(R.string.forgotpin), true);
-                break;
         }
 
     }

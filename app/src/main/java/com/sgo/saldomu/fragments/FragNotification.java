@@ -401,7 +401,7 @@ public class FragNotification extends BaseFragment {
                 if (mContext instanceof MainPage) {
                     MainPage mMainPage = (MainPage) mContext;
                     NotificationHandler mNoHand = new NotificationHandler(mMainPage, sp);
-//                    mNoHand.sentRetrieveNotif();
+                    mNoHand.sentRetrieveNotif();
                 }
             }
         };

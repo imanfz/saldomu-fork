@@ -46,6 +46,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
     private String mValuePin;
     private String confirmPin;
     private String tokenID;
+    private String userID;
     private Boolean isRegist = false;
     private Boolean isResetPIN = false;
 
@@ -59,6 +60,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         isRegist = i.getBooleanExtra(DefineValue.REGISTRATION, false);
         isResetPIN = i.getBooleanExtra(DefineValue.RESET_PIN, false);
         tokenID = i.getStringExtra(DefineValue.TOKEN_ID);
+        userID = i.getStringExtra(DefineValue.CURR_USERID);
 
         InitializeToolbar();
 
@@ -207,14 +209,14 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
     private void sendResetPin() {
         showProgressDialog();
 
-        extraSignature = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "") + tokenID + mValuePin;
+        extraSignature = userID + tokenID + mValuePin;
 
         HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CONFIRM_RESET_PIN, extraSignature);
         params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenID));
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
         params.put(WebParams.NEW_PIN, RSA.opensslEncrypt(mValuePin));
         params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(confirmPin));
-        params.put(WebParams.USER_ID, sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
+        params.put(WebParams.USER_ID, userID);
 
         Timber.d("isi param confirm otp reset pin: " + params);
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_RESET_PIN, params,
