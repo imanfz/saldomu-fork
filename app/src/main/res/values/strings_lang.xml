@@ -1575,4 +1575,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="wrong_otp">OTP is wrong</string>
     <string name="time_left">Time left</string>
     <string name="success_reset_pin">PIN has been successfully reset</string>
+    <string name="not_required">*Not required</string>
+    <string name="referal_no_validation1">Refereal number not registered!</string>
+    <string name="referal_no_validation2">Referral number cannot be the same as Customer Phone number!!</string>
 </resources>
