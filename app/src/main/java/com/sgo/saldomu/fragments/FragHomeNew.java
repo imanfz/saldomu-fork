@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -58,6 +59,7 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
+import com.sgo.saldomu.coreclass.NotificationHandler;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -193,6 +195,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         realm = RealmManager.getRealmBiller();
 
         getRealmData();
+
+        CheckNotification();
 
         if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
             llAgentDetail.setVisibility(View.GONE);
@@ -1147,6 +1151,21 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private void RefreshSaldo() {
         String balance = sp.getString(DefineValue.BALANCE_AMOUNT, "0");
         tv_saldo.setText(CurrencyFormat.format(balance));
+    }
+
+    private void CheckNotification() {
+        Thread mth = new Thread() {
+            @Override
+            public void run() {
+                Activity mContext = getActivity().getParent();
+                if (mContext instanceof MainPage) {
+                    MainPage mMainPage = (MainPage) mContext;
+                    NotificationHandler mNoHand = new NotificationHandler(mMainPage, sp);
+                    mNoHand.sentRetrieveNotif();
+                }
+            }
+        };
+        mth.start();
     }
 
     @Override

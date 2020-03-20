@@ -1542,7 +1542,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="selfie_ktp_photo">Foto Selfie dengan KTP tidak boleh kosong!</string>
     <string name="ttd_photo">Foto Tanda Tangan tidak boleh kosong!</string>
 
-    <string name="otp_sent_to_email">Masukkan kode OTP yang dikirimkan ke email</string>
+    <string name="otp_sent_to_email">Masukkan kode verifikasi yang dikirimkan ke email</string>
     <string name="announce_otp">Pemberitahuan :</string>
     <string name="announce_otp_1">1. Harap selalu mejaga kerahasiaan PASSWORD, PIN dan kode OTP anda, dan tidak memberikan data tersebut kepada siapapun termasuk yang mengatasnamakan PT Mitra Pembayaran Elektronik maupun SALDOMU.</string>
     <string name="announce_otp_2">2. SALDOMU hanya didistribusikan melalui Google Play oleh PT Mitra Pembayaran Elektronik.</string>

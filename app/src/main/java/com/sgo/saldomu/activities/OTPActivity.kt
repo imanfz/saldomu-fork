@@ -1,5 +1,6 @@
 package com.sgo.saldomu.activities
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -27,6 +28,7 @@ class OTPActivity : BaseActivity() {
     private var countDownTimer: CountDownTimer? = null
     private var dateDOB: String? = null
     private var tokenID: String? = null
+    private var userID: String? = null
     override fun getLayoutResource(): Int {
         return R.layout.activity_otp
     }
@@ -34,8 +36,9 @@ class OTPActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        tv_email_value.text = sp.getString(DefineValue.PROFILE_EMAIL, "")
+        tv_email_value.text = intent.getStringExtra(DefineValue.USER_EMAIL)
         dateDOB = intent.getStringExtra(DefineValue.PROFILE_DOB)
+        userID = intent.getStringExtra(DefineValue.CURR_USERID)
 
         initiateCountDownTimerForResendOTP()
 
@@ -84,11 +87,11 @@ class OTPActivity : BaseActivity() {
     private fun confirmOTP() {
         showProgressDialog()
 
-        extraSignature = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "") + tokenID
+        extraSignature = userID + tokenID
 
         val params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_VALIDATE_OTP_RESET_PIN, extraSignature)
 
-        params[WebParams.USER_ID] = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")
+        params[WebParams.USER_ID] = userID
         params[WebParams.COMM_ID] = MyApiClient.COMM_ID
         params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(tokenID)
 
@@ -105,6 +108,7 @@ class OTPActivity : BaseActivity() {
                                 val i = Intent(applicationContext, CreatePIN::class.java)
                                 i.putExtra(DefineValue.RESET_PIN, true)
                                 i.putExtra(DefineValue.TOKEN_ID, tokenID)
+                                i.putExtra(DefineValue.CURR_USERID, userID)
                                 startActivity(i)
                                 finish()
                             }
@@ -149,11 +153,11 @@ class OTPActivity : BaseActivity() {
     private fun getOTP() {
         showProgressDialog()
 
-        extraSignature = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "") + dateDOB
+        extraSignature = userID+ dateDOB
 
         val params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_REQUEST_RESET_PIN, extraSignature)
 
-        params[WebParams.USER_ID] = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")
+        params[WebParams.USER_ID] = userID
         params[WebParams.COMM_ID] = MyApiClient.COMM_ID
         params[WebParams.CUST_BIRTH_DATE] = dateDOB
 
