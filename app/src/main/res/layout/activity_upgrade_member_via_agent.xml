@@ -419,7 +419,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/layout_upgrade_online"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp">
                 <View
