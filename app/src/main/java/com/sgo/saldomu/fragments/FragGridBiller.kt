@@ -76,7 +76,7 @@ class FragGridBiller : BaseFragment() {
             startActivity(i)
         }
     }
-    
+
     private fun hardCodeMenuItemName(string: String): String {
         when (string) {
             getString(R.string.credit_card) -> return "Kartu Kredit"
@@ -90,28 +90,45 @@ class FragGridBiller : BaseFragment() {
     }
 
     private fun setTitleandIcon() {
-        menuStrings.add(resources.getString(R.string.credit_card))
-        menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_kartu_kredit))
 
-        menuStrings.add(resources.getString(R.string.installment))
-        menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_tagihan_kartu_kredit))
+        if (billerTypeName.contains(getString(R.string.credit_card))||billerTypeName.contains("Kartu Kredit")){
+            menuStrings.add(resources.getString(R.string.credit_card))
+            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_kartu_kredit))
+        }
 
-        menuStrings.add(resources.getString(R.string.telkom))
-        menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_telkom))
+        if (billerTypeName.contains(getString(R.string.installment))||billerTypeName.contains("Cicilan")) {
+            menuStrings.add(resources.getString(R.string.installment))
+            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_tagihan_kartu_kredit))
+        }
 
-        menuStrings.add(resources.getString(R.string.flight_ticket))
-        menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_pesawat))
+        if (billerTypeName.contains(getString(R.string.telkom))) {
+            menuStrings.add(resources.getString(R.string.telkom))
+            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_telkom))
+        }
 
-        menuStrings.add(resources.getString(R.string.train_ticket))
-        menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_kereta))
+        if (billerTypeName.contains(getString(R.string.flight_ticket))||billerTypeName.contains("Tiket Pesawat Terbang")) {
+            menuStrings.add(resources.getString(R.string.flight_ticket))
+            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_pesawat))
+        }
 
-        menuStrings.add(resources.getString(R.string.insurance))
-        menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_asuransi))
+        if (billerTypeName.contains(getString(R.string.train_ticket))||billerTypeName.contains("Tiket Kereta Api")) {
+            menuStrings.add(resources.getString(R.string.train_ticket))
+            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_kereta))
+        }
 
-        menuStrings.add(resources.getString(R.string.internet))
-        menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_internet))
+        if (billerTypeName.contains(getString(R.string.insurance))||billerTypeName.contains("Asuransi")) {
+            menuStrings.add(resources.getString(R.string.insurance))
+            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_asuransi))
+        }
 
-        menuStrings.add(resources.getString(R.string.cable_tv))
-        menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_tv))
+        if (billerTypeName.contains(getString(R.string.internet))) {
+            menuStrings.add(resources.getString(R.string.internet))
+            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_internet))
+        }
+
+        if (billerTypeName.contains(getString(R.string.cable_tv))||billerTypeName.contains("TV Cable")) {
+            menuStrings.add(resources.getString(R.string.cable_tv))
+            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_tv))
+        }
     }
 }

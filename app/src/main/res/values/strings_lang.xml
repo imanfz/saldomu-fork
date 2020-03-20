@@ -1167,7 +1167,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="label_bank_transfer_ke_emoney">Which E-money?</string>
     <string name="label_rekening_transfer_ke">Destination Account Number</string>
     <string name="label_transfer_dari_agent">What Bank / E-Money do you want to use?</string>
-    <string name="label_transfer_dari_agent_lkd">E-Money Agent</string>
+    <string name="label_transfer_dari_agent_lkd">Agent Balance</string>
     <string name="label_no_hp_sender">Customer’s phone number</string>
     <string name="label_notif_sender">Notifications to Customers</string>
     <string name="label_trx_description">Transaction Information</string>
