@@ -51,16 +51,10 @@ import java.io.File
 
 class DetailMemberToVerifyActivity : BaseActivity() {
     private val RESULT_CAMERA_KTP = 201
-    //    private val RESULT_CAMERA_CUST_KTP = 202
-//    private val RESULT_CAMERA_TTD = 203
     private val RC_CAMERA_STORAGE = 14
     private lateinit var pickAndCameraUtil: PickAndCameraUtil
     private val KTP_TYPE = 1
-    private val CUST_AND_KTP_TYPE = 2
-    private val TTD_TYPE = 3
     internal var ktp: File? = null
-    internal var custAndKTP: File? = null
-    internal var ttd: File? = null
     private var set_result_photo: Int? = null
 
     override fun getLayoutResource(): Int {

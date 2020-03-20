@@ -1554,7 +1554,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="lkd">LKD</string>
     <string name="lp">LP</string>
     <string name="DGI">DGI</string>
-    <string name="wrong_sms_format">Format SMS Invalid.</string>
+    <string name="wrong_sms_format">SMS Format Invalid.</string>
     <string name="topup_remark">Top Up Process takes max. 5 minutes.</string>
     <string name="no_notif">You have no notification yet.</string>
     <string name="confirmation_code">Confirmation Code</string>
@@ -1570,11 +1570,14 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="announce_otp_2">2. SALDOMU is only distributed through Google Play by PT Mitra Pembayaran Elektronik.</string>
     <string name="announce_otp_3">3. Please DO NOT log in any media other than the official application to avoid any type of fraud in the name of SALDOMU.</string>
     <string name="announce_otp_4">4. If there are indications of fraud, please report to us via support@saldomu.com</string>
-    <string name="otp_validation">OTP must 6 character!</string>
-    <string name="success_resend_otp">New OTP was successfully resend</string>
-    <string name="wrong_otp">OTP is wrong</string>
+    <string name="otp_validation">Verification code must 6 character!</string>
+    <string name="success_resend_otp">New verification code  was successfully resend</string>
+    <string name="wrong_otp">Verification code is wrong</string>
     <string name="time_left">Time left</string>
     <string name="success_reset_pin">PIN has been successfully reset</string>
+    <string name="not_required">*Not required</string>
+    <string name="referal_no_validation1">Refereal number not registered!</string>
+    <string name="referal_no_validation2">Referral number cannot be the same as Customer Phone number!!</string>
 
     <string name="credit_card">Credit Card</string>
     <string name="installment">Installment</string>

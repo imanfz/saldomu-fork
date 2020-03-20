@@ -1549,11 +1549,14 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="announce_otp_2">2. SALDOMU hanya didistribusikan melalui Google Play oleh PT Mitra Pembayaran Elektronik.</string>
     <string name="announce_otp_3">3. Harap TIDAK melakukan login di media lain selain aplikasi resmi untuk menghindari segala jenis penipuan yang mengatasnamakan SALDOMU.</string>
     <string name="announce_otp_4">4. Apabila terdapat indikasi penipuan harap melapor kepada kami melalui support@saldomu.com</string>
-    <string name="otp_validation">Kode OTP harus 6 karakter!</string>
-    <string name="success_resend_otp">OTP baru berhasil dikirim kembali</string>
-    <string name="wrong_otp">OTP salah</string>
+    <string name="otp_validation">Kode verifikasi harus 6 karakter!</string>
+    <string name="success_resend_otp">Kode verifikasi baru berhasil dikirim kembali</string>
+    <string name="wrong_otp">Kode verifikasi salah</string>
     <string name="time_left">Sisa waktu</string>
     <string name="success_reset_pin">PIN telah berhasil diatur ulang</string>
+    <string name="not_required">*Tidak wajib diisi</string>
+    <string name="referal_no_validation1">Masukkan No. Referal yang sesuai!</string>
+    <string name="referal_no_validation2">Nomor Referal tidak boleh sama dengan No. HP Pelanggan!!</string>
 
     <string name="credit_card">Kartu Kredit</string>
     <string name="installment">Cicilan</string>
