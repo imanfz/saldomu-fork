@@ -1167,7 +1167,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="label_bank_transfer_ke_emoney">Which E-money?</string>
     <string name="label_rekening_transfer_ke">Destination Account Number</string>
     <string name="label_transfer_dari_agent">What Bank / E-Money do you want to use?</string>
-    <string name="label_transfer_dari_agent_lkd">E-Money Agent</string>
+    <string name="label_transfer_dari_agent_lkd">Agent Balance</string>
     <string name="label_no_hp_sender">Customer’s phone number</string>
     <string name="label_notif_sender">Notifications to Customers</string>
     <string name="label_trx_description">Transaction Information</string>
@@ -1578,4 +1578,18 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="not_required">*Not required</string>
     <string name="referal_no_validation1">Refereal number not registered!</string>
     <string name="referal_no_validation2">Referral number cannot be the same as Customer Phone number!!</string>
+
+    <string name="credit_card">Credit Card</string>
+    <string name="installment">Installment</string>
+    <string name="telkom">Telkom</string>
+    <string name="flight_ticket">Flight Ticket</string>
+    <string name="train_ticket">Train Ticket</string>
+    <string name="cable_tv">Cable TV</string>
+    <string name="insurance">Insurance</string>
+    <string name="internet">Internet</string>
+    <string name="pbb">PBB</string>
+    <string name="pln_non_taglis">PLN Non-Taglis</string>
+    <string name="tuition_fee">Tuition Fee</string>
+    <string name="residence">Residence</string>
+    <string name="bpjs">BPJS</string>
 </resources>

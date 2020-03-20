@@ -116,7 +116,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue = "", comm_id, city_id, amount,
             transaksi, no_benef, name_benef, city_name, no_source, benef_product_value_token, source_product_value_token, key_code,
-            noHPMemberLocation = "", message, lkd_product_code, enabledAdditionalFee = "", defaultProductName = "";
+            noHPMemberLocation = "", message, lkd_product_code, enabledAdditionalFee = "";
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
@@ -307,10 +307,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 setAgent(listbankSource);
                 actv_rekening_cta.setAdapter(adapterAgent);
                 actv_rekening_cta.addTextChangedListener(textWatcher);
-                if (isAgentLKD) {
-                    defaultProductName = SALDO_AGEN;
-                    actv_rekening_cta.setText(defaultProductName);
-                }
+                if (isAgentLKD)
+                    actv_rekening_cta.setText(SALDO_AGEN);
             } else {
                 stub.setLayoutResource(R.layout.bbs_cashout_informasi);
                 View cashout_layout = stub.inflate();
@@ -397,6 +395,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                     break;
                 }
             }
+            if (source_product_name.toLowerCase().contains("saldomu"))
+                source_product_name = SALDO_AGEN;
         }
 
         @Override
