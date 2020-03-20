@@ -1575,4 +1575,18 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="wrong_otp">OTP is wrong</string>
     <string name="time_left">Time left</string>
     <string name="success_reset_pin">PIN has been successfully reset</string>
+
+    <string name="credit_card">Credit Card</string>
+    <string name="installment">Installment</string>
+    <string name="telkom">Telkom</string>
+    <string name="flight_ticket">Flight Ticket</string>
+    <string name="train_ticket">Train Ticket</string>
+    <string name="cable_tv">Cable TV</string>
+    <string name="insurance">Insurance</string>
+    <string name="internet">Internet</string>
+    <string name="pbb">PBB</string>
+    <string name="pln_non_taglis">PLN Non-Taglis</string>
+    <string name="tuition_fee">Tuition Fee</string>
+    <string name="residence">Residence</string>
+    <string name="bpjs">BPJS</string>
 </resources>

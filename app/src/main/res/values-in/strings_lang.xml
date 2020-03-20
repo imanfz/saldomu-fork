@@ -1553,4 +1553,18 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="wrong_otp">OTP salah</string>
     <string name="time_left">Sisa waktu</string>
     <string name="success_reset_pin">PIN telah berhasil diatur ulang</string>
+
+    <string name="credit_card">Kartu Kredit</string>
+    <string name="installment">Cicilan</string>
+    <string name="telkom">Telkom</string>
+    <string name="flight_ticket">Tiket Pesawat Terbang</string>
+    <string name="train_ticket">Tiket Kereta Api</string>
+    <string name="cable_tv">TV Kabel</string>
+    <string name="insurance">Asuransi</string>
+    <string name="internet">Internet</string>
+    <string name="pbb">PBB</string>
+    <string name="pln_non_taglis">PLN Non-Taglis</string>
+    <string name="tuition_fee">Uang Sekolah</string>
+    <string name="residence">Perumahan</string>
+    <string name="bpjs">BPJS</string>
 </resources>

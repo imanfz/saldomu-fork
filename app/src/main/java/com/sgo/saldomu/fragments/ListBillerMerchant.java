@@ -94,7 +94,7 @@ public class ListBillerMerchant extends ListFragment {
         });
 
         if (mBillerType != null)
-            setActionBarTitle(getString(R.string.biller_ab_title) + "-" + mBillerType.getBiller_type_name());
+            setActionBarTitle(getString(R.string.biller_ab_title) + " - " + mBillerType.getBiller_type_name());
 
 //        if(!realm.isInTransaction())
 //            initializeData();
@@ -131,7 +131,7 @@ public class ListBillerMerchant extends ListFragment {
 
         if (mBillerType != null) {
             mListBillerData = mBillerType.getBiller_data_models();
-            setActionBarTitle(getString(R.string.biller_ab_title) + "-" + mBillerType.getBiller_type_name());
+            setActionBarTitle(getString(R.string.biller_ab_title) + " - " + mBillerType.getBiller_type_name());
             _data.clear();
 
             for (int i = 0; i < mListBillerData.size(); i++) {
