@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.fragments.FragGridBiller;
 import com.sgo.saldomu.fragments.ListCollection;
 import com.sgo.saldomu.fragments.TabBuyItem;
 
@@ -51,10 +52,17 @@ public class BuyFragmentTabAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int i) {
 
+//        if(TITLES[i].equals(mContext.getString(R.string.purchase)))
+//            return TabBuyItem.newInstance(DefineValue.BIL_TYPE_BUY);
+//        else if(TITLES[i].equals(mContext.getString(R.string.payment)))
+//            return TabBuyItem.newInstance(DefineValue.BIL_TYPE_PAY);
+//        else if(TITLES[i].equals(mContext.getString(R.string.collection)))
+//            return ListCollection.newInstance();
+
         if(TITLES[i].equals(mContext.getString(R.string.purchase)))
-            return TabBuyItem.newInstance(DefineValue.BIL_TYPE_BUY);
+            return FragGridBiller.Companion.newInstance(DefineValue.BIL_TYPE_BUY);
         else if(TITLES[i].equals(mContext.getString(R.string.payment)))
-            return TabBuyItem.newInstance(DefineValue.BIL_TYPE_PAY);
+            return FragGridBiller.Companion.newInstance(DefineValue.BIL_TYPE_PAY);
         else if(TITLES[i].equals(mContext.getString(R.string.collection)))
             return ListCollection.newInstance();
 
