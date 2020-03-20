@@ -313,22 +313,22 @@
                         android:textColor="@color/colorSecondaryDark"/>
                 </TableRow>
 
-                <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="6dp">
+<!--                <TableRow-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:paddingTop="6dp">-->
 
-                    <TextView
-                        android:layout_weight="1"
-                        android:text="@string/notif_no_hp_pengirim"
-                        android:textColor="@color/colorSecondaryDark"/>
+<!--                    <TextView-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:text="@string/notif_no_hp_pengirim"-->
+<!--                        android:textColor="@color/colorSecondaryDark"/>-->
 
-                    <TextView
-                        android:id="@+id/bbscashin_confirm_value_no_hp"
-                        android:layout_weight="1"
-                        android:textSize="@dimen/text_size_medium_material"
-                        android:textColor="@color/colorSecondaryDark"/>
-                </TableRow>
+<!--                    <TextView-->
+<!--                        android:id="@+id/bbscashin_confirm_value_no_hp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:textSize="@dimen/text_size_medium_material"-->
+<!--                        android:textColor="@color/colorSecondaryDark"/>-->
+<!--                </TableRow>-->
 
                 <TableRow
                     android:layout_width="wrap_content"
