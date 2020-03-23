@@ -183,6 +183,7 @@ public class MyApiClient {
     private static String LINK_CREATE_PIN_PASS;
     public static String LINK_REPORT_MONEY_REQUEST;
     public static String LINK_REPORT_COMM_FEE;
+    public static String LINK_REPORT_ADDITIONAL_FEE;
     public static String LINK_REPORT_COLLECTOR;
     public static String LINK_ASK4MONEY_REJECT;
 
@@ -387,12 +388,13 @@ public class MyApiClient {
         LINK_CREATE_PIN_PASS    = headaddressfinal + "CreatePinPass/Invoke";
         LINK_REPORT_MONEY_REQUEST = headaddressfinal + "ReportMoneyReq/Retrieve";
         LINK_REPORT_COMM_FEE    = headaddressfinal + "ReportCommFee/Retrieve";
-        LINK_REPORT_COLLECTOR    = headaddressfinal + "ReportTrxCollector/Retrieve";
+        LINK_REPORT_ADDITIONAL_FEE    = headaddressfinal + "ReportAdditionalFee/Retrieve";
+        LINK_REPORT_COLLECTOR   = headaddressfinal + "ReportTrxCollector/Retrieve";
         LINK_ASK4MONEY_REJECT   = headaddressfinal + "Ask4Money/Decline";
 
-        LINK_INQUIRY_CUST = headaddressfinal + "InquiryCustomer/Retrieve";
-        LINK_EXEC_CUST   = headaddressfinal + "ExecCustomer/Invoke";
-        LINK_EXEC_AGENT   = headaddressfinal + "ExecAgent/Invoke";
+        LINK_INQUIRY_CUST       = headaddressfinal + "InquiryCustomer/Retrieve";
+        LINK_EXEC_CUST          = headaddressfinal + "ExecCustomer/Invoke";
+        LINK_EXEC_AGENT         = headaddressfinal + "ExecAgent/Invoke";
 
 		LINK_REQUEST_CASHOUT    = headaddressfinal + "RequestCashout/Invoke";
         LINK_CONFIRM_CASHOUT    = headaddressfinal + "ConfirmCashout/Invoke";

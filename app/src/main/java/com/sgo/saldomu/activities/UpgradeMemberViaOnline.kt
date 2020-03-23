@@ -260,6 +260,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
                 } else if (code == WebParams.LOGOUT_CODE) {
                     val message = model.error_message
                     val test = AlertDialogLogout.getInstance()
+                    sp.edit().putBoolean(DefineValue.IS_REGISTERED_LEVEL, true).apply()
                     test.showDialoginActivity(this@UpgradeMemberViaOnline, message)
                 } else if (code == DefineValue.ERROR_9333) {
                     Timber.d("isi response app data:" + model.app_data)

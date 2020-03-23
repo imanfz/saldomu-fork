@@ -117,6 +117,7 @@
         <!--<item>Transfer</item>-->
         <!--<item>Permintaan</item>-->
         <item>@string/fee</item>
+        <item>@string/additional_fee</item>
     </string-array>
 
     <integer-array name="google_colors">
