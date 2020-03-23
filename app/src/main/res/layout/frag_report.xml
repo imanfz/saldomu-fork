@@ -209,6 +209,66 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_alignParentBottom="true"
+                    android:id="@+id/table_summary_additionalfee">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:background="@color/grey_1000b"/>
+
+                    <TableLayout
+                        android:layout_marginLeft="@dimen/abc_text_size_medium_material"
+                        android:layout_marginRight="@dimen/abc_text_size_medium_material"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:stretchColumns="1"
+                        android:layout_gravity="center"
+                        >
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Summary"
+                            android:textStyle="bold"/>
+
+                        <TableRow>
+                            <TextView
+                                android:text="@string/total_trx"
+                                android:layout_weight="1"
+                                android:padding="3dip"
+                                />
+                            <TextView
+                                android:id="@+id/tv_total_transaction_additionalfee"
+                                android:text="100"
+                                android:layout_weight="2"
+                                android:layout_width="wrap_content"
+                                android:gravity="right"
+                                android:padding="3dip" />
+                        </TableRow>
+                        <TableRow>
+                            <TextView
+                                android:text="@string/total_amount"
+                                android:layout_weight="1"
+                                android:padding="3dip"
+                                />
+                            <TextView
+                                android:id="@+id/total_amount_additionalfee"
+                                android:text="100"
+                                android:layout_weight="2"
+                                android:layout_width="wrap_content"
+                                android:gravity="right"
+                                android:padding="3dip" />
+                        </TableRow>
+                    </TableLayout>
+
+                </LinearLayout>
+
                 <include android:id="@+id/empty_layout"
                     layout="@layout/empty_view"
                     />

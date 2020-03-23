@@ -1545,7 +1545,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="otp_sent_to_email">Masukkan kode verifikasi yang dikirimkan ke email</string>
     <string name="announce_otp">Pemberitahuan :</string>
-    <string name="announce_otp_1">1. Harap selalu mejaga kerahasiaan PASSWORD, PIN dan kode OTP anda, dan tidak memberikan data tersebut kepada siapapun termasuk yang mengatasnamakan PT Mitra Pembayaran Elektronik maupun SALDOMU.</string>
+    <string name="announce_otp_1">1. Harap selalu mejaga kerahasiaan PASSWORD, PIN dan kode verifikasi anda, dan tidak memberikan data tersebut kepada siapapun termasuk yang mengatasnamakan PT Mitra Pembayaran Elektronik maupun SALDOMU.</string>
     <string name="announce_otp_2">2. SALDOMU hanya didistribusikan melalui Google Play oleh PT Mitra Pembayaran Elektronik.</string>
     <string name="announce_otp_3">3. Harap TIDAK melakukan login di media lain selain aplikasi resmi untuk menghindari segala jenis penipuan yang mengatasnamakan SALDOMU.</string>
     <string name="announce_otp_4">4. Apabila terdapat indikasi penipuan harap melapor kepada kami melalui support@saldomu.com</string>
@@ -1571,4 +1571,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="tuition_fee">Uang Sekolah</string>
     <string name="residence">Perumahan</string>
     <string name="bpjs">BPJS</string>
+    <string name="total_trx">Total Transaksi</string>
 </resources>
