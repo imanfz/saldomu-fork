@@ -501,7 +501,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
                         intent.putExtra(DefineValue.BILLER_TYPE, "AIR");
-                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.pam));
+                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_pam));
                         startActivity(intent);
                     }
                 } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
