@@ -265,6 +265,7 @@ public class BillerActivity extends BaseActivity {
 
                     mArgs.putString(DefineValue.BILLER_TYPE, intent.getStringExtra(DefineValue.BILLER_TYPE));
                     mArgs.putString(DefineValue.BILLER_NAME, intent.getStringExtra(DefineValue.BILLER_NAME));
+                    mArgs.putString(DefineValue.BILLER_COMM_CODE, intent.getStringExtra(DefineValue.BILLER_COMM_CODE));
                     tag = BillerInput.TAG;
                 } else {
                     mLBM = new ListBillerMerchant();

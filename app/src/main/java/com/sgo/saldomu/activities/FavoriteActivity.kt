@@ -30,6 +30,10 @@ class FavoriteActivity : BaseActivity() {
             intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.postpaid_title))
         if (model.product_type == "TKN" || model.product_type == "PLN")
             intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.pln_title))
+        if (model.product_type == "VCHR")
+            intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_voucher))
+        if (model.product_type == "BPJS")
+            intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.bpjs))
         intent.putExtra(DefineValue.COMMUNITY_ID, model.comm_id)
         intent.putExtra(DefineValue.ITEM_ID, model.item_id)
         if (model.comm_name.contains("OVO")) {
@@ -40,6 +44,7 @@ class FavoriteActivity : BaseActivity() {
 
 
         intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
+        intent.putExtra(DefineValue.BILLER_COMM_CODE, model.comm_code)
 
         startActivity(intent)
     }

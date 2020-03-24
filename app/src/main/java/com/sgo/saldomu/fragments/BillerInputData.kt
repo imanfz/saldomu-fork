@@ -136,8 +136,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 //        } else {
             if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
                 billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
-                checkOperator()
-                showChoosePayment()
+//                checkOperator()
+//                showChoosePayment()
             }
 //        }
 
@@ -195,28 +195,34 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
         if (billerIdNumber != null) {
 
-            if (billerIdNumber.prefix_name.toLowerCase().equals("telkomsel", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.telkomsel)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("xl", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.xl)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("indosat", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.indosat)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("three", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.three)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("smart", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.smartfren)
-            } else
-                img_operator.visibility = View.GONE
+            when {
+                billerIdNumber.prefix_name.toLowerCase().equals("telkomsel", ignoreCase = true) -> {
+                    img_operator.background = resources.getDrawable(R.drawable.telkomsel)
+                }
+                billerIdNumber.prefix_name.toLowerCase().equals("xl", ignoreCase = true) -> {
+                    img_operator.background = resources.getDrawable(R.drawable.xl)
+                }
+                billerIdNumber.prefix_name.toLowerCase().equals("indosat", ignoreCase = true) -> {
+                    img_operator.background = resources.getDrawable(R.drawable.indosat)
+                }
+                billerIdNumber.prefix_name.toLowerCase().equals("three", ignoreCase = true) -> {
+                    img_operator.background = resources.getDrawable(R.drawable.three)
+                }
+                billerIdNumber.prefix_name.toLowerCase().equals("smart", ignoreCase = true) -> {
+                    img_operator.background = resources.getDrawable(R.drawable.smartfren)
+                }
+                else -> img_operator.visibility = View.GONE
+            }
 
             for (i in _data.indices) {
                 Timber.d("_data" + _data[i])
 
                 if (_data != null) {
                     if (_data.get(i).toLowerCase().contains(billerIdNumber.prefix_name.toLowerCase())) {
-                        Timber.d("_data " + billerItemList.get(i).commName)
-                        biller_comm_id = billerItemList.get(i).commId
-                        biller_comm_name = billerItemList.get(i).commName
-                        biller_item_id = billerItemList.get(i).itemId
+                        Timber.d("_data " + billerItemList[i].commName)
+                        biller_comm_id = billerItemList[i].commId
+                        biller_comm_name = billerItemList[i].commName
+                        biller_item_id = billerItemList[i].itemId
 
                         initializeSpinnerDenom(i)
                     }
@@ -285,8 +291,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private fun initializeSpinnerDenom(indexBiller: Int) {
         mDenomData = BillerItem()
-        mDenomData = billerItemList.get(indexBiller);
-        mListDenomData = billerItemList.get(indexBiller).denomData
+        mDenomData = billerItemList[indexBiller]
+        mListDenomData = billerItemList[indexBiller].denomData
 
         if (mListDenomData!!.isNotEmpty()) {
             denomData = ArrayList()
@@ -319,8 +325,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
 
         mBillerData = BillerItem()
-        mBillerData = billerItemList.get(indexBiller)
-        mListBankBiller = billerItemList.get(indexBiller).bankBiller
+        mBillerData = billerItemList[indexBiller]
+        mListBankBiller = billerItemList[indexBiller].bankBiller
 
         biller_comm_code = mBillerData?.commCode
         biller_api_key = mBillerData?.apiKey
@@ -863,7 +869,6 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
                 val gson = Gson()
                 val response = gson.fromJson(`object`, BillerDenomResponse::class.java)
-
 
                 if (response.errorCode == WebParams.SUCCESS_CODE) {
 
