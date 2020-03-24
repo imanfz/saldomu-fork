@@ -1064,7 +1064,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="cashoutmember_text_cashoutcode">Cash Out Code</string>
     <string name="cashoutmember_alert_no_tx">Please contact the nearest agent</string>
     <string name="newhome_bpjs">BPJS Kesehatan</string>
-    <string name="newhome_listrik_pln">PLN Electricity</string>
+    <string name="newhome_listrik_pln">PLN</string>
     <string name="bbs_mobility_agent_to_member">Agent to Member</string>
     <string name="bbs_mobility_member_to_agent">Member to Agent</string>
     <string name="bbs_mobility_both">Both</string>
@@ -1385,7 +1385,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="newhome_emoney">E-Money</string>
     <string name="newhome_game">Voucher Game</string>
     <string name="newhome_voucher">Voucher</string>
-    <string name="newhome_pam">AIR PDAM</string>
+    <string name="newhome_pam">PDAM</string>
     <string name="newhome_data">Internet Data</string>
     <string name="pam">PAM</string>
     <string name="good_morning">Good Morning, </string>
@@ -1440,8 +1440,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="postpaid_title">Tagihan Pascabayar</string>
     <string name="data_title">Paket Data Handphone</string>
     <string name="pln_title">Voucher Token Listrik</string>
-    <string name="token_listrik">Electric Token</string>
-    <string name="tagihan_listrik">Electricity Bills</string>
+    <string name="token_listrik">Prepaid</string>
+    <string name="tagihan_listrik">Postpaid</string>
     <string name="please_wait">Please Wait…</string>
     <string name="gender_validation">Gender required!</string>
     <string name="empty_notification">Notification Empty</string>
