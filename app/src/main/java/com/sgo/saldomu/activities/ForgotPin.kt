@@ -107,6 +107,7 @@ class ForgotPin : BaseActivity() {
 
     private fun initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left)
+        setTitle(getString(R.string.forgotpin))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
