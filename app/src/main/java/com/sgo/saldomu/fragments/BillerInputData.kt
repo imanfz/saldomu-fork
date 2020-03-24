@@ -132,13 +132,13 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         initEditTextListener()
 //        initRealm()
 //        if (_data.isEmpty()) {
-            getBillerDenom()
+        getBillerDenom()
 //        } else {
-            if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
-                billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
+        if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
+            billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
 //                checkOperator()
 //                showChoosePayment()
-            }
+        }
 //        }
 
         favorite_switch.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -647,11 +647,11 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                         }
 
                         override fun onError(throwable: Throwable?) {
-
+                            dismissProgressDialog()
                         }
 
                         override fun onComplete() {
-                            btn_submit_billerinput.isEnabled = true
+
                         }
 
                     })
@@ -757,15 +757,15 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                                     }
                                 }
                             }
+                            dismissProgressDialog()
                         }
 
                         override fun onError(throwable: Throwable?) {
-
+                            dismissProgressDialog()
                         }
 
                         override fun onComplete() {
                             btn_submit_billerinput.isEnabled = true
-                            dismissProgressDialog()
                         }
 
                     })

@@ -1048,10 +1048,10 @@ public class MainPage extends BaseActivity {
             callBBSCityService();
             checkAndRunServiceBBS();
             callAgentShopService();
-            callBBSBirthPlaceService();
         } else {
 
         }
+        callBBSBirthPlaceService();
     }
 
     /**
