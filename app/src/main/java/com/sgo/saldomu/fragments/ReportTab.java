@@ -78,6 +78,7 @@ public class ReportTab extends Fragment {
             if (isAgent) {
 
                 mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
+                mList.add(FragReport.newInstance(FragReport.REPORT_ADDITIONAL_FEE));
             }
 //            mList.add(FragReport.newInstance(FragReport.REPORT_SCASH));
 //            mList.add(FragReport.newInstance(FragReport.REPORT_ASK));
