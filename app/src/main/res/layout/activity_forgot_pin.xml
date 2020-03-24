@@ -5,21 +5,24 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/background_base"
-    android:padding="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.sgo.saldomu.activities.ForgotPin">
-
+    <include android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main"/>
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:layout_below="@id/main_toolbar"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:orientation="vertical">
         <TextView
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="@string/forgotpin_text_title"
+            android:text="@string/forgotpin"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textColor="@color/grey_1000w" />
 

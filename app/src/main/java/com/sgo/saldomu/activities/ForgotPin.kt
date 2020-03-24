@@ -5,6 +5,8 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import android.widget.Toast
@@ -20,8 +22,8 @@ import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseActivity
+import kotlinx.android.synthetic.main.activity_forgot_pin.*
 import kotlinx.android.synthetic.main.dialog_notification.*
-import kotlinx.android.synthetic.main.frag_forgot_pin.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -48,6 +50,7 @@ class ForgotPin : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initializeToolbar()
         if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")!!.isNotEmpty() && sp.getString(DefineValue.IS_POS, "N").equals("N", ignoreCase = true)) {
             et_userid.setText(NoHPFormat.formatTo08(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")))
             et_userid.isEnabled = false
@@ -100,6 +103,20 @@ class ForgotPin : BaseActivity() {
                 sentResetPin()
             }
         }
+    }
+
+    private fun initializeToolbar() {
+        setActionBarIcon(R.drawable.ic_arrow_left)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun inputValidation(): Boolean {

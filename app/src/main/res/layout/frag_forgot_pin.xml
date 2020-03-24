@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="@string/forgotpin_text_title"
+            android:text="@string/forgotpin"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textColor="@color/grey_1000w" />
 

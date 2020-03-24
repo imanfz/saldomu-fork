@@ -499,7 +499,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         mBillerData = billerItemList.get(indexData);
         mListBankBiller = billerItemList.get(indexData).getBankBiller();
         biller_comm_code = billerItemList.get(indexData).getCommCode();
-        biller_api_key =billerItemList.get(indexData).getApiKey();
+        biller_api_key = billerItemList.get(indexData).getApiKey();
         if (!billerItemList.isEmpty()) {
             paymentData = new ArrayList<>();
             adapterPaymentOptions = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, paymentData);
@@ -882,6 +882,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             getFragmentManager().popBackStack();
                         }
+                        dismissProgressDialog();
                     }
                 }
 
@@ -893,7 +894,6 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                 @Override
                 public void onComplete() {
                     btn_submit.setEnabled(true);
-                    dismissProgressDialog();
                 }
             });
         } catch (Exception e) {
@@ -923,7 +923,6 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
 
                             String code = model.getError_code();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-
                                 if (mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_SMS))
                                     showDialog(product_code, bank_code);
                                 else if (merchant_type.equals(DefineValue.AUTH_TYPE_OTP))
@@ -982,19 +981,18 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                                         getFragmentManager().popBackStack();
                                         break;
                                 }
-
                             }
+                            dismissProgressDialog();
                         }
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            dismissProgressDialog();
                         }
 
                         @Override
                         public void onComplete() {
                             btn_submit.setEnabled(true);
-                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
