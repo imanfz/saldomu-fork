@@ -581,22 +581,22 @@ class UpgradeMemberViaOnline : BaseActivity() {
 
         if (reject_KTP == "Y" || reject_selfie == "Y" || reject_ttd == "Y") {
             if (reject_KTP == "Y") {
-                camera_ktp.setEnabled(true)
-                tv_respon_reject_ktp.setText("Alasan : $respon_reject_ktp")
+                camera_ktp.isEnabled = true
+                tv_respon_reject_ktp.text = "Alasan : $respon_reject_ktp"
             } else
-                layout_foto_ktp.setVisibility(View.GONE)
+                layout_foto_ktp.visibility = View.GONE
 
             if (reject_selfie == "Y") {
-                camera_ktp.setEnabled(true)
+                camera_ktp.isEnabled = true
                 tv_respon_reject_selfie.text = "Alasan : $respon_reject_selfie"
             } else
-                layout_selfie.setVisibility(View.GONE)
+                layout_selfie.visibility = View.GONE
 
             if (reject_ttd == "Y") {
-                camera_ttd.setEnabled(true)
+                camera_ttd.isEnabled = true
                 tv_respon_reject_ttd.text = "Alasan : $respon_reject_ttd"
             } else
-                layout_ttd.setVisibility(View.GONE)
+                layout_ttd.visibility = View.GONE
         }
     }
 

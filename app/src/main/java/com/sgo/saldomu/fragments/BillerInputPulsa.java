@@ -536,22 +536,24 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         ArrayList<String> tempDataPaymentName = new ArrayList<>();
         paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
 
-        for (int i = 0; i < mListBankBiller.size(); i++) {
-            if (mListBankBiller.get(i).getProductCode().equals(DefineValue.SCASH)) {
-                paymentData.add(getString(R.string.appname));
-                mListBankBiller.get(i).setProductName(getString(R.string.appname));
-            } else {
-                tempDataPaymentName.add(mListBankBiller.get(i).getProductName());
+        if (mListBankBiller != null) {
+            for (int i = 0; i < mListBankBiller.size(); i++) {
+                if (mListBankBiller.get(i).getProductCode().equals(DefineValue.SCASH)) {
+                    paymentData.add(getString(R.string.appname));
+                    mListBankBiller.get(i).setProductName(getString(R.string.appname));
+                } else {
+                    tempDataPaymentName.add(mListBankBiller.get(i).getProductName());
+                }
             }
+            if (!tempDataPaymentName.isEmpty())
+                Collections.sort(tempDataPaymentName);
+
+            paymentData.addAll(tempDataPaymentName);
+            adapterPaymentOptions.notifyDataSetChanged();
+
+            spin_payment_options.setSelection(1); //set metode pembayaran jadi saldomu
+
         }
-        if (!tempDataPaymentName.isEmpty())
-            Collections.sort(tempDataPaymentName);
-
-        paymentData.addAll(tempDataPaymentName);
-        adapterPaymentOptions.notifyDataSetChanged();
-
-        spin_payment_options.setSelection(1); //set metode pembayaran jadi saldomu
-
     }
 
     private Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
