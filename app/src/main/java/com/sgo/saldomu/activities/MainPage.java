@@ -1352,7 +1352,7 @@ public class MainPage extends BaseActivity {
 //                            switchActivity(i, ACTIVITY_RESULT);
                             break;
                         case NotificationActivity.REJECTED_KTP:
-                            Intent e = new Intent(this, MyProfileNewActivity.class);
+                            Intent e = new Intent(this, UpgradeMemberViaOnline.class);
                             switchActivity(e, ACTIVITY_RESULT);
                             break;
                         case NotificationActivity.REJECTED_SIUP_NPWP:
