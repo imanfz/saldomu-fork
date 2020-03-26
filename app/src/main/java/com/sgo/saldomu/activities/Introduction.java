@@ -17,6 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.paolorotolo.appintro.AppIntro;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -98,6 +102,25 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             new UtilsLoader(this).getAppVersion();
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        Timber.d("Token intro : " +token);
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.FCM_ID, token);
+                        mEditor.putString(DefineValue.FCM_ENCRYPTED, Md5.hashMd5(token));
+                        mEditor.apply();
+                    }
+                });
+
 
 //        if (sp.getString(DefineValue.USERID_PHONE, "").isEmpty()) {
 //            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
