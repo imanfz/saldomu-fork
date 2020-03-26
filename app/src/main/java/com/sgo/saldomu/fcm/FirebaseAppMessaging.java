@@ -644,6 +644,28 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                     }
                     break;
                 case FCMManager.VERIFY_ACC:
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            String userId = jsonOptions.getJSONObject(0).getString(WebParams.USER_ID);
+                            bundle.putString(DefineValue.USER_ID, userId);
+                            if (flagLogin.equals(DefineValue.STRING_NO)) {
+                                intent = new Intent(this, LoginActivity.class);
+                                intent.putExtras(bundle);
+                                stackBuilder.addParentStack(LoginActivity.class);
+                                stackBuilder.addNextIntent(intent);
+
+                                contentIntent =
+                                        stackBuilder.getPendingIntent(
+                                                1,
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        );
+
+                            }
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
+                        }
+                    }
                     break;
                 case FCMManager.CONFIRM_ATC:
 
