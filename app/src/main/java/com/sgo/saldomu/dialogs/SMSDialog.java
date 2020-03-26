@@ -533,6 +533,7 @@ public class SMSDialog extends DialogFragment {
         SecurePreferences.Editor edit = sp.edit();
         edit.putString(DefineValue.SENDER_ID, model.getSender_id());
         edit.putBoolean(DefineValue.IS_INQUIRY_SMS, true);
+        edit.apply();
 
         //check apakah user register dari ATM atau tidak
 
