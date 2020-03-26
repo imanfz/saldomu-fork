@@ -399,7 +399,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
         } else if (selfie == null  && layout_selfie.visibility == View.VISIBLE) {
             DefinedDialog.showErrorDialog(this@UpgradeMemberViaOnline, getString(R.string.selfie_ktp_photo))
             return false
-        } else if (ttd == null && layout_ttd.visibility == View.GONE) {
+        } else if (ttd == null && layout_ttd.visibility == View.VISIBLE) {
             DefinedDialog.showErrorDialog(this@UpgradeMemberViaOnline, getString(R.string.ttd_photo))
             return false
         } else if (bank_acc_no.text.toString().isEmpty()) {
