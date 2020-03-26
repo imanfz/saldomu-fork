@@ -308,7 +308,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
                 @Override
                 public void onError(Throwable throwable) {
-                    Timber.d("isi error fcm:" + throwable);
+                    Timber.d("isi error fcm intro:" + throwable);
                 }
 
                 @Override

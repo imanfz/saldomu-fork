@@ -1206,7 +1206,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.MAX_RESEND, model.getMax_resend_token());
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
-        mArgs.putString(DefineValue.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
+//        mArgs.putString(DefineValue.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
         if (TCASHValidation != null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
         if (MandiriLKDValidation != null)
@@ -1259,7 +1259,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
         mArgs.putBoolean(DefineValue.IS_OWNER, isOwner);
-        mArgs.putString(DefineValue.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
+//        mArgs.putString(DefineValue.ADDITIONAL_FEE, etAdditionalFee.getText().toString());
         if (TCASHValidation != null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
 //        if (MandiriLKDValidation != null)
@@ -1328,7 +1328,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         mArgs.putString(DefineValue.FEE, model.getAdmin_fee());
         mArgs.putString(DefineValue.TOTAL_AMOUNT, model.getTotal_amount());
-        mArgs.putString(DefineValue.ADDITIONAL_FEE, model.getAdditional_fee());
+//        mArgs.putString(DefineValue.ADDITIONAL_FEE, model.getAdditional_fee());
 
         mArgs.putString(DefineValue.BENEF_BANK_CODE, benef_product_code);
         btnNext.setEnabled(true);

@@ -318,7 +318,7 @@ public class FragDataC2A extends BaseFragment {
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 Timber.d("response bbs send data : ", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    changeToBBSCashInConfirm(response.getString(WebParams.ADMIN_FEE), response.getString(WebParams.AMOUNT), response.getString(WebParams.TOTAL_AMOUNT), response.optString(WebParams.ADDITIONAL_FEE));
+                                    changeToBBSCashInConfirm(response.getString(WebParams.ADMIN_FEE), response.getString(WebParams.AMOUNT), response.getString(WebParams.TOTAL_AMOUNT));
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:" + response.toString());
@@ -362,7 +362,7 @@ public class FragDataC2A extends BaseFragment {
 
     }
 
-    private void changeToBBSCashInConfirm(String fee, String amount, String total_amount, String additional_fee) {
+    private void changeToBBSCashInConfirm(String fee, String amount, String total_amount) {
 
         Bundle mArgs = new Bundle();
         if (benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
@@ -393,7 +393,7 @@ public class FragDataC2A extends BaseFragment {
         mArgs.putString(DefineValue.MAX_RESEND, max_resend);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
-        mArgs.putString(DefineValue.ADDITIONAL_FEE, additional_fee);
+//        mArgs.putString(DefineValue.ADDITIONAL_FEE, additional_fee);
         if (TCASHValidation != null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
         if (MandiriLKDValidation != null)
