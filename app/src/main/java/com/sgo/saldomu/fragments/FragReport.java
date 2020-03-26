@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -95,7 +97,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private TextView tv_date_from, tv_date_to, sumTotalTrx, sumRelAmount, sumRelTrx, sumUnrelTrx, sumUnrelAmount, sumTotalAmount;
 
     private View v;
-    private LinearLayout layout_filter, layout_summary, layout_summary_additionalfee;
+    private LinearLayout layout_filter, layout_summary;
+    TableLayout tableCommFee, tableAdditionalFee;
     private int height;
     private String OrifromDate, comm_id_tagih;
     private String OritoDate;
@@ -169,7 +172,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         emptyLayout.setVisibility(View.GONE);
         btn_refresh = emptyLayout.findViewById(R.id.btnRefresh);
         layout_summary = getV().findViewById(R.id.table_summary);
-        layout_summary_additionalfee = getV().findViewById(R.id.table_summary_additionalfee);
+//        layout_summary_additionalfee = getV().findViewById(R.id.table_summary_additionalfee);
+        tableCommFee = getV().findViewById(R.id.table_summary_commfee);
+        tableAdditionalFee = getV().findViewById(R.id.table_summary_additionalfee);
 
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
@@ -609,13 +614,15 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         sumRelAmount.setText(CurrencyFormat.format(String.valueOf(obj.getReleased_amount())));
 
         layout_summary.setVisibility(View.VISIBLE);
+        tableCommFee.setVisibility(View.VISIBLE);
     }
 
     private void setSummaryAdditionalFee(SummaryAdditionalFeeModel obj) {
         sumTotalTrx.setText(String.valueOf(obj.getTotal_transaction()));
         sumTotalAmount.setText(CurrencyFormat.format(String.valueOf(obj.getTotal_amount())));
 
-        layout_summary_additionalfee.setVisibility(View.VISIBLE);
+        layout_summary.setVisibility(View.VISIBLE);
+        tableAdditionalFee.setVisibility(View.VISIBLE);
     }
 
     private void NotifyDataChange() {

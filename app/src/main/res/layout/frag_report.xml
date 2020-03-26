@@ -127,6 +127,8 @@
                         android:layout_height="wrap_content"
                         android:stretchColumns="1"
                         android:layout_gravity="center"
+                        android:id="@+id/table_summary_commfee"
+                        android:visibility="gone"
                         >
                         <TextView
                             android:layout_width="match_parent"
@@ -206,29 +208,14 @@
                         </TableRow>
 
                     </TableLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    android:layout_alignParentBottom="true"
-                    android:id="@+id/table_summary_additionalfee">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="3dp"
-                        android:background="@color/grey_1000b"/>
-
                     <TableLayout
                         android:layout_marginLeft="@dimen/abc_text_size_medium_material"
                         android:layout_marginRight="@dimen/abc_text_size_medium_material"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:stretchColumns="1"
+                        android:id="@+id/table_summary_additionalfee"
+                        android:visibility="gone"
                         android:layout_gravity="center"
                         >
                         <TextView
@@ -268,6 +255,25 @@
                     </TableLayout>
 
                 </LinearLayout>
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="5dp"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:visibility="gone"-->
+<!--                    android:background="@color/grey_300"-->
+<!--                    android:layout_alignParentBottom="true"-->
+<!--                    android:id="@+id/table_summary_additionalfee">-->
+
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="3dp"-->
+<!--                        android:background="@color/grey_1000b"/>-->
+
+<!--                    -->
+
+<!--                </LinearLayout>-->
 
                 <include android:id="@+id/empty_layout"
                     layout="@layout/empty_view"
