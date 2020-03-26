@@ -163,7 +163,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         tbNameBenef = v.findViewById(R.id.tb_name_benef);
         tvNomor = v.findViewById(R.id.tv_no_tcash);
         tvOTP = v.findViewById(R.id.tv_otp);
-        tvAdditionalFee = v.findViewById(R.id.bbscashin_confirm_additionalFee);
+//        tvAdditionalFee = v.findViewById(R.id.bbscashin_confirm_additionalFee);
         favoriteSwitch = v.findViewById(R.id.favorite_switch);
         notesEditText = v.findViewById(R.id.notes_edit_text);
         tvbenefname = v.findViewById(R.id.tvbenefname);
@@ -201,7 +201,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             TCASH_hp_validation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION);
             MandiriLKD_validation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION);
             code_success = bundle.getBoolean(DefineValue.CODE_SUCCESS);
-            addditionalFee = bundle.getString(DefineValue.ADDITIONAL_FEE, "0");
+//            addditionalFee = bundle.getString(DefineValue.ADDITIONAL_FEE, "0");
             String benef_product_type = bundle.getString(DefineValue.TYPE_BENEF, "");
 
             if (!bundle.containsKey(DefineValue.MAX_RESEND))
@@ -216,7 +216,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             tvAmount.setText(CurrencyFormat.format(amount));
             tvFee.setText(CurrencyFormat.format(fee));
             tvTotal.setText(CurrencyFormat.format(total_amount));
-            tvAdditionalFee.setText(CurrencyFormat.format(addditionalFee));
+//            tvAdditionalFee.setText(CurrencyFormat.format(addditionalFee));
             tvBankBenef.setText(benef_product_name);
             tvBenefCity.setText(benef_city);
 
@@ -888,7 +888,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         args.putString(DefineValue.BANK_PRODUCT, response.getProduct_name());
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
-        args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdditional_fee()));
+//        args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdditional_fee()));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_amount()));
 
         Boolean txStat = false;
