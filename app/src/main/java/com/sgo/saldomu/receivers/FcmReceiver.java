@@ -69,7 +69,7 @@ public class FcmReceiver extends BroadcastReceiver {
                     }
 
                 } else if (modelNotif == FCMManager.VERIFY_ACC) {
-                    if (sp.getBoolean(DefineValue.IS_INQUIRY_SMS, false) == true) {
+                    if (!sp.getBoolean(DefineValue.IS_INQUIRY_SMS, false)) {
                         Bundle tempBundle = new Bundle();
                         try {
                             JSONArray jsonOptions = new JSONArray(jsonOptionData);

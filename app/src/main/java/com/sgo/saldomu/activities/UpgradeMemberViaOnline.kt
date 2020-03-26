@@ -393,13 +393,13 @@ class UpgradeMemberViaOnline : BaseActivity() {
             job_edit_text.requestFocus()
             job_edit_text.error = resources.getString(R.string.job_validation)
             return false
-        } else if (ktp == null) {
+        } else if (ktp == null && layout_foto_ktp.visibility == View.VISIBLE) {
             DefinedDialog.showErrorDialog(this@UpgradeMemberViaOnline, getString(R.string.ktp_photo))
             return false
-        } else if (selfie == null) {
+        } else if (selfie == null  && layout_selfie.visibility == View.VISIBLE) {
             DefinedDialog.showErrorDialog(this@UpgradeMemberViaOnline, getString(R.string.selfie_ktp_photo))
             return false
-        } else if (ttd == null) {
+        } else if (ttd == null && layout_ttd.visibility == View.GONE) {
             DefinedDialog.showErrorDialog(this@UpgradeMemberViaOnline, getString(R.string.ttd_photo))
             return false
         } else if (bank_acc_no.text.toString().isEmpty()) {

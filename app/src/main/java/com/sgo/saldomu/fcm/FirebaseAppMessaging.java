@@ -115,7 +115,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                 }
                 if (modelNotif == VERIFY_ACC) {
 
-                    if (sp.getBoolean(DefineValue.IS_INQUIRY_SMS, false) == true) {
+                    if (!sp.getBoolean(DefineValue.IS_INQUIRY_SMS, false)) {
                         try {
                             JSONArray jsonObj = new JSONArray(jsonOptions);
                             JSONObject jsonObj2 = jsonObj.getJSONObject(0);
