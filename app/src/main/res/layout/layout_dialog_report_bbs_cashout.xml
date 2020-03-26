@@ -247,28 +247,28 @@
             android:padding="3dip" />
     </TableRow>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="8dp"
-        android:background="@color/grey_300"/>
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:layout_margin="8dp"-->
+<!--        android:background="@color/grey_300"/>-->
 
-    <TableRow>
-        <TextView
-            android:text="@string/additional_fee"
-            android:layout_span="2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="3dip" />
-        <TextView
-            android:id="@+id/dialog_reportbbs_additionalFee_value"
-            android:layout_weight="2"
-            android:maxLines="1"
-            android:layout_width="0dp"
-            android:gravity="right"
-            android:padding="3dip" />
-    </TableRow>
+<!--    <TableRow>-->
+<!--        <TextView-->
+<!--            android:text="@string/additional_fee"-->
+<!--            android:layout_span="2"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:padding="3dip" />-->
+<!--        <TextView-->
+<!--            android:id="@+id/dialog_reportbbs_additionalFee_value"-->
+<!--            android:layout_weight="2"-->
+<!--            android:maxLines="1"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:gravity="right"-->
+<!--            android:padding="3dip" />-->
+<!--    </TableRow>-->
 
     <View
         android:layout_width="match_parent"
