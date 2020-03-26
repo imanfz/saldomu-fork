@@ -719,7 +719,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
                 }
             }
             RESULT_SELFIE -> {
-                if (data != null && resultCode == Activity.RESULT_OK)
+                if (pickAndCameraUtil!!.captureImageUri != null && resultCode == Activity.RESULT_OK)
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
                         processImage(SELFIE_TYPE, pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.captureImageUri))
                     else
