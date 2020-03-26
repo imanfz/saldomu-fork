@@ -30,5 +30,23 @@ public class CameraUtils {
         }
         return c; // returns null if camera is unavailable
     }
+
+    public static Camera openFrontCamera() {
+        int cameraCount;
+        Camera cam = null;
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        cameraCount = Camera.getNumberOfCameras();
+        for (int camIdx = 0; camIdx < cameraCount; camIdx++) {
+            Camera.getCameraInfo(camIdx, cameraInfo);
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                try {
+                    cam = Camera.open(camIdx);
+                } catch (RuntimeException e) {
+
+                }
+            }
+        }
+        return cam;
+    }
 }
 

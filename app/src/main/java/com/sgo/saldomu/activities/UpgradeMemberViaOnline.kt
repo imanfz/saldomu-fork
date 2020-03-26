@@ -1,8 +1,10 @@
 package com.sgo.saldomu.activities
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -99,25 +101,25 @@ class UpgradeMemberViaOnline : BaseActivity() {
     private val KTP_TYPE = 1
     private val SELFIE_TYPE = 2
     private val TTD_TYPE = 3
-    private var reject_KTP:String? = null
-    private var reject_selfie:String? = null
-    private var reject_ttd:String? = null
-    private var respon_reject_ktp:String? = null
-    private var respon_reject_selfie:String? = null
+    private var reject_KTP: String? = null
+    private var reject_selfie: String? = null
+    private var reject_ttd: String? = null
+    private var respon_reject_ktp: String? = null
+    private var respon_reject_selfie: String? = null
     private var respon_reject_ttd: String? = null
 
     public override fun onSaveInstanceState(savedInstanceState: Bundle) {
         super.onSaveInstanceState(savedInstanceState)
-            savedInstanceState.putBoolean("isVerifiedMember", true)
-            if (ktp != null) {
-                savedInstanceState.putSerializable("KTP", ktp)
-            }
-            if (selfie != null) {
-                savedInstanceState.putSerializable("selfieKtp", selfie)
-            }
-            if (ttd != null) {
-                savedInstanceState.putSerializable("TTD", ttd)
-            }
+        savedInstanceState.putBoolean("isVerifiedMember", true)
+        if (ktp != null) {
+            savedInstanceState.putSerializable("KTP", ktp)
+        }
+        if (selfie != null) {
+            savedInstanceState.putSerializable("selfieKtp", selfie)
+        }
+        if (ttd != null) {
+            savedInstanceState.putSerializable("TTD", ttd)
+        }
 
     }
 
@@ -127,21 +129,21 @@ class UpgradeMemberViaOnline : BaseActivity() {
         selfie = savedInstanceState.getSerializable("selfieKtp") as File
         ttd = savedInstanceState.getSerializable("TTD") as File
 
-            if (ktp != null) {
-                Timber.d("ktp :$ktp")
-                GlideManager.sharedInstance().initializeGlideProfile(this, ktp, camera_ktp)
-                uploadFileToServer(ktp!!, KTP_TYPE)
-            }
+        if (ktp != null) {
+            Timber.d("ktp :$ktp")
+            GlideManager.sharedInstance().initializeGlideProfile(this, ktp, camera_ktp)
+            uploadFileToServer(ktp!!, KTP_TYPE)
+        }
 
-            if (selfie != null) {
-                GlideManager.sharedInstance().initializeGlideProfile(this, selfie, camera_selfie_ktp)
-                uploadFileToServer(selfie!!, SELFIE_TYPE)
-            }
+        if (selfie != null) {
+            GlideManager.sharedInstance().initializeGlideProfile(this, selfie, camera_selfie_ktp)
+            uploadFileToServer(selfie!!, SELFIE_TYPE)
+        }
 
-            if (ttd != null) {
-                GlideManager.sharedInstance().initializeGlideProfile(this, ttd, camera_ttd)
-                uploadFileToServer(ttd!!, TTD_TYPE)
-            }
+        if (ttd != null) {
+            GlideManager.sharedInstance().initializeGlideProfile(this, ttd, camera_ttd)
+            uploadFileToServer(ttd!!, TTD_TYPE)
+        }
 
     }
 
@@ -198,13 +200,13 @@ class UpgradeMemberViaOnline : BaseActivity() {
         submit_button.isEnabled = false
         submit_button.background = resources.getDrawable(R.drawable.rounded_background_button_disabled)
         cb_termnsncond.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (isChecked) {
-                    submit_button.isEnabled = true
-                    submit_button.background = resources.getDrawable(R.drawable.rounded_background_blue)
-                } else {
-                    submit_button.isEnabled = false
-                    submit_button.background = resources.getDrawable(R.drawable.rounded_background_button_disabled)
-                }
+            if (isChecked) {
+                submit_button.isEnabled = true
+                submit_button.background = resources.getDrawable(R.drawable.rounded_background_blue)
+            } else {
+                submit_button.isEnabled = false
+                submit_button.background = resources.getDrawable(R.drawable.rounded_background_button_disabled)
+            }
         }
 
         submit_button.setOnClickListener {
@@ -292,7 +294,11 @@ class UpgradeMemberViaOnline : BaseActivity() {
     private fun dialogSuccessUploadPhoto() {
         val dialog = DefinedDialog.MessageDialog(this@UpgradeMemberViaOnline, this.getString(R.string.upgrade_member),
                 this.getString(R.string.success_upgrade_member_via_agent)
-        ) { v, isLongClick -> finish() }
+        ) { v, isLongClick ->
+            finish()
+            val i = Intent(applicationContext, MainPage::class.java)
+            startActivityForResult(i, MainPage.REQUEST_FINISH)
+        }
         dialog.setCanceledOnTouchOutside(false)
         dialog.setCancelable(false)
         dialog.show()
@@ -581,22 +587,22 @@ class UpgradeMemberViaOnline : BaseActivity() {
 
         if (reject_KTP == "Y" || reject_selfie == "Y" || reject_ttd == "Y") {
             if (reject_KTP == "Y") {
-                camera_ktp.setEnabled(true)
-                tv_respon_reject_ktp.setText("Alasan : $respon_reject_ktp")
+                camera_ktp.isEnabled = true
+                tv_respon_reject_ktp.text = "Alasan : $respon_reject_ktp"
             } else
-                layout_foto_ktp.setVisibility(View.GONE)
+                layout_foto_ktp.visibility = View.GONE
 
             if (reject_selfie == "Y") {
-                camera_ktp.setEnabled(true)
+                camera_ktp.isEnabled = true
                 tv_respon_reject_selfie.text = "Alasan : $respon_reject_selfie"
             } else
-                layout_selfie.setVisibility(View.GONE)
+                layout_selfie.visibility = View.GONE
 
             if (reject_ttd == "Y") {
-                camera_ttd.setEnabled(true)
+                camera_ttd.isEnabled = true
                 tv_respon_reject_ttd.text = "Alasan : $respon_reject_ttd"
             } else
-                layout_ttd.setVisibility(View.GONE)
+                layout_ttd.visibility = View.GONE
         }
     }
 
@@ -681,7 +687,10 @@ class UpgradeMemberViaOnline : BaseActivity() {
         val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
         if (EasyPermissions.hasPermissions(this, *perms)) {
             set_result_photo?.let {
-                CameraActivity.openCertificateCamera(this, CameraActivity.TYPE_COMPANY_PORTRAIT)
+                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD)
+                    CameraActivity.openCertificateCamera(this, CameraActivity.TYPE_COMPANY_PORTRAIT)
+                else
+                    pickAndCameraUtil!!.runCamera(set_result_photo!!)
 //                pickAndCameraUtil.runCamera(it)
             }
         } else {
@@ -704,13 +713,20 @@ class UpgradeMemberViaOnline : BaseActivity() {
                         val path = CameraActivity.getResult(data)
                         if (set_result_photo == RESULT_CAMERA_KTP)
                             processImage(KTP_TYPE, path)
-                        if (set_result_photo == RESULT_SELFIE)
-                            processImage(SELFIE_TYPE, path)
                         if (set_result_photo == RESULT_CAMERA_TTD)
                             processImage(TTD_TYPE, path)
                     }
                 }
             }
+            RESULT_SELFIE -> {
+                if (data != null && resultCode == Activity.RESULT_OK)
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                        processImage(SELFIE_TYPE, pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.captureImageUri))
+                    else
+                        processImage(SELFIE_TYPE, pickAndCameraUtil!!.currentPhotoPath)
+
+            }
+
         }
     }
 
