@@ -423,7 +423,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
                     changeToSgoPlus(tx_id, _amount, bank_code, product_code, fee);
                 } else {
                     if (isPIN) {
-                        Toast.makeText(getActivity(), "Timeout From Service Provider", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getActivity(), "Timeout From Service Provider", Toast.LENGTH_LONG).show();
                         CallPINinput(attempt);
                         btn_submit.setEnabled(true);
                     } else {
