@@ -120,7 +120,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (spinner_no_acc.getItemAtPosition(position).toString().equals("Rekening Lainnya")) {
+                if (spinner_no_acc.getItemAtPosition(position).toString().equals(getString(R.string.other_acct))) {
                     divider_acc.visibility = View.VISIBLE
                     et_no_acct.visibility = View.VISIBLE
                 } else {

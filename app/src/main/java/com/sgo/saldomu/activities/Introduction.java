@@ -26,6 +26,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.commentModel;
+import com.sgo.saldomu.Beans.likeModel;
+import com.sgo.saldomu.Beans.listHistoryModel;
+import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -40,6 +44,7 @@ import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -52,6 +57,7 @@ import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
 import com.sgo.saldomu.models.retrofit.LoginModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.utils.LocaleManager;
@@ -80,7 +86,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     private static final int RC_SENTSMS_PERM = 502;
     private SMSDialog smsDialog;
     private SMSclass smsclass;
-    protected String extraSignature = "";
+    protected String extraSignature = "", userId;
     private String[] perms;
     private ProgressDialog progdialog;
 
@@ -89,6 +95,10 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     protected Gson gson;
     JsonParser jsonParser;
     private Bundle argsBundleNextLogin = new Bundle();
+
+    private final static int FIRST_SCREEN_LOGIN = 1;
+    private final static int FIRST_SCREEN_INTRO = 2;
+    private final static int FIRST_SCREEN_SPLASHSCREEN = 3;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
@@ -100,7 +110,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     public void init(@Nullable Bundle savedInstanceState) {
         if (InetHandler.isNetworkAvailable(this))
             new UtilsLoader(this).getAppVersion();
-
+        AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         FirebaseInstanceId.getInstance().getInstanceId()
@@ -113,7 +123,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
-                        Timber.d("Token intro : " +token);
+                        Timber.d("Token intro : " + token);
                         SecurePreferences.Editor mEditor = sp.edit();
                         mEditor.putString(DefineValue.FCM_ID, token);
                         mEditor.putString(DefineValue.FCM_ENCRYPTED, Md5.hashMd5(token));
@@ -666,7 +676,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         try {
             SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
             SecurePreferences.Editor mEditor = prefs.edit();
-            String userId = model.getUserId();
+            userId = model.getUserId();
             String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, "");
 
             if (prefs.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").equals(userId)) {
@@ -853,4 +863,133 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         Toast.makeText(getApplicationContext(), getString(R.string.login_validation_comm), Toast.LENGTH_LONG).show();
         return false;
     }
+
+    public void switchLogout() {
+        sentLogout();
+    }
+
+    private void sentLogout() {
+        try {
+            if (progdialog == null) {
+                progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.please_wait));
+                progdialog.show();
+            }
+
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LOGOUT);
+//            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.USER_ID, sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
+
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGOUT, params
+                    , new ResponseListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(object, jsonModel.class);
+
+                            if (model.getError_code().equals(WebParams.SUCCESS_CODE)) {
+                                //stopService(new Intent(MainPage.this, UpdateLocationService.class));
+                                Logout(FIRST_SCREEN_INTRO);
+
+                            } else {
+                                Toast.makeText(Introduction.this, model.getError_message(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            Introduction.this.finish();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog != null) {
+                                if (progdialog.isShowing())
+                                    progdialog.dismiss();
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
+    }
+
+    private void Logout(int logoutTo) {
+
+        String balance = sp.getString(DefineValue.BALANCE_AMOUNT, "");
+        String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME, "");
+        deleteData();
+        SecurePreferences.Editor mEditor = sp.edit();
+        mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+        if (sp.getString(DefineValue.IS_POS, "N").equals(DefineValue.N)) {
+            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userId);
+        } else
+            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
+        mEditor.putString(DefineValue.PREVIOUS_BALANCE, balance);
+        mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, contact_first_time);
+
+        mEditor.putString(DefineValue.IS_AGENT_APPROVE, "");
+        mEditor.putString(DefineValue.AGENT_NAME, "");
+        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, "");
+        mEditor.putString(DefineValue.BBS_MEMBER_ID, "");
+        mEditor.putString(DefineValue.BBS_SHOP_ID, "");
+        mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, "");
+        mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, "");
+        mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
+        mEditor.putString(DefineValue.IS_MEMBER_SHOP_DGI, "");
+        mEditor.putString(DefineValue.IS_POS, "");
+        mEditor.remove(DefineValue.IS_DORMANT);
+        mEditor.remove(DefineValue.IS_REGISTERED_LEVEL);
+        mEditor.remove(DefineValue.CATEGORY);
+        mEditor.remove(DefineValue.SAME_BANNER);
+        mEditor.remove(DefineValue.DATA_BANNER);
+        mEditor.remove(DefineValue.IS_POS);
+        mEditor.remove(DefineValue.COMM_UPGRADE_MEMBER);
+        mEditor.remove(DefineValue.MEMBER_CREATED);
+        mEditor.remove(DefineValue.LAST_CURRENT_LONGITUDE);
+        mEditor.remove(DefineValue.LAST_CURRENT_LATITUDE);
+        mEditor.remove(DefineValue.COMPANY_TYPE);
+        mEditor.remove(DefineValue.SMS_CONTENT);
+        mEditor.remove(DefineValue.SMS_CONTENT_ENCRYPTED);
+        mEditor.remove(DefineValue.PROFILE_DOB);
+        mEditor.remove(DefineValue.IS_INQUIRY_SMS);
+
+        //di commit bukan apply, biar yakin udah ke di write datanya
+        mEditor.commit();
+        openFirstScreen(logoutTo);
+    }
+
+    private void openFirstScreen(int index) {
+        Intent i;
+        switch (index) {
+            case FIRST_SCREEN_LOGIN:
+                i = new Intent(this, LoginActivity.class);
+                break;
+            case FIRST_SCREEN_INTRO:
+                i = new Intent(this, Introduction.class);
+                break;
+            case FIRST_SCREEN_SPLASHSCREEN:
+                if (LocaleManager.getLocale(getResources()).getLanguage().equals("in")) {
+                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
+                } else {
+                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, false);
+                }
+                i = new Intent(this, SplashScreen.class);
+                break;
+            default:
+                i = new Intent(this, LoginActivity.class);
+                break;
+        }
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        this.finish();
+    }
+
+    private void deleteData() {
+        CustomSecurePref.getInstance().ClearAllCustomData();
+        listTimeLineModel.deleteAll();
+        listHistoryModel.deleteAll();
+        commentModel.deleteAll();
+        likeModel.deleteAll();
+    }
+
 }
