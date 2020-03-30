@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -60,7 +61,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
     String valuePin;
     Boolean IsForgotPassword;
     Fragment toShow;
-    TextView tv_attempt;
+    TextView tv_attempt, tv_version;
     FingerprintManager fingerprintManager;
 
     @Override
@@ -70,13 +71,13 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         View v = this.findViewById(android.R.id.content);
         if (v != null) {
             tv_attempt = v.findViewById(R.id.pin_tries_value);
+            tv_version = v.findViewById(R.id.tv_version);
         }
         Timber.d("masuk UtilsLoader");
         String userId = sp.getString(DefineValue.USERID_PHONE, "");
-        if (userId.isEmpty()){
+        if (userId.isEmpty()) {
             userId = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
-            if (userId.isEmpty())
-            {
+            if (userId.isEmpty()) {
                 userId = getIntent().getStringExtra(DefineValue.USERID_PHONE);
             }
         }
@@ -85,6 +86,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
         if (flagLogin.equalsIgnoreCase(DefineValue.STRING_NO)) {
             if (getIntent().getBooleanExtra(DefineValue.FOR_LOGIN, false)) {
+                tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME);
                 if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
@@ -93,7 +95,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
                                     (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED)
                                     || fingerprintManager.hasEnrolledFingerprints()) {
                                 FingerprintDialog fingerprintDialog = FingerprintDialog.newDialog(result -> {
-                                    if (result){
+                                    if (result) {
                                         setResult(RESULT_FINGERPRINT_LOGIN);
                                         finish();
                                     }
@@ -210,10 +212,10 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
     public boolean onCreateOptionsMenu(Menu menu) {
         if (IsForgotPassword)
             getMenuInflater().inflate(R.menu.forgot_pin, menu);
-        for(int i = 0; i < menu.size(); i++) {
+        for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
-            spanString.setSpan(new ForegroundColorSpan(Color.WHITE), 0,     spanString.length(), 0); //fix the color to white
+            spanString.setSpan(new ForegroundColorSpan(Color.WHITE), 0, spanString.length(), 0); //fix the color to white
             item.setTitle(spanString);
         }
         super.onCreateOptionsMenu(menu);
