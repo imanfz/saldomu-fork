@@ -74,7 +74,6 @@ class FragMessage : BaseFragment() {
             override fun checkCanDoRefresh(frame: PtrFrameLayout?, content: View?, header: View?): Boolean {
                 return canScroolUp()
             }
-
         })
 
         mLayoutManager.orientation = LinearLayoutManager.VERTICAL
@@ -87,15 +86,15 @@ class FragMessage : BaseFragment() {
         mDataNotifDetail = ArrayList()
         mAdapter = NotificationListAdapter(activity, mData, object : NotificationListAdapter.OnItemClickListener {
             override fun onItemClickView(view: View, position: Int, isLongClick: Boolean) {
-                notificationItemClickAction(position)
+//                notificationItemClickAction(position)
             }
 
             override fun onItemBtnAccept(view: View, position: Int, isLongClick: Boolean) {
-                notificationItemClickAction(position)
+//                notificationItemClickAction(position)
             }
 
             override fun onItemBtnClaim(view: View, position: Int, isLongClick: Boolean) {
-                notificationItemClickAction(position)
+//                notificationItemClickAction(position)
             }
         })
         notification_recycle_list.adapter = mAdapter
@@ -234,11 +233,11 @@ class FragMessage : BaseFragment() {
                 })
     }
 
-    private fun notificationItemClickAction(position: Int) {
-        val mObj = mData!![position]
-        sentReadNotif(mObj.notif_id, position)
-        activity!!.finish()
-    }
+//    private fun notificationItemClickAction(position: Int) {
+//        val mObj = mData!![position]
+//        sentReadNotif(mObj.notif_id, position)
+//        activity!!.finish()
+//    }
 
     private fun canScroolUp(): Boolean {
         try {
@@ -259,65 +258,65 @@ class FragMessage : BaseFragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun sentReadNotif(_notif_id: String, position: Int) {
-        try {
-            extraSignature = _notif_id
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_READ, extraSignature)
-            params[WebParams.USER_ID] = userId
-            params[WebParams.NOTIF_ID_READ] = _notif_id
-            params[WebParams.MEMBER_ID] = memberId
-            params[WebParams.COMM_ID] = MyApiClient.COMM_ID
-            params[WebParams.DATE_TIME] = DateTimeFormat.getCurrentDateTime()
-            Timber.d("isi params Read Notif:$params")
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_NOTIF_READ, params,
-                    object : ResponseListener {
-                        override fun onResponses(`object`: JsonObject) {
-                            val model = getGson().fromJson(`object`, jsonModel::class.java)
-                            var code = model.error_code
-                            if (code == WebParams.SUCCESS_CODE) {
-                                if (activity != null) {
-                                    mData!![position].isRead = true
-                                    activity!!.setResult(MainPage.RESULT_NOTIF)
-                                    mAdapter!!.notifyItemChanged(position)
-                                    checkNotification()
-                                }
-                            } else if (code == WebParams.LOGOUT_CODE) {
-                                val message = model.error_message
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(activity, message)
-                            } else if (code == DefineValue.ERROR_9333) {
-                                Timber.d("isi response app data:" + model.app_data)
-                                val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            } else if (code == DefineValue.ERROR_0066) {
-                                Timber.d("isi response maintenance:$`object`")
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
-                            } else {
-                                code = model.error_code + ":" + model.error_message
-                                Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
-                            }
-                        }
+//    private fun sentReadNotif(_notif_id: String, position: Int) {
+//        try {
+//            extraSignature = _notif_id
+//            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_READ, extraSignature)
+//            params[WebParams.USER_ID] = userId
+//            params[WebParams.NOTIF_ID_READ] = _notif_id
+//            params[WebParams.MEMBER_ID] = memberId
+//            params[WebParams.COMM_ID] = MyApiClient.COMM_ID
+//            params[WebParams.DATE_TIME] = DateTimeFormat.getCurrentDateTime()
+//            Timber.d("isi params Read Notif:$params")
+//            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_NOTIF_READ, params,
+//                    object : ResponseListener {
+//                        override fun onResponses(`object`: JsonObject) {
+//                            val model = getGson().fromJson(`object`, jsonModel::class.java)
+//                            var code = model.error_code
+//                            if (code == WebParams.SUCCESS_CODE) {
+//                                if (activity != null) {
+//                                    mData!![position].isRead = true
+//                                    activity!!.setResult(MainPage.RESULT_NOTIF)
+//                                    mAdapter!!.notifyItemChanged(position)
+//                                    checkNotification()
+//                                }
+//                            } else if (code == WebParams.LOGOUT_CODE) {
+//                                val message = model.error_message
+//                                val test = AlertDialogLogout.getInstance()
+//                                test.showDialoginActivity(activity, message)
+//                            } else if (code == DefineValue.ERROR_9333) {
+//                                Timber.d("isi response app data:" + model.app_data)
+//                                val appModel = model.app_data
+//                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+//                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+//                            } else if (code == DefineValue.ERROR_0066) {
+//                                Timber.d("isi response maintenance:$`object`")
+//                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+//                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+//                            } else {
+//                                code = model.error_code + ":" + model.error_message
+//                                Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
+//                            }
+//                        }
+//
+//                        override fun onError(throwable: Throwable) {}
+//                        override fun onComplete() {}
+//                    })
+//        } catch (e: java.lang.Exception) {
+//            Timber.d("httpclient:" + e.message)
+//        }
+//    }
 
-                        override fun onError(throwable: Throwable) {}
-                        override fun onComplete() {}
-                    })
-        } catch (e: java.lang.Exception) {
-            Timber.d("httpclient:" + e.message)
-        }
-    }
-
-    private fun checkNotification() {
-        val mth: Thread = object : Thread() {
-            override fun run() {
-                val mContext = activity!!.parent
-                if (mContext is MainPage) {
-                    val mNoHand = NotificationHandler(mContext, sp)
-                    mNoHand.sentRetrieveNotif()
-                }
-            }
-        }
-        mth.start()
-    }
+//    private fun checkNotification() {
+//        val mth: Thread = object : Thread() {
+//            override fun run() {
+//                val mContext = activity!!.parent
+//                if (mContext is MainPage) {
+//                    val mNoHand = NotificationHandler(mContext, sp)
+//                    mNoHand.sentRetrieveNotif()
+//                }
+//            }
+//        }
+//        mth.start()
+//    }
 }
