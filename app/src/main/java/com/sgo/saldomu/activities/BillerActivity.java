@@ -17,6 +17,7 @@ import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.fragments.BillerInputData;
+import com.sgo.saldomu.fragments.BillerInputNew;
 import com.sgo.saldomu.fragments.BillerInputPLN;
 import com.sgo.saldomu.fragments.BillerInputPulsa;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -269,7 +270,7 @@ public class BillerActivity extends BaseActivity {
                     tag = BillerInput.TAG;
                 } else {
                     mLBM = new ListBillerMerchant();
-                    tag = ListBillerMerchant.TAG;
+                    tag = BillerInput.TAG;
                     Log.wtf("ListBillerMerchant ", "ListBillerMerchant");
                 }
             }

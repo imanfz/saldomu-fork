@@ -1154,18 +1154,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private void CheckNotification() {
-        Thread mth = new Thread() {
-            @Override
-            public void run() {
-                Activity mContext = getActivity().getParent();
-                if (mContext instanceof MainPage) {
-                    MainPage mMainPage = (MainPage) mContext;
-                    NotificationHandler mNoHand = new NotificationHandler(mMainPage, sp);
-                    mNoHand.sentRetrieveNotif();
-                }
-            }
-        };
-        mth.start();
+//        Thread mth = new Thread() {
+//            @Override
+//            public void run() {
+//                Activity mContext = getActivity().getParent();
+//                if (mContext instanceof MainPage) {
+//                    MainPage mMainPage = (MainPage) mContext;
+//                    NotificationHandler mNoHand = new NotificationHandler(mMainPage, sp);
+//                    mNoHand.sentRetrieveNotif();
+//                }
+//            }
+//        };
+//        mth.start();
     }
 
     @Override

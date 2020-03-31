@@ -370,13 +370,13 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
                         }
 
                         //isi data produk other atm jika ada
-//                        if (!va.isEmpty() && other_atm.equals(bankCode) && listBankModel.getProduct_type().equals(DefineValue.BANKLIST_TYPE_ATM)) {
-//                            String vaOtherATM = bankCode + " + " + va;
-//                            ArrayList<ListBankDataTopup> listBankModels = new ArrayList<>();
-//                            listBankModels.add(new ListBankDataTopup(listBankModel));
-//                            temp_other_atm = new BankDataTopUp(listBankModels, bankCode, vaOtherATM, fee);
-//                            DataManager.getInstance().setTemp_other_atm(temp_other_atm);
-//                        }
+                        if (!va.isEmpty() && other_atm.equals(bankCode) && listBankModel.getProduct_type().equals(DefineValue.BANKLIST_TYPE_ATM)) {
+                            String vaOtherATM = bankCode + " + " + va;
+                            ArrayList<ListBankDataTopup> listBankModels = new ArrayList<>();
+                            listBankModels.add(new ListBankDataTopup(listBankModel));
+                            temp_other_atm = new BankDataTopUp(listBankModels, bankCode, vaOtherATM, fee);
+                            DataManager.getInstance().setTemp_other_atm(temp_other_atm);
+                        }
 
                         tempListBankModels.add(new ListBankDataTopup(listBankModel));
 

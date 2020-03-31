@@ -1067,14 +1067,14 @@ public class MainPage extends BaseActivity {
     }
 
     private void CheckNotification() {
-        Thread mth = new Thread() {
-            @Override
-            public void run() {
-                NotificationHandler mNoHand = new NotificationHandler(MainPage.this, sp);
-                mNoHand.sentRetrieveNotif();
-            }
-        };
-        mth.start();
+//        Thread mth = new Thread() {
+//            @Override
+//            public void run() {
+//                NotificationHandler mNoHand = new NotificationHandler(MainPage.this, sp);
+//                mNoHand.sentRetrieveNotif();
+//            }
+//        };
+//        mth.start();
     }
 
     private void callBBSCityService() {
