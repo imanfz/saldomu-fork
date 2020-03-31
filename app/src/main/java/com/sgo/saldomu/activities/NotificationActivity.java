@@ -2,16 +2,17 @@ package com.sgo.saldomu.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.adapter.NotificationTabAdapter;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.fragments.FragMessage;
 import com.sgo.saldomu.fragments.FragNotification;
 import com.sgo.saldomu.widgets.BaseActivity;
-
-import timber.log.Timber;
 
 /*
   Created by Administrator on 5/6/2015.
@@ -38,44 +39,18 @@ public class NotificationActivity extends BaseActivity {
 
     public final static int UNREAD = 0;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InitializeToolbar();
 
-        if (findViewById(R.id.notification_content) != null) {
-            if (savedInstanceState != null) {
-                return;
-            }
-            Fragment newFragment = new FragNotification();
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.notification_content, newFragment,"notification");
-            fragmentTransaction.commit();
-        }
-    }
-
-    public void switchContent(Fragment mFragment,String fragName,Boolean isBackstack) {
-
-        if(isBackstack){
-            Timber.d("backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.notification_content, mFragment, fragName)
-                    .addToBackStack(null)
-                    .commit();
-        }
-        else {
-            Timber.d("bukan backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.notification_content, mFragment, fragName)
-                    .commit();
-
-        }
-        setActionBarTitle(fragName);
+        ViewPager viewPager = findViewById(R.id.viewPager);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        NotificationTabAdapter adapter = new NotificationTabAdapter(getSupportFragmentManager());
+        adapter.addFragment(new FragNotification(), getString(R.string.notifications));
+        adapter.addFragment(new FragMessage(), getString(R.string.payfriends_text_message));
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     public void switchActivity(Intent mIntent, int j) {

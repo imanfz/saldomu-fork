@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyQRActivity;
@@ -82,7 +83,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     String sourceAcct = "", sourceAcctName = "";
     private LevelClass levelClass;
     private String reject_npwp;
-//    private String listContactPhone = "";
+    //    private String listContactPhone = "";
 //    private String listAddress = "";
 //    private String contactCenter = "";
     private String userID;
@@ -101,7 +102,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     Activity activity;
 
     // UI LAYOUT
-    TextView tv_name, tv_phone_no, tv_lvl_member_value, currencyLimit, limitValue, tv_email, tv_dob;
+    TextView tv_name, tv_phone_no, tv_lvl_member_value, currencyLimit, limitValue, tv_email, tv_dob, tv_version;
     CardView btn_upgrade;
     ImageView imageQR;
     ProgressDialog progdialog;
@@ -126,6 +127,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         tv_lvl_member_value = v.findViewById(R.id.tv_lvl_member_value);
         tv_email = v.findViewById(R.id.tv_current_email);
         tv_dob = v.findViewById(R.id.tv_dob);
+        tv_version = v.findViewById(R.id.tv_version);
         btn_upgrade = v.findViewById(R.id.btn_upgrade);
         imageQR = v.findViewById(R.id.iv_qr);
         lytUpgrade = v.findViewById(R.id.lyt_upgrade_detail);
@@ -237,6 +239,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
             a.create();
             a.show();
         });
+        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME);
     }
 
     private String getLvl() {
@@ -448,7 +451,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                         Timber.d("isi response maintenance:" + object.toString());
                         AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                         alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                    }else {
+                    } else {
                         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                         alert.setTitle("Upload Image");
                         alert.setMessage("Upload Image : " + error_message);

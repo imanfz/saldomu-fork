@@ -128,6 +128,7 @@ public class MyApiClient {
 
     public static String LINK_ASKFORMONEY_SUBMIT;
     public static String LINK_NOTIF_RETRIEVE;
+    public static String LINK_NOTIF_RETRIEVE_ALL;
     public static String LINK_NOTIF_READ;
 
     public static String LINK_REQ_TOKEN_P2P_NOTIF;
@@ -338,6 +339,7 @@ public class MyApiClient {
 
         LINK_ASKFORMONEY_SUBMIT  = headaddressfinal + "Ask4Money/Submit";
         LINK_NOTIF_RETRIEVE      = headaddressfinal + "UserNotif/Retrieve";
+        LINK_NOTIF_RETRIEVE_ALL      = headaddressfinal + "UserNotif/RetrieveAll";
         LINK_NOTIF_READ          = headaddressfinal + "UserNotif/isRead";
 
         LINK_REQ_TOKEN_P2P_NOTIF = headaddressfinal + "PayFriend/Invoke";
