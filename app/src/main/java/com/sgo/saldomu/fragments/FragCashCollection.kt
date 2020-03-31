@@ -179,7 +179,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                             i++
                         }
                         if (accountList.size != 0) {
-                            accountListData.add(getString(R.string.other_acct))
+//                            accountListData.add(getString(R.string.other_acct))
                             spinner_no_acc.visibility = View.VISIBLE
                             spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_dropdown_item, accountListData)
                         } else {

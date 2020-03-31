@@ -269,7 +269,7 @@ public class BillerActivity extends BaseActivity {
                     tag = BillerInput.TAG;
                 } else {
                     mLBM = new ListBillerMerchant();
-                    tag = ListBillerMerchant.TAG;
+                    tag = BillerInput.TAG;
                     Log.wtf("ListBillerMerchant ", "ListBillerMerchant");
                 }
             }

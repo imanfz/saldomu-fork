@@ -156,8 +156,6 @@ public class ListBillerMerchant extends ListFragment {
                 mListBillerData.get(position).getItem_id(),
                 mListBillerData.get(position).getComm_code(),
                 mBillerType.getBiller_type());
-
-
     }
 
     private void changeToInputBiller(String _comm_id, String _comm_name, String _item_id, String _comm_code, String _buy_type) {
