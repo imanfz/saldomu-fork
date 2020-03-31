@@ -54,6 +54,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
@@ -135,7 +136,7 @@ public class FragNotification extends BaseFragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mData = new ArrayList<>();
         mDataNotifDetail = new ArrayList<>();
-        mAdapter = new NotificationListAdapter(this, getActivity(), mData, new NotificationListAdapter.OnItemClickListener() {
+        mAdapter = new NotificationListAdapter(getActivity(), mData, new NotificationListAdapter.OnItemClickListener() {
             @Override
             public void onItemClickView(View view, int position, Boolean isLongClick) {
                 NotificationItemClickAction(position);
@@ -188,7 +189,7 @@ public class FragNotification extends BaseFragment {
         NotificationModelClass mObj = mData.get(position);
         JSONObject mObjDetail = mDataNotifDetail.get(position);
         try {
-            Timber.d("isi notif type:" + String.valueOf(mObj.getNotif_type()));
+            Timber.d("isi notif type:" + mObj.getNotif_type());
 
             switch (mObj.getNotif_type()) {
                 case NotificationActivity.TYPE_TRANSFER:
@@ -204,7 +205,7 @@ public class FragNotification extends BaseFragment {
                         data.putExtra(DefineValue.TRX, mObjDetail.getString(WebParams.TRX_ID));
                         data.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.TYPE_TRANSFER);
                         data.putExtra(DefineValue.CONFIRM_PAYFRIEND, true);
-                        getActivity().setResult(MainPage.RESULT_NOTIF, data);
+                        Objects.requireNonNull(getActivity()).setResult(MainPage.RESULT_NOTIF, data);
                         getActivity().finish();
 
                     } else if (pay_status == NotificationActivity.P2PSTAT_PAID) {
@@ -220,7 +221,6 @@ public class FragNotification extends BaseFragment {
                     String tempFromID;
                     data.putExtra(DefineValue.POST_ID, mObjDetail.getString(WebParams.POST_ID));
                     data.putExtra(DefineValue.TO_ID, mObj.getTo_id());
-//                    data.putExtra(DefineValue.TO_NAME, mObj.getFrom_name());
 
                     if (mObj.getNotif_type() == NotificationActivity.TYPE_PAID) {
                         data.putExtra(DefineValue.MESSAGE, mObjDetail.getString(WebParams.DESC));
@@ -242,23 +242,19 @@ public class FragNotification extends BaseFragment {
                         data.putExtra(DefineValue.TO_NAME, getString(R.string.you));
                         data.putExtra(DefineValue.WITH_PROF_PIC, _profpic);
                     }
-//                    if(mObj.getTo_id().equals(_userid))
-//                        data.putExtra(DefineValue.FROM_NAME,getString(R.string.you));
 
                     data.putExtra(DefineValue.FROM_ID, mObj.getFrom_id());
                     data.putExtra(DefineValue.DATE_TIME, mObj.getDate_time());
                     data.putExtra(DefineValue.CCY_ID, mObjDetail.getString(WebParams.CCY_ID));
                     data.putExtra(DefineValue.AMOUNT, mObjDetail.getString(WebParams.AMOUNT));
-//                    data.putExtra(DefineValue.PROF_PIC,_profpic);
                     data.putExtra(DefineValue.TX_STATUS, mObjDetail.getString(WebParams.TYPECAPTION));
-//                    data.putExtra(DefineValue.WITH_PROF_PIC,mObj.getFrom_profile_picture());
                     data.putExtra(DefineValue.POST_TYPE, mObjDetail.getString(WebParams.TYPEPOST));
                     if (mObj.getNotif_type() == NotificationActivity.TYPE_LIKE)
                         data.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.TYPE_LIKE);
                     else
                         data.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.TYPE_COMMENT);
-                    Timber.d("isi extra intennt history detail activity:" + data.getExtras().toString());
-                    getActivity().setResult(MainPage.RESULT_NOTIF, data);
+                    Timber.d("isi extra intennt history detail activity:" + Objects.requireNonNull(data.getExtras()).toString());
+                    Objects.requireNonNull(getActivity()).setResult(MainPage.RESULT_NOTIF, data);
                     getActivity().finish();
                     break;
                 case NotificationActivity.TYPE_NON_MEMBER:
@@ -267,7 +263,6 @@ public class FragNotification extends BaseFragment {
                     break;
 
                 case NotificationActivity.REJECTED_KTP:
-//                    sentReadNotif(mData.get(position).getNotif_id(), position);
                     SecurePreferences.Editor editor = sp.edit();
                     editor.putString(DefineValue.REJECT_KTP, mObjDetail.optString(WebParams.REJECT_KTP, "N"));
                     editor.putString(DefineValue.REJECT_FOTO, mObjDetail.optString(WebParams.REJECT_FOTO, "N"));
@@ -283,7 +278,6 @@ public class FragNotification extends BaseFragment {
                     getActivity().finish();
                     break;
                 case NotificationActivity.REJECTED_SIUP_NPWP:
-//                    sentReadNotif(mData.get(position).getNotif_id(), position);
                     SecurePreferences.Editor editor1 = sp.edit();
                     editor1.putString(DefineValue.REJECT_SIUP, mObjDetail.optString(WebParams.REJECT_SIUP, "N"));
                     editor1.putString(DefineValue.REJECT_NPWP, mObjDetail.optString(WebParams.REJECT_NPWP, "N"));
@@ -308,13 +302,8 @@ public class FragNotification extends BaseFragment {
                     startActivity(s);
                     break;
             }
-
-
         } catch (JSONException e) {
             e.printStackTrace();
-        } finally {
-//            if (!mObj.isRead())
-//                sentReadNotif(mObj.getNotif_id(), position);
         }
     }
 
@@ -363,7 +352,7 @@ public class FragNotification extends BaseFragment {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -430,7 +419,7 @@ public class FragNotification extends BaseFragment {
             params.put(WebParams.MEMBER_ID, _memberId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-            params.put(WebParams.MEMBER_CREATED, sp.getString(DefineValue.MEMBER_CREATED,""));
+            params.put(WebParams.MEMBER_CREATED, sp.getString(DefineValue.MEMBER_CREATED, ""));
 
             Timber.d("isi params Retrieve Notif:" + params.toString());
 
@@ -605,7 +594,7 @@ public class FragNotification extends BaseFragment {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
 
                                     if (code.equals("0003")) {
                                         if (FragNotification.this.isVisible()) {
@@ -692,7 +681,7 @@ public class FragNotification extends BaseFragment {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                            } else {
                                 Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_SHORT).show();
 
                             }
@@ -725,10 +714,9 @@ public class FragNotification extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().finish();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

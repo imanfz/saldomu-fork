@@ -116,6 +116,7 @@ public class WebParams {
     public static String BILLER_INPUT_AMOUNT = "biller_input_amount";
     public static String BILLER_DISPLAY_AMOUNT = "biller_display_amount";
     public static String DESCRIPTION = "description";
+    public static String SHORT_DESCRIPTION = "short_description";
 
     public static String MEMBER_CUST = "member_cust";
 
@@ -160,6 +161,7 @@ public class WebParams {
     public static String NOTIF_READ = "read";
     public static String NOTIF_DATA = "data_user_notif";
     public static String NOTIF_DETAIL = "notif_detail";
+    public static String DATA_USER_NOTIF = "data_user_notif";
 
     public static String DATA_GROUP = "data_group";
     public static String COUNT = "count";

@@ -71,7 +71,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
     private Button btnforgetPass;
     private Button btnforgetPin;
     private Button btnRegister;
-    private TextView btnPrivacyPolicy;
+    private TextView btnPrivacyPolicy, tv_version;
     private EditText userIDValue;
     private EditText passLoginValue;
     private ImageView image_spinner, toogleViewPass, logo;
@@ -98,6 +98,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         btnRegister = v.findViewById(R.id.btn_register);
         image_spinner = v.findViewById(R.id.image_spinning_wheel);
         logo = v.findViewById(R.id.logo);
+        tv_version = v.findViewById(R.id.tv_version);
         return v;
     }
 
@@ -107,7 +108,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         super.onActivityCreated(savedInstanceState);
 
         argsBundleNextLogin = getArguments();
-
+        tv_version.setText(getString(R.string.appname)+" "+ BuildConfig.VERSION_NAME);
 
 //        btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
 
