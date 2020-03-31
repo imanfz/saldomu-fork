@@ -2,12 +2,17 @@ package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+import com.sgo.saldomu.R;
 
 import timber.log.Timber;
 
@@ -47,12 +52,48 @@ public class ScanQRUtils  {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
 
             bitmap  = barcodeEncoder.createBitmap(bitMatrix);
+            Bitmap logo = BitmapFactory.decodeResource(mContext.getResources(),
+                    R.mipmap.ic_launcher_pin_only);
 
-
+            Bitmap bitmapCircleLogo = Bitmap.createBitmap(logo.getWidth(), logo.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmapCircleLogo);
+            Paint paint = new Paint();
+            paint.setColor(Color.WHITE);
+            canvas.drawCircle(logo.getWidth()/ 2.0f + 0.7f,logo.getHeight()/ 2.0f + 0.7f,logo.getWidth()/ 2.0f + 0.7f,paint);
+            canvas.drawBitmap(logo,(bitmapCircleLogo.getWidth()-logo.getWidth())/2,
+                    (bitmapCircleLogo.getHeight()-logo.getHeight())/2,null);
+            canvas.save();
+            canvas.restore();
+            return addLogoToQRCode(bitmap,bitmapCircleLogo);
         } catch (WriterException e) {
             e.printStackTrace();
         }
-        return  bitmap;
+        return null;
+    }
+
+    private static Bitmap addLogoToQRCode(Bitmap src, Bitmap logo) {
+        if (src == null || logo == null) {
+            return src;
+        }
+
+        int srcWidth = src.getWidth();
+        int srcHeight = src.getHeight();
+        int logoWidth = logo.getWidth();
+        int logoHeight = logo.getHeight();
+
+        float scaleFactor = srcWidth * 1.0f / 5 / logoWidth;
+        Bitmap bitmap = Bitmap.createBitmap(srcWidth, srcHeight, Bitmap.Config.ARGB_8888);
+        try {
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawBitmap(src, 0, 0, null);
+            canvas.scale(scaleFactor, scaleFactor, srcWidth / 2, srcHeight / 2);
+            canvas.drawBitmap(logo, (srcWidth - logoWidth) / 2, (srcHeight - logoHeight) / 2, null);
+            canvas.save();
+            canvas.restore();
+        } catch (Exception e) {
+            bitmap = null;
+        }
+        return bitmap;
     }
     
     private String encryptedValue(String qrTypeValue, String sourceAcctValue, String sourceNameValue){
