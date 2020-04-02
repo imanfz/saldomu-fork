@@ -62,6 +62,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
     private var otp: String? = null
     private var benefProductValueCode: String? = ""
     private var benefProductValueName: String? = ""
+    private var fee: String? = ""
 
 
     private var comm: BBSCommModel? = null
@@ -272,6 +273,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                             productCode = model.tx_product_code
                             benefProductValueCode = model.benef_product_value_code
                             benefProductValueName = model.benef_product_value_name
+                            fee = model.admin_fee
                             confirmPayment()
                         }
                         WebParams.LOGOUT_CODE -> {
@@ -401,6 +403,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                         bundle.putString(DefineValue.MEMBER_CODE, memberCode)
                                         bundle.putString(DefineValue.PRODUCT_CODE, productCode)
                                         bundle.putString(DefineValue.AMOUNT, amount)
+                                        bundle.putString(DefineValue.FEE, fee)
 
                                         newFrag.arguments = bundle
                                         if (activity == null) {

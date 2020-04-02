@@ -46,6 +46,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
     private var benefProductValueName: String = ""
     private var otp: String = ""
     private var amount: String = ""
+    private var fee: String = ""
     private var isPIN: Boolean? = false
     private var attempt = 0
     private var failed = 0
@@ -70,10 +71,12 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         memberCode = args!!.getString(DefineValue.MEMBER_CODE)
         productCode = args!!.getString(DefineValue.PRODUCT_CODE)
         amount = args!!.getString(DefineValue.AMOUNT)
+        fee = args!!.getString(DefineValue.FEE)
 
         dialog_cash_collection_tv_name.setText(benefProductValueName)
         dialog_cash_collection_tv_acc_no.setText(benefProductValueCode)
         dialog_cash_collection_tv_amount_deposit.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(amount))
+        dialog_cash_collection_tv_fee.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(fee))
         tv_resend_otp.text = getString(R.string.resend_confirmation_code) + "(" + countResend + "/3)"
 
         dialog_cash_collection_btn_ok.setOnClickListener {
