@@ -21,6 +21,7 @@ public class WebParams {
     public static String USER_COMM_CODE = "user_comm_code";
     public static String USER_ID = "user_id";
     public static String USER_IMAGES = "user_images";
+    public static String USER_PIN = "user_pin";
     public static String TOKEN_ID = "token_id";
     public static String MEMBER_CODE = "member_code";
     public static String CUSTOMER_ID = "customer_id";
@@ -121,6 +122,7 @@ public class WebParams {
     public static String DENOM_DATA = "denom_data";
     public static String DENOM_DETAIL = "denom_detail";
     public static String DENOM_ITEM_ID = "item_id";
+    public static String DENOM_COMM_CODE = "comm_code";
     public static String DENOM_ITEM_NAME = "item_name";
     public static String DENOM_ITEM_PRICE = "item_price";
     public static String DENOM_CCY_ID = "ccy_id";
@@ -353,6 +355,7 @@ public class WebParams {
     public static String CATEGORY_ID = "category_id";
     public static String CATEGORY_NAME = "category_name";
     public static String IMEI = "imei";
+    public static String IMEI_ID = "imei_id";
     public static String ICCID = "iccid";
     public static String SENT = "sent";
     public static String SENDER_ID = "sender_id";
@@ -582,6 +585,8 @@ public class WebParams {
     public static String CUST_RW = "cust_rw";
     public static String CUST_KELURAHAN = "cust_kelurahan";
     public static String CUST_KECAMATAN = "cust_kecamatan";
+    public static String CUST_KABUPATEN = "cust_kabupaten";
+    public static String CUST_PROVINSI = "cust_provinsi";
     public static String CUST_RELIGION = "cust_religion";
     public static String CUST_MARRIAGE_STATUS = "cust_marriage_status";
     public static String CUST_OCCUPATION = "cust_occupation";
@@ -594,6 +599,15 @@ public class WebParams {
     public static String FROM_AGENT = "from_agent";
     public static String ERROR_9333 = "9333";
     public static String ERROR_0066 = "0066";
+    public static String ERROR_0003 = "0003";
     public static String LOC_TX_ID = "loc_tx_id";
+
+    public static String SHOP_TYPE = "shop_type";
+    public static String LANG = "lang";
+
+    public final static String LANGUAGE_ID = "id";
+    public final static String LANGUAGE_EN = "en";
+    public static String USER_EMAIL = "user_email";
+    public static String SUMMARY = "summary";
 
 }

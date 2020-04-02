@@ -76,7 +76,7 @@
 
         
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -85,30 +85,28 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/margin_10dp"
             android:text="@string/cancel"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_button_material"
             android:textColor="@color/colorPrimary"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
-            android:id="@+id/btn_dialog_cancel"
-            android:layout_alignParentLeft="true"/>
+            android:id="@+id/btn_dialog_cancel"/>
 
 
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/margin_10dp"
             android:text="@string/ok"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_button_material"
             android:textColor="@color/colorPrimary"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
             android:id="@+id/btn_dialog_ok"
-            android:layout_alignParentRight="true"
             />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

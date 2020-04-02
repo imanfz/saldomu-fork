@@ -89,15 +89,15 @@ public class ConfirmationDialog extends DialogFragment {
         toTextview.setText(toUserID);
 
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-            notifPelangganLayout.setVisibility(View.VISIBLE);
+//            notifPelangganLayout.setVisibility(View.VISIBLE);
             notifPelangganTextview.setText(notifPelanggan);
             if(!name.equals("")){
                 nameLayout.setVisibility(View.VISIBLE);
                 nameTextview.setText(name);
             }
             destinationTextview.setText(destinationUserID);
-            tv_left.setText("Milik Agen");
-            tv_right.setText("Milik Pelanggan");
+            tv_left.setText(getString(R.string.milik_agen));
+            tv_right.setText(getString(R.string.milik_pelanggan));
         }
         else
             destinationTextview.setText(destinationUserID);

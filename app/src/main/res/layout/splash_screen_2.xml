@@ -19,7 +19,7 @@
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="#40639f"
-        android:text="Kirim Uang"
+        android:text="@string/send_money"
         />
     <TextView
         android:layout_margin="12dp"
@@ -32,6 +32,6 @@
         android:letterSpacing="0.02"
         android:lineSpacingExtra="6sp"
         android:gravity="center_horizontal"
-        android:text="Kirim uang ke sesama pengguna, teman, komunitas kapanpun kamu inginkan."
+        android:text="@string/send_money_desc"
         />
 </LinearLayout>

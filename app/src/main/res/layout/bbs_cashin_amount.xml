@@ -1,51 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-    <TextView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/colorSecondaryDark"
-        android:layout_marginLeft="16dp"
-        android:text="@string/label_bank_transfer_ke"/>
+        android:orientation="vertical"
+        android:id="@+id/layout_bank_benef_cashin">
 
-    <com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon
-        android:id="@+id/rekening_member_value"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:hint="@string/label_bank_pelangggan" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:gravity="center"
+            android:text="@string/label_bank_transfer_ke"
+            android:textColor="@color/colorSecondaryDark"
+            android:id="@+id/tv_destination"/>
+        <com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon
+            android:id="@+id/rekening_member_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:hint="@string/label_bank_pelangggan" />
 
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:gravity="right"
-        android:text="(contoh: BANK MANDIRI)"
-        android:textColor="@color/colorSecondaryDark"
-        android:textStyle="italic" />
-
-
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="6dp"
+            android:gravity="right"
+            android:text="@string/example_mandiri"
+            android:textColor="@color/colorSecondaryDark"
+            android:textStyle="italic" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/no_tujuan_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:gravity="center"
         android:hint="@string/no_rekening_tujuan_hint"
         android:inputType="number"
-        android:maxLength="20"
+        android:maxLength="20" />
+
+
+    <EditText
+        android:id="@+id/no_OTP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="16dp"
+        android:gravity="center"
+        android:hint="@string/token_hint"
+        android:inputType="numberPassword"
+        android:maxLength="10"
+        android:visibility="gone" />
+
+
+    <LinearLayout
+        android:id="@+id/bbs_cashin_name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/name_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
+            android:gravity="center"
+            android:hint="@string/nama_rekening_tujuan_hint"
+            android:inputType="text"
+            android:maxLength="30" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="6dp"
+            android:gravity="right"
+            android:text="(contoh: SUPRIADI)"
+            android:textColor="@color/colorSecondaryDark"
+            android:textStyle="italic" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bbscashin_city_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/bbscashin_value_city_benef"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                android:gravity="center"
+                android:hint="@string/kota_tujuan_hint"
+                android:inputType="textCapWords"
+                android:maxLength="30"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:visibility="visible">
+
+                <requestFocus />
+            </AutoCompleteTextView>
+
+            <ImageView
+                android:id="@+id/spinning_wheel_bbscashin_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/default_spinner"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="right"
+            android:text="(contoh: KOTA JAKARTA)"
+            android:textColor="@color/colorSecondaryDark"
+            android:textStyle="italic" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tv_eg_no"
         android:layout_width="match_parent"
@@ -53,95 +151,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="6dp"
-        android:textColor="@color/colorSecondaryDark"
-        android:textStyle="italic"
         android:gravity="right"
-        android:text="@string/eg_no_acct"/>
-
-
-
-    <EditText
-        android:visibility="gone"
-        android:id="@+id/no_OTP"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:hint="@string/token_hint"
-        android:inputType="numberPassword"
-        android:maxLength="10"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp" />
-
-    <LinearLayout
-        android:id="@+id/bbs_cashin_name_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="vertical">
-        <EditText
-            android:id="@+id/name_value"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:hint="@string/nama_rekening_tujuan_hint"
-            android:inputType="text"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
-            android:maxLength="30"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="6dp"
-            android:textColor="@color/colorSecondaryDark"
-            android:textStyle="italic"
-            android:gravity="right"
-            android:text="(contoh: SUPRIADI)"/>
-    </LinearLayout>
-    <LinearLayout android:id="@+id/bbscashin_city_layout"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        >
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-            <ImageView
-                android:id="@+id/spinning_wheel_bbscashin_city"
-                android:visibility="invisible"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/default_spinner"
-                android:layout_centerInParent="true"
-                />
-            <AutoCompleteTextView
-                android:id="@+id/bbscashin_value_city_benef"
-                android:visibility="visible"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:maxLength="30"
-                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
-                android:inputType="textCapWords"
-                android:hint="@string/kota_tujuan_hint"
-                android:layout_gravity="center_horizontal">
-                <requestFocus/>
-            </AutoCompleteTextView>
-        </RelativeLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:textColor="@color/colorSecondaryDark"
-            android:textStyle="italic"
-            android:gravity="right"
-            android:text="(contoh: KOTA JAKARTA)"/>
-    </LinearLayout>
+        android:text="@string/eg_no_acct"
+        android:textColor="@color/colorSecondaryDark"
+        android:textStyle="italic" />
 </LinearLayout>

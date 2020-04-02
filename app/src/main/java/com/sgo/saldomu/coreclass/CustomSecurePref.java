@@ -129,7 +129,6 @@ public class CustomSecurePref {
         mEdit.remove(DefineValue.PROFILE_ADDRESS);
         mEdit.remove(DefineValue.PROFILE_BIO);
         mEdit.remove(DefineValue.PROFILE_COUNTRY);
-        mEdit.remove(DefineValue.PROFILE_EMAIL);
         mEdit.remove(DefineValue.PROFILE_FULL_NAME);
         mEdit.remove(DefineValue.PROFILE_SOCIAL_ID);
         mEdit.remove(DefineValue.PROFILE_HOBBY);
@@ -181,5 +180,16 @@ public class CustomSecurePref {
 
         mEdit.apply();
 
+    }
+
+
+    public void setBoolean(String key, boolean value){
+        SecurePreferences.Editor edit = getmSecurePrefs().edit();
+        edit.putBoolean(key,value);
+        edit.apply();
+    }
+
+    public boolean getBoolean(String key){
+        return getmSecurePrefs().getBoolean(key, false);
     }
 }

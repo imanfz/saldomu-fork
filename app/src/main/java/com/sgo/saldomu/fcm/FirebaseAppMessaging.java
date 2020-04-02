@@ -28,6 +28,7 @@ import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
+import com.sgo.saldomu.activities.UpgradeMemberViaOnline;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -66,6 +67,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Timber.d("From: " + remoteMessage.getFrom());
 
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
 
@@ -86,7 +89,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                 String jsonOptions = remoteMessage.getData().get(DefineValue.FCM_OPTIONS);
 
                 if (modelNotif == MEMBER_RATING_TRX) {
-                    sp = CustomSecurePref.getInstance().getmSecurePrefs();
                     flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
                     if (flagLogin == null)
                         flagLogin = DefineValue.STRING_NO;
@@ -113,34 +115,36 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                 }
                 if (modelNotif == VERIFY_ACC) {
 
-                    sp = CustomSecurePref.getInstance().getmSecurePrefs();
-                    try {
-                        JSONArray jsonObj = new JSONArray(jsonOptions);
-                        JSONObject jsonObj2 = jsonObj.getJSONObject(0);
-                        jsonObj2.put("model_notif", modelNotif);
+                    if (!sp.getBoolean(DefineValue.IS_INQUIRY_SMS, false)) {
+                        try {
+                            JSONArray jsonObj = new JSONArray(jsonOptions);
+                            JSONObject jsonObj2 = jsonObj.getJSONObject(0);
+                            jsonObj2.put("model_notif", modelNotif);
 
-                        SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.SENDER_ID, jsonObj2.getString(WebParams.USER_ID));
-                        mEditor.apply();
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            mEditor.putString(DefineValue.SENDER_ID, jsonObj2.getString(WebParams.USER_ID));
+                            mEditor.apply();
 
-                        if (flagLogin == null)
-                            flagLogin = DefineValue.STRING_NO;
+                            if (flagLogin == null)
+                                flagLogin = DefineValue.STRING_NO;
 
-                        if (flagLogin.equals(DefineValue.STRING_YES)) {
+                            if (flagLogin.equals(DefineValue.STRING_YES)) {
 
-                        } else {
-                            Intent broadcast = new Intent(this, LoginActivity.class);
-                            broadcast.setAction(DefineValue.INTENT_ACTION_FCM_DATA);
-                            broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
-                            broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
-                            broadcast.putExtra(DefineValue.USER_ID, sp.getString(DefineValue.SENDER_ID,""));
-                            broadcast.putExtra(DefineValue.USER_IS_NEW, Integer.parseInt(jsonObj2.getString(WebParams.IS_NEW_USER)));
-                            broadcast.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(broadcast);
+                            } else {
+                                Intent broadcast = new Intent(this, LoginActivity.class);
+                                broadcast.setAction(DefineValue.INTENT_ACTION_FCM_DATA);
+                                broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
+                                broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
+                                broadcast.putExtra(DefineValue.USER_ID, sp.getString(DefineValue.SENDER_ID, ""));
+                                broadcast.putExtra(DefineValue.USER_IS_NEW, Integer.parseInt(jsonObj2.getString(WebParams.IS_NEW_USER)));
+                                broadcast.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(broadcast);
+                            }
+
+
+                        } catch (JSONException e) {
+                            Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
                         }
-
-                    } catch (JSONException e) {
-                        Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
                     }
                 }
             }
@@ -206,17 +210,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
             Timber.e(key, data.get(key));
             msg.putString(key, data.get(key));
         }
-//
-//
-//        pref = getSharedPreferences("UPDATE_INSTANCE", MODE_PRIVATE);
-//        edit = pref.edit();
-//        Intent backIntent;
-//        Intent intent = null;
-//        PendingIntent pendingIntent = null;
-//        backIntent = new Intent(getApplicationContext(), MainActivity.class);
-//        backIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        SharedPreferences sp;
-//        Editor editor;
 
         if (msg.containsKey("model_notif") && msg.getString("model_notif") != null) {
 
@@ -555,9 +548,9 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             sp.edit().putString(DefineValue.REMARK_TTD, remark_ttd).apply();
                             sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
 
-                            intent = new Intent(this, MyProfileNewActivity.class);
+                            intent = new Intent(this, UpgradeMemberViaOnline.class);
 
-                            stackBuilder.addParentStack(MyProfileNewActivity.class);
+                            stackBuilder.addParentStack(UpgradeMemberViaOnline.class);
                             stackBuilder.addNextIntent(intent);
 
                             contentIntent =
@@ -651,6 +644,28 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                     }
                     break;
                 case FCMManager.VERIFY_ACC:
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            String userId = jsonOptions.getJSONObject(0).getString(WebParams.USER_ID);
+                            bundle.putString(DefineValue.USER_ID, userId);
+                            if (flagLogin.equals(DefineValue.STRING_NO)) {
+                                intent = new Intent(this, LoginActivity.class);
+                                intent.putExtras(bundle);
+                                stackBuilder.addParentStack(LoginActivity.class);
+                                stackBuilder.addNextIntent(intent);
+
+                                contentIntent =
+                                        stackBuilder.getPendingIntent(
+                                                1,
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        );
+
+                            }
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
+                        }
+                    }
                     break;
                 case FCMManager.CONFIRM_ATC:
 

@@ -35,9 +35,9 @@ public class UserProfileHandler {
         String extraSignature = memberID;
         try{
 //            RequestParams param = new RequestParams(extraSignature);
-//            HashMap<String, Object> params = RetrofitService.getInstance()
-//                    .getSignature(MyApiClient.LINK_FORGOT_PASSWORD, extraSignature);
-            HashMap<String, Object> params = new HashMap<>();
+            HashMap<String, Object> params = RetrofitService.getInstance()
+                    .getSignature(MyApiClient.LINK_USER_PROFILE, extraSignature);
+//            HashMap<String, Object> params = new HashMap<>();
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

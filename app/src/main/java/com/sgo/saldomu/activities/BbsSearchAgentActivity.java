@@ -183,6 +183,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
                     equalTo(BBSBankModel.PRODUCT_NAME, bbsProductName)
                     .findFirst();
+        } else if ( bbsSchemeCode.equals(DefineValue.CTR) ) {
+            bbsBankModel = realmBBSMemberBank.where(BBSBankModel.class).
+                    equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTR).
+                    equalTo(BBSBankModel.PRODUCT_NAME, bbsProductName)
+                    .findFirst();
         } else {
             bbsBankModel = realmBBSMemberBank.where(BBSBankModel.class).
                     equalTo(BBSBankModel.SCHEME_CODE, DefineValue.ATC).
@@ -1069,6 +1074,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             params.put(WebParams.BBS_MOBILITY, mobility);
             params.put(WebParams.BBS_NOTE, bbsNote);
             params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.SHOP_TYPE, sp.getString(DefineValue.COMPANY_TYPE,""));
 
             params.put(WebParams.PRODUCT_CODE, bbsProductCode);
             params.put(WebParams.PRODUCT_NAME, bbsProductName);

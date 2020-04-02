@@ -30,7 +30,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PulsaAgentActivity;
-import com.sgo.saldomu.activities.PulsaAgentWeb;
+import com.sgo.saldomu.activities.SgoPlusWeb;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -186,7 +186,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
 
     private void changeToSgoPlus(String _tx_id, String _bank_code, String _product_code,
                                  String _fee) {
-        Intent i = new Intent(getActivity(), PulsaAgentWeb.class);
+        Intent i = new Intent(getActivity(), SgoPlusWeb.class);
         i.putExtra(DefineValue.PRODUCT_CODE, _product_code);
         i.putExtra(DefineValue.BANK_CODE, _bank_code);
         i.putExtra(DefineValue.FEE, _fee);

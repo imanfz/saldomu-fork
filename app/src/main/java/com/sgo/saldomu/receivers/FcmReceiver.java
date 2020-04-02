@@ -29,23 +29,24 @@ import static com.facebook.stetho.inspector.network.PrettyPrinterDisplayType.JSO
 public class FcmReceiver extends BroadcastReceiver {
 
     private BundleToJSON bundleToJSON = new BundleToJSON();
+    SecurePreferences sp;
 
     public FcmReceiver() {
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Timber.d("FCM Receiver Trigger" );
+        Timber.d("FCM Receiver Trigger");
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-
-        if ( intent.getAction().equals(DefineValue.INTENT_ACTION_FCM_DATA) ) {
+        if (intent.getAction().equals(DefineValue.INTENT_ACTION_FCM_DATA)) {
             Bundle extras = intent.getExtras();
-            if(extras != null) {
-                int modelNotif          = extras.getInt(DefineValue.MODEL_NOTIF);
-                String jsonOptionData   = extras.getString(DefineValue.FCM_OPTIONS);
+            if (extras != null) {
+                int modelNotif = extras.getInt(DefineValue.MODEL_NOTIF);
+                String jsonOptionData = extras.getString(DefineValue.FCM_OPTIONS);
 
 
-                if ( modelNotif == FCMManager.MEMBER_RATING_TRX ) {
+                if (modelNotif == FCMManager.MEMBER_RATING_TRX) {
 
                     Bundle tempBundle = new Bundle();
                     try {
@@ -67,23 +68,21 @@ public class FcmReceiver extends BroadcastReceiver {
                         Timber.d("JSONException FCM Receiver OptionData: " + e.getMessage());
                     }
 
-                }
+                } else if (modelNotif == FCMManager.VERIFY_ACC) {
+                    if (sp.getBoolean(DefineValue.IS_INQUIRY_SMS, false) == false) {
+                        Bundle tempBundle = new Bundle();
+                        try {
+                            JSONArray jsonOptions = new JSONArray(jsonOptionData);
 
-                else if ( modelNotif == FCMManager.VERIFY_ACC ) {
+                            tempBundle.putString(DefineValue.USER_ID, jsonOptions.getJSONObject(0).getString(WebParams.USER_ID));
 
-                    Bundle tempBundle = new Bundle();
-                    try {
-                        JSONArray jsonOptions = new JSONArray(jsonOptionData);
-
-                        tempBundle.putString(DefineValue.USER_ID, jsonOptions.getJSONObject(0).getString(WebParams.USER_ID));
-
-                        Intent tempIntent = new Intent(context, LoginActivity.class);
-                        tempIntent.putExtras(tempBundle);
-                        context.startActivity(tempIntent);
-                    } catch (JSONException e) {
-                        Timber.d("JSONException FCM Receiver OptionData Verifiy Acc: " + e.getMessage());
+                            Intent tempIntent = new Intent(context, LoginActivity.class);
+                            tempIntent.putExtras(tempBundle);
+                            context.startActivity(tempIntent);
+                        } catch (JSONException e) {
+                            Timber.d("JSONException FCM Receiver OptionData Verifiy Acc: " + e.getMessage());
+                        }
                     }
-
                 }
 
             }

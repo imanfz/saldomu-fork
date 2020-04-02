@@ -43,7 +43,7 @@
                     android:id="@+id/nik_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan NIK"
+                    android:hint="@string/input_nik"
                     android:inputType="number"
                     android:maxLength="16"
                     android:textSize="@dimen/abc_text_size_medium_material" />
@@ -58,7 +58,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nama Lengkap"
+                    android:text="@string/full_name"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -67,10 +67,34 @@
                     android:id="@+id/fullname_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Nama Lengkap"
+                    android:hint="@string/input_full_name"
                     android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mothers_name"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/mothersname_edit_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_mothers_name"
+                    android:maxLength="30"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+            </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/linearLayout6"
@@ -82,7 +106,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tempat Lahir"
+                    android:text="@string/place_of_birth"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -91,9 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/birth_place_list"
-                    android:hint="Masukkan Tempat Lahir"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="20dp" />
+                    android:hint="@string/input_place_of_birth" />
             </LinearLayout>
 
             <LinearLayout
@@ -107,7 +129,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tanggal Lahir"
+                    android:text="@string/date_of_birth"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:layout_marginBottom="@dimen/margin_10dp"
@@ -118,7 +140,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:hint="Masukan Tanggal Lahir"
+                    android:hint="@string/input_date_of_birth"
                     android:maxLength="30"
                     android:layout_marginBottom="8dp"
                     android:textSize="@dimen/abc_text_size_medium_material" />
@@ -155,7 +177,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Alamat"
+                    android:text="@string/myprofile_text_address"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -164,7 +186,7 @@
                     android:id="@+id/address_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Alamat"
+                    android:hint="@string/input_address"
                     android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
@@ -188,7 +210,7 @@
                     android:id="@+id/rt_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan RT "
+                    android:hint="@string/input_rt"
                     android:maxLength="3"
                     android:inputType="number"
                     android:textSize="@dimen/abc_text_size_medium_material" />
@@ -213,10 +235,73 @@
                     android:id="@+id/rw_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan RW"
+                    android:hint="@string/input_rw"
                     android:maxLength="3"
                     android:inputType="number"
                     android:textSize="@dimen/abc_text_size_medium_material" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/province"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/province_auto_text"
+                    android:hint="@string/input_province" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/district"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/district_auto_text"
+                    android:hint="@string/input_district" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sub_district"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sub_district_auto_text"
+                    android:hint="@string/input_sub_district" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -229,43 +314,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kelurahan"
+                    android:text="@string/urban_village"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/urban_village_edit_text"
-                    android:layout_width="fill_parent"
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Kelurahan"
-                    android:maxLength="30"
-                    android:textSize="@dimen/abc_text_size_medium_material" />
+                    android:id="@+id/urban_village_auto_text"
+                    android:hint="@string/input_urban_village" />
+
             </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Kecamatan"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/abc_text_size_medium_material"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/sub_district_edit_text"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Masukan Kecamatan"
-                    android:maxLength="30"
-                    android:textSize="@dimen/abc_text_size_medium_material" />
-            </LinearLayout>
-
 
             <LinearLayout
                 android:id="@+id/linearLayout12"
@@ -276,7 +336,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Agama"
+                    android:text="@string/religion"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -298,7 +358,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Status Perkawinan"
+                    android:text="@string/marital_status"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -319,7 +379,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pekerjaan"
+                    android:text="@string/job"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -328,7 +388,7 @@
                     android:id="@+id/job_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Masukan Pekerjaan"
+                    android:hint="@string/input_job"
                     android:maxLength="30"
                     android:textSize="@dimen/abc_text_size_medium_material" />
             </LinearLayout>
@@ -342,7 +402,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kewarganegaraan"
+                    android:text="@string/citizenship"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -352,6 +412,282 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/abc_text_size_medium_material" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/layout_upgrade_online"
+                android:visibility="gone"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:layout_marginBottom="10dp"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layout_foto_ktp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:text="@string/KTP_title"
+                        android:textColor="@color/grey_1000b"
+                        android:textSize="16dp"
+                        android:id="@+id/tv_foto_ktp_paspor"/>
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="96dp"
+                        android:layout_below="@+id/tv_foto_ktp_paspor"
+                        android:id="@+id/camera_ktp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/ktp_new"/>
+
+                    <TextView
+                        android:id="@+id/tv_respon_reject_ktp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/camera_ktp"
+                        android:textColor="@color/red"
+                        android:gravity="left"/>
+                    <TextView
+                        android:id="@+id/tv_pb1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_respon_reject_ktp"
+                        android:textColor="@color/grey_1000b"
+                        android:gravity="right"/>
+                    <ProgressBar
+                        android:id="@+id/pb1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_pb1"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:minWidth="200dp"
+                        android:progress="1"
+                        android:max="100"
+                        />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layout_selfie">
+
+                    <TextView
+                        android:id="@+id/tv_selfie_ktp_paspor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:text="@string/KTP_and_cust_title"
+                        android:textColor="@color/grey_1000b"
+                        android:textSize="16dp" />
+
+                    <ImageButton
+                        android:id="@+id/camera_selfie_ktp"
+                        android:layout_width="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_height="96dp"
+                        android:scaleType="centerCrop"
+                        android:layout_below="@+id/tv_selfie_ktp_paspor"
+                        android:background="@drawable/selfie_with_ktp_new" />
+
+                    <TextView
+                        android:id="@+id/tv_respon_reject_selfie"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/camera_selfie_ktp"
+                        android:textColor="@color/red"
+                        android:gravity="left"/>
+                    <TextView
+                        android:id="@+id/tv_pb2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/camera_selfie_ktp"
+                        android:textColor="@color/grey_1000b"
+                        android:gravity="right"/>
+                    <ProgressBar
+                        android:id="@+id/pb2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_pb2"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:minWidth="200dp"
+                        android:progress="1"
+                        android:max="100"
+                        />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layout_ttd">
+
+                    <TextView
+                        android:id="@+id/tv_ttd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:text="@string/sign_title"
+                        android:textColor="@color/grey_1000b"
+                        android:textSize="16dp" />
+
+                    <ImageButton
+                        android:id="@+id/camera_ttd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="96dp"
+                        android:layout_below="@+id/tv_ttd"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/new_signature" />
+
+                    <TextView
+                        android:id="@+id/tv_respon_reject_ttd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/camera_ttd"
+                        android:textColor="@color/red"
+                        android:gravity="left"/>
+                    <TextView
+                        android:id="@+id/tv_pb3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/camera_ttd"
+                        android:textColor="@color/grey_1000b"
+                        android:gravity="right"/>
+                    <ProgressBar
+                        android:id="@+id/pb3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_pb3"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:minWidth="200dp"
+                        android:progress="1"
+                        android:max="100"
+                        />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sgoplus_text_bank"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_medium_material"
+                            android:textStyle="bold" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/spinning_wheel_bank_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:src="@drawable/default_spinner"
+                                android:visibility="invisible" />
+
+                            <Spinner
+                                android:id="@+id/spinner_nameBank"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:visibility="visible" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_rekening"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_medium_material"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/bank_acc_no"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/cashout_bank_acc_no_hint"
+                            android:inputType="number"
+                            android:maxLength="15"
+                            android:paddingStart="10dp"
+                            android:textSize="@dimen/abc_text_size_medium_material" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10sp"
+                            android:text="@string/cashout_lkd_warning_1"
+                            android:textColor="@color/red"
+                            android:textSize="12sp"
+                            android:textStyle="italic" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/myprofile_text_email"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_medium_material"
+                            android:textStyle="bold" />
+
+                        <com.sgo.saldomu.coreclass.CustomEditText
+                            android:id="@+id/value_email"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:inputType="textEmailAddress"
+                            android:textSize="@dimen/abc_text_size_medium_material" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/myprofile_email_warning"
+                            android:textColor="@color/red"
+                            android:textStyle="italic"
+                            android:textSize="12sp"
+                            android:paddingBottom="10sp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/terms_condition_upload_ktp"
+                    android:textColor="@color/black"
+                    android:id="@+id/cb_termnsncond"
+                    android:textStyle="italic"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="16dp"
+                    />
             </LinearLayout>
 
             <Button

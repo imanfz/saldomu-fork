@@ -148,7 +148,7 @@ private Button btnAsk;
             public void onClick(View v) {
                 if (isLevel1) {
                     if (isRegisteredLevel) {
-                        setListContact();
+//                        setListContact();
 //                        showDialogLevelRegistered();
                     }
                     else
@@ -172,7 +172,7 @@ private Button btnAsk;
             public void onClick(View v) {
                 if (isLevel1) {
                     if (isRegisteredLevel) {
-                        setListContact();
+//                        setListContact();
 //                        showDialogLevelRegistered();
                     }
                     else
@@ -335,25 +335,25 @@ private Button btnAsk;
         }
     }
 
-    private void setListContact() {
-        contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
-
-        if(contactCenter.equals("")) {
-            getHelpList();
-        }
-        else {
-            try {
-                JSONArray arrayContact = new JSONArray(contactCenter);
-                for (int i = 0; i < arrayContact.length(); i++) {
-                    if (i == 0) {
-                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            showDialogLevelRegistered();
-        }
-    }
+//    private void setListContact() {
+//        contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
+//
+//        if(contactCenter.equals("")) {
+//            getHelpList();
+//        }
+//        else {
+//            try {
+//                JSONArray arrayContact = new JSONArray(contactCenter);
+//                for (int i = 0; i < arrayContact.length(); i++) {
+//                    if (i == 0) {
+//                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
+//                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+//                    }
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            showDialogLevelRegistered();
+//        }
+//    }
 }

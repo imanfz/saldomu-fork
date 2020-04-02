@@ -67,9 +67,9 @@ public class MyApiClient {
         return singleton;
     }
 
-    public static Boolean PROD_FAILURE_FLAG = true;
-    public static Boolean IS_PROD = BuildConfig.IS_PROD_DOMAIN;
-    public static Boolean PROD_FLAG_ADDRESS = BuildConfig.IS_PROD_DOMAIN;
+    public static Boolean PROD_FAILURE_FLAG     = true;
+    public static Boolean IS_PROD               = BuildConfig.IS_PROD_DOMAIN;
+    public static Boolean PROD_FLAG_ADDRESS     = BuildConfig.IS_PROD_DOMAIN;
     public static Boolean IS_INTERNET_BANKING;
     public static String COMM_ID;
     public static String COMM_ID_PULSA;
@@ -77,7 +77,7 @@ public class MyApiClient {
 
 //    public static final String headaddressDEV = "http://116.90.162.173:18080/akardaya/";
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
-    public static String headaddressfinal = BuildConfig.HEAD_ADDRESSS+"saldomu/";
+    public static String headaddressfinal       = BuildConfig.HEAD_ADDRESSS+"saldomu/";
 
     public static String headaodaddressfinal    = BuildConfig.HEAD_ADDRESSS+"saldomu/agentlocation/";
     public static String urlMNotif              = BuildConfig.URL_MNOTIF;
@@ -87,6 +87,7 @@ public class MyApiClient {
     private static String LINK_REGISTRASI;
     private static String LINK_VALID_REGISTRASI;
     public static String LINK_LOGIN;
+    public static String LINK_PIN_LOGIN;
     public static String LINK_VALID_TOPUP;
     public static String LINK_LIST_MEMBER;
     public static String LINK_REQ_TOKEN_SGOL;
@@ -103,6 +104,7 @@ public class MyApiClient {
     public static String LINK_UPDATE_PROFILE;
     public static String LINK_CHANGE_PASSWORD;
     public static String LINK_FORGOT_PASSWORD;
+    public static String LINK_FORGOT_PIN;
     public static String LINK_MEMBER_PULSA;
     public static String LINK_USER_CONTACT_INSERT;
     public static String LINK_USER_CONTACT_UPDATE;
@@ -181,6 +183,7 @@ public class MyApiClient {
     private static String LINK_CREATE_PIN_PASS;
     public static String LINK_REPORT_MONEY_REQUEST;
     public static String LINK_REPORT_COMM_FEE;
+    public static String LINK_REPORT_ADDITIONAL_FEE;
     public static String LINK_REPORT_COLLECTOR;
     public static String LINK_ASK4MONEY_REJECT;
 
@@ -222,6 +225,7 @@ public class MyApiClient {
     public static String LINK_GLOBAL_BBS_INSERT_A2C;
     public static String LINK_BBS_LIST_MEMBER_A2C;
     public static String LINK_BBS_OTP_MEMBER_A2C;
+    public static String LINK_GLOBAL_BBS_INSERT_C2R;
 
     public static String LINK_BBS_LIST_COMMUNITY_ALL;
     public static String LINK_REG_TOKEN_FCM;
@@ -270,6 +274,7 @@ public class MyApiClient {
     public static String LINK_LIST_FILE;
     public static String LINK_DOWNLOAD_FILE;
     public static String LINK_HISTORY;
+    public static String LINK_HISTORY_COLLECTOR;
 
     public static String LINK_TRX_FAVORITE_LIST;
     public static String LINK_TRX_FAVORITE_SAVE;
@@ -280,6 +285,12 @@ public class MyApiClient {
     public static String LINK_REQ_UPGRADE_MEMBER;
     public static String LINK_GET_BILLER_DENOM;
     public static String LINK_GET_ANCHOR_COMMUNITIES;
+    public static String LINK_INQUIRY_CUSTOMER_ACCT;
+    public static String LINK_CONFIRM_TOKEN_C2R;
+    public static String LINK_RESEND_TOKEN_C2R;
+    public static String LINK_REQUEST_RESET_PIN;
+    public static String LINK_VALIDATE_OTP_RESET_PIN;
+    public static String LINK_CONFIRM_RESET_PIN;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -288,6 +299,7 @@ public class MyApiClient {
         LINK_REG_STEP3           = headaddressfinal + "RegStep3/Invoke";
         LINK_VALID_REGISTRASI    = headaddressfinal + "InsertCustomer/Invoke";
         LINK_LOGIN               = headaddressfinal + "MemberLogin/SignIn";
+        LINK_PIN_LOGIN           = headaddressfinal + "MemberLoginByPIN/SignIn";
         LINK_VALID_TOPUP         = headaddressfinal + "TopUp/Invoke";
         LINK_LIST_MEMBER         = headaddressfinal + "Member/Retrieve";
         LINK_REQ_TOKEN_SGOL      = headaddressfinal + "InquiryTrx/Retrieve";
@@ -303,6 +315,7 @@ public class MyApiClient {
         LINK_UPDATE_PROFILE      = headaddressfinal + "UserProfile/Update";
         LINK_CHANGE_PASSWORD     = headaddressfinal + "ChangePassword/Invoke";
         LINK_FORGOT_PASSWORD     = headaddressfinal + "ForgotPassword/Invoke";
+        LINK_FORGOT_PIN          = headaddressfinal + "ForgotPIN/Invoke";
         LINK_MEMBER_PULSA        = headaddressfinal + "MemberPulsa/Retrieve";
         LINK_USER_CONTACT_INSERT = headaddressfinal + "UserContact/Insert";
         LINK_USER_CONTACT_UPDATE = headaddressfinal + "UserContact/Update";
@@ -313,7 +326,7 @@ public class MyApiClient {
         LINK_REQ_TOKEN_BILLER    = headaddressfinal + "RequestBiller/Invoke";
         LINK_CONFIRM_BILLER      = headaddressfinal + "ConfirmTokenBiller/Invoke";
         LINK_RESENT_TOKEN_BILLER = headaddressfinal + "ResendToken/Invoke";
-        LINK_RETRY_TOKEN = headaddressfinal + "RetryToken/Invoke";
+        LINK_RETRY_TOKEN         = headaddressfinal + "RetryToken/Invoke";
         LINK_LIST_BANK_BILLER    = headaddressfinal + "BankBiller/Retrieve";
 
         LINK_UPLOAD_PROFILE_PIC  = headaddressfinal + "UploadProfPic/Submit";
@@ -375,12 +388,13 @@ public class MyApiClient {
         LINK_CREATE_PIN_PASS    = headaddressfinal + "CreatePinPass/Invoke";
         LINK_REPORT_MONEY_REQUEST = headaddressfinal + "ReportMoneyReq/Retrieve";
         LINK_REPORT_COMM_FEE    = headaddressfinal + "ReportCommFee/Retrieve";
-        LINK_REPORT_COLLECTOR    = headaddressfinal + "ReportTrxCollector/Retrieve";
+        LINK_REPORT_ADDITIONAL_FEE    = headaddressfinal + "ReportAdditionalFee/Retrieve";
+        LINK_REPORT_COLLECTOR   = headaddressfinal + "ReportTrxCollector/Retrieve";
         LINK_ASK4MONEY_REJECT   = headaddressfinal + "Ask4Money/Decline";
 
-        LINK_INQUIRY_CUST = headaddressfinal + "InquiryCustomer/Retrieve";
-        LINK_EXEC_CUST   = headaddressfinal + "ExecCustomer/Invoke";
-        LINK_EXEC_AGENT   = headaddressfinal + "ExecAgent/Invoke";
+        LINK_INQUIRY_CUST       = headaddressfinal + "InquiryCustomer/Retrieve";
+        LINK_EXEC_CUST          = headaddressfinal + "ExecCustomer/Invoke";
+        LINK_EXEC_AGENT         = headaddressfinal + "ExecAgent/Invoke";
 
 		LINK_REQUEST_CASHOUT    = headaddressfinal + "RequestCashout/Invoke";
         LINK_CONFIRM_CASHOUT    = headaddressfinal + "ConfirmCashout/Invoke";
@@ -408,6 +422,7 @@ public class MyApiClient {
 //        LINK_GLOBAL_BBS_COMM        = headaddressfinal + "GlobalBBSComm/Retrieve";
 //        LINK_GLOBAL_BBS_BANK_C2A    = headaddressfinal + "GlobalBBSBankC2A/Retrieve";
         LINK_GLOBAL_BBS_INSERT_C2A  = headaddressfinal + "GlobalBBSInsertC2A/Invoke";
+        LINK_GLOBAL_BBS_INSERT_C2R  = headaddressfinal + "GlobalBBSInsertC2R/Invoke";
 //        LINK_BBS_BANK_ACCOUNT       = headaddressfinal + "BBSBankAccount/Retrieve";
         LINK_BBS_BANK_ACCOUNT_DELETE = headaddressfinal + "DelBBSBankAcct/Invoke";
         LINK_BBS_BANK_REG_ACCT      = headaddressfinal + "BBSBankRegAcct/Retrieve";
@@ -431,7 +446,7 @@ public class MyApiClient {
         LINK_GET_PREVIEW_COMMUNITY_SCADM      = headaddressfinal + "scadm/JoinCommunity/Preview";
         LINK_CONFIRM_COMMUNITY_SCADM          = headaddressfinal + "scadm/JoinCommunity/Save";
         LINK_GET_LIST_BANK_TOPUP_SCADM        = headaddressfinal +"scadm/ListBank/Topup";
-        LINK_CONFIRM_TOPUP_SCADM    = headaddressfinal +"scadm/Topup/Invoke";
+        LINK_CONFIRM_TOPUP_SCADM              = headaddressfinal +"scadm/Topup/Invoke";
         LINK_CONFIRM_TOPUP_SCADM_NEW          = headaddressfinal +"scadm/ReqTopup/Invoke";
         LINK_GET_LIST_BANK_DENOM_SCADM        = headaddressfinal +"scadm/ListBank/Denom";
         LINK_GET_DENOM_LIST         = headaddressfinal +"scadm/ListDenom/Retrieve";
@@ -472,6 +487,7 @@ public class MyApiClient {
         LINK_LIST_FILE              = headaddressfinal + "DownloadList/Retrieve";
         LINK_DOWNLOAD_FILE          = headaddressfinal + "DownloadRequest/Invoke";
         LINK_HISTORY                = headaddressfinal + "History/Retrieve";
+        LINK_HISTORY_COLLECTOR      = headaddressfinal + "HistoryCollector/Retrieve";
 
         LINK_TRX_FAVORITE_LIST      = headaddressfinal + "TrxFavorite/List";
         LINK_TRX_FAVORITE_SAVE      = headaddressfinal + "TrxFavorite/Save";
@@ -482,9 +498,18 @@ public class MyApiClient {
         LINK_EXEC_UPGRADE_MEMBER    = headaddressfinal + "ExecUpgradeMember/Invoke";
         LINK_REQ_UPGRADE_MEMBER     = headaddressfinal + "InitiateUpgradeGold/Invoke";
 
-        LINK_GET_BILLER_DENOM     = headaddressfinal + "BillerEspayNew/Retrieve";
+        LINK_GET_BILLER_DENOM       = headaddressfinal + "BillerEspayNew/Retrieve";
 
         LINK_GET_ANCHOR_COMMUNITIES = headaddressfinal + "invoice/Getanchor/Communities";
+
+        LINK_INQUIRY_CUSTOMER_ACCT  = headaddressfinal + "InquiryCustomerAcct/Invoke";
+
+        LINK_CONFIRM_TOKEN_C2R      = headaddressfinal + "ConfirmTokenCTR/Invoke";
+        LINK_RESEND_TOKEN_C2R       = headaddressfinal + "ResendTokenCTR/Invoke";
+
+        LINK_REQUEST_RESET_PIN       = headaddressfinal + "RequestResetPIN/Invoke";
+        LINK_VALIDATE_OTP_RESET_PIN  = headaddressfinal + "ValidateOTPResetPIN/Invoke";
+        LINK_CONFIRM_RESET_PIN       = headaddressfinal + "ConfirmResetPIN/Invoke";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
@@ -527,55 +552,61 @@ public class MyApiClient {
 
     public static String URL_HELP_DEV = "https://mobile-dev.saldomu.com/static/pages/help/";
     public static String URL_FAQ;
-    public static String URL_FAQ_PROD = "https://mobile.saldomu.com/static/pages/help/pin_faq_saldomu.html";
-    public static String URL_FAQ_DEV = URL_HELP_DEV +"pin_faq_saldomu.html";
+    public static String URL_FAQ_PROD           = "https://mobile.saldomu.com/static/pages/help/pin_faq_saldomu.html";
+    public static String URL_FAQ_DEV            = URL_HELP_DEV +"pin_faq_saldomu.html";
 
     public static String URL_TERMS;
-    public static String URL_TERMS_PROD = "https://mobile.saldomu.com/static/pages/help/pin_terms_conditions_id_saldomu.html";
-    public static String URL_TERMS_DEV = URL_HELP_DEV +"pin_terms_conditions_id_saldomu.html";
+    public static String URL_TERMS_PROD         = "https://mobile.saldomu.com/static/pages/help/pin_terms_conditions_id_saldomu.html";
+    public static String URL_TERMS_DEV          = URL_HELP_DEV +"pin_terms_conditions_id_saldomu.html";
 
-    public static String LINK_SEARCH_AGENT = headaodaddressfinal + "SearchAgentUpgrade/Retrieve";
-    public static String LINK_CATEGORY_LIST = headaodaddressfinal + "Category/Retrieve";
-    public static String LINK_MEMBER_SHOP_LIST = headaodaddressfinal + "Membershop/Retrieve";
-    public static String LINK_MEMBER_SHOP_DETAIL = headaodaddressfinal + "Membershop/Detailmember";
-    public static String LINK_UPDATE_MEMBER_LOCATION = headaodaddressfinal + "Manage/UpdateMemberLocation";
-    public static String LINK_REGISTER_CATEGORY_SHOP = headaodaddressfinal + "Category/Registercategoryshop";
-    public static String LINK_SETUP_OPENING_HOUR = headaodaddressfinal + "Manage/Insertopenhour";
-    public static String LINK_SEARCH_TOKO = headaodaddressfinal + "Agent/Retrieve";
-    public static String LINK_REGISTER_OPEN_CLOSE_TOKO = headaodaddressfinal + "Membershop/Registeropenclosed";
-    public static String LINK_UPDATE_CLOSE_SHOP_TODAY = headaodaddressfinal + "Manage/UpdateClosedShopToday";
-    public static String LINK_GOOGLE_MAP_API_ROUTE = "https://maps.googleapis.com/maps/api/directions/json";
-    public static String LINK_TRANSACTION_AGENT = headaodaddressfinal + "Transaction/Retrieve";
+    public static String LINK_SEARCH_AGENT_UPG  = headaodaddressfinal + "SearchAgentUpgrade/Retrieve";
+    public static String LINK_SEARCH_AGENT      = headaodaddressfinal + "Search/NearestAgent";
+    public static String LINK_CATEGORY_LIST     = headaodaddressfinal + "Category/Retrieve";
+    public static String LINK_MEMBER_SHOP_LIST  = headaodaddressfinal + "Membershop/Retrieve";
+    public static String LINK_MEMBER_SHOP_DETAIL        = headaodaddressfinal + "Membershop/Detailmember";
+    public static String LINK_UPDATE_MEMBER_LOCATION    = headaodaddressfinal + "Manage/UpdateMemberLocation";
+    public static String LINK_REGISTER_CATEGORY_SHOP    = headaodaddressfinal + "Category/Registercategoryshop";
+    public static String LINK_SETUP_OPENING_HOUR        = headaodaddressfinal + "Manage/Insertopenhour";
+    public static String LINK_SEARCH_TOKO       = headaodaddressfinal + "Agent/Retrieve";
+    public static String LINK_REGISTER_OPEN_CLOSE_TOKO  = headaodaddressfinal + "Membershop/Registeropenclosed";
+    public static String LINK_UPDATE_CLOSE_SHOP_TODAY   = headaodaddressfinal + "Manage/UpdateClosedShopToday";
+    public static String LINK_GOOGLE_MAP_API_ROUTE      = "https://maps.googleapis.com/maps/api/directions/json";
+    public static String LINK_TRANSACTION_AGENT         = headaodaddressfinal + "Transaction/Retrieve";
     public static String LINK_UPDATE_APPROVAL_TRX_AGENT = headaodaddressfinal + "Transaction/Updatetransaction";
-    public static String LINK_UPDATE_LOCATION_AGENT = headaodaddressfinal + "Transaction/Updateagent";
-    public static String LINK_UPDATE_LOCATION_MEMBER = headaodaddressfinal + "Transaction/Updatemember";
-    public static String LINK_CHECK_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Checktransaction";
+    public static String LINK_UPDATE_LOCATION_AGENT     = headaodaddressfinal + "Transaction/Updateagent";
+    public static String LINK_UPDATE_LOCATION_MEMBER    = headaodaddressfinal + "Transaction/Updatemember";
+    public static String LINK_CHECK_TRANSACTION_MEMBER  = headaodaddressfinal + "Transaction/Checktransaction";
     public static String LINK_CONFIRM_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Confirmtransaction";
     public static String LINK_CANCEL_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Canceltransaction";
-    public static String LINK_UPDATE_LOCATION = headaodaddressfinal + "Location/Update";
-    public static String LINK_BBS_NEW_SEARCH_AGENT = headaodaddressfinal + "Search/Agent";
+    public static String LINK_UPDATE_LOCATION           = headaodaddressfinal + "Location/Update";
+    public static String LINK_BBS_NEW_SEARCH_AGENT      = headaodaddressfinal + "Search/Agent";
     public static String LINK_CONFIRM_TRANSACTION_BY_AGENT = headaodaddressfinal + "Transaction/Confirmtransactionbyagent";
-    public static String LINK_TRX_ONPROGRESS_BY_AGENT = headaodaddressfinal + "Report/Onprogressagent";
-    public static String LINK_UPDATE_FEEDBACK = headaodaddressfinal + "Transaction/Updatefeedback";
-    public static String LINK_CANCEL_SEARCH_AGENT = headaodaddressfinal + "Transaction/Cancelsearchagent";
+    public static String LINK_TRX_ONPROGRESS_BY_AGENT   = headaodaddressfinal + "Report/Onprogressagent";
+    public static String LINK_UPDATE_FEEDBACK           = headaodaddressfinal + "Transaction/Updatefeedback";
+    public static String LINK_CANCEL_SEARCH_AGENT       = headaodaddressfinal + "Transaction/Cancelsearchagent";
 
     private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
     public static Boolean FLAG_SIG = true;
-    public static String COMM_ID_DEV = "EMOSALDOMU1500439694RS6DD"; //dev
-    public static String COMM_ID_TAGIH_DEV = "TAGIHSALDO1540982049APLC2"; //dev tagih
-    public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
+    public static String COMM_ID_DEV        = "EMOSALDOMU1500439694RS6DD"; //dev
+    public static String COMM_ID_TAGIH_DEV  = "TAGIHSALDO1540982049APLC2"; //dev tagih
+    public static String COMM_ID_PULSA_DEV  = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
     public static String COMM_ID_PULSA_PROD = "DAPHAH14992553291VINB"; //prod pulsa agent
     public static String COMM_ID_TAGIH_PROD = "TAGIHSALDO15435070661GSQN"; //prod pulsa agent
-    public static String COMM_ID_PROD = "SALDOMU1503988580RFVBK";  //prod
+    public static String COMM_ID_PROD       = "SALDOMU1503988580RFVBK";  //prod
 
     public static String INCOMINGSMS_INFOBIP = "+6281350058801";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
 
     public static String APP_ID = BuildConfig.APP_ID;
-    public static String CCY_VALUE = "IDR";
-    public static String DEV_MEMBER_ID_PULSA_RETAIL = "EFENDI1421144347BPFIM";
-    public static String PROD_MEMBER_ID_PULSA_RETAIL = "EFENDI1421205049F0018";
+    public static String CCY_VALUE                      = "IDR";
+    public static String DEV_MEMBER_ID_PULSA_RETAIL     = "EFENDI1421144347BPFIM";
+    public static String PROD_MEMBER_ID_PULSA_RETAIL    = "EFENDI1421205049F0018";
+    public static String URL_INFO_HARGA_DEV             = "http://192.168.86.55:20080/misc/biller/index/";
+    public static String URL_INFO_HARGA_PROD            = "https://go.saldomu.com/misc/biller/index/";
+    public static String domainSgoPlusDev               = "https://sandbox-kit.espay.id/";
+    public static String domainSgoPlusProd              = "https://kit.espay.id/";
+    public static String domainPrivacyPolicy            = "http://saldomu.com/index.php/syarat-ketentuan/";
 
     public static UUID getUUID(){
         return UUID.randomUUID();

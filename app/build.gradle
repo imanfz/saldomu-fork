@@ -36,7 +36,7 @@ android {
 
     defaultConfig {
         applicationId "com.sgo.saldomu"
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -130,14 +130,14 @@ android {
             buildConfigField 'String', "SMS_CENTER_XL", "\"+6287850097188\""
             buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282257800888\""
             buildConfigField 'String', "SMS_CENTER_IND", "\"+6285784575700\""
-            buildConfigField 'String', "SMS_CENTER_3", "\"+6287850097188\""
+            buildConfigField 'String', "SMS_CENTER_3", "\"+6289665482956\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 64
-            versionName "3.8"
+            versionCode = 81
+            versionName "4.1"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
     }
@@ -145,6 +145,8 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            shrinkResources true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.prodKey
         }
@@ -283,5 +285,9 @@ dependencies {
 
     //custom camera
     implementation 'com.github.boxme:squarecamera:1.1.0'
+
+    //gifImageView
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+    implementation 'com.felipecsl:gifimageview:2.2.0'
 }
 apply plugin: 'com.google.gms.google-services'

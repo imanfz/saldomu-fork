@@ -137,7 +137,7 @@ class BillerInputPLN : BaseFragment() {
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false)
 //        realm = Realm.getInstance(RealmManager.BillerConfiguration)
         realm2 = Realm.getInstance(RealmManager.realmConfiguration)
-        setActionBarTitle(getString(R.string.biller_ab_title) + " - " + getString(R.string.newhome_listrik_pln))
+
         radioPrabayar.text = getString(R.string.token_listrik)
         radioPascabayar.text = getString(R.string.tagihan_listrik)
         billerinput_text_denom.text = getString(R.string.cashout_nominal_text)
@@ -788,12 +788,12 @@ class BillerInputPLN : BaseFragment() {
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
 
-        title_dialog.text = getString(R.string.smsBanking_dialog_validation_title)
-        title_dialog.text = resources.getString(R.string.regist1_notif_title_verification)
-        message_dialog.visibility = View.VISIBLE
-        message_dialog.text = getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
+        dialog.title_dialog.text = getString(R.string.smsBanking_dialog_validation_title)
+        dialog.title_dialog.text = resources.getString(R.string.regist1_notif_title_verification)
+        dialog.message_dialog.visibility = View.VISIBLE
+        dialog.message_dialog.text = getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
 
-        btn_dialog_notification_ok.setOnClickListener {
+        dialog.btn_dialog_notification_ok.setOnClickListener {
             changeToConfirmBiller(fee, merchantType, bankCode, productCode, -1)
             dialog.dismiss()
         }
@@ -834,14 +834,6 @@ class BillerInputPLN : BaseFragment() {
 
         }
 
-    }
-
-    private fun setActionBarTitle(_title: String) {
-        if (activity == null)
-            return
-
-        val fca = activity as BillerActivity?
-        fca!!.setToolbarTitle(_title)
     }
 
     private fun getIs_input_amount(): Boolean? {

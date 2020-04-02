@@ -87,6 +87,7 @@ import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.services.UpdateBBSBirthPlace;
 import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
+import com.sgo.saldomu.utils.LocaleManager;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.BaseFragment;
@@ -214,19 +215,25 @@ public class MainPage extends BaseActivity {
                 return true;
             case R.id.menu_transfer:
                 currentTab = getString(R.string.transfer);
-                if (isDormant.equalsIgnoreCase("Y")) {
-                    dialogDormant();
-                } else {
-                    if (levelClass.isLevel1QAC()) {
-                        levelClass.showDialogLevel();
-                    } else {
-//                        i = new Intent(MainPage.this, ActivityListTransfer.class);
-//                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp))) {
                         Fragment fragmentTransfer = new ListTransfer();
                         switchContent(fragmentTransfer, getString(R.string.transfer));
                         return true;
-                    }
-                }
+                } else
+                    dialogUnavailable();
+//                if (isDormant.equalsIgnoreCase("Y")) {
+//                    dialogDormant();
+//                } else {
+//                    if (levelClass.isLevel1QAC()) {
+//                        levelClass.showDialogLevel();
+//                    } else {
+////                        i = new Intent(MainPage.this, ActivityListTransfer.class);
+////                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+//                        Fragment fragmentTransfer = new ListTransfer();
+//                        switchContent(fragmentTransfer, getString(R.string.transfer));
+//                        return true;
+//                    }
+//                }
                 return true;
             case R.id.menu_help:
 //                i = new Intent(MainPage.this, ContactActivity.class);
@@ -250,9 +257,19 @@ public class MainPage extends BaseActivity {
         Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.title_dialog_dormant),
                 getString(R.string.message_dialog_dormant_),
                 (v, isLongClick) -> {
-                    Intent i = new Intent(MainPage.this, TopUpActivity.class);
-                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+//                    Intent i = new Intent(MainPage.this, TopUpActivity.class);
+//                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+//                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                }
+        );
+
+        dialognya.show();
+    }
+
+    private void dialogUnavailable() {
+        Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.alertbox_title_information),
+                getString(R.string.cashout_dialog_message),
+                (v, isLongClick) -> {
                 }
         );
 
@@ -421,9 +438,7 @@ public class MainPage extends BaseActivity {
 
         String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
         if (!notifDataNextLogin.equals("")) {
-
             changeActivityNextLogin(notifDataNextLogin);
-
         }
 //        }
 //        else {
@@ -864,7 +879,7 @@ public class MainPage extends BaseActivity {
             String cust_id = sp.getString(DefineValue.CUST_ID, "");
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_MEMBER, MyApiClient.COMM_ID_PULSA);
-            params.put(WebParams.COMM_ID, commIDLogin);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
@@ -981,7 +996,7 @@ public class MainPage extends BaseActivity {
                                 mEditor.apply();
 
 
-                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            } else if (code.equals(WebParams.LOGOUT_CODE) || code.equals(WebParams.ERROR_0003)) {
                                 Timber.d("isi response autologout:" + model.getError_message());
 
                                 String message = model.getError_message();
@@ -994,8 +1009,6 @@ public class MainPage extends BaseActivity {
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
                                 alertDialogUpdateApp.showDialogUpdate(MainPage.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(MainPage.this, model.getError_message());
@@ -1035,10 +1048,10 @@ public class MainPage extends BaseActivity {
             callBBSCityService();
             checkAndRunServiceBBS();
             callAgentShopService();
-            callBBSBirthPlaceService();
         } else {
 
         }
+        callBBSBirthPlaceService();
     }
 
     /**
@@ -1054,14 +1067,14 @@ public class MainPage extends BaseActivity {
     }
 
     private void CheckNotification() {
-        Thread mth = new Thread() {
-            @Override
-            public void run() {
-                NotificationHandler mNoHand = new NotificationHandler(MainPage.this, sp);
-                mNoHand.sentRetrieveNotif();
-            }
-        };
-        mth.start();
+//        Thread mth = new Thread() {
+//            @Override
+//            public void run() {
+//                NotificationHandler mNoHand = new NotificationHandler(MainPage.this, sp);
+//                mNoHand.sentRetrieveNotif();
+//            }
+//        };
+//        mth.start();
     }
 
     private void callBBSCityService() {
@@ -1092,6 +1105,12 @@ public class MainPage extends BaseActivity {
 
     }
 
+    private void showChangePin() {
+        Intent i = new Intent(this, ChangePIN.class);
+        switchActivity(i, MainPage.ACTIVITY_RESULT);
+
+    }
+
     private void checkField() {
         if (sp.getString(DefineValue.IS_CHANGED_PASS, "").equals(DefineValue.STRING_NO)) {
             showChangePassword();
@@ -1099,6 +1118,8 @@ public class MainPage extends BaseActivity {
             showCreatePin();
         } else if (levelClass.isLevel1QAC() && sp.getString(DefineValue.IS_FIRST, "").equalsIgnoreCase(DefineValue.YES)) {
             showMyProfile();
+        } else if (sp.getString(DefineValue.FORCE_CHANGE_PIN, "").equalsIgnoreCase(DefineValue.STRING_YES)) {
+            showChangePin();
         }
 //        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
 //            showValidasiEmail();
@@ -1119,6 +1140,11 @@ public class MainPage extends BaseActivity {
                 i = new Intent(this, Introduction.class);
                 break;
             case FIRST_SCREEN_SPLASHSCREEN:
+                if (LocaleManager.getLocale(getResources()).getLanguage().equals("in")) {
+                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
+                } else {
+                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, false);
+                }
                 i = new Intent(this, SplashScreen.class);
                 break;
             default:
@@ -1222,6 +1248,11 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.MEMBER_CREATED);
         mEditor.remove(DefineValue.LAST_CURRENT_LONGITUDE);
         mEditor.remove(DefineValue.LAST_CURRENT_LATITUDE);
+        mEditor.remove(DefineValue.COMPANY_TYPE);
+        mEditor.remove(DefineValue.SMS_CONTENT);
+        mEditor.remove(DefineValue.SMS_CONTENT_ENCRYPTED);
+        mEditor.remove(DefineValue.PROFILE_DOB);
+        mEditor.remove(DefineValue.IS_INQUIRY_SMS);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -1321,7 +1352,7 @@ public class MainPage extends BaseActivity {
 //                            switchActivity(i, ACTIVITY_RESULT);
                             break;
                         case NotificationActivity.REJECTED_KTP:
-                            Intent e = new Intent(this, MyProfileNewActivity.class);
+                            Intent e = new Intent(this, UpgradeMemberViaOnline.class);
                             switchActivity(e, ACTIVITY_RESULT);
                             break;
                         case NotificationActivity.REJECTED_SIUP_NPWP:
@@ -1370,8 +1401,8 @@ public class MainPage extends BaseActivity {
 
     private void showLogoutDialog() {
         AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
-        alertbox.setTitle("Warning");
-        alertbox.setMessage("Exit Application?");
+        alertbox.setTitle(getString(R.string.warning));
+        alertbox.setMessage(getString(R.string.exit_message));
         alertbox.setPositiveButton("OK", (arg0, arg1) -> switchLogout());
         alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
         });
@@ -1608,4 +1639,6 @@ public class MainPage extends BaseActivity {
     private void callAgentShopService() {
         AgentShopService.getAgentShop(MainPage.this);
     }
+
+
 }

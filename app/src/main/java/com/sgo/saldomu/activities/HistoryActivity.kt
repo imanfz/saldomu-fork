@@ -1,6 +1,5 @@
 package com.sgo.saldomu.activities
 
-import android.app.PendingIntent.getActivity
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
@@ -52,11 +51,14 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
     private var isMemberCTA: Boolean? = false
     private var isReport: Boolean? = false
     private var next: String = "0"
+    private var agentCOL: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mRecyclerView = findViewById(R.id.recycler_view)
         swipeRefresh = findViewById(R.id.swipeRefresh)
+
+        agentCOL = intent.getBooleanExtra(DefineValue.AGENT_COL, false)
 
 
         initialize()
@@ -68,12 +70,19 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
     internal fun getHistory() {
         showProgressDialog()
 
-        extraSignature = sp.getString(DefineValue.MEMBER_ID, "")
-        params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HISTORY, extraSignature)
+        extraSignature = memberIDLogin
+        var url = ""
+        if (agentCOL) {
+            url = MyApiClient.LINK_HISTORY_COLLECTOR
+        } else {
+            url = MyApiClient.LINK_HISTORY
+        }
+        params = RetrofitService.getInstance().getSignature(url, extraSignature)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_ID] = memberIDLogin
         params[WebParams.PAGE] = currentPage
-        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_HISTORY, params, object : ResponseListener {
+        Log.e(TAG, "params history : $`params`")
+        RetrofitService.getInstance().PostObjectRequest(url, params, object : ResponseListener {
             override fun onResponses(`object`: JsonObject) {
                 Log.e(TAG, "onResponses: $`object`")
                 val model = getGson().fromJson(`object`, jsonModel::class.java)
@@ -135,7 +144,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         swipeRefresh.setOnRefreshListener(this)
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
         setActionBarIcon(R.drawable.ic_arrow_left)
-        actionBarTitle = getString(R.string.menu_item_history_detail)
+        actionBarTitle = intent.getStringExtra(DefineValue.HISTORY_TITLE)
 
         val builder = AlertDialog.Builder(this)
         builder.setView(R.layout.progress)
@@ -243,7 +252,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         if (_object.buss_scheme_code == "BIL") {
             showReportEspayBillerDialog(sp.getString(DefineValue.USER_NAME, ""), response)
             //
-        } else if (_object.buss_scheme_code == "CTA") {
+        } else if (_object.buss_scheme_code == "CTA" || _object.buss_scheme_code == "CTR") {
             if (sp.getString(DefineValue.USERID_PHONE, "") == response.member_phone) {
                 showReportCTADialog(response)
             } else {
@@ -267,7 +276,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             showReportCollectorDialog(response)
         } else if (_object.buss_scheme_code == "SG3") {
             showReportSOFDialog(response)
-        } else if (_object.buss_scheme_code == "OR" || _object.buss_scheme_code == "ORP" || _object.buss_scheme_code == "IR" || _object.buss_scheme_code=="OC") run {
+        } else if (_object.buss_scheme_code == "OR" || _object.buss_scheme_code == "ORP" || _object.buss_scheme_code == "IR" || _object.buss_scheme_code == "OC") run {
             showReportBillerDialog(response)
         }
     }

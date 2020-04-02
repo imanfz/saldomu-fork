@@ -29,6 +29,7 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.interfaces.RetrofitInterfaces;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
+import com.sgo.saldomu.utils.LocaleManager;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
@@ -336,6 +337,11 @@ public class RetrofitService {
         params.put(WebParams.RC_DTIME, dtime);
         params.put(WebParams.SIGNATURE, hash);
         params.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
+        params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
+        String language = LocaleManager.getLanguagePref();
+        if (language.equals(DefineValue.LANGUAGE_CODE_IND))
+            language = "id";
+        params.put(WebParams.LANG, language);
 
         return params;
     }
@@ -357,6 +363,11 @@ public class RetrofitService {
         params.put(WebParams.RQ_DTIME, dtime);
         params.put(WebParams.SIGNATURE, hash);
         params.put(WebParams.PACKAGE_VERSION, BuildConfig.VERSION_NAME);
+        params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
+        String language = LocaleManager.getLanguagePref();
+        if (language.equals("in"))
+            language = "ID";
+        params.put(WebParams.LANG, language);
 
         return params;
     }
@@ -384,10 +395,13 @@ public class RetrofitService {
                 hash);
         RequestBody req4 = RequestBody.create(MediaType.parse("text/plain"),
                 BuildConfig.VERSION_NAME);
+        RequestBody req5 = RequestBody.create(MediaType.parse("text/plain"),
+                DefineValue.ANDROID);
         params.put(WebParams.RC_UUID, req1);
         params.put(WebParams.RC_DTIME, req2);
         params.put(WebParams.SIGNATURE, req3);
         params.put(WebParams.PACKAGE_VERSION, req4);
+        params.put(WebParams.CLIENT_APP, req5);
 
         return params;
     }
@@ -537,7 +551,6 @@ public class RetrofitService {
                             else
                                 Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
                         }
-
                         listener.onError(e);
                         listener.onComplete();
                     }

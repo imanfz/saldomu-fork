@@ -79,7 +79,7 @@
 
     <TableRow>
         <TextView
-            android:text="Produk Bank"
+            android:text="@string/bank_product"
             android:layout_weight="0"
             android:padding="3dip" />
         <TextView

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
     <TextView
+        android:id="@+id/tv_source"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/colorSecondaryDark"
@@ -31,7 +32,8 @@
         android:textColor="@color/colorSecondaryDark"
         android:textStyle="italic"
         android:gravity="right"
-        android:text="(contoh: BANK BCA)"/>
+        android:id="@+id/tv_bank_example"
+        android:text="@string/example_bca"/>
 
     <EditText
         android:id="@+id/no_tujuan_value"
@@ -53,7 +55,7 @@
         android:textColor="@color/colorSecondaryDark"
         android:textStyle="italic"
         android:gravity="right"
-        android:text="(contoh: 08xxxxxxxx)" />
+        android:text="@string/eg_no_hp" />
 
 
 </LinearLayout>

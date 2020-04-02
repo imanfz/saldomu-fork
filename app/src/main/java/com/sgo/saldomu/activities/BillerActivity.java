@@ -1,5 +1,6 @@
 package com.sgo.saldomu.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.fragments.BillerInputData;
+import com.sgo.saldomu.fragments.BillerInputNew;
 import com.sgo.saldomu.fragments.BillerInputPLN;
 import com.sgo.saldomu.fragments.BillerInputPulsa;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -202,8 +204,6 @@ public class BillerActivity extends BaseActivity {
                     Toast.makeText(this, getString(R.string.biller_empty_data), Toast.LENGTH_SHORT).show();
                     this.finish();
                 }
-
-
 //                if(!isEmptyBiller) {
 //                    progdialog = DefinedDialog.CreateProgressDialog(this, "");
 //                    isOneBiller = false;
@@ -217,7 +217,7 @@ public class BillerActivity extends BaseActivity {
         }
     }
 
-
+    @SuppressLint("NewApi")
     private void initializeListBiller() {
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.BILLER_TYPE, _biller_type_code);
@@ -226,7 +226,7 @@ public class BillerActivity extends BaseActivity {
         Intent intent = getIntent();
 
         if (isOneBiller && !_biller_type_code.equalsIgnoreCase("DATA")
-                && !_biller_type_code.equalsIgnoreCase("TKN")) {
+                && !_biller_type_code.equalsIgnoreCase("TKN") && !_biller_type_code.equalsIgnoreCase("EMON")) {
             mLBM = new BillerInput();
             if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
                 mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
@@ -234,6 +234,7 @@ public class BillerActivity extends BaseActivity {
             mArgs.putString(DefineValue.COMMUNITY_ID, mListBillerData.get(0).getComm_id());
             mArgs.putString(DefineValue.COMMUNITY_NAME, mListBillerData.get(0).getComm_name());
             mArgs.putString(DefineValue.BILLER_ITEM_ID, mListBillerData.get(0).getItem_id());
+            mArgs.putString(DefineValue.BILLER_COMM_CODE, mListBillerData.get(0).getComm_code());
 
             tag = BillerInput.TAG;
         } else {
@@ -265,10 +266,11 @@ public class BillerActivity extends BaseActivity {
 
                     mArgs.putString(DefineValue.BILLER_TYPE, intent.getStringExtra(DefineValue.BILLER_TYPE));
                     mArgs.putString(DefineValue.BILLER_NAME, intent.getStringExtra(DefineValue.BILLER_NAME));
+                    mArgs.putString(DefineValue.BILLER_COMM_CODE, intent.getStringExtra(DefineValue.BILLER_COMM_CODE));
                     tag = BillerInput.TAG;
                 } else {
                     mLBM = new ListBillerMerchant();
-                    tag = ListBillerMerchant.TAG;
+                    tag = BillerInput.TAG;
                     Log.wtf("ListBillerMerchant ", "ListBillerMerchant");
                 }
             }

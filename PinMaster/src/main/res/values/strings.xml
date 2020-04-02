@@ -1,11 +1,12 @@
 <resources>
 
-    <string name="app_name">Android Pin</string>
-    <string name="verify_n_digit_pin">Masukkan %d-digit PIN anda</string>
-    <string name="create_n_digit_pin">Buat %d-digit PIN anda</string>
-    <string name="confirm_n_digit_pin">Tetapkan %d-digit PIN anda</string>
-    <string name="pin_mismatch">PIN Tidak Sesuai</string>
-    <string name="pin_created">PIN Berhasil Dibuat</string>
-    <string name="saving_pin">PIN Tersimpan</string>
-    <string name="async_save_error">Gagal Menyimpan PIN</string>
+    <string name="app_name">Android PIN</string>
+    <string name="verify_n_digit_pin">Input your %d-digit PIN</string>
+    <string name="create_n_digit_pin">Create your %d-digit PIN</string>
+    <string name="confirm_n_digit_pin">Confirm your %d-digit PIN</string>
+    <string name="pin_mismatch">PIN Mismatch</string>
+    <string name="pin_created">PIN Created</string>
+    <string name="saving_pin">Saved PIN</string>
+    <string name="async_save_error">Failed to Save PIN</string>
+
 </resources>

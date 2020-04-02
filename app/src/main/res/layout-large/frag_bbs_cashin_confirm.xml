@@ -285,6 +285,7 @@
 
                     <TextView
                         android:layout_weight="1"
+                        android:id="@+id/tvbenefname"
                         android:text="@string/nama_rekening_tujuan"
                         android:textColor="@color/colorSecondaryDark"/>
 
@@ -315,7 +316,8 @@
                 <TableRow
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="6dp">
+                    android:paddingTop="6dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_weight="1"
@@ -346,22 +348,22 @@
                         android:textColor="@color/colorSecondaryDark"/>
                 </TableRow>
 
-                <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="6dp">
+<!--                <TableRow-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:paddingTop="6dp">-->
 
-                    <TextView
-                        android:layout_weight="1"
-                        android:text="@string/additional_fee"
-                        android:textColor="@color/colorSecondaryDark"/>
+<!--                    <TextView-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:text="@string/additional_fee"-->
+<!--                        android:textColor="@color/colorSecondaryDark"/>-->
 
-                    <TextView
-                        android:id="@+id/bbscashin_confirm_additionalFee"
-                        android:layout_weight="1"
-                        android:textSize="@dimen/sheet_item_textsize"
-                        android:textColor="@color/colorSecondaryDark"/>
-                </TableRow>
+<!--                    <TextView-->
+<!--                        android:id="@+id/bbscashin_confirm_additionalFee"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:textSize="@dimen/sheet_item_textsize"-->
+<!--                        android:textColor="@color/colorSecondaryDark"/>-->
+<!--                </TableRow>-->
 
                 <TableRow
                     android:layout_width="wrap_content"

@@ -515,7 +515,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                 }
                                 tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
 
-                                if (response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA)) {
+                                if (response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ||
+                                        response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTR)) {
                                     tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
                                 } else if (response.getString(WebParams.SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
                                     btnCancel.setVisibility(View.VISIBLE);
@@ -919,7 +920,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                         } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.ATC)) {
                                             bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
                                         }
-
                                         if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equalsIgnoreCase(DefineValue.DGI)) {
                                             Intent intent = new Intent(getApplicationContext(), TagihActivity.class);
                                             intent.putExtra(DefineValue.IS_SEARCH_DGI, true);
@@ -932,8 +932,14 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                             }
                                             startActivity(intent);
                                             finish();
-
-                                        } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
+                                        } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.CTR)) {
+                                            Intent intent = new Intent(getApplicationContext(), CashCollectionActivity.class);
+                                            intent.putExtra(DefineValue.BANK_CODE, response.optString(WebParams.BANK_CODE));
+                                            intent.putExtra(DefineValue.IS_SEARCH_CTR, true);
+                                            intent.putExtra(DefineValue.AMOUNT, response.optString(WebParams.AMOUNT));
+                                            startActivity(intent);
+                                            finish();
+                                        }else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
                                             Intent intent = new Intent(getApplicationContext(), MainPage.class);
                                             startActivity(intent);
                                             finish();

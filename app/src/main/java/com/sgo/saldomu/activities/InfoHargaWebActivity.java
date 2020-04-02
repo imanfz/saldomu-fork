@@ -35,8 +35,8 @@ public class InfoHargaWebActivity extends BaseActivity {
     private ProgressBar progbar;
     private Boolean isDisconnected;
     private String masterDomainInfoHarga;
-    private String devDomainInfoHarga = "http://192.168.86.55:20080/misc/biller/index";
-    private String prodDomainInfoHarga = "https://go.saldomu.com/misc/biller/index";
+    private String devDomainInfoHarga = MyApiClient.URL_INFO_HARGA_DEV;
+    private String prodDomainInfoHarga = MyApiClient.URL_INFO_HARGA_PROD;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class InfoHargaWebActivity extends BaseActivity {
 
     private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.sgoplusweb_ab_title_saldomu));
+        setActionBarTitle(getString(R.string.menu_item_title_info_harga));
     }
 
     private void loadUrl(String url) {

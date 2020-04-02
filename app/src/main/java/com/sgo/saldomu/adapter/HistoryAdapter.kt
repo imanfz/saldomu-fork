@@ -19,7 +19,7 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
 
     interface HistoryListener {
         fun onClick(model: HistoryModel)
-        fun showErrorMessage(message : String)
+        fun showErrorMessage(message: String)
     }
 
     fun updateAdapter(itemList: List<HistoryModel>) {
@@ -45,11 +45,11 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
         }
 
         val model = itemList.elementAt(position)
-        if (model.history_type=="I") {
-            holder.amountText.text = "+ Rp. " + CurrencyFormat.format(model.amount)
+        if (model.history_type == "I") {
+            holder.amountText.text = "+ Rp. " + CurrencyFormat.format1(model.amount)
             holder.amountText.setTextColor(ContextCompat.getColor(context, R.color.green_A700))
         } else {
-            holder.amountText.text = "- Rp. " + CurrencyFormat.format(model.amount)
+            holder.amountText.text = "- Rp. " + CurrencyFormat.format1(model.amount)
             holder.amountText.setTextColor(ContextCompat.getColor(context, R.color.red))
         }
 
@@ -64,6 +64,11 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
                 listener.onClick(model)
             }
         }
+
+        if (model.end_balance == "" || model.end_balance == null) {
+            holder.endBalanceText.text = "Rp. " + CurrencyFormat.format1(0.00)
+        } else
+            holder.endBalanceText.text = "Rp. " + CurrencyFormat.format1(model.end_balance)
     }
 
     override fun getItemCount(): Int {
@@ -72,6 +77,7 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
 
     internal inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var amountText: TextView = itemView.findViewById(R.id.amount_text)
+        var endBalanceText: TextView = itemView.findViewById(R.id.endbalance_text)
         var dateText: TextView = itemView.findViewById(R.id.date_text)
         var detailTypeText: TextView = itemView.findViewById(R.id.detail_type_text)
         var txEmoText: TextView = itemView.findViewById(R.id.tx_emo_text)

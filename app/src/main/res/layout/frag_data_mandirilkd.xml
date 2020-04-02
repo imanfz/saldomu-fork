@@ -246,7 +246,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nomor Handphone"
+                    android:text="@string/phone"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold" />
@@ -271,7 +271,7 @@
                 android:orientation="vertical">
                 <TextView android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sumber Dana"
+                    android:text="@string/source_income"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold"

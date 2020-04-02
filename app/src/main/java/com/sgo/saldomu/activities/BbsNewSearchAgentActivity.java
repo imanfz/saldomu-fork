@@ -85,6 +85,7 @@ import timber.log.Timber;
 
 import static com.activeandroid.Cache.getContext;
 import static com.sgo.saldomu.coreclass.DefineValue.CTA;
+import static com.sgo.saldomu.coreclass.DefineValue.CTR;
 
 public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -98,7 +99,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
-    private String categoryId, categoryName, bbsSchemeCode;
+    private String categoryId, categoryName, bbsSchemeCode, defaultProductCode;
     private Intent intentData;
     ProgressDialog progdialog, progDialog;
     private Boolean showHideLayoutNote = false, isZoomedAlready = false;
@@ -122,7 +123,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private Realm realm, realmBBSMemberBank;
     private CustomAutoCompleteTextViewWithIcon acMemberAcct;
     private SimpleAdapter adapterAccounts;
-    private List<BBSBankModel> listbankSource, listbankBenef;
+    private List<BBSBankModel> listbankSource, listbankBenef, listBankBenefCTR;
 
     private List<HashMap<String, String>> aListMember;
     // Keys used in Hashmap
@@ -182,9 +183,9 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         initializeDataBBS(bbsSchemeCode);
 
         acMemberAcct = findViewById(R.id.acMemberAcct);
-        if (bbsSchemeCode.equals(CTA)) {
+        if (bbsSchemeCode.equals(CTA) || bbsSchemeCode.equals(CTR)) {
             acMemberAcct.setHint(getString(R.string.bbs_setor_ke) + " " + getString(R.string.label_bank_pelangggan));
-        } else {
+        } else  {
             acMemberAcct.setHint(getString(R.string.bbs_tarik_dari) + " " + getString(R.string.label_bank_pelangggan));
         }
         acMemberAcct.setAdapter(adapterAccounts);
@@ -610,6 +611,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         params.put(WebParams.LONGITUDE, tempLongitude);
         params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
         params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.SHOP_TYPE, sp.getString(DefineValue.COMPANY_TYPE,""));
         Timber.d("Params new search agent :" + params);
 
         //Start
@@ -1081,15 +1083,41 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
     private void initializeDataBBS(String schemeCode) {
 
+
+        if (BuildConfig.FLAVOR.equalsIgnoreCase("development"))
+            defaultProductCode = "EMO SALDOMU";
+        else
+            defaultProductCode = getString(R.string.SALDOMU);
+
         if (schemeCode.equalsIgnoreCase(DefineValue.CTA)) {
-            listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
-                    .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
-                    .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
+//            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
+//                listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
+//                        .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
+//                        .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF)
+//                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll();
+//            }else{
+                listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
+                        .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
+                        .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
+//            }
             setMember(listbankBenef);
+        } else if (schemeCode.equalsIgnoreCase(DefineValue.CTR)) {
+            listBankBenefCTR = realmBBSMemberBank.where(BBSBankModel.class)
+                    .equalTo(WebParams.SCHEME_CODE, CTR)
+                    .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
+            setMember(listBankBenefCTR);
         } else {
-            listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
-                    .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
-                    .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE).findAll();
+//            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
+//                listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
+//                        .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
+//                        .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE)
+//                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode)
+//                        .findAll();
+//            } else {
+                listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
+                        .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
+                        .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE).findAll();
+//            }
             if (listbankSource == null) {
                 Toast.makeText(this, getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
             }

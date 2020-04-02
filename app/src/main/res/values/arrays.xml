@@ -102,21 +102,22 @@
     </string-array>
 
     <string-array name="privacy_list">
-        <item>Pribadi</item>
-        <item>Teman</item>
+        <item>@string/individu</item>
+        <item>@string/friend</item>
     </string-array>
 
     <string-array name="report_list">
-        <item>Transaksi</item>
+        <item>@string/transaction</item>
         <!--<item>Transfer</item>-->
         <!--<item>Permintaan</item>-->
     </string-array>
 
     <string-array name="report_list_agen">
-        <item>Transaksi</item>
+        <item>@string/transaction</item>
         <!--<item>Transfer</item>-->
         <!--<item>Permintaan</item>-->
-        <item>Fee</item>
+        <item>@string/fee</item>
+        <item>@string/additional_fee</item>
     </string-array>
 
     <integer-array name="google_colors">
@@ -128,7 +129,7 @@
 
     <string-array name="settings_list_pin">
         <item>@string/menu_setting_info</item>
-        <item>@string/privay_policy</item>
+        <item>@string/terms_and_condition</item>
         <!--<item>FAQ</item>-->
 
     </string-array>
@@ -145,6 +146,7 @@
     <string-array name="settings_is_agent">
         <item>@string/menu_setting_change_pass</item>
         <item>@string/menu_setting_change_pin</item>
+        <item>@string/forgotpin</item>
         <item>@string/menu_setting_change_email</item>
         <item>@string/menu_setting_about</item>
         <item>@string/menu_item_title_kelola</item>
@@ -154,6 +156,7 @@
     <string-array name="settings_is_member">
         <item>@string/menu_setting_change_pass</item>
         <item>@string/menu_setting_change_pin</item>
+        <item>@string/forgotpin</item>
         <item>@string/menu_setting_change_email</item>
         <item>@string/menu_setting_about</item>
 
@@ -161,6 +164,7 @@
     <string-array name="settings_list_info">
         <item>@string/menu_item_title_info_harga</item>
         <item>@string/menu_item_title_starterkit</item>
+        <item>@string/menu_item_title_language</item>
         <item>@string/logout</item>
     </string-array>
 
@@ -184,7 +188,7 @@
     </string-array>
 
     <string-array name="gender_type">
-        <item>-Pilih Jenis Kelamin-</item>
+        <item>@string/select_gender</item>
         <item>Laki-laki</item>
         <item>Perempuan</item>
     </string-array>
@@ -344,18 +348,18 @@
     </string-array>
 
     <string-array name="list_religion">
-        <item>-Pilih Agama-</item>
+        <item>@string/select_religion</item>
         <item>ISLAM</item>
         <item>KRISTEN PROTESTAN</item>
-        <item>KRISTEN KATOLIK</item>
+        <item>KATOLIK</item>
         <item>HINDU</item>
         <item>BUDDHA</item>
         <item>KHONGHUCU</item>
     </string-array>
 
     <string-array name="list_marital_status">
-        <item>BELUM KAWIN</item>
-        <item>KAWIN</item>
+        <item>@string/single</item>
+        <item>@string/married</item>
     </string-array>
 
     <string-array name="list_nationality">

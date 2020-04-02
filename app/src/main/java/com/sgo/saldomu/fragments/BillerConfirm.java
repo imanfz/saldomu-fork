@@ -136,8 +136,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private Switch favoriteSwitch;
     private EditText notesEditText;
     private String productType = "";
-    private String item_id="";
-    String value_pin ="";
+    private String item_id = "";
+    String value_pin = "";
     String _amount = "";
 
     @Override

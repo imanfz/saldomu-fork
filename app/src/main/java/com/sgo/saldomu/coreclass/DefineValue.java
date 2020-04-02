@@ -69,6 +69,8 @@ public class DefineValue {
     public static String ERROR_0127 = "0127" ;
     public static String ERROR_9333 = "9333" ;
     public static String ERROR_0066 = "0066" ;
+    public static String ERROR_0061 = "0061" ;
+    public static String ERROR_0135 = "0135" ;
     public static String SCASH = "SCASH" ;
     public static String PRIVATE = "1" ;
     public static String PUBLIC = "2" ;
@@ -352,6 +354,7 @@ public class DefineValue {
     public static String IS_JOIN_AGENT = "isJoinAgent";
     public static String ATC = "ATC";
     public static String CTA = "CTA";
+    public static String CTR = "CTR";
     public static String IS_UPDATE = "isUpdate";
     public static String BENEF_CITY = "benefCity";
     public static String BENEF_CITY_CODE = "benefCityCode";
@@ -374,8 +377,10 @@ public class DefineValue {
     public static String SOURCE_PRODUCT_H2H = "sourceProductH2h";
     public static String SOURCE_PRODUCT_NAME = "sourceProductName";
     public static String BENEF_PRODUCT_CODE = "benefProductCode";
+    public static String BENEF_PRODUCT_VALUE_CODE = "benefProductValueCode";
     public static String BENEF_PRODUCT_TYPE = "benefProductType";
     public static String BENEF_PRODUCT_NAME = "benefProductName";
+    public static String BENEF_PRODUCT_VALUE_NAME = "benefProductValueName";
     public static String BENEF_PRODUCT_VALUE_TOKEN = "benefProductValueToken";
     public static String SOURCE_PRODUCT_VALUE_TOKEN = "sourceProductValueToken";
 
@@ -441,6 +446,7 @@ public class DefineValue {
     public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
     public static String UPDATE_TIME_BBS_CTA_DATA = "updateTimeBBSDataCTA";
     public static String UPDATE_TIME_BBS_ATC_DATA = "updateTimeBBSDataATC";
+    public static String UPDATE_TIME_BBS_CTR_DATA = "updateTimeBBSDataCTR";
     public static String IS_UPDATING_BBS_DATA = "isUpdatingBBSData";
     public static String IS_BBS_DATA_UPDATED = "IsBBSDataUpdated";
     public static String IS_SUCCESS = "isSuccess";
@@ -561,6 +567,7 @@ public class DefineValue {
     public static String PARAMS = "params";
     public static String PAYMENT_TYPE = "payment_type";
     public static String AGENT_TYPE = "agent_type";
+    public static String COMPANY_TYPE = "company_type";
     public static String PAYMENT_TYPE_DESC= "payment_type_desc";
     public static String INVOICE = "invoice";
     public static String SCHEME_CODE = "scheme_code";
@@ -607,6 +614,8 @@ public class DefineValue {
     public static String MEMBER_RW = "memberRW";
     public static String MEMBER_KELURAHAN = "memberKelurahan";
     public static String MEMBER_KECAMATAN = "memberKecamatan";
+    public static String MEMBER_KABUPATEN = "memberKabupaten";
+    public static String MEMBER_PROVINSI = "memberProvinsi";
     public static String MEMBER_RELIGION = "memberReligion";
     public static String MEMBER_STATUS = "memberStatus";
     public static String MEMBER_OCUPATION= "memberOcupation";
@@ -621,6 +630,24 @@ public class DefineValue {
     public static String CT_CODE = "CT";
     public static String BG_CODE = "BG";
     public static String TS_CODE = "TS";
+    public static String IS_SEARCH_CTR = "isSearchCTR";
+    public static String AGENT_COL = "agentCOL";
+    public static String HISTORY_TITLE = "historyTitle";
+    public static String FORCE_CHANGE_PIN = "forceChangePin";
+
+    public static String IS_BAHASA = "is_bahasa";
+    public static String LANGUAGE_CODE_IND = "in";
+    public static String LANGUAGE_CODE_ENG = "en";
+    public static String MEMBER_MOTHERS_NAME = "memberMothersName";
+    public static String SMS_CONTENT = "smsContent";
+    public static String SMS_CONTENT_ENCRYPTED = "smsContentEncrypted";
+    public static String TIMESTAMP = "timeStamp";
+    public static String FOR_LOGIN = "for_login";
+    public static String IS_INQUIRY_SMS = "is_inquiry_sms";
+
+    public static String RESET_PIN = "reset_pin";
+    public static String USER_EMAIL = "user_email";
+    public static String CURR_USERID = "curr_userid";
 
 }
 

@@ -1,5 +1,7 @@
 package com.sgo.saldomu.adapter;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
@@ -98,22 +101,33 @@ public class SelectBankProductAdapter extends BaseExpandableListAdapter {
         View layout_view_child = convertView;
 
 //        if (layout_view_child == null && !childDataWrapper.getBank_code().equalsIgnoreCase(DefineValue.BankMandiri)) {
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            layout_view_child = inflater.inflate(getATMLayout(childDataWrapper), parent, false);
+        layout_view_child = inflater.inflate(getATMLayout(childDataWrapper), parent, false);
 
-            TextView tvTitleATM = layout_view_child.findViewById(R.id.title_atm);
-            TextView tvPinAccount = layout_view_child.findViewById(R.id.pin_account);
-            tvTitleATM.setText(childDataWrapper.getBank_name());
-            tvPinAccount.setText(childDataWrapper.getNoVA());
+        TextView tvTitleATM = layout_view_child.findViewById(R.id.title_atm);
+        TextView tvPinAccount = layout_view_child.findViewById(R.id.pin_account);
+        ImageView ivCopyButton = layout_view_child.findViewById(R.id.iv_copyButton);
+        tvTitleATM.setText(childDataWrapper.getBank_name());
+        tvPinAccount.setText(childDataWrapper.getNoVA());
 
-            TextView tv_fee = layout_view_child.findViewById(R.id.fee_deskripsi);
-            if (tv_fee != null) {
-                if (childDataWrapper.getFee() == null)
-                    tv_fee.setText("");
-                else
-                    tv_fee.setText(mContext.getString(R.string.listatm_topup_deskripsi_fee, childDataWrapper.getFee()));
+        ivCopyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Copy to Clip Board", tvPinAccount.getText());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(mContext, "Coppied to ClipBoard", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        TextView tv_fee = layout_view_child.findViewById(R.id.fee_deskripsi);
+        if (tv_fee != null) {
+            if (childDataWrapper.getFee() == null)
+                tv_fee.setText("");
+            else
+                tv_fee.setText(mContext.getString(R.string.listatm_topup_deskripsi_fee, childDataWrapper.getFee()));
+        }
 //        }
 
         return layout_view_child;
@@ -286,9 +300,10 @@ public class SelectBankProductAdapter extends BaseExpandableListAdapter {
             String bankName = bankData.getProduct_type();
             if (bankName.equalsIgnoreCase("MANDIRI_ATM")) {
                 return R.layout.list_topup_mandiri_online;
-            }else
+            } else
                 return R.layout.list_topup_atm_mandiri_item;
-        }else if (bankCode.equals(DefineValue.BankBRI))
+        }
+        else if (bankCode.equals(DefineValue.BankBRI))
             return R.layout.list_topup_atm_bri_item;
         else if (bankCode.equals(DefineValue.BankBCA)) {
             if (bankData.getProduct_code().equals(DefineValue.PRODUCT_BCA_SIMTOOLKIT))
@@ -297,7 +312,8 @@ public class SelectBankProductAdapter extends BaseExpandableListAdapter {
                 return R.layout.list_topup_atm_bca_klikva;
             else if (bankData.getProduct_code().equals(DefineValue.PRODUCT_BCA_MOBILEBANK))
                 return R.layout.list_topup_atm_bca_mbca;
-        } else if (bankCode.equals(DefineValue.BankDanamon))
+        }
+        else if (bankCode.equals(DefineValue.BankDanamon))
             return R.layout.list_topup_atm_danamon_item;
         else if (bankCode.equals(DefineValue.BankBII))
             return R.layout.list_topup_maybank_item;

@@ -19,7 +19,7 @@
         android:textColor="#de000000"
         android:layout_margin="@dimen/margin_5dp"
         android:gravity="center_horizontal"
-        android:text="Notifikasi kamu kosong"
+        android:text="@string/no_notif"
         />
 
     <TextView
@@ -31,7 +31,7 @@
         android:letterSpacing="0.03"
         android:lineSpacingExtra="3.8sp"
         android:gravity="center_horizontal"
-        android:text="@string/empty_notification"
+        android:text="@string/empty_notification_message"
         />
 
     <Button android:id="@+id/btnRefresh"
@@ -40,5 +40,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/rounded_background_outline"
-        android:text="Refresh"/>
+        android:text="@string/refresh"/>
 </LinearLayout>

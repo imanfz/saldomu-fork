@@ -42,18 +42,21 @@ class UpgradeMemberActivity : BaseActivity() {
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
         upgrade_online_button.setOnClickListener {
-            startActivity(Intent(this, MyProfileNewActivity::class.java))
+            if (sp.getString(DefineValue.COMM_UPGRADE_MEMBER, "").equals("A")) {
+                DialogCantUpgrade()
+            } else
+                startActivity(Intent(this, UpgradeMemberViaOnline::class.java))
         }
 
         upgrade_via_agent_button.setOnClickListener {
             if (sp.getString(DefineValue.COMM_UPGRADE_MEMBER, "").equals("O")) {
-                DialogCantUpgradeviaAgent()
+                DialogCantUpgrade()
             } else
                 reqUpgradeViaAgent()
         }
     }
 
-    private fun DialogCantUpgradeviaAgent() {
+    private fun DialogCantUpgrade() {
         val dialognya = DefinedDialog.MessageDialog(this, this.getString(R.string.alertbox_title_information),
                 this.getString(R.string.cashout_dialog_message)
         ) { v, isLongClick -> }
@@ -89,7 +92,7 @@ class UpgradeMemberActivity : BaseActivity() {
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(this@UpgradeMemberActivity, message)
-                            }  else if (code == DefineValue.ERROR_9333) run {
+                            } else if (code == DefineValue.ERROR_9333) run {
                                 Timber.d("isi response app data:" + model.app_data)
                                 val appModel = model.app_data
                                 val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
@@ -98,7 +101,7 @@ class UpgradeMemberActivity : BaseActivity() {
                                 Timber.d("isi response maintenance:$`object`")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                                 alertDialogMaintenance.showDialogMaintenance(this@UpgradeMemberActivity, model.error_message)
-                            }else {
+                            } else {
                                 code = model.error_message
 
                                 Toast.makeText(this@UpgradeMemberActivity, code, Toast.LENGTH_LONG).show()
@@ -121,8 +124,8 @@ class UpgradeMemberActivity : BaseActivity() {
     }
 
     private fun dialogSuccess() {
-        var dialognya = DefinedDialog.MessageSearchAgent(this, this!!.getString(R.string.menu_item_title_upgrade_via_agent),
-                "Silahkan datang ke Agent terdekat.")
+        val dialognya = DefinedDialog.MessageSearchAgent(this, this.getString(R.string.menu_item_title_upgrade_via_agent),
+                getString(R.string.come_to_nearest_agent))
 
         dialognya.show()
     }

@@ -19,7 +19,7 @@
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="#40639f"
-        android:text="Setor Tunai"
+        android:text="@string/cash_in"
         />
     <TextView
         android:layout_margin="12dp"
@@ -32,6 +32,6 @@
         android:letterSpacing="0.02"
         android:lineSpacingExtra="6sp"
         android:gravity="center_horizontal"
-        android:text="Jika menabung terkendala jarak, datang atau cari agen SALDOMU disekitar kamu. Kamu dapat dengan mudah menabung ke rekening yang yang kamu tuju. "
+        android:text="@string/cash_in_desc"
         />
 </LinearLayout>
