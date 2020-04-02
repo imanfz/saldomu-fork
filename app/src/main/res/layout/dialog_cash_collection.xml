@@ -64,7 +64,26 @@
                 android:paddingRight="8dp"
                 android:text="Rp 1.000.000"
                 android:textColor="@color/colorSecondaryDark"
-                android:textSize="@dimen/abc_text_size_medium_material"  />
+                android:textSize="@dimen/abc_text_size_medium_material"/>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/fee"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/dialog_cash_collection_tv_fee"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="Rp 1.000.000"
+                android:textColor="@color/colorSecondaryDark"
+                android:textSize="@dimen/abc_text_size_medium_material"/>
 
 
     <LinearLayout

@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
@@ -49,17 +50,11 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.UploadPPModel;
-import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -194,7 +189,18 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        tv_lvl_member_value.setText(getLvl());
+        boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        String agentType = sp.getString(DefineValue.COMPANY_TYPE, "");
+        if (isAgent) {
+            if (agentType.equalsIgnoreCase(getString(R.string.LKD))) {
+                SpannableString content = new SpannableString(getString(R.string.lbl_member_lvl_agent));
+                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                tv_lvl_member_value.setText(content);
+            } else {
+                tv_lvl_member_value.setText(getString(R.string.lbl_member_lvl_agent));
+            }
+        } else
+            tv_lvl_member_value.setText(getLvl());
         currencyLimit.setText(sp.getString(DefineValue.BALANCE_CCYID, ""));
         limitValue.setText(CurrencyFormat.format(sp.getString(DefineValue.BALANCE_REMAIN_LIMIT, "")));
 //        setImageProfPic();
@@ -244,17 +250,13 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
     private String getLvl() {
         int tempLvl = sp.getInt(DefineValue.LEVEL_VALUE, 1);
-        boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
-        if (isAgent) {
-            return getString(R.string.lbl_member_lvl_agent);
-        } else {
-            if (tempLvl == 1) {
-                return getString(R.string.lbl_member_lvl_silver);
-            } else if (tempLvl == 2) {
-                return getString(R.string.lbl_member_lvl_gold);
-            }
+        if (tempLvl == 1) {
+            return getString(R.string.lbl_member_lvl_silver);
+        } else if (tempLvl == 2) {
+            return getString(R.string.lbl_member_lvl_gold);
         }
+
         return "";
     }
 
