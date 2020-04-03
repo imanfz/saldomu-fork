@@ -78,9 +78,6 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     String sourceAcct = "", sourceAcctName = "";
     private LevelClass levelClass;
     private String reject_npwp;
-    //    private String listContactPhone = "";
-//    private String listAddress = "";
-//    private String contactCenter = "";
     private String userID;
     private boolean is_agent = false;//saat antri untuk diverifikasi
     private boolean isUpgradeAgent = false; //saat antri untuk diverifikasi upgrade agent
@@ -148,7 +145,6 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
 
         initData();
-//        checkContactCenter();
         initLayout();
         checkAgent();
         setView();
@@ -192,7 +188,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
         String agentType = sp.getString(DefineValue.COMPANY_TYPE, "");
         if (isAgent) {
-            if (agentType.equalsIgnoreCase(getString(R.string.LKD))) {
+            if (agentType.equalsIgnoreCase(getString(R.string.LP))) {
                 SpannableString content = new SpannableString(getString(R.string.lbl_member_lvl_agent));
                 content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
                 tv_lvl_member_value.setText(content);
