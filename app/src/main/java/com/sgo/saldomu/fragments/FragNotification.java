@@ -214,6 +214,8 @@ public class FragNotification extends BaseFragment {
 
                     break;
                 case NotificationActivity.TYPE_PAID:
+                    sentReadNotif(mObj.getNotif_id(), position);
+                    break;
                 case NotificationActivity.TYPE_COMMENT:
                 case NotificationActivity.TYPE_LIKE:
                     sentReadNotif(mObj.getNotif_id(), position);
@@ -258,11 +260,13 @@ public class FragNotification extends BaseFragment {
                     getActivity().finish();
                     break;
                 case NotificationActivity.TYPE_NON_MEMBER:
+                    sentReadNotif(mObj.getNotif_id(), position);
                     if (!flagClaim)
                         sentClaimTransfer(true, mObj.getId_result());
                     break;
 
                 case NotificationActivity.REJECTED_KTP:
+                    sentReadNotif(mObj.getNotif_id(), position);
                     SecurePreferences.Editor editor = sp.edit();
                     editor.putString(DefineValue.REJECT_KTP, mObjDetail.optString(WebParams.REJECT_KTP, "N"));
                     editor.putString(DefineValue.REJECT_FOTO, mObjDetail.optString(WebParams.REJECT_FOTO, "N"));
@@ -278,6 +282,7 @@ public class FragNotification extends BaseFragment {
                     getActivity().finish();
                     break;
                 case NotificationActivity.REJECTED_SIUP_NPWP:
+                    sentReadNotif(mObj.getNotif_id(), position);
                     SecurePreferences.Editor editor1 = sp.edit();
                     editor1.putString(DefineValue.REJECT_SIUP, mObjDetail.optString(WebParams.REJECT_SIUP, "N"));
                     editor1.putString(DefineValue.REJECT_NPWP, mObjDetail.optString(WebParams.REJECT_NPWP, "N"));
@@ -291,9 +296,11 @@ public class FragNotification extends BaseFragment {
                     getActivity().finish();
                     break;
                 case NotificationActivity.BLAST_INFO:
+                    sentReadNotif(mObj.getNotif_id(), position);
                     getActivity().finish();
                     break;
                 case NotificationActivity.SOURCE_OF_FUND:
+                    sentReadNotif(mObj.getNotif_id(), position);
                     Intent s = new Intent(getActivity(), SourceOfFundActivity.class);
                     s.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
                     s.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.SOURCE_OF_FUND);
@@ -449,7 +456,7 @@ public class FragNotification extends BaseFragment {
                                     mData.clear();
                                     mDataNotifDetail.clear();
                                     int notif_type, image = 0;
-                                    boolean read;
+                                    boolean read=false;
                                     Date time1;
                                     PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
                                     JSONObject notif_detail, mObject;
@@ -466,7 +473,7 @@ public class FragNotification extends BaseFragment {
                                             to_id = mObject.getString(WebParams.TO_USER_ID);
                                             from_profile_picture = mObject.getString(WebParams.FROM_PROFILE_PICTURE);
                                             date_time = mObject.getString(WebParams.CREATED_DATE);
-                                            read = (mObject.getInt(WebParams.NOTIF_READ) == 1);
+                                            read = (mObject.getInt(WebParams.NOTIF_READ) == 0);
                                             id_result = mObject.getString(WebParams.ID_RESULT);
 
                                             String notif_detail_string = mObject.optString(WebParams.NOTIF_DETAIL, "");
