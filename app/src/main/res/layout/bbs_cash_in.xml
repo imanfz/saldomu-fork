@@ -163,7 +163,7 @@
                     android:id="@+id/no_tujuan_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/topup_token_phone_number"
+                    android:hint="@string/number_hp_destination_hint"
                     android:inputType="number"
                     android:maxLength="20" />
 

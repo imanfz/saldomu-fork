@@ -114,8 +114,6 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
     private var list_bbs_cities: ArrayList<List_BBS_City>? = null
     private var list_name_bbs_cities: ArrayList<String>? = null
 
-    val bundle: Bundle? = arguments
-
     private var smsClass: SMSclass? = null
     private var smsDialog: SMSDialog? = null
 
@@ -132,12 +130,13 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
         realmBBS = Realm.getInstance(RealmManager.BBSConfiguration)
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
-
+        val bundle = arguments
         if (bundle != null) {
             transaksi = bundle.getString(DefineValue.TRANSACTION)
             type = bundle.getString(DefineValue.TYPE, "")
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE, "")
             enabledAdditionalFee = bundle.getString(DefineValue.ENABLED_ADDITIONAL_FEE) == "Y"
+            noBenef = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID,null)
 
             defaultProductCode = ""
             if (bundle.containsKey(DefineValue.PRODUCT_CODE)) {
@@ -195,7 +194,9 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
             message_value.setText(cashInHistoryModel!!.pesan)
         }
 
-        no_tujuan_value.setText(bundle?.getString(DefineValue.FAVORITE_CUSTOMER_ID, ""))
+        if (noBenef != "" && noBenef != null)
+            no_tujuan_value.setText(noBenef)
+
         if (isAgentLKD)
             no_tujuan_value.hint = getString(R.string.number_hp_destination_hint)
 
@@ -210,7 +211,7 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
         btn_change_destination.setOnClickListener { showDialogBankList(btn_change_destination) }
 
         back_btn.setOnClickListener { activity!!.finish() }
-        proses_btn.setOnClickListener { if (inputValidation()) sentInsertC2A() }
+        proses_btn.setOnClickListener { if (inputValidation()) submitAction() }
         validasiTutorial()
     }
 
@@ -224,13 +225,14 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
                         listBankBenef!![position].product_code,
                         listBankBenef!![position].product_name)
                 if (benef_product_type.equals(DefineValue.EMO, ignoreCase = true) && !benef_product_code.equals("MANDIRILKD", ignoreCase = true)) {
-                    no_tujuan_value.setHint(R.string.number_hp_destination_hint)
+                    no_tujuan_value.hint = getString(R.string.number_hp_destination_hint)
                 } else {
                     if (benef_product_code.equals("MANDIRILKD", ignoreCase = true)) {
                         no_tujuan_value.setHint(R.string.nomor_rekening)
                     } else {
                         no_tujuan_value.setHint(R.string.number_destination_hint)
                     }
+                    no_tujuan_value.setText("")
                 }
 
                 if (listBankBenef!![position].bank_gateway.equals(DefineValue.STRING_YES, ignoreCase = true))
@@ -426,26 +428,52 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
         return true
     }
 
+    private fun submitAction() {
+        if (inputValidation()) {
+            isSMSBanking = source_product_code.equals(MANDIRISMS, ignoreCase = true)
+            comm_id = bbsCommModel!!.comm_id
+            comm_code = bbsCommModel!!.comm_code
+            member_code = bbsCommModel!!.member_code
+            callbackURL = bbsCommModel!!.callback_url
+            apiKey = bbsCommModel!!.api_key
+            amount = amount_transfer_edit_text.text.toString()
+            noBenef = no_tujuan_value.text.toString()
+            nameBenef = if (name_value.visibility == View.VISIBLE)
+                name_value.text.toString()
+            else
+                ""
+
+            if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true)) {
+                cityId = list_bbs_cities!![cityAutocompletePosition].city_id
+                cityName = city_benef_value.text.toString()
+            }
+            paymentRemark = message_value.text.toString()
+            confirmationDialog = ConfirmationDialog.newDialog(this
+                    , transaksi
+                    , amount
+                    , source_product_name
+                    , benef_product_name
+                    , noBenef
+                    , paymentRemark
+                    ,
+                    if (name_value.visibility == View.VISIBLE)
+                        name_value.text.toString()
+                    else
+                        ""
+                    , userPhoneID)
+
+            confirmationDialog!!.show(activity!!.supportFragmentManager, "ConfirmationDialog")
+        }
+    }
+
+    override fun onOK() {
+        extraSignature = (comm_code + member_code + source_product_type + source_product_code + benef_product_type + benef_product_code
+                + MyApiClient.CCY_VALUE + amount)
+        sentInsertC2A()
+    }
+
     private fun sentInsertC2A() {
         showProgressDialog()
-        isSMSBanking = source_product_code.equals(MANDIRISMS, ignoreCase = true)
-        comm_id = bbsCommModel!!.comm_id
-        comm_code = bbsCommModel!!.comm_code
-        member_code = bbsCommModel!!.member_code
-        callbackURL = bbsCommModel!!.callback_url
-        apiKey = bbsCommModel!!.api_key
-        amount = amount_transfer_edit_text.text.toString()
-        noBenef = no_tujuan_value.text.toString()
-        nameBenef = if (name_value.visibility == View.VISIBLE)
-            name_value.text.toString()
-        else
-            ""
-
-        if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true)) {
-            cityId = list_bbs_cities!![cityAutocompletePosition].city_id
-            cityName = city_benef_value.text.toString()
-        }
-        paymentRemark = message_value.text.toString()
         extraSignature = (comm_code + member_code + source_product_type + source_product_code + benef_product_type + benef_product_code
                 + MyApiClient.CCY_VALUE + amount)
 
@@ -726,21 +754,6 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
                 alertDialog.show()
             } else isSimExist = true
         })
-    }
-
-    private fun submitAction() {
-        if (inputValidation()) {
-            confirmationDialog = ConfirmationDialog.newDialog(this
-                    , transaksi
-                    , amount
-                    , source_product_name
-                    , benef_product_name
-                    , noBenef
-                    , paymentRemark, nameBenef,
-                    userPhoneID)
-
-            confirmationDialog!!.show(activity!!.supportFragmentManager, "ConfirmationDialog")
-        }
     }
 
     fun sentDataReqToken(bbsTransModel: BBSTransModel?) {
@@ -1046,11 +1059,5 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
         RealmManager.closeRealm(realm)
         RealmManager.closeRealm(realmBBS)
         super.onDestroy()
-    }
-
-    override fun onOK() {
-        extraSignature = (comm_code + member_code + source_product_type + source_product_code + benef_product_type + benef_product_code
-                + MyApiClient.CCY_VALUE + amount)
-        sentInsertC2A()
     }
 }
