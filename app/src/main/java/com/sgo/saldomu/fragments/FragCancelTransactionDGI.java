@@ -2,6 +2,7 @@ package com.sgo.saldomu.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -43,7 +50,9 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
-public class FragCancelTransactionDGI extends BaseFragment {
+public class FragCancelTransactionDGI extends BaseFragment implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
     View v;
     Button btnProses, btnCancel;
     TextView tv_next_visit;
@@ -59,6 +68,11 @@ public class FragCancelTransactionDGI extends BaseFragment {
     private String date_visit;
     private com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd;
 
+    Double latitude, longitude;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    private Location mLastLocation;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,6 +83,8 @@ public class FragCancelTransactionDGI extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        runningApp();
 
         et_reason = v.findViewById(R.id.et_reason);
         tv_next_visit = v.findViewById(R.id.tv_nextVisit);
@@ -229,6 +245,8 @@ public class FragCancelTransactionDGI extends BaseFragment {
         params.put(WebParams.COMM_CODE, commCode);
         params.put(WebParams.USER_ID, userPhoneID);
         params.put(WebParams.NEXT_VISIT_DATE, date_visit);
+        params.put(WebParams.LATITUDE, latitude);
+        params.put(WebParams.LONGITUDE, longitude);
         Timber.d("params cancel search DGI : " + params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CANCEL_SEARCH_DGI, params,
@@ -288,5 +306,109 @@ public class FragCancelTransactionDGI extends BaseFragment {
 
                     }
                 });
+    }
+
+    private void runningApp() {
+        if (checkPlayServices()) {
+            buildGoogleApiClient();
+            createLocationRequest();
+        }
+
+        Timber.d("GPS Test googleapiclient : " + mGoogleApiClient.toString());
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+            Timber.d("GPS Test googleapiclient connect : " + mGoogleApiClient.toString());
+        }
+
+    }
+
+    /**
+     * Creating google api client object
+     */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+    }
+
+    /**
+     * Creating location request object
+     */
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(2 * 8000);
+        mLocationRequest.setFastestInterval(1 * 8000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        //mLocationRequest.setSmallestDisplacement(DefineValue.AGENT_DISPLACEMENT);
+
+    }
+
+    private boolean checkPlayServices() {
+
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(getContext());
+        Timber.d("GPS Test checkPlayServices : " + String.valueOf(result));
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
+                Toast.makeText(getActivity(), "GOOGLE API LOCATION CONNECTION FAILED", Toast.LENGTH_SHORT).show();
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Timber.d("onConnected Started");
+        //startLocationUpdate();
+
+        if ( mGoogleApiClient != null ) {
+            try {
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+                if (mLastLocation == null) {
+                    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                } else {
+
+                    latitude = mLastLocation.getLatitude();
+                    longitude = mLastLocation.getLongitude();
+
+                    Timber.d("Location Found" + mLastLocation.toString());
+                    //googleApiClient.disconnect();
+                }
+            } catch (SecurityException se) {
+                se.printStackTrace();
+                //Timber.d(se.printStackTrace());
+            }
+        }
+        if (bundle!=null) {
+            Timber.d(bundle.toString());
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        latitude = mLastLocation.getLatitude();
+        longitude = mLastLocation.getLongitude();
+        try {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
