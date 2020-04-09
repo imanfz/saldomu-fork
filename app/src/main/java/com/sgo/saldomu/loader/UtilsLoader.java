@@ -102,8 +102,7 @@ public class UtilsLoader {
                                     String code = model.getError_code();
                                     if (code.equals(WebParams.SUCCESS_CODE)) {
                                         Timber.v("masuk sini new balance caller Loader");
-
-                                        String unread = sp.getString(WebParams.UNREAD_NOTIF, "");
+//                                        String unread = sp.getString(WebParams.UNREAD_NOTIF, "");
 //                                        if (unread.equals("")) {
 //                                            SecurePreferences.Editor mEditor = sp.edit();
 //                                            mEditor.putString(WebParams.UNREAD_NOTIF, model.getUnread_notif());

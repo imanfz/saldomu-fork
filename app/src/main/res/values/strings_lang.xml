@@ -943,8 +943,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="produk_agent">Product Agent</string>
     <string name="jumlah_transfer">Amount of Transfer</string>
     <string name="jumlah_transfer_hint">Amount of Transfer</string>
-    <string name="rekening_bank_tujuan">Rekening Agen</string>
-    <string name="bank_emoney_tujuan">Bank / E-Money Tujuan</string>
+    <string name="rekening_bank_tujuan">Agent Account</string>
+    <string name="bank_emoney_tujuan">Destination Bank / E-Money</string>
     <string name="produk_pelanggan">Customer Products</string>
     <string name="bank_emoney_agen">Bank / E-Money Agent</string>
     <string name="rekening_bank_member">Member Account</string>
@@ -1161,7 +1161,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="title_rating_by_member">Agent Review</string>
 
     <string name="label_jumlah_amount">How much will be transferred?</string>
-    <string name="label_transfer_ke">Transfer Ke</string>
+    <string name="label_transfer_ke">Transfer To</string>
     <string name="label_bank_transfer_ke">Which Bank / E-money?</string>
     <string name="label_bank_transfer_ke_emoney">Which E-money?</string>
     <string name="label_rekening_transfer_ke">Destination Account Number</string>
@@ -1592,4 +1592,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="residence">Residence</string>
     <string name="bpjs">BPJS</string>
     <string name="total_trx">Total Transaction</string>
+    <string name="transfer_destination">Transfer Destination</string>
+    <string name="transfer_source">Transfer Source</string>
+    <string name="choose_bank_emoney">Choose Bank/E-Money</string>
 </resources>
