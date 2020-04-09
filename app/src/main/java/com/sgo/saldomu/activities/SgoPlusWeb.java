@@ -251,13 +251,13 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                 }
             }
 
-            @Override
-            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
-                if (MyApiClient.IS_PROD)
-                    super.onReceivedSslError(view, handler, error);
-                else
-                    handler.proceed();
-            }
+//            @Override
+//            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
+//                if (MyApiClient.IS_PROD)
+//                    super.onReceivedSslError(view, handler, error);
+//                else
+//                    handler.proceed();
+//            }
 
             @Override
             public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {

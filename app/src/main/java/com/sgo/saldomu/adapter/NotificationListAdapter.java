@@ -79,7 +79,7 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
     @Override
     public int getItemViewType(int position) {
         NotificationModelClass mNotif = mData.get(position);
-        if (mNotif.isRead()) return VIEW_TYPE_READED;
+        if ((mNotif.isRead())==true) return VIEW_TYPE_READED;
         else return VIEW_TYPE_UNREAD;
     }
 

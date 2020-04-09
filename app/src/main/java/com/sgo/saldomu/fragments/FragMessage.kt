@@ -171,8 +171,8 @@ class FragMessage : BaseFragment() {
                                     dateTime = mObject.getString(WebParams.CREATED_DATE)
                                     read = mObject.getInt(WebParams.NOTIF_READ) == 1
                                     idResult = mObject.getString(WebParams.ID_RESULT)
-                                    title = mObject.getString(WebParams.DESCRIPTION)
-                                    detail = mObject.getString(WebParams.SHORT_DESCRIPTION)
+                                    title = mObject.getString(WebParams.SHORT_DESCRIPTION)
+                                    detail = mObject.getString(WebParams.DESCRIPTION)
                                     image = R.drawable.ic_logo_inbox
                                     time1 = DateTimeFormat.convertStringtoCustomDateTime(dateTime)
                                     time = p.formatDuration(time1)
