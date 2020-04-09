@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <LinearLayout android:id="@+id/bbscashin_bottom_layout"
         android:background="@color/white"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:padding="8dp"
-        android:layout_marginBottom="50dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -22,7 +22,7 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
                 app:mrl_rippleOverlay="true"
                 app:mrl_rippleColor="@color/colorPrimaryDark"
                 app:mrl_rippleAlpha="0.2"
@@ -245,6 +245,24 @@
 
                     <TextView
                         android:id="@+id/bbscashin_confirm_value_benef_name"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/sheet_item_textsize"
+                        android:textColor="@color/colorSecondaryDark"/>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/benef_city_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="6dp">
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:text="@string/kota_rekening_tujuan"
+                        android:textColor="@color/colorSecondaryDark"/>
+
+                    <TextView
+                        android:id="@+id/bbscashin_confirm_value_benef_city"
                         android:layout_weight="1"
                         android:textSize="@dimen/sheet_item_textsize"
                         android:textColor="@color/colorSecondaryDark"/>

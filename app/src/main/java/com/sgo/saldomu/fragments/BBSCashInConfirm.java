@@ -25,7 +25,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.faber.circlestepview.CircleStepView;
 import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
@@ -125,7 +124,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        v = inflater.inflate(R.layout.frag_bbs_cashin_confirm, container, false);
+        v = inflater.inflate(R.layout.bbs_cashin_confirm, container, false);
         return v;
     }
 
@@ -135,11 +134,11 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
         isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.LKD));
 
-        CircleStepView mCircleStepView = v.findViewById(R.id.circle_step_view);
-        mCircleStepView.setTextBelowCircle("", "", getString(R.string.konfirmasi_agen));
-        mCircleStepView.setCurrentCircleIndex(2, false);
-
-        tvTitle = v.findViewById(R.id.tv_title);
+//        CircleStepView mCircleStepView = v.findViewById(R.id.circle_step_view);
+//        mCircleStepView.setTextBelowCircle("", "", getString(R.string.konfirmasi_agen));
+//        mCircleStepView.setCurrentCircleIndex(2, false);
+//
+//        tvTitle = v.findViewById(R.id.tv_title);
         cityLayout = v.findViewById(R.id.benef_city_layout);
         tvSourceAcct = v.findViewById(R.id.bbscashin_confirm_value_source_acct);
         tvBankBenef = v.findViewById(R.id.bbscashin_confirm_value_benef_acct);
@@ -212,7 +211,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                 tvbenefname.setText(getString(R.string.nama_rekening_tujuan_lkd));
             }
 
-            tvTitle.setText(transaksi);
+//            tvTitle.setText(transaksi);
             tvAmount.setText(CurrencyFormat.format(amount));
             tvFee.setText(CurrencyFormat.format(fee));
             tvTotal.setText(CurrencyFormat.format(total_amount));
@@ -225,20 +224,17 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             }else {
                 StringBuilder maskedName = new StringBuilder();
                 String[] nameArray = name_benef.split(" ");
-                for (int i = 0; i < nameArray.length; i++) {
-                    String originName = nameArray[i];
+                for (String originName : nameArray) {
                     String tempName = "";
 
                     StringBuilder maskingName = new StringBuilder();
-                    if (originName.length()>2)
-                    {
-                        for (int j = 0; j < originName.length()-2; j++) {
+                    if (originName.length() > 2) {
+                        for (int j = 0; j < originName.length() - 2; j++) {
                             maskingName.append("*");
                         }
                         tempName = originName.replace(originName.substring(2, originName.length()), maskingName);
 
-                    }
-                    else {
+                    } else {
                         maskedName.append(originName);
                     }
                     maskedName.append(tempName + " ");
@@ -1070,7 +1066,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
     @Override
     public void onOkButton() {
-        toFragAmount();
+        toFragCashIn();
     }
 
     public void setToStatus(String _tx_status) {
@@ -1095,12 +1091,12 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     public void onStart() {
         super.onStart();
         if (finishTransaction) {
-            toFragAmount();
+            toFragCashIn();
         }
     }
 
-    private void toFragAmount() {
-        Fragment mFrag = new BBSTransaksiAmount();
+    private void toFragCashIn() {
+        Fragment mFrag = new BBSCashIn();
         Bundle args = new Bundle();
         args.putString(DefineValue.TRANSACTION, transaksi);
 //            args.putString(DefineValue.TX_STATUS, tx_status);
