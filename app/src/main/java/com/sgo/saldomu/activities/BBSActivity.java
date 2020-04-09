@@ -178,10 +178,8 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     @Override
     protected void onResume() {
         super.onResume();
-
         Intent intent    = getIntent();
         int index = intent.getIntExtra(DefineValue.INDEX,0);
-
         InitializeTitle();
 
     }
@@ -196,8 +194,14 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             setActionBarTitle(getString(R.string.join_agent));
         else if(fragment instanceof Cashoutbbs_describ_member)
             setActionBarTitle(getString(R.string.cash_out));
-        else if(fragment instanceof BBSTransaksiPager)
-            setActionBarTitle(getString(R.string.transaction));
+        else if(fragment instanceof BBSTransaksiPager){
+            Intent intent    = getIntent();
+            String type = intent.getStringExtra(DefineValue.TYPE);
+            if(type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
+                setActionBarTitle(getString(R.string.cash_in));
+            else
+                setActionBarTitle(getString(R.string.cash_out));
+        }
         else if(fragment instanceof FragMenuKelola)
             setActionBarTitle(getString(R.string.menu_item_title_kelola));
         else if(fragment instanceof FragSetttingKelola)

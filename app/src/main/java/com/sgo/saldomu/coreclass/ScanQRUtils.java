@@ -52,19 +52,20 @@ public class ScanQRUtils  {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
 
             bitmap  = barcodeEncoder.createBitmap(bitMatrix);
-            Bitmap logo = BitmapFactory.decodeResource(mContext.getResources(),
-                    R.mipmap.ic_launcher_pin_only);
-
-            Bitmap bitmapCircleLogo = Bitmap.createBitmap(logo.getWidth(), logo.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmapCircleLogo);
-            Paint paint = new Paint();
-            paint.setColor(Color.WHITE);
-            canvas.drawCircle(logo.getWidth()/ 2.0f + 0.7f,logo.getHeight()/ 2.0f + 0.7f,logo.getWidth()/ 2.0f + 0.7f,paint);
-            canvas.drawBitmap(logo,(bitmapCircleLogo.getWidth()-logo.getWidth())/2,
-                    (bitmapCircleLogo.getHeight()-logo.getHeight())/2,null);
-            canvas.save();
-            canvas.restore();
-            return addLogoToQRCode(bitmap,bitmapCircleLogo);
+//            Bitmap logo = BitmapFactory.decodeResource(mContext.getResources(),
+//                    R.mipmap.ic_launcher_pin_only);
+//
+//            Bitmap bitmapCircleLogo = Bitmap.createBitmap(logo.getWidth(), logo.getHeight(), Bitmap.Config.ARGB_8888);
+//            Canvas canvas = new Canvas(bitmapCircleLogo);
+//            Paint paint = new Paint();
+//            paint.setColor(Color.WHITE);
+//            canvas.drawCircle(logo.getWidth()/ 2.0f + 0.7f,logo.getHeight()/ 2.0f + 0.7f,logo.getWidth()/ 2.0f + 0.7f,paint);
+//            canvas.drawBitmap(logo,(bitmapCircleLogo.getWidth()-logo.getWidth())/2,
+//                    (bitmapCircleLogo.getHeight()-logo.getHeight())/2,null);
+//            canvas.save();
+//            canvas.restore();
+//            return addLogoToQRCode(bitmap,bitmapCircleLogo);
+            return bitmap;
         } catch (WriterException e) {
             e.printStackTrace();
         }
