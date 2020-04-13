@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
@@ -213,7 +214,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                     public void onResponses(JSONObject response) {
                         try {
                             dismissProgressDialog();
-
+                            Gson gson = new Gson();
                             jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                             String code = response.getString(WebParams.ERROR_CODE);
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);
@@ -272,6 +273,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                Gson gson = new Gson();
                                 jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 String error_message = response.getString(WebParams.ERROR_MESSAGE);

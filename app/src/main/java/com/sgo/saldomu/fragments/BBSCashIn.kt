@@ -48,7 +48,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import java.util.*
 
-class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
+class BBSCashIn : BaseFragment(){
 
     private val CTA = "CTA"
     private val SOURCE = "SOURCE"
@@ -168,7 +168,7 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
 
         initializeDataBBSCTA()
 
-        if (cashInHistoryModel != null) {
+        if (cashInHistoryModel != null && sp.getString(DefineValue.USERID_PHONE,"").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,""))) {
             amount_transfer_edit_text.setText(cashInHistoryModel!!.amount)
 
             for (i in aListAgent!!.indices) {
@@ -387,10 +387,10 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
         tv_transfer_destination.text = benef_product_name
         iv_transfer_destination.setImageResource(id)
 
-        if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true))
-            city_benef_value.visibility = View.VISIBLE
-        else
-            city_benef_value.visibility = View.GONE
+//        if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true))
+//            city_benef_value.visibility = View.VISIBLE
+//        else
+//            city_benef_value.visibility = View.GONE
     }
 
     private fun inputValidation(): Boolean {
@@ -411,20 +411,20 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
                 return false
             }
         }
-        if (city_benef_value.visibility == View.VISIBLE) {
-            if (city_benef_value.text.toString() == "") {
-                city_benef_value.requestFocus()
-                city_benef_value.error = getString(R.string.destination_city_empty_message)
-                return false
-            } else if (!list_name_bbs_cities!!.contains(city_benef_value.text.toString())) {
-                city_benef_value.requestFocus()
-                city_benef_value.error = getString(R.string.city_not_found_message)
-                return false
-            } else {
-                cityAutocompletePosition = list_name_bbs_cities!!.indexOf(city_benef_value.text.toString())
-                city_benef_value.error = null
-            }
-        }
+//        if (city_benef_value.visibility == View.VISIBLE) {
+//            if (city_benef_value.text.toString() == "") {
+//                city_benef_value.requestFocus()
+//                city_benef_value.error = getString(R.string.destination_city_empty_message)
+//                return false
+//            } else if (!list_name_bbs_cities!!.contains(city_benef_value.text.toString())) {
+//                city_benef_value.requestFocus()
+//                city_benef_value.error = getString(R.string.city_not_found_message)
+//                return false
+//            } else {
+//                cityAutocompletePosition = list_name_bbs_cities!!.indexOf(city_benef_value.text.toString())
+//                city_benef_value.error = null
+//            }
+//        }
         return true
     }
 
@@ -448,29 +448,30 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
                 cityName = city_benef_value.text.toString()
             }
             paymentRemark = message_value.text.toString()
-            confirmationDialog = ConfirmationDialog.newDialog(this
-                    , transaksi
-                    , amount
-                    , source_product_name
-                    , benef_product_name
-                    , noBenef
-                    , paymentRemark
-                    ,
-                    if (name_value.visibility == View.VISIBLE)
-                        name_value.text.toString()
-                    else
-                        ""
-                    , userPhoneID)
-
-            confirmationDialog!!.show(activity!!.supportFragmentManager, "ConfirmationDialog")
+//            confirmationDialog = ConfirmationDialog.newDialog(this
+//                    , transaksi
+//                    , amount
+//                    , source_product_name
+//                    , benef_product_name
+//                    , noBenef
+//                    , paymentRemark
+//                    ,
+//                    if (name_value.visibility == View.VISIBLE)
+//                        name_value.text.toString()
+//                    else
+//                        ""
+//                    , userPhoneID)
+//
+//            confirmationDialog!!.show(activity!!.supportFragmentManager, "ConfirmationDialog")
+            sentInsertC2A()
         }
     }
 
-    override fun onOK() {
-        extraSignature = (comm_code + member_code + source_product_type + source_product_code + benef_product_type + benef_product_code
-                + MyApiClient.CCY_VALUE + amount)
-        sentInsertC2A()
-    }
+//    override fun onOK() {
+//        extraSignature = (comm_code + member_code + source_product_type + source_product_code + benef_product_type + benef_product_code
+//                + MyApiClient.CCY_VALUE + amount)
+//        sentInsertC2A()
+//    }
 
     private fun sentInsertC2A() {
         showProgressDialog()
@@ -601,7 +602,7 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
     }
 
     fun showDialogLimit(message: String) {
-        dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.limit_dialog_title),
+        dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.error),
                 message
         ) { v, isLongClick -> dialog!!.dismiss() }
         dialog!!.setCanceledOnTouchOutside(false)
@@ -830,8 +831,8 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
                 }
 
                 override fun onComplete() {
-                    confirmationDialog!!.dismiss()
-                    dismissProgressDialog()
+//                    confirmationDialog!!.dismiss()
+//                    dismissProgressDialog()
                 }
             })
         }
@@ -931,6 +932,7 @@ class BBSCashIn : BaseFragment(), ConfirmationDialog.clickListener {
         mArgs.putBoolean(DefineValue.CODE_SUCCESS, codeSuccess)
         proses_btn.isEnabled = true
         cashInHistory()
+        dismissProgressDialog()
         val mFrag: Fragment = FragDataC2A()
         mFrag.arguments = mArgs
         fragmentManager!!.beginTransaction().addToBackStack(BBSTransaksiInformasi.TAG)

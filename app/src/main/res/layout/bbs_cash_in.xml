@@ -184,7 +184,8 @@
                     android:hint="@string/kota_tujuan_hint"
                     android:inputType="textCapWords"
                     android:maxLength="30"
-                    android:textSize="@dimen/abc_text_size_medium_material">
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:visibility="gone">
                 </AutoCompleteTextView>
             </LinearLayout>
 
