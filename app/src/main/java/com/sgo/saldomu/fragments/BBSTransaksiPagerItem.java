@@ -68,6 +68,8 @@ public class BBSTransaksiPagerItem extends Fragment {
         Fragment newFrag;
         if (title.equalsIgnoreCase(getString(R.string.cash_in)))
             newFrag = new BBSCashIn();
+        else if (title.equalsIgnoreCase(getString(R.string.cash_out)))
+            newFrag = new BBSCashOut();
         else
             newFrag = new BBSTransaksiAmount();
         Bundle args = new Bundle();

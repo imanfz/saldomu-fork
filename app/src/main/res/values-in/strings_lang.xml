@@ -996,7 +996,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="no_hp_pengirim_validation">Nomor Handphone Pengirim Dibutuhkan !</string>
     <string name="community_empty">Tidak ada daftar komunitas</string>
     <string name="remark">Pesan</string>
-    <string name="cobbs_kode_tarik_tunai">Kode Tarik Tunai</string>
+    <string name="kode_tarik_tunai">Kode Tarik Tunai</string>
     <string name="no_tcash">No. Handphone TCASH Agen</string>
     <string name="no_member">No. Handphone Pelanggan</string>
     <string name="no_member_hint">Masukkan nomor Handphone member</string>

@@ -102,6 +102,14 @@
                         android:text="@string/change"
                         android:textColor="@color/colorPrimary" />
                 </LinearLayout>
+
+                <EditText
+                    android:id="@+id/no_source_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/number_hp_source_hint"
+                    android:inputType="number"
+                    android:maxLength="20" />
             </LinearLayout>
 
             <LinearLayout
@@ -160,7 +168,7 @@
                 </LinearLayout>
 
                 <EditText
-                    android:id="@+id/no_tujuan_value"
+                    android:id="@+id/no_benef_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/number_hp_destination_hint"
@@ -190,6 +198,26 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_additionalFee"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/rounded_background_white"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/additional_fee" />
+
+                <EditText
+                    android:id="@+id/et_additionalFee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/additionalFee_hint"
+                    android:inputType="number" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_background_white"
@@ -207,13 +235,6 @@
                     android:hint="@string/token_hint"
                     android:inputType="numberPassword"
                     android:maxLength="10"/>
-
-                <EditText
-                    android:id="@+id/et_additionalFee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/additionalFee_hint"
-                    android:inputType="number" />
 
                 <EditText
                     android:id="@+id/message_value"

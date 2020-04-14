@@ -16,7 +16,7 @@ import android.widget.Button
 import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.sgo.saldomu.Beans.CashInHistoryModel
+import com.sgo.saldomu.Beans.CashOutHistoryModel
 import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.MainPage
@@ -28,9 +28,9 @@ import com.sgo.saldomu.coreclass.SMSclass.SMS_SIM_STATE
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.dialogs.*
+import com.sgo.saldomu.entityRealm.BBSAccountACTModel
 import com.sgo.saldomu.entityRealm.BBSBankModel
 import com.sgo.saldomu.entityRealm.BBSCommModel
-import com.sgo.saldomu.entityRealm.List_BBS_City
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.AppDataModel
@@ -39,7 +39,6 @@ import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.utils.BbsUtil
 import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
-import io.realm.RealmResults
 import kotlinx.android.synthetic.main.bbs_cash_in_cash_out.*
 import kotlinx.android.synthetic.main.dialog_notification.*
 import org.json.JSONException
@@ -48,9 +47,9 @@ import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import java.util.*
 
-class BBSCashIn : BaseFragment(){
+class BBSCashOut : BaseFragment() {
 
-    private val CTA = "CTA"
+    private val ATC = "ATC"
     private val SOURCE = "SOURCE"
     private val BENEF = "BENEF"
     private val SALDO_AGEN = "SALDO AGEN"
@@ -74,16 +73,12 @@ class BBSCashIn : BaseFragment(){
     private var benef_product_name: String? = null
     private var defaultProductCode: String? = null
     private var productValue: String? = null
-    private var noBenef: String? = null
-    private var nameBenef: String? = null
+    private var noSource: String? = null
     private var paymentRemark: String? = null
     private var callbackURL: String? = null
     private var apiKey: String? = null
     private var lkd_product_code: String? = null
-    private var cityId: String = ""
     private var cityName: String = ""
-
-    private var cityAutocompletePosition = -1
 
     private var isAgentLKD = false
     private var enabledAdditionalFee = false
@@ -100,17 +95,14 @@ class BBSCashIn : BaseFragment(){
     private var dialog: Dialog? = null
     private var dialogBankList: DialogBankList? = null
 
-    private var cashInHistoryModel: CashInHistoryModel? = null
+    private var cashOutHistoryModel: CashOutHistoryModel? = null
     private var bbsCommModel: BBSCommModel? = null
 
     private var aListAgent: MutableList<HashMap<String, String>>? = null
     private var aListMember: MutableList<HashMap<String, String>>? = null
 
     private var listBankSource: List<BBSBankModel>? = null
-    private var listBankBenef: List<BBSBankModel>? = null
-
-    private var list_bbs_cities: ArrayList<List_BBS_City>? = null
-    private var list_name_bbs_cities: ArrayList<String>? = null
+    private var listBankBenef: List<BBSAccountACTModel>? = null
 
     private var smsClass: SMSclass? = null
     private var smsDialog: SMSDialog? = null
@@ -134,7 +126,7 @@ class BBSCashIn : BaseFragment(){
             type = bundle.getString(DefineValue.TYPE, "")
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE, "")
             enabledAdditionalFee = bundle.getString(DefineValue.ENABLED_ADDITIONAL_FEE) == "Y"
-            noBenef = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID,null)
+            noSource = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, null)
 
             defaultProductCode = ""
             if (bundle.containsKey(DefineValue.PRODUCT_CODE)) {
@@ -142,8 +134,8 @@ class BBSCashIn : BaseFragment(){
             }
 
             val gson = Gson()
-            val cashIn = sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "")
-            cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel::class.java)
+            val cashOut = sp.getString(DefineValue.CASH_OUT_HISTORY_TEMP, "")
+            cashOutHistoryModel = gson.fromJson(cashOut, CashOutHistoryModel::class.java)
         } else {
             fragmentManager!!.popBackStack()
         }
@@ -164,39 +156,40 @@ class BBSCashIn : BaseFragment(){
         aListAgent = ArrayList()
         aListMember = ArrayList()
 
-        initializeDataBBSCTA()
+        initializeDataBBSATC()
 
-        if (cashInHistoryModel != null && sp.getString(DefineValue.USERID_PHONE,"").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,""))) {
-            amount_transfer_edit_text.setText(cashInHistoryModel!!.amount)
+        if (cashOutHistoryModel != null && sp.getString(DefineValue.USERID_PHONE, "").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""))) {
+            amount_transfer_edit_text.setText(cashOutHistoryModel!!.amount)
 
             for (i in aListAgent!!.indices) {
                 if (aListAgent!![i]["txt"]!!.contains(source_product_name!!)) {
                     changeSource(Integer.parseInt(aListAgent!![i]["flag"]!!),
-                            cashInHistoryModel!!.source_product_type,
-                            cashInHistoryModel!!.source_product_code,
-                            cashInHistoryModel!!.source_product_name,
-                            cashInHistoryModel!!.source_product_h2h)
+                            cashOutHistoryModel!!.source_product_type,
+                            cashOutHistoryModel!!.source_product_code,
+                            cashOutHistoryModel!!.source_product_name,
+                            cashOutHistoryModel!!.source_product_h2h)
                 }
             }
 
             for (i in aListMember!!.indices) {
                 if (aListMember!![i]["txt"]!!.contains(benef_product_name!!)) {
                     changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!),
-                            cashInHistoryModel!!.benef_product_type,
-                            cashInHistoryModel!!.benef_product_code,
-                            cashInHistoryModel!!.benef_product_name)
+                            cashOutHistoryModel!!.benef_product_type,
+                            cashOutHistoryModel!!.benef_product_code,
+                            cashOutHistoryModel!!.benef_product_name)
                 }
             }
 
-            no_benef_value.setText(cashInHistoryModel!!.benef_product_value_code)
-            message_value.setText(cashInHistoryModel!!.pesan)
+            no_source_value.setText(cashOutHistoryModel!!.member_shop_phone)
+            message_value.setText(cashOutHistoryModel!!.pesan)
         }
-        no_source_value.visibility = View.GONE
-        if (noBenef != "" && noBenef != null)
-            no_benef_value.setText(noBenef)
+        no_benef_value.visibility = View.GONE
+        city_benef_value.visibility = View.GONE
+        if (noSource != "" && noSource != null)
+            no_source_value.setText(noSource)
 
         if (isAgentLKD)
-            no_benef_value.hint = getString(R.string.number_hp_destination_hint)
+            no_source_value.hint = getString(R.string.number_hp_destination_hint)
 
         name_value.visibility = View.GONE
         no_OTP.visibility = View.GONE
@@ -215,94 +208,63 @@ class BBSCashIn : BaseFragment(){
 
     private fun showDialogBankList(btnChange: Button) {
         if (btnChange == btn_change_source)
-            Toast.makeText(context, "Source", Toast.LENGTH_SHORT).show()
-        else
             dialogBankList = DialogBankList.newDialog(activity, aListMember) { position ->
-                changeDestination(Integer.parseInt(aListMember!![position]["flag"]!!),
-                        listBankBenef!![position].product_type,
-                        listBankBenef!![position].product_code,
-                        listBankBenef!![position].product_name)
-                if (benef_product_type.equals(DefineValue.EMO, ignoreCase = true) && !benef_product_code.equals("MANDIRILKD", ignoreCase = true)) {
-                    no_benef_value.hint = getString(R.string.number_hp_destination_hint)
+                changeSource(Integer.parseInt(aListMember!![position]["flag"]!!),
+                        listBankSource!![position].product_type,
+                        listBankSource!![position].product_code,
+                        listBankSource!![position].product_name,
+                        listBankSource!![position].product_h2h)
+                if (source_product_type.equals(DefineValue.EMO, ignoreCase = true) && !source_product_code.equals("MANDIRILKD", ignoreCase = true)) {
+                    no_source_value.hint = getString(R.string.number_hp_destination_hint)
                 } else {
-                    if (benef_product_code.equals("MANDIRILKD", ignoreCase = true)) {
-                        no_benef_value.setHint(R.string.nomor_rekening)
+                    if (source_product_code.equals("MANDIRILKD", ignoreCase = true)) {
+                        no_source_value.setHint(R.string.nomor_rekening)
                     } else {
-                        no_benef_value.setHint(R.string.number_destination_hint)
+                        no_source_value.setHint(R.string.number_destination_hint)
                     }
-                    no_benef_value.setText("")
+                    no_source_value.setText("")
                 }
 
-                if (listBankBenef!![position].bank_gateway.equals(DefineValue.STRING_YES, ignoreCase = true))
-                    name_value.visibility = View.GONE
-                else
-                    name_value.visibility = View.VISIBLE
-
-                if (benef_product_code.equals("tcash", ignoreCase = true))
+                if (source_product_code.equals("tcash", ignoreCase = true))
                     no_OTP.visibility = View.VISIBLE
                 else
                     no_OTP.visibility = View.GONE
 
                 dialogBankList!!.dismiss()
             }
+        else
+            Toast.makeText(context, "Benef", Toast.LENGTH_SHORT).show()
+
         dialogBankList!!.show(fragManager, "")
     }
 
-    private fun initializeDataBBSCTA() {
+    private fun initializeDataBBSATC() {
         bbsCommModel = realmBBS!!.where(BBSCommModel::class.java)
-                .equalTo(WebParams.SCHEME_CODE, CTA).findFirst()
-        listBankSource = realmBBS!!.where(BBSBankModel::class.java)
-                .equalTo(WebParams.SCHEME_CODE, CTA)
-                .equalTo(WebParams.COMM_TYPE, SOURCE).findAll()
+                .equalTo(WebParams.SCHEME_CODE, ATC).findFirst()
+        listBankBenef = realmBBS!!.where(BBSAccountACTModel::class.java).findAll()
 
         if (isAgentLKD) {
             defaultProductCode = if (BuildConfig.FLAVOR.equals("development", ignoreCase = true))
                 "EMO SALDOMU"
             else
                 getString(R.string.SALDOMU)
-            btn_change_destination.visibility = View.GONE
-            listBankBenef = realmBBS!!.where(BBSBankModel::class.java)
-                    .equalTo(WebParams.SCHEME_CODE, CTA)
-                    .equalTo(WebParams.COMM_TYPE, BENEF)
+            btn_change_source.visibility = View.GONE
+            listBankSource = realmBBS!!.where(BBSBankModel::class.java)
+                    .equalTo(WebParams.SCHEME_CODE, ATC)
+                    .equalTo(WebParams.COMM_TYPE, SOURCE)
                     .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll()
         } else {
-            listBankBenef = realmBBS!!.where(BBSBankModel::class.java)
-                    .equalTo(WebParams.SCHEME_CODE, CTA)
-                    .equalTo(WebParams.COMM_TYPE, BENEF).findAll()
+            listBankSource = realmBBS!!.where(BBSBankModel::class.java)
+                    .equalTo(WebParams.SCHEME_CODE, ATC)
+                    .equalTo(WebParams.COMM_TYPE, SOURCE).findAll()
         }
-        setBBSCity()
-        setMember(listBankBenef)
-        setAgent(listBankSource)
+        setMember(listBankSource)
+        setAgent(listBankBenef)
         if (bbsCommModel == null) {
-            Toast.makeText(activity, getString(R.string.bbstransaction_toast_not_registered, getString(R.string.cash_in)), Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, getString(R.string.bbstransaction_toast_not_registered, getString(R.string.cash_out)), Toast.LENGTH_LONG).show()
             val isUpdatingData = sp.getBoolean(DefineValue.IS_UPDATING_BBS_DATA, false)
             if (!isUpdatingData) checkAndRunServiceBBS()
         }
-    }
-
-    private fun setBBSCity() {
-        val proses: Thread = object : Thread() {
-            override fun run() {
-                val results: RealmResults<List_BBS_City> = realm!!.where(List_BBS_City::class.java).findAll()
-                list_bbs_cities = ArrayList(results)
-                list_name_bbs_cities = ArrayList<String>()
-                if (list_bbs_cities!!.size > 0) {
-                    for (i in list_bbs_cities!!.indices) {
-                        list_name_bbs_cities!!.add(list_bbs_cities!![i].city_name)
-                    }
-                }
-                val cityAdapter: ArrayAdapter<String> = ArrayAdapter<String>(context!!, android.R.layout.select_dialog_item, list_name_bbs_cities!!)
-                city_benef_value.threshold = 1
-                city_benef_value.setAdapter(cityAdapter)
-                activity!!.runOnUiThread(Runnable {
-                    cityAdapter.notifyDataSetChanged()
-                    val defaultValue = "KOTA JAKARTA"
-                    city_benef_value.setText(defaultValue)
-                    cityAutocompletePosition = list_name_bbs_cities!!.indexOf(defaultValue)
-                })
-            }
-        }
-        proses.run()
     }
 
     private fun setMember(bankMember: List<BBSBankModel>?) {
@@ -310,13 +272,13 @@ class BBSCashIn : BaseFragment(){
         aListMember!!.addAll(BbsUtil.mappingProductCodeIcons(bankMember))
         for (i in bankMember!!.indices) {
             if (bankMember[i].product_name.toLowerCase(Locale.getDefault()).contains("saldomu")) {
-                changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name)
+                changeSource(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name, bankMember[i].product_h2h)
             }
         }
     }
 
     @SuppressLint("DefaultLocale")
-    private fun setAgent(bankAgen: List<BBSBankModel>?) {
+    private fun setAgent(bankAgen: List<BBSAccountACTModel>?) {
         aListAgent!!.clear()
         for (i in bankAgen!!.indices) {
             val hm = HashMap<String, String>()
@@ -358,12 +320,11 @@ class BBSCashIn : BaseFragment(){
         }
         if (aListAgent!!.size == 1) {
             val position = 0
-            btn_change_source.visibility = View.GONE
-            changeSource(Integer.parseInt(aListAgent!![position]["flag"]!!),
+            btn_change_destination.visibility = View.GONE
+            changeDestination(Integer.parseInt(aListAgent!![position]["flag"]!!),
                     bankAgen[position].product_type,
                     bankAgen[position].product_code,
-                    bankAgen[position].product_name,
-                    bankAgen[position].product_h2h)
+                    bankAgen[position].product_name)
         }
     }
 
@@ -372,7 +333,6 @@ class BBSCashIn : BaseFragment(){
         source_product_code = productCode
         source_product_name = productName
         source_product_h2h = productH2h
-        if (source_product_name!!.toLowerCase(Locale.getDefault()).contains("saldomu")) source_product_name = SALDO_AGEN
         tv_transfer_source.text = source_product_name
         iv_transfer_source.setImageResource(id)
     }
@@ -381,13 +341,9 @@ class BBSCashIn : BaseFragment(){
         benef_product_type = productType
         benef_product_code = productCode
         benef_product_name = productName
+        if (benef_product_name!!.toLowerCase(Locale.getDefault()).contains("saldomu")) benef_product_name = SALDO_AGEN
         tv_transfer_destination.text = benef_product_name
         iv_transfer_destination.setImageResource(id)
-
-//        if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true))
-//            city_benef_value.visibility = View.VISIBLE
-//        else
-//            city_benef_value.visibility = View.GONE
     }
 
     private fun inputValidation(): Boolean {
@@ -396,9 +352,9 @@ class BBSCashIn : BaseFragment(){
             amount_transfer_edit_text.error = getString(R.string.payfriends_amount_validation)
             return false
         }
-        if (no_benef_value.text.isEmpty()) {
-            no_benef_value.requestFocus()
-            no_benef_value.error = getString(R.string.forgetpass_edittext_validation)
+        if (no_source_value.text.isEmpty()) {
+            no_source_value.requestFocus()
+            no_source_value.error = getString(R.string.forgetpass_edittext_validation)
             return false
         }
         if (no_OTP.visibility == View.VISIBLE) {
@@ -408,30 +364,17 @@ class BBSCashIn : BaseFragment(){
                 return false
             }
         }
-//        if (city_benef_value.visibility == View.VISIBLE) {
-//            if (city_benef_value.text.toString() == "") {
-//                city_benef_value.requestFocus()
-//                city_benef_value.error = getString(R.string.destination_city_empty_message)
-//                return false
-//            } else if (!list_name_bbs_cities!!.contains(city_benef_value.text.toString())) {
-//                city_benef_value.requestFocus()
-//                city_benef_value.error = getString(R.string.city_not_found_message)
-//                return false
-//            } else {
-//                cityAutocompletePosition = list_name_bbs_cities!!.indexOf(city_benef_value.text.toString())
-//                city_benef_value.error = null
-//            }
-//        }
+
         return true
     }
 
     private fun submitAction() {
         if (inputValidation()) {
-            sentInsertC2A()
+            sentInsertA2C()
         }
     }
 
-    private fun sentInsertC2A() {
+    private fun sentInsertA2C() {
         showProgressDialog()
         isSMSBanking = source_product_code.equals(MANDIRISMS, ignoreCase = true)
         comm_id = bbsCommModel!!.comm_id
@@ -440,20 +383,12 @@ class BBSCashIn : BaseFragment(){
         callbackURL = bbsCommModel!!.callback_url
         apiKey = bbsCommModel!!.api_key
         amount = amount_transfer_edit_text.text.toString()
-        noBenef = no_benef_value.text.toString()
-        nameBenef = if (name_value.visibility == View.VISIBLE)
-            name_value.text.toString()
-        else
-            ""
+        noSource = no_source_value.text.toString()
 
-        if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true)) {
-            cityId = list_bbs_cities!![cityAutocompletePosition].city_id
-            cityName = city_benef_value.text.toString()
-        }
         paymentRemark = message_value.text.toString()
         extraSignature = comm_code + member_code + source_product_type + source_product_code + benef_product_type + benef_product_code + MyApiClient.CCY_VALUE + amount
 
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A, extraSignature)
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C, extraSignature)
 
         params[WebParams.COMM_ID] = comm_id
         params[WebParams.USER_ID] = userPhoneID
@@ -461,10 +396,9 @@ class BBSCashIn : BaseFragment(){
         params[WebParams.MEMBER_CODE] = member_code
         params[WebParams.SOURCE_PRODUCT_CODE] = source_product_code!!
         params[WebParams.SOURCE_PRODUCT_TYPE] = source_product_type!!
+        params[WebParams.SOURCE_PRODUCT_VALUE] = noSource
         params[WebParams.BENEF_PRODUCT_CODE] = benef_product_code!!
         params[WebParams.BENEF_PRODUCT_TYPE] = benef_product_type!!
-        params[WebParams.BENEF_PRODUCT_VALUE_CODE] = noBenef
-        params[WebParams.BENEF_PRODUCT_VALUE_NAME] = nameBenef
         params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
         params[WebParams.AMOUNT] = amount
         params[WebParams.PAYMENT_REMARK] = paymentRemark
@@ -472,20 +406,12 @@ class BBSCashIn : BaseFragment(){
         params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
         params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
 
-        if (benef_product_code.equals("tcash", ignoreCase = true)) {
-            params[WebParams.BENEF_PRODUCT_VALUE_TOKEN] = no_OTP.text.toString()
-        }
-
-        if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true)) {
-            params[WebParams.BENEF_PRODUCT_VALUE_CITY] = cityId
-        }
-
         if (enabledAdditionalFee) {
             params[WebParams.ADDITIONAL_FEE] = et_additionalFee.text.toString()
         }
 
-        Timber.d("params insert c2a $params")
-        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A, params, object : ResponseListener {
+        Timber.d("params insert a2c $params")
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C, params, object : ResponseListener {
 
             override fun onResponses(response: JsonObject?) {
                 val model: BBSTransModel = getGson().fromJson<BBSTransModel>(response, BBSTransModel::class.java)
@@ -514,7 +440,7 @@ class BBSCashIn : BaseFragment(){
                                     smsDialog!!.sentSms()
                                     regSimCardReceiver(true)
                                 } else {
-                                    EasyPermissions.requestPermissions(this@BBSCashIn, getString(R.string.rationale_send_sms),
+                                    EasyPermissions.requestPermissions(this@BBSCashOut, getString(R.string.rationale_send_sms),
                                             RC_SEND_SMS, Manifest.permission.CAMERA)
                                 }
                             }
@@ -577,7 +503,7 @@ class BBSCashIn : BaseFragment(){
     }
 
     fun showDialogLimit(message: String) {
-        dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.error),
+        dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.limit_dialog_title),
                 message
         ) { v, isLongClick -> dialog!!.dismiss() }
         dialog!!.setCanceledOnTouchOutside(false)
@@ -619,7 +545,7 @@ class BBSCashIn : BaseFragment(){
                                 Timber.d("isi response sent data member mandiri lkd:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
-                                        sentInsertC2A()
+                                        sentInsertA2C()
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
@@ -756,20 +682,7 @@ class BBSCashIn : BaseFragment(){
                     var code = model.error_code
 
                     if (code == WebParams.SUCCESS_CODE) {
-                        if (isSMSBanking)
-                            showDialog(model)
-                        else if (benef_product_code.equals("MANDIRILKD", ignoreCase = true)) {
-                            dialogBenefLKD(bbsTransModel.tx_id, bbsTransModel.tx_product_code, bbsTransModel.tx_product_name, bbsTransModel.tx_bank_code,
-                                    bbsTransModel.amount, bbsTransModel.admin_fee, bbsTransModel.total_amount, bbsTransModel.tx_bank_name,
-                                    bbsTransModel.max_resend_token, bbsTransModel.benef_acct_no, bbsTransModel.benef_product_value_name, bbsTransModel.benef_product_value_code)
-                        } else {
-                            if (!isAgentLKD) {
-                                isOwner = true
-                                changeToDataMandiriLKD(bbsTransModel.tx_id, bbsTransModel.tx_product_code, bbsTransModel.tx_product_name, bbsTransModel.tx_bank_code,
-                                        bbsTransModel.amount, bbsTransModel.admin_fee, bbsTransModel.total_amount, bbsTransModel.tx_bank_name,
-                                        bbsTransModel.max_resend_token, bbsTransModel.benef_acct_no, bbsTransModel.benef_product_value_name, bbsTransModel.benef_product_value_code, isOwner)
-                            } else changeToConfirm(bbsTransModel)
-                        }
+                        changeToConfirm(bbsTransModel)
                     } else {
                         val codeMsg = model.error_code
                         if (code == "0059" || code == "0164") {
@@ -791,7 +704,7 @@ class BBSCashIn : BaseFragment(){
                                     mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true)
                                     activity!!.startActivityForResult(mI, MainPage.ACTIVITY_RESULT)
                                 }
-                                dialogFrag.setTargetFragment(this@BBSCashIn, 0)
+                                dialogFrag.setTargetFragment(this@BBSCashOut, 0)
                                 dialogFrag.show(fragmentManager, AlertDialogFrag.TAG)
                             }
                         } else {
@@ -831,9 +744,7 @@ class BBSCashIn : BaseFragment(){
 
     private fun changeToConfirm(model: BBSTransModel) {
         val mArgs = Bundle()
-        if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true)) {
-            mArgs.putString(DefineValue.BENEF_CITY, cityName)
-        }
+
         mArgs.putString(DefineValue.PRODUCT_H2H, source_product_h2h)
         mArgs.putString(DefineValue.PRODUCT_TYPE, source_product_type)
         mArgs.putString(DefineValue.PRODUCT_CODE, model.tx_product_code)
@@ -857,16 +768,17 @@ class BBSCashIn : BaseFragment(){
         mArgs.putString(DefineValue.SOURCE_ACCT, source_product_name)
         mArgs.putString(DefineValue.MAX_RESEND, model.max_resend_token)
         mArgs.putString(DefineValue.TRANSACTION, transaksi)
-        mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code)
+        mArgs.putString(DefineValue.BENEF_BANK_CODE, benef_product_code)
         mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, tcashValidation)
         mArgs.putBoolean(DefineValue.MANDIRI_LKD_VALIDATION, mandiriLKDValidation)
         mArgs.putBoolean(DefineValue.CODE_SUCCESS, codeSuccess)
+        mArgs.putString(DefineValue.USER_ID, noSource)
         proses_btn.isEnabled = true
-        cashInHistory()
-        val mFrag: Fragment = BBSCashInConfirm()
+        cashOutHistory()
+        val mFrag: Fragment = BBSCashOutConfirm()
         mFrag.arguments = mArgs
         fragmentManager!!.beginTransaction().addToBackStack(BBSTransaksiInformasi.TAG)
-                .replace(R.id.bbsTransaksiFragmentContent, mFrag, BBSCashInConfirm.TAG).commit()
+                .replace(R.id.bbsTransaksiFragmentContent, mFrag, BBSCashOutConfirm.TAG).commit()
         ToggleKeyboard.hide_keyboard(activity)
     }
 
@@ -905,8 +817,7 @@ class BBSCashIn : BaseFragment(){
         mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, tcashValidation)
         mArgs.putBoolean(DefineValue.CODE_SUCCESS, codeSuccess)
         proses_btn.isEnabled = true
-        cashInHistory()
-        dismissProgressDialog()
+        cashOutHistory()
         val mFrag: Fragment = FragDataC2A()
         mFrag.arguments = mArgs
         fragmentManager!!.beginTransaction().addToBackStack(BBSTransaksiInformasi.TAG)
@@ -914,27 +825,25 @@ class BBSCashIn : BaseFragment(){
         ToggleKeyboard.hide_keyboard(activity)
     }
 
-    private fun cashInHistory() {
-        if (cashInHistoryModel == null) {
-            cashInHistoryModel = CashInHistoryModel()
+    private fun cashOutHistory() {
+        if (cashOutHistoryModel == null) {
+            cashOutHistoryModel = CashOutHistoryModel()
         }
-        cashInHistoryModel!!.amount = amount
-        cashInHistoryModel!!.benef_product_code = benef_product_code
-        cashInHistoryModel!!.benef_product_name = benef_product_name
-        cashInHistoryModel!!.benef_product_type = benef_product_type
-        cashInHistoryModel!!.benef_product_value_code = noBenef
-        cashInHistoryModel!!.source_product_code = source_product_code
-        cashInHistoryModel!!.source_product_name = source_product_name
-        cashInHistoryModel!!.source_product_type = source_product_type
-        cashInHistoryModel!!.source_product_h2h = source_product_h2h
-        cashInHistoryModel!!.pesan = message_value.text.toString()
-        if (!benef_product_type.equals(DefineValue.EMO, ignoreCase = true)) {
-            cashInHistoryModel!!.benef_product_value_city = cityName
-        }
+        cashOutHistoryModel!!.amount = amount
+        cashOutHistoryModel!!.benef_product_code = benef_product_code
+        cashOutHistoryModel!!.benef_product_name = benef_product_name
+        cashOutHistoryModel!!.benef_product_type = benef_product_type
+        cashOutHistoryModel!!.source_product_code = source_product_code
+        cashOutHistoryModel!!.source_product_name = source_product_name
+        cashOutHistoryModel!!.source_product_type = source_product_type
+        cashOutHistoryModel!!.source_product_h2h = source_product_h2h
+        cashOutHistoryModel!!.member_shop_phone = noSource
+        cashOutHistoryModel!!.pesan = message_value.text.toString()
+
         val gson = Gson()
-        val jsonObject = gson.toJson(cashInHistoryModel, CashInHistoryModel::class.java)
+        val jsonObject = gson.toJson(cashOutHistoryModel, CashOutHistoryModel::class.java)
         val editor = sp.edit()
-        editor.putString(DefineValue.CASH_IN_HISTORY_TEMP, jsonObject)
+        editor.putString(DefineValue.CASH_OUT_HISTORY_TEMP, jsonObject)
         editor.apply()
     }
 
@@ -1005,8 +914,8 @@ class BBSCashIn : BaseFragment(){
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_information -> {
-                if (transaksi.equals(getString(R.string.cash_in), ignoreCase = true))
-                    showTutorialCashIn()
+                if (transaksi.equals(getString(R.string.cash_out), ignoreCase = true))
+                    showTutorialCashOut()
                 return true
             }
             android.R.id.home -> {
@@ -1018,16 +927,16 @@ class BBSCashIn : BaseFragment(){
     }
 
     private fun validasiTutorial() {
-        if (sp.contains(DefineValue.TUTORIAL_CASHIN)) {
-            val isFirstTime = sp.getBoolean(DefineValue.TUTORIAL_CASHIN, false)
-            if (isFirstTime) showTutorialCashIn()
+        if (sp.contains(DefineValue.TUTORIAL_CASHOUT)) {
+            val isFirstTime = sp.getBoolean(DefineValue.TUTORIAL_CASHOUT, false)
+            if (isFirstTime) showTutorialCashOut()
         } else
-            showTutorialCashIn()
+            showTutorialCashOut()
     }
 
-    private fun showTutorialCashIn() {
+    private fun showTutorialCashOut() {
         val intent = Intent(activity, TutorialActivity::class.java)
-        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_cash_in)
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_cash_out)
         startActivity(intent)
     }
 
