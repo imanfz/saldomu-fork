@@ -166,7 +166,7 @@ class BBSCashIn : BaseFragment(){
 
         initializeDataBBSCTA()
 
-        if (cashInHistoryModel != null) {
+        if (cashInHistoryModel != null && sp.getString(DefineValue.USERID_PHONE,"").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,""))) {
             amount_transfer_edit_text.setText(cashInHistoryModel!!.amount)
 
             for (i in aListAgent!!.indices) {
@@ -384,10 +384,10 @@ class BBSCashIn : BaseFragment(){
         tv_transfer_destination.text = benef_product_name
         iv_transfer_destination.setImageResource(id)
 
-        if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true))
-            city_benef_value.visibility = View.VISIBLE
-        else
-            city_benef_value.visibility = View.GONE
+//        if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true))
+//            city_benef_value.visibility = View.VISIBLE
+//        else
+//            city_benef_value.visibility = View.GONE
     }
 
     private fun inputValidation(): Boolean {
@@ -408,20 +408,20 @@ class BBSCashIn : BaseFragment(){
                 return false
             }
         }
-        if (city_benef_value.visibility == View.VISIBLE) {
-            if (city_benef_value.text.toString() == "") {
-                city_benef_value.requestFocus()
-                city_benef_value.error = getString(R.string.destination_city_empty_message)
-                return false
-            } else if (!list_name_bbs_cities!!.contains(city_benef_value.text.toString())) {
-                city_benef_value.requestFocus()
-                city_benef_value.error = getString(R.string.city_not_found_message)
-                return false
-            } else {
-                cityAutocompletePosition = list_name_bbs_cities!!.indexOf(city_benef_value.text.toString())
-                city_benef_value.error = null
-            }
-        }
+//        if (city_benef_value.visibility == View.VISIBLE) {
+//            if (city_benef_value.text.toString() == "") {
+//                city_benef_value.requestFocus()
+//                city_benef_value.error = getString(R.string.destination_city_empty_message)
+//                return false
+//            } else if (!list_name_bbs_cities!!.contains(city_benef_value.text.toString())) {
+//                city_benef_value.requestFocus()
+//                city_benef_value.error = getString(R.string.city_not_found_message)
+//                return false
+//            } else {
+//                cityAutocompletePosition = list_name_bbs_cities!!.indexOf(city_benef_value.text.toString())
+//                city_benef_value.error = null
+//            }
+//        }
         return true
     }
 
@@ -577,7 +577,7 @@ class BBSCashIn : BaseFragment(){
     }
 
     fun showDialogLimit(message: String) {
-        dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.limit_dialog_title),
+        dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.error),
                 message
         ) { v, isLongClick -> dialog!!.dismiss() }
         dialog!!.setCanceledOnTouchOutside(false)
@@ -906,6 +906,7 @@ class BBSCashIn : BaseFragment(){
         mArgs.putBoolean(DefineValue.CODE_SUCCESS, codeSuccess)
         proses_btn.isEnabled = true
         cashInHistory()
+        dismissProgressDialog()
         val mFrag: Fragment = FragDataC2A()
         mFrag.arguments = mArgs
         fragmentManager!!.beginTransaction().addToBackStack(BBSTransaksiInformasi.TAG)
