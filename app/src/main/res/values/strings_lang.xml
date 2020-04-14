@@ -972,6 +972,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="number_hp_destination">Destination Mobile Number</string>
     <string name="number_hp_member">Customer Mobile Number</string>
     <string name="number_hp_destination_hint">Destination Mobile Number</string>
+    <string name="number_hp_source_hint">Source Mobile Number</string>
     <string name="remark_hint">Message (opsional)</string>
     <string name="additionalFee_hint">Service Charge (opsional)</string>
     <string name="cash_in">Cash In</string>
@@ -1004,7 +1005,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="no_hp_pengirim_validation">sender phone number is required!</string>
     <string name="community_empty">There is no community list</string>
     <string name="remark">Message</string>
-    <string name="cobbs_kode_tarik_tunai">Cash Out Code</string>
+    <string name="kode_tarik_tunai">Cash Out Code</string>
     <string name="no_tcash">No. Handphone TCASH Agen</string>
     <string name="no_member">Customer Mobile Number</string>
     <string name="no_member_hint">Enter member mobile number</string>

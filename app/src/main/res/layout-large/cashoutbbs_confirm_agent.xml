@@ -328,7 +328,7 @@
                 >
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cobbs_kode_tarik_tunai"
+                    android:text="@string/kode_tarik_tunai"
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
                     android:id="@+id/tv_kode"
