@@ -1,7 +1,10 @@
 package com.sgo.saldomu.securities;
 
+import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 
 import java.io.ByteArrayInputStream;
@@ -11,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -85,22 +89,30 @@ public class AES {
         return bOut.toByteArray();
     }
 
-    private static String encryptAESString(String userId, String message){
+    public static String encryptAES(String userID, String message, String link){
+//        String key = UUID.randomUUID()+
+//                DateTimeFormat.getCurrentDateTime()+
+//                BuildConfig.APP_ID+
+//                link+
+//                MyApiClient.COMM_ID+
+//                userID;
+        String key = "2491b236-71e0-4c3b-96f3-7ed7cc9b3d6c"+
+                "2020-04-16 11:28:28"+
+                BuildConfig.APP_ID+
+                link+
+                MyApiClient.COMM_ID+
+                userID;
+        key = Md5.hashMd5(key);
+        byte[] messageBytes = message.getBytes();
 
-        byte[] MesageBytes = message.getBytes();
-
-
-        String dkey = userId +"_=_"+ MyApiClient.COMM_ID + "_=_" + MyApiClient.APP_ID +
-                "_=_" + "app590";
-
-        byte[] KeyBytes = dkey.getBytes();
-        byte[] IvBytes = "5904pp3MoN3y".getBytes();
+        byte[] keyBytes = key.getBytes();
+        byte[] ivBytes = "app590saldomu980".getBytes();
 
         AES aesHelper;
         try {
-            aesHelper = new AES(KeyBytes, IvBytes);
-            byte[] encryptedMsg = aesHelper.encrypt(MesageBytes);
-            return new String(encryptedMsg);
+            aesHelper = new AES(keyBytes, ivBytes);
+            byte[] encryptedMsg = aesHelper.encrypt(messageBytes);
+            return new String(Base64.encodeBase64(encryptedMsg));
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | IOException | InvalidAlgorithmParameterException | InvalidKeyException e) {
             e.printStackTrace();
         }
@@ -119,17 +131,21 @@ public class AES {
         }
     }
 
-    public static String aes_encrypt(String password, String userId) throws IllegalBlockSizeException {
+    public static String aes_encrypt(String userId, String password) throws IllegalBlockSizeException {
         try {
 
-            String dkey = userId +"_=_"+ MyApiClient.COMM_ID + "_=_" + MyApiClient.APP_ID +
-                    "_=_" + "app590";
+            String key = UUID.randomUUID()+
+                    DateTimeFormat.getCurrentDateTime()+
+                    BuildConfig.APP_ID+
+                    MyApiClient.LINK_LOGIN+
+                    MyApiClient.COMM_ID+
+                    userId;
 //            Timber.d(dkey);
-            dkey = Md5.hashMd5(dkey);
+            key = Md5.hashMd5(key);
 //            Timber.d(dkey);
 
             Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, generateMySQLAESKey(dkey,"UTF-8"));
+            cipher.init(Cipher.ENCRYPT_MODE, generateMySQLAESKey(key,"UTF-8"));
 
 //            Timber.d(password);
             byte[] cleartext = password.getBytes("UTF-8");

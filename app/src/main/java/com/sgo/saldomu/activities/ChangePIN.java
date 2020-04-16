@@ -9,7 +9,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -20,8 +22,9 @@ import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
-import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.securities.AES;
+import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.venmo.android.pin.PinFragment;
@@ -33,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -151,18 +155,18 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
 
             extraSignature = memberIDLogin + currentPin + newPin;
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CHANGE_PIN, extraSignature);
+            String link = MyApiClient.LINK_CHANGE_PIN;
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link, extraSignature);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, commIDLogin);
-            params.put(WebParams.OLD_PIN, RSA.opensslEncrypt(currentPin));
-            params.put(WebParams.NEW_PIN, RSA.opensslEncrypt(newPin));
-            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(confirmPin));
+            params.put(WebParams.OLD_PIN, RSA.opensslEncrypt(userPhoneID,currentPin,link.substring(link.indexOf("saldomu/"))));
+            params.put(WebParams.NEW_PIN, RSA.opensslEncrypt(userPhoneID,newPin,link.substring(link.indexOf("saldomu/"))));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(userPhoneID,confirmPin,link.substring(link.indexOf("saldomu/"))));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params change pin:" + params.toString());
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CHANGE_PIN, params,
+            RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     new ObjListeners() {
                         @Override
                         public void onResponses(JSONObject response) {
@@ -206,7 +210,8 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            Timber.e(throwable.getMessage());
+                            progdialog.dismiss();
                         }
 
                         @Override
