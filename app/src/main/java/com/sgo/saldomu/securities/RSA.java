@@ -4,6 +4,8 @@ import android.util.Base64;
 
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.UUID;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -27,6 +30,38 @@ public class RSA {
         String encryptedValue   = "";
         String strKey = BuildConfig.OPENSSL_ENCRYPT_KEY;
         String strIv = BuildConfig.OPENSSL_ENCRYPT_IV;
+
+        try {
+            Cipher ciper = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "AES");
+            IvParameterSpec iv = new IvParameterSpec(strIv.getBytes(), 0, ciper.getBlockSize());
+
+            // Encrypt
+            ciper.init(Cipher.ENCRYPT_MODE, key, iv);
+            byte[] encryptedCiperBytes = ciper.doFinal(data.getBytes());
+
+            //String s = new String(encryptedCiperBytes);
+            encryptedValue = Base64.encodeToString(encryptedCiperBytes, Base64.DEFAULT);
+            encryptedValue  = encryptedValue.trim();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        return encryptedValue;
+    }
+
+    public static String opensslEncrypt(String userID, String data, String link) {
+
+        String encryptedValue   = "";
+        String strKey = "2491b236-71e0-4c3b-96f3-7ed7cc9b3d6c"+
+                "2020-04-16 11:28:28"+
+                BuildConfig.APP_ID+
+                link+
+                MyApiClient.COMM_ID+
+                userID;
+        strKey = Md5.hashMd5(strKey);
+//        data = Md5.hashMd5(data);
+//        String strIv = BuildConfig.OPENSSL_ENCRYPT_IV;
+        String strIv = "app590saldomu980";
 
         try {
             Cipher ciper = Cipher.getInstance("AES/CBC/PKCS5Padding");
