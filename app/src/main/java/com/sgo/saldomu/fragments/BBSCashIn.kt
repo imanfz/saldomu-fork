@@ -571,7 +571,7 @@ class BBSCashIn : BaseFragment(){
             }
 
             override fun onComplete() {
-                dismissProgressDialog()
+//                dismissProgressDialog()
             }
         })
     }
