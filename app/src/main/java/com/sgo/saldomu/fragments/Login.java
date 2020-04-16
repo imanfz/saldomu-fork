@@ -52,10 +52,14 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
 import com.sgo.saldomu.models.retrofit.LoginModel;
+import com.sgo.saldomu.securities.AES;
+import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.securities.SHA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import java.util.List;
+import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -268,8 +272,8 @@ public class Login extends BaseFragment implements View.OnClickListener {
         toggleKeyboard.hide_keyboard(getActivity());
         try {
             String comm_id = MyApiClient.COMM_ID;
-//            String encrypted_password = RSA.opensslEncrypt(passLoginValue.getText().toString()
-//                    , BuildConfig.OPENSSL_ENCRYPT_KEY, BuildConfig.OPENSSL_ENCRYPT_IV);
+            String password = passLoginValue.getText().toString();
+            String encrypted_password = RSA.opensslEncrypt(password);
 
             btnLogin.setEnabled(false);
             userIDValue.setEnabled(false);
@@ -282,16 +286,16 @@ public class Login extends BaseFragment implements View.OnClickListener {
             if (isFingerprint) {
                 extraSignature = sp.getString(DefineValue.EXTRA_SIGNATURE, "");
             } else {
-                extraSignature = userIDfinale + passLoginValue.getText().toString();
+                extraSignature = userIDfinale + password;
             }
             params = RetrofitService.getInstance()
                     .getSignatureSecretKey(MyApiClient.LINK_LOGIN, extraSignature);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userIDfinale);
             if (isFingerprint) {
                 params.put(WebParams.PASSWORD_LOGIN, sp.getString(DefineValue.USER_PASSWORD, ""));
             } else {
-                params.put(WebParams.PASSWORD_LOGIN, RSA.opensslEncrypt(passLoginValue.getText().toString()));
+                params.put(WebParams.PASSWORD_LOGIN, encrypted_password);
             }
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
@@ -326,7 +330,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         sp.edit().putString(DefineValue.IS_POS, is_pos).commit();
                         sp.edit().putString(DefineValue.EXTRA_SIGNATURE, extraSignature).commit();
                         if (!isFingerprint)
-                            sp.edit().putString(DefineValue.USER_PASSWORD, RSA.opensslEncrypt(passLoginValue.getText().toString())).commit();
+                            sp.edit().putString(DefineValue.USER_PASSWORD, encrypted_password).commit();
 //                        if (checkCommunity(loginModel.getCommunity())) {
 //                            if (unregist_member.equals("N")) {
                                 Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
