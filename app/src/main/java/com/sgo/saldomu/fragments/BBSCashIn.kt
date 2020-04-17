@@ -48,7 +48,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import java.util.*
 
-class BBSCashIn : BaseFragment(){
+class BBSCashIn : BaseFragment() {
 
     private val CTA = "CTA"
     private val SOURCE = "SOURCE"
@@ -82,6 +82,7 @@ class BBSCashIn : BaseFragment(){
     private var lkd_product_code: String? = null
     private var cityId: String = ""
     private var cityName: String = ""
+    private var defaultAmount: String = ""
 
     private var cityAutocompletePosition = -1
 
@@ -132,9 +133,10 @@ class BBSCashIn : BaseFragment(){
         if (bundle != null) {
             transaksi = bundle.getString(DefineValue.TRANSACTION)
             type = bundle.getString(DefineValue.TYPE, "")
+            defaultAmount = bundle.getString(DefineValue.AMOUNT, "")
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE, "")
             enabledAdditionalFee = bundle.getString(DefineValue.ENABLED_ADDITIONAL_FEE) == "Y"
-            noBenef = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID,null)
+            noBenef = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, "")
 
             defaultProductCode = ""
             if (bundle.containsKey(DefineValue.PRODUCT_CODE)) {
@@ -144,6 +146,7 @@ class BBSCashIn : BaseFragment(){
             val gson = Gson()
             val cashIn = sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "")
             cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel::class.java)
+
         } else {
             fragmentManager!!.popBackStack()
         }
@@ -165,31 +168,36 @@ class BBSCashIn : BaseFragment(){
         aListMember = ArrayList()
 
         initializeDataBBSCTA()
+        if (defaultAmount != "" || noHpPengirim != "" ) run {
+            amount_transfer_edit_text.setText(defaultAmount)
+            no_benef_value.setText(noHpPengirim)
+        }
+        else{
+            if (cashInHistoryModel != null && sp.getString(DefineValue.USERID_PHONE, "").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""))) {
+                amount_transfer_edit_text.setText(cashInHistoryModel!!.amount)
 
-        if (cashInHistoryModel != null && sp.getString(DefineValue.USERID_PHONE,"").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,""))) {
-            amount_transfer_edit_text.setText(cashInHistoryModel!!.amount)
-
-            for (i in aListAgent!!.indices) {
-                if (aListAgent!![i]["txt"]!!.contains(source_product_name!!)) {
-                    changeSource(Integer.parseInt(aListAgent!![i]["flag"]!!),
-                            cashInHistoryModel!!.source_product_type,
-                            cashInHistoryModel!!.source_product_code,
-                            cashInHistoryModel!!.source_product_name,
-                            cashInHistoryModel!!.source_product_h2h)
+                for (i in aListAgent!!.indices) {
+                    if (aListAgent!![i]["txt"]!!.contains(source_product_name!!)) {
+                        changeSource(Integer.parseInt(aListAgent!![i]["flag"]!!),
+                                cashInHistoryModel!!.source_product_type,
+                                cashInHistoryModel!!.source_product_code,
+                                cashInHistoryModel!!.source_product_name,
+                                cashInHistoryModel!!.source_product_h2h)
+                    }
                 }
-            }
 
-            for (i in aListMember!!.indices) {
-                if (aListMember!![i]["txt"]!!.contains(benef_product_name!!)) {
-                    changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!),
-                            cashInHistoryModel!!.benef_product_type,
-                            cashInHistoryModel!!.benef_product_code,
-                            cashInHistoryModel!!.benef_product_name)
+                for (i in aListMember!!.indices) {
+                    if (aListMember!![i]["txt"]!!.contains(benef_product_name!!)) {
+                        changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!),
+                                cashInHistoryModel!!.benef_product_type,
+                                cashInHistoryModel!!.benef_product_code,
+                                cashInHistoryModel!!.benef_product_name)
+                    }
                 }
-            }
 
-            no_benef_value.setText(cashInHistoryModel!!.benef_product_value_code)
-            message_value.setText(cashInHistoryModel!!.pesan)
+                no_benef_value.setText(cashInHistoryModel!!.benef_product_value_code)
+                message_value.setText(cashInHistoryModel!!.pesan)
+            }
         }
         no_source_value.visibility = View.GONE
         if (noBenef != "" && noBenef != null)
@@ -266,9 +274,18 @@ class BBSCashIn : BaseFragment(){
                     .equalTo(WebParams.COMM_TYPE, BENEF)
                     .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll()
         } else {
+            if(defaultProductCode!="")
+            {
+                listBankBenef = realmBBS!!.where(BBSBankModel::class.java)
+                        .equalTo(WebParams.SCHEME_CODE, CTA)
+                        .equalTo(WebParams.COMM_TYPE, BENEF)
+                        .equalTo(WebParams.PRODUCT_CODE, defaultProductCode).findAll()
+            }
+            else {
             listBankBenef = realmBBS!!.where(BBSBankModel::class.java)
                     .equalTo(WebParams.SCHEME_CODE, CTA)
                     .equalTo(WebParams.COMM_TYPE, BENEF).findAll()
+            }
         }
         setBBSCity()
         setMember(listBankBenef)
@@ -310,6 +327,8 @@ class BBSCashIn : BaseFragment(){
         aListMember!!.addAll(BbsUtil.mappingProductCodeIcons(bankMember))
         for (i in bankMember!!.indices) {
             if (bankMember[i].product_name.toLowerCase(Locale.getDefault()).contains("saldomu")) {
+                changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name)
+            }else{
                 changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name)
             }
         }
