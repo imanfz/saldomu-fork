@@ -173,7 +173,8 @@ class BBSCashIn : BaseFragment() {
             no_benef_value.setText(noHpPengirim)
         }
         else{
-            if (cashInHistoryModel != null && sp.getString(DefineValue.USERID_PHONE, "").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""))) {
+//            if (cashInHistoryModel != null && sp.getString(DefineValue.USERID_PHONE, "").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""))) {
+            if (cashInHistoryModel != null) {
                 amount_transfer_edit_text.setText(cashInHistoryModel!!.amount)
 
                 for (i in aListAgent!!.indices) {
