@@ -72,6 +72,7 @@ class BBSCashOut : BaseFragment() {
     private var benef_product_code: String? = null
     private var benef_product_name: String? = null
     private var defaultProductCode: String? = null
+    private var defaultAmount: String? = null
     private var productValue: String? = null
     private var noSource: String? = null
     private var paymentRemark: String? = null
@@ -125,6 +126,7 @@ class BBSCashOut : BaseFragment() {
             transaksi = bundle.getString(DefineValue.TRANSACTION)
             type = bundle.getString(DefineValue.TYPE, "")
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE, "")
+            defaultAmount = bundle.getString(DefineValue.AMOUNT, "")
             enabledAdditionalFee = bundle.getString(DefineValue.ENABLED_ADDITIONAL_FEE) == "Y"
             noSource = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, null)
 
@@ -157,31 +159,36 @@ class BBSCashOut : BaseFragment() {
         aListMember = ArrayList()
 
         initializeDataBBSATC()
+        if (defaultAmount != "" || noHpPengirim != "") run {
+            amount_transfer_edit_text.setText(defaultAmount)
+            no_benef_value.setText(noHpPengirim)
+        }
+        else {
+            if (cashOutHistoryModel != null && sp.getString(DefineValue.USERID_PHONE, "").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""))) {
+                amount_transfer_edit_text.setText(cashOutHistoryModel!!.amount)
 
-        if (cashOutHistoryModel != null && sp.getString(DefineValue.USERID_PHONE, "").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""))) {
-            amount_transfer_edit_text.setText(cashOutHistoryModel!!.amount)
-
-            for (i in aListAgent!!.indices) {
-                if (aListAgent!![i]["txt"]!!.contains(source_product_name!!)) {
-                    changeSource(Integer.parseInt(aListAgent!![i]["flag"]!!),
-                            cashOutHistoryModel!!.source_product_type,
-                            cashOutHistoryModel!!.source_product_code,
-                            cashOutHistoryModel!!.source_product_name,
-                            cashOutHistoryModel!!.source_product_h2h)
+                for (i in aListAgent!!.indices) {
+                    if (aListAgent!![i]["txt"]!!.contains(source_product_name!!)) {
+                        changeSource(Integer.parseInt(aListAgent!![i]["flag"]!!),
+                                cashOutHistoryModel!!.source_product_type,
+                                cashOutHistoryModel!!.source_product_code,
+                                cashOutHistoryModel!!.source_product_name,
+                                cashOutHistoryModel!!.source_product_h2h)
+                    }
                 }
-            }
 
-            for (i in aListMember!!.indices) {
-                if (aListMember!![i]["txt"]!!.contains(benef_product_name!!)) {
-                    changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!),
-                            cashOutHistoryModel!!.benef_product_type,
-                            cashOutHistoryModel!!.benef_product_code,
-                            cashOutHistoryModel!!.benef_product_name)
+                for (i in aListMember!!.indices) {
+                    if (aListMember!![i]["txt"]!!.contains(benef_product_name!!)) {
+                        changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!),
+                                cashOutHistoryModel!!.benef_product_type,
+                                cashOutHistoryModel!!.benef_product_code,
+                                cashOutHistoryModel!!.benef_product_name)
+                    }
                 }
-            }
 
-            no_source_value.setText(cashOutHistoryModel!!.member_shop_phone)
-            message_value.setText(cashOutHistoryModel!!.pesan)
+                no_source_value.setText(cashOutHistoryModel!!.member_shop_phone)
+                message_value.setText(cashOutHistoryModel!!.pesan)
+            }
         }
         no_benef_value.visibility = View.GONE
         city_benef_value.visibility = View.GONE
@@ -254,9 +261,15 @@ class BBSCashOut : BaseFragment() {
                     .equalTo(WebParams.COMM_TYPE, SOURCE)
                     .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll()
         } else {
-            listBankSource = realmBBS!!.where(BBSBankModel::class.java)
-                    .equalTo(WebParams.SCHEME_CODE, ATC)
-                    .equalTo(WebParams.COMM_TYPE, SOURCE).findAll()
+            if (defaultProductCode != "") {
+                listBankSource = realmBBS!!.where(BBSBankModel::class.java)
+                        .equalTo(WebParams.SCHEME_CODE, ATC)
+                        .equalTo(WebParams.COMM_TYPE, BENEF)
+                        .equalTo(WebParams.PRODUCT_CODE, defaultProductCode).findAll()
+            } else
+                listBankSource = realmBBS!!.where(BBSBankModel::class.java)
+                        .equalTo(WebParams.SCHEME_CODE, ATC)
+                        .equalTo(WebParams.COMM_TYPE, SOURCE).findAll()
         }
         setMember(listBankSource)
         setAgent(listBankBenef)
@@ -272,6 +285,8 @@ class BBSCashOut : BaseFragment() {
         aListMember!!.addAll(BbsUtil.mappingProductCodeIcons(bankMember))
         for (i in bankMember!!.indices) {
             if (bankMember[i].product_name.toLowerCase(Locale.getDefault()).contains("saldomu")) {
+                changeSource(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name, bankMember[i].product_h2h)
+            }else{
                 changeSource(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name, bankMember[i].product_h2h)
             }
         }
@@ -497,7 +512,7 @@ class BBSCashOut : BaseFragment() {
             }
 
             override fun onComplete() {
-                dismissProgressDialog()
+//                dismissProgressDialog()
             }
         })
     }
