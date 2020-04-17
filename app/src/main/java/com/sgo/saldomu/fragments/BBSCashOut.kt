@@ -164,7 +164,7 @@ class BBSCashOut : BaseFragment() {
             no_benef_value.setText(noHpPengirim)
         }
         else {
-            if (cashOutHistoryModel != null && sp.getString(DefineValue.USERID_PHONE, "").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""))) {
+            if (cashOutHistoryModel != null) {
                 amount_transfer_edit_text.setText(cashOutHistoryModel!!.amount)
 
                 for (i in aListAgent!!.indices) {
