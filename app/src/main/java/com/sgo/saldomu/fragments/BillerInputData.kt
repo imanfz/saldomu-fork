@@ -965,21 +965,23 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         try {
             showProgressDialog()
 
+            val link = MyApiClient.LINK_INSERT_TRANS_TOPUP
+            val subStringLink = link.substring(link.indexOf("saldomu/"))
             extraSignature = tx_id + biller_comm_code + mTempBank?.product_code + tokenValue
-
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature)
-
+            val params = RetrofitService.getInstance().getSignature(link, extraSignature)
+            val uuid: String = params[WebParams.RC_UUID].toString()
+            val dateTime: String = params[WebParams.RC_DTIME].toString()
             params[WebParams.TX_ID] = tx_id
             params[WebParams.PRODUCT_CODE] = mTempBank?.product_code
             params[WebParams.COMM_CODE] = biller_comm_code
             params[WebParams.COMM_ID] = biller_comm_id
             params[WebParams.MEMBER_ID] = sp.getString(DefineValue.MEMBER_ID, "")
-            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncrypt(tokenValue)
+            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink)
             params[WebParams.USER_ID] = userPhoneID
 
             Timber.d("isi params insertTrxTOpupSGOL:$params")
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     object : ResponseListener {
                         override fun onResponses(response: JsonObject) {
                             val model = getGson().fromJson(response, SentPaymentBillerModel::class.java)

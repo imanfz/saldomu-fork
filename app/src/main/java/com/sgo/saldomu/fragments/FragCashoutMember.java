@@ -193,7 +193,7 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
                     startActivityForResult(i, MainPage.REQUEST_FINISH);
                 } else if (isOTP) {
                     if (inputValidation()) {
-                        inquiryTokenATC(RSA.opensslEncrypt(tokenValue.getText().toString()), txId);
+                        inquiryTokenATC(tokenValue.getText().toString(), txId);
                     }
                 } else {
                     Toast.makeText(getActivity(), "Authentication type kosong", Toast.LENGTH_LONG).show();
@@ -340,21 +340,26 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
         }
     }
 
-    public void inquiryTokenATC(String _token, String _tx_id) {
+    public void inquiryTokenATC(String token, String txId) {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_TOKEN_ATC);
-
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
-            params.put(WebParams.TX_ID, _tx_id);
+            String link = MyApiClient.LINK_INQUIRY_TOKEN_ATC;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, token, subStringLink));
+            params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.MEMBER_ID, memberID);
             Timber.d("isi params sent inquiry token ATC:" + params.toString());
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_INQUIRY_TOKEN_ATC, params,
+            RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     new ObjListeners() {
                         @Override
                         public void onResponses(JSONObject response) {

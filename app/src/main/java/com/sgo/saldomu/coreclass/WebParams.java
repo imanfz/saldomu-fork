@@ -32,7 +32,7 @@ public class WebParams {
     public static String MAX_RESEND = "max_resend";
     public static String COUNT_RESEND = "count_resend";
 
-    public static String PASSWORD_LOGIN = "password";
+    public static String PASSWORD = "password";
     public static String FLAG_LOGIN = "flag_login";
     public static String USER_NAME = "user_name";
     public static String COMMUNITY= "community";

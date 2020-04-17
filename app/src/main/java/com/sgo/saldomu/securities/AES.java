@@ -89,36 +89,6 @@ public class AES {
         return bOut.toByteArray();
     }
 
-    public static String encryptAES(String userID, String message, String link){
-//        String key = UUID.randomUUID()+
-//                DateTimeFormat.getCurrentDateTime()+
-//                BuildConfig.APP_ID+
-//                link+
-//                MyApiClient.COMM_ID+
-//                userID;
-        String key = "2491b236-71e0-4c3b-96f3-7ed7cc9b3d6c"+
-                "2020-04-16 11:28:28"+
-                BuildConfig.APP_ID+
-                link+
-                MyApiClient.COMM_ID+
-                userID;
-        key = Md5.hashMd5(key);
-        byte[] messageBytes = message.getBytes();
-
-        byte[] keyBytes = key.getBytes();
-        byte[] ivBytes = "app590saldomu980".getBytes();
-
-        AES aesHelper;
-        try {
-            aesHelper = new AES(keyBytes, ivBytes);
-            byte[] encryptedMsg = aesHelper.encrypt(messageBytes);
-            return new String(Base64.encodeBase64(encryptedMsg));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IOException | InvalidAlgorithmParameterException | InvalidKeyException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private static SecretKeySpec generateMySQLAESKey(String key, String encoding) {
         try {
             byte[] finalKey = new byte[16];

@@ -52,14 +52,10 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
 import com.sgo.saldomu.models.retrofit.LoginModel;
-import com.sgo.saldomu.securities.AES;
-import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
-import com.sgo.saldomu.securities.SHA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import java.util.List;
-import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -273,7 +269,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
         try {
             String comm_id = MyApiClient.COMM_ID;
             String password = passLoginValue.getText().toString();
-            String encrypted_password = RSA.opensslEncrypt(password);
+            String encrypted_password;
+            String link = MyApiClient.LINK_LOGIN;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
 
             btnLogin.setEnabled(false);
             userIDValue.setEnabled(false);
@@ -289,13 +289,16 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 extraSignature = userIDfinale + password;
             }
             params = RetrofitService.getInstance()
-                    .getSignatureSecretKey(MyApiClient.LINK_LOGIN, extraSignature);
+                    .getSignatureSecretKey(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
+            encrypted_password = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, password, subStringLink);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userIDfinale);
             if (isFingerprint) {
-                params.put(WebParams.PASSWORD_LOGIN, sp.getString(DefineValue.USER_PASSWORD, ""));
+                params.put(WebParams.PASSWORD, sp.getString(DefineValue.USER_PASSWORD, ""));
             } else {
-                params.put(WebParams.PASSWORD_LOGIN, encrypted_password);
+                params.put(WebParams.PASSWORD, encrypted_password);
             }
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
@@ -308,7 +311,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
             Timber.d("isi params login:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN, params, new ResponseListener() {
+            RetrofitService.getInstance().PostObjectRequest(link, params, new ResponseListener() {
 
                 @Override
                 public void onResponses(JsonObject response) {

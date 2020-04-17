@@ -254,20 +254,25 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
 
             final Bundle args = getArguments();
 
+            String link = MyApiClient.LINK_INSERT_TRANS_TOPUP;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = txID + args.getString(DefineValue.COMMUNITY_CODE) + productCode + tokenValue;
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.TX_ID, txID);
             params.put(WebParams.PRODUCT_CODE, productCode);
             params.put(WebParams.COMM_CODE, args.getString(DefineValue.COMMUNITY_CODE));
             params.put(WebParams.COMM_ID, args.getString(DefineValue.COMMUNITY_ID));
             params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(tokenValue));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrx Collection:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {

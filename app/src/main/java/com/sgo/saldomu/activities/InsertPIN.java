@@ -163,14 +163,11 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 //                        return PinHelper.doesMatchDefaultPin(getApplicationContext(), input);
                         Timber.d("pin yg di confirm " + input);
                         valuePin = input;
-                        SecurePreferences.Editor mEditor = sp.edit();
                         Intent i = new Intent();
-                        mEditor.putString(DefineValue.PIN_CODE, RSA.opensslEncrypt(input));
                         if (is_md5)
                             i.putExtra(DefineValue.PIN_VALUE, RSA.opensslEncrypt(input));
                         else
                             i.putExtra(DefineValue.PIN_VALUE, input);
-                        mEditor.apply();
                         setResult(RESULT_PIN_VALUE, i);
                         finish();
                         return true;

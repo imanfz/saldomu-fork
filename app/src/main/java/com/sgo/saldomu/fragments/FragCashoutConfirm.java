@@ -183,20 +183,25 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
         }
     }
 
-    public void confirmCashout(String _token){
+    public void confirmCashout(String token){
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            extraSignature = txId+_token;
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_CASHOUT, extraSignature);
+            String link = MyApiClient.LINK_CONFIRM_CASHOUT;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            extraSignature = txId+token;
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, token, subStringLink));
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_CASHOUT, params,
+            RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     new ObjListeners() {
                         @Override
                         public void onResponses(JSONObject response) {

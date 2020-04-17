@@ -412,17 +412,21 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         }
     }
 
-    public void OTPMemberATC(String _token, final String _tx_id) {
+    public void OTPMemberATC(String token, final String tx_id) {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            extraSignature = _tx_id + _token + comm_code;
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_OTP_MEMBER_A2C, extraSignature);
-
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
-            params.put(WebParams.TX_ID, _tx_id);
+            String link = MyApiClient.LINK_BBS_OTP_MEMBER_A2C;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            extraSignature = tx_id + token + comm_code;
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, token, subStringLink));
+            params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.CUSTOMER_ID, userPhoneID);
@@ -431,7 +435,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             params.put(WebParams.RECEIVER_ID, "GOWORLD");
             Timber.d("isi params sent otp member ATC:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_OTP_MEMBER_A2C, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
