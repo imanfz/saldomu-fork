@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -50,7 +49,6 @@ import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
 import com.sgo.saldomu.fragments.IntroPage;
-import com.sgo.saldomu.fragments.Regist1;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
@@ -515,11 +513,18 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
     private void pinLogin(String value_pin) {
         showProgLoading("Sending Data", true);
-        extraSignature = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "") + value_pin;
-        HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_PIN_LOGIN, extraSignature);
+        String link = MyApiClient.LINK_PIN_LOGIN;
+        String subStringLink = link.substring(link.indexOf("saldomu/"));
+        String uuid;
+        String dateTime;
+        String userPhoneID = sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
+        extraSignature = userPhoneID + value_pin;
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(link, extraSignature);
+        uuid = params.get(WebParams.RC_UUID).toString();
+        dateTime = params.get(WebParams.RC_DTIME).toString();
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-        params.put(WebParams.USER_ID, sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
-        params.put(WebParams.USER_PIN, sp.getString(DefineValue.PIN_CODE, ""));
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.USER_PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, value_pin, subStringLink));
         params.put(WebParams.RC_DATETIME, DateTimeFormat.getCurrentDateTime());
         params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
         params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
@@ -528,7 +533,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
         Timber.d("isi param pin login:" + params);
 
-        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_PIN_LOGIN, params, new ObjListeners() {
+        RetrofitService.getInstance().PostJsonObjRequest(link, params, new ObjListeners() {
             @Override
             public void onResponses(JSONObject response) {
                 try {
@@ -572,7 +577,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_LOGIN, extraSignature);
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
         params.put(WebParams.USER_ID, userID);
-        params.put(WebParams.PASSWORD_LOGIN, sp.getString(DefineValue.USER_PASSWORD, ""));
+        params.put(WebParams.PASSWORD, sp.getString(DefineValue.USER_PASSWORD, ""));
         params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
         params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
         params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());

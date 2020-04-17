@@ -177,18 +177,24 @@ public class ForgotPassword extends BaseFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            String link = MyApiClient.LINK_FORGOT_PASSWORD;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = userIDfinale + value_pin;
             HashMap<String, Object> params = RetrofitService.getInstance()
-                    .getSignatureSecretKey(MyApiClient.LINK_FORGOT_PASSWORD, extraSignature);
+                    .getSignatureSecretKey(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.USER_ID, userIDfinale);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.PIN, RSA.opensslEncrypt(value_pin));
+            params.put(WebParams.PIN, RSA.opensslEncrypt(uuid, dateTime, userIDfinale, value_pin, subStringLink));
             params.put(WebParams.IS_EMAIL, is_email);
             params.put(WebParams.IS_SMS, is_sms);
 
             Timber.d(params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_FORGOT_PASSWORD, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {

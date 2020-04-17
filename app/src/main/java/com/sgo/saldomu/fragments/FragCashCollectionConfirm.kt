@@ -98,18 +98,20 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         try {
             showProgressDialog()
 
+            val link = MyApiClient.LINK_CONFIRM_TOKEN_C2R
+            val subStringLink = link.substring(link.indexOf("saldomu/"))
             extraSignature = txId + commId + otp
-
-            params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOKEN_C2R, extraSignature)
-
+            params = RetrofitService.getInstance().getSignature(link, extraSignature)
+            val uuid: String = params[WebParams.RC_UUID].toString()
+            val dateTime: String = params[WebParams.RC_DTIME].toString()
             params[WebParams.TX_ID] = txId
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_ID] = commId
-            params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(otp)
+            params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, otp, subStringLink)
 
             Timber.d("isi params confirmTokenC2R:$params")
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TOKEN_C2R, params,
+            RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) = try {
                             val model = getGson().fromJson(response.toString(), jsonModel::class.java)
@@ -283,20 +285,22 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         try {
             showProgressDialog()
 
+            val link = MyApiClient.LINK_INSERT_TRANS_TOPUP
+            val subStringLink = link.substring(link.indexOf("saldomu/"))
             extraSignature = txId + commCode + productCode + tokenValue
-
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature)
-
+            val params = RetrofitService.getInstance().getSignature(link, extraSignature)
+            val uuid: String = params[WebParams.RC_UUID].toString()
+            val dateTime: String = params[WebParams.RC_DTIME].toString()
             params[WebParams.TX_ID] = txId
             params[WebParams.PRODUCT_CODE] = productCode
             params[WebParams.COMM_CODE] = commCode
             params[WebParams.COMM_ID] = commId
             params[WebParams.MEMBER_ID] = memberIDLogin
-            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncrypt(tokenValue)
+            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink)
             params[WebParams.USER_ID] = userPhoneID
 
             Timber.d("params insert trx : $params")
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     object : ResponseListener {
                         override fun onResponses(response: JsonObject) {
                             val model = getGson().fromJson(response, FailedPinModel::class.java)

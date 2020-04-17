@@ -394,17 +394,23 @@ public class Regist3 extends BaseFragment {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
+            String link = MyApiClient.LINK_CREATE_PASS;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = custID + pass;
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CREATE_PASS, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.PASS, pass);
-            params.put(WebParams.CONF_PASS, confPass);
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(token));
+            params.put(WebParams.PASS, RSA.opensslEncrypt(uuid, dateTime, custID, pass, subStringLink));
+            params.put(WebParams.CONF_PASS, RSA.opensslEncrypt(uuid, dateTime, custID, confPass, subStringLink));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, custID, token, subStringLink));
             params.put(WebParams.CUST_ID, custID);
 
             Timber.d("params create pass:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CREATE_PASS, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -459,17 +465,25 @@ public class Regist3 extends BaseFragment {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            extraSignature = memberID + custID + data.getStringExtra(DefineValue.PIN_VALUE);
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CREATE_PIN, extraSignature);
+            String link = MyApiClient.LINK_CREATE_PIN;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            String pin = data.getStringExtra(DefineValue.PIN_VALUE);
+            String confirmPin = data.getStringExtra(DefineValue.CONF_PIN);
+            extraSignature = memberID + custID + pin;
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.USER_ID, custID);
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.PIN_VALUE)));
-            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.CONF_PIN)));
+            params.put(WebParams.PIN, RSA.opensslEncrypt(uuid, dateTime, custID, pin, subStringLink));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, custID, confirmPin, subStringLink));
 
             Timber.d("params create pin:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CREATE_PIN, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {

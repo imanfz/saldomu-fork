@@ -158,19 +158,26 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
-            extraSignature = memberIDLogin + et_pass_current.getText().toString() + et_pass_new.getText().toString();
-
+            String link = MyApiClient.LINK_CHANGE_PASSWORD;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            String oldPassword = et_pass_current.getText().toString();
+            String newPassword = et_pass_new.getText().toString();
+            extraSignature = memberIDLogin + oldPassword + newPassword;
             HashMap<String, Object> params = RetrofitService.getInstance()
-                    .getSignature(MyApiClient.LINK_CHANGE_PASSWORD, extraSignature);
+                    .getSignature(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.OLD_PASSWORD, RSA.opensslEncrypt(et_pass_current.getText().toString()));
-            params.put(WebParams.NEW_PASSWORD, RSA.opensslEncrypt(et_pass_new.getText().toString()));
+            params.put(WebParams.OLD_PASSWORD, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, oldPassword, subStringLink));
+            params.put(WebParams.NEW_PASSWORD, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, newPassword, subStringLink));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
 
             Timber.d("isi params Change Password:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CHANGE_PASSWORD, params
+            RetrofitService.getInstance().PostObjectRequest(link, params
                     , new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {

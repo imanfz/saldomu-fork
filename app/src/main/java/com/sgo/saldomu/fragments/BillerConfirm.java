@@ -488,21 +488,25 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
             final Bundle args = getArguments();
 
+            String link = MyApiClient.LINK_INSERT_TRANS_TOPUP;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = tx_id + args.getString(DefineValue.BILLER_COMM_CODE) + product_code + tokenValue;
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
-
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
             params.put(WebParams.COMM_CODE, args.getString(DefineValue.BILLER_COMM_CODE));
             params.put(WebParams.COMM_ID, args.getString(DefineValue.BILLER_COMM_ID));
             params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(tokenValue));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject response) {
@@ -566,22 +570,15 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            extraSignature = tx_id + getArguments().getString(DefineValue.BILLER_COMM_CODE) + product_code;
-
             String url;
             HashMap<String, Object> params;
-            if (bank_code.equals("114")) {
-//                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INSERT_TRANS_TOPUP,
-//                        userPhoneID,accessKey, extraSignature);
-                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
+            if (bank_code.equals("114"))
                 url = MyApiClient.LINK_INSERT_TRANS_TOPUP;
-            } else {
-//                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESEND_TOKEN_SGOL,
-//                        userPhoneID,accessKey, extraSignature);
-                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_RESEND_TOKEN_SGOL, extraSignature);
+            else
                 url = MyApiClient.LINK_RESEND_TOKEN_SGOL;
-            }
 
+            extraSignature = tx_id + getArguments().getString(DefineValue.BILLER_COMM_CODE) + product_code;
+            params = RetrofitService.getInstance().getSignature(url, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
             params.put(WebParams.COMM_CODE, getArguments().getString(DefineValue.BILLER_COMM_CODE));

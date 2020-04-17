@@ -154,14 +154,19 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
 
-            extraSignature = memberIDLogin + currentPin + newPin;
             String link = MyApiClient.LINK_CHANGE_PIN;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            extraSignature = memberIDLogin + currentPin + newPin;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, commIDLogin);
-            params.put(WebParams.OLD_PIN, RSA.opensslEncrypt(userPhoneID,currentPin,link.substring(link.indexOf("saldomu/"))));
-            params.put(WebParams.NEW_PIN, RSA.opensslEncrypt(userPhoneID,newPin,link.substring(link.indexOf("saldomu/"))));
-            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(userPhoneID,confirmPin,link.substring(link.indexOf("saldomu/"))));
+            params.put(WebParams.OLD_PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, currentPin, subStringLink));
+            params.put(WebParams.NEW_PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, newPin, subStringLink));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, confirmPin, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params change pin:" + params.toString());
@@ -177,9 +182,8 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     Timber.d("isi params change pin:" + response.toString());
                                     Toast.makeText(ChangePIN.this, getString(R.string.changepin_toast_success), Toast.LENGTH_LONG).show();
-                                    if (sp.getString(DefineValue.FORCE_CHANGE_PIN,"").equalsIgnoreCase(DefineValue.STRING_YES))
-                                    {
-                                        sp.edit().putString(DefineValue.FORCE_CHANGE_PIN,DefineValue.STRING_NO).apply();
+                                    if (sp.getString(DefineValue.FORCE_CHANGE_PIN, "").equalsIgnoreCase(DefineValue.STRING_YES)) {
+                                        sp.edit().putString(DefineValue.FORCE_CHANGE_PIN, DefineValue.STRING_NO).apply();
                                     }
                                     finishChild();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {

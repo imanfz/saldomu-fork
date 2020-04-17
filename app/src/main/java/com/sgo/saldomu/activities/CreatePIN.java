@@ -143,17 +143,24 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
     private void sendCreatePin() {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
+
+            String link = MyApiClient.LINK_CREATE_PIN;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = memberIDLogin + userPhoneID + mValuePin;
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CREATE_PIN, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, commIDLogin);
-            params.put(WebParams.PIN, RSA.opensslEncrypt(mValuePin));
-            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(confirmPin));
+            params.put(WebParams.PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, mValuePin, subStringLink));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, confirmPin, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params create pin:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CREATE_PIN, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -209,17 +216,23 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
     private void sendResetPin() {
         showProgressDialog();
 
+        String link = MyApiClient.LINK_CONFIRM_RESET_PIN;
+        String subStringLink = link.substring(link.indexOf("saldomu/"));
+        String uuid;
+        String dateTime;
         extraSignature = userID + tokenID + mValuePin;
 
-        HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CONFIRM_RESET_PIN, extraSignature);
-        params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenID));
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(link, extraSignature);
+        uuid = params.get(WebParams.RC_UUID).toString();
+        dateTime = params.get(WebParams.RC_DTIME).toString();
+        params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userID, tokenID, subStringLink));
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-        params.put(WebParams.NEW_PIN, RSA.opensslEncrypt(mValuePin));
-        params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(confirmPin));
+        params.put(WebParams.NEW_PIN, RSA.opensslEncrypt(uuid, dateTime, userID, mValuePin, subStringLink));
+        params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, userID, confirmPin, subStringLink));
         params.put(WebParams.USER_ID, userID);
 
         Timber.d("isi param confirm otp reset pin: " + params);
-        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_RESET_PIN, params,
+        RetrofitService.getInstance().PostJsonObjRequest(link, params,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {

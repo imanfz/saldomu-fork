@@ -410,24 +410,27 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
             final Bundle args = getArguments();
 
             String kode_otp = et_otp.getText().toString();
-
+            String link = MyApiClient.LINK_INSERT_TRANS_TOPUP;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = tx_id + sp.getString(DefineValue.COMM_CODE_DGI, "") + product_code + tokenValue;
-
-            params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
-
+            params = RetrofitService.getInstance().getSignature(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             attempt = args.getInt(DefineValue.ATTEMPT, -1);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
             params.put(WebParams.COMM_CODE, sp.getString(DefineValue.COMM_CODE_DGI, ""));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(tokenValue));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.KODE_OTP, kode_otp);
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+            RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     new ObjListeners() {
 
                         @Override

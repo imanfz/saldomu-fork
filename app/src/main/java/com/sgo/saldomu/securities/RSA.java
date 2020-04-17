@@ -3,21 +3,21 @@ package com.sgo.saldomu.securities;
 import android.util.Base64;
 
 import com.sgo.saldomu.BuildConfig;
-import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.UUID;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import timber.log.Timber;
 
 /**
  * Created by Lenovo on 12/03/2018.
@@ -49,18 +49,19 @@ public class RSA {
         return encryptedValue;
     }
 
-    public static String opensslEncrypt(String userID, String data, String link) {
+    public static String opensslEncrypt(String uuid, String datetime, String userID, String data, String link) {
 
         String encryptedValue   = "";
-        String strKey = "2491b236-71e0-4c3b-96f3-7ed7cc9b3d6c"+
-                "2020-04-16 11:28:28"+
+        String strKey = uuid+
+                datetime+
                 BuildConfig.APP_ID+
                 link+
                 MyApiClient.COMM_ID+
                 userID;
+        Timber.d("key: "+strKey);
         strKey = Md5.hashMd5(strKey);
-//        data = Md5.hashMd5(data);
-//        String strIv = BuildConfig.OPENSSL_ENCRYPT_IV;
+        Timber.d("md5 key: "+strKey);
+        Timber.d("data: "+data);
         String strIv = "app590saldomu980";
 
         try {
@@ -70,11 +71,11 @@ public class RSA {
 
             // Encrypt
             ciper.init(Cipher.ENCRYPT_MODE, key, iv);
-            byte[] encryptedCiperBytes = ciper.doFinal(data.getBytes());
+            byte[] encryptedCiperBytes = ciper.doFinal(data.getBytes(StandardCharsets.UTF_8));
 
-            //String s = new String(encryptedCiperBytes);
             encryptedValue = Base64.encodeToString(encryptedCiperBytes, Base64.DEFAULT);
             encryptedValue  = encryptedValue.trim();
+            Timber.d("encrypt data: "+encryptedValue);
         } catch ( Exception e ) {
             e.printStackTrace();
         }

@@ -219,7 +219,7 @@ public class FragCashOutAgen extends BaseFragment {
                         btn_batal.setEnabled(false);
                         if (isOTP) {
                             btnResend.setEnabled(false);
-                            sentReqCodeWithdraw(RSA.opensslEncrypt(et_otp.getText().toString()));
+                            sentReqCodeWithdraw(et_otp.getText().toString());
                         } else
                             CallPINinput(-1);
                     }
@@ -374,23 +374,28 @@ public class FragCashOutAgen extends BaseFragment {
         }
     }
 
-    public void sentReqCodeWithdraw(String tokenid) {
+    public void sentReqCodeWithdraw(String tokenID) {
         try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQCODE_WITHDRAW);
+            String link = MyApiClient.LINK_REQCODE_WITHDRAW;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.TX_ID, tx_id);
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenid));
-
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenID, subStringLink));
 
             Timber.d("isi params sent req code Withdraw:" + params.toString());
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQCODE_WITHDRAW, params,
+            RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     new ObjListeners() {
                         @Override
                         public void onResponses(JSONObject response) {

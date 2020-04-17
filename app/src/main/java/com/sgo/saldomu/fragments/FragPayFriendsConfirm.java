@@ -463,28 +463,27 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         }
     }
 
-    private void sentDataConfirm(String _data, String _token) {
+    private void sentDataConfirm(String data, String token) {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
-            extraSignature = memberIDLogin + _token;
+            extraSignature = memberIDLogin + token;
             HashMap<String, Object> params;
             String url;
-            if (isNotification) {
-
-//                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF, extraSignature);
-                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF, extraSignature);
+            if (isNotification)
                 url = MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF;
-            } else {
-//                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P,extraSignature);
-                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TRANS_P2P, extraSignature);
+            else
                 url = MyApiClient.LINK_CONFIRM_TRANS_P2P;
-            }
-
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
+            String subStringLink = url.substring(url.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            params = RetrofitService.getInstance().getSignature(url, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, token, subStringLink));
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.DATA, _data);
+            params.put(WebParams.DATA, data);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.DATA_MAPPER, dataMapper);
             Timber.d("isi params sent confirm token p2p:" + params.toString());

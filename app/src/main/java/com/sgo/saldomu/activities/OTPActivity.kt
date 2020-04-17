@@ -1,6 +1,5 @@
 package com.sgo.saldomu.activities
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -87,16 +86,18 @@ class OTPActivity : BaseActivity() {
     private fun confirmOTP() {
         showProgressDialog()
 
+        val link = MyApiClient.LINK_VALIDATE_OTP_RESET_PIN
+        val subStringLink = link.substring(link.indexOf("saldomu/"))
         extraSignature = userID + tokenID
-
-        val params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_VALIDATE_OTP_RESET_PIN, extraSignature)
-
+        val params = RetrofitService.getInstance().getSignatureSecretKey(link, extraSignature)
+        val uuid: String = params[WebParams.RC_UUID].toString()
+        val dateTime: String = params[WebParams.RC_DTIME].toString()
         params[WebParams.USER_ID] = userID
         params[WebParams.COMM_ID] = MyApiClient.COMM_ID
-        params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(tokenID)
+        params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenID, subStringLink)
 
         Timber.d("isi param validate otp reset pin:$params")
-        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_VALIDATE_OTP_RESET_PIN, params,
+        RetrofitService.getInstance().PostJsonObjRequest(link, params,
                 object : ObjListeners {
                     override fun onResponses(response: JSONObject) {
                         dismissProgressDialog()

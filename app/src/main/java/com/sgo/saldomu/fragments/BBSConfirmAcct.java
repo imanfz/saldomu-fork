@@ -171,21 +171,26 @@ public class BBSConfirmAcct extends BaseFragment {
 
     private void sentConfirmAcct(final String commCode, final String memberCode, final String txId, final String tokenId) {
         try {
+            String link = MyApiClient.LINK_BBS_CONFIRM_ACCT;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = txId + tokenId + commCode + memberCode;
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_CONFIRM_ACCT,
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link,
                     extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);
             params.put(WebParams.TX_ID, txId);
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenId));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenId, subStringLink));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             Timber.d("isi params confirmAcct:" + params.toString());
 
             progdialog.show();
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_CONFIRM_ACCT, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
