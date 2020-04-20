@@ -292,7 +292,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                     .getSignatureSecretKey(link, extraSignature);
             uuid = params.get(WebParams.RC_UUID).toString();
             dateTime = params.get(WebParams.RC_DTIME).toString();
-            encrypted_password = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, password, subStringLink);
+            encrypted_password = RSA.opensslEncrypt(uuid, dateTime, userIDfinale, password, subStringLink);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userIDfinale);
             if (isFingerprint) {
