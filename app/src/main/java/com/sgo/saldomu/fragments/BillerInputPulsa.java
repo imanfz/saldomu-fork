@@ -1300,7 +1300,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
             params.put(WebParams.COMM_CODE, biller_comm_code);
             params.put(WebParams.COMM_ID, biller_comm_id);
             params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncryptCommID(biller_comm_id, uuid, dateTime, userPhoneID, tokenValue, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());

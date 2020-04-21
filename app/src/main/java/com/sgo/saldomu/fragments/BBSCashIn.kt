@@ -72,6 +72,7 @@ class BBSCashIn : BaseFragment() {
     private var benef_product_type: String? = null
     private var benef_product_code: String? = null
     private var benef_product_name: String? = null
+    private var benef_product_bank_gateaway: String? = null
     private var defaultProductCode: String? = null
     private var productValue: String? = null
     private var noBenef: String? = null
@@ -178,7 +179,7 @@ class BBSCashIn : BaseFragment() {
                 amount_transfer_edit_text.setText(cashInHistoryModel!!.amount)
 
                 for (i in aListAgent!!.indices) {
-                    if (aListAgent!![i]["txt"]!!.contains(source_product_name!!)) {
+                    if (aListAgent!![i]["txt"]!!.contains(cashInHistoryModel!!.source_product_name)) {
                         changeSource(Integer.parseInt(aListAgent!![i]["flag"]!!),
                                 cashInHistoryModel!!.source_product_type,
                                 cashInHistoryModel!!.source_product_code,
@@ -188,7 +189,8 @@ class BBSCashIn : BaseFragment() {
                 }
 
                 for (i in aListMember!!.indices) {
-                    if (aListMember!![i]["txt"]!!.contains(benef_product_name!!)) {
+                    if (aListMember!![i]["txt"]!!.contains(cashInHistoryModel!!.benef_product_name)) {
+                        benef_product_bank_gateaway = listBankBenef!![i].bank_gateway
                         changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!),
                                 cashInHistoryModel!!.benef_product_type,
                                 cashInHistoryModel!!.benef_product_code,
@@ -227,31 +229,11 @@ class BBSCashIn : BaseFragment() {
             Toast.makeText(context, "Source", Toast.LENGTH_SHORT).show()
         else
             dialogBankList = DialogBankList.newDialog(activity, aListMember) { position ->
+                benef_product_bank_gateaway = listBankBenef!![position].bank_gateway
                 changeDestination(Integer.parseInt(aListMember!![position]["flag"]!!),
                         listBankBenef!![position].product_type,
                         listBankBenef!![position].product_code,
                         listBankBenef!![position].product_name)
-                if (benef_product_type.equals(DefineValue.EMO, ignoreCase = true) && !benef_product_code.equals("MANDIRILKD", ignoreCase = true)) {
-                    no_benef_value.hint = getString(R.string.number_hp_destination_hint)
-                } else {
-                    if (benef_product_code.equals("MANDIRILKD", ignoreCase = true)) {
-                        no_benef_value.setHint(R.string.nomor_rekening)
-                    } else {
-                        no_benef_value.setHint(R.string.number_destination_hint)
-                    }
-                    no_benef_value.setText("")
-                }
-
-                if (listBankBenef!![position].bank_gateway.equals(DefineValue.STRING_YES, ignoreCase = true))
-                    name_value.visibility = View.GONE
-                else
-                    name_value.visibility = View.VISIBLE
-
-                if (benef_product_code.equals("tcash", ignoreCase = true))
-                    no_OTP.visibility = View.VISIBLE
-                else
-                    no_OTP.visibility = View.GONE
-
                 dialogBankList!!.dismiss()
             }
         dialogBankList!!.show(fragManager, "")
@@ -329,8 +311,6 @@ class BBSCashIn : BaseFragment() {
         for (i in bankMember!!.indices) {
             if (bankMember[i].product_name.toLowerCase(Locale.getDefault()).contains("saldomu")) {
                 changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name)
-            }else{
-                changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name)
             }
         }
     }
@@ -404,10 +384,26 @@ class BBSCashIn : BaseFragment() {
         tv_transfer_destination.text = benef_product_name
         iv_transfer_destination.setImageResource(id)
 
-//        if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true))
-//            city_benef_value.visibility = View.VISIBLE
-//        else
-//            city_benef_value.visibility = View.GONE
+        if (benef_product_type.equals(DefineValue.EMO, ignoreCase = true) && !benef_product_code.equals("MANDIRILKD", ignoreCase = true)) {
+            no_benef_value.hint = getString(R.string.number_hp_destination_hint)
+        } else {
+            if (benef_product_code.equals("MANDIRILKD", ignoreCase = true)) {
+                no_benef_value.setHint(R.string.nomor_rekening)
+            } else {
+                no_benef_value.setHint(R.string.number_destination_hint)
+            }
+            no_benef_value.setText("")
+        }
+
+        if (benef_product_bank_gateaway.equals(DefineValue.STRING_YES, ignoreCase = true))
+            name_value.visibility = View.GONE
+        else
+            name_value.visibility = View.VISIBLE
+
+        if (benef_product_code.equals("tcash", ignoreCase = true))
+            no_OTP.visibility = View.VISIBLE
+        else
+            no_OTP.visibility = View.GONE
     }
 
     private fun inputValidation(): Boolean {
@@ -583,6 +579,7 @@ class BBSCashIn : BaseFragment() {
                 } else {
                     val code_msg: String = model.error_message
                     Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
+                    dismissProgressDialog()
                 }
             }
 

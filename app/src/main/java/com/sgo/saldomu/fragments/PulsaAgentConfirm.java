@@ -264,7 +264,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncryptCommID(comm_id, uuid, dateTime, userID, tokenValue, subStringLink));
 
             Timber.d("isi params insertTrxTOpupSGOL", params.toString());
 

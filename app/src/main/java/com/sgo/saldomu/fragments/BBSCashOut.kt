@@ -128,7 +128,11 @@ class BBSCashOut : BaseFragment() {
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE, "")
             defaultAmount = bundle.getString(DefineValue.AMOUNT, "")
             enabledAdditionalFee = bundle.getString(DefineValue.ENABLED_ADDITIONAL_FEE) == "Y"
-            noSource = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, null)
+            noSource = NoHPFormat.formatTo08(bundle.getString(DefineValue.KEY_CODE, ""))
+
+            if (bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, "") != "") {
+                noSource = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, "")
+            }
 
             defaultProductCode = ""
             if (bundle.containsKey(DefineValue.PRODUCT_CODE)) {
@@ -261,15 +265,16 @@ class BBSCashOut : BaseFragment() {
                     .equalTo(WebParams.COMM_TYPE, SOURCE)
                     .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll()
         } else {
-            if (defaultProductCode != "") {
-                listBankSource = realmBBS!!.where(BBSBankModel::class.java)
-                        .equalTo(WebParams.SCHEME_CODE, ATC)
-                        .equalTo(WebParams.COMM_TYPE, BENEF)
-                        .equalTo(WebParams.PRODUCT_CODE, defaultProductCode).findAll()
-            } else
-                listBankSource = realmBBS!!.where(BBSBankModel::class.java)
-                        .equalTo(WebParams.SCHEME_CODE, ATC)
-                        .equalTo(WebParams.COMM_TYPE, SOURCE).findAll()
+            listBankSource =
+                    if (defaultProductCode != "") {
+                        realmBBS!!.where(BBSBankModel::class.java)
+                                .equalTo(WebParams.SCHEME_CODE, ATC)
+                                .equalTo(WebParams.COMM_TYPE, SOURCE)
+                                .equalTo(WebParams.PRODUCT_CODE, defaultProductCode).findAll()
+                    } else
+                        realmBBS!!.where(BBSBankModel::class.java)
+                                .equalTo(WebParams.SCHEME_CODE, ATC)
+                                .equalTo(WebParams.COMM_TYPE, SOURCE).findAll()
         }
         setMember(listBankSource)
         setAgent(listBankBenef)
@@ -286,7 +291,7 @@ class BBSCashOut : BaseFragment() {
         for (i in bankMember!!.indices) {
             if (bankMember[i].product_name.toLowerCase(Locale.getDefault()).contains("saldomu")) {
                 changeSource(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name, bankMember[i].product_h2h)
-            }else{
+            } else {
                 changeSource(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name, bankMember[i].product_h2h)
             }
         }

@@ -976,7 +976,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
             params[WebParams.COMM_CODE] = biller_comm_code
             params[WebParams.COMM_ID] = biller_comm_id
             params[WebParams.MEMBER_ID] = sp.getString(DefineValue.MEMBER_ID, "")
-            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink)
+            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncryptCommID(biller_comm_id, uuid, dateTime, userPhoneID, tokenValue, subStringLink)
             params[WebParams.USER_ID] = userPhoneID
 
             Timber.d("isi params insertTrxTOpupSGOL:$params")

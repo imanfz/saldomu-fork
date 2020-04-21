@@ -107,7 +107,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
             params[WebParams.TX_ID] = txId
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_ID] = commId
-            params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, otp, subStringLink)
+            params[WebParams.TOKEN_ID] = RSA.opensslEncryptCommID(commId, uuid, dateTime, userPhoneID, otp, subStringLink)
 
             Timber.d("isi params confirmTokenC2R:$params")
 
@@ -296,7 +296,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
             params[WebParams.COMM_CODE] = commCode
             params[WebParams.COMM_ID] = commId
             params[WebParams.MEMBER_ID] = memberIDLogin
-            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink)
+            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncryptCommID(commId, uuid, dateTime, userPhoneID, tokenValue, subStringLink)
             params[WebParams.USER_ID] = userPhoneID
 
             Timber.d("params insert trx : $params")
