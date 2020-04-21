@@ -123,14 +123,5 @@ public class UpdateBBSBirthPlace extends IntentService {
             }
 
         }
-
-
-        RealmResults<List_BBS_Birth_Place> results = realm.where(List_BBS_Birth_Place.class).findAll();
-        Timber.d("REALM isi realm results:"+results.toString());
-
-//        if(realm.isInTransaction())
-//            realm.commitTransaction();
-
-
     }
 }
