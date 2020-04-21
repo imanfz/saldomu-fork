@@ -339,7 +339,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_name);
             params.put(WebParams.MEMBER_ID, member_id_scadm);
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncryptCommID(comm_name, uuid, dateTime, userPhoneID, tokenValue, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());

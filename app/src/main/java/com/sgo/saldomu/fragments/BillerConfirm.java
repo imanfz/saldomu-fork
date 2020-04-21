@@ -492,16 +492,18 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             String subStringLink = link.substring(link.indexOf("saldomu/"));
             String uuid;
             String dateTime;
+            String commID = args.getString(DefineValue.BILLER_COMM_ID);
+            String commCode = args.getString(DefineValue.BILLER_COMM_CODE);
             extraSignature = tx_id + args.getString(DefineValue.BILLER_COMM_CODE) + product_code + tokenValue;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link, extraSignature);
             uuid = params.get(WebParams.RC_UUID).toString();
             dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
-            params.put(WebParams.COMM_CODE, args.getString(DefineValue.BILLER_COMM_CODE));
-            params.put(WebParams.COMM_ID, args.getString(DefineValue.BILLER_COMM_ID));
+            params.put(WebParams.COMM_CODE, commCode);
+            params.put(WebParams.COMM_ID, commID);
             params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncryptCommID(commID, uuid, dateTime, userPhoneID, tokenValue, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());

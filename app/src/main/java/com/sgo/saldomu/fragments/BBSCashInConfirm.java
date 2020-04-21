@@ -787,7 +787,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, token, subStringLink));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncryptCommID(comm_id, uuid, dateTime, userPhoneID, token, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params sentRetryToken:" + params.toString());

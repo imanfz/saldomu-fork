@@ -470,7 +470,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.COMM_ID, commName);
             params.put(WebParams.MEMBER_ID, memberIdSACDM);
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenValue, subStringLink));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncryptCommID(commName, uuid, dateTime, userPhoneID, tokenValue, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
