@@ -214,7 +214,7 @@ class BBSCashOut : BaseFragment() {
 
         back_btn.setOnClickListener { activity!!.finish() }
         proses_btn.setOnClickListener { if (inputValidation()) submitAction() }
-        validasiTutorial()
+//        validasiTutorial()
     }
 
     private fun showDialogBankList(btnChange: Button) {
@@ -933,11 +933,11 @@ class BBSCashOut : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_information -> {
-                if (transaksi.equals(getString(R.string.cash_out), ignoreCase = true))
-                    showTutorialCashOut()
-                return true
-            }
+//            R.id.action_information -> {
+//                if (transaksi.equals(getString(R.string.cash_out), ignoreCase = true))
+//                    showTutorialCashOut()
+//                return true
+//            }
             android.R.id.home -> {
                 activity!!.finish()
                 return true
@@ -946,19 +946,20 @@ class BBSCashOut : BaseFragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun validasiTutorial() {
-        if (sp.contains(DefineValue.TUTORIAL_CASHOUT)) {
-            val isFirstTime = sp.getBoolean(DefineValue.TUTORIAL_CASHOUT, false)
-            if (isFirstTime) showTutorialCashOut()
-        } else
-            showTutorialCashOut()
-    }
+//    private fun validasiTutorial() {
+//        if (sp.contains(DefineValue.TUTORIAL_CASHOUT)) {
+//            val isFirstTime = sp.getBoolean(DefineValue.TUTORIAL_CASHOUT, false)
+//            if (isFirstTime) showTutorialCashOut()
+//        } else {
+//            showTutorialCashOut()
+//        }
+//    }
 
-    private fun showTutorialCashOut() {
-        val intent = Intent(activity, TutorialActivity::class.java)
-        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_cash_out)
-        startActivity(intent)
-    }
+//    private fun showTutorialCashOut() {
+//        val intent = Intent(activity, TutorialActivity::class.java)
+//        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_cash_out)
+//        startActivity(intent)
+//    }
 
     override fun onDestroy() {
         RealmManager.closeRealm(realm)

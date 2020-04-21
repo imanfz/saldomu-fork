@@ -169,11 +169,11 @@ class BBSCashIn : BaseFragment() {
         aListMember = ArrayList()
 
         initializeDataBBSCTA()
-        if (defaultAmount != "" || noHpPengirim != "" ) run {
+        if (defaultAmount != "" || noHpPengirim != "") run {
             amount_transfer_edit_text.setText(defaultAmount)
             no_benef_value.setText(noHpPengirim)
         }
-        else{
+        else {
 //            if (cashInHistoryModel != null && sp.getString(DefineValue.USERID_PHONE, "").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""))) {
             if (cashInHistoryModel != null) {
                 amount_transfer_edit_text.setText(cashInHistoryModel!!.amount)
@@ -257,17 +257,15 @@ class BBSCashIn : BaseFragment() {
                     .equalTo(WebParams.COMM_TYPE, BENEF)
                     .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll()
         } else {
-            if(defaultProductCode!="")
-            {
+            if (defaultProductCode != "") {
                 listBankBenef = realmBBS!!.where(BBSBankModel::class.java)
                         .equalTo(WebParams.SCHEME_CODE, CTA)
                         .equalTo(WebParams.COMM_TYPE, BENEF)
                         .equalTo(WebParams.PRODUCT_CODE, defaultProductCode).findAll()
-            }
-            else {
-            listBankBenef = realmBBS!!.where(BBSBankModel::class.java)
-                    .equalTo(WebParams.SCHEME_CODE, CTA)
-                    .equalTo(WebParams.COMM_TYPE, BENEF).findAll()
+            } else {
+                listBankBenef = realmBBS!!.where(BBSBankModel::class.java)
+                        .equalTo(WebParams.SCHEME_CODE, CTA)
+                        .equalTo(WebParams.COMM_TYPE, BENEF).findAll()
             }
         }
         setBBSCity()
@@ -1038,8 +1036,9 @@ class BBSCashIn : BaseFragment() {
         if (sp.contains(DefineValue.TUTORIAL_CASHIN)) {
             val isFirstTime = sp.getBoolean(DefineValue.TUTORIAL_CASHIN, false)
             if (isFirstTime) showTutorialCashIn()
-        } else
+        } else {
             showTutorialCashIn()
+        }
     }
 
     private fun showTutorialCashIn() {
