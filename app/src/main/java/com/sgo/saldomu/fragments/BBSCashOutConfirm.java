@@ -227,7 +227,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, token, subStringLink));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncryptCommID(comm_id, uuid, dateTime, userID, token, subStringLink));
             params.put(WebParams.USER_ID, userID);
 
             Timber.d("isi params insertTrxSGOL:" + params.toString());
@@ -320,7 +320,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, token, subStringLink));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userID, token, subStringLink));
             params.put(WebParams.USER_ID, userID);
 
             Timber.d("isi params sentRetryToken:" + params.toString());

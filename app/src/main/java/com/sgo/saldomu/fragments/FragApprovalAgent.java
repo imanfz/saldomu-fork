@@ -775,11 +775,12 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        progdialog.dismiss();
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        progdialog.dismiss();
                     }
 
                     @Override

@@ -27,7 +27,7 @@ public class RSA {
 
     public static String opensslEncrypt(String data) {
 
-        String encryptedValue   = "";
+        String encryptedValue = "";
         String strKey = BuildConfig.OPENSSL_ENCRYPT_KEY;
         String strIv = BuildConfig.OPENSSL_ENCRYPT_IV;
 
@@ -42,8 +42,8 @@ public class RSA {
 
             //String s = new String(encryptedCiperBytes);
             encryptedValue = Base64.encodeToString(encryptedCiperBytes, Base64.DEFAULT);
-            encryptedValue  = encryptedValue.trim();
-        } catch ( Exception e ) {
+            encryptedValue = encryptedValue.trim();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return encryptedValue;
@@ -51,19 +51,39 @@ public class RSA {
 
     public static String opensslEncrypt(String uuid, String datetime, String userID, String data, String link) {
 
-        String encryptedValue   = "";
-        String strKey = uuid+
-                datetime+
-                BuildConfig.APP_ID+
-                link+
-                MyApiClient.COMM_ID+
+        String encryptedValue = "";
+        String strKey = uuid +
+                datetime +
+                BuildConfig.APP_ID +
+                link +
+                MyApiClient.COMM_ID +
                 userID;
-        Timber.d("key: "+strKey);
-        strKey = Md5.hashMd5(strKey);
-        Timber.d("md5 key: "+strKey);
-        Timber.d("data: "+data);
-        String strIv = "app590saldomu980";
 
+        encryptedValue = encrypt(strKey, data);
+        return encryptedValue;
+    }
+
+    public static String opensslEncryptCommID(String commID, String uuid, String datetime, String userID, String data, String link) {
+
+        String encryptedValue = "";
+        String strKey = uuid +
+                datetime +
+                BuildConfig.APP_ID +
+                link +
+                commID +
+                userID;
+
+        encryptedValue = encrypt(strKey, data);
+        return encryptedValue;
+    }
+
+    private static String encrypt(String strKey, String data) {
+        Timber.d("key: " + strKey);
+        strKey = Md5.hashMd5(strKey);
+        Timber.d("md5 key: " + strKey);
+        Timber.d("data: " + data);
+        String strIv = "app590saldomu980";
+        String encryptedValue = "";
         try {
             Cipher ciper = Cipher.getInstance("AES/CBC/PKCS5Padding");
             SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "AES");
@@ -74,9 +94,9 @@ public class RSA {
             byte[] encryptedCiperBytes = ciper.doFinal(data.getBytes(StandardCharsets.UTF_8));
 
             encryptedValue = Base64.encodeToString(encryptedCiperBytes, Base64.DEFAULT);
-            encryptedValue  = encryptedValue.trim();
-            Timber.d("encrypt data: "+encryptedValue);
-        } catch ( Exception e ) {
+            encryptedValue = encryptedValue.trim();
+            Timber.d("encrypt data: " + encryptedValue);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return encryptedValue;
@@ -88,7 +108,7 @@ public class RSA {
         this.publicKey = publicKey;
     }
 
-    public String readTxt(InputStream inputStream){
+    public String readTxt(InputStream inputStream) {
 
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -96,8 +116,7 @@ public class RSA {
         int i;
         try {
             i = inputStream.read();
-            while (i != -1)
-            {
+            while (i != -1) {
                 byteArrayOutputStream.write(i);
                 i = inputStream.read();
             }
@@ -130,21 +149,19 @@ public class RSA {
         return keyFactory.generatePrivate(keySpec);
     }*/
 
-    public String encryptData(String txt)
-    {
-        String encoded      = "";
-        byte[] encrypted    = null;
+    public String encryptData(String txt) {
+        String encoded = "";
+        byte[] encrypted = null;
         try {
-            byte[] publicBytes          = Base64.decode(this.publicKey.toString(), Base64.DEFAULT);
-            X509EncodedKeySpec keySpec  = new X509EncodedKeySpec(publicBytes);
-            KeyFactory keyFactory       = KeyFactory.getInstance("RSA");
-            PublicKey pubKey            = keyFactory.generatePublic(keySpec);
-            Cipher cipher               = Cipher.getInstance("RSA/ECB/PKCS7Padding"); //or try with "RSA"
+            byte[] publicBytes = Base64.decode(this.publicKey.toString(), Base64.DEFAULT);
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PublicKey pubKey = keyFactory.generatePublic(keySpec);
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS7Padding"); //or try with "RSA"
             cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-            encrypted                   = cipher.doFinal(txt.getBytes());
-            encoded                     = Base64.encodeToString(encrypted, Base64.DEFAULT);
-        }
-        catch (Exception e) {
+            encrypted = cipher.doFinal(txt.getBytes());
+            encoded = Base64.encodeToString(encrypted, Base64.DEFAULT);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return encoded;
