@@ -717,16 +717,16 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             if (orderList.size() > 0)
                 orderList.clear();
 
-            JSONObject itemArr = resp.getJSONObject("item");
-            Iterator<String> keys = itemArr.keys();
-            while (keys.hasNext()) {
-                JSONObject obj = itemArr.getJSONObject(keys.next());
-                orderList.add(new DenomOrderListModel(obj));
-            }
-//            for (int i=0; i<itemArr.length(); i++){
-//                JSONObject obj = itemArr.getJSONObject(i);
+            JSONArray itemArr = resp.getJSONArray("item");
+//            Iterator<String> keys = itemArr.keys();
+//            while (keys.hasNext()) {
+//                JSONObject obj = itemArr.getJSONObject(keys.next());
 //                orderList.add(new DenomOrderListModel(obj));
 //            }
+            for (int i=0; i<itemArr.length(); i++){
+                JSONObject obj = itemArr.getJSONObject(i);
+                orderList.add(new DenomOrderListModel(obj));
+            }
 
             itemListAdapter.notifyDataSetChanged();
 
