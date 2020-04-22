@@ -402,6 +402,7 @@ public class DefineValue {
     public static String KEY_LATITUDE       = "key_latitude";
     public static String KEY_LONGITUDE      = "key_longitude";
     public static String KEY_TX_STATUS      = "tx_status";
+    public static String KEY_VALUE          = "key_value";
     public static String CATEGORY_SCHEME_CODE   = "scheme_code";
 
     public static String STRING_ACCEPT          = "S";

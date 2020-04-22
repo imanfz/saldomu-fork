@@ -2,6 +2,7 @@ package com.sgo.saldomu.securities;
 
 import android.util.Base64;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
@@ -63,6 +64,10 @@ public class RSA {
         return encryptedValue;
     }
 
+    public static String opensslEncryptLogin(String strKey, String data) {
+        return encrypt(strKey, data);
+    }
+
     public static String opensslEncryptCommID(String commID, String uuid, String datetime, String userID, String data, String link) {
 
         String encryptedValue = "";
@@ -82,7 +87,7 @@ public class RSA {
         strKey = Md5.hashMd5(strKey);
         Timber.d("md5 key: " + strKey);
         Timber.d("data: " + data);
-        String strIv = "app590saldomu980";
+        String strIv = BuildConfig.AES_ENCRYPT_IV;
         String encryptedValue = "";
         try {
             Cipher ciper = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -100,6 +105,28 @@ public class RSA {
             e.printStackTrace();
         }
         return encryptedValue;
+    }
+
+    public static String decrypt(String strKey, String data){
+
+        String strIv = BuildConfig.AES_ENCRYPT_IV;
+        String decryptedValue = "";
+        try {
+            Cipher ciper = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            SecretKeySpec key = new SecretKeySpec(strKey.getBytes(), "AES");
+            IvParameterSpec iv = new IvParameterSpec(strIv.getBytes());
+
+            // Decrypt
+            ciper.init(Cipher.DECRYPT_MODE, key, iv);
+            byte[] original = ciper.doFinal(Base64.decode(data,0));
+
+            decryptedValue = new String(original);
+
+            Timber.d("decrypt data: " + decryptedValue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return decryptedValue;
     }
 
     private PublicKey publicKey;
