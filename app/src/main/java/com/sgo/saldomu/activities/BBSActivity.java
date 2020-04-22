@@ -18,7 +18,9 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
+import com.sgo.saldomu.fragments.BBSCashIn;
 import com.sgo.saldomu.fragments.BBSCashInConfirm;
+import com.sgo.saldomu.fragments.BBSCashOut;
 import com.sgo.saldomu.fragments.BBSJoinAgentInput;
 import com.sgo.saldomu.fragments.BBSTransaksiInformasi;
 import com.sgo.saldomu.fragments.BBSTransaksiPager;
@@ -57,6 +59,8 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     public static final int BBSRATINGBYMEMBER   = 10;
     public static final int BBSMYORDERS         = 11;
     public static final int BBSONPROGRESSAGENT  = 12;
+    public static final int CASHIN  = 13;
+    public static final int CASHOUT  = 14;
 
     private SecurePreferences sp;
     FragmentManager fragmentManager;
@@ -154,6 +158,14 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                     newFragment = new FragOnProgressAgent();
                     tag = FragOnProgressAgent.TAG;
                     break;
+//                case CASHIN:
+//                    newFragment = new BBSCashIn();
+//                    tag = BBSCashIn.TAG;
+//                    break;
+//                case CASHOUT:
+//                    newFragment = new BBSCashOut();
+//                    tag = BBSCashOut.TAG;
+//                    break;
             }
 
 
@@ -216,6 +228,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             setActionBarTitle(getString(R.string.title_rating_by_member));
         else if( fragment instanceof FragBbsMyOrders )
             setActionBarTitle(getString(R.string.title_bbs_my_orders));
+//        else if( fragment instanceof BBSCashIn )
+//            setActionBarTitle(getString(R.string.cash_in));
+//        else if( fragment instanceof BBSCashOut )
+//            setActionBarTitle(getString(R.string.cash_out));
     }
 
     @Override

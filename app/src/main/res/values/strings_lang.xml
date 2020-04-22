@@ -771,6 +771,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="dialog_sms_title">Mobile Number Verification</string>
     <string name="dialog_sms_msg">Send the SMS that appears after clicking the OK button. SMS fee will be charged according to the operator rate. Make sure you have enough credit.</string>
+    <string name="dialog_sms_msg1">After SMS has been sent, back to Saldomu Application.</string>
     <string name="dialog_sms_msg2">Verifying data…</string>
     <string name="dialog_sms_msg3">Verification of Mobile Number to the server failed. \ And Do you want to repeat the verification process?</string>
     <string name="dialog_sms_msg4">Mobile Number verification to the server success.</string>

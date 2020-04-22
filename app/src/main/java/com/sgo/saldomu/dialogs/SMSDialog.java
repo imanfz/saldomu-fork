@@ -63,7 +63,7 @@ public class SMSDialog extends DialogFragment {
     public Long date;
     private ImageView img_view;
     private ProgressBar progBar;
-    private TextView progText, tvMessage;
+    private TextView progText, tvMessage, tvMessage1;
     private Button btnOk, btnCancel;
     private CountDownTimer cdTimer;
     private static int lenghtTimer; //5 minute
@@ -126,6 +126,7 @@ public class SMSDialog extends DialogFragment {
         progBar = v.findViewById(R.id.dialog_probar_inquiry);
         progText = v.findViewById(R.id.dialog_duration_inquiry);
         tvMessage = v.findViewById(R.id.message_dialog);
+        tvMessage1 = v.findViewById(R.id.message_dialog1);
         btnOk = v.findViewById(R.id.btn_dialog_ok);
         btnCancel = v.findViewById(R.id.btn_dialog_cancel);
         return v;
