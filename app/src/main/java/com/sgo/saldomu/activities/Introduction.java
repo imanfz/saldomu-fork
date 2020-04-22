@@ -188,6 +188,34 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         }
         SMSclass smsClass = new SMSclass(this);
         imeiDevice = smsClass.getDeviceIMEI();
+
+        smsDialog = SMSDialog.newDialog(timeDate, checkFailedVerify(), new SMSDialog.DialogButtonListener() {
+            @Override
+            public void onClickOkButton(View v, boolean isLongClick) {
+
+            }
+
+            @Override
+            public void onClickCancelButton(View v, boolean isLongClick) {
+
+            }
+
+            @Override
+            public void onSuccess(int user_is_new) {
+                if (user_is_new == 1) {
+                    openLogin(1);
+                } else {
+                    openLogin(-2);
+                }
+            }
+
+            @Override
+            public void onSuccess(String product_value) {
+
+
+            }
+        });
+        smsDialog.setCancelable(false);
     }
 
     private Button.OnClickListener VerifyListener = new Button.OnClickListener() {
@@ -212,7 +240,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             } else if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
                 sendFCM();
             } else
-                InitializeSmsDialog();
+                showSmsDialog();
         }
     };
 
@@ -311,7 +339,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                 @Override
                 public void onResponses(JsonObject object) {
                     Timber.d("isi response fcm:" + object);
-                    InitializeSmsDialog();
+                    showSmsDialog();
                 }
 
                 @Override
@@ -329,34 +357,10 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         }
     }
 
-    private void InitializeSmsDialog() {
-        smsDialog = SMSDialog.newDialog(timeDate, checkFailedVerify(), new SMSDialog.DialogButtonListener() {
-            @Override
-            public void onClickOkButton(View v, boolean isLongClick) {
-
-            }
-
-            @Override
-            public void onClickCancelButton(View v, boolean isLongClick) {
-
-            }
-
-            @Override
-            public void onSuccess(int user_is_new) {
-                if (user_is_new == 1) {
-                    openLogin(1);
-                } else {
-                    openLogin(-2);
-                }
-            }
-
-            @Override
-            public void onSuccess(String product_value) {
-
-
-            }
-        });
-        smsDialog.show(getSupportFragmentManager(), "");
+    private void showSmsDialog() {
+        if (smsDialog != null) {
+            smsDialog.show(getSupportFragmentManager(), "");
+        }
     }
 
     private void checkIsSimExist() {
@@ -546,7 +550,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                     } else if (errorCode.equals("0324")) {
                         sp.edit().remove(DefineValue.PREVIOUS_LOGIN_USER_ID).apply();
                         getSMSContent();
-                        InitializeSmsDialog();
+                        showSmsDialog();
                     } else {
                         Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                     }
