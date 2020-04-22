@@ -764,6 +764,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="dialog_sms_title">Verifikasi Nomor Handphone</string>
     <string name="dialog_sms_msg">Kirimkan SMS yang tampil setelah klik tombol OK. Biaya SMS akan dikenakan sesuai dengan tarif operator. Pastikan pulsa Anda cukup.</string>
+    <string name="dialog_sms_msg1">Setelah SMS terkirim, harap kembali ke Aplikasi Saldomu.</string>
     <string name="dialog_sms_msg2">Melakukan verifikasi data…</string>
     <string name="dialog_sms_msg3">Verifikasi Nomor Handphone ke server gagal.\n Apakah Anda ingin mengulang proses verifikasi ?</string>
     <string name="dialog_sms_msg4">Verifikasi Nomor Handphone ke server berhasil.</string>

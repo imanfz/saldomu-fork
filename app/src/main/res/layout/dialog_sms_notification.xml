@@ -46,6 +46,17 @@
             android:layout_marginTop="10dp"
             android:id="@+id/message_dialog"
             android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_small_material"
+        android:gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/message_dialog1"
+        android:textStyle="bold"
+        android:text="@string/dialog_sms_msg1"
+        android:layout_gravity="center_horizontal"/>
 
     <RelativeLayout
         android:layout_marginTop="10dp"
