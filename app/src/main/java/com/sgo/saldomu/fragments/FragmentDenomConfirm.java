@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 import com.sgo.saldomu.Beans.DenomListModel;
 import com.sgo.saldomu.Beans.DenomOrderListModel;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.DenomSCADMActivity;
 import com.sgo.saldomu.activities.InsertPIN;
@@ -145,7 +146,8 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sentInquiry();
+//                sentInquiry();
+                confirmToken();
             }
         });
 
@@ -301,6 +303,64 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 //                });
 //    }
 
+    public void confirmToken() {
+        showProgressDialog();
+
+//        extraSignature = tx_id + comm_code;
+        params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_PAYMENT_DGI);
+
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+        params.put(WebParams.TX_ID, txID);
+        params.put(WebParams.COMM_CODE, commCode);
+        params.put(WebParams.USER_COMM_CODE, sp.getString(DefineValue.COMMUNITY_CODE, ""));
+        params.put(WebParams.USER_ID, userPhoneID);
+        Timber.d("params confirm payment denom scadm : " + params.toString());
+
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_PAYMENT_DGI, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            dismissProgressDialog();
+                            Gson gson = new Gson();
+                            jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String error_message = response.getString(WebParams.ERROR_MESSAGE);
+                            Timber.d("response confirm payment denom scadm : " + response.toString());
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                sentInquiry();
+                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            } else {
+                                Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+    }
+
     void getDenomConfirmData() {
 
         showProgressDialog();
@@ -454,9 +514,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
     private void sentInsertTransTopup(String tokenValue, final String _amount) {
         try {
-//            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-//            progdialog.show();
-
+            showProgressDialog();
             String link = MyApiClient.LINK_INSERT_TRANS_TOPUP;
             String subStringLink = link.substring(link.indexOf("saldomu/"));
             String uuid;
@@ -541,7 +599,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
     private void getTrxStatus(final String txId, String comm_id, final String _amount) {
         try {
-
+            showProgressDialog();
             extraSignature = txID + comm_id;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
@@ -595,7 +653,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
                         @Override
                         public void onComplete() {
-
+                            dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
@@ -717,16 +775,16 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             if (orderList.size() > 0)
                 orderList.clear();
 
-            JSONObject itemArr = resp.getJSONObject("item");
-            Iterator<String> keys = itemArr.keys();
-            while (keys.hasNext()) {
-                JSONObject obj = itemArr.getJSONObject(keys.next());
-                orderList.add(new DenomOrderListModel(obj));
-            }
-//            for (int i=0; i<itemArr.length(); i++){
-//                JSONObject obj = itemArr.getJSONObject(i);
+            JSONArray itemArr = resp.getJSONArray("item");
+//            Iterator<String> keys = itemArr.keys();
+//            while (keys.hasNext()) {
+//                JSONObject obj = itemArr.getJSONObject(keys.next());
 //                orderList.add(new DenomOrderListModel(obj));
 //            }
+            for (int i=0; i<itemArr.length(); i++){
+                JSONObject obj = itemArr.getJSONObject(i);
+                orderList.add(new DenomOrderListModel(obj));
+            }
 
             itemListAdapter.notifyDataSetChanged();
 
