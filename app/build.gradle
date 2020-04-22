@@ -97,6 +97,7 @@ android {
             buildConfigField 'String', "SMS_CENTER_3", "\"+6282333800085\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
+            buildConfigField 'String', "AES_ENCRYPT_IV", "\"app590saldomu980\""
             buildConfigField 'String', "SECRET_KEY", "\"add647f3d560bcb65fc0cb15d7b66615\""
 
             versionCode = 1
@@ -133,6 +134,7 @@ android {
             buildConfigField 'String', "SMS_CENTER_3", "\"+6289665482956\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
+            buildConfigField 'String', "AES_ENCRYPT_IV", "\"app590saldomu980\""
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey

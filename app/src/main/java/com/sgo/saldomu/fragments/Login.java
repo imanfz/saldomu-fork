@@ -52,6 +52,7 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
 import com.sgo.saldomu.models.retrofit.LoginModel;
+import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -108,7 +109,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         super.onActivityCreated(savedInstanceState);
 
         argsBundleNextLogin = getArguments();
-        tv_version.setText(getString(R.string.appname)+" "+ BuildConfig.VERSION_NAME);
+        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME);
 
 //        btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
 
@@ -274,6 +275,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             String subStringLink = link.substring(link.indexOf("saldomu/"));
             String uuid;
             String dateTime;
+            String key;
 
             btnLogin.setEnabled(false);
             userIDValue.setEnabled(false);
@@ -284,6 +286,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             image_spinner.setVisibility(View.VISIBLE);
             image_spinner.startAnimation(frameAnimation);
             if (isFingerprint) {
+                password = decryptPassword(sp.getString(DefineValue.KEY_VALUE, ""), sp.getString(DefineValue.USER_PASSWORD, ""));
                 extraSignature = sp.getString(DefineValue.EXTRA_SIGNATURE, "");
             } else {
                 extraSignature = userIDfinale + password;
@@ -292,14 +295,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
                     .getSignatureSecretKey(link, extraSignature);
             uuid = params.get(WebParams.RC_UUID).toString();
             dateTime = params.get(WebParams.RC_DTIME).toString();
-            encrypted_password = RSA.opensslEncrypt(uuid, dateTime, userIDfinale, password, subStringLink);
+            key = uuid + dateTime + BuildConfig.APP_ID + subStringLink + MyApiClient.COMM_ID + userIDfinale;
+            encrypted_password = RSA.opensslEncryptLogin(key, password);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userIDfinale);
-            if (isFingerprint) {
-                params.put(WebParams.PASSWORD, sp.getString(DefineValue.USER_PASSWORD, ""));
-            } else {
-                params.put(WebParams.PASSWORD, encrypted_password);
-            }
+            params.put(WebParams.PASSWORD, encrypted_password);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
             params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
@@ -332,12 +332,12 @@ public class Login extends BaseFragment implements View.OnClickListener {
 //                        String unregist_member = loginModel.getCommunity().get(0).getUnregisterMember();
                         sp.edit().putString(DefineValue.IS_POS, is_pos).commit();
                         sp.edit().putString(DefineValue.EXTRA_SIGNATURE, extraSignature).commit();
-                        if (!isFingerprint)
-                            sp.edit().putString(DefineValue.USER_PASSWORD, encrypted_password).commit();
+                        sp.edit().putString(DefineValue.KEY_VALUE, Md5.hashMd5(key)).commit();
+                        sp.edit().putString(DefineValue.USER_PASSWORD, encrypted_password).commit();
 //                        if (checkCommunity(loginModel.getCommunity())) {
 //                            if (unregist_member.equals("N")) {
-                                Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
-                                setLoginProfile(loginModel);
+                        Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
+                        setLoginProfile(loginModel);
 
 //                            } else {
 //                                Bundle bundle = new Bundle();
@@ -416,6 +416,10 @@ public class Login extends BaseFragment implements View.OnClickListener {
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
+    }
+
+    private String decryptPassword(String key, String password) {
+        return RSA.decrypt(key, password);
     }
 
     private void showDialog(String message) {
