@@ -768,6 +768,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="dialog_sms_msg2">Melakukan verifikasi data…</string>
     <string name="dialog_sms_msg3">Verifikasi Nomor Handphone ke server gagal.\n Apakah Anda ingin mengulang proses verifikasi ?</string>
     <string name="dialog_sms_msg4">Verifikasi Nomor Handphone ke server berhasil.</string>
+    <string name="dialog_sms_msg5">Pastikan SMS Verifikasi telah terkirim.</string>
 
     <string name="toast_msg_success_smsclass">Pesan Verifikasi Terkirim</string>
     <string name="toast_msg_fail_smsclass">Pesan Verifikasi Gagal Terkirim</string>
