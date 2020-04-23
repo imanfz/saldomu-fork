@@ -214,7 +214,7 @@ class BBSCashOut : BaseFragment() {
 
         back_btn.setOnClickListener { activity!!.finish() }
         proses_btn.setOnClickListener { if (inputValidation()) submitAction() }
-//        validasiTutorial()
+        validasiTutorial()
     }
 
     private fun showDialogBankList(btnChange: Button) {
