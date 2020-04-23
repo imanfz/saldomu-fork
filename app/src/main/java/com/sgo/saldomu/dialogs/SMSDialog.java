@@ -158,6 +158,7 @@ public class SMSDialog extends DialogFragment {
                 if (InetHandler.isNetworkAvailable(getActivity())) {
                     progBar.setProgress(0);
                     tvMessage.setText(getActivity().getString(R.string.dialog_sms_msg2));
+                    tvMessage1.setText(getActivity().getString(R.string.dialog_sms_msg5));
                     progBar.setVisibility(View.VISIBLE);
                     progText.setVisibility(View.VISIBLE);
                     btnOk.setVisibility(View.GONE);

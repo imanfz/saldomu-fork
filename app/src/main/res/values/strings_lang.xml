@@ -775,6 +775,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="dialog_sms_msg2">Verifying data…</string>
     <string name="dialog_sms_msg3">Verification of Mobile Number to the server failed. \ And Do you want to repeat the verification process?</string>
     <string name="dialog_sms_msg4">Mobile Number verification to the server success.</string>
+    <string name="dialog_sms_msg5">Make sure that SMS Verification has been sent.</string>
 
     <string name="toast_msg_success_smsclass">Verification Message Sent</string>
     <string name="toast_msg_fail_smsclass">Verification Message failed</string>

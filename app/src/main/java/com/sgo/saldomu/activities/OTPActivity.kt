@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
+import com.sgo.saldomu.coreclass.NoHPFormat
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
@@ -37,7 +38,7 @@ class OTPActivity : BaseActivity() {
 
         tv_email_value.text = intent.getStringExtra(DefineValue.USER_EMAIL)
         dateDOB = intent.getStringExtra(DefineValue.PROFILE_DOB)
-        userID = intent.getStringExtra(DefineValue.CURR_USERID)
+        userID = NoHPFormat.formatTo62(intent.getStringExtra(DefineValue.CURR_USERID))
 
         initiateCountDownTimerForResendOTP()
 
@@ -94,7 +95,7 @@ class OTPActivity : BaseActivity() {
         val dateTime: String = params[WebParams.RC_DTIME].toString()
         params[WebParams.USER_ID] = userID
         params[WebParams.COMM_ID] = MyApiClient.COMM_ID
-        params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenID, subStringLink)
+        params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(uuid, dateTime, userID, tokenID, subStringLink)
 
         Timber.d("isi param validate otp reset pin:$params")
         RetrofitService.getInstance().PostJsonObjRequest(link, params,
