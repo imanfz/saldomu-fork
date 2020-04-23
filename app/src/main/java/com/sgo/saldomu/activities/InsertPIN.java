@@ -85,30 +85,30 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
 
         if (flagLogin.equalsIgnoreCase(DefineValue.STRING_NO)) {
-            if (getIntent().getBooleanExtra(DefineValue.FOR_LOGIN, false)) {
-                tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME);
-                if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
-                        try {
-                            if (fingerprintManager.isHardwareDetected() ||
-                                    (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED)
-                                    || fingerprintManager.hasEnrolledFingerprints()) {
-                                FingerprintDialog fingerprintDialog = FingerprintDialog.newDialog(result -> {
-                                    if (result) {
-                                        setResult(RESULT_FINGERPRINT_LOGIN);
-                                        finish();
-                                    }
-                                });
-                                fingerprintDialog.setCancelable(false);
-                                fingerprintDialog.show(getSupportFragmentManager(), "FingerprintDialog");
-                            }
-                        } catch (NullPointerException e) {
-                            Timber.e(e.getMessage());
-                        }
-                    }
-                }
-            }
+//            if (getIntent().getBooleanExtra(DefineValue.FOR_LOGIN, false)) {
+//                tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME);
+//                if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+//                        try {
+//                            if (fingerprintManager.isHardwareDetected() ||
+//                                    (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED)
+//                                    || fingerprintManager.hasEnrolledFingerprints()) {
+//                                FingerprintDialog fingerprintDialog = FingerprintDialog.newDialog(result -> {
+//                                    if (result) {
+//                                        setResult(RESULT_FINGERPRINT_LOGIN);
+//                                        finish();
+//                                    }
+//                                });
+//                                fingerprintDialog.setCancelable(false);
+//                                fingerprintDialog.show(getSupportFragmentManager(), "FingerprintDialog");
+//                            }
+//                        } catch (NullPointerException e) {
+//                            Timber.e(e.getMessage());
+//                        }
+//                    }
+//                }
+//            }
             new UtilsLoader(this, sp).getFailedPINNo(userId, new OnLoadDataListener() {
                 @Override
                 public void onSuccess(Object deData) {
