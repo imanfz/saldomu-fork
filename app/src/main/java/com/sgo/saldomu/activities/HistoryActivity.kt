@@ -59,6 +59,10 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         swipeRefresh = findViewById(R.id.swipeRefresh)
 
         agentCOL = intent.getBooleanExtra(DefineValue.AGENT_COL, false)
+        if (agentCOL==true)
+        {
+            sp.edit().putBoolean(DefineValue.AGENT_COL,true).commit()
+        }
 
 
         initialize()

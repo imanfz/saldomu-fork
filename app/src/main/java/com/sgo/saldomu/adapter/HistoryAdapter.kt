@@ -8,14 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.securepreferences.SecurePreferences
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CurrencyFormat
+import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DateTimeFormat
+import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.models.retrofit.HistoryModel
 
 class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     internal lateinit var context: Context
     internal var itemList: MutableList<HistoryModel> = arrayListOf()
+    private var agentCOL: Boolean = false
+    lateinit var sp: SecurePreferences
 
     interface HistoryListener {
         fun onClick(model: HistoryModel)
@@ -39,6 +44,9 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as Holder
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs()
+        agentCOL = sp.getBoolean(DefineValue.AGENT_COL, false)
 
         if (position == itemList.size - 1) {
             holder.dividerView.visibility = View.GONE
@@ -66,7 +74,10 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
         }
 
         if (model.end_balance == "" || model.end_balance == null) {
-            holder.endBalanceText.text = "Rp. " + CurrencyFormat.format1(0.00)
+            if (agentCOL == true) {
+                holder.endBalanceText.visibility=View.GONE
+            } else
+                holder.endBalanceText.text = "Rp. " + CurrencyFormat.format1(0.00)
         } else
             holder.endBalanceText.text = "Rp. " + CurrencyFormat.format1(model.end_balance)
     }
