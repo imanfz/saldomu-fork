@@ -1253,6 +1253,7 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.SMS_CONTENT_ENCRYPTED);
         mEditor.remove(DefineValue.PROFILE_DOB);
         mEditor.remove(DefineValue.IS_INQUIRY_SMS);
+        mEditor.remove(DefineValue.AGENT_COL);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
