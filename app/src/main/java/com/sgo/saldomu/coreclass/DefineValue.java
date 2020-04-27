@@ -649,6 +649,8 @@ public class DefineValue {
     public static String RESET_PIN = "reset_pin";
     public static String USER_EMAIL = "user_email";
     public static String CURR_USERID = "curr_userid";
+    public static String IS_AGENT_BDK = "isAgentBdk";
+    public static String IS_AGENT_TOP = "isAgentTop";
 
 }
 

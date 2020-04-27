@@ -42,7 +42,7 @@ import com.sgo.saldomu.Beans.navdrawmainmenuModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.ActivityListSettings;
-import com.sgo.saldomu.activities.ActivitySCADM;
+import com.sgo.saldomu.activities.B2BActivity;
 import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
@@ -54,7 +54,6 @@ import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.ContactActivity;
 import com.sgo.saldomu.activities.InfoHargaWebActivity;
 import com.sgo.saldomu.activities.ListBuyActivity;
-import com.sgo.saldomu.activities.ListContactActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.PayFriendsActivity;
@@ -90,10 +89,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 import okhttp3.MediaType;
@@ -584,7 +580,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 if (isDormant.equalsIgnoreCase("Y")) {
                     dialogDormant();
                 } else {
-                    i = new Intent(getActivity(), ActivitySCADM.class);
+                    i = new Intent(getActivity(), B2BActivity.class);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
                 break;
