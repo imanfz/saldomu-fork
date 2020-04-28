@@ -88,6 +88,7 @@ android {
 
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "false"
             buildConfigField 'String', "COMM_CODE_BBS_ATC", "\"EMOMSCADM\""
+            buildConfigField 'String', "COMM_CODE", "\"EMOSALDOMU\""
             buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile-dev.saldomu.com/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
             buildConfigField 'String', "URL_MNOTIF", "\"https://mnotif-dev.saldomu.com/\""
@@ -125,6 +126,7 @@ android {
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "true"
 
             buildConfigField 'String', "COMM_CODE_BBS_ATC", "\"SALDOMU\""
+            buildConfigField 'String', "COMM_CODE", "\"SALDOMU\""
             buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile.saldomu.com/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
             buildConfigField 'String', "URL_MNOTIF", "\"https://mnotif.saldomu.com/\""
@@ -138,7 +140,7 @@ android {
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 83
+            versionCode = 84
             versionName "4.2"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
