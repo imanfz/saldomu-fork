@@ -72,6 +72,7 @@ public class MyApiClient {
     public static Boolean PROD_FLAG_ADDRESS     = BuildConfig.IS_PROD_DOMAIN;
     public static Boolean IS_INTERNET_BANKING;
     public static String COMM_ID;
+    public static String COMM_CODE = BuildConfig.COMM_CODE;
     public static String COMM_ID_PULSA;
     public static String COMM_ID_TAGIH;
 
