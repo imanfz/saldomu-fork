@@ -220,8 +220,8 @@ dependencies {
     implementation 'com.wdullaer:materialdatetimepicker:3.6.0'
     implementation 'com.joanzapata.iconify:android-iconify-fontawesome:2.1.0'
     implementation 'com.github.paolorotolo:appintro:3.4.0'
-    implementation 'com.txusballesteros:FitChart:1.0'
-    implementation 'com.gordonwong:material-sheet-fab:1.2'
+//    implementation 'com.txusballesteros:FitChart:1.0'
+//    implementation 'com.gordonwong:material-sheet-fab:1.2'
     implementation 'com.faber.circlestepview:library:1.0.0@aar'
     implementation 'com.squareup:android-times-square:1.6.5@aar'
     implementation 'in.srain.cube:ultra-ptr:1.0.11'
@@ -238,7 +238,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
 //    implementation 'com.loopj.android:android-async-http:1.4.8'
     implementation 'com.squareup.okhttp:okhttp:2.5.0'
-    implementation 'com.facebook.stetho:stetho:1.5.0'
+//    implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.uphyca:stetho_realm:2.2.1'
     implementation 'io.realm:android-adapters:2.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.6'
@@ -276,8 +276,8 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
 
     implementation 'com.scottyab:aes-crypto:0.0.4'
-    implementation 'com.jakewharton:butterknife:9.0.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0'
+//    implementation 'com.jakewharton:butterknife:9.0.0'
+//    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0'
 
     implementation 'com.chaos.view:pinview:1.4.2'
 
