@@ -253,14 +253,14 @@ public class FragMainPage extends Fragment {
         if (getActivity() == null)
             return;
 
-        if(getActivity() instanceof MainPage) {
-            MainPage fca = (MainPage) getActivity();
-            if(fca.materialSheetFab != null) {
-                if (isShow)
-                    fca.materialSheetFab.showFab();
-                else
-                    fca.materialSheetFab.hideSheetThenFab();
-            }
-        }
+//        if(getActivity() instanceof MainPage) {
+//            MainPage fca = (MainPage) getActivity();
+//            if(fca.materialSheetFab != null) {
+//                if (isShow)
+//                    fca.materialSheetFab.showFab();
+//                else
+//                    fca.materialSheetFab.hideSheetThenFab();
+//            }
+//        }
     }
 }
