@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
-import com.facebook.stetho.Stetho;
+//import com.facebook.stetho.Stetho;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -82,11 +82,11 @@ public class CoreApp extends MultiDexApplication {
 
         set_instance(this);
 
-        Stetho.initialize(
-                Stetho.newInitializerBuilder(this)
-                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
-                        .build());
+//        Stetho.initialize(
+//                Stetho.newInitializerBuilder(this)
+//                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+//                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+//                        .build());
 
 
         Iconify.with(new FontAwesomeModule());
