@@ -2,7 +2,6 @@ package com.sgo.saldomu.activities;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -20,7 +19,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
@@ -34,11 +32,8 @@ import com.sgo.saldomu.dialogs.FingerprintDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
-import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseActivity;
-import com.venmo.android.pin.PinFragment;
-import com.venmo.android.pin.PinFragmentConfiguration;
-import com.venmo.android.pin.Validator;
+import com.sgo.saldomu.widgets.KeyboardPin;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +46,7 @@ import timber.log.Timber;
 /**
  * Created by thinkpad on 4/2/2015.
  */
-public class InsertPIN extends BaseActivity implements PinFragment.Listener {
+public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinListener {
 
     public static final int RESULT_PIN_VALUE = 302;
     public static final int RESULT_CANCEL_ORDER = 303;
@@ -60,9 +55,9 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
     SecurePreferences sp;
     String valuePin;
     Boolean IsForgotPassword;
-    Fragment toShow;
     TextView tv_attempt, tv_version;
     FingerprintManager fingerprintManager;
+    KeyboardPin keyboardPin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,6 +68,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
             tv_attempt = v.findViewById(R.id.pin_tries_value);
             tv_version = v.findViewById(R.id.tv_version);
         }
+        keyboardPin = findViewById(R.id.keyboard);
         Timber.d("masuk UtilsLoader");
         String userId = sp.getString(DefineValue.USERID_PHONE, "");
         if (userId.isEmpty()) {
@@ -85,30 +81,12 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
 
         if (flagLogin.equalsIgnoreCase(DefineValue.STRING_NO)) {
-//            if (getIntent().getBooleanExtra(DefineValue.FOR_LOGIN, false)) {
-//                tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME);
-//                if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                        fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
-//                        try {
-//                            if (fingerprintManager.isHardwareDetected() ||
-//                                    (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED)
-//                                    || fingerprintManager.hasEnrolledFingerprints()) {
-//                                FingerprintDialog fingerprintDialog = FingerprintDialog.newDialog(result -> {
-//                                    if (result) {
-//                                        setResult(RESULT_FINGERPRINT_LOGIN);
-//                                        finish();
-//                                    }
-//                                });
-//                                fingerprintDialog.setCancelable(false);
-//                                fingerprintDialog.show(getSupportFragmentManager(), "FingerprintDialog");
-//                            }
-//                        } catch (NullPointerException e) {
-//                            Timber.e(e.getMessage());
-//                        }
-//                    }
-//                }
-//            }
+            if (getIntent().getBooleanExtra(DefineValue.FOR_LOGIN, false)) {
+                tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME);
+                if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
+                    showDialogFingerprint();
+                }
+            }
             new UtilsLoader(this, sp).getFailedPINNo(userId, new OnLoadDataListener() {
                 @Override
                 public void onSuccess(Object deData) {
@@ -156,31 +134,35 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
             setTextAttempt(String.valueOf(attempt));
         }
 
-        PinFragmentConfiguration config = new PinFragmentConfiguration(getApplicationContext())
-                .validator(new Validator() {
-                    @Override
-                    public boolean isValid(String input) {
-//                        return PinHelper.doesMatchDefaultPin(getApplicationContext(), input);
-                        Timber.d("pin yg di confirm " + input);
-                        valuePin = input;
-                        Intent i = new Intent();
-                        if (is_md5)
-                            i.putExtra(DefineValue.PIN_VALUE, RSA.opensslEncrypt(input));
-                        else
-                            i.putExtra(DefineValue.PIN_VALUE, input);
-                        setResult(RESULT_PIN_VALUE, i);
-                        finish();
-                        return true;
+        keyboardPin.setListener(this);
+    }
+
+    private void showDialogFingerprint() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+            if (fingerprintManager != null) {
+                try {
+                    if (fingerprintManager.isHardwareDetected() ||
+                            (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED)
+                            || fingerprintManager.hasEnrolledFingerprints()) {
+                        FingerprintDialog fingerprintDialog = FingerprintDialog.newDialog(result -> {
+                            if (result) {
+                                setResult(RESULT_FINGERPRINT_LOGIN);
+                                finish();
+                            }
+                        });
+                        fingerprintDialog.setCancelable(false);
+                        fingerprintDialog.show(getSupportFragmentManager(), "FingerprintDialog");
+                    } else {
+                        keyboardPin.hideFingerprint();
                     }
-                });
-
-        toShow = PinFragment.newInstanceForVerification(config);
-
-        getFragmentManager().beginTransaction()
-                .add(R.id.root, toShow)
-                .commit();
-
-
+                } catch (NullPointerException e) {
+                    Timber.e(e.getMessage());
+                }
+            } else {
+                keyboardPin.hideFingerprint();
+            }
+        }
     }
 
     private void setTextAttempt(String attempt) {
@@ -233,16 +215,6 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onValidated() {
-
-    }
-
-    @Override
-    public void onPinCreated() {
-
     }
 
     void showDialogForgotPin() {
@@ -336,5 +308,21 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 //        super.onBackPressed();
         setResult(RESULT_CANCEL_ORDER);
         finish();
+    }
+
+    @Override
+    public void getCharSequenceKeyboard(CharSequence text) {
+        if (text.length() == 6) {
+            valuePin = text.toString();
+            Intent i = new Intent();
+            i.putExtra(DefineValue.PIN_VALUE, valuePin);
+            setResult(RESULT_PIN_VALUE, i);
+            finish();
+        }
+    }
+
+    @Override
+    public void useFingerprint() {
+        showDialogFingerprint();
     }
 }

@@ -9,9 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -23,38 +21,30 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
-import com.sgo.saldomu.securities.AES;
-import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseActivity;
-import com.venmo.android.pin.PinFragment;
+import com.sgo.saldomu.widgets.KeyboardPin;
 import com.venmo.android.pin.PinFragmentConfiguration;
-import com.venmo.android.pin.PinSaver;
-import com.venmo.android.pin.Validator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 import timber.log.Timber;
 
 /**
  * Created by thinkpad on 2/11/2016.
  */
-public class ChangePIN extends BaseActivity implements PinFragment.Listener {
+public class ChangePIN extends BaseActivity implements KeyboardPin.KeyboardPinListener {
 
     private ProgressDialog progdialog;
     private String currentPin;
     private String newPin;
     private String confirmPin;
-    private Fragment insertPin;
-    private Fragment createPin;
     private TextView tv_title;
 
-    private PinFragmentConfiguration configNew;
-    private PinFragmentConfiguration configCurrent;
+    KeyboardPin keyboardPin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,45 +55,16 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
         View v = this.findViewById(android.R.id.content);
         assert v != null;
         tv_title = v.findViewById(R.id.pin_title);
+        keyboardPin = findViewById(R.id.keyboard);
         tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
 
-        configNew = new PinFragmentConfiguration(this)
-                .pinSaver(new PinSaver() {
-                    @Override
-                    public void save(String pin) {
-                        newPin = pin;
-                        confirmPin = pin;
-                        Timber.d("new pin:" + newPin);
-//                        PinHelper.saveDefaultPin(ChangePIN1.this, pin);
-                        sendChangePin();
-                    }
-                });
-
-        configCurrent = new PinFragmentConfiguration(this)
-                .validator(new Validator() {
-                    @Override
-                    public boolean isValid(String input) {
-//                        return PinHelper.doesMatchDefaultPin(getApplicationContext(), input);
-                        Timber.d("pin current: " + input);
-                        currentPin = input;
-
-                        createPin = PinFragment.newInstanceForCreation(configNew);
-                        getFragmentManager().beginTransaction()
-                                .replace(R.id.root, createPin)
-                                .commit();
-
-                        tv_title.setText(getResources().getString(R.string.changepin_text_newpin));
-                        return true;
-                    }
-                });
-
-        setFragmentInsertPin();
-
+        keyboardPin.setListener(this);
+        keyboardPin.hideFingerprint();
     }
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.activity_change_pin;
+        return R.layout.change_pin;
     }
 
     private void InitializeToolbar() {
@@ -128,26 +89,9 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onValidated() {
-
-    }
-
-    @Override
-    public void onPinCreated() {
-
-    }
-
     private void finishChild() {
         setResult(MainPage.RESULT_NORMAL);
         this.finish();
-    }
-
-    private void setFragmentInsertPin() {
-        insertPin = PinFragment.newInstanceForVerification(configCurrent);
-        getFragmentManager().beginTransaction()
-                .add(R.id.root, insertPin)
-                .commit();
     }
 
     private void sendChangePin() {
@@ -201,10 +145,8 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
                                     alertDialogMaintenance.showDialogMaintenance(ChangePIN.this, model.getError_message());
                                 } else {
                                     Toast.makeText(ChangePIN.this, message, Toast.LENGTH_LONG).show();
-
                                     tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
-                                    getFragmentManager().beginTransaction().remove(createPin).commit();
-                                    setFragmentInsertPin();
+                                    resetLayout();
                                 }
 
                             } catch (JSONException e) {
@@ -226,5 +168,41 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
+    }
+
+    private void resetLayout() {
+        tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
+        currentPin = null;
+        newPin = null;
+        confirmPin = null;
+        keyboardPin.reset();
+    }
+
+    @Override
+    public void getCharSequenceKeyboard(CharSequence text) {
+        if (text.length() == 6) {
+            keyboardPin.reset();
+            if (tv_title.getText() == getResources().getString(R.string.changepin_text_currentpin)) {
+                currentPin = text.toString();
+                tv_title.setText(getResources().getString(R.string.changepin_text_newpin));
+            } else if (tv_title.getText() == getResources().getString(R.string.changepin_text_newpin)) {
+                newPin = text.toString();
+                tv_title.setText(getResources().getString(R.string.changepin_text_retypenewpin));
+            } else if (tv_title.getText() == getResources().getString(R.string.changepin_text_retypenewpin))
+                confirmPin = text.toString();
+
+            if (currentPin != null && newPin != null && confirmPin != null)
+                if (currentPin.length() == 6 && newPin.length() == 6 && confirmPin.length() == 6) {
+                    Timber.d("current pin : " + currentPin);
+                    Timber.d("new pin : " + newPin);
+                    Timber.d("confirm pin : " + confirmPin);
+                    sendChangePin();
+                }
+        }
+    }
+
+    @Override
+    public void useFingerprint() {
+
     }
 }

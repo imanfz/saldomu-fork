@@ -278,34 +278,34 @@ public class MainPage extends BaseActivity {
 
     private void InitializeApp() {
         if (GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
-            if (RootUtil.isDeviceRooted()) {
-                if (BuildConfig.FLAVOR.equals("production")) {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
-                    builder.setMessage("Apakah anda ingin melewati pengecekan device?")
-                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    initializeDashboard();
-                                }
-                            });
-                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
-                        }
-                    });
-                    builder.setCancelable(false);
-                    devRootedDeviceAlertDialog = builder.create();
-                    if (!isFinishing())
-                        devRootedDeviceAlertDialog.show();
-                } else {
-                    switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
-//                    initializeDashboard();
-                }
-            } else {
+//            if (RootUtil.isDeviceRooted()) {
+//                if (BuildConfig.FLAVOR.equals("production")) {
+//
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
+//                    builder.setMessage("Apakah anda ingin melewati pengecekan device?")
+//                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    initializeDashboard();
+//                                }
+//                            });
+//                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
+//                        }
+//                    });
+//                    builder.setCancelable(false);
+//                    devRootedDeviceAlertDialog = builder.create();
+//                    if (!isFinishing())
+//                        devRootedDeviceAlertDialog.show();
+//                } else {
+//                    switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
+////                    initializeDashboard();
+//                }
+//            } else {
                 initializeDashboard();
-            }
+//            }
         } else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
         }
