@@ -1577,4 +1577,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="transfer_destination">Tujuan Transfer</string>
     <string name="transfer_source">Sumber Transfer</string>
     <string name="choose_bank_emoney">Pilih Bank/E-Money</string>
+    <string name="member_code_validation">Kode Member dibutuhkan!</string>
+    <string name="amount_validation_scadm">Jumlah harus kelipatan 1000!</string>
 </resources>
