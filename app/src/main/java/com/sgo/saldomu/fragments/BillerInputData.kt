@@ -1,10 +1,16 @@
 package com.sgo.saldomu.fragments
 
+import android.Manifest
+import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentManager
+import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
@@ -27,15 +33,13 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.interfaces.OnLoadDataListener
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.loader.UtilsLoader
-import com.sgo.saldomu.models.BankBillerItem
-import com.sgo.saldomu.models.BillerDenomResponse
-import com.sgo.saldomu.models.BillerItem
-import com.sgo.saldomu.models.DenomDataItem
+import com.sgo.saldomu.models.*
 import com.sgo.saldomu.models.retrofit.GetTrxStatusModel
 import com.sgo.saldomu.models.retrofit.InqBillerModel
 import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.securities.RSA
+import com.sgo.saldomu.utils.CustomStringUtil
 import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
 import io.realm.RealmResults
@@ -44,10 +48,13 @@ import kotlinx.android.synthetic.main.frag_biller_input_new.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 
 class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private lateinit var viewLayout: View
+    private val RC_READ_CONTACTS = 14
 
     val TAG = "BillerInputData"
     val REQUEST_BillerInqReq = 22
@@ -108,6 +115,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     private lateinit var sentPaymentBillerModel: SentPaymentBillerModel
 
     private var billerItemList = ArrayList<BillerItem>()
+    private val contactList = java.util.ArrayList<ContactList>()
+    private var selectedContact: ContactList? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -145,6 +154,61 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
             notes_edit_text.visibility = if (isChecked) View.VISIBLE else View.GONE
             notes_edit_text.isEnabled = isChecked
         }
+
+        ib_contact_list.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(activity!!, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                showListContact()
+            } else {
+                ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS),
+                        RC_READ_CONTACTS)
+            }
+        }
+    }
+
+    private fun showListContact() {
+        getContactList()
+        Collections.sort(contactList) { contactList: ContactList, t1: ContactList -> contactList.name.compareTo(t1.name, ignoreCase = true) }
+        val bundle = Bundle()
+        bundle.putInt(DefineValue.SEARCH_TYPE, ActivitySearch.TYPE_SEARCH_CONTACT)
+        //bundle.putString(DefineValue.TYPE, type);
+        bundle.putParcelableArrayList(DefineValue.BUNDLE_LIST, contactList)
+        val intent = Intent(activity, ActivitySearch::class.java)
+        intent.putExtra(DefineValue.BUNDLE_FRAG, bundle)
+        startActivityForResult(intent, RC_READ_CONTACTS)
+    }
+
+    private fun getContactList() {
+        if (contactList.size > 0) {
+            contactList.clear()
+        }
+        val cr = activity!!.contentResolver
+        val cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null)
+        if (cur?.count ?: 0 > 0) {
+            while (cur != null && cur.moveToNext()) {
+                val id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID))
+                val name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME))
+                if (cur.getInt(cur.getColumnIndex(
+                                ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    val pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", arrayOf(id), null)
+                    while (pCur.moveToNext()) {
+                        val phoneNo = pCur.getString(pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER))
+                        Timber.i("Name: $name")
+                        Timber.i("Phone Number: $phoneNo")
+                        contactList.add(ContactList(name, phoneNo))
+                    }
+                    pCur.close()
+                }
+            }
+        }
+        cur?.close()
     }
 
     private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
@@ -848,6 +912,16 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                 }
             }
         }
+
+        if (requestCode == RC_READ_CONTACTS) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                selectedContact = data.getParcelableExtra(DefineValue.ITEM_SELECTED)
+                //trim 0878 - 0872 - 0888 -> ommit "-"
+                val finalPhoneNo = CustomStringUtil.filterPhoneNo(selectedContact!!.getPhoneNo())
+                billerinput_et_id_remark.setText(finalPhoneNo)
+            }
+        }
+
     }
 
     private fun getBillerDenom() {
