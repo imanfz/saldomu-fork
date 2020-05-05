@@ -2,6 +2,7 @@ package com.sgo.saldomu.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 public class ContactList  implements Parcelable {
 
@@ -56,6 +57,24 @@ public class ContactList  implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(phoneNo);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == this) return true;
+
+        if (!(obj instanceof ContactList)) {
+            return false;
+        }
+
+        ContactList person = (ContactList) obj;
+
+        return person.phoneNo.equals(phoneNo);
+    }
+
+    @Override
+    public int hashCode() {
+        return (phoneNo == null) ? 0 : phoneNo.hashCode();
     }
 }
 

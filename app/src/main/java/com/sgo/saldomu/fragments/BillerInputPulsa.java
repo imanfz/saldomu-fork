@@ -758,9 +758,9 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     };
 
     private void showListContact() {
-        getContactList();
+        //getContactList();
 
-        Collections.sort(contactList, (contactList, t1) -> contactList.getName().compareToIgnoreCase(t1.getName()));
+        //Collections.sort(contactList, (contactList, t1) -> contactList.getName().compareToIgnoreCase(t1.getName()));
 
         Bundle bundle = new Bundle();
         bundle.putInt(DefineValue.SEARCH_TYPE, ActivitySearch.TYPE_SEARCH_CONTACT);
