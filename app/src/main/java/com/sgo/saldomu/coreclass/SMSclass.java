@@ -23,6 +23,7 @@ import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
@@ -46,7 +47,7 @@ public class SMSclass {
     private BroadcastReceiver receiverSent;
     private BroadcastReceiver receiverDelivered;
 
-    private static final String SMS_VERIFY = "REG EMO " + MyApiClient.COMM_ID;
+    private static final String SMS_VERIFY = "REG EMO " + MyApiClient.COMM_CODE;
     String[] perms = {Manifest.permission.READ_PHONE_STATE};
 
     public interface SMS_SIM_STATE {

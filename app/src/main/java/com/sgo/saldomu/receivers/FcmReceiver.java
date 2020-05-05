@@ -20,8 +20,6 @@ import org.json.JSONObject;
 
 import timber.log.Timber;
 
-import static com.facebook.stetho.inspector.network.PrettyPrinterDisplayType.JSON;
-
 /**
  * Created by Lenovo on 16/01/2018.
  */
