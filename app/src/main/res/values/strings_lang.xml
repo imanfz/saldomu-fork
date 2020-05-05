@@ -1598,4 +1598,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="transfer_destination">Transfer Destination</string>
     <string name="transfer_source">Transfer Source</string>
     <string name="choose_bank_emoney">Choose Bank/E-Money</string>
+    <string name="member_code_validation">Member Code Required!</string>
+    <string name="amount_validation_scadm">must be a multiple of 1000!</string>
 </resources>
