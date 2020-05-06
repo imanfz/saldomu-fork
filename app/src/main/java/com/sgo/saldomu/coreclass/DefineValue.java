@@ -649,6 +649,13 @@ public class DefineValue {
     public static String RESET_PIN = "reset_pin";
     public static String USER_EMAIL = "user_email";
     public static String CURR_USERID = "curr_userid";
+    public static String IS_AGENT_BDK = "isAgentBdk";
+    public static String IS_AGENT_TOP = "isAgentTop";
+
+    public static final String BUNDLE_FRAG = "BUNDLE_FRAG";
+    public static String SEARCH_TYPE = "search_type";
+    public static String ITEM_SELECTED = "item_selected";
+    public static final String BUNDLE_LIST = "BUNDLE_LIST";
 
 }
 

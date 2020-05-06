@@ -36,7 +36,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
-import com.gordonwong.materialsheetfab.MaterialSheetFab;
+//import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.commentModel;
 import com.sgo.saldomu.Beans.likeModel;
@@ -47,7 +47,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.FabInstance;
+//import com.sgo.saldomu.coreclass.FabInstance;
 import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.NotificationActionView;
@@ -152,7 +152,7 @@ public class MainPage extends BaseActivity {
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
     private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent, isForeground = false;
-    public MaterialSheetFab materialSheetFab;
+//    public MaterialSheetFab materialSheetFab;
     AlertDialog devRootedDeviceAlertDialog;
     private Bundle savedInstanceState;
     private SMSclass smSclass;
@@ -400,7 +400,7 @@ public class MainPage extends BaseActivity {
 //        utilsLoader.getAppVersion();
         ActiveAndroid.initialize(this);
         InitializeNavDrawer();
-        setupFab();
+//        setupFab();
         FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userPhoneID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
         AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
@@ -1254,6 +1254,8 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.PROFILE_DOB);
         mEditor.remove(DefineValue.IS_INQUIRY_SMS);
         mEditor.remove(DefineValue.AGENT_COL);
+        mEditor.remove(DefineValue.IS_AGENT_TOP);
+        mEditor.remove(DefineValue.IS_AGENT_BDK);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -1614,22 +1616,22 @@ public class MainPage extends BaseActivity {
     }
 
 
-    private void setupFab() {
-        materialSheetFab = FabInstance.newInstance(this, new FabInstance.OnBtnListener() {
-            @Override
-            public void OnClickItemFAB(int idx) {
-                switch (idx) {
-                    case FabInstance.ITEM_FAB_ASK4MONEY:
-                        switchMenu(NavigationDrawMenu.MASK4MONEY, null);
-                        break;
-                    case FabInstance.ITEM_FAB_PAYFRIENDS:
-                        switchMenu(NavigationDrawMenu.MPAYFRIENDS, null);
-                        break;
-                }
-            }
-        });
-
-    }
+//    private void setupFab() {
+//        materialSheetFab = FabInstance.newInstance(this, new FabInstance.OnBtnListener() {
+//            @Override
+//            public void OnClickItemFAB(int idx) {
+//                switch (idx) {
+//                    case FabInstance.ITEM_FAB_ASK4MONEY:
+//                        switchMenu(NavigationDrawMenu.MASK4MONEY, null);
+//                        break;
+//                    case FabInstance.ITEM_FAB_PAYFRIENDS:
+//                        switchMenu(NavigationDrawMenu.MPAYFRIENDS, null);
+//                        break;
+//                }
+//            }
+//        });
+//
+//    }
 
     private void showValidasiEmail() {
         Intent i = new Intent(this, ValidasiEmailActivity.class);

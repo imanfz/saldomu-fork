@@ -1,6 +1,5 @@
 package com.sgo.saldomu.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -39,7 +38,7 @@ import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.PromoObject;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.ActivitySCADM;
+import com.sgo.saldomu.activities.B2BActivity;
 import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
@@ -49,7 +48,6 @@ import com.sgo.saldomu.activities.HistoryActivity;
 import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.ReportActivity;
-import com.sgo.saldomu.activities.SearchAgentUpgradeActivity;
 import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
@@ -59,7 +57,6 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.NotificationHandler;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -130,7 +127,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
     String shopStatus, isMemberShopDGI, isDormant, agentSchemeCode, memberSchemeCode;
-    Boolean isAgent;
+    Boolean isAgent, isShowB2b=false;
     ProgressBar gridview_progbar;
     ProgressBar progBanner;
     private CarouselView carouselView;
@@ -509,7 +506,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_history_detail));
                     startActivity(intent);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
-                    Intent intent = new Intent(getActivity(), ActivitySCADM.class);
+                    Intent intent = new Intent(getActivity(), B2BActivity.class);
                     startActivity(intent);
                 }
 
@@ -999,10 +996,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
             menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
             menuDrawables.add(getResources().getDrawable(R.drawable.group));
 
-            if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
-                menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
-                menuDrawables.add(getResources().getDrawable(R.drawable.group));
-            }
+//            if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
+//                menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
+//                menuDrawables.add(getResources().getDrawable(R.drawable.group));
+//            }
         }
 
 //        menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));
@@ -1085,6 +1082,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_pdam));
                         }
                         break;
+                    case "TOP":
+                        isShowB2b = true;
+                        sp.edit().putBoolean(DefineValue.IS_AGENT_TOP,true).commit();
+                        menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.group));
+                        break;
+                    case "BDK":
+                        sp.edit().putBoolean(DefineValue.IS_AGENT_BDK,true).commit();
+                        if (isShowB2b==false) {
+                            menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.group));
+                        }break;
                 }
             }
         } catch (JSONException e) {

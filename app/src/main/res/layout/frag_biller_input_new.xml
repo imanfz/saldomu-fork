@@ -80,6 +80,16 @@
                     android:layout_below="@id/billerinput_text_id_remark"
                     android:layout_toRightOf="@id/billerinput_et_id_remark"
                     android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/ib_contact_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@mipmap/camera_result_cancel"
+                    android:layout_below="@id/billerinput_text_id_remark"
+                    android:layout_toRightOf="@id/img_operator"
+                    android:visibility="visible" />
+
             </RelativeLayout>
 
             <LinearLayout

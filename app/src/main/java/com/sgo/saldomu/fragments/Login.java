@@ -109,7 +109,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         super.onActivityCreated(savedInstanceState);
 
         argsBundleNextLogin = getArguments();
-        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME);
+        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" +BuildConfig.VERSION_CODE +")");
 
 //        btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
 
@@ -140,35 +140,35 @@ public class Login extends BaseFragment implements View.OnClickListener {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
-//            if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    fingerprintManager =
-//                            (FingerprintManager) getActivity().getSystemService(FINGERPRINT_SERVICE);
-//
-//                    //Check whether the device has a fingerprint sensor//
-//                    try {
-//                        if (!fingerprintManager.isHardwareDetected() ||
-//                                (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED)
-//                                || !fingerprintManager.hasEnrolledFingerprints()) {
-//                            // If a fingerprint sensor isn’t available, then inform the user that they’ll be unable to use your app’s fingerprint functionality//
-//
-//                        } else if (sp.getString(DefineValue.USER_PASSWORD, "") != "") {
-//                            // Create and show the dialog.
-//                            isFingerprint = false;
-//                            DialogFragment fingerprintDialog = FingerprintDialog.newDialog(result -> {
-//                                isFingerprint = result;
-//                                if (isFingerprint)
-//                                    sentDatas();
-//                            });
-////                            fingerprintDialog.setTargetFragment(Login.this, 300);
-//                            fingerprintDialog.setCancelable(false);
-//                            fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
-//                        }
-//                    } catch (NullPointerException e) {
-//                        Timber.e(e.getMessage());
-//                    }
-//                }
-//            }
+            if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    fingerprintManager =
+                            (FingerprintManager) getActivity().getSystemService(FINGERPRINT_SERVICE);
+
+                    //Check whether the device has a fingerprint sensor//
+                    try {
+                        if (!fingerprintManager.isHardwareDetected() ||
+                                (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED)
+                                || !fingerprintManager.hasEnrolledFingerprints()) {
+                            // If a fingerprint sensor isn’t available, then inform the user that they’ll be unable to use your app’s fingerprint functionality//
+
+                        } else if (sp.getString(DefineValue.USER_PASSWORD, "") != "") {
+                            // Create and show the dialog.
+                            isFingerprint = false;
+                            DialogFragment fingerprintDialog = FingerprintDialog.newDialog(result -> {
+                                isFingerprint = result;
+                                if (isFingerprint)
+                                    sentDatas();
+                            });
+//                            fingerprintDialog.setTargetFragment(Login.this, 300);
+                            fingerprintDialog.setCancelable(false);
+                            fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
+                        }
+                    } catch (NullPointerException e) {
+                        Timber.e(e.getMessage());
+                    }
+                }
+            }
 
         } else if (m != null) {
             if (m.containsKey(DefineValue.IS_POS)) {

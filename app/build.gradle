@@ -88,6 +88,7 @@ android {
 
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "false"
             buildConfigField 'String', "COMM_CODE_BBS_ATC", "\"EMOMSCADM\""
+            buildConfigField 'String', "COMM_CODE", "\"EMOSALDOMU\""
             buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile-dev.saldomu.com/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
             buildConfigField 'String', "URL_MNOTIF", "\"https://mnotif-dev.saldomu.com/\""
@@ -125,6 +126,7 @@ android {
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "true"
 
             buildConfigField 'String', "COMM_CODE_BBS_ATC", "\"SALDOMU\""
+            buildConfigField 'String', "COMM_CODE", "\"SALDOMU\""
             buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile.saldomu.com/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
             buildConfigField 'String', "URL_MNOTIF", "\"https://mnotif.saldomu.com/\""
@@ -138,7 +140,7 @@ android {
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 83
+            versionCode = 84
             versionName "4.2"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
@@ -218,8 +220,8 @@ dependencies {
     implementation 'com.wdullaer:materialdatetimepicker:3.6.0'
     implementation 'com.joanzapata.iconify:android-iconify-fontawesome:2.1.0'
     implementation 'com.github.paolorotolo:appintro:3.4.0'
-    implementation 'com.txusballesteros:FitChart:1.0'
-    implementation 'com.gordonwong:material-sheet-fab:1.2'
+//    implementation 'com.txusballesteros:FitChart:1.0'
+//    implementation 'com.gordonwong:material-sheet-fab:1.2'
     implementation 'com.faber.circlestepview:library:1.0.0@aar'
     implementation 'com.squareup:android-times-square:1.6.5@aar'
     implementation 'in.srain.cube:ultra-ptr:1.0.11'
@@ -236,7 +238,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
 //    implementation 'com.loopj.android:android-async-http:1.4.8'
     implementation 'com.squareup.okhttp:okhttp:2.5.0'
-    implementation 'com.facebook.stetho:stetho:1.5.0'
+//    implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.uphyca:stetho_realm:2.2.1'
     implementation 'io.realm:android-adapters:2.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.6'
@@ -274,8 +276,8 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
 
     implementation 'com.scottyab:aes-crypto:0.0.4'
-    implementation 'com.jakewharton:butterknife:9.0.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0'
+//    implementation 'com.jakewharton:butterknife:9.0.0'
+//    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0'
 
     implementation 'com.chaos.view:pinview:1.4.2'
 

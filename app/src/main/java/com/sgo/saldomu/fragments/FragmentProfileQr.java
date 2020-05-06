@@ -241,7 +241,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
             a.create();
             a.show();
         });
-        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME);
+        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME+ " (" +BuildConfig.VERSION_CODE +")");
     }
 
     private String getLvl() {
