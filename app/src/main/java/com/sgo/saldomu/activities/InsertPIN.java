@@ -122,6 +122,7 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
 
                 }
             });
+            keyboardPin.hideFingerprint();
         }
 
         InitializeToolbar();

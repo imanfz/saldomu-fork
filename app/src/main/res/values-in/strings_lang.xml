@@ -441,7 +441,7 @@
     <string name="askformoney_otp">* maks. 6 karakter</string>
 
     <string name="changepin_ab_changepin">Ganti PIN</string>
-    <string name="changepin_text_currentpin">PIN Berlaku</string>
+    <string name="changepin_text_currentpin">PIN Sekarang</string>
     <string name="changepin_text_newpin">PIN Baru</string>
     <string name="changepin_text_retypenewpin">Ketik Ulang PIN Baru</string>
     <string name="changepin_edit_error_currentpin">PIN dibutuhkan!</string>
