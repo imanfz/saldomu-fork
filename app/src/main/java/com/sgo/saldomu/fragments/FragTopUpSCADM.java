@@ -93,7 +93,7 @@ public class FragTopUpSCADM extends BaseFragment {
         et_membercode = v.findViewById(R.id.et_member_code);
         btn_next = v.findViewById(R.id.btn_next);
 
-        et_membercode.setText(member_id_scadm);
+        et_membercode.setText(userPhoneID);
 
         scadmListBankTopUp.clear();
         spinnerContentStrings.clear();
