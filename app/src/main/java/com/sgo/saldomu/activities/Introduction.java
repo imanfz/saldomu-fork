@@ -576,12 +576,19 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
     private void fingerprintLogin() {
         showProgLoading("Sending Data", true);
+        String link = MyApiClient.LINK_LOGIN;
+        String password = RSA.decrypt(sp.getString(DefineValue.KEY_VALUE, ""), sp.getString(DefineValue.USER_PASSWORD, ""));
+        String subStringLink = link.substring(link.indexOf("saldomu/"));
         extraSignature = sp.getString(DefineValue.EXTRA_SIGNATURE, "");
         String userID = NoHPFormat.formatTo62(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
-        HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_LOGIN, extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(link, extraSignature);
+        String uuid = params.get(WebParams.RC_UUID).toString();
+        String dateTime = params.get(WebParams.RC_DTIME).toString();
+        String key = uuid + dateTime + BuildConfig.APP_ID + subStringLink + MyApiClient.COMM_ID + userID;
+        String encrypted_password = RSA.opensslEncryptLogin(key, password);
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
         params.put(WebParams.USER_ID, userID);
-        params.put(WebParams.PASSWORD, sp.getString(DefineValue.USER_PASSWORD, ""));
+        params.put(WebParams.PASSWORD, encrypted_password);
         params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
         params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
         params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
@@ -592,7 +599,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
         Timber.d("isi params login:" + params.toString());
 
-        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN, params, new ResponseListener() {
+        RetrofitService.getInstance().PostObjectRequest(link, params, new ResponseListener() {
             @Override
             public void onResponses(JsonObject response) {
                 LoginModel loginModel = getGson().fromJson(response.toString(), LoginModel.class);
