@@ -65,7 +65,7 @@ public class BBSTransaksiPagerItem extends Fragment {
                 defaultProductCode = bundle.getString(DefineValue.PRODUCT_CODE);
             }
         }
-        Fragment newFrag;
+        Fragment newFrag = null;
         if (title.equalsIgnoreCase(getString(R.string.cash_in)) && type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
             newFrag = new BBSCashIn();
         else if (title.equalsIgnoreCase(getString(R.string.cash_out)) && type.equalsIgnoreCase(DefineValue.BBS_CASHOUT))

@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/main_toolbar"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:background="@color/grey_1000w"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
@@ -32,7 +31,7 @@
                 android:id="@+id/pin_tries_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:text="@string/login_failed_attempt_1"
                 android:textColor="@color/red_600"
                 android:visibility="gone" />
@@ -51,21 +50,20 @@
                 android:text="@string/keep_your_pin_confidential"
                 android:textStyle="italic" />
 
-            <FrameLayout
-
-                android:id="@+id/root"
+            <com.sgo.saldomu.widgets.KeyboardPin
+                android:id="@+id/keyboard"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/tv_version"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:gravity="center"
-                android:text=""
-                android:textSize="12sp" />
+                android:layout_height="wrap_content"/>
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text=""
+        android:textSize="12sp" />
 </RelativeLayout>

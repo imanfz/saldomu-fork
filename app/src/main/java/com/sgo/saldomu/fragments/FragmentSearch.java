@@ -1,8 +1,11 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,21 +17,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.ActivitySearch;
 import com.sgo.saldomu.adapter.AdapterSearchContact;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.models.ContactList;
+import com.sgo.saldomu.utils.CustomStringUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class FragmentSearch extends Fragment {
 
     EditText et_search;
     RecyclerView recycler_view;
-    ArrayList<ContactList> contactLists = new ArrayList<>();
+    ProgressBar prgLoading;
+    //ArrayList<ContactList> contactLists = new ArrayList<>();
     ContactList selectedContact;
     private AdapterSearchContact adapter;
 
@@ -49,6 +62,7 @@ public class FragmentSearch extends Fragment {
         View v = inflater.inflate(R.layout.fragment_search_contact, container, false);
         et_search = v.findViewById(R.id.et_search);
         recycler_view = v.findViewById(R.id.recycler_view);
+        prgLoading = v.findViewById(R.id.prgLoading);
 
         //disableCopyPaste();
         initAdapter();
@@ -85,15 +99,71 @@ public class FragmentSearch extends Fragment {
 //        EditTextUtil.disableCopy(list);
 //    }
 
+    private List<ContactList> getContactList() {
+        List<ContactList> contactLists = new ArrayList<>();
+
+        ContentResolver cr = getActivity().getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+        if ((cur != null ? cur.getCount() : 0) > 0) {
+            while (cur != null && cur.moveToNext()) {
+                String id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME));
+
+                if (cur.getInt(cur.getColumnIndex(
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        Timber.i("Name: " + name);
+                        String finalPhoneNo = CustomStringUtil.filterPhoneNo(phoneNo);
+                        Timber.i("Phone Number: " + finalPhoneNo);
+                        contactLists.add(new ContactList(name, finalPhoneNo));
+                    }
+                    pCur.close();
+                }
+            }
+        }
+        if (cur != null) {
+            cur.close();
+        }
+
+        return contactLists;
+    }
+
+
     private void initAdapter() {
         LinearLayoutManager lm = new LinearLayoutManager(getActivity());
-        adapter = new AdapterSearchContact(ActivitySearch.TYPE_SEARCH_CONTACT, contactLists, obj -> {
-            selectedContact = obj;
-            updateView();
-        });
-
         recycler_view.setLayoutManager(lm);
-        recycler_view.setAdapter(adapter);
+
+        Completable.complete()
+                .delay(1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() ->
+                        Observable.fromIterable(getContactList())
+                        .distinct()
+                        .sorted((t0, t1) -> t0.getName().compareToIgnoreCase(t1.getName()))
+                        .toList()
+                        .subscribe(contactLists -> {
+                            prgLoading.setVisibility(View.GONE);
+
+                            adapter = new AdapterSearchContact(contactLists, obj -> {
+                                selectedContact = obj;
+                                updateView();
+                            });
+                            recycler_view.setAdapter(adapter);
+                        }, e -> {
+                            prgLoading.setVisibility(View.GONE);
+                            Toast.makeText(getContext(), R.string.no_data, Toast.LENGTH_SHORT).show();
+                        }).dispose())
+                .subscribe();
     }
 
     private void updateView() {
@@ -107,7 +177,7 @@ public class FragmentSearch extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             isSearchPhone = true;
-            contactLists = bundle.getParcelableArrayList(DefineValue.BUNDLE_LIST);
+            //contactLists = bundle.getParcelableArrayList(DefineValue.BUNDLE_LIST);
         }
     }
 }

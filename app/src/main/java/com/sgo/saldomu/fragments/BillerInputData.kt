@@ -167,8 +167,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     }
 
     private fun showListContact() {
-        getContactList()
-        Collections.sort(contactList) { contactList: ContactList, t1: ContactList -> contactList.name.compareTo(t1.name, ignoreCase = true) }
+//        getContactList()
+        //Collections.sort(contactList) { contactList: ContactList, t1: ContactList -> contactList.name.compareTo(t1.name, ignoreCase = true) }
         val bundle = Bundle()
         bundle.putInt(DefineValue.SEARCH_TYPE, ActivitySearch.TYPE_SEARCH_CONTACT)
         //bundle.putString(DefineValue.TYPE, type);

@@ -28,13 +28,11 @@ public class AdapterSearchContact extends RecyclerView.Adapter<RecyclerView.View
     private Context mContext;
     private List<ContactList> dataContact;
     private List<ContactList> dataContactDisplay;
-    private int type;
 
-    public AdapterSearchContact(int type, List<ContactList> data, OnItemClick listener) {
+    public AdapterSearchContact(List<ContactList> data, OnItemClick listener) {
         this.dataContact = data;
         this.listener = listener;
         this.dataContactDisplay = data;
-        this.type = type;
     }
 
     @NonNull
@@ -42,12 +40,8 @@ public class AdapterSearchContact extends RecyclerView.Adapter<RecyclerView.View
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         this.mContext = parent.getContext();
         View v;
-        switch (type) {
-            case ActivitySearch.TYPE_SEARCH_CONTACT:
-                v = LayoutInflater.from(mContext).inflate(R.layout.item_search_contact, parent, false);
-                return new ViewHolderContact(v);
-        }
-        return null;
+        v = LayoutInflater.from(mContext).inflate(R.layout.item_search_contact, parent, false);
+        return new ViewHolderContact(v);
     }
 
     @Override
