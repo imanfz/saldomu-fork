@@ -584,7 +584,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
         mFrag.setArguments(args);
         getFragmentManager().popBackStack(getFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getFragmentManager().beginTransaction()
-                .replace(R.id.bbsTransaksiFragmentContent, mFrag, BBSTransaksiAmount.TAG)
+                .replace(R.id.bbs_content, mFrag, BBSTransaksiAmount.TAG)
                 .addToBackStack(TAG).commit();
     }
 

@@ -202,26 +202,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_additionalFee"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/rounded_background_white"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/additional_fee" />
-
-                <EditText
-                    android:id="@+id/et_additionalFee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/additionalFee_hint"
-                    android:inputType="number" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_background_white"

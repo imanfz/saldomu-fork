@@ -1,6 +1,5 @@
 package com.sgo.saldomu.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -65,7 +64,7 @@ public class BBSTransaksiPagerItem extends Fragment {
                 defaultProductCode = bundle.getString(DefineValue.PRODUCT_CODE);
             }
         }
-        Fragment newFrag = null;
+        Fragment newFrag;
         if (title.equalsIgnoreCase(getString(R.string.cash_in)) && type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
             newFrag = new BBSCashIn();
         else if (title.equalsIgnoreCase(getString(R.string.cash_out)) && type.equalsIgnoreCase(DefineValue.BBS_CASHOUT))

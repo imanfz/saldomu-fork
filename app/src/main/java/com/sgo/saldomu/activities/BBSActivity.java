@@ -51,21 +51,22 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     public static final int TRANSACTION = 2;
     public static final int CONFIRMCASHOUT = 4;
 
-    public static final int BBSKELOLA           = 5;
-    public static final int BBSAPPROVALAGENT    = 6;
-    public static final int BBSTRXAGENT         = 7;
-    public static final int BBSWAKTUBEROPERASI  = 8;
-    public static final int BBSTUTUPMANUAL      = 9;
-    public static final int BBSRATINGBYMEMBER   = 10;
-    public static final int BBSMYORDERS         = 11;
-    public static final int BBSONPROGRESSAGENT  = 12;
-    public static final int CASHIN  = 13;
-    public static final int CASHOUT  = 14;
+    public static final int BBSKELOLA = 5;
+    public static final int BBSAPPROVALAGENT = 6;
+    public static final int BBSTRXAGENT = 7;
+    public static final int BBSWAKTUBEROPERASI = 8;
+    public static final int BBSTUTUPMANUAL = 9;
+    public static final int BBSRATINGBYMEMBER = 10;
+    public static final int BBSMYORDERS = 11;
+    public static final int BBSONPROGRESSAGENT = 12;
+    public static final int CASHIN = 13;
+    public static final int CASHOUT = 14;
 
     private SecurePreferences sp;
     FragmentManager fragmentManager;
     Fragment mContent;
     FloatingActionButton fab;
+    String type;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,11 +75,11 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
         Timber.d("Flag Login BbsActivity ");
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        if(flagLogin == null)
+        if (flagLogin == null)
             flagLogin = DefineValue.STRING_NO;
 
 
-        if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+        if (flagLogin.equals(DefineValue.STRING_NO)) {
             finish();
         }
 
@@ -87,11 +88,12 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 return;
             }
 
-            Intent intent    = getIntent();
+            Intent intent = getIntent();
             Bundle bundle = getIntent().getExtras();
 
             Fragment newFragment = null;
-            int index = intent.getIntExtra(DefineValue.INDEX,0);
+            int index = intent.getIntExtra(DefineValue.INDEX, 0);
+            type = intent.getStringExtra(DefineValue.TYPE);
             String tag = "agent";
             switch (index) {
                 case JOINAGENT:
@@ -103,10 +105,15 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                     tag = ListAccountBBS.TAG;
                     break;
                 case TRANSACTION:
-                    newFragment = new BBSTransaksiPager();
                     tag = BBSTransaksiPager.TAG;
 
-                    if(bundle != null){
+                    if (type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
+                        newFragment = new BBSCashIn();
+                    else
+                        newFragment = new BBSCashOut();
+
+                    if (bundle != null) {
+                        bundle.putString(DefineValue.TRANSACTION, type);
                         newFragment.setArguments(bundle);
                     }
                     break;
@@ -146,7 +153,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 case BBSRATINGBYMEMBER:
                     newFragment = new FragMemberRating();
                     tag = FragMemberRating.TAG;
-                    if(bundle != null){
+                    if (bundle != null) {
                         newFragment.setArguments(bundle);
                     }
                     break;
@@ -169,16 +176,11 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             }
 
 
-            fab = (FloatingActionButton) findViewById(R.id.fab_add_account);
+            fab = findViewById(R.id.fab_add_account);
             mContent = newFragment;
 
             fragmentManager = getSupportFragmentManager();
-            fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-                @Override
-                public void onBackStackChanged() {
-                    InitializeTitle();
-                }
-            });
+            fragmentManager.addOnBackStackChangedListener(() -> InitializeTitle());
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.bbs_content, newFragment, tag);
             fragmentTransaction.commitAllowingStateLoss();
@@ -190,43 +192,39 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     @Override
     protected void onResume() {
         super.onResume();
-        Intent intent    = getIntent();
-        int index = intent.getIntExtra(DefineValue.INDEX,0);
+        Intent intent = getIntent();
+        int index = intent.getIntExtra(DefineValue.INDEX, 0);
         InitializeTitle();
 
     }
 
-    private void InitializeTitle(){
+    private void InitializeTitle() {
         Fragment fragment = fragmentManager.findFragmentById(R.id.bbs_content);
         fab.setVisibility(View.GONE);
-        if(fragment instanceof ListAccountBBS) {
+        if (fragment instanceof ListAccountBBS) {
             setActionBarTitle(getString(R.string.title_bbs_list_account_bbs));
             fab.setVisibility(View.VISIBLE);
-        }else if(fragment instanceof BBSJoinAgentInput)
+        } else if (fragment instanceof BBSJoinAgentInput)
             setActionBarTitle(getString(R.string.join_agent));
-        else if(fragment instanceof Cashoutbbs_describ_member)
+        else if (fragment instanceof Cashoutbbs_describ_member)
             setActionBarTitle(getString(R.string.cash_out));
-        else if(fragment instanceof BBSTransaksiPager){
-            Intent intent    = getIntent();
-            String type = intent.getStringExtra(DefineValue.TYPE);
-            if(type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
-                setActionBarTitle(getString(R.string.cash_in));
-            else
-                setActionBarTitle(getString(R.string.cash_out));
-        }
-        else if(fragment instanceof FragMenuKelola)
+        else if (fragment instanceof BBSCashIn)
+            setActionBarTitle(getString(R.string.cash_in));
+        else if (fragment instanceof BBSCashOut)
+            setActionBarTitle(getString(R.string.cash_out));
+        else if (fragment instanceof FragMenuKelola)
             setActionBarTitle(getString(R.string.menu_item_title_kelola));
-        else if(fragment instanceof FragSetttingKelola)
+        else if (fragment instanceof FragSetttingKelola)
             setActionBarTitle(getString(R.string.menu_item_title_kelola));
-        else if(fragment instanceof FragApprovalAgent)
+        else if (fragment instanceof FragApprovalAgent)
             setActionBarTitle(getString(R.string.menu_item_title_trx_agent));
-        else if( fragment instanceof FragWaktuBeroperasi )
+        else if (fragment instanceof FragWaktuBeroperasi)
             setActionBarTitle(getString(R.string.menu_item_title_waktu_beroperasi));
-        else if( fragment instanceof FragTutupManual )
+        else if (fragment instanceof FragTutupManual)
             setActionBarTitle(getString(R.string.menu_item_title_tutup_manual));
-        else if( fragment instanceof FragMemberRating )
+        else if (fragment instanceof FragMemberRating)
             setActionBarTitle(getString(R.string.title_rating_by_member));
-        else if( fragment instanceof FragBbsMyOrders )
+        else if (fragment instanceof FragBbsMyOrders)
             setActionBarTitle(getString(R.string.title_bbs_my_orders));
 //        else if( fragment instanceof BBSCashIn )
 //            setActionBarTitle(getString(R.string.cash_in));
@@ -239,20 +237,19 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
         return R.layout.activity_bbs;
     }
 
-    public void InitializeToolbar(){
+    public void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_bbs));
     }
 
-    public void togglerBroadcastReceiver(Boolean _on, BroadcastReceiver _myreceiver){
+    public void togglerBroadcastReceiver(Boolean _on, BroadcastReceiver _myreceiver) {
         Timber.wtf("masuk turnOnBR");
-        if(_on){
+        if (_on) {
             IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-            registerReceiver(_myreceiver,filter);
+            registerReceiver(_myreceiver, filter);
             filter.setPriority(999);
             filter.addCategory("android.intent.category.DEFAULT");
-        }
-        else unregisterReceiver(_myreceiver);
+        } else unregisterReceiver(_myreceiver);
 
     }
 
@@ -260,45 +257,42 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MainPage.REQUEST_FINISH) {
-            if(resultCode == MainPage.RESULT_BBS){
+            if (resultCode == MainPage.RESULT_BBS) {
                 finish();
-            }
-            else if(resultCode == MainPage.RESULT_BBS_MEMBER_OTP){
-                if(mContent instanceof Cashoutbbs_describ_member) {
+            } else if (resultCode == MainPage.RESULT_BBS_MEMBER_OTP) {
+                if (mContent instanceof Cashoutbbs_describ_member) {
                     Cashoutbbs_describ_member mFrag = (Cashoutbbs_describ_member) mContent;
                     mFrag.setMemberOTP(data.getStringExtra(DefineValue.BBS_MEMBER_OTP));
                 }
-            }
-            else if (resultCode == MainPage.RESULT_LOGOUT) {
+            } else if (resultCode == MainPage.RESULT_LOGOUT) {
                 setResult(MainPage.RESULT_LOGOUT);
                 finish();
-            }
-            else if(resultCode == MainPage.RESULT_BBS_STATUS){
-                if(mContent instanceof BBSTransaksiPager) {
+            } else if (resultCode == MainPage.RESULT_BBS_STATUS) {
+                if (mContent instanceof BBSTransaksiPager) {
                     BBSTransaksiPager mFrag = (BBSTransaksiPager) mContent;
-                    Fragment confirmFrag =  mFrag.getConfirmFragment();
-                    if(confirmFrag instanceof BBSTransaksiPagerItem) {
+                    Fragment confirmFrag = mFrag.getConfirmFragment();
+                    if (confirmFrag instanceof BBSTransaksiPagerItem) {
                         Fragment childFragment = ((BBSTransaksiPagerItem) confirmFrag).getChildFragment();
-                        if(childFragment instanceof BBSCashInConfirm) {
+                        if (childFragment instanceof BBSCashInConfirm) {
                             BBSCashInConfirm cashInConfirm = (BBSCashInConfirm) childFragment;
                             cashInConfirm.setToStatus(data.getStringExtra(DefineValue.TX_STATUS));
                         }
                     }
                 }
-            } else if(resultCode == MainPage.RESULT_RETRY){
-                if(mContent instanceof BBSTransaksiPager) {
+            } else if (resultCode == MainPage.RESULT_RETRY) {
+                if (mContent instanceof BBSTransaksiPager) {
                     BBSTransaksiPager mFrag = (BBSTransaksiPager) mContent;
-                    Fragment confirmFrag =  mFrag.getConfirmFragment();
-                    if(confirmFrag instanceof BBSTransaksiPagerItem) {
+                    Fragment confirmFrag = mFrag.getConfirmFragment();
+                    if (confirmFrag instanceof BBSTransaksiPagerItem) {
                         Fragment childFragment = ((BBSTransaksiPagerItem) confirmFrag).getChildFragment();
-                        if(childFragment instanceof BBSCashInConfirm) {
+                        if (childFragment instanceof BBSCashInConfirm) {
                             BBSCashInConfirm cashInConfirm = (BBSCashInConfirm) childFragment;
                             cashInConfirm.setToRetryTokenEspay();
                         }
                     }
                 }
 
-            }else if ( resultCode == MainPage.RESULT_REFRESH_NAVDRAW ) {
+            } else if (resultCode == MainPage.RESULT_REFRESH_NAVDRAW) {
                 this.setResult(MainPage.RESULT_REFRESH_NAVDRAW);
                 finish();
             }
@@ -308,9 +302,9 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     }
 
     public void switchActivity(Intent mIntent, int j) {
-        switch (j){
+        switch (j) {
             case MainPage.ACTIVITY_RESULT:
-                startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
+                startActivityForResult(mIntent, MainPage.REQUEST_FINISH);
                 this.setResult(MainPage.RESULT_BALANCE);
                 break;
             case 2:
@@ -321,15 +315,14 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
 
     public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
         ToggleKeyboard.hide_keyboard(this);
-        if(isBackstack){
+        if (isBackstack) {
             Timber.d("backstack");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.bbs_content, mFragment, fragName)
                     .addToBackStack(null)
                     .commitAllowingStateLoss();
-        }
-        else {
+        } else {
             Timber.d("bukan backstack");
             getSupportFragmentManager()
                     .beginTransaction()
@@ -342,8 +335,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -355,6 +347,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
 
     /**
      * Buka RegAccountActivity untuk daftarin akun agent, ini interface dari ListAccountBBS di BBSActivity
+     *
      * @param data data account yang dibutuhkan untuk menambahkan account seperti comm id dll
      */
     @Override
@@ -367,6 +360,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
 
     /**
      * Buka RegAccountActivity untuk update akun agent, ini interface dari ListAccountBBS di BBSActivity
+     *
      * @param data data account yang dibutuhkan untuk meng-update account seperti comm id dll
      */
     @Override
@@ -380,12 +374,12 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     @Override
     public void onBackPressed() {
 
-        Intent intent    = getIntent();
-        int index = intent.getIntExtra(DefineValue.INDEX,0);
+        Intent intent = getIntent();
+        int index = intent.getIntExtra(DefineValue.INDEX, 0);
 
         Fragment fragment = fragmentManager.findFragmentById(R.id.bbs_content);
 
-        if ( fragment instanceof FragMemberRating ) {
+        if (fragment instanceof FragMemberRating) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.alertbox_set_rating_trx))
                     .setCancelable(false)
@@ -397,7 +391,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             ;
             final AlertDialog alert = builder.create();
             alert.show();
-        } else if ( fragment instanceof FragWaktuBeroperasi ) {
+        } else if (fragment instanceof FragWaktuBeroperasi) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.alertbox_set_working_hour_warning))
                     .setCancelable(false)
@@ -438,11 +432,11 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
 
     @Override
     public void ChangeActivityFromCashInput(Intent data) {
-        switchActivity(data,MainPage.ACTIVITY_RESULT);
+        switchActivity(data, MainPage.ACTIVITY_RESULT);
     }
 
     @Override
     public void ChangeActivityFromCashInConfirm(Intent data) {
-        switchActivity(data,MainPage.ACTIVITY_RESULT);
+        switchActivity(data, MainPage.ACTIVITY_RESULT);
     }
 }
