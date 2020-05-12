@@ -59,7 +59,6 @@ class BBSCashIn : BaseFragment() {
     private val RC_SEND_SMS = 123
 
     private var transaksi: String? = null
-    private var type: String? = null
     private var noHpPengirim: String? = null
     private var amount: String? = null
     private var comm_id: String? = null
@@ -88,7 +87,6 @@ class BBSCashIn : BaseFragment() {
     private var cityAutocompletePosition = -1
 
     private var isAgentLKD = false
-    private var enabledAdditionalFee = false
     private var tcashValidation = false
     private var mandiriLKDValidation = false
     private var codeSuccess = false
@@ -133,10 +131,8 @@ class BBSCashIn : BaseFragment() {
         val bundle = arguments
         if (bundle != null) {
             transaksi = bundle.getString(DefineValue.TRANSACTION)
-            type = bundle.getString(DefineValue.TYPE, "")
             defaultAmount = bundle.getString(DefineValue.AMOUNT, "")
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE, "")
-            enabledAdditionalFee = bundle.getString(DefineValue.ENABLED_ADDITIONAL_FEE) == "Y"
             noBenef = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, "")
 
             defaultProductCode = ""
@@ -211,10 +207,6 @@ class BBSCashIn : BaseFragment() {
 
         name_value.visibility = View.GONE
         no_OTP.visibility = View.GONE
-        if (enabledAdditionalFee)
-            layout_additionalFee.visibility = View.VISIBLE
-        else
-            layout_additionalFee.visibility = View.GONE
 
         btn_change_source.setOnClickListener { showDialogBankList(btn_change_source) }
         btn_change_destination.setOnClickListener { showDialogBankList(btn_change_destination) }
@@ -492,10 +484,6 @@ class BBSCashIn : BaseFragment() {
 
         if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true)) {
             params[WebParams.BENEF_PRODUCT_VALUE_CITY] = cityId
-        }
-
-        if (enabledAdditionalFee) {
-            params[WebParams.ADDITIONAL_FEE] = et_additionalFee.text.toString()
         }
 
         Timber.d("params insert c2a $params")
@@ -925,7 +913,7 @@ class BBSCashIn : BaseFragment() {
         val mFrag: Fragment = FragDataC2A()
         mFrag.arguments = mArgs
         fragmentManager!!.beginTransaction().addToBackStack(BBSTransaksiInformasi.TAG)
-                .replace(R.id.bbsTransaksiFragmentContent, mFrag, FragDataC2A.TAG).commit()
+                .replace(R.id.bbs_content, mFrag, FragDataC2A.TAG).commit()
         ToggleKeyboard.hide_keyboard(activity)
     }
 

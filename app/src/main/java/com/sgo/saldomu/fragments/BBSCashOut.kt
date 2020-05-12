@@ -51,7 +51,6 @@ class BBSCashOut : BaseFragment() {
 
     private val ATC = "ATC"
     private val SOURCE = "SOURCE"
-    private val BENEF = "BENEF"
     private val SALDO_AGEN = "SALDO AGEN"
     private val MANDIRISMS = "MANDIRISMS"
     private val RC_READ_PHONE_STATE = 122
@@ -82,7 +81,6 @@ class BBSCashOut : BaseFragment() {
     private var cityName: String = ""
 
     private var isAgentLKD = false
-    private var enabledAdditionalFee = false
     private var tcashValidation = false
     private var mandiriLKDValidation = false
     private var codeSuccess = false
@@ -124,10 +122,8 @@ class BBSCashOut : BaseFragment() {
         val bundle = arguments
         if (bundle != null) {
             transaksi = bundle.getString(DefineValue.TRANSACTION)
-            type = bundle.getString(DefineValue.TYPE, "")
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE, "")
             defaultAmount = bundle.getString(DefineValue.AMOUNT, "")
-            enabledAdditionalFee = bundle.getString(DefineValue.ENABLED_ADDITIONAL_FEE) == "Y"
             noSource = NoHPFormat.formatTo08(bundle.getString(DefineValue.KEY_CODE, ""))
 
             if (bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, "") != "") {
@@ -204,10 +200,6 @@ class BBSCashOut : BaseFragment() {
 
         name_value.visibility = View.GONE
         no_OTP.visibility = View.GONE
-        if (enabledAdditionalFee)
-            layout_additionalFee.visibility = View.VISIBLE
-        else
-            layout_additionalFee.visibility = View.GONE
 
         btn_change_source.setOnClickListener { showDialogBankList(btn_change_source) }
         btn_change_destination.setOnClickListener { showDialogBankList(btn_change_destination) }
@@ -425,10 +417,6 @@ class BBSCashOut : BaseFragment() {
         params[WebParams.USER_COMM_CODE] = BuildConfig.COMM_CODE_BBS_ATC
         params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
         params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
-
-        if (enabledAdditionalFee) {
-            params[WebParams.ADDITIONAL_FEE] = et_additionalFee.text.toString()
-        }
 
         Timber.d("params insert a2c $params")
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C, params, object : ResponseListener {
@@ -798,7 +786,7 @@ class BBSCashOut : BaseFragment() {
         val mFrag: Fragment = BBSCashOutConfirm()
         mFrag.arguments = mArgs
         fragmentManager!!.beginTransaction().addToBackStack(BBSTransaksiInformasi.TAG)
-                .replace(R.id.bbsTransaksiFragmentContent, mFrag, BBSCashOutConfirm.TAG).commit()
+                .replace(R.id.bbs_content, mFrag, BBSCashOutConfirm.TAG).commit()
         ToggleKeyboard.hide_keyboard(activity)
     }
 

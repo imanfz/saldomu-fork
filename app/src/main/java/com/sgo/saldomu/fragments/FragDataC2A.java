@@ -21,7 +21,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.BBSCommBenef;
 import com.sgo.saldomu.R;
@@ -39,7 +38,6 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
-import com.sgo.saldomu.models.retrofit.GetMemberModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -406,7 +404,7 @@ public class FragDataC2A extends BaseFragment {
         mFrag.setArguments(mArgs);
 
         getFragmentManager().beginTransaction().addToBackStack(TAG)
-                .replace(R.id.bbsTransaksiFragmentContent, mFrag, BBSCashInConfirm.TAG).commit();
+                .replace(R.id.bbs_content, mFrag, BBSCashInConfirm.TAG).commit();
         ToggleKeyboard.hide_keyboard(act);
 //        switchFragment(mFrag, getString(R.string.cash_in), true);
     }
