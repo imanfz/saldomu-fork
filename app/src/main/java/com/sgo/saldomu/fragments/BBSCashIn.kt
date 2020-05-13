@@ -869,7 +869,7 @@ class BBSCashIn : BaseFragment() {
         val mFrag: Fragment = BBSCashInConfirm()
         mFrag.arguments = mArgs
         fragmentManager!!.beginTransaction().addToBackStack(BBSTransaksiInformasi.TAG)
-                .replace(R.id.bbsTransaksiFragmentContent, mFrag, BBSCashInConfirm.TAG).commit()
+                .replace(R.id.bbs_content, mFrag, BBSCashInConfirm.TAG).commit()
         ToggleKeyboard.hide_keyboard(activity)
     }
 
