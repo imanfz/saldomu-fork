@@ -60,6 +60,7 @@ public class FcmReceiver extends BroadcastReceiver {
                         tempBundle.putString(DefineValue.BBS_DEFAULT_RATING, jsonOptions.getJSONObject(0).getString(WebParams.DEFAULT_RATING));
 
                         Intent tempIntent = new Intent(context, BBSActivity.class);
+                        tempIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         tempIntent.putExtras(tempBundle);
                         context.startActivity(tempIntent);
                     } catch (JSONException e) {
