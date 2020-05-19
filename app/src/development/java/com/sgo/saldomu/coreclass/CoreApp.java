@@ -4,32 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
 
-import com.activeandroid.ActiveAndroid;
-import com.activeandroid.Configuration;
 //import com.facebook.stetho.Stetho;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
-import com.sgo.saldomu.Beans.commentModel;
-import com.sgo.saldomu.Beans.communityModel;
-import com.sgo.saldomu.Beans.friendModel;
-import com.sgo.saldomu.Beans.likeModel;
-import com.sgo.saldomu.Beans.listHistoryModel;
-import com.sgo.saldomu.Beans.listTimeLineModel;
-import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
-import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,8 +22,6 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import timber.log.Timber;
-
-import static com.sgo.saldomu.fragments.FragTutupManual.TAG;
 
 /*
   Created by Administrator on 8/15/2014.
@@ -121,17 +103,16 @@ public class CoreApp extends MultiDexApplication {
 
         myApiClient.InitializeAddress();
         Timber.wtf("isi headaddressfinal:" + MyApiClient.headaddressfinal);
-        Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
-        configurationBuilder.addModelClasses(
-                communityModel.class,
-                friendModel.class,
-                myFriendModel.class,
-                listTimeLineModel.class,
-                listHistoryModel.class,
-                likeModel.class,
-                commentModel.class
-        );
-        ActiveAndroid.initialize(configurationBuilder.create());
+//        Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
+//        configurationBuilder.addModelClasses(
+//                friendModel.class,
+//                myFriendModel.class,
+//                listTimeLineModel.class,
+//                listHistoryModel.class,
+//                likeModel.class,
+//                commentModel.class
+//        );
+//        ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
 
         /*registerReceiver(new BroadcastReceiver() {
@@ -228,7 +209,6 @@ public class CoreApp extends MultiDexApplication {
     public void onTerminate() {
         super.onTerminate();
         RetrofitService.dispose();
-        ActiveAndroid.dispose();
     }
 
     public static Context getAppContext() {

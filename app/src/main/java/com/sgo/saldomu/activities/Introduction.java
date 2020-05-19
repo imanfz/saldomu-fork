@@ -25,11 +25,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.commentModel;
-import com.sgo.saldomu.Beans.likeModel;
-import com.sgo.saldomu.Beans.listHistoryModel;
-import com.sgo.saldomu.Beans.listTimeLineModel;
-import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BBSDataManager;
@@ -701,7 +696,6 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                 mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER, true);
             } else {
                 if (prevContactFT.equals(DefineValue.NO)) {
-                    myFriendModel.deleteAll();
                     mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
                 }
                 mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
@@ -1002,10 +996,6 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
     private void deleteData() {
         CustomSecurePref.getInstance().ClearAllCustomData();
-        listTimeLineModel.deleteAll();
-        listHistoryModel.deleteAll();
-        commentModel.deleteAll();
-        likeModel.deleteAll();
     }
 
 }
