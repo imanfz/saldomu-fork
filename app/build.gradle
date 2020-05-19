@@ -234,7 +234,6 @@ dependencies {
     implementation 'commons-io:commons-io:2.4'
     implementation 'joda-time:joda-time:2.9.3'
     implementation 'pub.devrel:easypermissions:1.2.0'
-    implementation 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     implementation 'com.google.code.gson:gson:2.8.2'
 //    implementation 'com.loopj.android:android-async-http:1.4.8'
     implementation 'com.squareup.okhttp:okhttp:2.5.0'

@@ -60,7 +60,6 @@ public class RootUtil {
 //        agent = sp.getBoolean(DefineValue.IS_AGENT, false);
 //        utilsLoader = new UtilsLoader(this, sp);
 //        utilsLoader.getAppVersion();
-//        ActiveAndroid.initialize(this);
 //        progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
 //        progdialog.show();
 //        InitializeNavDrawer();

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +26,6 @@ import com.sgo.saldomu.activities.NFCActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.PrefixOperatorValidator;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 
@@ -168,15 +168,18 @@ public class ListBillerMerchant extends ListFragment {
         mArgs.putString(DefineValue.BILLER_ID_NUMBER, billerIdNumber);
         mArgs.putString(DefineValue.BUY_TYPE, buy_type);
 
-        BillerInput billerInput = new BillerInput();
-        billerInput.setArguments(mArgs);
-
-        String fragname = mBillerType.getBiller_type_name() + " - " + comm_name;
+        Fragment billerInput;
+        String fragName;
         if (comm_name.contains("Emoney Mandiri") || comm_name.contains("Top Up LinkAja") || comm_name.contains("Grab OVO")) {
-            fragname = comm_name;
+            fragName = comm_name;
+            billerInput = new BillerInputEmoney();
+        } else {
+            fragName = mBillerType.getBiller_type_name() + " - " + comm_name;
+            billerInput = new BillerInput();
         }
 
-        switchFragment(billerInput, BillerActivity.FRAG_BIL_LIST_MERCHANT, fragname, true, BillerInput.TAG);
+        billerInput.setArguments(mArgs);
+        switchFragment(billerInput, BillerActivity.FRAG_BIL_LIST_MERCHANT, fragName, true, BillerInput.TAG);
     }
 
     private void switchFragment(android.support.v4.app.Fragment i, String name, String next_name, Boolean isBackstack, String tag) {

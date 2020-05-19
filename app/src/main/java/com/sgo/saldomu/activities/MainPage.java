@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -30,30 +29,20 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
-//import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.commentModel;
-import com.sgo.saldomu.Beans.likeModel;
-import com.sgo.saldomu.Beans.listHistoryModel;
-import com.sgo.saldomu.Beans.listTimeLineModel;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-//import com.sgo.saldomu.coreclass.FabInstance;
 import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.NotificationActionView;
-import com.sgo.saldomu.coreclass.NotificationHandler;
 import com.sgo.saldomu.coreclass.RealmManager;
-import com.sgo.saldomu.coreclass.RootUtil;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -398,7 +387,6 @@ public class MainPage extends BaseActivity {
         agent = sp.getBoolean(DefineValue.IS_AGENT, false);
         UtilsLoader utilsLoader = new UtilsLoader(this, sp);
 //        utilsLoader.getAppVersion();
-        ActiveAndroid.initialize(this);
         InitializeNavDrawer();
 //        setupFab();
         FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userPhoneID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
@@ -1609,10 +1597,6 @@ public class MainPage extends BaseActivity {
     private void deleteData() {
 //        sp.edit().clear().apply();
         CustomSecurePref.getInstance().ClearAllCustomData();
-        listTimeLineModel.deleteAll();
-        listHistoryModel.deleteAll();
-        commentModel.deleteAll();
-        likeModel.deleteAll();
     }
 
 
