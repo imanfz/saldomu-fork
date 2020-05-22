@@ -34,6 +34,8 @@ class FavoriteActivity : BaseActivity() {
             intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_voucher))
         if (model.product_type == "BPJS")
             intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.bpjs))
+        if (model.product_type == "EMON")
+            intent.putExtra(DefineValue.BILLER_NAME, model.comm_name)
         intent.putExtra(DefineValue.COMMUNITY_ID, model.comm_id)
         intent.putExtra(DefineValue.ITEM_ID, model.item_id)
         if (model.comm_name.contains("OVO")) {

@@ -657,5 +657,6 @@ public class DefineValue {
     public static String ITEM_SELECTED = "item_selected";
     public static final String BUNDLE_LIST = "BUNDLE_LIST";
 
+    public static String REJECT_REASON = "reject_reason";
 }
 

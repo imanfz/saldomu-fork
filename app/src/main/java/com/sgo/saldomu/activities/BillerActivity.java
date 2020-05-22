@@ -17,6 +17,7 @@ import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.fragments.BillerInputData;
+import com.sgo.saldomu.fragments.BillerInputEmoney;
 import com.sgo.saldomu.fragments.BillerInputPLN;
 import com.sgo.saldomu.fragments.BillerInputPulsa;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -256,8 +257,11 @@ public class BillerActivity extends BaseActivity {
                 }
                 tag = BillerInput.TAG;
             } else {
-                if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)){
-                    mLBM = new BillerInput();
+                if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
+                    if (_biller_type_code.equalsIgnoreCase("EMON"))
+                        mLBM = new BillerInputEmoney();
+                    else
+                        mLBM = new BillerInput();
                     mArgs.putString(DefineValue.COMMUNITY_ID, intent.getStringExtra(DefineValue.COMMUNITY_ID));
                     mArgs.putString(DefineValue.COMMUNITY_NAME, intent.getStringExtra(DefineValue.COMMUNITY_NAME));
                     mArgs.putString(DefineValue.BILLER_ITEM_ID, intent.getStringExtra(DefineValue.ITEM_ID));

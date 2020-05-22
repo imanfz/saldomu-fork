@@ -1,16 +1,13 @@
 package com.sgo.saldomu.activities
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.view.MenuItem
-import android.view.View
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.ToggleKeyboard
 import com.sgo.saldomu.fragments.FragCashCollection
-import com.sgo.saldomu.fragments.FragTagihInput
 import com.sgo.saldomu.widgets.BaseActivity
 import timber.log.Timber
 

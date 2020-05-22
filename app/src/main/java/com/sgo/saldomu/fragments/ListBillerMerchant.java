@@ -155,15 +155,17 @@ public class ListBillerMerchant extends ListFragment {
                 mListBillerData.get(position).getComm_name(),
                 mListBillerData.get(position).getItem_id(),
                 mListBillerData.get(position).getComm_code(),
+                mListBillerData.get(position).getApi_key(),
                 mBillerType.getBiller_type());
     }
 
-    private void changeToInputBiller(String comm_id, String comm_name, String item_id, String comm_code, String buy_type) {
+    private void changeToInputBiller(String comm_id, String comm_name, String item_id, String comm_code, String api_key, String buy_type) {
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, comm_name);
         mArgs.putString(DefineValue.BILLER_ITEM_ID, item_id);
         mArgs.putString(DefineValue.BILLER_COMM_CODE, comm_code);
+        mArgs.putString(DefineValue.BILLER_API_KEY, api_key);
         mArgs.putString(DefineValue.BILLER_TYPE, billerTypeCode);
         mArgs.putString(DefineValue.BILLER_ID_NUMBER, billerIdNumber);
         mArgs.putString(DefineValue.BUY_TYPE, buy_type);
