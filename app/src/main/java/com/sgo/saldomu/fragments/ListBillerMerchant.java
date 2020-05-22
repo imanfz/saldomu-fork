@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +26,6 @@ import com.sgo.saldomu.activities.NFCActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.PrefixOperatorValidator;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 
@@ -155,32 +155,33 @@ public class ListBillerMerchant extends ListFragment {
                 mListBillerData.get(position).getComm_name(),
                 mListBillerData.get(position).getItem_id(),
                 mListBillerData.get(position).getComm_code(),
+                mListBillerData.get(position).getApi_key(),
                 mBillerType.getBiller_type());
     }
 
-    private void changeToInputBiller(String _comm_id, String _comm_name, String _item_id, String _comm_code, String _buy_type) {
-//        if(_item_id.isEmpty())
-//            callUpdateDenom(_comm_id, _comm_name);
-
+    private void changeToInputBiller(String comm_id, String comm_name, String item_id, String comm_code, String api_key, String buy_type) {
         Bundle mArgs = new Bundle();
-        mArgs.putString(DefineValue.COMMUNITY_ID, _comm_id);
-        mArgs.putString(DefineValue.COMMUNITY_NAME, _comm_name);
-        mArgs.putString(DefineValue.BILLER_ITEM_ID, _item_id);
-        mArgs.putString(DefineValue.BILLER_COMM_CODE, _comm_code);
+        mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
+        mArgs.putString(DefineValue.COMMUNITY_NAME, comm_name);
+        mArgs.putString(DefineValue.BILLER_ITEM_ID, item_id);
+        mArgs.putString(DefineValue.BILLER_COMM_CODE, comm_code);
+        mArgs.putString(DefineValue.BILLER_API_KEY, api_key);
         mArgs.putString(DefineValue.BILLER_TYPE, billerTypeCode);
         mArgs.putString(DefineValue.BILLER_ID_NUMBER, billerIdNumber);
-        mArgs.putString(DefineValue.BUY_TYPE, _buy_type);
+        mArgs.putString(DefineValue.BUY_TYPE, buy_type);
 
-        BillerInput mBI = new BillerInput();
-        mBI.setArguments(mArgs);
-
-        String fragname = mBillerType.getBiller_type_name() + "-" + _comm_name;
-        if (_comm_name.contains("Emoney Mandiri")) {
-            fragname = _comm_name;
+        Fragment billerInput;
+        String fragName;
+        if (comm_name.contains("Emoney Mandiri") || comm_name.contains("Top Up LinkAja") || comm_name.contains("Grab OVO")) {
+            fragName = comm_name;
+            billerInput = new BillerInputEmoney();
+        } else {
+            fragName = mBillerType.getBiller_type_name() + " - " + comm_name;
+            billerInput = new BillerInput();
         }
 
-
-        switchFragment(mBI, BillerActivity.FRAG_BIL_LIST_MERCHANT, fragname, true, BillerInput.TAG);
+        billerInput.setArguments(mArgs);
+        switchFragment(billerInput, BillerActivity.FRAG_BIL_LIST_MERCHANT, fragName, true, BillerInput.TAG);
     }
 
     private void switchFragment(android.support.v4.app.Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
@@ -198,14 +199,6 @@ public class ListBillerMerchant extends ListFragment {
         BillerActivity fca = (BillerActivity) getActivity();
         fca.setToolbarTitle(_title);
     }
-
-//    private void callUpdateDenom(String comm_id, String comm_name){
-//        if (getActivity() == null)
-//            return;
-//
-//        BillerActivity fca = (BillerActivity) getActivity();
-//        fca.updateDenom(comm_id,comm_name);
-//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

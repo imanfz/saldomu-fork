@@ -336,7 +336,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="billerinput_text_dest_remark">Porpose Description</string>
     <string name="billerinput_text_keterangan">Description</string>
     <string name="billerinput_text_payment_remark">Customer ID</string>
-    <string name="billerinput_text_payment_remark_Pulsa">Phone number</string>
+    <string name="billerinput_text_payment_remark_Pulsa">Phone Number</string>
     <string name="billerinput_text_payment_remark_Emoney">Card Number</string>
     <string name="billerinput_text_payment_remark_Listrik">Meter Number</string>
     <string name="billerinput_text_payment_remark_CC">Credit Card Number</string>
@@ -348,7 +348,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="billerinput_dialog_validation_title">Validation</string>
     <string name="billerinput_validation_payment_remark">ID is required!</string>
     <string name="billerinput_radio_text_internet_banking" translatable="false">Internet Banking</string>
-    <string name="billerinput_radio_text_emoney" translatable="false">Emoney</string>
+    <string name="billerinput_radio_text_emoney" translatable="false">E-money</string>
     <string name="billerinput_text_payment_options">Payment Method</string>
     <string name="billerinput_text_spinner_default_payment">Choose Payment Method</string>
     <string name="billerinput_validation_spinner_default_payment">Please choose a payment method!</string>
@@ -357,6 +357,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="billerinput_text_spinner_default_data">Select Internet Data</string>
     <string name="billerinput_text_spinner_default_pulsa">Select Nominal Mobile Credit</string>
     <string name="billerinput_text_spinner_default_listrik">Select Electric Token</string>
+    <string name="billerinput_text_spinner_default_emoney">Select Nominal E-Money</string>
     <string name="billerinput_validation_spinner_default_data">Please select Internet Data</string>
     <string name="billerinput_validation_spinner_default_pulsa">Please select nominal mobile credit</string>
     <string name="billerinput_validation_spinner_default_listrik">Please Select Electric Token</string>
@@ -1612,4 +1613,10 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="btn_backspace">DEL</string>
     <string name="member_code_validation">Member Code Required!</string>
     <string name="amount_validation_scadm">must be a multiple of 1000!</string>
+
+    <string name="remind_update_balance">Please check and update balance after top up!</string>
+    <string name="check_balance">Check Balance</string>
+    <string name="insert_16_card_number">Enter 16 digit card number</string>
+
+    <string name="next_visit">Next Visit</string>
 </resources>

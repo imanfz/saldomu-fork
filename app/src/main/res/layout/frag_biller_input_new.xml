@@ -41,19 +41,46 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:layout_weight="10">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:id="@+id/layout_cek_balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/tv_remind_update_balance"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/remind_update_balance"
+                    android:layout_gravity="center_vertical"/>
+
+                <Button
+                    android:id="@+id/btn_cek_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:background="@drawable/rounded_background_outline_primary_dark"
+                    android:text="@string/check_balance"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
+            </LinearLayout>
+            
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:paddingBottom="10dp">
 
                 <TextView
@@ -78,7 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/billerinput_text_id_remark"
-                    android:layout_toRightOf="@id/billerinput_et_id_remark"
+                    android:layout_toEndOf="@id/billerinput_et_id_remark"
                     android:visibility="visible" />
 
                 <ImageButton
@@ -87,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:background="@mipmap/camera_result_cancel"
                     android:layout_below="@id/billerinput_text_id_remark"
-                    android:layout_toRightOf="@id/img_operator"
+                    android:layout_toEndOf="@id/img_operator"
                     android:visibility="visible" />
 
             </RelativeLayout>
@@ -96,9 +123,7 @@
                 android:id="@+id/billerinput_layout_denom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/billerinput_text_denom"
@@ -109,7 +134,7 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="@dimen/abc_text_size_medium_material" />
 
-                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -136,9 +161,7 @@
                 android:id="@+id/billerinput_layout_payment_method"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -163,9 +186,7 @@
                 android:id="@+id/billerinput_layout_add_fee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -179,7 +200,6 @@
                     android:id="@+id/billerinput_et_add_fee"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/billerinput_text_id_remark"
                     android:enabled="true"
                     android:maxLength="32"
                     android:inputType="number"/>
@@ -189,9 +209,7 @@
                 android:id="@+id/billerinput_layout_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -211,7 +229,7 @@
                         android:id="@+id/billerinput_detail_text_name"
                         android:layout_width="220dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="Paket data 100 GB" />
 
                     <TextView
@@ -232,7 +250,7 @@
                         android:id="@+id/billerinput_detail_text_admin_fee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/fee" />
 
                     <TextView
@@ -253,7 +271,7 @@
                         android:id="@+id/billerinput_detail_text_add_fee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:text="@string/additional_fee" />
 
                     <TextView

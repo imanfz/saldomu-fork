@@ -700,7 +700,7 @@ class BBSCashIn : BaseFragment() {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    fun onPermissionsGranted(requestCode: Int, perms: List<String?>?) {
+    fun onPermissionsGranted(requestCode: Int) {
         if (requestCode == RC_READ_PHONE_STATE) {
             initializeSmsClass()
             if (isSimExist) submitAction()
@@ -709,7 +709,7 @@ class BBSCashIn : BaseFragment() {
         }
     }
 
-    fun onPermissionsDenied(requestCode: Int, perms: List<String?>?) {
+    fun onPermissionsDenied(requestCode: Int) {
         Toast.makeText(activity, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show()
         if (requestCode == RC_SEND_SMS) {
             dismissProgressDialog()
@@ -774,7 +774,6 @@ class BBSCashIn : BaseFragment() {
                             } else changeToConfirm(bbsTransModel)
                         }
                     } else {
-                        val codeMsg = model.error_code
                         if (code == "0059" || code == "0164") {
                             showDialogErrorSMS(model.tx_bank_name, code, model.error_message)
                         } else if (code == "0057") {

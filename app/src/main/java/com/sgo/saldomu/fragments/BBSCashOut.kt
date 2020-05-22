@@ -57,7 +57,6 @@ class BBSCashOut : BaseFragment() {
     private val RC_SEND_SMS = 123
 
     private var transaksi: String? = null
-    private var type: String? = null
     private var noHpPengirim: String? = null
     private var amount: String? = null
     private var comm_id: String? = null
@@ -78,7 +77,6 @@ class BBSCashOut : BaseFragment() {
     private var callbackURL: String? = null
     private var apiKey: String? = null
     private var lkd_product_code: String? = null
-    private var cityName: String = ""
 
     private var isAgentLKD = false
     private var tcashValidation = false
@@ -631,7 +629,7 @@ class BBSCashOut : BaseFragment() {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    fun onPermissionsGranted(requestCode: Int, perms: List<String?>?) {
+    fun onPermissionsGranted(requestCode: Int) {
         if (requestCode == RC_READ_PHONE_STATE) {
             initializeSmsClass()
             if (isSimExist) submitAction()
@@ -640,7 +638,7 @@ class BBSCashOut : BaseFragment() {
         }
     }
 
-    fun onPermissionsDenied(requestCode: Int, perms: List<String?>?) {
+    fun onPermissionsDenied(requestCode: Int) {
         Toast.makeText(activity, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show()
         if (requestCode == RC_SEND_SMS) {
             dismissProgressDialog()
@@ -692,7 +690,6 @@ class BBSCashOut : BaseFragment() {
                     if (code == WebParams.SUCCESS_CODE) {
                         changeToConfirm(bbsTransModel)
                     } else {
-                        val codeMsg = model.error_code
                         if (code == "0059" || code == "0164") {
                             showDialogErrorSMS(model.tx_bank_name, code, model.error_message)
                         } else if (code == "0057") {
@@ -731,23 +728,6 @@ class BBSCashOut : BaseFragment() {
                 }
             })
         }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun showDialog(model: BBSTransModel) {
-        val dialog = Dialog(activity)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCanceledOnTouchOutside(false)
-        dialog.setContentView(R.layout.dialog_notification)
-
-        title_dialog.text = resources.getString(R.string.regist1_notif_title_verification)
-        message_dialog.visibility = View.VISIBLE
-        message_dialog.text = getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
-        btn_dialog_notification_ok.setOnClickListener {
-            changeToConfirm(model)
-            dialog.dismiss()
-        }
-        dialog.show()
     }
 
     private fun changeToConfirm(model: BBSTransModel) {
@@ -790,49 +770,6 @@ class BBSCashOut : BaseFragment() {
         ToggleKeyboard.hide_keyboard(activity)
     }
 
-    private fun changeToDataMandiriLKD(_tx_id: String, _product_code: String, _product_name: String, _bank_code: String,
-                                       _amount: String, fee: String, totalAmount: String, _bank_name: String, _max_resend_token: String,
-                                       _benef_acct_no: String, _benef_acct_name: String, no_benef: String, isOwner: Boolean) {
-        val mArgs = Bundle()
-        if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true)) {
-            mArgs.putString(DefineValue.BENEF_CITY, cityName)
-        }
-        mArgs.putString(DefineValue.PRODUCT_H2H, source_product_h2h)
-        mArgs.putString(DefineValue.PRODUCT_TYPE, source_product_type)
-        mArgs.putString(DefineValue.PRODUCT_CODE, _product_code)
-        mArgs.putString(DefineValue.BANK_CODE, _bank_code)
-        mArgs.putString(DefineValue.BANK_NAME, _bank_name)
-        mArgs.putString(DefineValue.PRODUCT_NAME, _product_name)
-        mArgs.putString(DefineValue.FEE, fee)
-        mArgs.putString(DefineValue.COMMUNITY_CODE, comm_code)
-        mArgs.putString(DefineValue.TX_ID, _tx_id)
-        mArgs.putString(DefineValue.AMOUNT, _amount)
-        mArgs.putString(DefineValue.TOTAL_AMOUNT, totalAmount)
-        mArgs.putString(DefineValue.SHARE_TYPE, "1")
-        mArgs.putString(DefineValue.CALLBACK_URL, callbackURL)
-        mArgs.putString(DefineValue.API_KEY, apiKey)
-        mArgs.putString(DefineValue.COMMUNITY_ID, comm_id)
-        mArgs.putString(DefineValue.BANK_BENEF, benef_product_name)
-        mArgs.putString(DefineValue.NAME_BENEF, _benef_acct_name)
-        mArgs.putString(DefineValue.NO_BENEF, no_benef)
-        mArgs.putString(DefineValue.TYPE_BENEF, benef_product_type)
-        mArgs.putString(DefineValue.REMARK, paymentRemark)
-        mArgs.putString(DefineValue.SOURCE_ACCT, source_product_name)
-        mArgs.putString(DefineValue.MAX_RESEND, _max_resend_token)
-        mArgs.putString(DefineValue.TRANSACTION, transaksi)
-        mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code)
-        mArgs.putBoolean(DefineValue.IS_OWNER, isOwner)
-        mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, tcashValidation)
-        mArgs.putBoolean(DefineValue.CODE_SUCCESS, codeSuccess)
-        proses_btn.isEnabled = true
-        cashOutHistory()
-        val mFrag: Fragment = FragDataC2A()
-        mFrag.arguments = mArgs
-        fragmentManager!!.beginTransaction().addToBackStack(BBSTransaksiInformasi.TAG)
-                .replace(R.id.bbsTransaksiFragmentContent, mFrag, FragDataC2A.TAG).commit()
-        ToggleKeyboard.hide_keyboard(activity)
-    }
-
     private fun cashOutHistory() {
         if (cashOutHistoryModel == null) {
             cashOutHistoryModel = CashOutHistoryModel()
@@ -853,33 +790,6 @@ class BBSCashOut : BaseFragment() {
         val editor = sp.edit()
         editor.putString(DefineValue.CASH_OUT_HISTORY_TEMP, jsonObject)
         editor.apply()
-    }
-
-    fun dialogBenefLKD(_tx_id: String?, _product_code: String?, _product_name: String?, _bank_code: String?,
-                       _amount: String?, _fee: String?, _totalAmount: String?, _bank_name: String?, _max_resend_token: String?,
-                       _benef_acct_no: String?, _benef_acct_name: String?, no_benef: String?) {
-        val builder1 = android.support.v7.app.AlertDialog.Builder(activity!!)
-        builder1.setTitle(R.string.c2a_lkd)
-        builder1.setMessage("Transfer ke : ")
-        builder1.setCancelable(true)
-        builder1.setPositiveButton(
-                "Diri Sendiri"
-        ) { dialog, id ->
-            isOwner = true
-            changeToDataMandiriLKD(_tx_id!!, _product_code!!, _product_name!!, _bank_code!!,
-                    _amount!!, _fee!!, _totalAmount!!, _bank_name!!, _max_resend_token!!,
-                    _benef_acct_no!!, _benef_acct_name!!, no_benef!!, isOwner)
-        }
-        builder1.setNegativeButton(
-                "Orang Lain"
-        ) { dialog, id ->
-            isOwner = false
-            changeToDataMandiriLKD(_tx_id!!, _product_code!!, _product_name!!, _bank_code!!,
-                    _amount!!, _fee!!, _totalAmount!!, _bank_name!!, _max_resend_token!!,
-                    _benef_acct_no!!, _benef_acct_name!!, no_benef!!, isOwner)
-        }
-        val alert11 = builder1.create()
-        alert11.show()
     }
 
     fun showDialogErrorSMS(nama_bank: String?, error_code: String, error_msg: String?) { // Create custom dialog object

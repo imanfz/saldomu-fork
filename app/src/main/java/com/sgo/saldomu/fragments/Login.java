@@ -26,7 +26,6 @@ import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
@@ -65,7 +64,6 @@ import static android.content.Context.FINGERPRINT_SERVICE;
 /**
  * Created by Administrator on 7/10/2014.
  */
-//public class Login extends BaseFragment implements View.OnClickListener {
 public class Login extends BaseFragment implements View.OnClickListener {
 
     private String userIDfinale = null, is_pos, imeiIdDevice;
@@ -499,7 +497,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER, true);
             } else {
                 if (prevContactFT.equals(DefineValue.NO)) {
-                    myFriendModel.deleteAll();
                     mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
                 }
                 mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");

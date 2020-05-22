@@ -552,11 +552,6 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
                 break;
-
-            case MMYFRIENDS:
-                newFragment = new ListMyFriends();
-                switchFragment(newFragment, getString(R.string.toolbar_title_myfriends));
-                break;
             case MTARIKDANA:
                 if (levelClass.isLevel1QAC()) {
                     levelClass.showDialogLevel();
