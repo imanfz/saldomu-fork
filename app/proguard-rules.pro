@@ -117,6 +117,11 @@
     public static <fields>;
 }
 
+-keepclassmembers,allowobfuscation class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+  }
+
+-keep,allowobfuscation @interface com.google.gson.annotations.SerializedName
 
 # The support library contains references to newer platform versions.
 # Don't warn about those in case this app is linking against an older

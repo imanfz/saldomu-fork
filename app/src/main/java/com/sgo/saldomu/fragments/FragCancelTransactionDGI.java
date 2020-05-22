@@ -33,17 +33,20 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.models.TagihReasonModel;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -73,6 +76,9 @@ public class FragCancelTransactionDGI extends BaseFragment implements GoogleApiC
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
 
+    private ArrayList<TagihReasonModel> reasonDataList = new ArrayList<>();
+    private ArrayList<String> reasonNameArrayList = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -98,7 +104,6 @@ public class FragCancelTransactionDGI extends BaseFragment implements GoogleApiC
             commCode = bundle.getString(DefineValue.COMMUNITY_CODE, "");
         }
 
-
         fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID", "INDONESIA"));
         toFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID", "INDONESIA"));
         toFormat2 = new SimpleDateFormat("dd-M-yyyy", new Locale("ID", "INDONESIA"));
@@ -114,36 +119,34 @@ public class FragCancelTransactionDGI extends BaseFragment implements GoogleApiC
                 c.get(Calendar.DAY_OF_MONTH)
         );
 
-        tv_next_visit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dpd.show(getActivity().getFragmentManager(), "asd");
-            }
-        });
+        tv_next_visit.setOnClickListener(view -> dpd.show(getActivity().getFragmentManager(), "asd"));
 
-        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.cancel_dgi_reason, android.R.layout.simple_spinner_item);
-        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_reason.setAdapter(spinAdapter);
-        sp_reason.setOnItemSelectedListener(spinnerReason);
+        try {
+            reasonDataList.clear();
+            JSONArray reasonArray = new JSONArray(sp.getString(DefineValue.REJECT_REASON, ""));
+            if (reasonArray.length() > 0) {
+                for (int i = 0; i < reasonArray.length(); i++) {
+                    JSONObject jsonObjectReason = reasonArray.getJSONObject(i);
+                    reasonNameArrayList.add(formatStringCamelCase(jsonObjectReason.getString("DESCRIPTION")));
+                }
+            }
+            ArrayAdapter<String> spinAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, reasonNameArrayList);
+            spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            sp_reason.setAdapter(spinAdapter);
+            sp_reason.setOnItemSelectedListener(spinnerReason);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         btnCancel.setOnClickListener(cancelListener);
         btnProses.setOnClickListener(prosesListener);
     }
 
-    Button.OnClickListener cancelListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            getFragmentManager().popBackStack();
-        }
-    };
+    Button.OnClickListener cancelListener = view -> getFragmentManager().popBackStack();
 
-    Button.OnClickListener prosesListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (inputValidation()) {
-                cancelDGI();
-            }
+    Button.OnClickListener prosesListener = view -> {
+        if (inputValidation()) {
+            cancelDGI();
         }
     };
 
@@ -201,7 +204,7 @@ public class FragCancelTransactionDGI extends BaseFragment implements GoogleApiC
             et_reason.requestFocus();
             et_reason.setError("Alasan dibutuhkan!");
             return false;
-        } else if (compare == 100 || tv_next_visit.getText().toString().equalsIgnoreCase(getString(R.string.myprofile_text_date_click))) {
+        } else if (compare == 100 || tv_next_visit.getText().toString().equalsIgnoreCase(getString(R.string.choose_date))) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.validation_date_empty))
@@ -277,7 +280,7 @@ public class FragCancelTransactionDGI extends BaseFragment implements GoogleApiC
                                 AlertDialog dialog = builder.create();
                                 dialog.show();
 
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -365,7 +368,7 @@ public class FragCancelTransactionDGI extends BaseFragment implements GoogleApiC
         Timber.d("onConnected Started");
         //startLocationUpdate();
 
-        if ( mGoogleApiClient != null ) {
+        if (mGoogleApiClient != null) {
             try {
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
@@ -384,7 +387,7 @@ public class FragCancelTransactionDGI extends BaseFragment implements GoogleApiC
                 //Timber.d(se.printStackTrace());
             }
         }
-        if (bundle!=null) {
+        if (bundle != null) {
             Timber.d(bundle.toString());
         }
     }
@@ -410,5 +413,18 @@ public class FragCancelTransactionDGI extends BaseFragment implements GoogleApiC
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String formatStringCamelCase(String description) {
+        String[] words = description.split(" ");
+        StringBuilder sb = new StringBuilder();
+        if (words[0].length() > 0) {
+            sb.append(Character.toUpperCase(words[0].charAt(0))).append(words[0].subSequence(1, words[0].length()).toString().toLowerCase());
+            for (int i = 1; i < words.length; i++) {
+                sb.append(" ");
+                sb.append(Character.toUpperCase(words[i].charAt(0))).append(words[i].subSequence(1, words[i].length()).toString().toLowerCase());
+            }
+        }
+        return sb.toString();
     }
 }

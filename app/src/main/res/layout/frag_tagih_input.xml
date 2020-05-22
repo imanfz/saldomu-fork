@@ -57,7 +57,7 @@
         <Spinner
             android:id="@+id/sp_mitra"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="5"/>
     </LinearLayout>
 
@@ -85,7 +85,7 @@
         <Spinner
             android:id="@+id/sp_community"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="5"/>
     </LinearLayout>
 
@@ -147,7 +147,6 @@
         android:id="@+id/btn_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:visibility="gone"
         android:background="@drawable/rounded_background_blue"
         android:text="@string/cancel_transaction"

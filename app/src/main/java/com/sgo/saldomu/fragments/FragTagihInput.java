@@ -91,7 +91,7 @@ public class FragTagihInput extends BaseFragment {
 
         sp = CustomSecurePref.getInstance().getSecurePrefsInstance();
 
-        isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE,"").equalsIgnoreCase(getString(R.string.LKD));
+        isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.LKD));
 
         getBalanceCollector();
 
@@ -141,6 +141,10 @@ public class FragTagihInput extends BaseFragment {
 
                                     tagihModel.setListCommunity(comList);
                                 }
+                            }
+                            JSONArray rejectReasonArray = response.getJSONArray("reject_reason_codes");
+                            if (rejectReasonArray.length() > 0) {
+                                sp.edit().putString(DefineValue.REJECT_REASON, rejectReasonArray.toString()).commit();
                             }
                         }
                     } catch (JSONException e) {
@@ -223,13 +227,13 @@ public class FragTagihInput extends BaseFragment {
         tv_saldo_collector = v.findViewById(R.id.tv_saldoCollector);
         ll_komunitas = v.findViewById(R.id.ll_komunitas);
 
-        if (is_search==true) {
+        if (is_search) {
             Timber.d("is_search initialize");
             btn_cancel.setVisibility(View.VISIBLE);
             et_memberCode.setText(memberCode);
         }
 
-        if (isAgentLKD){
+        if (isAgentLKD) {
             btn_regShop.setVisibility(View.GONE);
         }
 
@@ -327,7 +331,7 @@ public class FragTagihInput extends BaseFragment {
             et_memberCode.setError(getString(R.string.error_input_tagih));
             return false;
         }
-        if (commCodeTagih.equals("")) {
+        if (commCodeTagih == null || commCodeTagih.equals("")) {
             sp_communtiy.requestFocus();
             Toast.makeText(getActivity(), getString(R.string.error_input_community), Toast.LENGTH_SHORT).show();
             return false;
@@ -373,7 +377,7 @@ public class FragTagihInput extends BaseFragment {
                                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                                 test.showDialoginMain(getActivity(), message);
                                             }
-                                        }else if (code.equals(DefineValue.ERROR_9333)) {
+                                        } else if (code.equals(DefineValue.ERROR_9333)) {
                                             Timber.d("isi response app data:" + model.getApp_data());
                                             final AppDataModel appModel = model.getApp_data();
                                             AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
