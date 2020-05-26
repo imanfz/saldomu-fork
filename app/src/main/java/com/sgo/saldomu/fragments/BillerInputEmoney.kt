@@ -192,7 +192,10 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
             notes_edit_text.visibility = if (isChecked) View.VISIBLE else View.GONE
             notes_edit_text.isEnabled = isChecked
         }
-        btn_submit_billerinput.setOnClickListener { if (inputValidation()) sentPaymentBiller() }
+        btn_submit_billerinput.setOnClickListener {
+            if (inputValidation())
+                sentPaymentBiller()
+        }
         buttonSubmit(false)
     }
 
@@ -429,6 +432,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                         merchantType = sentPaymentBillerModel.merchant_type
                         when (code) {
                             WebParams.SUCCESS_CODE -> {
+
                                 if (productType == DefineValue.BANKLIST_TYPE_IB)
                                     inputPIN(-1)
                                 else {
@@ -784,7 +788,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                         }
 
                         override fun onComplete() {
-                            dismissProgressDialog()
+//                            dismissProgressDialog()
                             btn_submit_billerinput.isEnabled = true
                         }
                     })
@@ -970,7 +974,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                 cardNumber = cardInfo!!.substring(0, 16)
                 billerinput_et_id_remark.setText(cardNumber)
             }
-        } catch (e : IOException) {
+        } catch (e: IOException) {
             e.printStackTrace();
         }
     }
