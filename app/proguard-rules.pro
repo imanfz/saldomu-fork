@@ -67,7 +67,7 @@
 -keep class com.sgo.saldomu.fragments.ListCollectionPayment$TempObjectData { *; }
 
 -keep class com.sgo.saldomu.fragments.FragAskForMoney$TempObjectData { *; }
--keep class com.sgo.saldomu.fragments.FragPayFriends$TempObjectData { *; }
+#-keep class com.sgo.saldomu.fragments.FragPayFriends$TempObjectData { *; }
 -keep class com.sgo.saldomu.fragments.FragPayFriendsConfirm$TempTxID { *; }
 -keep class com.sgo.saldomu.fragments.ListBillerMerchant$ListObject{ *; }
 -keep class com.sgo.saldomu.activities.AskForMoneyActivity$TempObjectData{ *; }
@@ -117,6 +117,11 @@
     public static <fields>;
 }
 
+-keepclassmembers,allowobfuscation class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+  }
+-keep,allowobfuscation @interface com.google.gson.annotations.SerializedName
+
 
 # The support library contains references to newer platform versions.
 # Don't warn about those in case this app is linking against an older
@@ -138,4 +143,7 @@
 -dontwarn com.squareup.okhttp3.**
 -dontwarn javax.annotation.**
 
+#-keepattributes *Annotation*,LineNumberTable
+#-keepattributes SourceFile,LineNumberTable
+#-renamesourcefileattribute SourceFile
 #-ignorewarnings -keep class * { public private *; }

@@ -1,12 +1,16 @@
 package com.sgo.saldomu.fragments
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.nfc.NfcAdapter
+import android.nfc.Tag
+import android.nfc.tech.IsoDep
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -22,6 +26,7 @@ import com.sgo.saldomu.Beans.listBankModel
 import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.BillerActivity
+import com.sgo.saldomu.activities.NFCActivity
 import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -30,13 +35,16 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.InqBillerModel
+import com.sgo.saldomu.utils.Converter.Companion.hexStringToByteArray
+import com.sgo.saldomu.utils.Converter.Companion.toHex
 import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
 import kotlinx.android.synthetic.main.frag_biller_input_new.*
 import timber.log.Timber
+import java.io.IOException
 import java.util.*
 
-class BillerInputEmoney : BaseFragment() {
+class BillerInputEmoney : BaseFragment(), NfcAdapter.ReaderCallback {
     private val LINKAJASALDOMU: String = "LINKAJASALDOMU"
     private val EMONEYSALDOMU: String = "EMONEYSALDOMU"
     private val OVOSALDOMU: String = "OVOSALDOMU"
@@ -110,8 +118,8 @@ class BillerInputEmoney : BaseFragment() {
             billerinput_text_id_remark.text = getString(R.string.billerinput_text_payment_remark_Emoney)
             billerinput_et_id_remark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(16))
             if (BuildConfig.FLAVOR == "development")
-                billerinput_et_id_remark.setText("6032984008386579")
-            layout_cek_balance.visibility = View.VISIBLE
+//                billerinput_et_id_remark.setText("6032984008386579")
+                layout_cek_balance.visibility = View.VISIBLE
         }
         billerinput_et_id_remark.inputType = InputType.TYPE_CLASS_NUMBER
         if (billerIdNumber != null)
@@ -146,8 +154,13 @@ class BillerInputEmoney : BaseFragment() {
         })
         billerinput_layout_payment_method.visibility = View.GONE
         billerinput_layout_detail.visibility = View.GONE
-        btn_submit_billerinput.setOnClickListener{sentPaymentBiller()}
+        btn_submit_billerinput.setOnClickListener { sentPaymentBiller() }
         buttonSubmit(false)
+
+        btn_cek_balance.setOnClickListener {
+            val intent = Intent(activity, NFCActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun buttonSubmit(enable: Boolean) {
@@ -365,5 +378,74 @@ class BillerInputEmoney : BaseFragment() {
             return false
         }
         return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (nfcAdapter != null) {
+            nfcAdapter!!.enableReaderMode(activity, this, NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK, null)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        nfcAdapter!!.disableReaderMode(activity)
+    }
+
+    override fun onTagDiscovered(tag: Tag?) {
+        val isoDep = IsoDep.get(tag)
+        try {
+            isoDep.connect()
+//            byte[] selectEmoneyResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+//                    "00A40400080000000000000001"));
+//            getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.d("SELECT_RESPONSE : ", Converter.Companion.toHex(selectEmoneyResponse));
+//                    cardSelect = Converter.Companion.toHex(selectEmoneyResponse);
+//                }
+//            });
+//
+//            byte[] cardAttirbuteResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+//                    "00F210000B"));
+//            getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.d("CARD_ATTRIBUTE : ", Converter.Companion.toHex(cardAttirbuteResponse));
+//                    cardAttribute = Converter.Companion.toHex(cardAttirbuteResponse);
+//                }
+//            });
+//
+//            getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.d("UUID : ", Converter.Companion.toHex(tag.getId()));
+//                    cardUid = Converter.Companion.toHex(tag.getId());
+//                }
+//            });
+            val cardInfoResponse = isoDep.transceive(hexStringToByteArray(
+                    "00B300003F"))
+            activity!!.runOnUiThread {
+                Log.d("CARD_INFO : ", toHex(cardInfoResponse))
+                val cardInfo = toHex(cardInfoResponse)
+                val numberCard = cardInfo.substring(0, 16)
+                billerinput_et_id_remark.setText(numberCard)
+            }
+//            byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+//                    "00B500000A"));
+//            getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                    Log.d("LAST_BALANCE : ", Converter.Companion.toHex(lastBalanceResponse));
+//                    cardBalance = Converter.Companion.toHex(lastBalanceResponse);
+////                    cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
+//                    Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
+//                    saldo = String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
+//                }
+//            });
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 }
