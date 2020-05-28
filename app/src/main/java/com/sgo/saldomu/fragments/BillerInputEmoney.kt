@@ -959,7 +959,9 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
 
     override fun onPause() {
         super.onPause()
-        nfcAdapter!!.disableReaderMode(activity)
+        if (nfcAdapter != null) {
+            nfcAdapter!!.disableReaderMode(activity)
+        }
     }
 
     override fun onTagDiscovered(tag: Tag?) {
