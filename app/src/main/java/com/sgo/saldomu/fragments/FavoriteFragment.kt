@@ -72,7 +72,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
         dialog = builder.create()
 
         swipeRefresh.setOnRefreshListener(this)
-        swipeRefresh.setColorSchemeResources(R.color.orange_600)
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark)
         key = this.arguments!!.getString("key").toString()
         adapter = FavoriteAdapter(this)
     }
