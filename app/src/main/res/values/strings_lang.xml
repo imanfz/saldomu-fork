@@ -188,7 +188,7 @@
     <string name="menu_item_title_topup" translatable="false">Top Up Balance</string>
     <string name="menu_item_title_pulsa_agent">Mobile Credit</string>
     <string name="menu_item_title_report">Report</string>
-    <string name="menu_item_title_scadm">B2B Telco</string>
+    <string name="menu_item_title_scadm">B2B</string>
     <string name="menu_group_title_account">Account</string>
     <string name="menu_item_title_my_profile">My Profile</string>
     <string name="menu_item_title_my_friends">My Friend</string>
@@ -1317,7 +1317,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="scadm_join">Join the B2B Community</string>
     <string name="scadm_topup">Top Up</string>
-    <string name="scadm_denom">Buy Denom Telko</string>
+    <string name="scadm_denom">Buy Denom</string>
     <string name="bank_product">Bank Products</string>
     <string name="comm_code">Community Code</string>
     <string name="denom_item">Denom Item</string>
