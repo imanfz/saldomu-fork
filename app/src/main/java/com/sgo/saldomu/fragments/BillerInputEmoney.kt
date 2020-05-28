@@ -50,6 +50,7 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
+
 class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback, NfcAdapter.ReaderCallback {
     private val EMONEYSALDOMU: String = "EMONEYSALDOMU"
 
@@ -188,6 +189,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         })
         billerinput_layout_payment_method.visibility = View.GONE
         billerinput_layout_detail.visibility = View.GONE
+
         favorite_switch.setOnCheckedChangeListener { buttonView, isChecked ->
             notes_edit_text.visibility = if (isChecked) View.VISIBLE else View.GONE
             notes_edit_text.isEnabled = isChecked
@@ -197,6 +199,11 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                 sentPaymentBiller()
         }
         buttonSubmit(false)
+
+        btn_cek_balance.setOnClickListener {
+            val intent = Intent(activity, NFCActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun checkBalance() {
@@ -968,6 +975,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         val isoDep = IsoDep.get(tag)
         try {
             isoDep.connect()
+
             val cardInfoResponse = isoDep.transceive(hexStringToByteArray(
                     "00B300003F"))
             activity!!.runOnUiThread {
