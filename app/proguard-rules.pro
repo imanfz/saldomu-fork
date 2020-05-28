@@ -67,7 +67,7 @@
 -keep class com.sgo.saldomu.fragments.ListCollectionPayment$TempObjectData { *; }
 
 -keep class com.sgo.saldomu.fragments.FragAskForMoney$TempObjectData { *; }
-#-keep class com.sgo.saldomu.fragments.FragPayFriends$TempObjectData { *; }
+-keep class com.sgo.saldomu.fragments.FragPayFriends$TempObjectData { *; }
 -keep class com.sgo.saldomu.fragments.FragPayFriendsConfirm$TempTxID { *; }
 -keep class com.sgo.saldomu.fragments.ListBillerMerchant$ListObject{ *; }
 -keep class com.sgo.saldomu.activities.AskForMoneyActivity$TempObjectData{ *; }
@@ -143,7 +143,4 @@
 -dontwarn com.squareup.okhttp3.**
 -dontwarn javax.annotation.**
 
-#-keepattributes *Annotation*,LineNumberTable
-#-keepattributes SourceFile,LineNumberTable
-#-renamesourcefileattribute SourceFile
 #-ignorewarnings -keep class * { public private *; }
