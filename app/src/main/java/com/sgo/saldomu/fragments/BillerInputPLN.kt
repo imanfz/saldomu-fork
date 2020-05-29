@@ -240,6 +240,7 @@ class BillerInputPLN : BaseFragment() {
         billerinput_layout_denom.visibility = View.VISIBLE
         billerinput_layout_add_fee.visibility = View.GONE
         billerinput_layout_detail.visibility = View.GONE
+        ib_contact_list.visibility = View.GONE
     }
 
 //    private fun initRealm() {
