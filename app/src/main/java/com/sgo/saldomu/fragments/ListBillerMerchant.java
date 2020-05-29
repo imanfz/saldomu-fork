@@ -172,7 +172,7 @@ public class ListBillerMerchant extends ListFragment {
 
         Fragment billerInput;
         String fragName;
-        if (comm_name.contains("Emoney Mandiri") || comm_name.contains("Top Up LinkAja") || comm_name.contains("Grab OVO")) {
+        if (billerTypeCode.equals("EMON")) {
             fragName = comm_name;
             billerInput = new BillerInputEmoney();
         } else {
