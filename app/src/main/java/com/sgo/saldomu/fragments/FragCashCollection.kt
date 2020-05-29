@@ -348,7 +348,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                                     alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                                 }
-                                else -> Toast.makeText(activity, error_message, Toast.LENGTH_LONG).show()
+                                else -> showDialog(error_message)
                             }
 
 
@@ -388,6 +388,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                             try {
                                 val model = getGson().fromJson(response.toString(), jsonModel::class.java)
                                 var code = response.getString(WebParams.ERROR_CODE)
+                                var errormessage = response.getString(WebParams.ERROR_MESSAGE)
                                 Timber.d("isi response InquiryTrx cash collection: $response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
@@ -431,9 +432,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                     }
                                     else -> {
                                         Timber.d("Error inquirytrx cash collection:$response")
-                                        code = response.getString(WebParams.ERROR_MESSAGE)
-
-                                        Toast.makeText(activity, code, Toast.LENGTH_SHORT).show()
+                                        showDialog(errormessage)
                                     }
                                 }
                             } catch (e: JSONException) {
