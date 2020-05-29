@@ -226,6 +226,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                 } else {
                                     String msg = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
 //                            showDialogUpdate(msg);
                                 }
 

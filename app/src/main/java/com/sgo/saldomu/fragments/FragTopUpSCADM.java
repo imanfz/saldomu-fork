@@ -21,6 +21,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TopUpSCADMActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -104,10 +105,19 @@ public class FragTopUpSCADM extends BaseFragment {
             @Override
             public void onClick(View view) {
                 if (inputValidation())
+                {
+                    if (!member_code.equals(userPhoneID))
+                    {
+                        member_code = NoHPFormat.formatTo62(et_membercode.getText().toString());
+                    }else
+                        member_code = et_membercode.getText().toString();
+
                     if (selectedProductCode.equalsIgnoreCase("SCASH")) {
                         sentInsertTopUpSCASH();
                     } else
                         sentInsertTopUp();
+                }
+
             }
         });
     }
@@ -259,7 +269,7 @@ public class FragTopUpSCADM extends BaseFragment {
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
             params.put(WebParams.AMOUNT, et_jumlah.getText().toString());
             params.put(WebParams.PAYMENT_REMARK, et_pesan.getText().toString());
-            params.put(WebParams.MEMBER_REMARK, et_membercode.getText().toString());
+            params.put(WebParams.MEMBER_REMARK, member_code);
 
             Timber.d("isi params confirm topup scadm:" + params.toString());
 

@@ -112,7 +112,7 @@
                     android:id="@+id/ib_contact_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@mipmap/camera_result_cancel"
+                    android:background="@drawable/ic_contact"
                     android:layout_below="@id/billerinput_text_id_remark"
                     android:layout_toEndOf="@id/img_operator"
                     android:visibility="visible" />
