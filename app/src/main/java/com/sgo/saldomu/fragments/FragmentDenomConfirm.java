@@ -339,7 +339,8 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                             } else {
-                                Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
+//                                Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
+                                showDialog(error_message);
                             }
 
 
@@ -413,7 +414,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                             }else {
                                 String msg = response.getString(WebParams.ERROR_MESSAGE);
-//                            showDialogUpdate(msg);
+                                showDialog(msg);
                             }
 
                         } catch (JSONException e) {
@@ -489,7 +490,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                                     Timber.d("Error resendTokenSGOL:" + response.toString());
                                     code = response.getString(WebParams.ERROR_MESSAGE);
 
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                    showDialog(code);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -563,6 +564,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                                 code = model.getError_code() + " : " + model.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 String message = model.getError_message();
+                                showDialog(message);
 //                            progdialog.dismiss();
 //                            btn_next.setEnabled(true);
                                 if (isPIN && message.equals("PIN tidak sesuai")) {
@@ -575,9 +577,10 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                                         i.putExtra(DefineValue.ATTEMPT, failed - attempt);
 
                                     startActivityForResult(i, MainPage.REQUEST_FINISH);
-                                } else {
-                                    getActivity().finish();
                                 }
+//                                else {
+//                                    getActivity().finish();
+//                                }
 
                             }
                         }

@@ -1083,16 +1083,19 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         }
                         break;
                     case "TOP":
-                        isShowB2b = true;
                         sp.edit().putBoolean(DefineValue.IS_AGENT_TOP,true).commit();
-                        menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.group));
+                        if (isShowB2b==false) {
+                            menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.group));
+                            isShowB2b = true;
+                        }
                         break;
                     case "BDK":
                         sp.edit().putBoolean(DefineValue.IS_AGENT_BDK,true).commit();
                         if (isShowB2b==false) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
                             menuDrawables.add(getResources().getDrawable(R.drawable.group));
+                            isShowB2b = true;
                         }break;
                 }
             }

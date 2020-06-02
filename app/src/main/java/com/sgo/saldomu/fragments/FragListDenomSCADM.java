@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -149,8 +153,7 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
                                     Timber.d("Error isi response get list community denom scadm:" + response.toString());
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                                    getActivity().finish();
+                                    showDialog(response.getString(WebParams.ERROR_MESSAGE));
                                 }
 
                             } catch (JSONException e) {
@@ -188,5 +191,33 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
         frag.setArguments(bundle);
         SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
 
+    }
+
+    private void showDialog(String msg) {
+        // Create custom dialog object
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        // Include dialog.xml file
+        dialog.setContentView(R.layout.dialog_notification);
+
+        // set values for custom dialog components - text, image and button
+        Button btnDialog= dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
+
+        Message.setVisibility(View.VISIBLE);
+        Title.setText(getString(R.string.error));
+        Message.setText(msg);
+
+        btnDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().finish();
+                //SgoPlusWeb.this.finish();
+            }
+        });
+
+        dialog.show();
     }
 }
