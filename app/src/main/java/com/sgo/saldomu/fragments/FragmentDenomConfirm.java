@@ -735,7 +735,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                //SgoPlusWeb.this.finish();
+                getActivity().onBackPressed();
             }
         });
 
