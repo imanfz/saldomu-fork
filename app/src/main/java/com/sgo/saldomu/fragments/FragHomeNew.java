@@ -1086,7 +1086,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         sp.edit().putBoolean(DefineValue.IS_AGENT_TOP,true).commit();
                         if (isShowB2b==false) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.group));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_menu_b2b));
                             isShowB2b = true;
                         }
                         break;
@@ -1094,7 +1094,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         sp.edit().putBoolean(DefineValue.IS_AGENT_BDK,true).commit();
                         if (isShowB2b==false) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.group));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_menu_b2b));
                             isShowB2b = true;
                         }break;
                 }
