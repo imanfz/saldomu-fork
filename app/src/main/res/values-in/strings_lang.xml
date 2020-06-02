@@ -1307,7 +1307,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="msg_error">Input errors, please check!</string>
 
     <string name="scadm_join">Gabung Komunitas B2B</string>
-    <string name="scadm_topup">Bayar</string>
+    <string name="scadm_topup">Tambah Saldo</string>
     <string name="scadm_denom">Beli Denom</string>
     <string name="bank_product">Produk Bank</string>
     <string name="comm_code">Kode Komunitas</string>
