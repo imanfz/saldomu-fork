@@ -16,10 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:gravity="left"
             android:padding="3dip"
-            android:text="@string/bank_product"
+            android:text="@string/billerinput_text_payment_options"
             android:textSize="18sp" />
 
         <Spinner
@@ -90,7 +90,7 @@
         android:orientation="horizontal"
         android:layout_margin="10dp">
         <TextView
-            android:text="Pesan"
+            android:text="@string/remark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"

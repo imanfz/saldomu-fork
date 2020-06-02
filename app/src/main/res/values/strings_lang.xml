@@ -815,7 +815,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="saving_gallery">Saving Gallery…</string>
     <string name="community">Community</string>
     <string name="community_default">Select Community</string>
-    <string name="member_code">Code Member</string>
+    <string name="member_code">Member Code</string>
     <string name="shop_code">Store Code</string>
     <string name="foldername_struk">Saldomu Receipt</string>
 
@@ -1621,4 +1621,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="next_visit">Next Visit</string>
     <string name="signature">Signature</string>
     <string name="put_a_signature">Put a Signature</string>
+    <string name="community_name">Community Name</string>
+    <string name="item_list">Item List</string>
 </resources>
