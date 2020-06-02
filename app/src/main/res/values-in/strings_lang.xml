@@ -1588,4 +1588,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="next_visit">Datang Kembali</string>
     <string name="signature">Tanda Tangan</string>
     <string name="put_a_signature">Bubuhkan Tanda Tangan</string>
+    <string name="community_name">Komunitas</string>
+    <string name="item_list">Daftar Barang</string>
 </resources>

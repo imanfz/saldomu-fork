@@ -18,7 +18,7 @@
             android:layout_weight="1.5"
             android:gravity="left"
             android:padding="3dip"
-            android:text="Kode Komunitas"
+            android:text="@string/comm_code"
             android:textSize="18sp"/>
 
         <TextView
@@ -90,7 +90,7 @@
         android:orientation="horizontal"
         android:layout_margin="@dimen/margin_10dp">
         <TextView
-            android:text="Produk Bank"
+            android:text="@string/billerinput_text_payment_options"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
@@ -115,7 +115,7 @@
         android:orientation="horizontal"
         android:layout_margin="@dimen/margin_10dp">
         <TextView
-            android:text="@string/jumlah"
+            android:text="@string/amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
@@ -165,7 +165,7 @@
         android:orientation="horizontal"
         android:layout_margin="@dimen/margin_10dp">
         <TextView
-            android:text="@string/total"
+            android:text="@string/total_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
@@ -190,7 +190,7 @@
         android:orientation="horizontal"
         android:layout_margin="10dp">
         <TextView
-            android:text="Pesan"
+            android:text="@string/remark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"

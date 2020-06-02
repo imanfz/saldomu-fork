@@ -23,7 +23,7 @@
                 android:layout_marginBottom="15dp">
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Community Code"
+                    android:text="@string/comm_code"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold"
@@ -46,7 +46,7 @@
                 android:layout_marginBottom="15dp">
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Community Name"
+                    android:text="@string/community"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold"
@@ -69,7 +69,7 @@
                 android:layout_marginBottom="15dp">
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Member Code"
+                    android:text="@string/member_code"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold"
@@ -92,7 +92,7 @@
                 android:layout_marginBottom="15dp">
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bank Product"
+                    android:text="@string/billerinput_text_payment_options"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold"
@@ -116,7 +116,7 @@
                 android:id="@+id/frag_denom_toogle_denom_list">
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Denom List"
+                    android:text="@string/item_list"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold"
