@@ -49,6 +49,7 @@
         android:theme="@style/Theme.MyTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:label,allowBackup,theme">
+        <activity android:name=".activities.SignActivity"></activity>
         <activity android:name=".activities.OTPActivity" />
         <activity android:name=".activities.ForgotPin" />
         <activity
@@ -86,6 +87,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -217,9 +219,7 @@
             android:name=".activities.Introduction"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" >
-
-        </activity>
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <activity
             android:name=".activities.ChangePIN"
             android:configChanges="screenSize|keyboardHidden|orientation"
@@ -489,7 +489,6 @@
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".activities.ActivitySearch"
             android:configChanges="screenSize|keyboardHidden|orientation"

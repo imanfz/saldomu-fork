@@ -295,7 +295,6 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                                     itemListAdapter.notifyDataSetChanged();
 //                            denomListSpinAdapter.notifyDataSetChanged();
 
-
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -310,9 +309,9 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
                                     String msg = response.getString(WebParams.ERROR_MESSAGE);
-//                            showDialogUpdate(msg);
+                                    showDialog(msg);
                                 }
 
                             } catch (JSONException e) {
@@ -382,7 +381,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                //SgoPlusWeb.this.finish();
+                getActivity().finish();
             }
         });
 

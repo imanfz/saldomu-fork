@@ -291,5 +291,7 @@ dependencies {
     //gifImageView
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
     implementation 'com.felipecsl:gifimageview:2.2.0'
+
+    implementation 'com.github.gcacace:signature-pad:1.2.1'
 }
 apply plugin: 'com.google.gms.google-services'

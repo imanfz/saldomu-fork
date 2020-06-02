@@ -214,7 +214,6 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
             @Override
             public void onClick(View view) {
                 getActivity().finish();
-                //SgoPlusWeb.this.finish();
             }
         });
 

@@ -658,5 +658,6 @@ public class DefineValue {
     public static final String BUNDLE_LIST = "BUNDLE_LIST";
 
     public static String REJECT_REASON = "reject_reason";
+    public static String SIGNATURE_PHOTO = "signature_photo";
 }
 
