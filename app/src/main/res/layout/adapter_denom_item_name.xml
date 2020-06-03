@@ -15,7 +15,7 @@
         android:textSize="20sp"
         android:id="@+id/adapter_denom_phone_number_field"
         android:layout_marginRight="10dp"
-        android:hint="Phone Number"
+        android:hint="@string/phone"
         android:inputType="phone" />
 
     <LinearLayout
