@@ -33,6 +33,14 @@
             android:visible="false"
             />
         <item
+            android:id="@+id/cancel"
+            android:orderInCategory="4"
+            android:title="@string/cancel"
+            android:icon="@drawable/squarecamera__cancel_unselected"
+            someNamespace:showAsAction="always"
+            android:visible="false"
+            />
+        <item
             android:id="@+id/right_drawer_menu"
             android:orderInCategory="99"
             android:title="@string/social_promo"

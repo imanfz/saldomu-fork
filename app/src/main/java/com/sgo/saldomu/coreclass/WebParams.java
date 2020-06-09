@@ -532,6 +532,7 @@ public class WebParams {
     public static String PHONE_DATA = "phone_data";
     public static String INVOICE_DATA = "invoice_data";
     public static String INVOICE = "invoice";
+    public static String INVOICES = "invoices";
     public static String FEE_DATA = "fee_data";
     public static String PAYMENT_TYPE = "payment_type";
     public static String PAYMENT_TYPE_DESC = "payment_type_desc";
