@@ -261,19 +261,30 @@
         </TableLayout>
 
         <LinearLayout
-            android:layout_below="@+id/llAgentShop"
             android:id="@+id/llButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_small"
             android:orientation="horizontal">
-
             <Button
-                android:layout_width="wrap_content"
+                android:id="@+id/btnCall"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/rounded_background_blue"
+                android:text="@string/call"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/grey_1000w"/>
+            <Button
                 android:id="@+id/btnCancel"
-                android:text="@string/cancel" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_background_outline"
+                android:text="@string/cancel"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/colorPrimary"/>/>
         </LinearLayout>
 
     </LinearLayout>

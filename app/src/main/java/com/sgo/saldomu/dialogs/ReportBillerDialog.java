@@ -831,28 +831,39 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         printStruk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                printStruk.setEnabled(false);
-                printStruk.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        printStruk.setEnabled(true);
-                    }
-                }, 4000);
-
-                String perms = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-                if (EasyPermissions.hasPermissions(getContext(), perms)) {
-                    String[] separated = trx_id.split("\n");
-                    imgFilename = separated[0];
-
-                    countRetry = 0;
-
-                    connect();
-
+                // If Bluetooth is not on, request that it be enabled.
+                // setupChat() will then be called during onActivityResult
+                if (!mBluetoothAdapter.isEnabled()) {
+                    Intent enableIntent = new Intent(
+                            BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableIntent, DevicesList.REQUEST_ENABLE_BT);
+                    // Otherwise, setup the session
                 } else {
-                    EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_save_image_permission),
-                            RC_REQUEST_WRITE_EXTERNAL_STORAGE_AND_PRINT, perms);
-                }
+                    if (mService == null)
+                        mService = new BluetoothService(getContext(), mHandler);//监听
 
+                    printStruk.setEnabled(false);
+                    printStruk.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            printStruk.setEnabled(true);
+                        }
+                    }, 4000);
+
+                    String perms = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+                    if (EasyPermissions.hasPermissions(getContext(), perms)) {
+                        String[] separated = trx_id.split("\n");
+                        imgFilename = separated[0];
+
+                        countRetry = 0;
+
+                        connect();
+
+                    } else {
+                        EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_save_image_permission),
+                                RC_REQUEST_WRITE_EXTERNAL_STORAGE_AND_PRINT, perms);
+                    }
+                }
             }
         });
 
@@ -1225,18 +1236,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     @Override
     public void onStart() {
         super.onStart();
-
-        // If Bluetooth is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(
-                    BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, DevicesList.REQUEST_ENABLE_BT);
-            // Otherwise, setup the session
-        } else {
-            if (mService == null)
-                mService = new BluetoothService(getContext(), mHandler);//监听
-        }
     }
 
     /****************************************************************************************************/

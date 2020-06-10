@@ -31,7 +31,6 @@ import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.SgoPlusWeb;
-import com.sgo.saldomu.activities.SignActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -60,7 +59,6 @@ import com.sgo.saldomu.widgets.BaseFragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -73,8 +71,6 @@ import timber.log.Timber;
 public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSCashInConfirm";
     private static final int MAX_TOKEN_RESENT = 3;
-    private static final int SIGNATURE = 210;
-    private static final int RESULT_SIGNATURE = 230;
 
     private TextView tvTitle;
     private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
@@ -99,7 +95,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     private Switch favoriteSwitch;
     private EditText notesEditText;
     private String value_pin;
-    private File signaturePhoto;
 
     public interface ActionListener {
         void ChangeActivityFromCashInConfirm(Intent data);
@@ -174,7 +169,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Log.e ("BBS", "isi bundle " + bundle.toString());
+            Log.e("BBS", "isi bundle " + bundle.toString());
 
             transaksi = bundle.getString(DefineValue.TRANSACTION);
             if (bundle.containsKey(DefineValue.BENEF_CITY)) {
@@ -211,8 +206,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             if (!bundle.containsKey(DefineValue.MAX_RESEND))
                 max_token_resend = Integer.parseInt(bundle.getString(DefineValue.MAX_RESEND, "3"));
 
-            if (isAgentLKD)
-            {
+            if (isAgentLKD) {
                 tvbenefname.setText(getString(R.string.nama_rekening_tujuan_lkd));
             }
 
@@ -226,7 +220,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             if (name_benef.equalsIgnoreCase("")) {
                 tbNameBenef.setVisibility(View.GONE);
-            }else {
+            } else {
                 StringBuilder maskedName = new StringBuilder();
                 String[] nameArray = name_benef.split(" ");
                 for (String originName : nameArray) {
@@ -237,7 +231,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                         for (int j = 0; j < originName.length() - 2; j++) {
                             maskingName.append("*");
                         }
-                        tempName = originName.replace(originName.substring(2, originName.length()), maskingName);
+                        tempName = originName.replace(originName.substring(2), maskingName);
 
                     } else {
                         maskedName.append(originName);
@@ -426,7 +420,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                         }
                     } else {
                         callPINInput(attempt);
-//                        signatureInput();
                         btnSubmit.setEnabled(true);
                     }
                     btnSubmit.setEnabled(true);
@@ -482,15 +475,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SIGNATURE){
-            if (resultCode == RESULT_SIGNATURE){
-                signaturePhoto = new File(data.getStringExtra(DefineValue.SIGNATURE_PHOTO));
-                if (signaturePhoto.exists()){
-                    Toast.makeText(getActivity(), "input pin", Toast.LENGTH_LONG).show();
-//                    callPINInput(attempt);
-                }
-            }
-        }
         if (requestCode == MainPage.REQUEST_FINISH) {
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
@@ -501,11 +485,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                 }
             }
         }
-    }
-
-    private void signatureInput() {
-        Intent i = new Intent(getActivity(), SignActivity.class);
-        startActivityForResult(i, SIGNATURE);
     }
 
     private void callPINInput(int _attempt) {
@@ -566,7 +545,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 String code_msg = model.getError_message();
                                 Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
                                 tokenValue.setText("");
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -678,7 +657,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -764,7 +743,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                            } else {
                                 String msg = model.getError_message();
                                 showDialog(msg);
                             }
@@ -834,7 +813,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -1174,7 +1153,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                            } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {

@@ -1619,6 +1619,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="insert_16_card_number">Enter 16 digit card number</string>
 
     <string name="next_visit">Next Visit</string>
-    <string name="signature">Signature</string>
+    <string name="signature_cash_in">Signature</string>
     <string name="put_a_signature">Put a Signature</string>
 </resources>

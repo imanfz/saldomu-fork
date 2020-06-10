@@ -1586,6 +1586,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="insert_16_card_number">Masukkan 16 angka nomor kartu</string>
 
     <string name="next_visit">Datang Kembali</string>
-    <string name="signature">Tanda Tangan</string>
+    <string name="signature_cash_in">Tanda Tangan Penyetor</string>
     <string name="put_a_signature">Bubuhkan Tanda Tangan</string>
 </resources>
