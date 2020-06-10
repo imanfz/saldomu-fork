@@ -1623,4 +1623,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="put_a_signature">Put a Signature</string>
     <string name="community_name">Community Name</string>
     <string name="item_list">Item List</string>
+    <string name="customer_name">Customer Name</string>
+    <string name="customer_phone">Customer Phone Number</string>
 </resources>

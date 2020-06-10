@@ -1590,4 +1590,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="put_a_signature">Bubuhkan Tanda Tangan</string>
     <string name="community_name">Komunitas</string>
     <string name="item_list">Daftar Barang</string>
+    <string name="customer_name">Nama Pelanggan</string>
+    <string name="customer_phone">No. HP Pelanggan</string>
 </resources>

@@ -222,7 +222,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
 
         if (buss_scheme_code != null || type != null) {
-            if (buss_scheme_code.equalsIgnoreCase("CTA") || buss_scheme_code.equalsIgnoreCase("CTR")) {
+            if (buss_scheme_code.equalsIgnoreCase("CTA")) {
                 if (type.equals(DefineValue.BBS_CASHIN)) {
                     stub.setLayoutResource(R.layout.layout_dialog_report_bbs_cashin);
                     View inflated = stub.inflate();
@@ -283,7 +283,61 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 //                    tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
-            } else if (buss_scheme_code.equalsIgnoreCase("ATC")) {
+            } else if (buss_scheme_code.equalsIgnoreCase("CTR"))
+            {
+                stub.setLayoutResource(R.layout.layout_dialog_report_ctr);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
+
+                TextView tvNoDestination = inflated.findViewById(R.id.tvNoDestination);
+
+                String benef_type = args.getString(DefineValue.TYPE_BENEF, "");
+                String benef_product_code = args.getString(DefineValue.BENEF_PRODUCT_CODE, "");
+                String benef_bank_name = args.getString(DefineValue.BANK_BENEF, "");
+                if (benef_type.equalsIgnoreCase(DefineValue.ACCT) || benef_product_code.equalsIgnoreCase("MANDIRILKD") || benef_bank_name.equalsIgnoreCase("Mandiri Laku Pandai"))
+                    tvNoDestination.setText(R.string.number_destination);
+                else
+                    tvNoDestination.setText(R.string.number_hp_destination);
+
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                if (!isSuccess) {
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
+                TextView tv_transaction_type = inflated.findViewById(R.id.tv_report_transaction_type);
+                TextView tv_useerid_value = inflated.findViewById(R.id.dialog_reportbbs_userid_value);
+                TextView tv_name_value = inflated.findViewById(R.id.dialog_reportbbs_membername_value);
+                TextView tv_member_shop_phone = inflated.findViewById(R.id.dialog_reportbs_member_shop_phone);
+                TextView tv_source_acc_name_value = inflated.findViewById(R.id.dialog_reportbs_bank_source_acc_name_value);
+                TextView tv_benef_bank_name_value = inflated.findViewById(R.id.dialog_reportbbs_benef_bank_value);
+                TextView tv_benef_acc_no_value = inflated.findViewById(R.id.dialog_reportbbs_bank_benef_acct_no_value);
+                TextView tv_benef_acc_name_value = inflated.findViewById(R.id.dialog_reportbs_bank_benef_acc_name_value);
+                TextView tv_amount_value = inflated.findViewById(R.id.dialog_reportbbs_amount_value);
+                TextView tv_fee_value = inflated.findViewById(R.id.dialog_reportbbs_fee_value);
+                TextView tv_total_amount_value = inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
+                TextView tv_cust_name = inflated.findViewById(R.id.dialog_reportbbs_cust_name);
+                TextView tv_cust_phone = inflated.findViewById(R.id.dialog_reportbbs_benef_cust_phone);
+
+                tv_transaction_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
+                tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
+                tv_name_value.setText(args.getString(DefineValue.USER_NAME));
+                tv_source_acc_name_value.setText(args.getString(DefineValue.PRODUCT_NAME));
+                tv_member_shop_phone.setText(args.getString(DefineValue.MEMBER_SHOP_PHONE));
+                tv_benef_acc_no_value.setText(args.getString(DefineValue.NO_BENEF));
+                tv_benef_acc_name_value.setText(args.getString(DefineValue.NAME_BENEF));
+                String bankBenef = args.getString(DefineValue.BANK_BENEF);
+                if (bankBenef != null && bankBenef.toLowerCase().contains("saldomu"))
+                    bankBenef = SALDO_AGEN;
+                tv_benef_bank_name_value.setText(bankBenef);
+                tv_cust_name.setText(args.getString(DefineValue.MEMBER_SHOP_NAME));
+                tv_cust_phone.setText(args.getString(DefineValue.MEMBER_SHOP_PHONE));
+                tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
+                tv_fee_value.setText(args.getString(DefineValue.FEE));
+                tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
+            }else if (buss_scheme_code.equalsIgnoreCase("ATC")) {
                 if (type.equals(DefineValue.BBS_MEMBER_OTP)) {
                     View inflated;
                     stub.setLayoutResource(R.layout.layout_dialog_report_bbs_member_confirm);
