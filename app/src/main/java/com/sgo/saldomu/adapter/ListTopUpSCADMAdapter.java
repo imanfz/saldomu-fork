@@ -12,9 +12,6 @@ import android.widget.TextView;
 
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.TopUpSCADMActivity;
-import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.fragments.FragTopUpSCADM;
 
 import java.util.ArrayList;
 
@@ -26,11 +23,18 @@ public class ListTopUpSCADMAdapter extends RecyclerView.Adapter<ListTopUpSCADMAd
     private final Activity mContext;
     Fragment mFrag;
     private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList;
+    listener listener;
 
-    public ListTopUpSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext) {
+
+    public ListTopUpSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext, listener _listener) {
         this.scadmCommunityModelArrayList = scadmCommunityModelArrayList;
         this.mContext = mContext;
+        listener = _listener;
 //        this.frameLayout = frameLayout;
+    }
+
+    public interface listener{
+        void onClick(SCADMCommunityModel item);
     }
 
     @Override
@@ -48,23 +52,26 @@ public class ListTopUpSCADMAdapter extends RecyclerView.Adapter<ListTopUpSCADMAd
             @Override
             public void onClick(View view) {
 
-                Bundle bundle = new Bundle();
-                bundle.putString(DefineValue.COMMUNITY_NAME,scadmCommunityModelArrayList.get(position).getComm_name());
-                bundle.putString(DefineValue.COMM_ID_SCADM,scadmCommunityModelArrayList.get(position).getComm_id());
-                bundle.putString(DefineValue.COMMUNITY_CODE,scadmCommunityModelArrayList.get(position).getComm_code());
-                bundle.putString(DefineValue.MEMBER_CODE,scadmCommunityModelArrayList.get(position).getMember_code());
-                bundle.putString(DefineValue.API_KEY,scadmCommunityModelArrayList.get(position).getApi_key());
-                bundle.putString(DefineValue.MEMBER_ID_SCADM,scadmCommunityModelArrayList.get(position).getMember_id_scadm());
-                TopUpSCADMActivity ftf = (TopUpSCADMActivity) mContext;
 
-                mFrag = new FragTopUpSCADM();
-                ftf.switchContent(mFrag, "Tambah Saldo SCADM", true);
+                listener.onClick(scadmCommunityModelArrayList.get(position));
 
-                mFrag.setArguments(bundle);
-
-                if (mContext == null) {
-                    return;
-                }
+//                Bundle bundle = new Bundle();
+//                bundle.putString(DefineValue.COMMUNITY_NAME,scadmCommunityModelArrayList.get(position).getComm_name());
+//                bundle.putString(DefineValue.COMM_ID_SCADM,scadmCommunityModelArrayList.get(position).getComm_id());
+//                bundle.putString(DefineValue.COMMUNITY_CODE,scadmCommunityModelArrayList.get(position).getComm_code());
+//                bundle.putString(DefineValue.MEMBER_CODE,scadmCommunityModelArrayList.get(position).getMember_code());
+//                bundle.putString(DefineValue.API_KEY,scadmCommunityModelArrayList.get(position).getApi_key());
+//                bundle.putString(DefineValue.MEMBER_ID_SCADM,scadmCommunityModelArrayList.get(position).getMember_id_scadm());
+//                TopUpSCADMActivity ftf = (TopUpSCADMActivity) mContext;
+//
+//                mFrag = new FragTopUpSCADM();
+//                ftf.switchContent(mFrag, ListTopUpSCADMAdapter.this.toString(), true);
+//
+//                mFrag.setArguments(bundle);
+//
+//                if (mContext == null) {
+//                    return;
+//                }
             }
         });
     }

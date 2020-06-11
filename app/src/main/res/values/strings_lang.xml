@@ -188,7 +188,7 @@
     <string name="menu_item_title_topup" translatable="false">Top Up Balance</string>
     <string name="menu_item_title_pulsa_agent">Mobile Credit</string>
     <string name="menu_item_title_report">Report</string>
-    <string name="menu_item_title_scadm">B2B Telco</string>
+    <string name="menu_item_title_scadm">B2B</string>
     <string name="menu_group_title_account">Account</string>
     <string name="menu_item_title_my_profile">My Profile</string>
     <string name="menu_item_title_my_friends">My Friend</string>
@@ -815,7 +815,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="saving_gallery">Saving Gallery…</string>
     <string name="community">Community</string>
     <string name="community_default">Select Community</string>
-    <string name="member_code">Code Member</string>
+    <string name="member_code">Member Code</string>
     <string name="shop_code">Store Code</string>
     <string name="foldername_struk">Saldomu Receipt</string>
 
@@ -1317,7 +1317,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="scadm_join">Join the B2B Community</string>
     <string name="scadm_topup">Top Up</string>
-    <string name="scadm_denom">Buy Denom Telko</string>
+    <string name="scadm_denom">Buy Denom</string>
     <string name="bank_product">Bank Products</string>
     <string name="comm_code">Community Code</string>
     <string name="denom_item">Denom Item</string>
@@ -1619,7 +1619,13 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="insert_16_card_number">Enter 16 digit card number</string>
 
     <string name="next_visit">Next Visit</string>
+
     <string name="no_item_selected">No Item Selected</string>
     <string name="please_choose_date">Please Choose Date</string>
     <string name="please_input_description">Please Input Description</string>
+
+    <string name="signature">Signature</string>
+    <string name="put_a_signature">Put a Signature</string>
+    <string name="community_name">Community Name</string>
+    <string name="item_list">Item List</string>
 </resources>

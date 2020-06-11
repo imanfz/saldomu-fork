@@ -190,7 +190,7 @@
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
-    <string name="menu_item_title_scadm">B2B Telco</string>
+    <string name="menu_item_title_scadm">B2B</string>
     <string name="menu_group_title_account">Akun</string>
     <string name="menu_item_title_my_profile">Profil Saya</string>
     <string name="menu_item_title_my_friends">Teman Saya</string>
@@ -1307,8 +1307,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="msg_error">Input errors, please check!</string>
 
     <string name="scadm_join">Gabung Komunitas B2B</string>
-    <string name="scadm_topup">Bayar</string>
-    <string name="scadm_denom">Beli Denom Telko</string>
+    <string name="scadm_topup">Tambah Saldo</string>
+    <string name="scadm_denom">Beli Denom</string>
     <string name="bank_product">Produk Bank</string>
     <string name="comm_code">Kode Komunitas</string>
     <string name="denom_item">Item Denom</string>
@@ -1586,4 +1586,13 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="insert_16_card_number">Masukkan 16 angka nomor kartu</string>
 
     <string name="next_visit">Datang Kembali</string>
+
+    <string name="no_item_selected">Tidak ada item yang di pilih </string>
+    <string name="please_choose_date">Mohon input tanggal</string>
+    <string name="please_input_description">Mohon input deskripsi</string>
+
+    <string name="signature">Tanda Tangan</string>
+    <string name="put_a_signature">Bubuhkan Tanda Tangan</string>
+    <string name="community_name">Komunitas</string>
+    <string name="item_list">Daftar Barang</string>
 </resources>

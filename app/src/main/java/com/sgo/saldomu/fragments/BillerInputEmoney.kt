@@ -50,6 +50,7 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
+
 class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback, NfcAdapter.ReaderCallback {
     private val EMONEYSALDOMU: String = "EMONEYSALDOMU"
 
@@ -188,12 +189,21 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         })
         billerinput_layout_payment_method.visibility = View.GONE
         billerinput_layout_detail.visibility = View.GONE
+
         favorite_switch.setOnCheckedChangeListener { buttonView, isChecked ->
             notes_edit_text.visibility = if (isChecked) View.VISIBLE else View.GONE
             notes_edit_text.isEnabled = isChecked
         }
-        btn_submit_billerinput.setOnClickListener { if (inputValidation()) sentPaymentBiller() }
+        btn_submit_billerinput.setOnClickListener {
+            if (inputValidation())
+                sentPaymentBiller()
+        }
         buttonSubmit(false)
+
+        btn_cek_balance.setOnClickListener {
+            val intent = Intent(activity, NFCActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun checkBalance() {
@@ -429,6 +439,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                         merchantType = sentPaymentBillerModel.merchant_type
                         when (code) {
                             WebParams.SUCCESS_CODE -> {
+
                                 if (productType == DefineValue.BANKLIST_TYPE_IB)
                                     inputPIN(-1)
                                 else {
@@ -784,7 +795,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                         }
 
                         override fun onComplete() {
-                            dismissProgressDialog()
+//                            dismissProgressDialog()
                             btn_submit_billerinput.isEnabled = true
                         }
                     })
@@ -955,13 +966,16 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
 
     override fun onPause() {
         super.onPause()
-        nfcAdapter!!.disableReaderMode(activity)
+        if (nfcAdapter != null) {
+            nfcAdapter!!.disableReaderMode(activity)
+        }
     }
 
     override fun onTagDiscovered(tag: Tag?) {
         val isoDep = IsoDep.get(tag)
         try {
             isoDep.connect()
+
             val cardInfoResponse = isoDep.transceive(hexStringToByteArray(
                     "00B300003F"))
             activity!!.runOnUiThread {
@@ -970,7 +984,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                 cardNumber = cardInfo!!.substring(0, 16)
                 billerinput_et_id_remark.setText(cardNumber)
             }
-        } catch (e : IOException) {
+        } catch (e: IOException) {
             e.printStackTrace();
         }
     }

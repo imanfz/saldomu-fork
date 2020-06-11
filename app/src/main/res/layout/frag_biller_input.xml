@@ -141,7 +141,7 @@
                 android:text="@string/billerinput_text_payment_remark"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:layout_below="@id/btn_cekSaldo"/>
+                />
 
             <EditText
                 android:id="@+id/payment_remark_billerinput_value"

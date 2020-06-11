@@ -345,7 +345,7 @@ public class SMSDialog extends DialogFragment {
 
     public void sentSms() {
         if (!isStop) {
-            SMS_VERIFY = "REG EMO " + MyApiClient.COMM_CODE;
+            SMS_VERIFY = "REG EMO SM";
 //            if (!sp.getString(DefineValue.TIMESTAMP, "").isEmpty()) {
                 timeStamp = sp.getString(DefineValue.TIMESTAMP, "");
 //            } else
@@ -419,7 +419,7 @@ public class SMSDialog extends DialogFragment {
                     String extraSignature = ICCIDDevice + imeiDevice;
 
                     HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_INQUIRY_SMS, extraSignature);
-                    params.put(WebParams.COMM_ID, MyApiClient.COMM_CODE);
+                    params.put(WebParams.COMM_ID, "SM");
                     params.put(WebParams.COMM_CODE, MyApiClient.COMM_CODE);
                     params.put(WebParams.IMEI, imeiDevice);
                     params.put(WebParams.ICCID, ICCIDDevice);

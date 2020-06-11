@@ -140,7 +140,7 @@ android {
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 84
+            versionCode = 85
             versionName "4.2"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
@@ -150,7 +150,6 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.prodKey
         }
@@ -292,5 +291,7 @@ dependencies {
     //gifImageView
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
     implementation 'com.felipecsl:gifimageview:2.2.0'
+
+    implementation 'com.github.gcacace:signature-pad:1.2.1'
 }
 apply plugin: 'com.google.gms.google-services'

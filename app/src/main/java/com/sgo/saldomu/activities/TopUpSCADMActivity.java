@@ -24,6 +24,7 @@ public class TopUpSCADMActivity extends BaseActivity {
     FragmentManager fragmentManager;
     Fragment mContent;
     Fragment newFragment = null;
+    public static String TOPUP = "topup";
 
     @Override
     protected int getLayoutResource() {

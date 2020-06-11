@@ -658,7 +658,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     }
 
     private void getSMSContent() {
-        String SMS_VERIFY = "REG EMO " + MyApiClient.COMM_CODE;
+        String SMS_VERIFY = "REG EMO SM";
         SMSclass smSclass = new SMSclass(getApplicationContext());
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
         sp.edit().putString(DefineValue.TIMESTAMP, timeStamp).apply();
