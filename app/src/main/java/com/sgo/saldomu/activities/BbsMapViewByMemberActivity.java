@@ -18,10 +18,11 @@ import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -45,12 +46,13 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.interfaces.ObjListeners;
@@ -74,8 +76,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private SecurePreferences sp;
-    private String title;
-    String txId, memberPhone, shopId, categoryName, amount, cancelFee;
+    String txId, memberPhone, shopId, categoryName, amount, cancelFee, urlProfilePicture;
     SupportMapFragment mapFrag;
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
@@ -83,13 +84,14 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     Double memberLatitude, memberLongitude, agentLatitude, agentLongitude, benefLatitude, benefLongitude;
     ShopDetail shopDetail;
     private GoogleMap globalMap;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvDurasi, tvAcctLabel, tvAcctName;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvETA, tvAcctLabel, tvAcctName;
     Boolean isFirstLoad = true, isRunning = false, isInquiryRoute = false;
     int distanceBetween = 0;
     String gcmId, emoMemberId;
-    Button btnCall, btnCancel;
+    MaterialRippleLayout btnCall, btnCancel;
     ProgressDialog progdialog, progdialog2;
     Intent intentData;
+    ImageView ivPhoto;
 
     private int timeDelayed = 30000;
 
@@ -108,6 +110,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             handler.postDelayed(this, timeDelayed);
         }
     };
+    private Bitmap bitmap;
+    private RoundImageTransformation roundedImage;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,16 +145,14 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         emoMemberId = sp.getString(DefineValue.MEMBER_ID, "");
         gcmId = "";
-        tvCategoryName = (TextView) findViewById(R.id.tvCategoryName);
-        tvMemberName = (TextView) findViewById(R.id.tvMemberName);
-        tvAmount = (TextView) findViewById(R.id.tvAmount);
-        tvDurasi = (TextView) findViewById(R.id.tvDurasi);
-        //tvShop                  = (TextView) findViewById(R.id.tvShop);
-        //btnDone                 = (Button) findViewById(R.id.btnDone);
-        btnCall = (Button) findViewById(R.id.btnCall);
-        btnCancel = (Button) findViewById(R.id.btnCancel);
-        tvAcctLabel = (TextView) findViewById(R.id.tvAcctLabel);
-        tvAcctName = (TextView) findViewById(R.id.tvAcctName);
+        tvMemberName = findViewById(R.id.tvName);
+        tvAmount = findViewById(R.id.tvAmount);
+        tvETA = findViewById(R.id.tvETA);
+        btnCall = findViewById(R.id.btnCall);
+        btnCancel = findViewById(R.id.btnCancel);
+        tvAcctLabel = findViewById(R.id.tvAcctLabel);
+        tvAcctName = findViewById(R.id.tvAcctName);
+        ivPhoto = findViewById(R.id.ivPhoto);
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.agentMap);
         mapFrag.getMapAsync(this);
@@ -241,11 +243,13 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                 }
         );
 
-        title = getString(R.string.menu_item_title_map_member);
+        String title = categoryName;
         initializeToolbar(title);
 
-        TextView t = (TextView) findViewById(R.id.name);
-        t.setText(Html.fromHtml(getString(R.string.bbs_trx_detail_member)));
+//        TextView t = (TextView) findViewById(R.id.name);
+//        t.setText(Html.fromHtml(getString(R.string.bbs_trx_detail_member)));
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
+        roundedImage = new RoundImageTransformation(bitmap);
     }
 
     @Override
@@ -543,8 +547,14 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
                                 tvMemberName.setText(response.getString(WebParams.SHOP_NAME));
                                 memberPhone = NoHPFormat.formatTo08(response.getString(WebParams.SHOP_PHONE));
+                                urlProfilePicture = response.getString(WebParams.PROFILE_PICTURE);
+                                if (urlProfilePicture != null && urlProfilePicture.isEmpty()) {
+                                    GlideManager.sharedInstance().initializeGlide(BbsMapViewByMemberActivity.this, R.drawable.user_unknown_menu, roundedImage, ivPhoto);
+                                } else {
+                                    GlideManager.sharedInstance().initializeGlide(BbsMapViewByMemberActivity.this, urlProfilePicture, roundedImage, ivPhoto);
+                                }
                                 //tvShop.setText(response.getString(WebParams.SHOP_NAME));
-                                tvCategoryName.setText(categoryName);
+//                                tvCategoryName.setText(categoryName);
                                 tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(amount));
 
                                 if (response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA)) {
@@ -906,17 +916,14 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             query.put("origin", dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString());
             query.put("destination", targetLatitude.toString() + "," + targetLongitude.toString());
 
-            getGoogleMapRoute(query, 0);
+            getGoogleMapRoute(query);
             return null;
         }
 
     }
 
-    public void getGoogleMapRoute(
-//            String tempParams
-            HashMap<String, Object> query, final int idx) {
-        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
-//                        + "?" + tempParams,
+    public void getGoogleMapRoute(HashMap<String, Object> query) {
+        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query, 
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {
@@ -944,7 +951,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    tvDurasi.setText(parseDuration);
+                                    tvETA.setText(getString(R.string.estimated_time_arrived, parseDuration));
                                 }
                             });
 

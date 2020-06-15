@@ -1588,4 +1588,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="next_visit">Datang Kembali</string>
     <string name="signature_cash_in">Tanda Tangan Penyetor</string>
     <string name="put_a_signature">Bubuhkan Tanda Tangan</string>
+
+    <string name="estimated_time_arrived">Tiba pada %1$s menit</string>
 </resources>
