@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,9 +15,11 @@ import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.TopUpSCADMActivity;
 import com.sgo.saldomu.adapter.ListTopUpSCADMAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -42,7 +45,7 @@ import timber.log.Timber;
  * Created by Lenovo Thinkpad on 5/16/2018.
  */
 
-public class FragListTopUpSCADM extends BaseFragment {
+public class FragListTopUpSCADM extends BaseFragment implements ListTopUpSCADMAdapter.listener{
     View v;
     SecurePreferences sp;
     private ProgressDialog progdialog;
@@ -79,7 +82,7 @@ public class FragListTopUpSCADM extends BaseFragment {
     }
 
     private void initializeAdapter() {
-        listTopUpSCADMAdapter = new ListTopUpSCADMAdapter(scadmCommunityModelArrayList,getActivity());
+        listTopUpSCADMAdapter = new ListTopUpSCADMAdapter(scadmCommunityModelArrayList,getActivity(), this);
         recyclerView.setAdapter(listTopUpSCADMAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
     }
@@ -174,5 +177,21 @@ public class FragListTopUpSCADM extends BaseFragment {
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
+    }
+
+
+    @Override
+    public void onClick(SCADMCommunityModel item) {
+        Bundle bundle = new Bundle();
+        bundle.putString(DefineValue.COMMUNITY_NAME,item.getComm_name());
+        bundle.putString(DefineValue.COMM_ID_SCADM,item.getComm_id());
+        bundle.putString(DefineValue.COMMUNITY_CODE,item.getComm_code());
+        bundle.putString(DefineValue.MEMBER_CODE,item.getMember_code());
+        bundle.putString(DefineValue.API_KEY,item.getApi_key());
+        bundle.putString(DefineValue.MEMBER_ID_SCADM,item.getMember_id_scadm());
+        DataManager.getInstance().setSCADMCommMod(item);
+        Fragment frag = new FragTopUpSCADM();
+        frag.setArguments(bundle);
+        SwitchFragmentTop(frag, TopUpSCADMActivity.TOPUP, true);
     }
 }

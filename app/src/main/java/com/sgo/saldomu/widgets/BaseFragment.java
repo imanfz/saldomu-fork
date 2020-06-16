@@ -93,6 +93,22 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
+    protected void SwitchFragmentTop(Fragment mFragment, String fragName, Boolean isBackstack){
+        ToggleKeyboard.hide_keyboard(getActivity());
+        FragmentTransaction fragManager = getActivity().getSupportFragmentManager().beginTransaction();
+        fragManager.replace(R.id.topup_scadm_content, mFragment, fragName)
+                .commitAllowingStateLoss();
+
+        if (isBackstack) {
+            Timber.d("backstack");
+            fragManager.addToBackStack(fragName);
+        } else {
+            Timber.d("bukan backstack");
+
+        }
+
+    }
+
     ProgressDialog getProgDialog() {
         if (progressDialog == null)
             progressDialog = DefinedDialog.CreateProgressDialog(getActivity(),getString(R.string.please_wait));

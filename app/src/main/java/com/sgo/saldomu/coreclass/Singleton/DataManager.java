@@ -28,7 +28,7 @@ public class DataManager {
         return singleton;
     }
 
-    public void setSACDMCommMod(SCADMCommunityModel item){
+    public void setSCADMCommMod(SCADMCommunityModel item){
         this.item = item;
     }
 

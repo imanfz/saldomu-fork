@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.DenomSCADMActivity;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.SgoPlusWeb;
@@ -297,8 +298,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                                 } else {
                                     Timber.d("Error resendTokenSGOL:" + response.toString());
                                     code = response.getString(WebParams.ERROR_MESSAGE);
-
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                    showDialog(code);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -421,7 +421,8 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                 _amount = amount;
                 //    Log.d("onActivity result", "Biller Fragment result pin value");
                 sentInsertTransTopup(value_pin, _amount);
-            }
+            }else
+                backToTopUpSACDM();
         }
     }
 
@@ -583,12 +584,6 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
-    @Override
-    public void onOkButton() {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        fm.popBackStack();
-    }
-
     private void showDialog(String msg) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
@@ -610,10 +605,19 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                //SgoPlusWeb.this.finish();
+                getActivity().onBackPressed();
             }
         });
 
         dialog.show();
+    }
+
+    @Override
+    public void onOkButton() {
+        backToTopUpSACDM();
+    }
+
+    void backToTopUpSACDM() {
+        getFragManager().popBackStack(TopUpSCADMActivity.TOPUP, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

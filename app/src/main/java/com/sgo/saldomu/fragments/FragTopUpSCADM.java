@@ -466,8 +466,9 @@ public class FragTopUpSCADM extends BaseFragment {
 //        bundle1.putString(DefineValue.PRODUCT_NAME, spinnerContentStrings.get(spinner_bank_product.getSelectedItemPosition()));
         Fragment mFrag = new FragTopUpConfirmSCADM();
         mFrag.setArguments(bundle1);
+        SwitchFragmentTop(mFrag, TopUpSCADMActivity.TOPUP, true);
 
-        TopUpSCADMActivity ftf = (TopUpSCADMActivity) getActivity();
-        ftf.switchContent(mFrag, "Konfirmasi Tambah Saldo", true);
+//        TopUpSCADMActivity ftf = (TopUpSCADMActivity) getActivity();
+//        ftf.switchContent(mFrag, TopUpSCADMActivity.TOPUP, true);
     }
 }

@@ -45,7 +45,7 @@
                 android:layout_marginBottom="15dp">
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/preview_comm_name"
+                    android:text="@string/community"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold"
@@ -112,7 +112,7 @@
                 android:id="@+id/frag_denom_toogle_denom_list">
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Denom List"
+                    android:text="@string/item_list"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold"

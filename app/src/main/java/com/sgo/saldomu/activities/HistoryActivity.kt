@@ -427,6 +427,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.NAME_BENEF, response.benef_acct_name)
         args.putString(DefineValue.PRODUCT_NAME, response.product_name)
         args.putString(DefineValue.MEMBER_SHOP_PHONE, response.member_shop_phone)
+        args.putString(DefineValue.MEMBER_SHOP_NAME, response.member_shop_name)
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.buss_scheme_code)
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.buss_scheme_name)
         args.putBoolean(DefineValue.IS_MEMBER_CTA, this.isMemberCTA!!)
