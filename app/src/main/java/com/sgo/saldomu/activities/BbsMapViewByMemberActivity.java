@@ -923,7 +923,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     }
 
     public void getGoogleMapRoute(HashMap<String, Object> query) {
-        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query, 
+        RetrofitService.getInstance().QueryRequestSSL(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE, query,
                 new ObjListeners() {
                     @Override
                     public void onResponses(JSONObject response) {

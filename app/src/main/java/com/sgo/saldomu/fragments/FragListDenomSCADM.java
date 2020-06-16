@@ -187,7 +187,7 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
         bundle.putString(DefineValue.COMMUNITY_ID, item.getComm_id());
         bundle.putString(DefineValue.MEMBER_CODE, item.getMember_code());
         DataManager.getInstance().setSACDMCommMod(item);
-        Fragment frag = new FragmentDenom();
+        Fragment frag = new InputMemberCode();
         frag.setArguments(bundle);
         SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
 
