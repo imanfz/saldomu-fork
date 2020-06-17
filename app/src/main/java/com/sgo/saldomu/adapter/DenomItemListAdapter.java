@@ -4,9 +4,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,6 +29,8 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
         void onClick(int pos);
 
         void onDelete(int pos);
+
+        void onChangeQty(int pos, String qty);
     }
 
     public DenomItemListAdapter(Context _context, ArrayList<DenomListModel> itemList, listener listener, boolean isFragConfirm) {
@@ -56,13 +61,30 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
         holder.itemID.setText(itemList.get(position).getItemID());
         holder.itemName.setText(itemList.get(position).getItemName());
 
-        holder.inputDenom.setOnClickListener(new View.OnClickListener() {
+        holder.itemQty.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                listener.
-                        onClick(position);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                listener.onChangeQty(position,s.toString());
             }
         });
+
+//        holder.inputDenom.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                listener.
+//                        onClick(position);
+//            }
+//        });
 
         if (position == 0) {
             holder.border.setVisibility(View.VISIBLE);
@@ -77,6 +99,7 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
     class holder extends RecyclerView.ViewHolder {
 
         TextView itemName, itemID;
+        EditText itemQty;
         LinearLayout inputDenom;
         RecyclerView orderList;
         View border;
@@ -86,6 +109,7 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
             border = itemView.findViewById(R.id.border);
             itemName = itemView.findViewById(R.id.adapter_denom_item_name_field);
             itemID = itemView.findViewById(R.id.adapter_denom_item_id_field);
+            itemQty = itemView.findViewById(R.id.adapter_denom_item_et_qty);
             inputDenom = itemView.findViewById(R.id.adapter_denom_item_layout);
             orderList = itemView.findViewById(R.id.adapter_denom_item_list_order_list);
         }
