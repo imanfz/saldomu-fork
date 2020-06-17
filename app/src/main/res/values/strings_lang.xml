@@ -1621,10 +1621,12 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="next_visit">Next Visit</string>
     <string name="signature_cash_in">Signature</string>
     <string name="put_a_signature">Put a Signature</string>
-    
+
     <string name="estimated_time_arrived">Arrived in %1$s min</string>
     <string name="community_name">Community Name</string>
     <string name="item_list">Item List</string>
     <string name="customer_name">Customer Name</string>
     <string name="customer_phone">Customer Phone Number</string>
+
+    <string name="quantity">Qty</string>
 </resources>

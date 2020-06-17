@@ -131,6 +131,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                     bundle.putString(WebParams.BANK_GATEWAY, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankGateway());
                     bundle.putString(WebParams.BANK_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankCode());
                     bundle.putString(WebParams.PRODUCT_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getProductCode());
+                    bundle.putString(WebParams.MEMBER_REMARK, memberCode);
 
                     frag.setArguments(bundle);
 
@@ -357,6 +358,13 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
         itemListAdapter.notifyItemChanged(pos);
         itemListAdapter.notifyItemRangeChanged(pos, itemList.get(pos).getOrderList().size());
+    }
+
+    @Override
+    public void onChangeQty(int pos, String qty) {
+        ArrayList<DenomOrderListModel> orderList = new ArrayList<>();
+        orderList.add(new DenomOrderListModel(memberCode, qty));
+        itemList.get(pos).setOrderList(orderList);
     }
 
     private void showDialog(String msg) {
