@@ -66,7 +66,7 @@ import java.util.Iterator;
 
 import timber.log.Timber;
 
-public class FragmentDenomConfirm extends BaseFragment implements DenomItemListAdapter.listener, ReportBillerDialog.OnDialogOkCallback {
+public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
 
     TextView commCodeTextview, commNameTextview, memberCodeTextview, productBankTextview, costTextview, feeTextview, totalTextview;
     Button submitBtn;
@@ -115,6 +115,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
         bankCode = bundle.getString(WebParams.BANK_CODE, "");
         productCode = bundle.getString(WebParams.PRODUCT_CODE, "");
+        memberCode = bundle.getString(WebParams.MEMBER_REMARK, "");
 
         orderList = new ArrayList<>();
 
@@ -381,6 +382,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         params.put(WebParams.BANK_CODE, bankCode);
         params.put(WebParams.PRODUCT_CODE, productCode);
         params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
+        params.put(WebParams.MEMBER_REMARK, memberCode);
 
         Timber.d("isi params sent get denom invoke:" + params.toString());
 
@@ -748,7 +750,6 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             commName = obj.getComm_name();
             commCode = obj.getComm_code();
             commID = obj.getComm_id();
-            memberCode = obj.getMember_code();
             productName = resp.getString("product_name");
             if (productName.equalsIgnoreCase("MANDIRI SMS")) {
                 OTPlayout.setVisibility(View.VISIBLE);
@@ -812,16 +813,6 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                 backToDenomSACDM();
             }
         }
-    }
-
-    @Override
-    public void onClick(int pos) {
-
-    }
-
-    @Override
-    public void onDelete(int pos) {
-
     }
 
     @Override
