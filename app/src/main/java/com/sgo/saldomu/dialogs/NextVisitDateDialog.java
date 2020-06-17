@@ -73,7 +73,7 @@ public class NextVisitDateDialog extends DialogFragment {
                 Toast.makeText(getContext(), getContext().getString(R.string.please_choose_date), Toast.LENGTH_SHORT).show();
                 return;
             }
-            listener.onClick(this, tv_nextVisit.getText().toString());
+            listener.onClick(this, date_visit);
         });
 
         return v;
