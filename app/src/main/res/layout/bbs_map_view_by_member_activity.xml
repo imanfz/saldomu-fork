@@ -33,7 +33,7 @@
             android:id="@+id/llLegend"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:alpha="0.7"
             android:background="#FFFFFF"
@@ -47,8 +47,8 @@
 
                 <ImageView
                     android:id="@+id/imageView2"
-                    android:layout_width="70px"
-                    android:layout_height="70px"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@drawable/map_person"
                     tools:layout_editor_absoluteX="-71dp"
                     tools:layout_editor_absoluteY="320dp" />
@@ -57,15 +57,10 @@
                     android:id="@+id/textView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/imageView2"
-                    android:layout_alignParentTop="true"
-                    android:layout_toEndOf="@+id/imageView2"
-                    android:layout_toRightOf="@+id/imageView2"
                     android:text="@string/agent"
                     android:textColor="@color/orange_800"
                     tools:layout_editor_absoluteX="-27dp"
                     tools:layout_editor_absoluteY="329dp" />
-
 
             </LinearLayout>
 
@@ -77,8 +72,8 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="70px"
-                    android:layout_height="70px"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@drawable/search_location"
                     tools:layout_editor_absoluteX="-71dp"
                     tools:layout_editor_absoluteY="320dp" />
@@ -87,135 +82,165 @@
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/imageView3"
-                    android:layout_alignParentTop="true"
-                    android:layout_toEndOf="@+id/imageView3"
-                    android:layout_toRightOf="@+id/imageView3"
                     android:text="@string/bbs_you"
                     android:textColor="@color/orange_800"
                     tools:layout_editor_absoluteX="-27dp"
                     tools:layout_editor_absoluteY="329dp" />
-
-
             </LinearLayout>
-
         </LinearLayout>
-
     </fragment>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#ffffff"
         android:orientation="vertical"
         android:id="@+id/linearLayout2"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         app:layout_constraintHorizontal_bias="0.0">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:paddingLeft="10dp"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <!-- TableRow android:layout_marginTop="10dip">
-
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/ivPPMember"
-                    android:src="@drawable/user_unknown_menu"
-                    android:layout_weight="1"
-                    android:paddingLeft="10dp"
-                    />
-
-                <RatingBar
-                    android:id="@+id/ratingBar"
-                    style="?android:attr/ratingBarStyleIndicator"
+            <ImageView
+                android:id="@+id/ivPhoto"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/circle_border_orange_dark"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:stepSize="0.5"
-                    android:rating="3.5"
-                    android:layout_weight="1"
-                    />
+                    android:text="John Doe"
+                    android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tvETA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Arrived in a few min"/>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="10dp"
+                        android:src="@drawable/ic_clock"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/llButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            </TableRow -->
+            <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/btnCancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ripple_effect"
+                android:layout_weight="1"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                app:mrl_rippleOverlay="true">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="15dp"
+                    android:gravity="center"
+                    android:background="@drawable/background_outline"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_x"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cancel"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="#99000000"/>
+                </LinearLayout>
+            </com.balysv.materialripple.MaterialRippleLayout>
 
-            <TableRow android:layout_marginTop="10dip">
+            <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/btnCall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ripple_effect"
+                android:layout_weight="1"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                app:mrl_rippleOverlay="true">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="15dp"
+                    android:gravity="center"
+                    android:background="@drawable/background_outline"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_phone"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/call"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/colorPrimary"/>
+                </LinearLayout>
+            </com.balysv.materialripple.MaterialRippleLayout>
+        </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="@string/category"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:paddingLeft="10dp"></TextView>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:id="@+id/tvCategoryName"
-                    android:text=""
-                    android:layout_weight="1"
-                    android:textSize="14sp"></TextView>
-
-            </TableRow>
-
-            <TableRow android:layout_marginTop="10dip">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="@string/agent_name"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:paddingLeft="10dp"></TextView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text=""
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:id="@+id/tvMemberName"></TextView>
-
-            </TableRow>
-
-            <TableRow android:layout_marginTop="10dip">
+            <TableRow>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="@string/amount"
                     android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:paddingLeft="10dp"></TextView>
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:text=""
                     android:layout_weight="1"
+                    android:gravity="end"
                     android:textSize="14sp"
-                    android:id="@+id/tvAmount"></TextView>
+                    android:id="@+id/tvAmount" />
 
             </TableRow>
 
@@ -226,55 +251,23 @@
                     android:id="@+id/tvAcctLabel"
                     android:text=""
                     android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:paddingLeft="10dp"></TextView>
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:text=""
+                    android:gravity="end"
                     android:layout_weight="1"
                     android:textSize="14sp"
-                    android:id="@+id/tvAcctName"></TextView>
-
-            </TableRow>
-
-
-
-            <TableRow
-                android:layout_marginTop="10dip">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="@string/duration"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:paddingLeft="10dp"></TextView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text=""
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:id="@+id/tvDurasi"></TextView>
+                    android:id="@+id/tvAcctName" />
 
             </TableRow>
         </TableLayout>
-
-        <LinearLayout
-            android:layout_below="@+id/llAgentShop"
-            android:id="@+id/llButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
-            android:orientation="horizontal">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/btnCancel"
-                android:text="@string/cancel" />
-        </LinearLayout>
-
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

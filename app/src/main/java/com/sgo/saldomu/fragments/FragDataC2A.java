@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,11 +20,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.BBSCommBenef;
 import com.sgo.saldomu.R;
@@ -36,15 +42,19 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place;
-import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
+import com.sgo.saldomu.widgets.ProgressRequestBody;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,6 +67,9 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import timber.log.Timber;
 
 public class FragDataC2A extends BaseFragment {
@@ -94,7 +107,11 @@ public class FragDataC2A extends BaseFragment {
     public Boolean isUpdate = false;
     AutoCompleteTextView city_textview_autocomplete;
     private Integer CityAutocompletePos = -1;
-
+    SignaturePad signaturePad;
+    ImageButton ibRefresh;
+    Boolean signed = false;
+    File photoFile;
+    MultipartBody.Part photoFilePart;
 
     @Nullable
     @Override
@@ -130,6 +147,8 @@ public class FragDataC2A extends BaseFragment {
         layout_dob = v.findViewById(R.id.layout_tanggal_lahir);
         city_textview_autocomplete = v.findViewById(R.id.mandiriLKD_pob);
         et_sumberdana = v.findViewById(R.id.et_sumber_dana);
+        signaturePad = v.findViewById(R.id.signature_pad);
+        ibRefresh = v.findViewById(R.id.ib_refresh);
 
         bundle = getArguments();
         if (bundle != null) {
@@ -240,6 +259,23 @@ public class FragDataC2A extends BaseFragment {
         sp_sumberdana.setAdapter(spinAdapter);
         sp_sumberdana.setOnItemSelectedListener(spinnerSumberDana);
 
+        ibRefresh.setOnClickListener(v -> signaturePad.clear());
+        signaturePad.setOnSignedListener(new SignaturePad.OnSignedListener() {
+            @Override
+            public void onStartSigning() {
+                signed = true;
+            }
+
+            @Override
+            public void onSigned() {
+
+            }
+
+            @Override
+            public void onClear() {
+                signed = false;
+            }
+        });
         btn_submit.setOnClickListener(submitlistener);
         btn_cancel.setOnClickListener(cancellistener);
 
@@ -271,87 +307,157 @@ public class FragDataC2A extends BaseFragment {
     private Button.OnClickListener submitlistener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (inputvalidation()) {
+            if (inputValidation()) {
 //                birthplace_id = list_bbs_birth_place.get(CityAutocompletePos).getBirthPlace_id();
-                sendData();
+                setSignaturePhoto();
             }
         }
     };
+
+    private void setSignaturePhoto() {
+        Bitmap signatureBitmap = signaturePad.getSignatureBitmap();
+        if (addJpgSignatureToGallery(signatureBitmap)) {
+            sendData();
+        } else {
+            Toast.makeText(getActivity(), "Unable to store the signature", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean addJpgSignatureToGallery(Bitmap signature) {
+        try {
+            File photo = new File(getAlbumStorageDir("SignaturePad"),
+                    String.format("Signature_%d.jpg", System.currentTimeMillis()));
+            saveBitmapToJPG(signature, photo);
+            scanMediaFile(photo);
+            photoFile = photo;
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void scanMediaFile(File photo) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri contentUri = Uri.fromFile(photo);
+        mediaScanIntent.setData(contentUri);
+        getActivity().sendBroadcast(mediaScanIntent);
+    }
+
+    private void saveBitmapToJPG(Bitmap bitmap, File photo) {
+        try {
+            OutputStream stream = new FileOutputStream(photo);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private File getAlbumStorageDir(String albumName) {
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES
+        ), albumName);
+        if (!file.mkdirs()) {
+            Timber.e("Directory not created");
+        }
+        return file;
+    }
 
     public void sendData() {
         progressDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
         progressDialog.show();
         try {
             extraSignature = tx_id + sp.getString(DefineValue.MEMBER_ID, "") + custIDtypes;
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_SEND_DATA_LKD, extraSignature);
+            HashMap<String, RequestBody> params = RetrofitService.getInstance().getSignature2(MyApiClient.LINK_BBS_SEND_DATA_LKD, extraSignature);
 
+            String transferTo;
             if (isOwner) {
-                params.put(WebParams.TRANSFER_TO, "S");
+                transferTo = "S";
             } else {
-                params.put(WebParams.TRANSFER_TO, "O");
-                params.put(WebParams.CUST_BIRTH_PLACE, city_textview_autocomplete.getText().toString());
-                params.put(WebParams.CUST_BIRTH_DATE, date_dob);
+                transferTo = "O";
+                RequestBody reqCustBirthPlace = RequestBody.create(MediaType.parse("text/plain"),
+                        city_textview_autocomplete.getText().toString());
+                RequestBody reqCustBirthDate = RequestBody.create(MediaType.parse("text/plain"),
+                        date_dob);
+                params.put(WebParams.CUST_BIRTH_PLACE, reqCustBirthPlace);
+                params.put(WebParams.CUST_BIRTH_DATE, reqCustBirthDate);
             }
 
-            params.put(WebParams.CUST_NAME, et_name.getText().toString());
-            params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.TX_ID, tx_id);
-            params.put(WebParams.MEMBER_ID, memberIDLogin);
-            params.put(WebParams.CUST_PHONE, et_noHp.getText().toString());
-            params.put(WebParams.CUST_ADDRESS, et_address.getText().toString());
-            params.put(WebParams.CUST_ID_TYPE, custIDtypes);
-            params.put(WebParams.CUST_ID_NUMBER, et_noID.getText().toString());
-            if (sumberdana.equalsIgnoreCase("LAINNYA")) {
-                params.put(WebParams.SOURCE_OF_FUND, et_sumberdana.getText().toString());
-            } else params.put(WebParams.SOURCE_OF_FUND, sumberdana);
+            if (sumberdana.equalsIgnoreCase("LAINNYA"))
+                sumberdana = et_sumberdana.getText().toString();
+
+            RequestBody reqTransferTo = RequestBody.create(MediaType.parse("text/plain"),
+                    transferTo);
+            RequestBody reqCustName = RequestBody.create(MediaType.parse("text/plain"),
+                    et_name.getText().toString());
+            RequestBody reqUserId = RequestBody.create(MediaType.parse("text/plain"),
+                    userPhoneID);
+            RequestBody reqTxId = RequestBody.create(MediaType.parse("text/plain"),
+                    tx_id);
+            RequestBody reqMemberId = RequestBody.create(MediaType.parse("text/plain"),
+                    memberIDLogin);
+            RequestBody reqCustPhone = RequestBody.create(MediaType.parse("text/plain"),
+                    et_noHp.getText().toString());
+            RequestBody reqCustAddress = RequestBody.create(MediaType.parse("text/plain"),
+                    et_address.getText().toString());
+            RequestBody reqCustIdType = RequestBody.create(MediaType.parse("text/plain"),
+                    custIDtypes);
+            RequestBody reqCustIdNumber = RequestBody.create(MediaType.parse("text/plain"),
+                    et_noID.getText().toString());
+            RequestBody reqSourceOfFund = RequestBody.create(MediaType.parse("text/plain"),
+                    sumberdana);
+
+            params.put(WebParams.TRANSFER_TO, reqTransferTo);
+            params.put(WebParams.CUST_NAME, reqCustName);
+            params.put(WebParams.USER_ID, reqUserId);
+            params.put(WebParams.TX_ID, reqTxId);
+            params.put(WebParams.MEMBER_ID, reqMemberId);
+            params.put(WebParams.CUST_PHONE, reqCustPhone);
+            params.put(WebParams.CUST_ADDRESS, reqCustAddress);
+            params.put(WebParams.CUST_ID_TYPE, reqCustIdType);
+            params.put(WebParams.CUST_ID_NUMBER, reqCustIdNumber);
+            params.put(WebParams.SOURCE_OF_FUND, reqSourceOfFund);
+
+            RequestBody reqFile = new ProgressRequestBody(photoFile, percentage -> Timber.d("Percentage : %s", percentage));
+            photoFilePart = MultipartBody.Part.createFormData(WebParams.SIGN, photoFile.getName(), reqFile);
 
             Timber.d("params bbs send data : ", params.toString());
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_SEND_DATA_LKD, params,
-                    new ObjListeners() {
-                        @Override
-                        public void onResponses(JSONObject response) {
-                            try {
-                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("response bbs send data : ", response.toString());
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    changeToBBSCashInConfirm(response.getString(WebParams.ADMIN_FEE), response.getString(WebParams.AMOUNT), response.getString(WebParams.TOTAL_AMOUNT));
+            RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_BBS_SEND_DATA_LKD, params, photoFilePart,
+                    response -> {
+                        try {
+                            jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
+                            JSONObject jsonObject = new JSONObject(response.toString());
+                            String code = jsonObject.getString(WebParams.ERROR_CODE);
+                            Timber.d("response bbs send data : ", jsonObject.toString());
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                changeToBBSCashInConfirm(jsonObject.getString(WebParams.ADMIN_FEE), jsonObject.getString(WebParams.AMOUNT), jsonObject.getString(WebParams.TOTAL_AMOUNT));
 
-                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
-                                } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
-                                    final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-                                } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
-                                    Timber.d("isi error bbs send data:" + response.toString());
-                                    String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                                    Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                Timber.d("isi response autologout:" + response.toString());
+                                String message = jsonObject.getString(WebParams.ERROR_MESSAGE);
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(), message);
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            } else {
+                                Timber.d("isi error bbs send data:" + response.toString());
+                                String code_msg = jsonObject.getString(WebParams.ERROR_MESSAGE);
+                                Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
                             }
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-                            btn_submit.setEnabled(true);
-                        }
-
-                        @Override
-                        public void onComplete() {
                             btn_submit.setEnabled(true);
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     });
         } catch (Exception e) {
@@ -420,7 +526,7 @@ public class FragDataC2A extends BaseFragment {
     };
 
 
-    private boolean inputvalidation() {
+    private boolean inputValidation() {
         int compare = 100;
         if (date_dob != null) {
             Date dob = null;
@@ -447,7 +553,7 @@ public class FragDataC2A extends BaseFragment {
             et_noID.requestFocus();
             et_noID.setError("NIK Anda kurang lengkap!");
             return false;
-        }else if (layout_sender.getVisibility() == View.VISIBLE) {
+        } else if (layout_sender.getVisibility() == View.VISIBLE) {
             if (et_name.getText().toString().length() == 0) {
                 et_name.requestFocus();
                 et_name.setError("Nama dibutuhkan!");
@@ -512,9 +618,12 @@ public class FragDataC2A extends BaseFragment {
             et_noHp.requestFocus();
             et_noHp.setError("No. Handphone minimal 10 karakter!");
             return false;
-        }else if (et_sumberdana.getVisibility() == View.VISIBLE && et_sumberdana.getText().toString().length() == 0) {
+        } else if (et_sumberdana.getVisibility() == View.VISIBLE && et_sumberdana.getText().toString().length() == 0) {
             et_sumberdana.requestFocus();
             et_sumberdana.setError("Sumber Dana dibutuhkan!");
+            return false;
+        } else if (!signed) {
+            Toast.makeText(getActivity(), getString(R.string.put_a_signature), Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

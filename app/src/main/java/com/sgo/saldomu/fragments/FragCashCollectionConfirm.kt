@@ -471,6 +471,8 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         args.putString(DefineValue.BUSS_SCHEME_CODE, response?.buss_scheme_code)
         args.putString(DefineValue.BUSS_SCHEME_NAME, response?.buss_scheme_name)
         args.putString(DefineValue.BENEF_PRODUCT_CODE, benefProductValueCode)
+        args.putString(DefineValue.MEMBER_SHOP_NAME, response?.member_shop_name)
+        args.putString(DefineValue.MEMBER_SHOP_PHONE, response?.member_shop_phone)
 
         dialogReport.arguments = args
         dialogReport.show(activity!!.supportFragmentManager, ReportBillerDialog.TAG)

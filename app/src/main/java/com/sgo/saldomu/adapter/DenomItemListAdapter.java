@@ -15,22 +15,23 @@ import com.sgo.saldomu.R;
 
 import java.util.ArrayList;
 
-public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdapter.holder>{
+public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdapter.holder> {
 
     Context context;
     ArrayList<DenomListModel> itemList;
     listener listener;
     boolean isFragConfirm;
 
-    public interface listener{
+    public interface listener {
         void onClick(int pos);
+
         void onDelete(int pos);
     }
 
-    public DenomItemListAdapter(Context _context, ArrayList<DenomListModel> itemList, listener listener, boolean isFragConfirm){
+    public DenomItemListAdapter(Context _context, ArrayList<DenomListModel> itemList, listener listener, boolean isFragConfirm) {
         this.context = _context;
         this.itemList = itemList;
-        this.listener=listener;
+        this.listener = listener;
         this.isFragConfirm = isFragConfirm;
     }
 
@@ -58,13 +59,14 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
         holder.inputDenom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onClick(position);
+                listener.
+                        onClick(position);
             }
         });
 
-        if (position == 0){
+        if (position == 0) {
             holder.border.setVisibility(View.VISIBLE);
-        }else holder.border.setVisibility(View.GONE);
+        } else holder.border.setVisibility(View.GONE);
     }
 
     @Override
@@ -72,7 +74,7 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
         return itemList.size();
     }
 
-    class holder extends RecyclerView.ViewHolder{
+    class holder extends RecyclerView.ViewHolder {
 
         TextView itemName, itemID;
         LinearLayout inputDenom;

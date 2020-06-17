@@ -1592,7 +1592,12 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="please_input_description">Mohon input deskripsi</string>
 
     <string name="signature">Tanda Tangan</string>
+    <string name="signature_cash_in">Tanda Tangan Penyetor</string>
     <string name="put_a_signature">Bubuhkan Tanda Tangan</string>
+
+    <string name="estimated_time_arrived">Tiba pada %1$s menit</string>
     <string name="community_name">Komunitas</string>
     <string name="item_list">Daftar Barang</string>
+    <string name="customer_name">Nama Pelanggan</string>
+    <string name="customer_phone">No. HP Pelanggan</string>
 </resources>

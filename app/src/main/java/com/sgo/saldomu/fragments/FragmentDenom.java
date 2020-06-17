@@ -68,7 +68,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     ArrayList<DenomBankListData> bankDataList;
     SCADMCommunityModel obj;
 
-    String memberCode, commCode, memberId, commId;
+    String memberCode;
 
     @Nullable
     @Override
@@ -90,6 +90,9 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Bundle bundle = getArguments();
+
+        memberCode = bundle.getString(DefineValue.MEMBER_CODE, "");
         itemList = new ArrayList<>();
         itemListString = new ArrayList<>();
         itemListAdapter = new DenomItemListAdapter(getActivity(), itemList, this, false);
@@ -108,7 +111,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
         CommCodeTextview.setText(obj.getComm_code());
         CommNameTextview.setText(obj.getComm_name());
-        MemberCodeTextview.setText(obj.getMember_code());
+        MemberCodeTextview.setText(memberCode);
 
         bankProductList = new ArrayList<>();
         bankDataList = new ArrayList<>();
@@ -116,11 +119,6 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         bankProductAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, bankProductList);
         bankProductAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ProductBankSpinner.setAdapter(bankProductAdapter);
-
-        Bundle bundle = getArguments();
-
-        commCode = bundle.getString(DefineValue.COMMUNITY_CODE, "");
-        commId = bundle.getString(DefineValue.COMMUNITY_ID, "");
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,6 +259,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_LIST, extraSignature);
 
             params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.MEMBER_REMARK, memberCode);
             params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
 
             Timber.d("isi params sent get denom list:" + params.toString());

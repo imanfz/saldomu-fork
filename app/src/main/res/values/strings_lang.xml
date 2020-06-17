@@ -1619,13 +1619,17 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="insert_16_card_number">Enter 16 digit card number</string>
 
     <string name="next_visit">Next Visit</string>
-
     <string name="no_item_selected">No Item Selected</string>
     <string name="please_choose_date">Please Choose Date</string>
     <string name="please_input_description">Please Input Description</string>
 
     <string name="signature">Signature</string>
+    <string name="signature_cash_in">Signature</string>
     <string name="put_a_signature">Put a Signature</string>
+    
+    <string name="estimated_time_arrived">Arrived in %1$s min</string>
     <string name="community_name">Community Name</string>
     <string name="item_list">Item List</string>
+    <string name="customer_name">Customer Name</string>
+    <string name="customer_phone">Customer Phone Number</string>
 </resources>

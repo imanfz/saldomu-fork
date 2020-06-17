@@ -34,8 +34,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textColor="@color/colorSecondaryDark"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginLeft="15dp"/>
+                    android:layout_marginTop="4dp"/>
 
             </LinearLayout>
 
@@ -57,8 +56,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textColor="@color/colorSecondaryDark"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginLeft="15dp"/>
+                    android:layout_marginTop="4dp"/>
 
             </LinearLayout>
 
@@ -80,8 +78,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textColor="@color/colorSecondaryDark"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginLeft="15dp"/>
+                    android:layout_marginTop="4dp"/>
 
             </LinearLayout>
 
@@ -92,7 +89,7 @@
                 android:layout_marginBottom="15dp">
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/billerinput_text_payment_options"
+                    android:text="@string/bank_product"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold"
@@ -103,8 +100,7 @@
                     android:spinnerMode="dropdown"
                     android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
                     android:id="@+id/frag_denom_bank_product_spinner"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="15dp"/>
+                    android:layout_gravity="center_horizontal"/>
 
             </LinearLayout>
 
@@ -130,7 +126,6 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="15dp"
                 android:paddingTop="15dp"
-                android:paddingLeft="10dp"
                 android:visibility="visible">
 
             </android.support.v7.widget.RecyclerView>

@@ -49,7 +49,6 @@
         android:theme="@style/Theme.MyTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:label,allowBackup,theme">
-        <activity android:name=".activities.SignActivity"></activity>
         <activity android:name=".activities.OTPActivity" />
         <activity android:name=".activities.ForgotPin" />
         <activity

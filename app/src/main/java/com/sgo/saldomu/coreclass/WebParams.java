@@ -613,4 +613,6 @@ public class WebParams {
     public static String USER_EMAIL = "user_email";
     public static String SUMMARY = "summary";
 
+
+    public static String SIGN = "sign";
 }
