@@ -41,7 +41,8 @@ public class LocaleManager {
         Timber.d("Locale Manager IS BAHASA ===== "+isBahasa);
 
         if(!isBahasa){
-            language = DefineValue.LANGUAGE_CODE_ENG;
+//            language = DefineValue.LANGUAGE_CODE_ENG;
+            language = DefineValue.LANGUAGE_CODE_IND;
         }else{
             language = DefineValue.LANGUAGE_CODE_IND;
         }
@@ -75,7 +76,7 @@ public class LocaleManager {
         boolean isBahasa;
 
         if(localeKey.equals(DefineValue.LANGUAGE_CODE_ENG)){
-            isBahasa = false;
+            isBahasa = true;
         }else{
             isBahasa = true;
         }

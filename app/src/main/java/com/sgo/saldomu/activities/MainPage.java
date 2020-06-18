@@ -1128,11 +1128,11 @@ public class MainPage extends BaseActivity {
                 i = new Intent(this, Introduction.class);
                 break;
             case FIRST_SCREEN_SPLASHSCREEN:
-                if (LocaleManager.getLocale(getResources()).getLanguage().equals("in")) {
+//                if (LocaleManager.getLocale(getResources()).getLanguage().equals("in")) {
                     CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
-                } else {
-                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, false);
-                }
+//                } else {
+//                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, false);
+//                }
                 i = new Intent(this, SplashScreen.class);
                 break;
             default:

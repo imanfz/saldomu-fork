@@ -68,6 +68,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
+
 public class FragListInvoiceTagih extends BaseFragment {
     View view;
     SecurePreferences sp;
@@ -106,6 +107,7 @@ public class FragListInvoiceTagih extends BaseFragment {
     int total;
     List<BankCashoutModel> listBankCashOut = new ArrayList<>();
     BankCashoutAdapter adapter;
+    boolean isSearchVissible = false;
 
     @Nullable
     @Override
@@ -206,6 +208,7 @@ public class FragListInvoiceTagih extends BaseFragment {
                 }
             }
         });
+
         parseResponse();
     }
 
@@ -222,13 +225,29 @@ public class FragListInvoiceTagih extends BaseFragment {
         menu.findItem(R.id.notifications).setVisible(false);
         menu.findItem(R.id.settings).setVisible(false);
         menu.findItem(R.id.search).setVisible(true);
+        menu.findItem(R.id.cancel).setVisible(true);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         getActivity().invalidateOptionsMenu();
-        if (item.getItemId() == R.id.search)
-            searchLayout.setVisibility(View.VISIBLE);
+        if (item.getItemId() == R.id.search) {
+            isSearchVissible = !isSearchVissible;
+            searchLayout.setVisibility(isSearchVissible ? View.VISIBLE : View.GONE);
+            if (!isSearchVissible) {
+                search.getText().clear();
+            }
+        } else if (item.getItemId() == R.id.cancel) {
+            DataManager.getInstance().setListInvoice(invoiceDGIModelArrayList);
+
+            Fragment newFrag = new CancelInvoiceFragment();
+            Bundle bundle2 = new Bundle();
+            bundle2.putString(DefineValue.MEMBER_CODE, memberCode);
+            bundle2.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+            newFrag.setArguments(bundle2);
+            TagihActivity ftf = (TagihActivity) getActivity();
+            ftf.switchContent(newFrag, "Pembatalan Transaksi", true);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -622,5 +641,7 @@ public class FragListInvoiceTagih extends BaseFragment {
             Timber.d("httpclient:" + e.getMessage());
         }
     }
+
+
 
 }

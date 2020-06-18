@@ -1586,6 +1586,12 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="insert_16_card_number">Masukkan 16 angka nomor kartu</string>
 
     <string name="next_visit">Datang Kembali</string>
+
+    <string name="no_item_selected">Tidak ada item yang di pilih </string>
+    <string name="please_choose_date">Mohon input tanggal</string>
+    <string name="please_input_description">Mohon input deskripsi</string>
+
+    <string name="signature">Tanda Tangan</string>
     <string name="signature_cash_in">Tanda Tangan Penyetor</string>
     <string name="put_a_signature">Bubuhkan Tanda Tangan</string>
 
