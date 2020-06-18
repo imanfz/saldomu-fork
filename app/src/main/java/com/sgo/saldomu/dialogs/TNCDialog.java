@@ -1,25 +1,22 @@
 package com.sgo.saldomu.dialogs;
 
 import android.annotation.SuppressLint;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ClientCertRequest;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -36,10 +33,12 @@ public class TNCDialog extends DialogFragment {
     WebView webView;
     LinearLayout layout;
     ProgressBar progressBar;
+    CheckBox checkBox;
     public OnTapItemListener listener;
 
     public interface OnTapItemListener {
         void onSubmit(DialogFragment dialog);
+
         void onCancel(DialogFragment dialog);
     }
 
@@ -62,7 +61,12 @@ public class TNCDialog extends DialogFragment {
         layout = v.findViewById(R.id.content_layout);
         progressBar = v.findViewById(R.id.progress_bar_web);
         hideView();
-        CheckBox checkBox = v.findViewById(R.id.cb_termsncondition);
+        checkBox = v.findViewById(R.id.cb_termsncondition);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            initWebViewScrollListener();
+        }
+
         checkBox.setOnCheckedChangeListener((compoundButton, isCheck) -> {
             if (isCheck) {
                 enabledButton();
@@ -80,6 +84,19 @@ public class TNCDialog extends DialogFragment {
             Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
 
         return v;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void initWebViewScrollListener() {
+        checkBox.setEnabled(false);
+        webView.setOnScrollChangeListener((v12, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            int height = (int) Math.floor(webView.getContentHeight() * webView.getScale());
+            height -= (height * 0.017);
+            int webViewHeight = webView.getMeasuredHeight();
+            Timber.i(scrollY + webViewHeight + " = " + height);
+            if (scrollY + webViewHeight >= height)
+                checkBox.setEnabled(true);
+        });
     }
 
     @SuppressLint("SetJavaScriptEnabled")
