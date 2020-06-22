@@ -54,7 +54,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:gravity="left"
-            android:inputType="number"
             android:padding="3dip"
             android:textSize="18sp"/>
     </LinearLayout>
