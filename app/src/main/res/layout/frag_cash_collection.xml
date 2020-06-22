@@ -78,6 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
+                    android:layout_weight="1"
                     android:text="Budi"
                     android:textColor="@color/black" />
             </TableRow>
@@ -107,6 +108,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
+                    android:layout_weight="1"
                     android:text="Budi Jaya Abadi"
                     android:textColor="@color/black" />
             </TableRow>
@@ -136,6 +138,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
+                    android:layout_weight="1"
                     android:text="Alam Sutera"
                     android:textColor="@color/black" />
             </TableRow>
