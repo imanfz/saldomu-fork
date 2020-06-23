@@ -227,15 +227,17 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //                startActivity(i);
 //            }
             sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
-            if (sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
-                Intent i = new Intent(Introduction.this, LoginActivity.class);
-                i.putExtra(DefineValue.USER_IS_NEW, -2);
-                startActivity(i);
-            } else if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
-                Intent i = new Intent(Introduction.this, InsertPIN.class);
-                i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
-                i.putExtra(DefineValue.FOR_LOGIN, true);
-                startActivityForResult(i, MainPage.REQUEST_FINISH);
+            if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
+                if (sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
+                    Intent i = new Intent(Introduction.this, LoginActivity.class);
+                    i.putExtra(DefineValue.USER_IS_NEW, -2);
+                    startActivity(i);
+                } else {
+                    Intent i = new Intent(Introduction.this, InsertPIN.class);
+                    i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
+                    i.putExtra(DefineValue.FOR_LOGIN, true);
+                    startActivityForResult(i, MainPage.REQUEST_FINISH);
+                }
             } else if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
                 sendFCM();
             } else
