@@ -1,6 +1,7 @@
 package com.sgo.saldomu.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.ViewHolder> implements Filterable {
     private ArrayList<InvoiceDGI> invoiceDGIModelArrayList;
     private ArrayList<InvoiceDGI> originalList;
-    private final Activity mContext;
+    private Context context;
     OnTap listener;
 
     public interface OnTap {
@@ -30,7 +31,6 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
     public InvoiceDGIAdapter(ArrayList<InvoiceDGI> invoiceDGIModelArrayList, Activity mContext, OnTap listener) {
         this.invoiceDGIModelArrayList = invoiceDGIModelArrayList;
         originalList = invoiceDGIModelArrayList;
-        this.mContext = mContext;
         this.listener = listener;
     }
 
@@ -59,6 +59,7 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
     @NonNull
     @Override
     public InvoiceDGIAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        this.context = parent.getContext();
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_invoice, parent, false));
     }
 
@@ -67,7 +68,7 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
 
         InvoiceDGI obj = invoiceDGIModelArrayList.get(position);
 
-        holder.tvinvoiceNo.setText("INVOICE " + invoiceDGIModelArrayList.get(position).getDoc_no());
+        holder.tvinvoiceNo.setText(context.getString(R.string.invoice) + " " + invoiceDGIModelArrayList.get(position).getDoc_no());
         holder.tvremainAmount.setText(CurrencyFormat.format(invoiceDGIModelArrayList.get(position).getRemain_amount()));
         holder.tvdueDate.setText(invoiceDGIModelArrayList.get(position).getDue_date());
 

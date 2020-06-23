@@ -1622,6 +1622,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="no_item_selected">No Item Selected</string>
     <string name="please_choose_date">Please Choose Date</string>
     <string name="please_input_description">Please Input Description</string>
+    <string name="please_choose_reason">Please Choose Reason</string>
 
     <string name="signature">Signature</string>
     <string name="signature_cash_in">Signature</string>
@@ -1634,4 +1635,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="customer_phone">Customer Phone Number</string>
 
     <string name="quantity">Qty</string>
+    <string name="choose_reason">Choose Reason</string>
+    <string name="invoice">INVOICE</string>
+    <string name="due_date">Due date :</string>
 </resources>

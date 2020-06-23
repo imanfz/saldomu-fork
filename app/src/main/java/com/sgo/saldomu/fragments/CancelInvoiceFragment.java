@@ -104,6 +104,7 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
         try {
             reasonArray = new JSONArray(sp.getString(DefineValue.REJECT_REASON, ""));
             if (reasonArray.length() > 0) {
+                this.reasonNameArrayList.add(getContext().getString(R.string.choose_reason));
                 for (int i = 0; i < reasonArray.length(); i++) {
                     JSONObject jsonObjectReason;
                     jsonObjectReason = reasonArray.getJSONObject(i);
@@ -167,6 +168,10 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
 
 
         for (Invoice invoice : selectedCancelInvoice) {
+            if (invoice.getReason_description().equals(getString(R.string.choose_reason))) {
+                Toast.makeText(getContext(), Objects.requireNonNull(getContext()).getString(R.string.please_choose_reason), Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (invoice.getReason_description().equals("")) {
                 Toast.makeText(getContext(), Objects.requireNonNull(getContext()).getString(R.string.please_input_description), Toast.LENGTH_SHORT).show();
                 return;
