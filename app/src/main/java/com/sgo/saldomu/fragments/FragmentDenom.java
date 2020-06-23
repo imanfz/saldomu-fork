@@ -56,7 +56,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     View v;
     ArrayAdapter<String> bankProductAdapter;
 
-    TextView CommCodeTextview, CommNameTextview, MemberCodeTextview;
+    TextView CommCodeTextview, CommNameTextview, MemberCodeTextview, StoreNameTextview;
     Spinner ProductBankSpinner;
     RecyclerView itemListRv;
     DenomItemListAdapter itemListAdapter;
@@ -82,6 +82,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         itemListRv = v.findViewById(R.id.frag_denom_list_rv);
         submitBtn = v.findViewById(R.id.frag_denom_submit_btn);
         toogleDenomList = v.findViewById(R.id.frag_denom_toogle_denom_list);
+        StoreNameTextview = v.findViewById(R.id.frag_denom_store_name);
 
         return v;
     }
@@ -132,6 +133,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                     bundle.putString(WebParams.BANK_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankCode());
                     bundle.putString(WebParams.PRODUCT_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getProductCode());
                     bundle.putString(WebParams.MEMBER_REMARK, memberCode);
+                    bundle.putString(WebParams.STORE_NAME, StoreNameTextview.getText().toString());
 
                     frag.setArguments(bundle);
 
@@ -243,7 +245,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
                         @Override
                         public void onComplete() {
-                            dismissProgressDialog();
+
                         }
                     });
         } catch (Exception e) {
@@ -255,6 +257,8 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
     void getDenomList() {
         try {
+
+            showProgressDialog();
 
             extraSignature = obj.getMember_id_scadm();
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_LIST, extraSignature);
@@ -276,6 +280,8 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                                 Timber.d("isi response get denom list:" + response.toString());
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                    StoreNameTextview.setText(response.getString(WebParams.STORE_NAME));
 
                                     if (itemList.size() > 0) {
                                         itemList.clear();

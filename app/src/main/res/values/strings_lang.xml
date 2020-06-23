@@ -1634,4 +1634,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="customer_phone">Customer Phone Number</string>
 
     <string name="quantity">Qty</string>
+    <string name="store_name">Store Name</string>
+    <string name="partner_code">Partner Code</string>
 </resources>

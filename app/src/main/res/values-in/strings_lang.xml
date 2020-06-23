@@ -1602,4 +1602,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="customer_phone">No. HP Pelanggan</string>
 
     <string name="quantity">Jumlah</string>
+    <string name="store_name">Nama Toko</string>
+    <string name="partner_code">Kode Mitra</string>
 </resources>
