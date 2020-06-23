@@ -68,7 +68,7 @@ import timber.log.Timber;
 
 public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
 
-    TextView commCodeTextview, commNameTextview, memberCodeTextview, productBankTextview, costTextview, feeTextview, totalTextview;
+    TextView commCodeTextview, commNameTextview, memberCodeTextview, productBankTextview, costTextview, feeTextview, totalTextview, storeNameTextView;
     Button submitBtn;
     DenomItemOrderListConfirmAdapter itemListAdapter;
     RecyclerView orderListrv;
@@ -78,7 +78,8 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     SCADMCommunityModel obj;
     ArrayList<DenomListModel> itemList;
     ArrayList<DenomOrderListModel> orderList;
-    String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount, ccyID, bankGateway, bankName, txID, remark, apiKey, memberIdSACDM, memberName = "", commID, item_name = "";
+    String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount, ccyID, bankGateway, bankName, txID, remark,
+            apiKey, memberIdSACDM, memberName = "", commID, item_name = "", storeName;
     int attempt, failed;
     Boolean isPIN = false;
 
@@ -98,6 +99,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         orderListrv = v.findViewById(R.id.frag_denom_confirm_item_list_field);
         OTPedittext = v.findViewById(R.id.frag_denom_confirm_et_otp);
         OTPlayout = v.findViewById(R.id.frag_denom_confirm_otp_layout);
+        storeNameTextView = v.findViewById(R.id.frag_denom_confirm_store_name);
 
         return v;
     }
@@ -116,6 +118,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         bankCode = bundle.getString(WebParams.BANK_CODE, "");
         productCode = bundle.getString(WebParams.PRODUCT_CODE, "");
         memberCode = bundle.getString(WebParams.MEMBER_REMARK, "");
+        storeName = bundle.getString(WebParams.STORE_NAME, "");
 
         orderList = new ArrayList<>();
 
@@ -630,7 +633,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                                         sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
                                         txstatus, model.getTx_remark(), _amount, model.getTotal_amount(), model.getTx_fee(), getGson().toJson(model.getDenom_detail()), model.getBuss_scheme_code(),
                                         model.getBuss_scheme_name(), model.getProduct_name(), model.getOrder_id(), model.getComm_code(),
-                                        model.getMember_code());
+                                        model.getMember_code(), model.getStore_name());
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -669,7 +672,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     private void showReportBillerDialog(String name, String date, String userId, String txId, String itemName, String txStatus,
                                         String txRemark, String _amount, String totalAmount, String txFee, String denom_detail,
                                         String buss_scheme_code, String buss_scheme_name, String product_name, String order_id,
-                                        String comm_code, String member_code) {
+                                        String comm_code, String member_code, String store_name) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
@@ -709,6 +712,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         args.putString(DefineValue.ORDER_ID, order_id);
         args.putString(DefineValue.COMMUNITY_CODE, comm_code);
         args.putString(DefineValue.MEMBER_CODE, member_code);
+        args.putString(DefineValue.STORE_NAME, store_name);
 
         dialog.setArguments(args);
         FragmentTransaction ft = getFragManager().beginTransaction();
@@ -768,6 +772,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             commCodeTextview.setText(commCode);
             memberCodeTextview.setText(memberCode);
             productBankTextview.setText(productName);
+            storeNameTextView.setText(storeName);
 
             if (amount != null)
                 costTextview.setText(ccyID + " " + amount);

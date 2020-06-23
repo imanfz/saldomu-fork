@@ -22,6 +22,30 @@
                 android:layout_marginBottom="10dp">
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/store_name"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/frag_denom_confirm_store_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="15dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="@string/comm_code"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
@@ -69,7 +93,7 @@
                 android:layout_marginBottom="10dp">
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/member_code"
+                    android:text="@string/partner_code"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold"

@@ -133,4 +133,7 @@ open class GetTrxStatusReportModel : GetTrxStatusModel() {
     @SerializedName("comm_name")
     @Expose
     val comm_name: String? = ""
+    @SerializedName("store_name")
+    @Expose
+    val store_name: String? = ""
 }

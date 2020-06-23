@@ -71,7 +71,7 @@
             android:layout_weight="1.5"
             android:gravity="left"
             android:padding="3dip"
-            android:text="@string/member_code"
+            android:text="@string/partner_code"
             android:textSize="18sp"/>
 
         <TextView
