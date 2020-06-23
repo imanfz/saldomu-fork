@@ -143,9 +143,11 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
             fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
             if (fingerprintManager != null) {
                 try {
-                    if (fingerprintManager.isHardwareDetected() ||
+
+                    if ((fingerprintManager.isHardwareDetected() ||
                             (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED)
-                            || fingerprintManager.hasEnrolledFingerprints()) {
+                            || fingerprintManager.hasEnrolledFingerprints()) && sp.getString(DefineValue.USER_PASSWORD,"")!=null) {
+
                         FingerprintDialog fingerprintDialog = FingerprintDialog.newDialog(result -> {
                             if (result) {
                                 setResult(RESULT_FINGERPRINT_LOGIN);
