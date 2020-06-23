@@ -51,7 +51,7 @@ public class FragTagihInput extends BaseFragment {
     LinearLayout ll_komunitas;
     SecurePreferences sp;
     EditText et_memberCode;
-    Button btn_submit, btn_cancel, btn_regShop;
+    Button btn_submit, btn_regShop;
     Boolean is_search = false, isAgentLKD = false;
     View v;
     TextView tv_saldo_collector;
@@ -101,7 +101,6 @@ public class FragTagihInput extends BaseFragment {
 
 
         btn_submit.setOnClickListener(submitListener);
-        btn_cancel.setOnClickListener(cancelListener);
         btn_regShop.setOnClickListener(registrationListener);
     }
 
@@ -197,39 +196,18 @@ public class FragTagihInput extends BaseFragment {
         }
     };
 
-    Button.OnClickListener cancelListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (inputValidation()) {
-                Fragment newFrag = new FragCancelTransactionDGI();
-                Bundle bundle = new Bundle();
-                bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
-                bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
-
-                newFrag.setArguments(bundle);
-                if (getActivity() == null) {
-                    return;
-                }
-                TagihActivity ftf = (TagihActivity) getActivity();
-                ftf.switchContent(newFrag, "Pembatalan Transaksi", true);
-            }
-        }
-    };
-
 
     private void initializeView() {
         sp_mitra = v.findViewById(R.id.sp_mitra);
         sp_communtiy = v.findViewById(R.id.sp_community);
         et_memberCode = v.findViewById(R.id.et_memberCode);
         btn_submit = v.findViewById(R.id.btn_submit);
-        btn_cancel = v.findViewById(R.id.btn_cancel);
         btn_regShop = v.findViewById(R.id.bt_registTokoDGI);
         tv_saldo_collector = v.findViewById(R.id.tv_saldoCollector);
         ll_komunitas = v.findViewById(R.id.ll_komunitas);
 
         if (is_search) {
             Timber.d("is_search initialize");
-            btn_cancel.setVisibility(View.VISIBLE);
             et_memberCode.setText(memberCode);
         }
 

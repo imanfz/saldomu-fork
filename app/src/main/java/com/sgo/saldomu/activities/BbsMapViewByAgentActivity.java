@@ -196,6 +196,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         title = getString(R.string.menu_item_title_map_agent);
         initializeToolbar(title);
+        updateLocationAgent();
 
         TextView t = findViewById(R.id.name);
         t.setText(Html.fromHtml(getString(R.string.bbs_trx_detail_agent)));
@@ -483,9 +484,10 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.LATITUDE, agentLatitude);
         params.put(WebParams.LONGITUDE, agentLongitude);
         params.put(WebParams.USER_ID, userPhoneID);
-        //
 
         handler.removeCallbacks(runnable2);
+
+        Timber.d("params update agent : " + params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_LOCATION_AGENT, params,
                 new ObjListeners() {

@@ -2,17 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/tv_collector_balance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_gravity="center"
         android:layout_marginTop="25dp"
         android:gravity="center"
-        android:layout_alignParentTop="true"
         android:text="@string/balance"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -21,8 +21,8 @@
         android:id="@+id/ll_collector_balance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
         android:layout_below="@id/tv_collector_balance"
+        android:layout_marginBottom="25dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -58,14 +58,14 @@
             android:id="@+id/sp_mitra"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"/>
+            android:layout_weight="5" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/ll_mitra"
-        android:background="@color/grey_300"/>
+        android:background="@color/grey_300" />
 
     <LinearLayout
         android:id="@+id/ll_komunitas"
@@ -73,8 +73,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_mitra"
         android:layout_marginTop="24dp"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="100dp"
@@ -86,38 +86,40 @@
             android:id="@+id/sp_community"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"/>
+            android:layout_weight="5" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/ll_komunitas"
-        android:background="@color/grey_300"/>
+        android:background="@color/grey_300" />
 
     <LinearLayout
         android:id="@+id/ll_kode_toko"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:layout_below="@id/ll_komunitas"
+        android:layout_marginTop="24dp"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/shop_code"
                 android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/et_memberCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/shop_code"/>
+                android:hint="@string/shop_code" />
         </LinearLayout>
 
         <Button
@@ -129,43 +131,32 @@
             android:background="@drawable/rounded_background_outline"
             android:text="@string/rsb_register"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/colorPrimary" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/ll_kode_toko"
-        android:background="@color/grey_300"/>
+        android:background="@color/grey_300" />
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_alignParentBottom="true"
-    android:orientation="vertical"
-    android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/btn_cancel"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:background="@drawable/rounded_background_blue"
-        android:text="@string/cancel_transaction"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-        android:textColor="@color/grey_1000w"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"/>
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-    <Button
+        <Button
 
-        android:id="@+id/btn_submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_background_blue"
-        android:text="@string/submit"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-        android:textColor="@color/grey_1000w" />
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_background_blue"
+            android:text="@string/submit"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/grey_1000w" />
 
-</LinearLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>
