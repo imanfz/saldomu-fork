@@ -15,25 +15,55 @@
       },
       "oauth_client": [
         {
+          "client_id": "451695092641-6oc3tns5m4iios9duql1egfjf4997v53.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sgo.saldomu",
+            "certificate_hash": "a89d6853fdb3e9d800a9ebc361f333662b90ead0"
+          }
+        },
+        {
+          "client_id": "451695092641-5084alto2erskut5p6vq18lo6075p7n3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sgo.saldomu",
+            "certificate_hash": "5a9e1d509844259f7ab1458a0af0aed34a1b8412"
+          }
+        },
+        {
+          "client_id": "451695092641-6evrbgkrqru4klbca488l1o09fe9v6tb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sgo.saldomu",
+            "certificate_hash": "ebb31d9dd912c99d7334bbcbb9ccb2db5acb8656"
+          }
+        },
+        {
           "client_id": "451695092641-3ch648fd9qjf6f14cpr3bagta8neoj20.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCdDMVkLYc5tTtZvTUK-wlpEKqHL1ecAcw"
+          "current_key": "AIzaSyAgFK153M4kbcX64P5g0SAHv3UPEEV3J3Q"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451695092641-3ch648fd9qjf6f14cpr3bagta8neoj20.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "451695092641-m0mh09622q95s5n6av2860l9dd71ne25.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sgo.saldomu",
+                "app_store_id": "1448839874"
+              }
+            }
+          ]
         }
       }
     },
@@ -46,25 +76,55 @@
       },
       "oauth_client": [
         {
+          "client_id": "451695092641-ac1ihr14uod271vgfpdjhf8gq8qci592.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sgo.saldomudev",
+            "certificate_hash": "a89d6853fdb3e9d800a9ebc361f333662b90ead0"
+          }
+        },
+        {
+          "client_id": "451695092641-slou3vim61trqv8m3qc6ohcaq2abcb9h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sgo.saldomudev",
+            "certificate_hash": "5a9e1d509844259f7ab1458a0af0aed34a1b8412"
+          }
+        },
+        {
+          "client_id": "451695092641-agap9q529viu4hba114aosk3tmpgt51g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sgo.saldomudev",
+            "certificate_hash": "ebb31d9dd912c99d7334bbcbb9ccb2db5acb8656"
+          }
+        },
+        {
           "client_id": "451695092641-3ch648fd9qjf6f14cpr3bagta8neoj20.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCdDMVkLYc5tTtZvTUK-wlpEKqHL1ecAcw"
+          "current_key": "AIzaSyAgFK153M4kbcX64P5g0SAHv3UPEEV3J3Q"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451695092641-3ch648fd9qjf6f14cpr3bagta8neoj20.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "451695092641-m0mh09622q95s5n6av2860l9dd71ne25.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sgo.saldomu",
+                "app_store_id": "1448839874"
+              }
+            }
+          ]
         }
       }
     }
