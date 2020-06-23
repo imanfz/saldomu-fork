@@ -56,7 +56,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     View v;
     ArrayAdapter<String> bankProductAdapter;
 
-    TextView CommCodeTextview, CommNameTextview, MemberCodeTextview, StoreNameTextview;
+    TextView CommCodeTextview, CommNameTextview, MemberCodeTextview, StoreNameTextview, StoreAddressTextview;
     Spinner ProductBankSpinner;
     RecyclerView itemListRv;
     DenomItemListAdapter itemListAdapter;
@@ -83,6 +83,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         submitBtn = v.findViewById(R.id.frag_denom_submit_btn);
         toogleDenomList = v.findViewById(R.id.frag_denom_toogle_denom_list);
         StoreNameTextview = v.findViewById(R.id.frag_denom_store_name);
+        StoreAddressTextview = v.findViewById(R.id.frag_denom_store_address);
 
         return v;
     }
@@ -134,6 +135,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                     bundle.putString(WebParams.PRODUCT_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getProductCode());
                     bundle.putString(WebParams.MEMBER_REMARK, memberCode);
                     bundle.putString(WebParams.STORE_NAME, StoreNameTextview.getText().toString());
+                    bundle.putString(WebParams.STORE_ADDRESS, StoreAddressTextview.getText().toString());
 
                     frag.setArguments(bundle);
 
@@ -282,6 +284,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                     StoreNameTextview.setText(response.getString(WebParams.STORE_NAME));
+                                    StoreAddressTextview.setText(response.getString(WebParams.STORE_ADDRESS));
 
                                     if (itemList.size() > 0) {
                                         itemList.clear();

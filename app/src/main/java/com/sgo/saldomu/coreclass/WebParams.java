@@ -616,4 +616,5 @@ public class WebParams {
 
     public static String SIGN = "sign";
     public static String STORE_NAME = "store_name";
+    public static String STORE_ADDRESS = "store_address";
 }

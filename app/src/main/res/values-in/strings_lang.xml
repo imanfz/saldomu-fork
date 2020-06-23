@@ -1604,6 +1604,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="quantity">Jumlah</string>
     <string name="store_name">Nama Toko</string>
+    <string name="store_address">Alamat Toko</string>
     <string name="partner_code">Kode Mitra</string>
     <string name="choose_reason">Pilih Alasan</string>
     <string name="invoice">INVOICE</string>

@@ -68,7 +68,7 @@ import timber.log.Timber;
 
 public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
 
-    TextView commCodeTextview, commNameTextview, memberCodeTextview, productBankTextview, costTextview, feeTextview, totalTextview, storeNameTextView;
+    TextView commCodeTextview, commNameTextview, memberCodeTextview, productBankTextview, costTextview, feeTextview, totalTextview, storeNameTextView, storeAddressTextView;
     Button submitBtn;
     DenomItemOrderListConfirmAdapter itemListAdapter;
     RecyclerView orderListrv;
@@ -79,7 +79,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     ArrayList<DenomListModel> itemList;
     ArrayList<DenomOrderListModel> orderList;
     String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount, ccyID, bankGateway, bankName, txID, remark,
-            apiKey, memberIdSACDM, memberName = "", commID, item_name = "", storeName;
+            apiKey, memberIdSACDM, memberName = "", commID, item_name = "", storeName, storeAddress;
     int attempt, failed;
     Boolean isPIN = false;
 
@@ -100,6 +100,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         OTPedittext = v.findViewById(R.id.frag_denom_confirm_et_otp);
         OTPlayout = v.findViewById(R.id.frag_denom_confirm_otp_layout);
         storeNameTextView = v.findViewById(R.id.frag_denom_confirm_store_name);
+        storeAddressTextView = v.findViewById(R.id.frag_denom_store_address);
 
         return v;
     }
@@ -119,6 +120,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         productCode = bundle.getString(WebParams.PRODUCT_CODE, "");
         memberCode = bundle.getString(WebParams.MEMBER_REMARK, "");
         storeName = bundle.getString(WebParams.STORE_NAME, "");
+        storeAddress = bundle.getString(WebParams.STORE_ADDRESS, "");
 
         orderList = new ArrayList<>();
 
@@ -773,6 +775,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             memberCodeTextview.setText(memberCode);
             productBankTextview.setText(productName);
             storeNameTextView.setText(storeName);
+            storeAddressTextView.setText(storeAddress);
 
             if (amount != null)
                 costTextview.setText(ccyID + " " + amount);
