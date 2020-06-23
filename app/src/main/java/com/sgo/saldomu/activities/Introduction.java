@@ -227,7 +227,11 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 //                startActivity(i);
 //            }
             sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
-            if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
+            if (sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
+                Intent i = new Intent(Introduction.this, LoginActivity.class);
+                i.putExtra(DefineValue.USER_IS_NEW, -2);
+                startActivity(i);
+            } else if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 Intent i = new Intent(Introduction.this, InsertPIN.class);
                 i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
                 i.putExtra(DefineValue.FOR_LOGIN, true);
@@ -979,7 +983,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                 break;
             case FIRST_SCREEN_SPLASHSCREEN:
 //                if (LocaleManager.getLocale(getResources()).getLanguage().equals("in")) {
-                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
+                CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
 //                } else {
 //                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, false);
 //                }
