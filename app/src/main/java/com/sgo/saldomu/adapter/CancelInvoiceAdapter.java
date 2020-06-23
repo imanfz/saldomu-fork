@@ -39,7 +39,7 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
     OnItemClick listener;
     Context context;
     ArrayList<InvoiceDGI> invoiceDGIModelArrayList;
-    private ArrayList<String> reasonNameArrayList;
+    private ArrayList<String> reasonNameArrayList = new ArrayList<>();
     String reason = "";
 
     public CancelInvoiceAdapter(ArrayList<InvoiceDGI> invoiceDGIModelArrayList, ArrayList<String> reasonNameArrayList, OnItemClick listener) {
@@ -59,7 +59,7 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
         InvoiceDGI item = invoiceDGIModelArrayList.get(position);
 
         ViewHolder holder = (ViewHolder) viewHolder;
-        holder.title_video_text.setText("INVOICE " + item.getDoc_no());
+        holder.title_video_text.setText( context.getString(R.string.invoice) +" " + item.getDoc_no());
 
         ArrayAdapter<String> spinAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, reasonNameArrayList);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -110,8 +110,8 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
                     } else {
                         holder.reason_et.setVisibility(View.GONE);
                     }
-
-                    listener.onCheck(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
+                    listener.onEdit(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
+//                    listener.onCheck(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
                 }
             }
 
@@ -124,17 +124,21 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (reason.equals("LAINNYA")) {
-                    if (holder.reason_et.getText().toString().isEmpty()) {
-                        return;
-                    }
-                    reason = holder.reason_et.getText().toString();
-                }
+//                if (reason.equals("LAINNYA")) {
+//                    if (holder.reason_et.getText().toString().isEmpty()) {
+//                        return;
+//                    }
+//                    reason = holder.reason_et.getText().toString();
+//                }
 
                 if (!isChecked) {
                     listener.onUncheck(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
+                    holder.sp_reason.setVisibility(View.GONE);
                 } else {
-                    holder.sp_reason.performClick();
+                    reason = holder.sp_reason.getItemAtPosition(0).toString();
+                    listener.onCheck(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
+                    holder.sp_reason.setVisibility(View.VISIBLE);
+//                    holder.sp_reason.performClick();
                 }
 //                else {
 //                    listener.onCheck(new Invoice(String.valueOf(position), reason, item.getDoc_no()));

@@ -1331,7 +1331,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="invoice_dgi_search">Cari Invoice</string>
     <string name="invoice_dgi_payment">Bayar Invoice</string>
     <string name="payment_type">Tipe Pembayaran</string>
-    <string name="reset">Reset</string>
+    <string name="reset">Atur Ulang</string>
     <string name="checkout">Check Out</string>
 
     <string name="preview_bank_name">Nama Bank</string>
@@ -1590,6 +1590,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="no_item_selected">Tidak ada item yang di pilih </string>
     <string name="please_choose_date">Mohon input tanggal</string>
     <string name="please_input_description">Mohon input deskripsi</string>
+    <string name="please_choose_reason">Alasan belum dipilih</string>
 
     <string name="signature">Tanda Tangan</string>
     <string name="signature_cash_in">Tanda Tangan Penyetor</string>
@@ -1604,4 +1605,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="quantity">Jumlah</string>
     <string name="store_name">Nama Toko</string>
     <string name="partner_code">Kode Mitra</string>
+    <string name="choose_reason">Pilih Alasan</string>
+    <string name="invoice">INVOICE</string>
+    <string name="due_date">Batas tanggal terakhir :</string>
 </resources>

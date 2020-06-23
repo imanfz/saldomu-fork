@@ -36,7 +36,8 @@
             android:id="@+id/cancel"
             android:orderInCategory="4"
             android:title="@string/cancel"
-            android:icon="@drawable/squarecamera__cancel_unselected"
+            android:iconTint="@color/red"
+            android:tooltipText="@string/cancel"
             someNamespace:showAsAction="always"
             android:visible="false"
             />
