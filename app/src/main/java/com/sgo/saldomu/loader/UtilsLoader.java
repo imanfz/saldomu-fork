@@ -207,10 +207,6 @@ public class UtilsLoader {
                                 int failed = model.getMax_failed();
                                 if (attempt != -1)
                                     mListener.onSuccess(failed - attempt);
-                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginMain(getmActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();

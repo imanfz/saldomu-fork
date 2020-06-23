@@ -129,8 +129,7 @@
                     <TextView
                         android:id="@+id/tvETA"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Arrived in a few min"/>
+                        android:layout_height="wrap_content"/>
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
