@@ -143,3 +143,4 @@
 -dontwarn javax.annotation.**
 
 #-ignorewarnings -keep class * { public private *; }
+-keep class com.sgo.saldomu.models.Invoice { *; }
