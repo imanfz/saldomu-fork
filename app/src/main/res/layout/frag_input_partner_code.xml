@@ -1,47 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/partner_code"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/et_member_code"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="true"
-        android:hint="@string/partner_code"/>
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/et_partner_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_x"
+            android:hint="@string/partner_code" />
+    </android.support.design.widget.TextInputLayout>
 
     <com.balysv.materialripple.MaterialRippleLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/card_bk"
         android:layout_marginTop="30dp"
-        app:mrl_rippleOverlay="true"
-        app:mrl_rippleColor="@color/white"
+        android:background="@drawable/card_bk"
         app:mrl_rippleAlpha="0.2"
+        app:mrl_rippleColor="@color/white"
         app:mrl_rippleDelayClick="false"
         app:mrl_rippleHover="true"
-        >
+        app:mrl_rippleOverlay="true">
+
         <Button
             android:id="@+id/btn_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@color/colorPrimaryDark"
-            android:gravity="center"
-            android:text="@string/next"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/button_transparant"
-            />
+            android:gravity="center"
+            android:text="@string/next"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/colorPrimaryDark" />
     </com.balysv.materialripple.MaterialRippleLayout>
 
 </LinearLayout>
