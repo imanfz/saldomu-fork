@@ -10,12 +10,14 @@ import java.util.ArrayList;
 public class DenomListModel {
     private String itemName;
     private String itemID;
+    private String itemPrice;
     private ArrayList<DenomOrderListModel> orderList;
 
-    public DenomListModel(JSONObject obj){
+    public DenomListModel(JSONObject obj) {
         try {
             setItemName(obj.getString("item_name"));
             setItemID(obj.getString("item_id"));
+            setItemPrice(obj.getString("price"));
             setOrderList(new ArrayList<DenomOrderListModel>());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -36,6 +38,14 @@ public class DenomListModel {
 
     public void setItemID(String itemID) {
         this.itemID = itemID;
+    }
+
+    public String getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(String itemPrice) {
+        this.itemPrice = itemPrice;
     }
 
     public ArrayList<DenomOrderListModel> getOrderList() {

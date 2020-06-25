@@ -17,13 +17,13 @@
         android:background="@color/grey_500"
         android:visibility="gone" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/adapter_denom_item_layout"
+            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -46,12 +46,19 @@
                 android:textSize="@dimen/abc_text_size_medium_material"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/adapter_denom_item_price_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Item Name"
+                android:textColor="@color/black"
+                android:textSize="@dimen/abc_text_size_medium_material"/>
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:orientation="horizontal">
 
             <TextView
@@ -62,12 +69,14 @@
 
             <EditText
                 android:id="@+id/adapter_denom_item_et_qty"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:background="@color/default_button_background_disabled"
                 android:inputType="number"/>
         </LinearLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/adapter_denom_item_list_order_list"
