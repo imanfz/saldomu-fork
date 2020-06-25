@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.fragments.ForgotPassword;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
@@ -51,10 +54,13 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     private CheckBox cb_show_pass;
     private Button btn_submit_changepass;
     private Button btn_batal_changepass;
+    private Button btnForgetPass;
     private ProgressDialog progdialog;
     private boolean is_first_time;
     private int lenght_auth_min, validIdx;
     private PasswordValidator mPassValid;
+
+    FrameLayout frameLayout;
 
     private static final String PASSWORD_PATTERN =
             "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
@@ -70,13 +76,16 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         InitializeToolbar();
 
         et_pass_current = findViewById(R.id.current_pass_value);
+        btnForgetPass = findViewById(R.id.btn_forgetPass);
         et_pass_new = findViewById(R.id.new_pass_value);
         et_pass_retype = findViewById(R.id.retype_new_pass_value);
         cb_show_pass = findViewById(R.id.cb_showPass_changepass);
         btn_submit_changepass = findViewById(R.id.btn_submit_changePassword);
         btn_batal_changepass = findViewById(R.id.btn_batal_changepass);
         tv_firsttime_msg = findViewById(R.id.changepass_firsttime_msg);
+        frameLayout = findViewById(R.id.changePassContent);
 
+        btnForgetPass.setOnClickListener(this);
         btn_submit_changepass.setOnClickListener(this);
         btn_batal_changepass.setOnClickListener(this);
         cb_show_pass.setOnCheckedChangeListener(showPassword);
@@ -134,6 +143,16 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
                     setResult(MainPage.RESULT_NORMAL);
                 else setResult(MainPage.RESULT_LOGOUT);
                 finish();
+                break;
+
+            case R.id.btn_forgetPass:
+                frameLayout.setVisibility(View.VISIBLE);
+                Fragment newFrag = new ForgotPassword();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.changePassContent, newFrag, "forgot password")
+                        .addToBackStack(null)
+                        .commit();
                 break;
         }
     }

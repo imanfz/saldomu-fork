@@ -659,5 +659,6 @@ public class DefineValue {
 
     public static String REJECT_REASON = "reject_reason";
     public static String SIGNATURE_PHOTO = "signature_photo";
+    public static String STORE_NAME = "storeName";
 }
 

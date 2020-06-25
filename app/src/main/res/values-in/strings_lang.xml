@@ -1596,13 +1596,16 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="signature_cash_in">Tanda Tangan Penyetor</string>
     <string name="put_a_signature">Bubuhkan Tanda Tangan</string>
 
-    <string name="estimated_time_arrived">Tiba pada %1$s menit</string>
+    <string name="estimated_time_arrived">Tiba dalam %1$s </string>
     <string name="community_name">Komunitas</string>
     <string name="item_list">Daftar Barang</string>
     <string name="customer_name">Nama Pelanggan</string>
     <string name="customer_phone">No. HP Pelanggan</string>
 
     <string name="quantity">Jumlah</string>
+    <string name="store_name">Nama Toko</string>
+    <string name="store_address">Alamat Toko</string>
+    <string name="partner_code">Kode Mitra</string>
     <string name="choose_reason">Pilih Alasan</string>
     <string name="invoice">INVOICE</string>
     <string name="due_date">Batas tanggal terakhir :</string>
