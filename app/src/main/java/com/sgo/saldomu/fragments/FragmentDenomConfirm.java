@@ -32,7 +32,6 @@ import com.sgo.saldomu.activities.DenomSCADMActivity;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.SgoPlusWeb;
-import com.sgo.saldomu.adapter.DenomItemListAdapter;
 import com.sgo.saldomu.adapter.DenomItemOrderListConfirmAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -62,7 +61,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import timber.log.Timber;
 
@@ -335,7 +333,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                             Timber.d("response confirm payment denom scadm : " + response.toString());
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 sentInquiry();
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -419,7 +417,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                            } else {
                                 String msg = response.getString(WebParams.ERROR_MESSAGE);
                                 showDialog(msg);
                             }
@@ -635,7 +633,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                                         sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
                                         txstatus, model.getTx_remark(), _amount, model.getTotal_amount(), model.getTx_fee(), getGson().toJson(model.getDenom_detail()), model.getBuss_scheme_code(),
                                         model.getBuss_scheme_name(), model.getProduct_name(), model.getOrder_id(), model.getComm_code(),
-                                        model.getMember_code(), model.getStore_name());
+                                        model.getMember_code(), model.getStore_name(), model.getStore_address());
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -674,7 +672,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     private void showReportBillerDialog(String name, String date, String userId, String txId, String itemName, String txStatus,
                                         String txRemark, String _amount, String totalAmount, String txFee, String denom_detail,
                                         String buss_scheme_code, String buss_scheme_name, String product_name, String order_id,
-                                        String comm_code, String member_code, String store_name) {
+                                        String comm_code, String member_code, String store_name, String store_address) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
@@ -715,6 +713,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         args.putString(DefineValue.COMMUNITY_CODE, comm_code);
         args.putString(DefineValue.MEMBER_CODE, member_code);
         args.putString(DefineValue.STORE_NAME, store_name);
+        args.putString(DefineValue.STORE_ADDRESS, store_address);
 
         dialog.setArguments(args);
         FragmentTransaction ft = getFragManager().beginTransaction();
@@ -793,7 +792,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
 //                JSONObject obj = itemArr.getJSONObject(keys.next());
 //                orderList.add(new DenomOrderListModel(obj));
 //            }
-            for (int i=0; i<itemArr.length(); i++){
+            for (int i = 0; i < itemArr.length(); i++) {
                 JSONObject obj = itemArr.getJSONObject(i);
                 orderList.add(new DenomOrderListModel(obj));
             }
@@ -829,6 +828,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     }
 
     void backToDenomSACDM() {
+        getActivity().onBackPressed();
         getFragManager().popBackStack(DenomSCADMActivity.DENOM_PAYMENT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }
