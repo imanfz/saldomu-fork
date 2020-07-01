@@ -633,7 +633,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                                         sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
                                         txstatus, model.getTx_remark(), _amount, model.getTotal_amount(), model.getTx_fee(), getGson().toJson(model.getDenom_detail()), model.getBuss_scheme_code(),
                                         model.getBuss_scheme_name(), model.getProduct_name(), model.getOrder_id(), model.getComm_code(),
-                                        model.getMember_code(), model.getStore_name(), model.getStore_address());
+                                        model.getMember_code(), model.getStore_name(), model.getStore_address(), model.getStore_code());
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -672,7 +672,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     private void showReportBillerDialog(String name, String date, String userId, String txId, String itemName, String txStatus,
                                         String txRemark, String _amount, String totalAmount, String txFee, String denom_detail,
                                         String buss_scheme_code, String buss_scheme_name, String product_name, String order_id,
-                                        String comm_code, String member_code, String store_name, String store_address) {
+                                        String comm_code, String member_code, String store_name, String store_address, String store_code) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
@@ -714,6 +714,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         args.putString(DefineValue.MEMBER_CODE, member_code);
         args.putString(DefineValue.STORE_NAME, store_name);
         args.putString(DefineValue.STORE_ADDRESS, store_address);
+        args.putString(DefineValue.STORE_CODE, store_code);
 
         dialog.setArguments(args);
         FragmentTransaction ft = getFragManager().beginTransaction();

@@ -632,6 +632,9 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.MEMBER_CODE, response.member_code)
         args.putString(DefineValue.DENOM_DETAIL, getGson().toJson(response.denom_detail))
         args.putString(DefineValue.ORDER_ID, response.order_id)
+        args.putString(DefineValue.STORE_CODE, response.store_code)
+        args.putString(DefineValue.STORE_NAME, response.store_name)
+        args.putString(DefineValue.STORE_ADDRESS, response.store_address)
 
         dialog.arguments = args
         dialog.show(this.supportFragmentManager, ReportBillerDialog.TAG)

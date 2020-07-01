@@ -34,7 +34,7 @@ public class DenomItemOrderListConfirmAdapter extends RecyclerView.Adapter<Denom
 
     @Override
     public void onBindViewHolder(@NonNull holder holder, final int position) {
-        holder.number.setText(itemList.get(position).getPhoneNumber());
+        holder.itemName.setText(itemList.get(position).getItemName());
         holder.pulsa.setText(itemList.get(position).getPulsa());
         holder.itemID.setText(itemList.get(position).getItemID());
     }
@@ -46,11 +46,11 @@ public class DenomItemOrderListConfirmAdapter extends RecyclerView.Adapter<Denom
 
     class holder extends RecyclerView.ViewHolder{
 
-        TextView number, pulsa, itemID;
+        TextView itemName, pulsa, itemID;
 
         public holder(View itemView) {
             super(itemView);
-            number = itemView.findViewById(R.id.adapter_denom_item_order_list_confirm_number);
+            itemName = itemView.findViewById(R.id.adapter_denom_item_order_list_confirm_item_name);
             pulsa = itemView.findViewById(R.id.adapter_denom_item_order_list_confirm_pulsa);
             itemID = itemView.findViewById(R.id.adapter_denom_item_order_list_confirm_item_id);
         }

@@ -772,7 +772,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                 tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
-                tv_member_code.setText(args.getString(DefineValue.MEMBER_CODE));
+                tv_member_code.setText(args.getString(DefineValue.STORE_CODE));
                 tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
                 tv_bank_order_number.setText(args.getString(DefineValue.ORDER_ID));
                 tv_amount.setText(args.getString(DefineValue.AMOUNT));
