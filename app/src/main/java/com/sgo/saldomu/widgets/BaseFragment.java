@@ -109,6 +109,12 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
+    public void addFragment(Fragment mFragment, String fragName){
+        ToggleKeyboard.hide_keyboard(getActivity());
+        FragmentTransaction fragManager = getActivity().getSupportFragmentManager().beginTransaction();
+        fragManager.add(R.id.denom_scadm_content, mFragment, fragName).commit();
+    }
+
     ProgressDialog getProgDialog() {
         if (progressDialog == null)
             progressDialog = DefinedDialog.CreateProgressDialog(getActivity(),getString(R.string.please_wait));
