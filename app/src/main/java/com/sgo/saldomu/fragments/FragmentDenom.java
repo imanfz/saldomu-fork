@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -56,6 +57,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     View v;
     ArrayAdapter<String> bankProductAdapter;
 
+    NestedScrollView nestedScrollView;
     TextView CommCodeTextview, CommNameTextview, MemberCodeTextview, StoreNameTextview, StoreAddressTextview;
     Spinner ProductBankSpinner;
     RecyclerView itemListRv;
@@ -75,6 +77,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         v = inflater.inflate(R.layout.fragment_denom, container, false);
+        nestedScrollView = v.findViewById(R.id.nested_scroll_view);
         CommCodeTextview = v.findViewById(R.id.frag_denom_comm_code_field);
         CommNameTextview = v.findViewById(R.id.frag_denom_comm_name_field);
         MemberCodeTextview = v.findViewById(R.id.frag_denom_member_code_field);
@@ -93,7 +96,6 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = getArguments();
-
         memberCode = bundle.getString(DefineValue.MEMBER_CODE, "");
         itemList = new ArrayList<>();
         itemListString = new ArrayList<>();
@@ -126,6 +128,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
             @Override
             public void onClick(View v) {
                 if (checkInput()) {
+                    nestedScrollView.scrollTo(0, 0);
                     Fragment frag = new FragmentDenomConfirm();
 
                     Bundle bundle = new Bundle();
@@ -139,7 +142,8 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
                     frag.setArguments(bundle);
 
-                    SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
+//                    SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
+                    addFragment(frag, DenomSCADMActivity.DENOM_PAYMENT);
                 } else
                     Toast.makeText(getActivity(), "Daftar denom kosong", Toast.LENGTH_SHORT).show();
             }
@@ -397,7 +401,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                getActivity().finish();
+                getActivity().onBackPressed();
             }
         });
 

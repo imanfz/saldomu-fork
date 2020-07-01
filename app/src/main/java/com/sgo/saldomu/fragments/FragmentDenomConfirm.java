@@ -32,7 +32,6 @@ import com.sgo.saldomu.activities.DenomSCADMActivity;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.SgoPlusWeb;
-import com.sgo.saldomu.adapter.DenomItemListAdapter;
 import com.sgo.saldomu.adapter.DenomItemOrderListConfirmAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -62,7 +61,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import timber.log.Timber;
 
@@ -335,7 +333,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                             Timber.d("response confirm payment denom scadm : " + response.toString());
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 sentInquiry();
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -419,7 +417,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                            } else {
                                 String msg = response.getString(WebParams.ERROR_MESSAGE);
                                 showDialog(msg);
                             }
@@ -795,7 +793,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
 //                JSONObject obj = itemArr.getJSONObject(keys.next());
 //                orderList.add(new DenomOrderListModel(obj));
 //            }
-            for (int i=0; i<itemArr.length(); i++){
+            for (int i = 0; i < itemArr.length(); i++) {
                 JSONObject obj = itemArr.getJSONObject(i);
                 orderList.add(new DenomOrderListModel(obj));
             }
@@ -831,6 +829,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     }
 
     void backToDenomSACDM() {
+        getActivity().onBackPressed();
         getFragManager().popBackStack(DenomSCADMActivity.DENOM_PAYMENT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

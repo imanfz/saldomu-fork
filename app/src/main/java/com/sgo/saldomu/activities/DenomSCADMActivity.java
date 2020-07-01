@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
 import com.securepreferences.SecurePreferences;
@@ -11,6 +12,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragListDenomSCADM;
+import com.sgo.saldomu.fragments.FragmentDenomConfirm;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
@@ -66,21 +68,20 @@ public class DenomSCADMActivity extends BaseActivity {
         super.onResume();
     }
 
-    public void setResultActivity(int result){
+    public void setResultActivity(int result) {
         setResult(MainPage.RESULT_BALANCE);
     }
 
     public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
         ToggleKeyboard.hide_keyboard(this);
-        if(isBackstack){
+        if (isBackstack) {
             Timber.d("backstack");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.denom_scadm_content, mFragment, fragName)
                     .addToBackStack(null)
                     .commitAllowingStateLoss();
-        }
-        else {
+        } else {
             Timber.d("bukan backstack");
             getSupportFragmentManager()
                     .beginTransaction()
@@ -92,9 +93,9 @@ public class DenomSCADMActivity extends BaseActivity {
     }
 
     public void switchActivity(Intent mIntent, int j) {
-        switch (j){
+        switch (j) {
             case MainPage.ACTIVITY_RESULT:
-                startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
+                startActivityForResult(mIntent, MainPage.REQUEST_FINISH);
                 this.setResult(MainPage.RESULT_BALANCE);
                 break;
             case 2:
@@ -105,8 +106,7 @@ public class DenomSCADMActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -122,6 +122,12 @@ public class DenomSCADMActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.denom_scadm_content);
+        if (fragment instanceof FragmentDenomConfirm) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.remove(fragment).commit();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
