@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -30,30 +29,20 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
-import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.commentModel;
-import com.sgo.saldomu.Beans.likeModel;
-import com.sgo.saldomu.Beans.listHistoryModel;
-import com.sgo.saldomu.Beans.listTimeLineModel;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.FabInstance;
 import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.NotificationActionView;
-import com.sgo.saldomu.coreclass.NotificationHandler;
 import com.sgo.saldomu.coreclass.RealmManager;
-import com.sgo.saldomu.coreclass.RootUtil;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -87,6 +76,7 @@ import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.services.UpdateBBSBirthPlace;
 import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
+import com.sgo.saldomu.utils.LocaleManager;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.BaseFragment;
@@ -151,7 +141,7 @@ public class MainPage extends BaseActivity {
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
     private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent, isForeground = false;
-    public MaterialSheetFab materialSheetFab;
+//    public MaterialSheetFab materialSheetFab;
     AlertDialog devRootedDeviceAlertDialog;
     private Bundle savedInstanceState;
     private SMSclass smSclass;
@@ -214,19 +204,25 @@ public class MainPage extends BaseActivity {
                 return true;
             case R.id.menu_transfer:
                 currentTab = getString(R.string.transfer);
-                if (isDormant.equalsIgnoreCase("Y")) {
-                    dialogDormant();
-                } else {
-                    if (levelClass.isLevel1QAC()) {
-                        levelClass.showDialogLevel();
-                    } else {
-//                        i = new Intent(MainPage.this, ActivityListTransfer.class);
-//                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp))) {
                         Fragment fragmentTransfer = new ListTransfer();
                         switchContent(fragmentTransfer, getString(R.string.transfer));
                         return true;
-                    }
-                }
+                } else
+                    dialogUnavailable();
+//                if (isDormant.equalsIgnoreCase("Y")) {
+//                    dialogDormant();
+//                } else {
+//                    if (levelClass.isLevel1QAC()) {
+//                        levelClass.showDialogLevel();
+//                    } else {
+////                        i = new Intent(MainPage.this, ActivityListTransfer.class);
+////                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+//                        Fragment fragmentTransfer = new ListTransfer();
+//                        switchContent(fragmentTransfer, getString(R.string.transfer));
+//                        return true;
+//                    }
+//                }
                 return true;
             case R.id.menu_help:
 //                i = new Intent(MainPage.this, ContactActivity.class);
@@ -250,9 +246,19 @@ public class MainPage extends BaseActivity {
         Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.title_dialog_dormant),
                 getString(R.string.message_dialog_dormant_),
                 (v, isLongClick) -> {
-                    Intent i = new Intent(MainPage.this, TopUpActivity.class);
-                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+//                    Intent i = new Intent(MainPage.this, TopUpActivity.class);
+//                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+//                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                }
+        );
+
+        dialognya.show();
+    }
+
+    private void dialogUnavailable() {
+        Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.alertbox_title_information),
+                getString(R.string.cashout_dialog_message),
+                (v, isLongClick) -> {
                 }
         );
 
@@ -261,34 +267,34 @@ public class MainPage extends BaseActivity {
 
     private void InitializeApp() {
         if (GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
-            if (RootUtil.isDeviceRooted()) {
-                if (BuildConfig.FLAVOR.equals("production")) {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
-                    builder.setMessage("Apakah anda ingin melewati pengecekan device?")
-                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    initializeDashboard();
-                                }
-                            });
-                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
-                        }
-                    });
-                    builder.setCancelable(false);
-                    devRootedDeviceAlertDialog = builder.create();
-                    if (!isFinishing())
-                        devRootedDeviceAlertDialog.show();
-                } else {
-                    switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
-//                    initializeDashboard();
-                }
-            } else {
+//            if (RootUtil.isDeviceRooted()) {
+//                if (BuildConfig.FLAVOR.equals("production")) {
+//
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
+//                    builder.setMessage("Apakah anda ingin melewati pengecekan device?")
+//                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    initializeDashboard();
+//                                }
+//                            });
+//                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
+//                        }
+//                    });
+//                    builder.setCancelable(false);
+//                    devRootedDeviceAlertDialog = builder.create();
+//                    if (!isFinishing())
+//                        devRootedDeviceAlertDialog.show();
+//                } else {
+//                    switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
+////                    initializeDashboard();
+//                }
+//            } else {
                 initializeDashboard();
-            }
+//            }
         } else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
         }
@@ -381,9 +387,8 @@ public class MainPage extends BaseActivity {
         agent = sp.getBoolean(DefineValue.IS_AGENT, false);
         UtilsLoader utilsLoader = new UtilsLoader(this, sp);
 //        utilsLoader.getAppVersion();
-        ActiveAndroid.initialize(this);
         InitializeNavDrawer();
-        setupFab();
+//        setupFab();
         FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userPhoneID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
         AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
@@ -421,9 +426,7 @@ public class MainPage extends BaseActivity {
 
         String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
         if (!notifDataNextLogin.equals("")) {
-
             changeActivityNextLogin(notifDataNextLogin);
-
         }
 //        }
 //        else {
@@ -864,7 +867,7 @@ public class MainPage extends BaseActivity {
             String cust_id = sp.getString(DefineValue.CUST_ID, "");
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_MEMBER, MyApiClient.COMM_ID_PULSA);
-            params.put(WebParams.COMM_ID, commIDLogin);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
@@ -981,7 +984,7 @@ public class MainPage extends BaseActivity {
                                 mEditor.apply();
 
 
-                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            } else if (code.equals(WebParams.LOGOUT_CODE) || code.equals(WebParams.ERROR_0003)) {
                                 Timber.d("isi response autologout:" + model.getError_message());
 
                                 String message = model.getError_message();
@@ -994,8 +997,6 @@ public class MainPage extends BaseActivity {
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
                                 alertDialogUpdateApp.showDialogUpdate(MainPage.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(MainPage.this, model.getError_message());
@@ -1035,10 +1036,10 @@ public class MainPage extends BaseActivity {
             callBBSCityService();
             checkAndRunServiceBBS();
             callAgentShopService();
-            callBBSBirthPlaceService();
         } else {
 
         }
+        callBBSBirthPlaceService();
     }
 
     /**
@@ -1054,14 +1055,14 @@ public class MainPage extends BaseActivity {
     }
 
     private void CheckNotification() {
-        Thread mth = new Thread() {
-            @Override
-            public void run() {
-                NotificationHandler mNoHand = new NotificationHandler(MainPage.this, sp);
-                mNoHand.sentRetrieveNotif();
-            }
-        };
-        mth.start();
+//        Thread mth = new Thread() {
+//            @Override
+//            public void run() {
+//                NotificationHandler mNoHand = new NotificationHandler(MainPage.this, sp);
+//                mNoHand.sentRetrieveNotif();
+//            }
+//        };
+//        mth.start();
     }
 
     private void callBBSCityService() {
@@ -1105,7 +1106,7 @@ public class MainPage extends BaseActivity {
             showCreatePin();
         } else if (levelClass.isLevel1QAC() && sp.getString(DefineValue.IS_FIRST, "").equalsIgnoreCase(DefineValue.YES)) {
             showMyProfile();
-        }else if (sp.getString(DefineValue.FORCE_CHANGE_PIN, "").equalsIgnoreCase(DefineValue.STRING_YES)) {
+        } else if (sp.getString(DefineValue.FORCE_CHANGE_PIN, "").equalsIgnoreCase(DefineValue.STRING_YES)) {
             showChangePin();
         }
 //        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
@@ -1127,6 +1128,11 @@ public class MainPage extends BaseActivity {
                 i = new Intent(this, Introduction.class);
                 break;
             case FIRST_SCREEN_SPLASHSCREEN:
+//                if (LocaleManager.getLocale(getResources()).getLanguage().equals("in")) {
+                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
+//                } else {
+//                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, false);
+//                }
                 i = new Intent(this, SplashScreen.class);
                 break;
             default:
@@ -1230,6 +1236,14 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.MEMBER_CREATED);
         mEditor.remove(DefineValue.LAST_CURRENT_LONGITUDE);
         mEditor.remove(DefineValue.LAST_CURRENT_LATITUDE);
+        mEditor.remove(DefineValue.COMPANY_TYPE);
+        mEditor.remove(DefineValue.SMS_CONTENT);
+        mEditor.remove(DefineValue.SMS_CONTENT_ENCRYPTED);
+        mEditor.remove(DefineValue.PROFILE_DOB);
+        mEditor.remove(DefineValue.IS_INQUIRY_SMS);
+        mEditor.remove(DefineValue.AGENT_COL);
+        mEditor.remove(DefineValue.IS_AGENT_TOP);
+        mEditor.remove(DefineValue.IS_AGENT_BDK);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -1329,7 +1343,7 @@ public class MainPage extends BaseActivity {
 //                            switchActivity(i, ACTIVITY_RESULT);
                             break;
                         case NotificationActivity.REJECTED_KTP:
-                            Intent e = new Intent(this, MyProfileNewActivity.class);
+                            Intent e = new Intent(this, UpgradeMemberViaOnline.class);
                             switchActivity(e, ACTIVITY_RESULT);
                             break;
                         case NotificationActivity.REJECTED_SIUP_NPWP:
@@ -1378,8 +1392,8 @@ public class MainPage extends BaseActivity {
 
     private void showLogoutDialog() {
         AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
-        alertbox.setTitle("Warning");
-        alertbox.setMessage("Exit Application?");
+        alertbox.setTitle(getString(R.string.warning));
+        alertbox.setMessage(getString(R.string.exit_message));
         alertbox.setPositiveButton("OK", (arg0, arg1) -> switchLogout());
         alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
         });
@@ -1583,29 +1597,25 @@ public class MainPage extends BaseActivity {
     private void deleteData() {
 //        sp.edit().clear().apply();
         CustomSecurePref.getInstance().ClearAllCustomData();
-        listTimeLineModel.deleteAll();
-        listHistoryModel.deleteAll();
-        commentModel.deleteAll();
-        likeModel.deleteAll();
     }
 
 
-    private void setupFab() {
-        materialSheetFab = FabInstance.newInstance(this, new FabInstance.OnBtnListener() {
-            @Override
-            public void OnClickItemFAB(int idx) {
-                switch (idx) {
-                    case FabInstance.ITEM_FAB_ASK4MONEY:
-                        switchMenu(NavigationDrawMenu.MASK4MONEY, null);
-                        break;
-                    case FabInstance.ITEM_FAB_PAYFRIENDS:
-                        switchMenu(NavigationDrawMenu.MPAYFRIENDS, null);
-                        break;
-                }
-            }
-        });
-
-    }
+//    private void setupFab() {
+//        materialSheetFab = FabInstance.newInstance(this, new FabInstance.OnBtnListener() {
+//            @Override
+//            public void OnClickItemFAB(int idx) {
+//                switch (idx) {
+//                    case FabInstance.ITEM_FAB_ASK4MONEY:
+//                        switchMenu(NavigationDrawMenu.MASK4MONEY, null);
+//                        break;
+//                    case FabInstance.ITEM_FAB_PAYFRIENDS:
+//                        switchMenu(NavigationDrawMenu.MPAYFRIENDS, null);
+//                        break;
+//                }
+//            }
+//        });
+//
+//    }
 
     private void showValidasiEmail() {
         Intent i = new Intent(this, ValidasiEmailActivity.class);
@@ -1616,4 +1626,6 @@ public class MainPage extends BaseActivity {
     private void callAgentShopService() {
         AgentShopService.getAgentShop(MainPage.this);
     }
+
+
 }

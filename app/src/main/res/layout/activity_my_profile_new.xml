@@ -151,7 +151,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="30dp"
                     android:background="@drawable/rounded_background_blue"
-                    android:text="Selanjutnya"
+                    android:text="@string/next"
                     android:textColor="@color/white" />
             </LinearLayout>
 
@@ -218,7 +218,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="12dp"
-                            android:text="Foto KTP / Paspor"
+                            android:text="@string/KTP_title"
                             android:textColor="@color/grey_1000b"
                             android:textSize="16dp"
                             android:id="@+id/tv_foto_ktp_paspor"/>
@@ -226,7 +226,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="96dp"
                             android:layout_below="@+id/tv_foto_ktp_paspor"
-                            android:id="@+id/camera_ktp_paspor"
+                            android:id="@+id/camera_ktp"
                             android:layout_centerInParent="true"
                             android:onClick="camera_ktp_paspor_dialog"
                             android:background="@drawable/ktp_new"/>
@@ -235,7 +235,7 @@
                             android:id="@+id/tv_respon_reject_ktp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/camera_ktp_paspor"
+                            android:layout_below="@+id/camera_ktp"
                             android:textColor="@color/red"
                             android:gravity="left"/>
                         <TextView
@@ -268,12 +268,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="12dp"
-                            android:text="Foto Selfie dengan KTP / Paspor"
+                            android:text="@string/KTP_and_cust_title"
                             android:textColor="@color/grey_1000b"
                             android:textSize="16dp" />
 
                         <ImageButton
-                            android:id="@+id/camera_selfie_ktp_paspor"
+                            android:id="@+id/camera_selfie_ktp"
                             android:layout_width="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_height="96dp"
@@ -286,14 +286,14 @@
                             android:id="@+id/tv_respon_reject_selfie"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/camera_selfie_ktp_paspor"
+                            android:layout_below="@+id/camera_selfie_ktp"
                             android:textColor="@color/red"
                             android:gravity="left"/>
                         <TextView
                             android:id="@+id/tv_pb2_myprofileactivity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/camera_selfie_ktp_paspor"
+                            android:layout_below="@+id/camera_selfie_ktp"
                             android:textColor="@color/grey_1000b"
                             android:gravity="right"/>
                         <ProgressBar
@@ -318,7 +318,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="12dp"
-                            android:text="Foto Tanda Tangan Anda"
+                            android:text="@string/sign_title"
                             android:textColor="@color/grey_1000b"
                             android:textSize="16dp" />
 

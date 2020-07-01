@@ -4,14 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
-import com.activeandroid.util.Log;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
@@ -20,18 +13,18 @@ import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
+import com.sgo.saldomu.activities.UpgradeMemberViaOnline;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.WebParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -44,44 +37,44 @@ public class FCMManager {
     public final static int SYNC_BBS_DATA = 70;
     public final static int OPEN_PLAYSTORE = 80;
 
-    public final static int AGENT_LOCATION_SET_SHOP_LOCATION        = 1000;
-    public final static int AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT  = 1001;
-    public final static int AGENT_LOCATION_SHOP_REJECT_TRANSACTION  = 1002;
-    public final static int AGENT_LOCATION_KEY_ACCEPT_TRANSACTION   = 1003;
-    public final static int AGENT_LOCATION_KEY_REJECT_TRANSACTION   = 1004;
-    public final static int MEMBER_CONFIRM_CASHOUT_TRANSACTION      = 1005;
-    public final static int SHOP_ACCEPT_TRX                         = 1006;
-    public final static int SHOP_NOTIF_TRANSACTION                  = 1007;
-    public final static int MEMBER_RATING_TRX                       = 1008;
-    public final static int REJECT_UPGRADE_MEMBER                   = 2;
-    public final static int REJECT_UPGRADE_AGENT                    = 202;
-    public final static int BLAST_INFO                              = 1009;
-    public final static int SOURCE_OF_FUND                          = 1010;
-    public final static int VERIFY_ACC                              = 1011;
-    public final static int CONFIRM_ATC                             = 1012;
+    public final static int AGENT_LOCATION_SET_SHOP_LOCATION = 1000;
+    public final static int AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT = 1001;
+    public final static int AGENT_LOCATION_SHOP_REJECT_TRANSACTION = 1002;
+    public final static int AGENT_LOCATION_KEY_ACCEPT_TRANSACTION = 1003;
+    public final static int AGENT_LOCATION_KEY_REJECT_TRANSACTION = 1004;
+    public final static int MEMBER_CONFIRM_CASHOUT_TRANSACTION = 1005;
+    public final static int SHOP_ACCEPT_TRX = 1006;
+    public final static int SHOP_NOTIF_TRANSACTION = 1007;
+    public final static int MEMBER_RATING_TRX = 1008;
+    public final static int REJECT_UPGRADE_MEMBER = 2;
+    public final static int REJECT_UPGRADE_AGENT = 202;
+    public final static int BLAST_INFO = 1009;
+    public final static int SOURCE_OF_FUND = 1010;
+    public final static int VERIFY_ACC = 1011;
+    public final static int CONFIRM_ATC = 1012;
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
 
-    private Bundle bundleNextLogin  = new Bundle();
+    private Bundle bundleNextLogin = new Bundle();
     private Context mContext;
     private SecurePreferences sp;
     private BundleToJSON bundleToJSON = new BundleToJSON();
 //    final private static String token="";
 
-    public FCMManager(Context context){
+    public FCMManager(Context context) {
         this.mContext = context;
     }
 
-    public static FCMManager getInstance(Context context){
+    public static FCMManager getInstance(Context context) {
         return new FCMManager(context);
     }
 
-    public static void subscribeAgent(){
+    public static void subscribeAgent() {
         FirebaseMessaging.getInstance().subscribeToTopic(AGENT_TOPIC);
     }
 
-    public static void unsubscribeAgent(){
+    public static void unsubscribeAgent() {
         FirebaseMessaging.getInstance().unsubscribeFromTopic(AGENT_TOPIC);
     }
 
@@ -89,20 +82,20 @@ public class FCMManager {
         return bundleNextLogin;
     }
 
-    public static void subscribeAll(){
+    public static void subscribeAll() {
         Timber.d("Subscribe All");
         FirebaseMessaging.getInstance().subscribeToTopic(ALL_TOPIC);
     }
 
-    public Intent checkingAction(int type, Map<String, String> data){
+    public Intent checkingAction(int type, Map<String, String> data) {
         Intent i = null;
-        Timber.d("isi index type "+ String.valueOf(type));
+        Timber.d("isi index type " + String.valueOf(type));
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         SecurePreferences.Editor mEditor = null;
 
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        if(flagLogin == null)
+        if (flagLogin == null)
             flagLogin = DefineValue.STRING_NO;
 
         Bundle msg = new Bundle();
@@ -111,7 +104,7 @@ public class FCMManager {
             msg.putString(key, data.get(key));
         }
 
-        if ( msg.containsKey("model_notif") && msg.getString("model_notif") != null ) {
+        if (msg.containsKey("model_notif") && msg.getString("model_notif") != null) {
 
             int modelNotif = Integer.parseInt(msg.getString("model_notif"));
             bundleNextLogin.putInt("model_notif", modelNotif);
@@ -121,9 +114,9 @@ public class FCMManager {
             switch (modelNotif) {
                 case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
                     i = new Intent(mContext, BbsMemberLocationActivity.class);
-                    if ( msg.containsKey("options") && msg.getString("options") != null ) {
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
                         try {
-                            JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
                             bundleNextLogin.putString("memberId", jsonOptions.getJSONObject(0).getString("member_id"));
                             bundleNextLogin.putString("shopId", jsonOptions.getJSONObject(0).getString("shop_id"));
@@ -139,15 +132,15 @@ public class FCMManager {
                             bundleNextLogin.putString("isMobility", jsonOptions.getJSONObject(0).getString("is_mobility"));
                             i.putExtras(bundleNextLogin);
 
-                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                            if (flagLogin.equals(DefineValue.STRING_NO)) {
                                 bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
                                 mEditor = sp.edit();
-                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
                                 mEditor.apply();
                             }
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: "+e.getMessage());
+                            Timber.d("JSONException: " + e.getMessage());
                         }
 
                     }
@@ -160,22 +153,22 @@ public class FCMManager {
 
                     bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
                     mEditor = sp.edit();
-                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
                     mEditor.apply();
 
                     break;
                 case FCMManager.AGENT_LOCATION_KEY_REJECT_TRANSACTION:
                     i = new Intent(mContext, BbsSearchAgentActivity.class);
-                    if ( msg.containsKey("options") && msg.getString("options") != null ) {
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
                         try {
-                            JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
-                            String keyCode          = jsonOptions.getJSONObject(0).getString("key_code");
-                            String keyAmount        = jsonOptions.getJSONObject(0).getString("amount");
-                            String categoryName     = jsonOptions.getJSONObject(0).getString("category_name");
-                            String categoryId       = jsonOptions.getJSONObject(0).getString("category_id");
-                            Double benefLatitude    = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_latitude"));
-                            Double benefLongitude    = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_longitude"));
+                            String keyCode = jsonOptions.getJSONObject(0).getString("key_code");
+                            String keyAmount = jsonOptions.getJSONObject(0).getString("amount");
+                            String categoryName = jsonOptions.getJSONObject(0).getString("category_name");
+                            String categoryId = jsonOptions.getJSONObject(0).getString("category_id");
+                            Double benefLatitude = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_latitude"));
+                            Double benefLongitude = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_longitude"));
 
                             bundleNextLogin.putString(DefineValue.CATEGORY_ID, categoryId);
                             bundleNextLogin.putString(DefineValue.CATEGORY_NAME, categoryName);
@@ -187,15 +180,15 @@ public class FCMManager {
 
                             i.putExtras(bundleNextLogin);
 
-                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                            if (flagLogin.equals(DefineValue.STRING_NO)) {
                                 bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
                                 mEditor = sp.edit();
-                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
                                 mEditor.apply();
                             }
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: "+e.getMessage());
+                            Timber.d("JSONException: " + e.getMessage());
                         }
 
                     }
@@ -216,16 +209,16 @@ public class FCMManager {
 
                     bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
                     mEditor = sp.edit();
-                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
                     mEditor.apply();
 
                     break;
                 case FCMManager.SHOP_ACCEPT_TRX:
                     i = new Intent(mContext, BbsMapViewByMemberActivity.class);
 
-                    if ( msg.containsKey("options") && msg.getString("options") != null ) {
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
                         try {
-                            JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
                             bundleNextLogin.putString(DefineValue.BBS_TX_ID, jsonOptions.getJSONObject(0).getString("tx_id"));
                             bundleNextLogin.putString(DefineValue.CATEGORY_NAME, jsonOptions.getJSONObject(0).getString("category_name"));
@@ -234,14 +227,14 @@ public class FCMManager {
                             i.putExtras(bundleNextLogin);
 
                             //if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
-                                mEditor = sp.edit();
-                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                                mEditor.apply();
+                            bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                            mEditor = sp.edit();
+                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
+                            mEditor.apply();
                             //}
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: "+e.getMessage());
+                            Timber.d("JSONException: " + e.getMessage());
                         }
 
                     }
@@ -250,16 +243,15 @@ public class FCMManager {
                     break;
                 case FCMManager.SHOP_NOTIF_TRANSACTION:
 
-                    if ( msg.containsKey("options") && msg.getString("options") != null )
-                    {
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
 
 
                         try {
-                            JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
-                            String keyCode          = jsonOptions.getJSONObject(0).getString("key_code");
-                            String keyAmount        = jsonOptions.getJSONObject(0).getString("amount");
-                            String keySchemeCode    = jsonOptions.getJSONObject(0).getString("scheme_code");
+                            String keyCode = jsonOptions.getJSONObject(0).getString("key_code");
+                            String keyAmount = jsonOptions.getJSONObject(0).getString("amount");
+                            String keySchemeCode = jsonOptions.getJSONObject(0).getString("scheme_code");
 
                             bundleNextLogin.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
                             if (keySchemeCode.equals(DefineValue.CTA)) {
@@ -276,25 +268,24 @@ public class FCMManager {
 
                             bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
 
-                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
                             mEditor.apply();
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: "+e.getMessage());
+                            Timber.d("JSONException: " + e.getMessage());
                         }
                     }
                     break;
                 case FCMManager.AGENT_LOCATION_KEY_ACCEPT_TRANSACTION:
 
-                    if ( msg.containsKey("options") && msg.getString("options") != null )
-                    {
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
 
                         try {
-                            JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
-                            String keyCode          = jsonOptions.getJSONObject(0).getString("key_code");
-                            String keyAmount        = jsonOptions.getJSONObject(0).getString("amount");
-                            String keySchemeCode    = jsonOptions.getJSONObject(0).getString("scheme_code");
+                            String keyCode = jsonOptions.getJSONObject(0).getString("key_code");
+                            String keyAmount = jsonOptions.getJSONObject(0).getString("amount");
+                            String keySchemeCode = jsonOptions.getJSONObject(0).getString("scheme_code");
 
                             bundleNextLogin.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
                             if (keySchemeCode.equals(DefineValue.CTA)) {
@@ -319,12 +310,12 @@ public class FCMManager {
 
                             bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
                             mEditor = sp.edit();
-                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
                             mEditor.apply();
 
 
                         } catch (JSONException e) {
-                            Timber.d("JSONException: "+e.getMessage());
+                            Timber.d("JSONException: " + e.getMessage());
                         }
                     }
                     break;
@@ -341,19 +332,17 @@ public class FCMManager {
                             String remark_foto = jsonOptions.getJSONObject(0).getString("remark_foto");
                             String remark_ttd = jsonOptions.getJSONObject(0).getString("remark_ttd");
 
-                            sp.edit().putInt(DefineValue.IS_REGISTERED_LEVEL,isRegisteredLevel).apply();
-                            sp.edit().putString(DefineValue.REJECT_KTP,reject_ktp).apply();
-                            sp.edit().putString(DefineValue.REJECT_FOTO,reject_foto).apply();
-                            sp.edit().putString(DefineValue.REJECT_TTD,reject_ttd).apply();
-                            sp.edit().putString(DefineValue.REMARK_KTP,remark_ktp).apply();
-                            sp.edit().putString(DefineValue.REMARK_FOTO,remark_foto).apply();
-                            sp.edit().putString(DefineValue.REMARK_TTD,remark_ttd).apply();
+                            sp.edit().putInt(DefineValue.IS_REGISTERED_LEVEL, isRegisteredLevel).apply();
+                            sp.edit().putString(DefineValue.REJECT_KTP, reject_ktp).apply();
+                            sp.edit().putString(DefineValue.REJECT_FOTO, reject_foto).apply();
+                            sp.edit().putString(DefineValue.REJECT_TTD, reject_ttd).apply();
+                            sp.edit().putString(DefineValue.REMARK_KTP, remark_ktp).apply();
+                            sp.edit().putString(DefineValue.REMARK_FOTO, remark_foto).apply();
+                            sp.edit().putString(DefineValue.REMARK_TTD, remark_ttd).apply();
                             sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
 
-                            i = new Intent(mContext, MyProfileNewActivity.class);
-                        }
-                        catch (JSONException e)
-                        {
+                            i = new Intent(mContext, UpgradeMemberViaOnline.class);
+                        } catch (JSONException e) {
                             Timber.d("JSONException: " + e.getMessage());
                         }
                     }
@@ -368,17 +357,15 @@ public class FCMManager {
                             String remark_siup = jsonOptions.getJSONObject(0).getString("remark_siup");
                             String remark_npwp = jsonOptions.getJSONObject(0).getString("remark_npwp");
 
-                            sp.edit().putString(DefineValue.REJECT_SIUP,reject_siup).apply();
-                            sp.edit().putString(DefineValue.REJECT_NPWP,reject_npwp).apply();
-                            sp.edit().putString(DefineValue.REMARK_SIUP,remark_siup).apply();
-                            sp.edit().putString(DefineValue.REMARK_NPWP,remark_npwp).apply();
-                            sp.edit().putBoolean(DefineValue.IS_UPGRADE_AGENT,false).apply();
+                            sp.edit().putString(DefineValue.REJECT_SIUP, reject_siup).apply();
+                            sp.edit().putString(DefineValue.REJECT_NPWP, reject_npwp).apply();
+                            sp.edit().putString(DefineValue.REMARK_SIUP, remark_siup).apply();
+                            sp.edit().putString(DefineValue.REMARK_NPWP, remark_npwp).apply();
+                            sp.edit().putBoolean(DefineValue.IS_UPGRADE_AGENT, false).apply();
                             sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_AGENT, jsonOptions.toString()).apply();
 
                             i = new Intent(mContext, UpgradeAgentActivity.class);
-                        }
-                        catch (JSONException e)
-                        {
+                        } catch (JSONException e) {
                             Timber.d("JSONException: " + e.getMessage());
                         }
                     }
@@ -391,14 +378,12 @@ public class FCMManager {
                         try {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
                             String txId = jsonOptions.getJSONObject(0).getString("tx_id");
-                            bundleNextLogin.putString(DefineValue.TX_ID,txId);
-                            bundleNextLogin.putString(DefineValue.IS_INAPP,"Y");
+                            bundleNextLogin.putString(DefineValue.TX_ID, txId);
+                            bundleNextLogin.putString(DefineValue.IS_INAPP, "Y");
 
                             i = new Intent(mContext, SourceOfFundActivity.class);
                             i.putExtras(bundleNextLogin);
-                        }
-                        catch (JSONException e)
-                        {
+                        } catch (JSONException e) {
                             Timber.d("JSONException: " + e.getMessage());
                         }
                     }
@@ -413,9 +398,25 @@ public class FCMManager {
 
                     bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
                     mEditor = sp.edit();
-                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, bundleToJSONString);
                     mEditor.apply();
 
+                    break;
+                case FCMManager.VERIFY_ACC:
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            String userID = jsonOptions.getJSONObject(0).getString(WebParams.USER_ID);
+                            bundleNextLogin.putString(DefineValue.USER_ID, userID);
+                            if (flagLogin.equals(DefineValue.STRING_NO)) {
+
+                                i = new Intent(mContext, SourceOfFundActivity.class);
+                                i.putExtras(bundleNextLogin);
+                            }
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
+                        }
+                    }
                     break;
                 default:
                     i = new Intent(mContext, MainPage.class);
@@ -426,8 +427,8 @@ public class FCMManager {
         return i;
     }
 
-    public Intent checkingAction(int type){
-        Timber.d("isi index type2 "+ String.valueOf(type));
+    public Intent checkingAction(int type) {
+        Timber.d("isi index type2 " + String.valueOf(type));
         Intent i;
         switch (type) {
             case OPEN_PLAYSTORE:
@@ -442,7 +443,7 @@ public class FCMManager {
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 break;
             default:
-                i =  new Intent();
+                i = new Intent();
                 break;
         }
         return i;

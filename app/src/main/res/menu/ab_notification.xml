@@ -33,6 +33,15 @@
             android:visible="false"
             />
         <item
+            android:id="@+id/cancel"
+            android:orderInCategory="4"
+            android:title="@string/cancel"
+            android:iconTint="@color/red"
+            android:tooltipText="@string/cancel"
+            someNamespace:showAsAction="always"
+            android:visible="false"
+            />
+        <item
             android:id="@+id/right_drawer_menu"
             android:orderInCategory="99"
             android:title="@string/social_promo"

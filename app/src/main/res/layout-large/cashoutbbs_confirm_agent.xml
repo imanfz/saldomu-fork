@@ -269,21 +269,21 @@
                         android:textSize="@dimen/sheet_item_textsize"
                         android:textColor="@color/colorSecondaryDark"/>
                 </TableRow>
-                <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+<!--                <TableRow-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content">-->
 
-                    <TextView
-                        android:layout_weight="1"
-                        android:text="@string/additional_fee"
-                        android:textColor="@color/colorSecondaryDark"/>
+<!--                    <TextView-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:text="@string/additional_fee"-->
+<!--                        android:textColor="@color/colorSecondaryDark"/>-->
 
-                    <TextView
-                        android:id="@+id/bbscashout_additional_fee"
-                        android:layout_weight="1"
-                        android:textSize="@dimen/sheet_item_textsize"
-                        android:textColor="@color/colorSecondaryDark"/>
-                </TableRow>
+<!--                    <TextView-->
+<!--                        android:id="@+id/bbscashout_additional_fee"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:textSize="@dimen/sheet_item_textsize"-->
+<!--                        android:textColor="@color/colorSecondaryDark"/>-->
+<!--                </TableRow>-->
                 <TableRow
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -328,7 +328,7 @@
                 >
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cobbs_kode_tarik_tunai"
+                    android:text="@string/kode_tarik_tunai"
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
                     android:id="@+id/tv_kode"

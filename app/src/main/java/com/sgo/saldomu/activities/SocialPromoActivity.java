@@ -89,14 +89,14 @@ public class SocialPromoActivity extends BaseActivity {
                 Toast.makeText(activity, error.getDescription(), Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
-                if(MyApiClient.IS_PROD)
-                    super.onReceivedSslError(view, handler, error);
-                else
-                    handler.proceed();
-
-            }
+//            @Override
+//            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
+//                if(MyApiClient.IS_PROD)
+//                    super.onReceivedSslError(view, handler, error);
+//                else
+//                    handler.proceed();
+//
+//            }
 
             @Override
             public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {

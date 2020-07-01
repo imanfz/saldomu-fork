@@ -97,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:id="@+id/agentService"
-                    android:text="Cash In"
+                    android:text="@string/cash_in"
                     style="@style/CashInCashOutLabelAgentProfileBbs" />
 
             </LinearLayout>

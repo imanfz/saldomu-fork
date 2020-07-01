@@ -51,16 +51,10 @@ import java.io.File
 
 class DetailMemberToVerifyActivity : BaseActivity() {
     private val RESULT_CAMERA_KTP = 201
-    //    private val RESULT_CAMERA_CUST_KTP = 202
-//    private val RESULT_CAMERA_TTD = 203
     private val RC_CAMERA_STORAGE = 14
     private lateinit var pickAndCameraUtil: PickAndCameraUtil
     private val KTP_TYPE = 1
-    private val CUST_AND_KTP_TYPE = 2
-    private val TTD_TYPE = 3
     internal var ktp: File? = null
-    internal var custAndKTP: File? = null
-    internal var ttd: File? = null
     private var set_result_photo: Int? = null
 
     override fun getLayoutResource(): Int {
@@ -80,7 +74,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
 
         pickAndCameraUtil = PickAndCameraUtil(this)
 
-        camera_ktp_paspor.setOnClickListener {
+        camera_ktp_paspor_via_agent.setOnClickListener {
             set_result_photo = RESULT_CAMERA_KTP
             camera_dialog()
         }
@@ -121,6 +115,8 @@ class DetailMemberToVerifyActivity : BaseActivity() {
             params[WebParams.CUST_RW] = intent.getStringExtra(DefineValue.MEMBER_RW)
             params[WebParams.CUST_KELURAHAN] = intent.getStringExtra(DefineValue.MEMBER_KELURAHAN)
             params[WebParams.CUST_KECAMATAN] = intent.getStringExtra(DefineValue.MEMBER_KECAMATAN)
+            params[WebParams.CUST_KABUPATEN] = intent.getStringExtra(DefineValue.MEMBER_KABUPATEN)
+            params[WebParams.CUST_PROVINSI] = intent.getStringExtra(DefineValue.MEMBER_PROVINSI)
             params[WebParams.CUST_RELIGION] = intent.getStringExtra(DefineValue.MEMBER_RELIGION)
             params[WebParams.CUST_MARRIAGE_STATUS] = intent.getStringExtra(DefineValue.MEMBER_STATUS)
             params[WebParams.CUST_OCCUPATION] = intent.getStringExtra(DefineValue.MEMBER_OCUPATION)
@@ -223,7 +219,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                         val path = CameraActivity.getResult(data)
                         ImageCompressionAsyncTask(KTP_TYPE).execute(path)
                     } else {
-                        camera_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
+                        camera_ktp_paspor_via_agent.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
                         Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
                     }
                 }
@@ -322,7 +318,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                 Toast.makeText(this@DetailMemberToVerifyActivity, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show()
 
                 if (flag == KTP_TYPE) {
-                    camera_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
+                    camera_ktp_paspor_via_agent.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
                 }
 //                else if (flag == CUST_AND_KTP_TYPE) {
 //                    camera_selfie_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
@@ -348,7 +344,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
         override fun onPostExecute(file: File) {
             when (type) {
                 KTP_TYPE -> {
-                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_ktp_paspor)
+                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_ktp_paspor_via_agent)
                     ktp = file
                     uploadFileToServer(ktp!!, KTP_TYPE)
                 }

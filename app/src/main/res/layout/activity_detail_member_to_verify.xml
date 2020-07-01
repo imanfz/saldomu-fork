@@ -34,7 +34,7 @@
                 android:layout_margin="@dimen/margin_10dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/camera_ktp"
-                android:id="@+id/camera_ktp_paspor"/>
+                android:id="@+id/camera_ktp_paspor_via_agent"/>
 <!--            <TextView-->
 <!--                android:layout_width="match_parent"-->
 <!--                android:layout_height="wrap_content"-->

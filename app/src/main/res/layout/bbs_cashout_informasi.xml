@@ -4,6 +4,7 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/tv_destination"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -38,7 +39,8 @@
         android:textColor="@color/colorSecondaryDark"
         android:textStyle="italic"
         android:gravity="right"
-        android:text="@string/example_bca"/>
+        android:text="@string/example_bca"
+        android:id="@+id/tv_bank_example"/>
 
     <EditText
         android:visibility="gone"

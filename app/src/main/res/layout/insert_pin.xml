@@ -1,65 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
-    <include android:id="@+id/main_toolbar"
-        layout="@layout/toolbar_main"/>
+    <include
+        android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main" />
 
     <LinearLayout
-        android:descendantFocusability="beforeDescendants"
-        android:background="@color/grey_1000w"
-        android:orientation="vertical"
-        android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/main_toolbar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:background="@color/grey_1000w"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp"
             android:orientation="vertical"
-            >
+            android:padding="10dp">
+
             <TextView
                 android:id="@+id/pin_tries_value"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:textColor="@color/red_600"
+                android:layout_gravity="end"
                 android:text="@string/login_failed_attempt_1"
-                />
+                android:textColor="@color/red_600"
+                android:visibility="gone" />
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/icon_lock"/>
+                android:src="@drawable/icon_lock" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_horizontal"
                 android:text="@string/keep_your_pin_confidential"
-                android:textStyle="italic"/>
-            <FrameLayout
+                android:textStyle="italic" />
 
-                android:id="@+id/root"
-                android:layout_weight="1"
+            <com.sgo.saldomu.widgets.KeyboardPin
+                android:id="@+id/keyboard"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                />
+                android:layout_height="wrap_content"/>
         </LinearLayout>
-
-
-
     </LinearLayout>
 
-
+    <TextView
+        android:id="@+id/tv_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text=""
+        android:textSize="12sp" />
 </RelativeLayout>

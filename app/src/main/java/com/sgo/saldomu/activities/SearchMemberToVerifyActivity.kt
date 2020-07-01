@@ -1,13 +1,11 @@
 package com.sgo.saldomu.activities
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.google.gson.JsonObject
-import com.securepreferences.SecurePreferences
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -18,7 +16,6 @@ import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
-import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseActivity
@@ -48,6 +45,7 @@ class SearchMemberToVerifyActivity : BaseActivity() {
         }
 
         next_button.setOnClickListener {
+            showProgressDialog()
             val intent = Intent(this, UpgradeMemberViaAgentActivity::class.java)
 //            intent.putExtra(DefineValue.MEMBER_ID_CUST, memberIdCust)
             startActivity(intent)
@@ -69,13 +67,13 @@ class SearchMemberToVerifyActivity : BaseActivity() {
 
     private fun inputValidation():Boolean
     {
-        if(etNote.text.length==0 || etNote.text.length<10)
+        if(etNote.text.isEmpty() || etNote.text.length<10)
         {
             etNote.requestFocus()
-            etNote.setError(getString(R.string.login_validation_userID))
+            etNote.error = getString(R.string.login_validation_userID)
             return false
         }
-        return true;
+        return true
     }
 
     private fun searchMember() {
@@ -131,7 +129,7 @@ class SearchMemberToVerifyActivity : BaseActivity() {
 
                                 }
 
-                                tv_membername.setText(maskedName)
+                                tv_membername.text = maskedName
 
                             } else if (code == WebParams.LOGOUT_CODE) {
                                 val test = AlertDialogLogout.getInstance()
@@ -163,5 +161,10 @@ class SearchMemberToVerifyActivity : BaseActivity() {
             Timber.d("httpclient:" + e.message)
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dismissProgressDialog()
     }
 }

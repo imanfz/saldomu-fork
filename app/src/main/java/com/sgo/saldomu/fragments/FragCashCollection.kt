@@ -62,6 +62,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
     private var otp: String? = null
     private var benefProductValueCode: String? = ""
     private var benefProductValueName: String? = ""
+    private var fee: String? = ""
 
 
     private var comm: BBSCommModel? = null
@@ -120,7 +121,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (spinner_no_acc.getItemAtPosition(position).toString().equals("Rekening Lainnya")) {
+                if (spinner_no_acc.getItemAtPosition(position).toString().equals(getString(R.string.other_acct))) {
                     divider_acc.visibility = View.VISIBLE
                     et_no_acct.visibility = View.VISIBLE
                 } else {
@@ -179,9 +180,9 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                             i++
                         }
                         if (accountList.size != 0) {
-                            accountListData.add(getString(R.string.other_acct))
+//                            accountListData.add(getString(R.string.other_acct))
                             spinner_no_acc.visibility = View.VISIBLE
-                            spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, accountListData)
+                            spinner_no_acc.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_dropdown_item, accountListData)
                         } else {
                             spinner_no_acc.visibility = View.GONE
                             et_no_acct.visibility = View.VISIBLE
@@ -272,6 +273,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                             productCode = model.tx_product_code
                             benefProductValueCode = model.benef_product_value_code
                             benefProductValueName = model.benef_product_value_name
+                            fee = model.admin_fee
                             confirmPayment()
                         }
                         WebParams.LOGOUT_CODE -> {
@@ -303,6 +305,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                 }
 
                 override fun onComplete() {
+                    dismissProgressDialog()
                 }
 
             })
@@ -345,7 +348,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                                     alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                                 }
-                                else -> Toast.makeText(activity, error_message, Toast.LENGTH_LONG).show()
+                                else -> showDialog(error_message)
                             }
 
 
@@ -385,6 +388,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                             try {
                                 val model = getGson().fromJson(response.toString(), jsonModel::class.java)
                                 var code = response.getString(WebParams.ERROR_CODE)
+                                var errormessage = response.getString(WebParams.ERROR_MESSAGE)
                                 Timber.d("isi response InquiryTrx cash collection: $response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
@@ -400,6 +404,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                         bundle.putString(DefineValue.MEMBER_CODE, memberCode)
                                         bundle.putString(DefineValue.PRODUCT_CODE, productCode)
                                         bundle.putString(DefineValue.AMOUNT, amount)
+                                        bundle.putString(DefineValue.FEE, fee)
 
                                         newFrag.arguments = bundle
                                         if (activity == null) {
@@ -427,9 +432,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                     }
                                     else -> {
                                         Timber.d("Error inquirytrx cash collection:$response")
-                                        code = response.getString(WebParams.ERROR_MESSAGE)
-
-                                        Toast.makeText(activity, code, Toast.LENGTH_SHORT).show()
+                                        showDialog(errormessage)
                                     }
                                 }
                             } catch (e: JSONException) {

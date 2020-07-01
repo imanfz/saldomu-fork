@@ -18,10 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.DenomSCADMActivity;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.SgoPlusWeb;
@@ -213,7 +215,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                     public void onResponses(JSONObject response) {
                         try {
                             dismissProgressDialog();
-
+                            Gson gson = new Gson();
                             jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                             String code = response.getString(WebParams.ERROR_CODE);
                             String error_message = response.getString(WebParams.ERROR_MESSAGE);
@@ -272,6 +274,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                         @Override
                         public void onResponses(JSONObject response) {
                             try {
+                                Gson gson = new Gson();
                                 jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 String error_message = response.getString(WebParams.ERROR_MESSAGE);
@@ -295,8 +298,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                                 } else {
                                     Timber.d("Error resendTokenSGOL:" + response.toString());
                                     code = response.getString(WebParams.ERROR_MESSAGE);
-
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                    showDialog(code);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -324,21 +326,25 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            String link = MyApiClient.LINK_INSERT_TRANS_TOPUP;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = tx_id + comm_code + product_code + tokenValue;
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
-
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_name);
             params.put(WebParams.MEMBER_ID, member_id_scadm);
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(tokenValue));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncryptCommID(comm_name, uuid, dateTime, userPhoneID, tokenValue, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -415,7 +421,8 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                 _amount = amount;
                 //    Log.d("onActivity result", "Biller Fragment result pin value");
                 sentInsertTransTopup(value_pin, _amount);
-            }
+            }else
+                backToTopUpSACDM();
         }
     }
 
@@ -577,12 +584,6 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
-    @Override
-    public void onOkButton() {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        fm.popBackStack();
-    }
-
     private void showDialog(String msg) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
@@ -604,10 +605,19 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                //SgoPlusWeb.this.finish();
+                getActivity().onBackPressed();
             }
         });
 
         dialog.show();
+    }
+
+    @Override
+    public void onOkButton() {
+        backToTopUpSACDM();
+    }
+
+    void backToTopUpSACDM() {
+        getFragManager().popBackStack(TopUpSCADMActivity.TOPUP, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

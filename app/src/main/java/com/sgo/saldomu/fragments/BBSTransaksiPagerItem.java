@@ -1,6 +1,5 @@
 package com.sgo.saldomu.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,7 +31,7 @@ public class BBSTransaksiPagerItem extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        v =  inflater.inflate(R.layout.bbs_transaksi_pager_item, container, false);
+        v = inflater.inflate(R.layout.bbs_transaksi_pager_item, container, false);
         return v;
     }
 
@@ -43,50 +42,54 @@ public class BBSTransaksiPagerItem extends Fragment {
         layout = v.findViewById(R.id.bbsTransaksiFragmentContent);
 
         Bundle bundle = getArguments();
-        String type = "",defaultAmount="", noHpPengirim="", defaultProductCode="";
-        if(bundle != null) {
-            title = bundle.getString(DefineValue.TRANSACTION,"");
+        String type = "", defaultAmount = "", noHpPengirim = "", defaultProductCode = "";
+        if (bundle != null) {
+            title = bundle.getString(DefineValue.TRANSACTION, "");
 //            if (title.equalsIgnoreCase("Tarik Tunai"))
 //            {
 //                title = "Cash Withdrawal";
 //            }else
 //                title = "Cash Deposit";
             isShowRegAccountMenu = false;
-            if(bundle.containsKey(DefineValue.TYPE)) {
+            if (bundle.containsKey(DefineValue.TYPE)) {
                 type = bundle.getString(DefineValue.TYPE);
             }
-            if(bundle.containsKey(DefineValue.AMOUNT)) {
+            if (bundle.containsKey(DefineValue.AMOUNT)) {
                 defaultAmount = bundle.getString(DefineValue.AMOUNT);
             }
-            if(bundle.containsKey(DefineValue.KEY_CODE)) {
+            if (bundle.containsKey(DefineValue.KEY_CODE)) {
                 noHpPengirim = bundle.getString(DefineValue.KEY_CODE);
             }
-            if(bundle.containsKey(DefineValue.PRODUCT_CODE)) {
+            if (bundle.containsKey(DefineValue.PRODUCT_CODE)) {
                 defaultProductCode = bundle.getString(DefineValue.PRODUCT_CODE);
             }
         }
-
-        Fragment newFrag = new BBSTransaksiAmount();
+        Fragment newFrag;
+        if (title.equalsIgnoreCase(getString(R.string.cash_in)) && type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
+            newFrag = new BBSCashIn();
+        else if (title.equalsIgnoreCase(getString(R.string.cash_out)) && type.equalsIgnoreCase(DefineValue.BBS_CASHOUT))
+            newFrag = new BBSCashOut();
+        else
+            newFrag = new BBSTransaksiAmount();
         Bundle args = new Bundle();
         args.putString(DefineValue.TRANSACTION, title);
         args.putString(DefineValue.TYPE, type);
         args.putString(DefineValue.AMOUNT, defaultAmount);
         args.putString(DefineValue.KEY_CODE, noHpPengirim);
-        args.putString(DefineValue.FAVORITE_CUSTOMER_ID, bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID,""));
-        if ( defaultProductCode != null )
+        args.putString(DefineValue.FAVORITE_CUSTOMER_ID, bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, ""));
+        if (defaultProductCode != null)
             args.putString(DefineValue.PRODUCT_CODE, defaultProductCode);
         newFrag.setArguments(args);
-        getChildFragmentManager().beginTransaction().add(R.id.bbsTransaksiFragmentContent , newFrag, BBSTransaksiAmount.TAG).commit();
+        getChildFragmentManager().beginTransaction().add(R.id.bbsTransaksiFragmentContent, newFrag, BBSTransaksiAmount.TAG).commit();
 
         getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                if(title.equalsIgnoreCase(getString(R.string.cash_out))) {
+                if (title.equalsIgnoreCase(getString(R.string.cash_out))) {
                     if (getChildFragmentManager().findFragmentById(R.id.bbsTransaksiFragmentContent) instanceof BBSTransaksiInformasi) {
                         isShowRegAccountMenu = true;
                         getActivity().invalidateOptionsMenu();
-                    }
-                    else {
+                    } else {
                         isShowRegAccountMenu = false;
                     }
                 }
@@ -98,12 +101,12 @@ public class BBSTransaksiPagerItem extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        if(title.equalsIgnoreCase(getString(R.string.cash_out))) {
-            if(isShowRegAccountMenu)
+        if (title.equalsIgnoreCase(getString(R.string.cash_out))) {
+            if (isShowRegAccountMenu)
                 inflater.inflate(R.menu.bbs_reg_acct, menu);
         }
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -119,15 +122,15 @@ public class BBSTransaksiPagerItem extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void switchFragment(Fragment i, String name, Boolean isBackstack){
+    private void switchFragment(Fragment i, String name, Boolean isBackstack) {
         if (getActivity() == null)
             return;
 
-        BBSActivity fca = (BBSActivity ) getActivity();
-        fca.switchContent(i,name,isBackstack);
+        BBSActivity fca = (BBSActivity) getActivity();
+        fca.switchContent(i, name, isBackstack);
     }
 
-    public Fragment getChildFragment(){
+    public Fragment getChildFragment() {
         return getChildFragmentManager().findFragmentById(R.id.bbsTransaksiFragmentContent);
     }
 }

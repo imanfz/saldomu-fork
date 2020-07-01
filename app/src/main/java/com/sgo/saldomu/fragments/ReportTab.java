@@ -78,6 +78,7 @@ public class ReportTab extends Fragment {
             if (isAgent) {
 
                 mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
+                mList.add(FragReport.newInstance(FragReport.REPORT_ADDITIONAL_FEE));
             }
 //            mList.add(FragReport.newInstance(FragReport.REPORT_SCASH));
 //            mList.add(FragReport.newInstance(FragReport.REPORT_ASK));
@@ -100,15 +101,15 @@ public class ReportTab extends Fragment {
         if (getActivity() == null)
             return;
 
-        if (getActivity() instanceof MainPage) {
-            MainPage fca = (MainPage) getActivity();
-            if (fca.materialSheetFab != null) {
-                if (isShow)
-                    fca.materialSheetFab.showFab();
-                else
-                    fca.materialSheetFab.hideSheetThenFab();
-            }
-        }
+//        if (getActivity() instanceof MainPage) {
+//            MainPage fca = (MainPage) getActivity();
+//            if (fca.materialSheetFab != null) {
+//                if (isShow)
+//                    fca.materialSheetFab.showFab();
+//                else
+//                    fca.materialSheetFab.hideSheetThenFab();
+//            }
+//        }
     }
 
     private View getCurrentView() {

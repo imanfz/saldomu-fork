@@ -82,9 +82,9 @@ public class UpgradeAgentActivity extends BaseActivity {
     private Integer proses;
     private Integer set_result_photo;
     RelativeLayout layout_siup, layout_npwp;
-    private String contactCenter;
-    private String listContactPhone = "";
-    private String listAddress = "";
+//    private String contactCenter;
+//    private String listContactPhone = "";
+//    private String listAddress = "";
     private EditText et_mothersName;
     String reject_siup, reject_npwp, remark_siup, remark_npwp;
     CheckBox cb_termsncond;
@@ -105,7 +105,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         remark_siup = sp.getString(DefineValue.REMARK_SIUP, "");
         remark_npwp = sp.getString(DefineValue.REMARK_NPWP, "");
 
-        contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
+//        contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
 
         View v = this.findViewById(android.R.id.content);
         pbSIUP = v.findViewById(R.id.pb1_upgradeAgent);
@@ -127,21 +127,21 @@ public class UpgradeAgentActivity extends BaseActivity {
         cameraNPWP.setOnClickListener(setImageCameraNPWP);
         btn_proses.setOnClickListener(prosesListener);
 
-        if (contactCenter.equals("")) {
-            getHelpList();
-        } else {
-            try {
-                JSONArray arrayContact = new JSONArray(contactCenter);
-                for (int i = 0; i < arrayContact.length(); i++) {
-                    if (i == 0) {
-                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (contactCenter.equals("")) {
+//            getHelpList();
+//        } else {
+//            try {
+//                JSONArray arrayContact = new JSONArray(contactCenter);
+//                for (int i = 0; i < arrayContact.length(); i++) {
+//                    if (i == 0) {
+//                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
+//                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+//                    }
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         InitializeToolbar();
 
@@ -203,83 +203,83 @@ public class UpgradeAgentActivity extends BaseActivity {
         }
     };
 
-    private void getHelpList() {
-        try {
-            showProgressDialog();
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
-            params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            Timber.d("isi params help list:" + params.toString());
-
-
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_USER_CONTACT_INSERT, params,
-                    new ObjListeners() {
-                        @Override
-                        public void onResponses(JSONObject response) {
-                            try {
-                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi params help list:" + response.toString());
-
-                                    contactCenter = response.getString(WebParams.CONTACT_DATA);
-
-                                    SecurePreferences.Editor mEditor = sp.edit();
-                                    mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
-                                    mEditor.apply();
-
-                                    try {
-                                        JSONArray arrayContact = new JSONArray(contactCenter);
-                                        for (int i = 0; i < arrayContact.length(); i++) {
-                                            if (i == 0) {
-                                                listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                                                listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(UpgradeAgentActivity.this, message);
-                                } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
-                                    final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(UpgradeAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-                                } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this, model.getError_message());
-                                }else {
-                                    Timber.d("isi error help list:" + response.toString());
-                                    Toast.makeText(UpgradeAgentActivity.this, message, Toast.LENGTH_LONG).show();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            dismissProgressDialog();
-                        }
-                    });
-        } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
-        }
-    }
+//    private void getHelpList() {
+//        try {
+//            showProgressDialog();
+//
+//            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
+//            params.put(WebParams.USER_ID, userPhoneID);
+//            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+//            Timber.d("isi params help list:" + params.toString());
+//
+//
+//            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_USER_CONTACT_INSERT, params,
+//                    new ObjListeners() {
+//                        @Override
+//                        public void onResponses(JSONObject response) {
+//                            try {
+//                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
+//                                String code = response.getString(WebParams.ERROR_CODE);
+//                                String message = response.getString(WebParams.ERROR_MESSAGE);
+//
+//                                if (code.equals(WebParams.SUCCESS_CODE)) {
+//                                    Timber.d("isi params help list:" + response.toString());
+//
+//                                    contactCenter = response.getString(WebParams.CONTACT_DATA);
+//
+//                                    SecurePreferences.Editor mEditor = sp.edit();
+//                                    mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
+//                                    mEditor.apply();
+//
+//                                    try {
+//                                        JSONArray arrayContact = new JSONArray(contactCenter);
+//                                        for (int i = 0; i < arrayContact.length(); i++) {
+//                                            if (i == 0) {
+//                                                listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
+//                                                listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+//                                            }
+//                                        }
+//                                    } catch (JSONException e) {
+//                                        e.printStackTrace();
+//                                    }
+//
+//                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+//                                    Timber.d("isi response autologout:" + response.toString());
+//                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+//                                    test.showDialoginActivity(UpgradeAgentActivity.this, message);
+//                                } else if (code.equals(DefineValue.ERROR_9333)) {
+//                                    Timber.d("isi response app data:" + model.getApp_data());
+//                                    final AppDataModel appModel = model.getApp_data();
+//                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+//                                    alertDialogUpdateApp.showDialogUpdate(UpgradeAgentActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+//                                } else if (code.equals(DefineValue.ERROR_0066)) {
+//                                    Timber.d("isi response maintenance:" + response.toString());
+//                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+//                                    alertDialogMaintenance.showDialogMaintenance(UpgradeAgentActivity.this, model.getError_message());
+//                                }else {
+//                                    Timber.d("isi error help list:" + response.toString());
+//                                    Toast.makeText(UpgradeAgentActivity.this, message, Toast.LENGTH_LONG).show();
+//                                }
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable throwable) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//                            dismissProgressDialog();
+//                        }
+//                    });
+//        } catch (Exception e) {
+//            Timber.d("httpclient:" + e.getMessage());
+//        }
+//    }
 
     public Boolean validationPhoto() {
         if (et_mothersName.getText().toString().length() == 0) {
@@ -572,9 +572,11 @@ public class UpgradeAgentActivity extends BaseActivity {
     }
 
     private void DialogSuccessUploadPhoto() {
+//        Dialog dialognya = DefinedDialog.MessageDialog(UpgradeAgentActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
+//                this.getString(R.string.level_dialog_finish_message) + listAddress + "\n" +
+//                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
         Dialog dialognya = DefinedDialog.MessageDialog(UpgradeAgentActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
-                this.getString(R.string.level_dialog_finish_message) + listAddress + "\n" +
-                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                this.getString(R.string.level_dialog_waiting),
                 new DefinedDialog.DialogButtonListener() {
                     @Override
                     public void onClickButton(View v, boolean isLongClick) {

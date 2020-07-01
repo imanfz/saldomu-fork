@@ -118,19 +118,25 @@ public class ChangeEmail extends BaseActivity {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
-            extraSignature = memberIDLogin + et_new_email.getText().toString() + value_pin;
-
+            String link = MyApiClient.LINK_CHANGE_EMAIL;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            String newEmail = et_new_email.getText().toString();
+            extraSignature = memberIDLogin + newEmail + value_pin;
             HashMap<String, Object> params = RetrofitService.getInstance()
-                    .getSignature(MyApiClient.LINK_CHANGE_EMAIL, extraSignature);
+                    .getSignature(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.EMAIL, et_new_email.getText().toString());
+            params.put(WebParams.EMAIL, newEmail);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(value_pin));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, value_pin, subStringLink));
             params.put(WebParams.MEMBER_ID, memberIDLogin);
 
             Timber.d("isi params Change Email:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CHANGE_EMAIL, params
+            RetrofitService.getInstance().PostObjectRequest(link, params
                     , new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {

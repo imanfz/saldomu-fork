@@ -130,22 +130,6 @@
             android:textColor="@color/yellow_200"
             android:textStyle="italic" />
 
-        <CheckBox
-            android:id="@+id/cb_termsncondition"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/termsncondition_checkbox_1" />
-
-        <TextView
-            android:id="@+id/tv_termsncondition"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:clickable="true"
-            android:text="@string/termsncondition_checkbox_2"
-            android:textColor="@color/white" />
-
         <EditText
             android:id="@+id/referal_value"
             android:layout_width="match_parent"
@@ -166,7 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:text="*Tidak wajib diisi"
+            android:text="@string/not_required"
             android:textSize="12dp"
             android:textColor="@color/white"/>
 
@@ -192,7 +176,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_transparant"
-                android:enabled="false"
                 android:gravity="center"
                 android:text="@string/regist1_button_verifikasi"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"

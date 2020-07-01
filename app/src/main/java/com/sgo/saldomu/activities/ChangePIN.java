@@ -20,14 +20,11 @@ import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
-import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseActivity;
-import com.venmo.android.pin.PinFragment;
+import com.sgo.saldomu.widgets.KeyboardPin;
 import com.venmo.android.pin.PinFragmentConfiguration;
-import com.venmo.android.pin.PinSaver;
-import com.venmo.android.pin.Validator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,18 +36,15 @@ import timber.log.Timber;
 /**
  * Created by thinkpad on 2/11/2016.
  */
-public class ChangePIN extends BaseActivity implements PinFragment.Listener {
+public class ChangePIN extends BaseActivity implements KeyboardPin.KeyboardPinListener {
 
     private ProgressDialog progdialog;
     private String currentPin;
     private String newPin;
     private String confirmPin;
-    private Fragment insertPin;
-    private Fragment createPin;
     private TextView tv_title;
 
-    private PinFragmentConfiguration configNew;
-    private PinFragmentConfiguration configCurrent;
+    KeyboardPin keyboardPin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,45 +55,16 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
         View v = this.findViewById(android.R.id.content);
         assert v != null;
         tv_title = v.findViewById(R.id.pin_title);
+        keyboardPin = findViewById(R.id.keyboard);
         tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
 
-        configNew = new PinFragmentConfiguration(this)
-                .pinSaver(new PinSaver() {
-                    @Override
-                    public void save(String pin) {
-                        newPin = pin;
-                        confirmPin = pin;
-                        Timber.d("new pin:" + newPin);
-//                        PinHelper.saveDefaultPin(ChangePIN1.this, pin);
-                        sendChangePin();
-                    }
-                });
-
-        configCurrent = new PinFragmentConfiguration(this)
-                .validator(new Validator() {
-                    @Override
-                    public boolean isValid(String input) {
-//                        return PinHelper.doesMatchDefaultPin(getApplicationContext(), input);
-                        Timber.d("pin current: " + input);
-                        currentPin = input;
-
-                        createPin = PinFragment.newInstanceForCreation(configNew);
-                        getFragmentManager().beginTransaction()
-                                .replace(R.id.root, createPin)
-                                .commit();
-
-                        tv_title.setText(getResources().getString(R.string.changepin_text_newpin));
-                        return true;
-                    }
-                });
-
-        setFragmentInsertPin();
-
+        keyboardPin.setListener(this);
+        keyboardPin.hideFingerprint();
     }
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.activity_change_pin;
+        return R.layout.change_pin;
     }
 
     private void InitializeToolbar() {
@@ -124,45 +89,33 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onValidated() {
-
-    }
-
-    @Override
-    public void onPinCreated() {
-
-    }
-
     private void finishChild() {
         setResult(MainPage.RESULT_NORMAL);
         this.finish();
-    }
-
-    private void setFragmentInsertPin() {
-        insertPin = PinFragment.newInstanceForVerification(configCurrent);
-        getFragmentManager().beginTransaction()
-                .add(R.id.root, insertPin)
-                .commit();
     }
 
     private void sendChangePin() {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
 
+            String link = MyApiClient.LINK_CHANGE_PIN;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = memberIDLogin + currentPin + newPin;
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CHANGE_PIN, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, commIDLogin);
-            params.put(WebParams.OLD_PIN, RSA.opensslEncrypt(currentPin));
-            params.put(WebParams.NEW_PIN, RSA.opensslEncrypt(newPin));
-            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(confirmPin));
+            params.put(WebParams.OLD_PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, currentPin, subStringLink));
+            params.put(WebParams.NEW_PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, newPin, subStringLink));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, confirmPin, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params change pin:" + params.toString());
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CHANGE_PIN, params,
+            RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     new ObjListeners() {
                         @Override
                         public void onResponses(JSONObject response) {
@@ -173,9 +126,8 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     Timber.d("isi params change pin:" + response.toString());
                                     Toast.makeText(ChangePIN.this, getString(R.string.changepin_toast_success), Toast.LENGTH_LONG).show();
-                                    if (sp.getString(DefineValue.FORCE_CHANGE_PIN,"").equalsIgnoreCase(DefineValue.STRING_YES))
-                                    {
-                                        sp.edit().putString(DefineValue.FORCE_CHANGE_PIN,DefineValue.STRING_NO).apply();
+                                    if (sp.getString(DefineValue.FORCE_CHANGE_PIN, "").equalsIgnoreCase(DefineValue.STRING_YES)) {
+                                        sp.edit().putString(DefineValue.FORCE_CHANGE_PIN, DefineValue.STRING_NO).apply();
                                     }
                                     finishChild();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
@@ -193,10 +145,8 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
                                     alertDialogMaintenance.showDialogMaintenance(ChangePIN.this, model.getError_message());
                                 } else {
                                     Toast.makeText(ChangePIN.this, message, Toast.LENGTH_LONG).show();
-
                                     tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
-                                    getFragmentManager().beginTransaction().remove(createPin).commit();
-                                    setFragmentInsertPin();
+                                    resetLayout();
                                 }
 
                             } catch (JSONException e) {
@@ -206,7 +156,8 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            Timber.e(throwable.getMessage());
+                            progdialog.dismiss();
                         }
 
                         @Override
@@ -217,5 +168,41 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
+    }
+
+    private void resetLayout() {
+        tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
+        currentPin = null;
+        newPin = null;
+        confirmPin = null;
+        keyboardPin.reset();
+    }
+
+    @Override
+    public void getCharSequenceKeyboard(CharSequence text) {
+        if (text.length() == 6) {
+            keyboardPin.reset();
+            if (tv_title.getText() == getResources().getString(R.string.changepin_text_currentpin)) {
+                currentPin = text.toString();
+                tv_title.setText(getResources().getString(R.string.changepin_text_newpin));
+            } else if (tv_title.getText() == getResources().getString(R.string.changepin_text_newpin)) {
+                newPin = text.toString();
+                tv_title.setText(getResources().getString(R.string.changepin_text_retypenewpin));
+            } else if (tv_title.getText() == getResources().getString(R.string.changepin_text_retypenewpin))
+                confirmPin = text.toString();
+
+            if (currentPin != null && newPin != null && confirmPin != null)
+                if (currentPin.length() == 6 && newPin.length() == 6 && confirmPin.length() == 6) {
+                    Timber.d("current pin : " + currentPin);
+                    Timber.d("new pin : " + newPin);
+                    Timber.d("confirm pin : " + confirmPin);
+                    sendChangePin();
+                }
+        }
+    }
+
+    @Override
+    public void useFingerprint() {
+
     }
 }

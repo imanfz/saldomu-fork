@@ -3,8 +3,7 @@ package com.sgo.saldomu.coreclass;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
-import com.activeandroid.ActiveAndroid;
-import com.sgo.saldomu.activities.MainPage;
+
 
 import java.util.Locale;
 
@@ -51,8 +50,6 @@ public class LifeCycleHandler implements Application.ActivityLifecycleCallbacks 
     public void onActivityPaused(Activity activity) {
         ++paused;
         mApp.setCurrentActivity(null);
-        if(ActiveAndroid.inTransaction())
-            ActiveAndroid.endTransaction();
         Timber.w("application is in foreground: " + (resumed > paused));
     }
 
@@ -60,8 +57,6 @@ public class LifeCycleHandler implements Application.ActivityLifecycleCallbacks 
     public void onActivityStopped(Activity activity) {
         ++stopped;
         mApp.setCurrentActivity(null);
-        if(ActiveAndroid.inTransaction())
-            ActiveAndroid.endTransaction();
         Timber.w("application is visible: " + (started > stopped));
     }
 
@@ -73,8 +68,6 @@ public class LifeCycleHandler implements Application.ActivityLifecycleCallbacks 
     @Override
     public void onActivityDestroyed(Activity activity) {
         mApp.setCurrentActivity(null);
-        if(ActiveAndroid.inTransaction())
-            ActiveAndroid.endTransaction();
         Timber.w("application is in destroyed");
     }
 

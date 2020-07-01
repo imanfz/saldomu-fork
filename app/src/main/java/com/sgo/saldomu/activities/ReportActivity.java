@@ -62,10 +62,10 @@ public class ReportActivity extends BaseActivity {
 //            dialogI.setTargetFragment(this,0);
             List<ListFragment> mList = new ArrayList<>();
             mList.add(FragReport.newInstance(FragReport.REPORT_ESPAY));
-//            mList.add(FragReport.newInstance(FragReport.REPORT_SCASH));
-//            mList.add(FragReport.newInstance(FragReport.REPORT_ASK));
-            if (isAgent)
-            mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
+            if (isAgent) {
+                mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
+                mList.add(FragReport.newInstance(FragReport.REPORT_ADDITIONAL_FEE));
+            }
 
             tabs = (TabPageIndicator) findViewById(R.id.report_tabs_activity);
             pager = (ViewPager) findViewById(R.id.report_pager_activity);

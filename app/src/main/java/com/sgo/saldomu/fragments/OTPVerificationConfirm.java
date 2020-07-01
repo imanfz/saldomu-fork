@@ -165,16 +165,22 @@ public class OTPVerificationConfirm extends BaseFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            String link = MyApiClient.LINK_CONFIRM_OTP;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            String pin = pinView.getText().toString();
             extraSignature = user_id;
-
             HashMap<String, Object> params = RetrofitService.getInstance()
-                    .getSignatureSecretKey(MyApiClient.LINK_CONFIRM_OTP, extraSignature);
+                    .getSignatureSecretKey(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.USER_ID, user_id);
-            params.put(WebParams.OTP, RSA.opensslEncrypt(pinView.getText().toString()));
+            params.put(WebParams.OTP, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, pin, subStringLink));
 
             Timber.d("isi params confirm OTP:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CONFIRM_OTP, params
+            RetrofitService.getInstance().PostObjectRequest(link, params
                     , new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {

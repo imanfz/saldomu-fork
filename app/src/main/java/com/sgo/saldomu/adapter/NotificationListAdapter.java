@@ -20,7 +20,6 @@ import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.RejectNotifDialog;
-import com.sgo.saldomu.fragments.FragNotification;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
 /*
   Created by thinkpad on 3/19/2015.
  */
-public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHolder> implements RejectNotifDialog.OnItemSelectedListener{
+public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHolder> implements RejectNotifDialog.OnItemSelectedListener {
 
     private final int VIEW_TYPE_READED = 10;
     private final int VIEW_TYPE_UNREAD = 20;
@@ -40,37 +39,39 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
     private OnItemClickListener mOnItemClick;
     private Context mContext;
     private boolean rejectSuccess;
-    private FragNotification fragment;
 
     @Override
     public void onItemSelected(boolean success) {
         rejectSuccess = success;
-        fragment.refreshAdapter();
     }
 
     public interface OnItemClickListener {
         void onItemClickView(View view, int position, Boolean isLongClick);
+
         void onItemBtnAccept(View view, int position, Boolean isLongClick);
+
         void onItemBtnClaim(View view, int position, Boolean isLongClick);
     }
 
-    public NotificationListAdapter(FragNotification _fragment, Context context, ArrayList<NotificationModelClass> _data, OnItemClickListener _onItemClick) {
+    public NotificationListAdapter(Context context, ArrayList<NotificationModelClass> _data, OnItemClickListener _onItemClick) {
         mInflater = LayoutInflater.from(context);
         mData = _data;
         mContext = context;
         mOnItemClick = _onItemClick;
-        fragment = _fragment;
     }
 
     @Override
     public NotificationHolder onCreateViewHolder(ViewGroup viewGroup, int viewtype) {
         View row;
-        switch (viewtype){
-            case VIEW_TYPE_UNREAD : row = mInflater.inflate(R.layout.list_notification_item, viewGroup, false);
-                                    break;
-            case VIEW_TYPE_READED : row = mInflater.inflate(R.layout.list_notification_item_readed, viewGroup, false);
-                                    break;
-            default: row = mInflater.inflate(R.layout.list_notification_item, viewGroup, false);
+        switch (viewtype) {
+            case VIEW_TYPE_UNREAD:
+                row = mInflater.inflate(R.layout.list_notification_item, viewGroup, false);
+                break;
+            case VIEW_TYPE_READED:
+                row = mInflater.inflate(R.layout.list_notification_item_readed, viewGroup, false);
+                break;
+            default:
+                row = mInflater.inflate(R.layout.list_notification_item, viewGroup, false);
         }
         return new NotificationHolder(row);
     }
@@ -78,10 +79,9 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
     @Override
     public int getItemViewType(int position) {
         NotificationModelClass mNotif = mData.get(position);
-        if(mNotif.isRead())return VIEW_TYPE_READED;
+        if ((mNotif.isRead())==true) return VIEW_TYPE_READED;
         else return VIEW_TYPE_UNREAD;
     }
-
 
 
     @Override
@@ -90,44 +90,41 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
         simpleHolder.setClickListener(new NotificationHolder.ClickListener() {
             @Override
             public void onClickView(View v, boolean isLongClick) {
-                mOnItemClick.onItemClickView(v,position,isLongClick);
+                mOnItemClick.onItemClickView(v, position, isLongClick);
             }
 
             @Override
             public void onClickBtnAccept(View v, boolean isLongClick) {
-                mOnItemClick.onItemBtnAccept(v,position,isLongClick);
+                mOnItemClick.onItemBtnAccept(v, position, isLongClick);
             }
 
             @Override
-             public void onClickBtnClaim(View v, boolean isLongClick) {
-                mOnItemClick.onItemBtnClaim(v,position,isLongClick);
+            public void onClickBtnClaim(View v, boolean isLongClick) {
+                mOnItemClick.onItemBtnClaim(v, position, isLongClick);
             }
         });
 
         final NotificationModelClass mNotif = mData.get(position);
         int notif_type = mNotif.getNotif_type();
-        if(notif_type == NotificationActivity.TYPE_TRANSFER) {
+        if (notif_type == NotificationActivity.TYPE_TRANSFER) {
             simpleHolder.layout_button_ask.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             simpleHolder.layout_button_ask.setVisibility(View.GONE);
         }
-        if(notif_type == NotificationActivity.TYPE_NON_MEMBER) {
+        if (notif_type == NotificationActivity.TYPE_NON_MEMBER) {
             simpleHolder.layout_button_claim.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             simpleHolder.layout_button_claim.setVisibility(View.GONE);
         }
         simpleHolder.name.setText(mNotif.getTitle());
         simpleHolder.detail.setText(mNotif.getDetail());
         simpleHolder.time.setText(mNotif.getTime());
 
-        if(notif_type == NotificationActivity.TYPE_COMMENT || notif_type == NotificationActivity.TYPE_LIKE) {
+        if (notif_type == NotificationActivity.TYPE_COMMENT || notif_type == NotificationActivity.TYPE_LIKE) {
             simpleHolder.icon.setVisibility(View.GONE);
             simpleHolder.iconPicture.setVisibility(View.VISIBLE);
             setImageProfPic(mNotif.getFrom_profile_picture(), simpleHolder.iconPicture);
-        }
-        else {
+        } else {
             simpleHolder.iconPicture.setVisibility(View.GONE);
             simpleHolder.icon.setVisibility(View.VISIBLE);
             simpleHolder.icon.setImageResource(mNotif.getImage());
@@ -160,22 +157,22 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
             }
         });
 
-        if(mNotif.getNotif_type() == NotificationActivity.TYPE_TRANSFER && mNotif.getNotif_detail() != null){
+        if (mNotif.getNotif_type() == NotificationActivity.TYPE_TRANSFER && mNotif.getNotif_detail() != null) {
             JSONObject mObj = mNotif.getNotif_detail();
             try {
                 int idxStat = mObj.getInt(WebParams.STATUS);
                 String trx_stat = mContext.getString(R.string.pending);
-                switch (idxStat){
-                    case NotificationActivity.P2PSTAT_PAID :
+                switch (idxStat) {
+                    case NotificationActivity.P2PSTAT_PAID:
                         trx_stat = mContext.getString(R.string.paid);
                         break;
-                    case NotificationActivity.P2PSTAT_FAILED :
+                    case NotificationActivity.P2PSTAT_FAILED:
                         trx_stat = mContext.getString(R.string.failed);
                         break;
-                    case NotificationActivity.P2PSTAT_SUSPECT :
+                    case NotificationActivity.P2PSTAT_SUSPECT:
                         trx_stat = mContext.getString(R.string.suspect);
                         break;
-                    case NotificationActivity.P2PSTAT_CANCELLED :
+                    case NotificationActivity.P2PSTAT_CANCELLED:
                         trx_stat = mContext.getString(R.string.cancelled);
                         break;
                 }
@@ -184,15 +181,14 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
             simpleHolder.dll.setVisibility(View.GONE);
         }
     }
 
     private void showDialog(String _req_id, String _trx_id, String _from, String _amount, String _ccy_id) {
 
-        FragmentManager fm = ((Activity)mContext).getFragmentManager();
+        FragmentManager fm = ((Activity) mContext).getFragmentManager();
         RejectNotifDialog dialog_frag = new RejectNotifDialog();
 
         Bundle args = new Bundle();
@@ -212,7 +208,7 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
         return mData.size();
     }
 
-    private void setImageProfPic(String _data, QuickContactBadge _holder){
+    private void setImageProfPic(String _data, QuickContactBadge _holder) {
         /*
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
@@ -234,10 +230,9 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
 //        else
 //            mPic= Picasso.with(mContext);
 
-        if(_data.equals("") || _data.isEmpty()){
+        if (_data.equals("") || _data.isEmpty()) {
             GlideManager.sharedInstance().initializeGlide(mContext, R.drawable.user_unknown_menu, roundedImage, _holder);
-        }
-        else {
+        } else {
             GlideManager.sharedInstance().initializeGlide(mContext, _data, roundedImage, _holder);
         }
     }

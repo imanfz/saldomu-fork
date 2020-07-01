@@ -73,9 +73,8 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     private String masterDomainSGOplus;
     private String userID;
     private String accessKey;
-    private String devDomainSGOPlus = "https://sandbox-kit.espay.id/";
-    private String prodDomainSGOPlus = "https://kit.espay.id/";
-    private String prodDomainSGOPlusMandiri = "https://scm.bankmandiri.co.id/sgo+/";
+    private String devDomainSGOPlus = MyApiClient.domainSgoPlusDev;
+    private String prodDomainSGOPlus = MyApiClient.domainSgoPlusProd;
     private String bankName;
     private String bankProduct;
     private String bankCode;
@@ -252,13 +251,13 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                 }
             }
 
-            @Override
-            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
-                if (MyApiClient.IS_PROD)
-                    super.onReceivedSslError(view, handler, error);
-                else
-                    handler.proceed();
-            }
+//            @Override
+//            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
+//                if (MyApiClient.IS_PROD)
+//                    super.onReceivedSslError(view, handler, error);
+//                else
+//                    handler.proceed();
+//            }
 
             @Override
             public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {

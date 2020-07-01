@@ -20,6 +20,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
@@ -29,6 +30,9 @@ import com.venmo.android.pin.PinFragment;
 import com.venmo.android.pin.PinFragmentConfiguration;
 import com.venmo.android.pin.PinSaver;
 import com.venmo.android.pin.util.PinHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -41,7 +45,10 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 
     private String mValuePin;
     private String confirmPin;
+    private String tokenID;
+    private String userID;
     private Boolean isRegist = false;
+    private Boolean isResetPIN = false;
 
     private ProgressDialog mProg;
 
@@ -51,6 +58,9 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 
         Intent i = getIntent();
         isRegist = i.getBooleanExtra(DefineValue.REGISTRATION, false);
+        isResetPIN = i.getBooleanExtra(DefineValue.RESET_PIN, false);
+        tokenID = i.getStringExtra(DefineValue.TOKEN_ID);
+        userID = i.getStringExtra(DefineValue.CURR_USERID);
 
         InitializeToolbar();
 
@@ -122,24 +132,35 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 
     @Override
     public void onPinCreated() {
-        if (!isRegist) sendCreatePin();
+        if (!isRegist)
+            if (!isResetPIN)
+                sendCreatePin();
+            else
+                sendResetPin();
         else finishChild();
     }
 
     private void sendCreatePin() {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
+
+            String link = MyApiClient.LINK_CREATE_PIN;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = memberIDLogin + userPhoneID + mValuePin;
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CREATE_PIN, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, commIDLogin);
-            params.put(WebParams.PIN, RSA.opensslEncrypt(mValuePin));
-            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(confirmPin));
+            params.put(WebParams.PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, mValuePin, subStringLink));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, confirmPin, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params create pin:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CREATE_PIN, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -169,7 +190,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(CreatePIN.this, model.getError_message());
-                            }else {
+                            } else {
 
                                 Toast.makeText(CreatePIN.this, message, Toast.LENGTH_LONG).show();
                                 recreate();
@@ -190,6 +211,55 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
+    }
+
+    private void sendResetPin() {
+        showProgressDialog();
+
+        String link = MyApiClient.LINK_CONFIRM_RESET_PIN;
+        String subStringLink = link.substring(link.indexOf("saldomu/"));
+        String uuid;
+        String dateTime;
+        extraSignature = userID + tokenID + mValuePin;
+
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(link, extraSignature);
+        uuid = params.get(WebParams.RC_UUID).toString();
+        dateTime = params.get(WebParams.RC_DTIME).toString();
+        params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userID, tokenID, subStringLink));
+        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+        params.put(WebParams.NEW_PIN, RSA.opensslEncrypt(uuid, dateTime, userID, mValuePin, subStringLink));
+        params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, userID, confirmPin, subStringLink));
+        params.put(WebParams.USER_ID, userID);
+
+        Timber.d("isi param confirm otp reset pin: " + params);
+        RetrofitService.getInstance().PostJsonObjRequest(link, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        dismissProgressDialog();
+                        try {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)){
+                                Toast.makeText(getApplicationContext(),getString(R.string.success_reset_pin),Toast.LENGTH_SHORT).show();
+                                finish();
+                            }else{
+                                Toast.makeText(getApplicationContext(),code,Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dismissProgressDialog();
+                    }
+                });
     }
 
     private void finishChild() {

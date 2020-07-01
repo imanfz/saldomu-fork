@@ -34,7 +34,6 @@ public class TermsAndCondition extends BaseActivity {
     SecurePreferences sp;
     private ProgressBar progbar;
     private Boolean isDisconnected;
-    private String domainPrivacyPolicy= "http://saldomu.com/index.php/syarat-ketentuan/";
 
     @Override
     protected int getLayoutResource() {
@@ -51,7 +50,7 @@ public class TermsAndCondition extends BaseActivity {
 
         isDisconnected = !InetHandler.isNetworkAvailable(this);
 
-        loadUrl(domainPrivacyPolicy);
+        loadUrl(MyApiClient.domainPrivacyPolicy);
     }
 
     private void InitializeToolbar(){
@@ -116,14 +115,14 @@ public class TermsAndCondition extends BaseActivity {
 //                    Toast.makeText(getActivity(), error.getDescription(), Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
-                if(MyApiClient.IS_PROD)
-                    super.onReceivedSslError(view, handler, error);
-                else
-                    handler.proceed();
-
-            }
+//            @Override
+//            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
+//                if(MyApiClient.IS_PROD)
+//                    super.onReceivedSslError(view, handler, error);
+//                else
+//                    handler.proceed();
+//
+//            }
 
             @Override
             public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {
@@ -143,7 +142,7 @@ public class TermsAndCondition extends BaseActivity {
                 return true;
             case R.id.action_refresh:
                 if(webview_privacypolicy != null) {
-                    webview_privacypolicy.loadUrl(domainPrivacyPolicy);
+                    webview_privacypolicy.loadUrl(MyApiClient.domainPrivacyPolicy);
                     invalidateOptionsMenu();
                 }
                 return true;

@@ -47,6 +47,8 @@ class SearchAgentUpgradeActivity : BaseActivity(),
         GoogleMap.OnMarkerClickListener {
 
     private var categoryId: String? = ""
+    private var type: String? = ""
+    private var link: String? = ""
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private var isZoomedAlready: Boolean = false
@@ -72,7 +74,11 @@ class SearchAgentUpgradeActivity : BaseActivity(),
     }
 
     private fun initialize() {
-        actionBarTitle = getString(R.string.menu_item_title_upgrade_via_agent)
+        type = intent.getStringExtra(DefineValue.TYPE)
+        if (type.equals("ALL")) {
+            actionBarTitle = getString(R.string.title_search_agent)
+        } else
+            actionBarTitle = getString(R.string.menu_item_title_upgrade_via_agent)
         setActionBarIcon(R.drawable.ic_arrow_left)
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
         categoryId = sp.getString(DefineValue.CATEGORY_ID_UPG, "")
@@ -332,16 +338,29 @@ class SearchAgentUpgradeActivity : BaseActivity(),
     private fun getAgentLoc() {
         try {
 //            showProgressDialog()
-
-            var params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_SEARCH_AGENT, categoryId)
+            if (type.equals("ALL")) {
+                link = MyApiClient.LINK_SEARCH_AGENT
+                extraSignature =""
+            } else{
+                link = MyApiClient.LINK_SEARCH_AGENT_UPG
+                extraSignature = categoryId
+            }
+            var params = RetrofitService.getInstance().getSignature(link, extraSignature)
             params[WebParams.SENDER_ID] = DefineValue.BBS_SENDER_ID
             params[WebParams.RECEIVER_ID] = DefineValue.BBS_RECEIVER_ID
             params[WebParams.APP_ID] = BuildConfig.APP_ID
             params[WebParams.USER_ID] = userPhoneID
-            params[WebParams.CATEGORY_ID] = categoryId
+            if (!type.equals("ALL")) {
+                params[WebParams.CATEGORY_ID] = categoryId
+            }
+            else{
+                params[WebParams.SHOP_TYPE] = sp.getString(DefineValue.COMPANY_TYPE,"")
+                params[WebParams.LATITUDE] = latitude
+                params[WebParams.LONGITUDE] = longitude
+            }
             Timber.d("Params search agent upgrade :$params")
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SEARCH_AGENT, params,
+            RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject?) {
                             Timber.d("Respon search agent upgrade :$response")
@@ -437,7 +456,7 @@ class SearchAgentUpgradeActivity : BaseActivity(),
                 val directionIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + shopDetails[position].shopLatitude + "," + shopDetails[position].shopLongitude))
                 startActivity(directionIntent)
             }
-            var animation = AnimationUtils.loadAnimation(this,R.anim.slide_up)
+            var animation = AnimationUtils.loadAnimation(this, R.anim.slide_up)
             cardDetail.startAnimation(animation)
         }
         return false

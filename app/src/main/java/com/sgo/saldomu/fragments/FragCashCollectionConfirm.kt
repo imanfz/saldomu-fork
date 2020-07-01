@@ -46,6 +46,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
     private var benefProductValueName: String = ""
     private var otp: String = ""
     private var amount: String = ""
+    private var fee: String = ""
     private var isPIN: Boolean? = false
     private var attempt = 0
     private var failed = 0
@@ -70,11 +71,13 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         memberCode = args!!.getString(DefineValue.MEMBER_CODE)
         productCode = args!!.getString(DefineValue.PRODUCT_CODE)
         amount = args!!.getString(DefineValue.AMOUNT)
+        fee = args!!.getString(DefineValue.FEE)
 
         dialog_cash_collection_tv_name.setText(benefProductValueName)
         dialog_cash_collection_tv_acc_no.setText(benefProductValueCode)
         dialog_cash_collection_tv_amount_deposit.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(amount))
-        tv_resend_otp.text = getString(R.string.reg3_btn_text_resend_token_sms) + "(" + countResend + "/3)"
+        dialog_cash_collection_tv_fee.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(fee))
+        tv_resend_otp.text = getString(R.string.resend_confirmation_code) + "(" + countResend + "/3)"
 
         dialog_cash_collection_btn_ok.setOnClickListener {
             if (inputValidation()) {
@@ -95,18 +98,20 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         try {
             showProgressDialog()
 
+            val link = MyApiClient.LINK_CONFIRM_TOKEN_C2R
+            val subStringLink = link.substring(link.indexOf("saldomu/"))
             extraSignature = txId + commId + otp
-
-            params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOKEN_C2R, extraSignature)
-
+            params = RetrofitService.getInstance().getSignature(link, extraSignature)
+            val uuid: String = params[WebParams.RC_UUID].toString()
+            val dateTime: String = params[WebParams.RC_DTIME].toString()
             params[WebParams.TX_ID] = txId
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_ID] = commId
-            params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(otp)
+            params[WebParams.TOKEN_ID] = RSA.opensslEncryptCommID(commId, uuid, dateTime, userPhoneID, otp, subStringLink)
 
             Timber.d("isi params confirmTokenC2R:$params")
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TOKEN_C2R, params,
+            RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) = try {
                             val model = getGson().fromJson(response.toString(), jsonModel::class.java)
@@ -191,10 +196,10 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                                     countResend = response.opt(WebParams.COUNT_RESEND) as Int
                                     maxResend = response.opt(WebParams.MAX_RESEND) as Int
                                     if (countResend == 3) {
-                                        tv_resend_otp.isEnabled == false
+                                        !tv_resend_otp.isEnabled
                                         tv_resend_otp.setTextColor(resources.getColor(R.color.colorSecondaryDark))
                                     }
-                                    tv_resend_otp.text = getString(R.string.reg3_btn_text_resend_token_sms) + "(" + countResend + "/" + maxResend +")"
+                                    tv_resend_otp.text = getString(R.string.resend_confirmation_code) + "(" + countResend + "/" + maxResend + ")"
                                 }
                                 WebParams.LOGOUT_CODE -> {
                                     Timber.d("isi response autologout:$response")
@@ -280,20 +285,22 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         try {
             showProgressDialog()
 
+            val link = MyApiClient.LINK_INSERT_TRANS_TOPUP
+            val subStringLink = link.substring(link.indexOf("saldomu/"))
             extraSignature = txId + commCode + productCode + tokenValue
-
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature)
-
+            val params = RetrofitService.getInstance().getSignature(link, extraSignature)
+            val uuid: String = params[WebParams.RC_UUID].toString()
+            val dateTime: String = params[WebParams.RC_DTIME].toString()
             params[WebParams.TX_ID] = txId
             params[WebParams.PRODUCT_CODE] = productCode
             params[WebParams.COMM_CODE] = commCode
             params[WebParams.COMM_ID] = commId
             params[WebParams.MEMBER_ID] = memberIDLogin
-            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncrypt(tokenValue)
+            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncryptCommID(commId, uuid, dateTime, userPhoneID, tokenValue, subStringLink)
             params[WebParams.USER_ID] = userPhoneID
 
             Timber.d("params insert trx : $params")
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     object : ResponseListener {
                         override fun onResponses(response: JsonObject) {
                             val model = getGson().fromJson(response, FailedPinModel::class.java)
@@ -464,6 +471,8 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         args.putString(DefineValue.BUSS_SCHEME_CODE, response?.buss_scheme_code)
         args.putString(DefineValue.BUSS_SCHEME_NAME, response?.buss_scheme_name)
         args.putString(DefineValue.BENEF_PRODUCT_CODE, benefProductValueCode)
+        args.putString(DefineValue.MEMBER_SHOP_NAME, response?.member_shop_name)
+        args.putString(DefineValue.MEMBER_SHOP_PHONE, response?.member_shop_phone)
 
         dialogReport.arguments = args
         dialogReport.show(activity!!.supportFragmentManager, ReportBillerDialog.TAG)
@@ -496,7 +505,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         dialog.message_dialog.text = msg
 
         dialog.btn_dialog_notification_ok.setOnClickListener {
-//            dialog.dismiss()
+            //            dialog.dismiss()
             activity!!.finish()
         }
 

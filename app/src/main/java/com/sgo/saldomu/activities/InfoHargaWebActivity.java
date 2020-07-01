@@ -35,8 +35,8 @@ public class InfoHargaWebActivity extends BaseActivity {
     private ProgressBar progbar;
     private Boolean isDisconnected;
     private String masterDomainInfoHarga;
-    private String devDomainInfoHarga = "http://192.168.86.55:20080/misc/biller/index";
-    private String prodDomainInfoHarga = "https://go.saldomu.com/misc/biller/index";
+    private String devDomainInfoHarga = MyApiClient.URL_INFO_HARGA_DEV;
+    private String prodDomainInfoHarga = MyApiClient.URL_INFO_HARGA_PROD;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -124,14 +124,14 @@ public class InfoHargaWebActivity extends BaseActivity {
 //                    Toast.makeText(getActivity(), error.getDescription(), Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
-                if(MyApiClient.IS_PROD)
-                    super.onReceivedSslError(view, handler, error);
-                else
-                    handler.proceed();
-
-            }
+//            @Override
+//            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
+//                if(MyApiClient.IS_PROD)
+//                    super.onReceivedSslError(view, handler, error);
+//                else
+//                    handler.proceed();
+//
+//            }
 
             @Override
             public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {

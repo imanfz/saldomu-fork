@@ -117,6 +117,7 @@
         <!--<item>Transfer</item>-->
         <!--<item>Permintaan</item>-->
         <item>@string/fee</item>
+        <item>@string/additional_fee</item>
     </string-array>
 
     <integer-array name="google_colors">
@@ -163,7 +164,7 @@
     <string-array name="settings_list_info">
         <item>@string/menu_item_title_info_harga</item>
         <item>@string/menu_item_title_starterkit</item>
-        <item>@string/menu_item_title_language</item>
+<!--        <item>@string/menu_item_title_language</item>-->
         <item>@string/logout</item>
     </string-array>
 
@@ -350,15 +351,15 @@
         <item>@string/select_religion</item>
         <item>ISLAM</item>
         <item>KRISTEN PROTESTAN</item>
-        <item>KRISTEN KATOLIK</item>
+        <item>KATOLIK</item>
         <item>HINDU</item>
         <item>BUDDHA</item>
         <item>KHONGHUCU</item>
     </string-array>
 
     <string-array name="list_marital_status">
-        <item>BELUM KAWIN</item>
-        <item>KAWIN</item>
+        <item>@string/single</item>
+        <item>@string/married</item>
     </string-array>
 
     <string-array name="list_nationality">

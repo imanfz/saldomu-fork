@@ -15,7 +15,8 @@
             android:layout_marginLeft="16dp"
             android:gravity="center"
             android:text="@string/label_bank_transfer_ke"
-            android:textColor="@color/colorSecondaryDark" />
+            android:textColor="@color/colorSecondaryDark"
+            android:id="@+id/tv_destination"/>
         <com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon
             android:id="@+id/rekening_member_value"
             android:layout_width="match_parent"
@@ -102,7 +103,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <RelativeLayout
             android:layout_width="match_parent"

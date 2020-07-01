@@ -46,7 +46,6 @@ import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-import static com.activeandroid.Cache.getContext;
 
 /*
   Created by Administrator on 11/4/2014.

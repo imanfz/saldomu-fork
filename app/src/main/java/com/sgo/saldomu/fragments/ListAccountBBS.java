@@ -323,22 +323,27 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
         try{
             progressDialog.show();
 
+            String link = MyApiClient.LINK_BBS_BANK_ACCOUNT_DELETE;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = dataComm.getComm_code()+dataComm.getMember_code()+
                     listDataAccount.get(position).getProduct_type()+ listDataAccount.get(position).getProduct_code()
                     + listDataAccount.get(position).getAccount_no();
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_BANK_ACCOUNT_DELETE, extraSignature);
-
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.COMM_CODE, dataComm.getComm_code());
             params.put(WebParams.MEMBER_CODE, dataComm.getMember_code());
             params.put(WebParams.PRODUCT_CODE, listDataAccount.get(position).getProduct_code());
             params.put(WebParams.PRODUCT_TYPE, listDataAccount.get(position).getProduct_type());
             params.put(WebParams.BENEF_ACCT_NO, listDataAccount.get(position).getAccount_no());
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenId));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenId, subStringLink));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             Timber.d("isi params deleteAccountList:" + params.toString());
 
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_BANK_ACCOUNT_DELETE, params,
+            RetrofitService.getInstance().PostJsonObjRequest(link, params,
                     new ObjListeners() {
                         @Override
                         public void onResponses(JSONObject response) {

@@ -38,7 +38,7 @@ import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.PromoObject;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.ActivitySCADM;
+import com.sgo.saldomu.activities.B2BActivity;
 import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
@@ -96,6 +96,7 @@ import timber.log.Timber;
 public class FragHomeNew extends BaseFragmentMainPage {
     GridView GridView;
     Button btn_beli, btn_topup;
+    TextView tv_balance;
     TextView tv_saldo;
     EditText input;
     TextView tv_pulsa;
@@ -126,7 +127,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
     String shopStatus, isMemberShopDGI, isDormant, agentSchemeCode, memberSchemeCode;
-    Boolean isAgent;
+    Boolean isAgent, isShowB2b=false;
     ProgressBar gridview_progbar;
     ProgressBar progBanner;
     private CarouselView carouselView;
@@ -163,6 +164,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         v = inflater.inflate(R.layout.frag_home_new, container, false);
 
         GridView = v.findViewById(R.id.grid);
+        tv_balance = v.findViewById(R.id.tv_balance);
         tv_saldo = v.findViewById(R.id.tv_saldo);
         swSettingOnline = v.findViewById(R.id.swSettingOnline);
         llAgentDetail = v.findViewById(R.id.llAgentDetail);
@@ -190,6 +192,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         realm = RealmManager.getRealmBiller();
 
         getRealmData();
+
+        CheckNotification();
 
         if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
             llAgentDetail.setVisibility(View.GONE);
@@ -238,7 +242,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                                         ShopCategory shopCategory = new ShopCategory();
                                         shopCategory.setCategoryId(obj.getCategory_id());
-                                        if (shopCategory.getCategoryId().contains("SETOR"))
+                                        if (obj.getCategory_name().contains("Setor"))
                                             mEditor.putString(DefineValue.CATEGORY_ID_CTA, shopCategory.getCategoryId());
                                         if (obj.getCategory_name().contains("Upgrade"))
                                             mEditor.putString(DefineValue.CATEGORY_ID_UPG, shopCategory.getCategoryId());
@@ -289,9 +293,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
         btn_topup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity(), TopUpActivity.class);
-                i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else {
+                    Intent i = new Intent(getActivity(), TopUpActivity.class);
+                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                }
             }
         });
 
@@ -379,12 +387,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();
                     } else {
-                        if (getLvlClass().isLevel1QAC()) {
-                            getLvlClass().showDialogLevel();
-                        } else {
-                            Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
-                            switchActivity(i, MainPage.ACTIVITY_RESULT);
-                        }
+//                        if (getLvlClass().isLevel1QAC()) {
+//                            getLvlClass().showDialogLevel();
+//                        } else {
+                            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp))) {
+                                Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
+                                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                            } else {
+                                dialogUnavailable();
+                            }
+//                        }
                     }
                 }
                 // upgrade Member AGENT
@@ -486,7 +498,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
                         intent.putExtra(DefineValue.BILLER_TYPE, "AIR");
-                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.pam));
+                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_pam));
                         startActivity(intent);
                     }
                 } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
@@ -494,7 +506,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_history_detail));
                     startActivity(intent);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
-                    Intent intent = new Intent(getActivity(), ActivitySCADM.class);
+                    Intent intent = new Intent(getActivity(), B2BActivity.class);
                     startActivity(intent);
                 }
 
@@ -570,7 +582,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         intent.putExtra(DefineValue.AGENT_COL, true);
                         intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_collector_history));
                         startActivity(intent);
-                    }else {
+                    } else {
                         posIdx = -1;
                     }
                 } else {
@@ -589,13 +601,26 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             dialogDormant();
                         } else
                             posIdx = BBSActivity.BBSMYORDERS;
+//                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_search_agent)))
+//                        if (isDormant.equalsIgnoreCase("Y")) {
+//                            dialogDormant();
+//                        } else {
+//                            Intent intent = new Intent(getActivity(), SearchAgentUpgradeActivity.class);
+//                            intent.putExtra(DefineValue.TYPE, "ALL");
+//                            startActivity(intent);
+//                        }
+
                     else {
-//                        posIdx = -1;
+                        posIdx = -1;
                         try {
                             JSONArray jsonArray = new JSONArray(memberSchemeCode);
                             for (int index = 0; index < jsonArray.length(); index++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(index);
                                 String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
+                                if (objs.equals("Tarik Tunai"))
+                                    objs = getString(R.string.cash_out);
+                                if (objs.equals("Setor Tunai"))
+                                    objs = getString(R.string.cash_in);
                                 String categoryNameModified = getString(R.string.menu_item_search_agent_bbs) + " " + objs;
                                 if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
                                     if (isDormant.equalsIgnoreCase("Y")) {
@@ -604,7 +629,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                         Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
                                         i.putExtra(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
                                         sp.edit().putString(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
-                                        i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
+//                                        i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
+                                        i.putExtra(DefineValue.CATEGORY_NAME, objs);
                                         i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
                                         i.putExtra(DefineValue.AMOUNT, "");
                                         i.putExtra(DefineValue.BBS_SCHEME_CODE, jsonObject.optString(WebParams.SCHEME_CODE));
@@ -664,6 +690,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             getPromoList();
         else
             populateBanner();
+        if (isAgent)
+            tv_balance.setText(getString(R.string.agent_balance));
     }
 
     private void getRealmData() {
@@ -908,6 +936,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             } else {
                 checkSchemeCodeMember();
+//                menuStrings.add(getResources().getString(R.string.title_search_agent));
+//                menuDrawables.add(getResources().getDrawable(R.drawable.ic_search_agent));
+
 
                 menuStrings.add(getResources().getString(R.string.title_cash_out_member));
                 menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
@@ -965,10 +996,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
             menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
             menuDrawables.add(getResources().getDrawable(R.drawable.group));
 
-            if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
-                menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
-                menuDrawables.add(getResources().getDrawable(R.drawable.group));
-            }
+//            if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
+//                menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
+//                menuDrawables.add(getResources().getDrawable(R.drawable.group));
+//            }
         }
 
 //        menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));
@@ -993,7 +1024,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         break;
                     case "DGI":
                         menuStrings.add(getResources().getString(R.string.menu_item_title_tagih_agent));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.tagih_id));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
                         if (sp.getString(DefineValue.AGENT_TYPE, "").equalsIgnoreCase(getString(R.string.agent_type_col))) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_collector_history));
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_history_collector));
@@ -1051,6 +1082,21 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_pdam));
                         }
                         break;
+                    case "TOP":
+                        sp.edit().putBoolean(DefineValue.IS_AGENT_TOP,true).commit();
+                        if (isShowB2b==false) {
+                            menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_menu_b2b));
+                            isShowB2b = true;
+                        }
+                        break;
+                    case "BDK":
+                        sp.edit().putBoolean(DefineValue.IS_AGENT_BDK,true).commit();
+                        if (isShowB2b==false) {
+                            menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_menu_b2b));
+                            isShowB2b = true;
+                        }break;
                 }
             }
         } catch (JSONException e) {
@@ -1117,6 +1163,21 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private void RefreshSaldo() {
         String balance = sp.getString(DefineValue.BALANCE_AMOUNT, "0");
         tv_saldo.setText(CurrencyFormat.format(balance));
+    }
+
+    private void CheckNotification() {
+//        Thread mth = new Thread() {
+//            @Override
+//            public void run() {
+//                Activity mContext = getActivity().getParent();
+//                if (mContext instanceof MainPage) {
+//                    MainPage mMainPage = (MainPage) mContext;
+//                    NotificationHandler mNoHand = new NotificationHandler(mMainPage, sp);
+//                    mNoHand.sentRetrieveNotif();
+//                }
+//            }
+//        };
+//        mth.start();
     }
 
     @Override
@@ -1337,9 +1398,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 new DefinedDialog.DialogButtonListener() {
                     @Override
                     public void onClickButton(View v, boolean isLongClick) {
-                        Intent i = new Intent(getActivity(), TopUpActivity.class);
-                        i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+//                        Intent i = new Intent(getActivity(), TopUpActivity.class);
+//                        i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+//                        switchActivity(i, MainPage.ACTIVITY_RESULT);
                     }
                 }
         );
@@ -1353,5 +1414,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         MainPage fca = (MainPage) getActivity();
         fca.switchContent(i, name);
+    }
+
+    private void dialogUnavailable() {
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.alertbox_title_information),
+                getString(R.string.cashout_dialog_message),
+                (v, isLongClick) -> {
+                }
+        );
+
+        dialognya.show();
     }
 }

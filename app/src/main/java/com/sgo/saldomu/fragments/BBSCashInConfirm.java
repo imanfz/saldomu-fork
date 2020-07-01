@@ -25,7 +25,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.faber.circlestepview.CircleStepView;
 import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
@@ -76,7 +75,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     private TextView tvTitle;
     private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
     private TextView tvSourceAcct, tvBankBenef, tvBenefCity, tvAmount, tvNoBenefAcct,
-            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor, tvOTP, tvAdditionalFee;
+            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor, tvOTP, tvAdditionalFee, tvbenefname;
     private TableRow tbNameBenef;
     private EditText tokenValue, noHpTCASH;
     private Button btnSubmit, btnResend, btnBack;
@@ -91,7 +90,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     private int failed;
     private SMSclass smSclass;
     private ActionListener actionListener;
-    private Boolean finishTransaction = false, retryToken = false;
+    private Boolean finishTransaction = false, retryToken = false, isAgentLKD = false;
     ArrayList<String> name = new ArrayList<String>();
     private Switch favoriteSwitch;
     private EditText notesEditText;
@@ -125,7 +124,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        v = inflater.inflate(R.layout.frag_bbs_cashin_confirm, container, false);
+        v = inflater.inflate(R.layout.bbs_cashin_confirm, container, false);
         return v;
     }
 
@@ -133,12 +132,13 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.LKD));
 
-        CircleStepView mCircleStepView = v.findViewById(R.id.circle_step_view);
-        mCircleStepView.setTextBelowCircle("", "", getString(R.string.konfirmasi_agen));
-        mCircleStepView.setCurrentCircleIndex(2, false);
-
-        tvTitle = v.findViewById(R.id.tv_title);
+//        CircleStepView mCircleStepView = v.findViewById(R.id.circle_step_view);
+//        mCircleStepView.setTextBelowCircle("", "", getString(R.string.konfirmasi_agen));
+//        mCircleStepView.setCurrentCircleIndex(2, false);
+//
+//        tvTitle = v.findViewById(R.id.tv_title);
         cityLayout = v.findViewById(R.id.benef_city_layout);
         tvSourceAcct = v.findViewById(R.id.bbscashin_confirm_value_source_acct);
         tvBankBenef = v.findViewById(R.id.bbscashin_confirm_value_benef_acct);
@@ -162,13 +162,14 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         tbNameBenef = v.findViewById(R.id.tb_name_benef);
         tvNomor = v.findViewById(R.id.tv_no_tcash);
         tvOTP = v.findViewById(R.id.tv_otp);
-        tvAdditionalFee = v.findViewById(R.id.bbscashin_confirm_additionalFee);
+//        tvAdditionalFee = v.findViewById(R.id.bbscashin_confirm_additionalFee);
         favoriteSwitch = v.findViewById(R.id.favorite_switch);
         notesEditText = v.findViewById(R.id.notes_edit_text);
+        tvbenefname = v.findViewById(R.id.tvbenefname);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Log.e ("BBS", "isi bundle " + bundle.toString());
+            Log.e("BBS", "isi bundle " + bundle.toString());
 
             transaksi = bundle.getString(DefineValue.TRANSACTION);
             if (bundle.containsKey(DefineValue.BENEF_CITY)) {
@@ -199,39 +200,40 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             TCASH_hp_validation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION);
             MandiriLKD_validation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION);
             code_success = bundle.getBoolean(DefineValue.CODE_SUCCESS);
-            addditionalFee = bundle.getString(DefineValue.ADDITIONAL_FEE, "0");
+//            addditionalFee = bundle.getString(DefineValue.ADDITIONAL_FEE, "0");
             String benef_product_type = bundle.getString(DefineValue.TYPE_BENEF, "");
 
             if (!bundle.containsKey(DefineValue.MAX_RESEND))
                 max_token_resend = Integer.parseInt(bundle.getString(DefineValue.MAX_RESEND, "3"));
 
-            tvTitle.setText(transaksi);
+            if (isAgentLKD) {
+                tvbenefname.setText(getString(R.string.nama_rekening_tujuan_lkd));
+            }
+
+//            tvTitle.setText(transaksi);
             tvAmount.setText(CurrencyFormat.format(amount));
             tvFee.setText(CurrencyFormat.format(fee));
             tvTotal.setText(CurrencyFormat.format(total_amount));
-            tvAdditionalFee.setText(CurrencyFormat.format(addditionalFee));
+//            tvAdditionalFee.setText(CurrencyFormat.format(addditionalFee));
             tvBankBenef.setText(benef_product_name);
             tvBenefCity.setText(benef_city);
 
             if (name_benef.equalsIgnoreCase("")) {
                 tbNameBenef.setVisibility(View.GONE);
-            }else {
+            } else {
                 StringBuilder maskedName = new StringBuilder();
                 String[] nameArray = name_benef.split(" ");
-                for (int i = 0; i < nameArray.length; i++) {
-                    String originName = nameArray[i];
+                for (String originName : nameArray) {
                     String tempName = "";
 
                     StringBuilder maskingName = new StringBuilder();
-                    if (originName.length()>2)
-                    {
-                        for (int j = 0; j < originName.length()-2; j++) {
+                    if (originName.length() > 2) {
+                        for (int j = 0; j < originName.length() - 2; j++) {
                             maskingName.append("*");
                         }
-                        tempName = originName.replace(originName.substring(2, originName.length()), maskingName);
+                        tempName = originName.replace(originName.substring(2), maskingName);
 
-                    }
-                    else {
+                    } else {
                         maskedName.append(originName);
                     }
                     maskedName.append(tempName + " ");
@@ -417,7 +419,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             }
                         }
                     } else {
-                        CallPINinput(attempt);
+                        callPINInput(attempt);
                         btnSubmit.setEnabled(true);
                     }
                     btnSubmit.setEnabled(true);
@@ -485,7 +487,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         }
     }
 
-    private void CallPINinput(int _attempt) {
+    private void callPINInput(int _attempt) {
         Intent i = new Intent(getActivity(), InsertPIN.class);
         if (_attempt == 1)
             i.putExtra(DefineValue.ATTEMPT, _attempt);
@@ -496,21 +498,26 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         try {
             showProgressDialog();
 
+            String link = MyApiClient.LINK_INSERT_TRANS_TOPUP;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = tx_id + comm_code + tx_product_code + token;
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP,
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link,
                     extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
-            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(token));
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, token, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxSGOL:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -538,7 +545,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 String code_msg = model.getError_message();
                                 Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
                                 tokenValue.setText("");
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -650,7 +657,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -736,7 +743,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                            } else {
                                 String msg = model.getError_message();
                                 showDialog(msg);
                             }
@@ -766,19 +773,25 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         try {
             showProgressDialog();
 
-            extraSignature = tx_id + comm_id + tokenValue.getText().toString();
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_RETRY_TOKEN,
+            String link = MyApiClient.LINK_RETRY_TOKEN;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            String token = tokenValue.getText().toString();
+            extraSignature = tx_id + comm_id + token;
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(link,
                     extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenValue.getText().toString()));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncryptCommID(comm_id, uuid, dateTime, userPhoneID, token, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params sentRetryToken:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_RETRY_TOKEN, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -800,7 +813,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -881,7 +894,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         args.putString(DefineValue.BANK_PRODUCT, response.getProduct_name());
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
-        args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdditional_fee()));
+//        args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdditional_fee()));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_amount()));
 
         Boolean txStat = false;
@@ -1063,7 +1076,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
     @Override
     public void onOkButton() {
-        toFragAmount();
+        toFragCashIn();
     }
 
     public void setToStatus(String _tx_status) {
@@ -1088,19 +1101,19 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     public void onStart() {
         super.onStart();
         if (finishTransaction) {
-            toFragAmount();
+            toFragCashIn();
         }
     }
 
-    private void toFragAmount() {
-        Fragment mFrag = new BBSTransaksiAmount();
+    private void toFragCashIn() {
+        Fragment mFrag = new BBSCashIn();
         Bundle args = new Bundle();
         args.putString(DefineValue.TRANSACTION, transaksi);
 //            args.putString(DefineValue.TX_STATUS, tx_status);
         mFrag.setArguments(args);
         getFragmentManager().popBackStack(getFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getFragmentManager().beginTransaction()
-                .replace(R.id.bbsTransaksiFragmentContent, mFrag, BBSTransaksiAmount.TAG)
+                .replace(R.id.bbs_content, mFrag, BBSTransaksiAmount.TAG)
                 .addToBackStack(TAG).commit();
     }
 
@@ -1140,7 +1153,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                            } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {

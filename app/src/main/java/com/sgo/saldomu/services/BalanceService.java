@@ -95,9 +95,9 @@ public class BalanceService extends Service {
         super.onCreate();
         Timber.i("Masuk onCreate BalanceService");
         setServiceDestroyed(false);
-        mHandler.removeCallbacks(callNotif);
+//        mHandler.removeCallbacks(callNotif);
         mHandler.removeCallbacks(callBalance);
-        mHandler.postDelayed(callNotif,LOOPING_TIME_NOTIF);
+//        mHandler.postDelayed(callNotif,LOOPING_TIME_NOTIF);
         mHandler.postDelayed(callBalance, LOOPING_TIME_BALANCE);
     }
 

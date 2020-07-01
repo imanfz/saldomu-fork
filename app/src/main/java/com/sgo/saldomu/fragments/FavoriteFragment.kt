@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.FavoriteActivity
-import com.sgo.saldomu.activities.HistoryActivity
 import com.sgo.saldomu.adapter.FavoriteAdapter
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -72,7 +70,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
         dialog = builder.create()
 
         swipeRefresh.setOnRefreshListener(this)
-        swipeRefresh.setColorSchemeResources(R.color.orange_600)
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark)
         key = this.arguments!!.getString("key").toString()
         adapter = FavoriteAdapter(this)
     }
@@ -91,13 +89,13 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_ID] = memberIDLogin
         params[WebParams.TX_FAVORITE_TYPE] = key
-        Log.e(TAG, "params: $params")
+        Timber.e("params: $params")
 
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TRX_FAVORITE_LIST, params,
                 object : ResponseListener {
                     override fun onResponses(`object`: JsonObject) {
                         try {
-                            Log.e(TAG, "onResponses: ${`object`.toString()}")
+                            Timber.e("onResponses: $`object`")
                             val model = getGson().fromJson(`object`, jsonModel::class.java)
 
                             val code = model.error_code
@@ -106,7 +104,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
                             if (code == WebParams.SUCCESS_CODE) {
                                 val type = object : TypeToken<List<FavoriteModel>>() {}.type
                                 val list = gson.fromJson<List<FavoriteModel>>(`object`.get("favorite"), type)
-                                Log.e(TAG, "onResponses: $list")
+                                Timber.e("onResponses: $list")
                                 adapter.updateAdapter(list)
                             } else if (code == WebParams.LOGOUT_CODE) {
                                 val test = AlertDialogLogout.getInstance()
@@ -122,17 +120,17 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
                                 alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                             }
                         } catch (e: Exception) {
-                            e.printStackTrace()
+                            Timber.e(e.message)
                         }
 
                     }
 
                     override fun onError(throwable: Throwable) {
-                        Log.e(HistoryActivity.TAG, "onError: ${throwable.localizedMessage}")
+                        Timber.e("onError: ${throwable.localizedMessage}")
                     }
 
                     override fun onComplete() {
-                        Log.e(HistoryActivity.TAG, "onComplete")
+                        Timber.e("onComplete")
                         dismissProgressDialog()
                     }
                 })
@@ -150,17 +148,17 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
         params[WebParams.PRODUCT_TYPE] = model.product_type
         params[WebParams.TX_FAVORITE_TYPE] = model.tx_favorite_type
         params[WebParams.COMM_ID] = model.comm_id
-        
-        if(model.product_type.isNullOrBlank()) {
+
+        if (model.product_type.isNullOrBlank()) {
             params[WebParams.DENOM_ITEM_ID] = model.item_id
         }
-        Log.e(TAG, "params: $params")
+        Timber.e("params: $params")
 
         RetrofitService.getInstance().PostObjectRequest(url, params,
                 object : ResponseListener {
                     override fun onResponses(`object`: JsonObject) {
                         try {
-                            Log.e(TAG, "onResponses: ${`object`.toString()}")
+                            Timber.e("onResponses: $`object`")
                             val model2 = getGson().fromJson(`object`, jsonModel::class.java)
 
                             val code = model2.error_code
@@ -168,7 +166,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
 
                             if (code == WebParams.SUCCESS_CODE) {
                                 adapter.removeItem(model)
-                            }else if (code == WebParams.LOGOUT_CODE) {
+                            } else if (code == WebParams.LOGOUT_CODE) {
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(activity, message)
                             } else if (code == DefineValue.ERROR_9333) run {
@@ -180,9 +178,8 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
                                 Timber.d("isi response maintenance:$`object`")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                                 alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
-                            }else
-                            {
-                                Toast.makeText(context,message, Toast.LENGTH_LONG).show()
+                            } else {
+                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -191,11 +188,11 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
                     }
 
                     override fun onError(throwable: Throwable) {
-                        Log.e(TAG, "onError: ${throwable.localizedMessage}")
+                        Timber.e("onError: ${throwable.localizedMessage}")
                     }
 
                     override fun onComplete() {
-                        Log.e(TAG, "onComplete")
+                        Timber.e("onComplete")
                         dismissProgressDialog()
                     }
                 })
@@ -221,7 +218,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
     }
 
     override fun onDeleteFavorite(model: FavoriteModel) {
-        var dialogFrag : AlertDialogFrag = AlertDialogFrag.newInstance(activity!!.getString(R.string.menu_item_favorite),
+        var dialogFrag: AlertDialogFrag = AlertDialogFrag.newInstance(activity!!.getString(R.string.menu_item_favorite),
                 activity!!.getString(R.string.delete_item_favorite_dialog), activity!!.getString(R.string.yes),
                 activity!!.getString(R.string.no), false)
 

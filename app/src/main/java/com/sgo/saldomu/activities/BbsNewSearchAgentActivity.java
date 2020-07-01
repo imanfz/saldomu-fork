@@ -83,7 +83,6 @@ import io.realm.Realm;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-import static com.activeandroid.Cache.getContext;
 import static com.sgo.saldomu.coreclass.DefineValue.CTA;
 import static com.sgo.saldomu.coreclass.DefineValue.CTR;
 
@@ -246,7 +245,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
 
         searchLocationEditText = findViewById(R.id.searchLocationEditText);
-        googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getContext(), R.layout.google_places_auto_complete_listview);
+        googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getApplicationContext(), R.layout.google_places_auto_complete_listview);
         searchLocationEditText.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
         searchLocationEditText.setOnItemClickListener(this);
         searchLocationEditText.setOnEditorActionListener(this);
@@ -315,7 +314,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         btnProses = findViewById(R.id.btnProses);
         btnProses.setEnabled(false);
 
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
 
@@ -764,7 +763,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String searchLocationString = searchLocationEditText.getText().toString().trim();
         try {
-            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
             List<Address> multiAddress = geocoder.getFromLocationName(searchLocationString, 1);
 
@@ -791,7 +790,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 searchLocationEditText.clearFocus();
                 searchAgent();
 
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
                 if (globalMap != null) {
@@ -1090,16 +1089,16 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
             defaultProductCode = getString(R.string.SALDOMU);
 
         if (schemeCode.equalsIgnoreCase(DefineValue.CTA)) {
-            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
-                listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
-                        .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
-                        .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF)
-                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll();
-            }else{
+//            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
+//                listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
+//                        .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
+//                        .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF)
+//                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll();
+//            }else{
                 listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
                         .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
                         .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
-            }
+//            }
             setMember(listbankBenef);
         } else if (schemeCode.equalsIgnoreCase(DefineValue.CTR)) {
             listBankBenefCTR = realmBBSMemberBank.where(BBSBankModel.class)
@@ -1107,17 +1106,17 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
             setMember(listBankBenefCTR);
         } else {
-            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
-                listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
-                        .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
-                        .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE)
-                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode)
-                        .findAll();
-            } else {
+//            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase("LKD")) {
+//                listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
+//                        .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
+//                        .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE)
+//                        .equalTo(WebParams.PRODUCT_NAME, defaultProductCode)
+//                        .findAll();
+//            } else {
                 listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
                         .equalTo(WebParams.SCHEME_CODE, DefineValue.ATC)
                         .equalTo(WebParams.COMM_TYPE, DefineValue.SOURCE).findAll();
-            }
+//            }
             if (listbankSource == null) {
                 Toast.makeText(this, getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
             }

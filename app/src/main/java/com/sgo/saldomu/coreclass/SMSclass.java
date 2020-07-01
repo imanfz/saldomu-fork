@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
@@ -22,6 +23,7 @@ import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
@@ -33,6 +35,7 @@ import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
+
 /**
  * Created by yuddistirakiki on 5/18/16.
  */
@@ -43,7 +46,7 @@ public class SMSclass {
     private BroadcastReceiver receiverSent;
     private BroadcastReceiver receiverDelivered;
 
-    private static final String SMS_VERIFY = "REG EMO " + MyApiClient.COMM_ID;
+    private static final String SMS_VERIFY = "REG EMO " + MyApiClient.COMM_CODE;
     String[] perms = {Manifest.permission.READ_PHONE_STATE};
 
     public interface SMS_SIM_STATE {
@@ -155,7 +158,7 @@ public class SMSclass {
         SmsManager sms = SmsManager.getDefault();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager subscriptionManager = SubscriptionManager.from(mContext);
-            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
+            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
                 Timber.d("subscriptionId slot 1 = " + subscriptionInfoList.get(0).getSubscriptionId());
                 if (SmsManager.getSmsManagerForSubscriptionId(subscriptionInfoList.get(0).getSubscriptionId()) != null)
@@ -285,16 +288,15 @@ public class SMSclass {
     }
 
 
-    public Boolean isSimSameSP()
-    {
+    public Boolean isSimSameSP() {
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        String imei = sp.getString(DefineValue.DEIMEI,"");
-        String iccid = sp.getString(DefineValue.DEICCID,"");
+        String imei = sp.getString(DefineValue.DEIMEI, "");
+        String iccid = sp.getString(DefineValue.DEICCID, "");
 
-        if(!imei.isEmpty()){
-            if(!iccid.isEmpty()){
+        if (!imei.isEmpty()) {
+            if (!iccid.isEmpty()) {
                 String diccid = getDeviceICCID();
-                if(diccid != null) {
+                if (diccid != null) {
                     if (diccid.equals(iccid) && getDeviceIMEI().equals(imei))
                         return true;
                 }
@@ -304,17 +306,20 @@ public class SMSclass {
         return false;
     }
 
-    public String getDeviceIMEI(){
+    public String getDeviceIMEI() {
         String imei = "";
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            imei = Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(mContext);
-            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED ) {
+            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
-                imei = telephonyManager.getDeviceId(sis.get(0).getSimSlotIndex());
+                if (sis != null)
+                    imei = telephonyManager.getDeviceId(sis.get(0).getSimSlotIndex());
             }
         } else {
-            if ( isPermissionGranted() ) {
+            if (isPermissionGranted()) {
                 if (telephonyManager.getDeviceId() == null)
                     imei = "00000";
                 else
@@ -325,15 +330,15 @@ public class SMSclass {
         return imei;
     }
 
-    public String getSimNumber(){
-        if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED ) {
+    public String getSimNumber() {
+        if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             return telephonyManager.getLine1Number();
         }
         return "";
     }
 
     public Boolean isPermissionGranted() {
-        if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED ) {
+        if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
         return false;
@@ -346,20 +351,20 @@ public class SMSclass {
      * sedangkan lollipop 5.1 kebawah default ambil iccid di simcard 1 juga.
      * Terkecuali kondisi dimana simcard dimasukkan hanya di slot 2, maka otomatis ambil
      * iccid di slot ke 2
+     *
      * @return iccid di simcard slot 1
      */
-    public String getDeviceICCID(){
-        String iccId="";
+    public String getDeviceICCID() {
+        String iccId = "";
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(mContext);
-            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
+            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
                 SubscriptionInfo si = sis.get(0);
                 iccId = si.getIccId();
             }
-        }
-        else {
-            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED  && telephonyManager.getSimSerialNumber() == null)
+        } else {
+            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED && telephonyManager.getSimSerialNumber() == null)
                 iccId = "00000";
             else
                 iccId = telephonyManager.getSimSerialNumber();
@@ -385,7 +390,7 @@ public class SMSclass {
             do {
                 int id = c.getInt(c.getColumnIndex("_id"));
                 int slot = 0;
-                if(c.getColumnIndex("slot") != -1)
+                if (c.getColumnIndex("slot") != -1)
                     slot = c.getInt(c.getColumnIndex("slot"));
                 String display_name = c.getString(c.getColumnIndex("display_name"));
                 String icc_id = c.getString(c.getColumnIndex("icc_id"));
@@ -441,7 +446,7 @@ public class SMSclass {
         }
     }
 
-    private int getIndexActiveSIMSlot(){
+    private int getIndexActiveSIMSlot() {
         boolean isSIM1Ready = false;
         boolean isSIM2Ready = false;
 
@@ -469,19 +474,19 @@ public class SMSclass {
             }
         }
 
-        if(isSIM1Ready)
+        if (isSIM1Ready)
             return 0;
 
-        if(isSIM2Ready)
+        if (isSIM2Ready)
             return 1;
 
         return 0;
     }
 
-    private void deleteSMS( String message, String number) {
+    private void deleteSMS(String message, String number) {
         if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             // only for gingerbread and newer versions
-            if(!isWriteEnabled(mContext.getApplicationContext())) {
+            if (!isWriteEnabled(mContext.getApplicationContext())) {
                 setWriteEnabled(mContext.getApplicationContext(), true);
             }
         }
@@ -490,8 +495,8 @@ public class SMSclass {
         try {
             Uri uriSms = Uri.parse("content://sms");
             Cursor c = mContext.getContentResolver().query(uriSms,
-                    new String[] { "_id", "thread_id", "address",
-                            "person", "date", "body" }, null, null, null);
+                    new String[]{"_id", "thread_id", "address",
+                            "person", "date", "body"}, null, null, null);
 
             if (c != null && c.moveToFirst()) {
                 do {
@@ -501,7 +506,7 @@ public class SMSclass {
 
                     if (message.equals(body) && address.equals(number)) {
                         // mLogger.logInfo("Deleting SMS with id: " + threadId);
-                        mContext.getContentResolver().delete(Uri.parse("content://sms/" + id), "date=?",new String[] { c.getString(4) });
+                        mContext.getContentResolver().delete(Uri.parse("content://sms/" + id), "date=?", new String[]{c.getString(4)});
                         break;
                     }
                 } while (c.moveToNext());
@@ -557,14 +562,11 @@ public class SMSclass {
             Object result = checkOpMethod.invoke(appOpsManager, args);
 
             return result;
-        }
-        catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             e.printStackTrace();
-        }
-        catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;
@@ -594,8 +596,7 @@ public class SMSclass {
             setModeMethod.invoke(appOpsManager, args);
 
             return true;
-        }
-        catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -611,8 +612,7 @@ public class SMSclass {
             return context.getPackageManager()
                     .getApplicationInfo(context.getPackageName(),
                             PackageManager.GET_META_DATA).uid;
-        }
-        catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return 0;
         }
@@ -650,7 +650,7 @@ public class SMSclass {
 
             return true;
         } catch (ClassNotFoundException e) {
-            Timber.e( "ClassNotFoundException:" + e.getMessage());
+            Timber.e("ClassNotFoundException:" + e.getMessage());
         } catch (NoSuchMethodException e) {
             Timber.e("NoSuchMethodException:" + e.getMessage());
         } catch (InvocationTargetException e) {

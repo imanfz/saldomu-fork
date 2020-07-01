@@ -102,16 +102,15 @@ public class UtilsLoader {
                                     String code = model.getError_code();
                                     if (code.equals(WebParams.SUCCESS_CODE)) {
                                         Timber.v("masuk sini new balance caller Loader");
-
-                                        String unread = sp.getString(WebParams.UNREAD_NOTIF, "");
-                                        if (unread.equals("")) {
-                                            SecurePreferences.Editor mEditor = sp.edit();
-                                            mEditor.putString(WebParams.UNREAD_NOTIF, model.getUnread_notif());
-
-                                            mEditor.apply();
+//                                        String unread = sp.getString(WebParams.UNREAD_NOTIF, "");
+//                                        if (unread.equals("")) {
+//                                            SecurePreferences.Editor mEditor = sp.edit();
+//                                            mEditor.putString(WebParams.UNREAD_NOTIF, model.getUnread_notif());
+//
+//                                            mEditor.apply();
 
                                             setNotifCount(model.getUnread_notif());
-                                        }
+//                                        }
 
                                         SecurePreferences.Editor mEditor = sp.edit();
                                         mEditor.putString(DefineValue.BALANCE_AMOUNT, model.getAmount());
@@ -208,10 +207,6 @@ public class UtilsLoader {
                                 int failed = model.getMax_failed();
                                 if (attempt != -1)
                                     mListener.onSuccess(failed - attempt);
-                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginMain(getmActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();

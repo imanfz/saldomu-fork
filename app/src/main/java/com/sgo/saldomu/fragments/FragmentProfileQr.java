@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +26,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyQRActivity;
@@ -48,17 +50,11 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.UploadPPModel;
-import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -82,9 +78,6 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     String sourceAcct = "", sourceAcctName = "";
     private LevelClass levelClass;
     private String reject_npwp;
-    private String listContactPhone = "";
-    private String listAddress = "";
-    private String contactCenter = "";
     private String userID;
     private boolean is_agent = false;//saat antri untuk diverifikasi
     private boolean isUpgradeAgent = false; //saat antri untuk diverifikasi upgrade agent
@@ -101,7 +94,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     Activity activity;
 
     // UI LAYOUT
-    TextView tv_name, tv_phone_no, tv_lvl_member_value, currencyLimit, limitValue, tv_email, tv_dob;
+    TextView tv_name, tv_phone_no, tv_lvl_member_value, currencyLimit, limitValue, tv_email, tv_dob, tv_version;
     CardView btn_upgrade;
     ImageView imageQR;
     ProgressDialog progdialog;
@@ -126,6 +119,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         tv_lvl_member_value = v.findViewById(R.id.tv_lvl_member_value);
         tv_email = v.findViewById(R.id.tv_current_email);
         tv_dob = v.findViewById(R.id.tv_dob);
+        tv_version = v.findViewById(R.id.tv_version);
         btn_upgrade = v.findViewById(R.id.btn_upgrade);
         imageQR = v.findViewById(R.id.iv_qr);
         lytUpgrade = v.findViewById(R.id.lyt_upgrade_detail);
@@ -151,7 +145,6 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
 
         initData();
-        checkContactCenter();
         initLayout();
         checkAgent();
         setView();
@@ -173,116 +166,14 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private void initData() {
         if (getActivity().getIntent() != null) {
             sourceAcct = NoHPFormat.formatTo08(sp.getString(DefineValue.USERID_PHONE, ""));
-            ;
             sourceAcctName = sp.getString(DefineValue.CUST_NAME, "");
-            contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
+//            contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
         }
 
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
         isUpgradeAgent = sp.getBoolean(DefineValue.IS_UPGRADE_AGENT, false);
         is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
         reject_npwp = sp.getString(DefineValue.REJECT_NPWP, "N");
-    }
-
-    private void checkContactCenter() {
-        if (contactCenter.equals("")) {
-            getHelpList();
-        } else {
-            try {
-                JSONArray arrayContact = new JSONArray(contactCenter);
-                for (int i = 0; i < arrayContact.length(); i++) {
-                    if (i == 0) {
-                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void getHelpList() {
-        try {
-            progdialog = DefinedDialog.CreateProgressDialog(context, "");
-            progdialog.show();
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
-            params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            Timber.d("isi params help list:" + params.toString());
-
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_USER_CONTACT_INSERT, params,
-                    new ObjListeners() {
-                        @Override
-                        public void onResponses(JSONObject response) {
-                            try {
-                                jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi params help list:" + response.toString());
-
-                                    contactCenter = response.getString(WebParams.CONTACT_DATA);
-
-                                    SecurePreferences.Editor mEditor = sp.edit();
-                                    mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
-                                    mEditor.apply();
-
-                                    try {
-                                        JSONArray arrayContact = new JSONArray(contactCenter);
-                                        for (int i = 0; i < arrayContact.length(); i++) {
-                                            if (i == 0) {
-                                                listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                                                listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
-                                } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
-                                    final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-                                } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                } else {
-                                    Timber.d("isi error help list:" + response.toString());
-                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                                }
-
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Timber.d("Error JSON catch contact:" + e.toString());
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
-                        }
-                    });
-        } catch (Exception e) {
-            if (progdialog.isShowing())
-                progdialog.dismiss();
-            Timber.d("httpclient:" + e.getMessage());
-        }
     }
 
     private void initLayout() {
@@ -294,7 +185,18 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        tv_lvl_member_value.setText(getLvl());
+        boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        String agentType = sp.getString(DefineValue.COMPANY_TYPE, "");
+        if (isAgent) {
+            if (agentType.equalsIgnoreCase(getString(R.string.LP))) {
+                SpannableString content = new SpannableString(getString(R.string.lbl_member_lvl_agent));
+                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                tv_lvl_member_value.setText(content);
+            } else {
+                tv_lvl_member_value.setText(getString(R.string.lbl_member_lvl_agent));
+            }
+        } else
+            tv_lvl_member_value.setText(getLvl());
         currencyLimit.setText(sp.getString(DefineValue.BALANCE_CCYID, ""));
         limitValue.setText(CurrencyFormat.format(sp.getString(DefineValue.BALANCE_REMAIN_LIMIT, "")));
 //        setImageProfPic();
@@ -339,21 +241,18 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
             a.create();
             a.show();
         });
+        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME+ " (" +BuildConfig.VERSION_CODE +")");
     }
 
     private String getLvl() {
         int tempLvl = sp.getInt(DefineValue.LEVEL_VALUE, 1);
-        boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
-        if (isAgent) {
-            return getString(R.string.lbl_member_lvl_agent);
-        } else {
-            if (tempLvl == 1) {
-                return getString(R.string.lbl_member_lvl_silver);
-            } else if (tempLvl == 2) {
-                return getString(R.string.lbl_member_lvl_gold);
-            }
+        if (tempLvl == 1) {
+            return getString(R.string.lbl_member_lvl_silver);
+        } else if (tempLvl == 2) {
+            return getString(R.string.lbl_member_lvl_gold);
         }
+
         return "";
     }
 
@@ -390,9 +289,11 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     };
 
     private void showDialogMessage() {
+//        final Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), this.getString(R.string.upgrade_dialog_finish_title),
+//                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
+//                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
         final Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), this.getString(R.string.upgrade_dialog_finish_title),
-                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                this.getString(R.string.level_dialog_waiting),
                 (v, isLongClick) -> {
 
                 }
@@ -548,7 +449,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                         Timber.d("isi response maintenance:" + object.toString());
                         AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                         alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                    }else {
+                    } else {
                         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                         alert.setTitle("Upload Image");
                         alert.setMessage("Upload Image : " + error_message);

@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,8 +48,6 @@ import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.BankCashoutModel;
-import com.sgo.saldomu.models.retrofit.ContactDataModel;
-import com.sgo.saldomu.models.retrofit.GetHelpModel;
 import com.sgo.saldomu.models.retrofit.SentExecCustModel;
 import com.sgo.saldomu.models.retrofit.UpdateProfileModel;
 import com.sgo.saldomu.models.retrofit.UploadFotoModel;
@@ -124,8 +121,8 @@ public class MyProfileNewActivity extends BaseActivity {
     private boolean isUpgradeAgent = false; //saat antri untuk diverifikasi upgrade agent
     private boolean is_verified = false;
     private boolean is_agent = false;
-    private String listContactPhone = "";
-    private String listAddress = "";
+//    private String listContactPhone = "";
+//    private String listAddress = "";
     private String contactCenter;
     private String is_new_bulk, reject_KTP, reject_selfie, reject_ttd, respon_reject_ktp, respon_reject_selfie,
             respon_reject_ttd, reject_npwp;
@@ -215,21 +212,6 @@ public class MyProfileNewActivity extends BaseActivity {
         contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
         isUpgradeAgent = sp.getBoolean(DefineValue.IS_UPGRADE_AGENT, false);
 
-        if (contactCenter.equals("")) {
-            getHelpList();
-        } else {
-            Type type = new TypeToken<List<ContactDataModel>>() {
-            }.getType();
-            List<ContactDataModel> temp = gson.fromJson(contactCenter, type);
-
-            for (int i = 0; i < temp.size(); i++) {
-                if (i == 0) {
-                    listContactPhone = temp.get(i).getContact_phone();
-                    listAddress = temp.get(i).getAddress();
-                }
-            }
-        }
-
         InitializeToolbar();
 
         View v = this.findViewById(android.R.id.content);
@@ -255,8 +237,8 @@ public class MyProfileNewActivity extends BaseActivity {
         et_nama = v.findViewById(R.id.myprofile_value_name);
         et_email = v.findViewById(R.id.myprofile_value_email);
         et_acctNo = v.findViewById(R.id.bank_acc_no);
-        cameraKTP = v.findViewById(R.id.camera_ktp_paspor);
-        selfieKTP = v.findViewById(R.id.camera_selfie_ktp_paspor);
+        cameraKTP = v.findViewById(R.id.camera_ktp);
+        selfieKTP = v.findViewById(R.id.camera_selfie_ktp);
         cameraTTD = v.findViewById(R.id.camera_ttd);
         sp_bank = v.findViewById(R.id.spinner_nameBank);
         btn1 = v.findViewById(R.id.button1);
@@ -414,7 +396,7 @@ public class MyProfileNewActivity extends BaseActivity {
         else {
             setActionBarIcon(R.drawable.ic_arrow_left);
         }
-        setActionBarTitle(getString(R.string.upgrade_member));
+        setActionBarTitle(getString(R.string.data_customer));
     }
 
     @Override
@@ -525,7 +507,8 @@ public class MyProfileNewActivity extends BaseActivity {
     public void camera_dialog() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(this, perms)) {
-            final String[] items = {"Choose from Gallery", "Take a Photo"};
+            //final String[] items = {"Choose from Gallery", "Take a Photo"};
+            final String[] items = {"Take a Photo"};
 
             android.app.AlertDialog.Builder a = new android.app.AlertDialog.Builder(MyProfileNewActivity.this);
             a.setCancelable(true);
@@ -534,15 +517,16 @@ public class MyProfileNewActivity extends BaseActivity {
                     new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {
+//                            if (which == 0) {
+//                                if (set_result_photo == RESULT_CAMERA_KTP) {
+//                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_KTP);
+//                                } else if (set_result_photo == RESULT_SELFIE) {
+//                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SELFIE);
+//                                } else if (set_result_photo == RESULT_CAMERA_TTD) {
+//                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_TTD);
+//                                }
+//                            } else
                             if (which == 0) {
-                                if (set_result_photo == RESULT_CAMERA_KTP) {
-                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_KTP);
-                                } else if (set_result_photo == RESULT_SELFIE) {
-                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SELFIE);
-                                } else if (set_result_photo == RESULT_CAMERA_TTD) {
-                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_TTD);
-                                }
-                            } else if (which == 1) {
                                 if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
                                     CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
                                 } else {
@@ -604,13 +588,13 @@ public class MyProfileNewActivity extends BaseActivity {
                 e.printStackTrace();
             }
             tv_dob.setText(dedate);
-
-            dpd = DatePickerDialog.newInstance(
-                    dobPickerSetListener,
-                    c.get(Calendar.YEAR),
-                    c.get(Calendar.MONTH),
-                    c.get(Calendar.DAY_OF_MONTH)
-            );
+//
+//            dpd = DatePickerDialog.newInstance(
+//                    dobPickerSetListener,
+//                    c.get(Calendar.YEAR),
+//                    c.get(Calendar.MONTH),
+//                    c.get(Calendar.DAY_OF_MONTH)
+//            );
         }
         is_verified = sp.getInt(DefineValue.PROFILE_VERIFIED, 0) == 1;
         Timber.d("isi is verified:" + String.valueOf(sp.getInt(DefineValue.PROFILE_VERIFIED, 0)) + " " + is_verified);
@@ -671,6 +655,7 @@ public class MyProfileNewActivity extends BaseActivity {
                                 sp.edit().putString(DefineValue.IS_NEW_BULK, "N");
                                 setLoginProfile(model);
                                 Toast.makeText(MyProfileNewActivity.this, getString(R.string.myprofile_toast_update_success), Toast.LENGTH_LONG).show();
+                                sp.edit().putString(DefineValue.IS_FIRST, DefineValue.NO).apply();
 //                                    Timber.d("isi response Update Profile:"+ response.toString());
 //                                if (levelClass.isLevel1QAC()) {
 //                                    android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
@@ -716,7 +701,7 @@ public class MyProfileNewActivity extends BaseActivity {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(MyProfileNewActivity.this, message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -770,7 +755,7 @@ public class MyProfileNewActivity extends BaseActivity {
         mEditor.putString(DefineValue.USER_NAME, response.getFull_name());
         mEditor.putString(DefineValue.MEMBER_NAME, response.getFull_name());
         mEditor.putString(DefineValue.IS_NEW_BULK, "N");
-//            mEditor.putString(DefineValue.IS_REGISTERED_LEVEL, response.getString(WebParams.IS_REGISTER));
+        mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
         is_verified = Integer.valueOf(response.getVerified()) == 1;
         mEditor.putString(DefineValue.PROFILE_VERIFIED, response.getVerified());
         mEditor.apply();
@@ -842,19 +827,19 @@ public class MyProfileNewActivity extends BaseActivity {
     public Boolean ValidationPhoto() {
         if (layoutKTP.getVisibility() == View.VISIBLE) {
             if (ktp == null) {
-                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto KTP tidak boleh kosong!");
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, getString(R.string.ktp_photo));
                 return false;
             }
         }
         if (layoutSelfie.getVisibility() == View.VISIBLE) {
             if (selfie == null) {
-                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Selfie dengan KTP tidak boleh kosong!");
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, getString(R.string.selfie_ktp_photo));
                 return false;
             }
         }
         if (layoutTTD.getVisibility() == View.VISIBLE) {
             if (ttd == null) {
-                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Tanda Tangan tidak boleh kosong!");
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, getString(R.string.ttd_photo));
                 return false;
             }
         }
@@ -1041,7 +1026,7 @@ public class MyProfileNewActivity extends BaseActivity {
                             Timber.d("isi response maintenance:" + object.toString());
                             AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                             alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
-                        }else {
+                        } else {
                             Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
 
 
@@ -1053,12 +1038,13 @@ public class MyProfileNewActivity extends BaseActivity {
 
     private void DialogSuccessUploadPhoto() {
         Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, this.getString(R.string.level_dialog_finish_title),
-                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                this.getString(R.string.level_dialog_waiting),
                 new DefinedDialog.DialogButtonListener() {
                     @Override
                     public void onClickButton(View v, boolean isLongClick) {
                         finish();
+                        Intent i = new Intent(getApplicationContext(),MainPage.class);
+                        startActivityForResult(i, MainPage.REQUEST_FINISH);
                     }
                 }
         );
@@ -1071,8 +1057,7 @@ public class MyProfileNewActivity extends BaseActivity {
 
     private void DialogWaitingUpgradeAgent() {
         Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
-                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                this.getString(R.string.level_dialog_waiting),
                 new DefinedDialog.DialogButtonListener() {
                     @Override
                     public void onClickButton(View v, boolean isLongClick) {
@@ -1084,7 +1069,6 @@ public class MyProfileNewActivity extends BaseActivity {
         dialognya.setCanceledOnTouchOutside(false);
         dialognya.setCancelable(false);
 
-//        dialognya.show();
     }
 
     private static boolean isValidEmail(CharSequence target) {
@@ -1117,15 +1101,7 @@ public class MyProfileNewActivity extends BaseActivity {
             params.put(WebParams.CUST_CONTACT_EMAIL, et_email.getText().toString());
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.IS_REGISTER, "Y");
-
-//            final String dob = nowCalendar.get(Calendar.YEAR)+"-"+ (nowCalendar.get(Calendar.MONTH)+1) +"-"+nowCalendar.get(Calendar.DAY_OF_MONTH);
             params.put(WebParams.CUST_BIRTH_DATE, date_dob);
-
-//            final String gender;
-//            if(sp_gender.getSelectedItemPosition()==0)
-//                gender = gender_value[0];
-//            else
-//                gender = gender_value[1];
             params.put(WebParams.CUST_GENDER, "");
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -1180,84 +1156,12 @@ public class MyProfileNewActivity extends BaseActivity {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
-                            }else {
+                            } else {
                                 code = model.getError_message();
 
                                 Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
                                 getFragmentManager().popBackStack();
                             }
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
-                        }
-                    });
-        } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
-        }
-    }
-
-    private void getHelpList() {
-        try {
-            progdialog = DefinedDialog.CreateProgressDialog(this, "");
-            progdialog.show();
-
-            HashMap<String, Object> params = RetrofitService.getInstance()
-                    .getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
-            params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            Timber.d("isi params help list:" + params.toString());
-
-            RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_USER_CONTACT_INSERT,
-                    new ResponseListener() {
-                        @Override
-                        public void onResponses(JsonObject object) {
-                            GetHelpModel model = gson.fromJson(object, GetHelpModel.class);
-
-                            String code = model.getError_code();
-                            String message = model.getError_message();
-
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-//                                Timber.d("isi params help list:"+response.toString());
-
-//                                contactCenter = model.getContact_data();
-
-                                SecurePreferences.Editor mEditor = sp.edit();
-                                mEditor.putString(DefineValue.LIST_CONTACT_CENTER, gson.toJson(model.getContact_data()));
-                                mEditor.apply();
-
-                                for (int i = 0; i < model.getContact_data().size(); i++) {
-                                    if (i == 0) {
-                                        listContactPhone = model.getContact_data().get(i).getContact_phone();
-                                        listAddress = model.getContact_data().get(i).getAddress();
-                                    }
-                                }
-
-                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
-//                                Timber.d("isi response autologout:"+response.toString());
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(MyProfileNewActivity.this, message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
-                                final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(MyProfileNewActivity.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-                            } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(MyProfileNewActivity.this, model.getError_message());
-                            } else {
-                                Toast.makeText(MyProfileNewActivity.this, message, Toast.LENGTH_LONG).show();
-                            }
-
-
                         }
 
                         @Override
@@ -1333,7 +1237,8 @@ public class MyProfileNewActivity extends BaseActivity {
 
                             Log.e("getBankCashout", object.get("bank_cashout").toString());
 
-                            Type type = new TypeToken<List<BankCashoutModel>>() {}.getType();
+                            Type type = new TypeToken<List<BankCashoutModel>>() {
+                            }.getType();
                             Gson gson2 = new Gson();
                             listBankCashOut = gson2.fromJson(object.get("bank_cashout"), type);
 

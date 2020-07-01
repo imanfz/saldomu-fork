@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout android:id="@+id/bbscashin_bottom_layout"
+    <LinearLayout android:id="@+id/bottom_layout"
         android:background="@color/white"
         android:layout_alignParentBottom="true"
         android:gravity="center"
@@ -107,7 +107,7 @@
     </LinearLayout>
 
     <ScrollView
-        android:layout_above="@id/bbscashin_bottom_layout"
+        android:layout_above="@id/bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbarAlwaysDrawVerticalTrack="true"
@@ -177,7 +177,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/bbscashin_confirm_value_amount"
+                    android:id="@+id/confirm_value_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_large_material"
@@ -193,7 +193,7 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/bbscashin_confirm_value_source_acct"
+                    android:id="@+id/confirm_value_source_acct"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
                     android:src="@drawable/arrow"/>
 
                 <TextView
-                    android:id="@+id/bbscashin_confirm_value_benef_acct"
+                    android:id="@+id/confirm_value_benef_acct"
                     android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -265,13 +265,13 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/bbscashin_confirm_text_no_destination"
+                        android:id="@+id/confirm_text_no_destination"
                         android:layout_weight="1"
                         android:text="@string/no_tujuan"
                         android:textColor="@color/colorSecondaryDark"/>
 
                     <TextView
-                        android:id="@+id/bbscashin_confirm_value_benef_no"
+                        android:id="@+id/confirm_value_benef_no"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_medium_material"
                         android:textColor="@color/colorSecondaryDark"/>
@@ -285,11 +285,12 @@
 
                     <TextView
                         android:layout_weight="1"
+                        android:id="@+id/tvbenefname"
                         android:text="@string/nama_rekening_tujuan"
                         android:textColor="@color/colorSecondaryDark"/>
 
                     <TextView
-                        android:id="@+id/bbscashin_confirm_value_benef_name"
+                        android:id="@+id/confirm_value_benef_name"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_medium_material"
                         android:textColor="@color/colorSecondaryDark"/>
@@ -306,7 +307,7 @@
                         android:textColor="@color/colorSecondaryDark"/>
 
                     <TextView
-                        android:id="@+id/bbscashin_confirm_value_benef_city"
+                        android:id="@+id/confirm_value_benef_city"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_medium_material"
                         android:textColor="@color/colorSecondaryDark"/>
@@ -315,7 +316,8 @@
                 <TableRow
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="6dp">
+                    android:paddingTop="6dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_weight="1"
@@ -323,7 +325,7 @@
                         android:textColor="@color/colorSecondaryDark"/>
 
                     <TextView
-                        android:id="@+id/bbscashin_confirm_value_no_hp"
+                        android:id="@+id/confirm_value_no_hp"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_medium_material"
                         android:textColor="@color/colorSecondaryDark"/>
@@ -340,28 +342,28 @@
                         android:textColor="@color/colorSecondaryDark"/>
 
                     <TextView
-                        android:id="@+id/bbscashin_confirm_value_fee"
+                        android:id="@+id/confirm_value_fee"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_medium_material"
                         android:textColor="@color/colorSecondaryDark"/>
                 </TableRow>
 
-                <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="6dp">
+<!--                <TableRow-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:paddingTop="6dp">-->
 
-                    <TextView
-                        android:layout_weight="1"
-                        android:text="@string/additional_fee"
-                        android:textColor="@color/colorSecondaryDark"/>
+<!--                    <TextView-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:text="@string/additional_fee"-->
+<!--                        android:textColor="@color/colorSecondaryDark"/>-->
 
-                    <TextView
-                        android:id="@+id/bbscashin_confirm_additionalFee"
-                        android:layout_weight="1"
-                        android:textSize="@dimen/sheet_item_textsize"
-                        android:textColor="@color/colorSecondaryDark"/>
-                </TableRow>
+<!--                    <TextView-->
+<!--                        android:id="@+id/bbscashin_confirm_additionalFee"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:textSize="@dimen/sheet_item_textsize"-->
+<!--                        android:textColor="@color/colorSecondaryDark"/>-->
+<!--                </TableRow>-->
 
                 <TableRow
                     android:layout_width="wrap_content"
@@ -374,7 +376,7 @@
                         android:textColor="@color/colorSecondaryDark"/>
 
                     <TextView
-                        android:id="@+id/bbscashin_confirm_value_total"
+                        android:id="@+id/confirm_value_total"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_medium_material"
                         android:textColor="@color/colorSecondaryDark"/>
@@ -392,7 +394,7 @@
                         android:textColor="@color/colorSecondaryDark"/>
 
                     <TextView
-                        android:id="@+id/bbscashin_confirm_value_remark"
+                        android:id="@+id/confirm_value_remark"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_medium_material"
                         android:textColor="@color/colorSecondaryDark"/>
@@ -441,7 +443,7 @@
                     android:id="@+id/tv_otp"
                     />
                 <EditText
-                    android:id="@+id/bbscashin_confirm_value_otp"
+                    android:id="@+id/confirm_value_otp"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number|numberPassword"

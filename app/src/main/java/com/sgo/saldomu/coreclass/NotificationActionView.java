@@ -84,7 +84,8 @@ public class NotificationActionView extends RelativeLayout
 	public void setCount(int count)
 	{
 		mCount = count;
-		mText.setText(mCount > 99 ? "99+" : String.valueOf(mCount));
+//		mText.setText(mCount > 99 ? "99+" : String.valueOf(mCount));
+		mText.setText(" ");
 		mText.setVisibility((mCount == 0) ? View.GONE : View.VISIBLE);
 	}
 	

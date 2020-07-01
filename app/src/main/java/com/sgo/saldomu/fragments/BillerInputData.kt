@@ -1,10 +1,16 @@
 package com.sgo.saldomu.fragments
 
+import android.Manifest
+import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentManager
+import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
@@ -27,15 +33,13 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.interfaces.OnLoadDataListener
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.loader.UtilsLoader
-import com.sgo.saldomu.models.BankBillerItem
-import com.sgo.saldomu.models.BillerDenomResponse
-import com.sgo.saldomu.models.BillerItem
-import com.sgo.saldomu.models.DenomDataItem
+import com.sgo.saldomu.models.*
 import com.sgo.saldomu.models.retrofit.GetTrxStatusModel
 import com.sgo.saldomu.models.retrofit.InqBillerModel
 import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.securities.RSA
+import com.sgo.saldomu.utils.CustomStringUtil
 import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
 import io.realm.RealmResults
@@ -44,10 +48,13 @@ import kotlinx.android.synthetic.main.frag_biller_input_new.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 
 class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private lateinit var viewLayout: View
+    private val RC_READ_CONTACTS = 14
 
     val TAG = "BillerInputData"
     val REQUEST_BillerInqReq = 22
@@ -108,6 +115,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     private lateinit var sentPaymentBillerModel: SentPaymentBillerModel
 
     private var billerItemList = ArrayList<BillerItem>()
+    private val contactList = java.util.ArrayList<ContactList>()
+    private var selectedContact: ContactList? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -130,21 +139,76 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
         initLayout()
         initEditTextListener()
-        initRealm()
+//        initRealm()
 //        if (_data.isEmpty()) {
-            getBillerDenom()
+        getBillerDenom()
 //        } else {
-            if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
-                billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
-                checkOperator()
-                showChoosePayment()
-            }
+        if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
+            billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
+//                checkOperator()
+//                showChoosePayment()
+        }
 //        }
 
         favorite_switch.setOnCheckedChangeListener { buttonView, isChecked ->
             notes_edit_text.visibility = if (isChecked) View.VISIBLE else View.GONE
             notes_edit_text.isEnabled = isChecked
         }
+
+        ib_contact_list.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(activity!!, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                showListContact()
+            } else {
+                ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS),
+                        RC_READ_CONTACTS)
+            }
+        }
+    }
+
+    private fun showListContact() {
+//        getContactList()
+        //Collections.sort(contactList) { contactList: ContactList, t1: ContactList -> contactList.name.compareTo(t1.name, ignoreCase = true) }
+        val bundle = Bundle()
+        bundle.putInt(DefineValue.SEARCH_TYPE, ActivitySearch.TYPE_SEARCH_CONTACT)
+        //bundle.putString(DefineValue.TYPE, type);
+        bundle.putParcelableArrayList(DefineValue.BUNDLE_LIST, contactList)
+        val intent = Intent(activity, ActivitySearch::class.java)
+        intent.putExtra(DefineValue.BUNDLE_FRAG, bundle)
+        startActivityForResult(intent, RC_READ_CONTACTS)
+    }
+
+    private fun getContactList() {
+        if (contactList.size > 0) {
+            contactList.clear()
+        }
+        val cr = activity!!.contentResolver
+        val cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null)
+        if (cur?.count ?: 0 > 0) {
+            while (cur != null && cur.moveToNext()) {
+                val id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID))
+                val name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME))
+                if (cur.getInt(cur.getColumnIndex(
+                                ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    val pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", arrayOf(id), null)
+                    while (pCur.moveToNext()) {
+                        val phoneNo = pCur.getString(pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER))
+                        Timber.i("Name: $name")
+                        Timber.i("Phone Number: $phoneNo")
+                        contactList.add(ContactList(name, phoneNo))
+                    }
+                    pCur.close()
+                }
+            }
+        }
+        cur?.close()
     }
 
     private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
@@ -195,30 +259,36 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
         if (billerIdNumber != null) {
 
-            if (billerIdNumber.prefix_name.toLowerCase().equals("telkomsel", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.telkomsel)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("xl", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.xl)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("indosat", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.indosat)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("three", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.three)
-            } else if (billerIdNumber.prefix_name.toLowerCase().equals("smart", ignoreCase = true)) {
-                img_operator.background = resources.getDrawable(R.drawable.smartfren)
-            } else
-                img_operator.visibility = View.GONE
+            when {
+                billerIdNumber.prefix_name.toLowerCase().equals("telkomsel", ignoreCase = true) -> {
+                    img_operator.background = resources.getDrawable(R.drawable.telkomsel)
+                }
+                billerIdNumber.prefix_name.toLowerCase().equals("xl", ignoreCase = true) -> {
+                    img_operator.background = resources.getDrawable(R.drawable.xl)
+                }
+                billerIdNumber.prefix_name.toLowerCase().equals("indosat", ignoreCase = true) -> {
+                    img_operator.background = resources.getDrawable(R.drawable.indosat)
+                }
+                billerIdNumber.prefix_name.toLowerCase().equals("three", ignoreCase = true) -> {
+                    img_operator.background = resources.getDrawable(R.drawable.three)
+                }
+                billerIdNumber.prefix_name.toLowerCase().equals("smart", ignoreCase = true) -> {
+                    img_operator.background = resources.getDrawable(R.drawable.smartfren)
+                }
+                else -> img_operator.visibility = View.GONE
+            }
 
             for (i in _data.indices) {
                 Timber.d("_data" + _data[i])
 
                 if (_data != null) {
                     if (_data.get(i).toLowerCase().contains(billerIdNumber.prefix_name.toLowerCase())) {
-                        Timber.d("_data " + billerItemList.get(i).commName)
-                        biller_comm_id = billerItemList.get(i).commId
-                        biller_comm_name = billerItemList.get(i).commName
-                        biller_item_id = billerItemList.get(i).itemId
+                        Timber.d("_data " + billerItemList[i].commName)
+                        biller_comm_id = billerItemList[i].commId
+                        biller_comm_name = billerItemList[i].commName
+                        biller_item_id = billerItemList[i].itemId
 
-                        initializeSpinnerDenom()
+                        initializeSpinnerDenom(i)
                     }
                 }
 
@@ -283,10 +353,10 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         })
     }
 
-    private fun initializeSpinnerDenom() {
+    private fun initializeSpinnerDenom(indexBiller: Int) {
         mDenomData = BillerItem()
-        mDenomData = realm2?.where(BillerItem::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.findFirst()
-        mListDenomData = realm2?.copyFromRealm(mDenomData?.denomData)
+        mDenomData = billerItemList[indexBiller]
+        mListDenomData = billerItemList[indexBiller].denomData
 
         if (mListDenomData!!.isNotEmpty()) {
             denomData = ArrayList()
@@ -319,8 +389,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
 
         mBillerData = BillerItem()
-        mBillerData = realm2?.where(BillerItem::class.java)?.equalTo(WebParams.COMM_ID, biller_comm_id)?.equalTo(WebParams.COMM_NAME, biller_comm_name)?.findFirst()
-        mListBankBiller = realm2?.copyFromRealm(mBillerData?.bankBiller)
+        mBillerData = billerItemList[indexBiller]
+        mListBankBiller = billerItemList[indexBiller].bankBiller
 
         biller_comm_code = mBillerData?.commCode
         biller_api_key = mBillerData?.apiKey
@@ -394,7 +464,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                 billerinput_et_id_remark.text.length > 15) {
             billerinput_et_id_remark.requestFocus()
             billerinput_et_id_remark.error = getString(R.string.regist1_validation_nohp)
-            initializeSpinnerDenom()
+            //leo
+//            initializeSpinnerDenom()
             return false
         }
         if (item_name == null) {
@@ -640,11 +711,11 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                         }
 
                         override fun onError(throwable: Throwable?) {
-
+                            dismissProgressDialog()
                         }
 
                         override fun onComplete() {
-                            btn_submit_billerinput.isEnabled = true
+
                         }
 
                     })
@@ -750,15 +821,15 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                                     }
                                 }
                             }
+                            dismissProgressDialog()
                         }
 
                         override fun onError(throwable: Throwable?) {
-
+                            dismissProgressDialog()
                         }
 
                         override fun onComplete() {
                             btn_submit_billerinput.isEnabled = true
-                            dismissProgressDialog()
                         }
 
                     })
@@ -841,6 +912,16 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                 }
             }
         }
+
+        if (requestCode == RC_READ_CONTACTS) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                selectedContact = data.getParcelableExtra(DefineValue.ITEM_SELECTED)
+                //trim 0878 - 0872 - 0888 -> ommit "-"
+                val finalPhoneNo = CustomStringUtil.filterPhoneNo(selectedContact!!.getPhoneNo())
+                billerinput_et_id_remark.setText(finalPhoneNo)
+            }
+        }
+
     }
 
     private fun getBillerDenom() {
@@ -862,7 +943,6 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
                 val gson = Gson()
                 val response = gson.fromJson(`object`, BillerDenomResponse::class.java)
-
 
                 if (response.errorCode == WebParams.SUCCESS_CODE) {
 
@@ -959,21 +1039,23 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         try {
             showProgressDialog()
 
+            val link = MyApiClient.LINK_INSERT_TRANS_TOPUP
+            val subStringLink = link.substring(link.indexOf("saldomu/"))
             extraSignature = tx_id + biller_comm_code + mTempBank?.product_code + tokenValue
-
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature)
-
+            val params = RetrofitService.getInstance().getSignature(link, extraSignature)
+            val uuid: String = params[WebParams.RC_UUID].toString()
+            val dateTime: String = params[WebParams.RC_DTIME].toString()
             params[WebParams.TX_ID] = tx_id
             params[WebParams.PRODUCT_CODE] = mTempBank?.product_code
             params[WebParams.COMM_CODE] = biller_comm_code
             params[WebParams.COMM_ID] = biller_comm_id
             params[WebParams.MEMBER_ID] = sp.getString(DefineValue.MEMBER_ID, "")
-            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncrypt(tokenValue)
+            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncryptCommID(biller_comm_id, uuid, dateTime, userPhoneID, tokenValue, subStringLink)
             params[WebParams.USER_ID] = userPhoneID
 
             Timber.d("isi params insertTrxTOpupSGOL:$params")
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     object : ResponseListener {
                         override fun onResponses(response: JsonObject) {
                             val model = getGson().fromJson(response, SentPaymentBillerModel::class.java)

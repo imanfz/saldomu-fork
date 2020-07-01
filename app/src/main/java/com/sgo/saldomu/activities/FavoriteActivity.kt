@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_favorite.*
 private const val TAG = "FavoriteActivity"
 
 class FavoriteActivity : BaseActivity() {
+    private var isAgent: Boolean = false
     fun startBillerActivity(model: FavoriteModel) {
         var intent = Intent(this, BillerActivity::class.java)
         intent.putExtra(DefineValue.BILLER_TYPE, model.product_type)
@@ -27,8 +28,14 @@ class FavoriteActivity : BaseActivity() {
             intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.prepaid_title))
         if (model.product_type == "HP")
             intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.postpaid_title))
-        if (model.product_type == "TKN"||model.product_type == "PLN")
+        if (model.product_type == "TKN" || model.product_type == "PLN")
             intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.pln_title))
+        if (model.product_type == "VCHR")
+            intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_voucher))
+        if (model.product_type == "BPJS")
+            intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.bpjs))
+        if (model.product_type == "EMON")
+            intent.putExtra(DefineValue.BILLER_NAME, model.comm_name)
         intent.putExtra(DefineValue.COMMUNITY_ID, model.comm_id)
         intent.putExtra(DefineValue.ITEM_ID, model.item_id)
         if (model.comm_name.contains("OVO")) {
@@ -39,6 +46,7 @@ class FavoriteActivity : BaseActivity() {
 
 
         intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
+        intent.putExtra(DefineValue.BILLER_COMM_CODE, model.comm_code)
 
         startActivity(intent)
     }
@@ -83,6 +91,8 @@ class FavoriteActivity : BaseActivity() {
         setActionBarIcon(R.drawable.ic_arrow_left)
         actionBarTitle = getString(R.string.menu_item_favorite)
 
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false)
+
         val builder = AlertDialog.Builder(this)
         builder.setView(R.layout.progress)
         dialog = builder.create()
@@ -105,26 +115,49 @@ class FavoriteActivity : BaseActivity() {
     }
 
     inner class FavoritePagerAdapter(fm: FragmentManager, private val context: Context) : FragmentStatePagerAdapter(fm) {
-        private val PAGE_COUNT = 3
-        private val tabTitles = arrayOf("Biller", "Laku Pandai", "Transfer")
+        private val PAGE_COUNTagent = 3
+        private val PAGE_COUNT = 2
+        private val tabTitlesAgent = arrayOf("Biller", "Setor Dan Tarik", "Transfer")
+        private val tabTitles = arrayOf("Biller", "Transfer")
         private val bilFragment: FavoriteFragment = FavoriteFragment().newInstance("BIL")
         private val bbsFragment: FavoriteFragment = FavoriteFragment().newInstance("BBS")
         private val trfFragment: FavoriteFragment = FavoriteFragment().newInstance("TRF")
 
 
         override fun getCount(): Int {
-            return PAGE_COUNT
+            if (isAgent) {
+                return PAGE_COUNTagent
+            } else
+                return PAGE_COUNT
         }
 
-        override fun getItem(position: Int): Fragment = when (position) {
-            0 -> bilFragment
-            1 -> bbsFragment
-            else -> trfFragment
+        override fun getItem(position: Int): Fragment {
+            if (isAgent) {
+                when (position) {
+                    0 -> return bilFragment
+                    1 -> return bbsFragment
+                    else -> return trfFragment
+                }
+            } else {
+                when (position) {
+                    0 -> return bilFragment
+                    else -> return trfFragment
+                }
+            }
         }
+
+//        override fun getItem(position: Int): Fragment = when (position) {
+//            0 -> bilFragment
+//            1 -> trfFragment
+//            else -> bbsFragment
+//        }
 
         override fun getPageTitle(position: Int): CharSequence {
             // Generate title based on item position
-            return tabTitles[position]
+            if (isAgent)
+                return tabTitlesAgent[position]
+            else
+                return tabTitles[position]
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.support.v7.widget.SnapHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -54,7 +56,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     View v;
     ArrayAdapter<String> bankProductAdapter;
 
-    TextView CommCodeTextview, CommNameTextview, MemberCodeTextview;
+    TextView CommCodeTextview, CommNameTextview, MemberCodeTextview, StoreNameTextview, StoreAddressTextview;
     Spinner ProductBankSpinner;
     RecyclerView itemListRv;
     DenomItemListAdapter itemListAdapter;
@@ -66,7 +68,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     ArrayList<DenomBankListData> bankDataList;
     SCADMCommunityModel obj;
 
-    String memberCode, commCode, memberId, commId;
+    String memberCode;
 
     @Nullable
     @Override
@@ -80,6 +82,8 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         itemListRv = v.findViewById(R.id.frag_denom_list_rv);
         submitBtn = v.findViewById(R.id.frag_denom_submit_btn);
         toogleDenomList = v.findViewById(R.id.frag_denom_toogle_denom_list);
+        StoreNameTextview = v.findViewById(R.id.frag_denom_store_name);
+        StoreAddressTextview = v.findViewById(R.id.frag_denom_store_address);
 
         return v;
     }
@@ -88,6 +92,9 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Bundle bundle = getArguments();
+
+        memberCode = bundle.getString(DefineValue.MEMBER_CODE, "");
         itemList = new ArrayList<>();
         itemListString = new ArrayList<>();
         itemListAdapter = new DenomItemListAdapter(getActivity(), itemList, this, false);
@@ -106,7 +113,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
         CommCodeTextview.setText(obj.getComm_code());
         CommNameTextview.setText(obj.getComm_name());
-        MemberCodeTextview.setText(obj.getMember_code());
+        MemberCodeTextview.setText(memberCode);
 
         bankProductList = new ArrayList<>();
         bankDataList = new ArrayList<>();
@@ -114,11 +121,6 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         bankProductAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, bankProductList);
         bankProductAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ProductBankSpinner.setAdapter(bankProductAdapter);
-
-        Bundle bundle = getArguments();
-
-        commCode = bundle.getString(DefineValue.COMMUNITY_CODE, "");
-        commId = bundle.getString(DefineValue.COMMUNITY_ID, "");
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +133,9 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                     bundle.putString(WebParams.BANK_GATEWAY, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankGateway());
                     bundle.putString(WebParams.BANK_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankCode());
                     bundle.putString(WebParams.PRODUCT_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getProductCode());
+                    bundle.putString(WebParams.MEMBER_REMARK, memberCode);
+                    bundle.putString(WebParams.STORE_NAME, StoreNameTextview.getText().toString());
+                    bundle.putString(WebParams.STORE_ADDRESS, StoreAddressTextview.getText().toString());
 
                     frag.setArguments(bundle);
 
@@ -226,6 +231,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                 } else {
                                     String msg = response.getString(WebParams.ERROR_MESSAGE);
+                                    showDialog(msg);
 //                            showDialogUpdate(msg);
                                 }
 
@@ -241,7 +247,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
                         @Override
                         public void onComplete() {
-                            dismissProgressDialog();
+
                         }
                     });
         } catch (Exception e) {
@@ -254,10 +260,13 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     void getDenomList() {
         try {
 
+            showProgressDialog();
+
             extraSignature = obj.getMember_id_scadm();
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_LIST, extraSignature);
 
             params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.MEMBER_REMARK, memberCode);
             params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
 
             Timber.d("isi params sent get denom list:" + params.toString());
@@ -273,6 +282,9 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                                 Timber.d("isi response get denom list:" + response.toString());
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                    StoreNameTextview.setText(response.getString(WebParams.STORE_NAME));
+                                    StoreAddressTextview.setText(response.getString(WebParams.STORE_ADDRESS));
 
                                     if (itemList.size() > 0) {
                                         itemList.clear();
@@ -292,7 +304,6 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                                     itemListAdapter.notifyDataSetChanged();
 //                            denomListSpinAdapter.notifyDataSetChanged();
 
-
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -307,9 +318,9 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
                                     String msg = response.getString(WebParams.ERROR_MESSAGE);
-//                            showDialogUpdate(msg);
+                                    showDialog(msg);
                                 }
 
                             } catch (JSONException e) {
@@ -356,5 +367,40 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
         itemListAdapter.notifyItemChanged(pos);
         itemListAdapter.notifyItemRangeChanged(pos, itemList.get(pos).getOrderList().size());
+    }
+
+    @Override
+    public void onChangeQty(int pos, String qty) {
+        ArrayList<DenomOrderListModel> orderList = new ArrayList<>();
+        orderList.add(new DenomOrderListModel(memberCode, qty));
+        itemList.get(pos).setOrderList(orderList);
+    }
+
+    private void showDialog(String msg) {
+        // Create custom dialog object
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        // Include dialog.xml file
+        dialog.setContentView(R.layout.dialog_notification);
+
+        // set values for custom dialog components - text, image and button
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
+
+        Message.setVisibility(View.VISIBLE);
+        Title.setText(getString(R.string.error));
+        Message.setText(msg);
+
+        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                getActivity().finish();
+            }
+        });
+
+        dialog.show();
     }
 }

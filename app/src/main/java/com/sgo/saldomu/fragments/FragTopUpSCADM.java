@@ -21,6 +21,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TopUpSCADMActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -50,12 +51,12 @@ public class FragTopUpSCADM extends BaseFragment {
     View v;
     SecurePreferences sp;
     Spinner spinner_bank_product;
-    EditText et_jumlah, et_pesan;
+    EditText et_jumlah, et_pesan, et_membercode;
     Button btn_next;
     private ProgressDialog progdialog;
     String memberIDLogin, commIDLogin, userPhoneID, accessKey, member_id_scadm, comm_id_scadm, selectedProductCode, selectedBankCode;
     String tx_id, member_id, member_code, member_name, comm_id, comm_code, comm_name, bank_code, bank_name,
-            product_code, product_name, ccy_id, amount, admin_fee, total_amount, api_key;
+            product_code, product_name, ccy_id, amount, admin_fee, total_amount, api_key, member_id_finale;
     String bank_gateway, selectedBankGateway;
     private ArrayList<listBankModel> scadmListBankTopUp = new ArrayList<>();
     private ArrayList<String> spinnerContentStrings = new ArrayList<>();
@@ -90,7 +91,11 @@ public class FragTopUpSCADM extends BaseFragment {
         spinner_bank_product = v.findViewById(R.id.spinner_bank_produk);
         et_jumlah = v.findViewById(R.id.et_jumlah);
         et_pesan = v.findViewById(R.id.et_remark);
+        et_membercode = v.findViewById(R.id.et_member_code);
         btn_next = v.findViewById(R.id.btn_next);
+
+        et_membercode.setText(userPhoneID);
+
         scadmListBankTopUp.clear();
         spinnerContentStrings.clear();
         initiateAdapterAndSpinner();
@@ -100,18 +105,36 @@ public class FragTopUpSCADM extends BaseFragment {
             @Override
             public void onClick(View view) {
                 if (inputValidation())
+                {
+                    if (!member_code.equals(userPhoneID))
+                    {
+                        member_code = NoHPFormat.formatTo62(et_membercode.getText().toString());
+                    }else
+                        member_code = et_membercode.getText().toString();
+
                     if (selectedProductCode.equalsIgnoreCase("SCASH")) {
                         sentInsertTopUpSCASH();
                     } else
                         sentInsertTopUp();
+                }
+
             }
         });
     }
 
     public boolean inputValidation() {
-        if (et_jumlah == null || et_jumlah.getText().toString().isEmpty()) {
+        if (et_membercode == null || et_membercode.getText().toString().isEmpty())
+        {
+            et_membercode.requestFocus();
+            et_membercode.setError(getString(R.string.member_code_validation));
+            return false;
+        }else if (et_jumlah == null || et_jumlah.getText().toString().isEmpty()) {
             et_jumlah.requestFocus();
-            et_jumlah.setError("Jumlah harus diisi!");
+            et_jumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus));
+            return false;
+        }else if ((Integer.parseInt(et_jumlah.getText().toString())%1000)!=0) {
+            et_jumlah.requestFocus();
+            et_jumlah.setError(getString(R.string.amount_validation_scadm));
             return false;
         }
         return true;
@@ -246,6 +269,7 @@ public class FragTopUpSCADM extends BaseFragment {
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
             params.put(WebParams.AMOUNT, et_jumlah.getText().toString());
             params.put(WebParams.PAYMENT_REMARK, et_pesan.getText().toString());
+            params.put(WebParams.MEMBER_REMARK, member_code);
 
             Timber.d("isi params confirm topup scadm:" + params.toString());
 
@@ -442,8 +466,9 @@ public class FragTopUpSCADM extends BaseFragment {
 //        bundle1.putString(DefineValue.PRODUCT_NAME, spinnerContentStrings.get(spinner_bank_product.getSelectedItemPosition()));
         Fragment mFrag = new FragTopUpConfirmSCADM();
         mFrag.setArguments(bundle1);
+        SwitchFragmentTop(mFrag, TopUpSCADMActivity.TOPUP, true);
 
-        TopUpSCADMActivity ftf = (TopUpSCADMActivity) getActivity();
-        ftf.switchContent(mFrag, "Konfirmasi Tambah Saldo", true);
+//        TopUpSCADMActivity ftf = (TopUpSCADMActivity) getActivity();
+//        ftf.switchContent(mFrag, TopUpSCADMActivity.TOPUP, true);
     }
 }

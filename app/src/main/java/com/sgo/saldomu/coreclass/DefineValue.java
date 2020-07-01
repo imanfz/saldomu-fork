@@ -402,6 +402,7 @@ public class DefineValue {
     public static String KEY_LATITUDE       = "key_latitude";
     public static String KEY_LONGITUDE      = "key_longitude";
     public static String KEY_TX_STATUS      = "tx_status";
+    public static String KEY_VALUE          = "key_value";
     public static String CATEGORY_SCHEME_CODE   = "scheme_code";
 
     public static String STRING_ACCEPT          = "S";
@@ -614,6 +615,8 @@ public class DefineValue {
     public static String MEMBER_RW = "memberRW";
     public static String MEMBER_KELURAHAN = "memberKelurahan";
     public static String MEMBER_KECAMATAN = "memberKecamatan";
+    public static String MEMBER_KABUPATEN = "memberKabupaten";
+    public static String MEMBER_PROVINSI = "memberProvinsi";
     public static String MEMBER_RELIGION = "memberReligion";
     public static String MEMBER_STATUS = "memberStatus";
     public static String MEMBER_OCUPATION= "memberOcupation";
@@ -637,6 +640,27 @@ public class DefineValue {
     public static String LANGUAGE_CODE_IND = "in";
     public static String LANGUAGE_CODE_ENG = "en";
     public static String MEMBER_MOTHERS_NAME = "memberMothersName";
+    public static String SMS_CONTENT = "smsContent";
+    public static String SMS_CONTENT_ENCRYPTED = "smsContentEncrypted";
+    public static String TIMESTAMP = "timeStamp";
+    public static String FOR_LOGIN = "for_login";
+    public static String IS_INQUIRY_SMS = "is_inquiry_sms";
 
+    public static String RESET_PIN = "reset_pin";
+    public static String USER_EMAIL = "user_email";
+    public static String CURR_USERID = "curr_userid";
+    public static String IS_AGENT_BDK = "isAgentBdk";
+    public static String IS_AGENT_TOP = "isAgentTop";
+
+    public static final String BUNDLE_FRAG = "BUNDLE_FRAG";
+    public static String SEARCH_TYPE = "search_type";
+    public static String ITEM_SELECTED = "item_selected";
+    public static final String BUNDLE_LIST = "BUNDLE_LIST";
+
+    public static String REJECT_REASON = "reject_reason";
+    public static String SIGNATURE_PHOTO = "signature_photo";
+    public static String STORE_NAME = "storeName";
+    public static String STORE_ADDRESS = "storeAddress";
+    public static String STORE_CODE = "storeCode";
 }
 

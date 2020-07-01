@@ -21,6 +21,7 @@ public class WebParams {
     public static String USER_COMM_CODE = "user_comm_code";
     public static String USER_ID = "user_id";
     public static String USER_IMAGES = "user_images";
+    public static String USER_PIN = "user_pin";
     public static String TOKEN_ID = "token_id";
     public static String MEMBER_CODE = "member_code";
     public static String CUSTOMER_ID = "customer_id";
@@ -31,7 +32,7 @@ public class WebParams {
     public static String MAX_RESEND = "max_resend";
     public static String COUNT_RESEND = "count_resend";
 
-    public static String PASSWORD_LOGIN = "password";
+    public static String PASSWORD = "password";
     public static String FLAG_LOGIN = "flag_login";
     public static String USER_NAME = "user_name";
     public static String COMMUNITY= "community";
@@ -115,6 +116,7 @@ public class WebParams {
     public static String BILLER_INPUT_AMOUNT = "biller_input_amount";
     public static String BILLER_DISPLAY_AMOUNT = "biller_display_amount";
     public static String DESCRIPTION = "description";
+    public static String SHORT_DESCRIPTION = "short_description";
 
     public static String MEMBER_CUST = "member_cust";
 
@@ -159,6 +161,7 @@ public class WebParams {
     public static String NOTIF_READ = "read";
     public static String NOTIF_DATA = "data_user_notif";
     public static String NOTIF_DETAIL = "notif_detail";
+    public static String DATA_USER_NOTIF = "data_user_notif";
 
     public static String DATA_GROUP = "data_group";
     public static String COUNT = "count";
@@ -354,6 +357,7 @@ public class WebParams {
     public static String CATEGORY_ID = "category_id";
     public static String CATEGORY_NAME = "category_name";
     public static String IMEI = "imei";
+    public static String IMEI_ID = "imei_id";
     public static String ICCID = "iccid";
     public static String SENT = "sent";
     public static String SENDER_ID = "sender_id";
@@ -528,6 +532,7 @@ public class WebParams {
     public static String PHONE_DATA = "phone_data";
     public static String INVOICE_DATA = "invoice_data";
     public static String INVOICE = "invoice";
+    public static String INVOICES = "invoices";
     public static String FEE_DATA = "fee_data";
     public static String PAYMENT_TYPE = "payment_type";
     public static String PAYMENT_TYPE_DESC = "payment_type_desc";
@@ -583,6 +588,8 @@ public class WebParams {
     public static String CUST_RW = "cust_rw";
     public static String CUST_KELURAHAN = "cust_kelurahan";
     public static String CUST_KECAMATAN = "cust_kecamatan";
+    public static String CUST_KABUPATEN = "cust_kabupaten";
+    public static String CUST_PROVINSI = "cust_provinsi";
     public static String CUST_RELIGION = "cust_religion";
     public static String CUST_MARRIAGE_STATUS = "cust_marriage_status";
     public static String CUST_OCCUPATION = "cust_occupation";
@@ -595,12 +602,16 @@ public class WebParams {
     public static String FROM_AGENT = "from_agent";
     public static String ERROR_9333 = "9333";
     public static String ERROR_0066 = "0066";
+    public static String ERROR_0003 = "0003";
     public static String LOC_TX_ID = "loc_tx_id";
 
     public static String SHOP_TYPE = "shop_type";
+    public static String LANG = "lang";
 
     public final static String LANGUAGE_ID = "id";
     public final static String LANGUAGE_EN = "en";
+    public static String USER_EMAIL = "user_email";
+    public static String SUMMARY = "summary";
 
     //NFC PARAMS
     public final static String CARD_BALANCE = "card_balance";
@@ -614,4 +625,7 @@ public class WebParams {
     public final static String REVERSE_CARD_KEY = "reverse_card_key";
 
 
+    public static String SIGN = "sign";
+    public static String STORE_NAME = "store_name";
+    public static String STORE_ADDRESS = "store_address";
 }

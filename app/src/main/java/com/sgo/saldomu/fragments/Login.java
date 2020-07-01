@@ -9,6 +9,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -25,7 +26,6 @@ import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
@@ -38,6 +38,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
@@ -50,6 +51,7 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
 import com.sgo.saldomu.models.retrofit.LoginModel;
+import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -62,14 +64,13 @@ import static android.content.Context.FINGERPRINT_SERVICE;
 /**
  * Created by Administrator on 7/10/2014.
  */
-//public class Login extends BaseFragment implements View.OnClickListener {
-public class Login extends BaseFragment implements View.OnClickListener, FingerprintDialog.FingerprintDialogListener {
+public class Login extends BaseFragment implements View.OnClickListener {
 
-    private String userIDfinale = null, is_pos;
+    private String userIDfinale = null, is_pos, imeiIdDevice;
     private Button btnforgetPass;
     private Button btnforgetPin;
     private Button btnRegister;
-    private TextView btnPrivacyPolicy;
+    private TextView btnPrivacyPolicy, tv_version;
     private EditText userIDValue;
     private EditText passLoginValue;
     private ImageView image_spinner, toogleViewPass, logo;
@@ -96,6 +97,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
         btnRegister = v.findViewById(R.id.btn_register);
         image_spinner = v.findViewById(R.id.image_spinning_wheel);
         logo = v.findViewById(R.id.logo);
+        tv_version = v.findViewById(R.id.tv_version);
         return v;
     }
 
@@ -105,7 +107,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
         super.onActivityCreated(savedInstanceState);
 
         argsBundleNextLogin = getArguments();
-
+        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" +BuildConfig.VERSION_CODE +")");
 
 //        btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
 
@@ -115,6 +117,9 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
+
+        SMSclass smSclass = new SMSclass(getActivity());
+        imeiIdDevice = smSclass.getDeviceIMEI();
 
         Bundle m = getArguments();
 
@@ -148,8 +153,12 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                         } else if (sp.getString(DefineValue.USER_PASSWORD, "") != "") {
                             // Create and show the dialog.
                             isFingerprint = false;
-                            FingerprintDialog fingerprintDialog = new FingerprintDialog();
-                            fingerprintDialog.setTargetFragment(Login.this, 300);
+                            DialogFragment fingerprintDialog = FingerprintDialog.newDialog(result -> {
+                                isFingerprint = result;
+                                if (isFingerprint)
+                                    sentDatas();
+                            });
+//                            fingerprintDialog.setTargetFragment(Login.this, 300);
                             fingerprintDialog.setCancelable(false);
                             fingerprintDialog.show(getActivity().getSupportFragmentManager(), "FingerprintDialog");
                         }
@@ -243,13 +252,6 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                     isTexted = false;
                     break;
                 }
-//                    return true;
-//                });
-//                break;
-            case R.id.btn_forgetPin:
-                newFrag = new FragForgotPIN();
-                switchFragment(newFrag, "forgot pin", true);
-                break;
         }
 
     }
@@ -260,20 +262,18 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
         return false;
     }
 
-    @Override
-    public void onFinishFingerprintDialog(boolean result) {
-        isFingerprint = result;
-        if (isFingerprint)
-            sentDatas();
-    }
-
     private void sentDatas() {
         ToggleKeyboard toggleKeyboard = new ToggleKeyboard();
         toggleKeyboard.hide_keyboard(getActivity());
         try {
             String comm_id = MyApiClient.COMM_ID;
-//            String encrypted_password = RSA.opensslEncrypt(passLoginValue.getText().toString()
-//                    , BuildConfig.OPENSSL_ENCRYPT_KEY, BuildConfig.OPENSSL_ENCRYPT_IV);
+            String password = passLoginValue.getText().toString();
+            String encrypted_password;
+            String link = MyApiClient.LINK_LOGIN;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            String key;
 
             btnLogin.setEnabled(false);
             userIDValue.setEnabled(false);
@@ -284,24 +284,24 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
             image_spinner.setVisibility(View.VISIBLE);
             image_spinner.startAnimation(frameAnimation);
             if (isFingerprint) {
+                password = decryptPassword(sp.getString(DefineValue.KEY_VALUE, ""), sp.getString(DefineValue.USER_PASSWORD, ""));
                 extraSignature = sp.getString(DefineValue.EXTRA_SIGNATURE, "");
             } else {
-                extraSignature = userIDfinale + passLoginValue.getText().toString();
+                extraSignature = userIDfinale + password;
             }
             params = RetrofitService.getInstance()
-                    .getSignatureSecretKey(MyApiClient.LINK_LOGIN, extraSignature);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                    .getSignatureSecretKey(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
+            key = uuid + dateTime + BuildConfig.APP_ID + subStringLink + MyApiClient.COMM_ID + userIDfinale;
+            encrypted_password = RSA.opensslEncryptLogin(key, password);
+            params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userIDfinale);
-            if (isFingerprint) {
-                params.put(WebParams.PASSWORD_LOGIN, sp.getString(DefineValue.USER_PASSWORD, ""));
-            } else {
-                params.put(WebParams.PASSWORD_LOGIN, RSA.opensslEncrypt(passLoginValue.getText().toString()));
-            }
-//            params.put(WebParams.PASSWORD_LOGIN, encrypted_password);
+            params.put(WebParams.PASSWORD, encrypted_password);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
             params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
-            params.put(WebParams.CLIENT_APP, DefineValue.ANDROID);
+            params.put(WebParams.IMEI_ID, imeiIdDevice.toUpperCase());
             if (checkIsPOS())
                 params.put(WebParams.IS_POS, is_pos);
             if (sp.getString(DefineValue.FCM_ID, "") != null)
@@ -309,7 +309,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
 
             Timber.d("isi params login:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN, params, new ResponseListener() {
+            RetrofitService.getInstance().PostObjectRequest(link, params, new ResponseListener() {
 
                 @Override
                 public void onResponses(JsonObject response) {
@@ -327,25 +327,25 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                     String code = loginModel.getError_code();
 
                     if (code.equalsIgnoreCase(WebParams.SUCCESS_CODE)) {
-                        String unregist_member = loginModel.getCommunity().get(0).getUnregisterMember();
+//                        String unregist_member = loginModel.getCommunity().get(0).getUnregisterMember();
                         sp.edit().putString(DefineValue.IS_POS, is_pos).commit();
                         sp.edit().putString(DefineValue.EXTRA_SIGNATURE, extraSignature).commit();
-                        if (!isFingerprint)
-                            sp.edit().putString(DefineValue.USER_PASSWORD, RSA.opensslEncrypt(passLoginValue.getText().toString())).commit();
-                        if (checkCommunity(loginModel.getCommunity())) {
-                            if (unregist_member.equals("N")) {
-                                Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
-                                setLoginProfile(loginModel);
+                        sp.edit().putString(DefineValue.KEY_VALUE, Md5.hashMd5(key)).commit();
+                        sp.edit().putString(DefineValue.USER_PASSWORD, encrypted_password).commit();
+//                        if (checkCommunity(loginModel.getCommunity())) {
+//                            if (unregist_member.equals("N")) {
+                        Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
+                        setLoginProfile(loginModel);
 
-                            } else {
-                                Bundle bundle = new Bundle();
-                                bundle.putString(DefineValue.USER_ID, userIDValue.getText().toString());
-                                bundle.putBoolean(DefineValue.IS_UNREGISTER_MEMBER, true);
-                                Fragment newFrag = new Regist1();
-                                newFrag.setArguments(bundle);
-                                switchFragment(newFrag, "reg1", true);
-                            }
-                        }
+//                            } else {
+//                                Bundle bundle = new Bundle();
+//                                bundle.putString(DefineValue.USER_ID, userIDValue.getText().toString());
+//                                bundle.putBoolean(DefineValue.IS_UNREGISTER_MEMBER, true);
+//                                Fragment newFrag = new Regist1();
+//                                newFrag.setArguments(bundle);
+//                                switchFragment(newFrag, "reg1", true);
+//                            }
+//                        }
                     } else if (code.equals(DefineValue.ERROR_0042)) {
 
                         String message;
@@ -369,7 +369,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                         showDialog(getString(R.string.login_failed_inactive));
                     } else if (code.equals(DefineValue.ERROR_0042)) {
                         showDialog(getString(R.string.wrong_userid_password));
-                    }else if (code.equals(DefineValue.ERROR_0127)) {
+                    } else if (code.equals(DefineValue.ERROR_0127)) {
                         showDialog(getString(R.string.login_failed_dormant));
                     } else if (code.equals(DefineValue.ERROR_0004)) {
                         String msg = loginModel.getError_message();
@@ -414,6 +414,10 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
+    }
+
+    private String decryptPassword(String key, String password) {
+        return RSA.decrypt(key, password);
     }
 
     private void showDialog(String message) {
@@ -493,7 +497,6 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                 mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER, true);
             } else {
                 if (prevContactFT.equals(DefineValue.NO)) {
-                    myFriendModel.deleteAll();
                     mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
                 }
                 mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
@@ -549,7 +552,7 @@ public class Login extends BaseFragment implements View.OnClickListener, Fingerp
                 for (int i = 0; i < model.getCommunity().size(); i++) {
                     LoginCommunityModel commModel = model.getCommunity().get(i);
                     if (commModel.getCommId().equals(MyApiClient.COMM_ID)) {
-                        mEditor.putString(DefineValue.COMMUNITY_ID, commModel.getCommId());
+                        mEditor.putString(DefineValue.COMMUNITY_ID, MyApiClient.COMM_ID);
                         mEditor.putString(DefineValue.CALLBACK_URL_TOPUP, commModel.getCallbackUrl());
                         mEditor.putString(DefineValue.API_KEY_TOPUP, commModel.getApiKey());
                         mEditor.putString(DefineValue.COMMUNITY_CODE, commModel.getCommCode());

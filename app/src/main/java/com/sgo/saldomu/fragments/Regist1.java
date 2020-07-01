@@ -1,13 +1,17 @@
 package com.sgo.saldomu.fragments;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
@@ -20,11 +24,13 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CreatePIN;
+import com.sgo.saldomu.activities.Introduction;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.PasswordRegisterActivity;
 import com.sgo.saldomu.activities.TermsAndCondition;
@@ -40,6 +46,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.dialogs.TNCDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.CreatePassModel;
@@ -63,7 +70,6 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     EditText namaValue, emailValue, noHPValue, referalValue;
     Button btnLanjut;
     String flag_change_pwd, flag_change_pin, pass, confPass;
-    CheckBox cb_terms;
     View v;
     final int RC_READ_SMS = 10;
     Fragment mFragment;
@@ -93,27 +99,17 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        openTNC();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         namaValue = getActivity().findViewById(R.id.name_value);
         emailValue = getActivity().findViewById(R.id.email_value);
         noHPValue = getActivity().findViewById(R.id.noHP_value);
-        cb_terms = v.findViewById(R.id.cb_termsncondition);
+
         referalValue = v.findViewById(R.id.referal_value);
 
         btnLanjut = getActivity().findViewById(R.id.btn_reg1_verification);
         btnLanjut.setOnClickListener(btnNextClickListener);
-
-        cb_terms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    btnLanjut.setEnabled(true);
-                else
-                    btnLanjut.setEnabled(false);
-            }
-        });
 
 //        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.READ_PHONE_STATE)) {
 //            if (isSimExists()) {
@@ -131,15 +127,6 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
 
         noHPValue.requestFocus();
         ToggleKeyboard.show_keyboard(getActivity());
-
-        TextView tv_termsnconditions = v.findViewById(R.id.tv_termsncondition);
-        tv_termsnconditions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), TermsAndCondition.class);
-                startActivity(i);
-            }
-        });
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
@@ -173,6 +160,23 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
 
     }
 
+    private void openTNC() {
+        DialogFragment dialog = TNCDialog.newDialog(new TNCDialog.OnTapItemListener() {
+
+            @Override
+            public void onSubmit(DialogFragment dialog) {
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onCancel(DialogFragment dialog) {
+                startActivity(new Intent(getActivity(), Introduction.class));
+                getActivity().finish();
+            }
+        });
+        dialog.show(getActivity().getSupportFragmentManager(), "Dialog");
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -197,9 +201,9 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Timber.d("isi regist 1 requestCode:" + String.valueOf(requestCode));
+        Timber.d("isi regist 1 requestCode:" + requestCode);
         if (requestCode == LoginActivity.ACTIVITY_RESULT) {
-            Timber.d("isi regist 1 resultcode:" + String.valueOf(resultCode));
+            Timber.d("isi regist 1 resultcode:" + resultCode);
             if (resultCode == LoginActivity.RESULT_PIN) {
                 Timber.d("isi regist 1 authtype:" + authType);
 
@@ -262,9 +266,9 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             params.put(WebParams.CUST_EMAIL, emailValue.getText());
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.FLAG_NEW_FLOW, DefineValue.Y);
-            params.put(WebParams.LATITUDE, sp.getDouble(DefineValue.LATITUDE_UPDATED,0.0));
-            params.put(WebParams.LONGITUDE, sp.getDouble(DefineValue.LONGITUDE_UPDATED,0.0));
-            if (referalValue.getText().toString().trim().length() >0) {
+            params.put(WebParams.LATITUDE, sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0));
+            params.put(WebParams.LONGITUDE, sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0));
+            if (referalValue.getText().toString().trim().length() > 0) {
                 params.put(WebParams.REFERAL_NO, referalValue.getText());
             } else params.put(WebParams.REFERAL_NO, "");
 
@@ -295,7 +299,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                                         flag_change_pin = model.getFlag_change_pin();
                                         check(code);
                                     }
-                                }  else if (code.equals(DefineValue.ERROR_9333)) {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:" + model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
                                     AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -304,7 +308,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
                                     namaValid = model.getCust_name();
                                     emailValid = model.getCust_email();
                                     noHPValid = model.getCust_phone();
@@ -338,7 +342,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
-                    } );
+                    });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
@@ -348,17 +352,23 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
+            String link = MyApiClient.LINK_CREATE_PASS;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
             extraSignature = noHPValid + pass;
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CREATE_PASS, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.PASS, RSA.opensslEncrypt(pass));
-            params.put(WebParams.CONF_PASS, RSA.opensslEncrypt(confPass));
+            params.put(WebParams.PASS, RSA.opensslEncrypt(uuid, dateTime, noHPValid, pass, subStringLink));
+            params.put(WebParams.CONF_PASS, RSA.opensslEncrypt(uuid, dateTime, noHPValid, confPass, subStringLink));
             params.put(WebParams.CUST_ID, noHPValid);
             params.put(WebParams.FLAG_NEW_FLOW, DefineValue.Y);
 
             Timber.d("params create pass:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CREATE_PASS, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -387,7 +397,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
 //                                        });
 //                                AlertDialog dialog = builder.create();
 //                                dialog.show();
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -396,7 +406,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                            } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
                                 i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
@@ -424,17 +434,25 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            extraSignature = memberID + noHPValid + data.getStringExtra(DefineValue.PIN_VALUE);
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CREATE_PIN, extraSignature);
+            String link = MyApiClient.LINK_CREATE_PIN;
+            String subStringLink = link.substring(link.indexOf("saldomu/"));
+            String uuid;
+            String dateTime;
+            String pin = data.getStringExtra(DefineValue.PIN_VALUE);
+            String confirmPin = data.getStringExtra(DefineValue.CONF_PIN);
+            extraSignature = memberID + noHPValid + pin;
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(link, extraSignature);
+            uuid = params.get(WebParams.RC_UUID).toString();
+            dateTime = params.get(WebParams.RC_DTIME).toString();
             params.put(WebParams.USER_ID, noHPValid);
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.PIN_VALUE)));
-            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.CONF_PIN)));
+            params.put(WebParams.PIN, RSA.opensslEncrypt(uuid, dateTime, noHPValid, pin, subStringLink));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, noHPValid, confirmPin, subStringLink));
 
             Timber.d("params create pin:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ADD_LIKE, params,
+            RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -459,7 +477,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                            } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), CreatePIN.class);
                                 i.putExtra(DefineValue.REGISTRATION, true);
@@ -478,7 +496,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
-                    } );
+                    });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
@@ -538,7 +556,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
         TextView Message3 = dialog.findViewById(R.id.message_dialog3);
         Message3.setVisibility(View.VISIBLE);
 
-        sp.edit().putString(DefineValue.PREVIOUS_LOGIN_USER_ID,noHPValue.getText().toString()).commit();
+        sp.edit().putString(DefineValue.PREVIOUS_LOGIN_USER_ID, noHPValue.getText().toString()).commit();
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title));
@@ -597,11 +615,11 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
         } else if (referalValue.getText().toString().length() != 0) {
             if (referalValue.length() < 9 || referalValue.length() > 13) {
                 referalValue.requestFocus();
-                referalValue.setError("Masukkan No. Referal yang sesuai!");
+                referalValue.setError(getString(R.string.referal_no_validation1));
                 return false;
             } else if (referalValue.getText().toString().equals(noHPValue.getText().toString())) {
                 referalValue.requestFocus();
-                referalValue.setError("Nomor Referal tidak boleh sama dengan No. HP Pelanggan!");
+                referalValue.setError(getString(R.string.referal_no_validation2));
                 return false;
             }
         }
@@ -645,9 +663,10 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
         if (requestCode == RC_READ_SMS) {
             if (isSimExists()) {
                 TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-                String Nomor1 = tm.getLine1Number();
-
-                noHPValue.setText(Nomor1);
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    String nomor1 = tm.getLine1Number();
+                    noHPValue.setText(nomor1);
+                }
             }
         }
     }

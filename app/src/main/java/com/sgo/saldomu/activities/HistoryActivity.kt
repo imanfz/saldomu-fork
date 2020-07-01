@@ -1,6 +1,5 @@
 package com.sgo.saldomu.activities
 
-import android.app.PendingIntent.getActivity
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
@@ -60,6 +59,10 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         swipeRefresh = findViewById(R.id.swipeRefresh)
 
         agentCOL = intent.getBooleanExtra(DefineValue.AGENT_COL, false)
+        if (agentCOL==true)
+        {
+            sp.edit().putBoolean(DefineValue.AGENT_COL,true).commit()
+        }
 
 
         initialize()
@@ -424,6 +427,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.NAME_BENEF, response.benef_acct_name)
         args.putString(DefineValue.PRODUCT_NAME, response.product_name)
         args.putString(DefineValue.MEMBER_SHOP_PHONE, response.member_shop_phone)
+        args.putString(DefineValue.MEMBER_SHOP_NAME, response.member_shop_name)
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.buss_scheme_code)
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.buss_scheme_name)
         args.putBoolean(DefineValue.IS_MEMBER_CTA, this.isMemberCTA!!)
@@ -628,6 +632,9 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.MEMBER_CODE, response.member_code)
         args.putString(DefineValue.DENOM_DETAIL, getGson().toJson(response.denom_detail))
         args.putString(DefineValue.ORDER_ID, response.order_id)
+        args.putString(DefineValue.STORE_CODE, response.store_code)
+        args.putString(DefineValue.STORE_NAME, response.store_name)
+        args.putString(DefineValue.STORE_ADDRESS, response.store_address)
 
         dialog.arguments = args
         dialog.show(this.supportFragmentManager, ReportBillerDialog.TAG)

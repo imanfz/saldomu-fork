@@ -15,7 +15,12 @@
         android:theme="@style/Theme.MyTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:label,allowBackup,theme">
-        <activity android:name=".activities.ForgotPin" />
+        <activity
+            android:name=".activities.OTPActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ForgotPin"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".CameraViewActivity"
             android:screenOrientation="portrait" /> <!-- <activity android:name="com.desmond.squarecamera.CameraActivity" /> -->
@@ -109,27 +114,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".activities.TimelineDetailActivity"
-            android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".activities.HistoryDetailActivity"
-            android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".activities.GroupDetailActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.SocialPromoActivity"
-            android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".activities.AddByQRCodeActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
@@ -159,11 +149,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".activities.PulsaAgentWeb"
-            android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".activities.PasswordRegisterActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
@@ -182,14 +167,9 @@
             android:name=".activities.Introduction"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <activity
             android:name=".activities.ChangePIN"
-            android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".activities.ListContactActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
@@ -284,16 +264,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".activities.ActivityProfileQr"
-            android:configChanges="orientation"
-            android:parentActivityName=".activities.MainPage"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage" />
-        </activity>
-        <activity
             android:name=".activities.MyProfileNewActivity"
             android:configChanges="orientation"
             android:parentActivityName=".activities.MainPage"
@@ -376,7 +346,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".activities.ActivitySCADM"
+            android:name=".activities.B2BActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
@@ -480,6 +450,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainPage" />
         </activity>
+
+        <activity
+            android:name=".activities.UpgradeMemberViaOnline"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.ActivitySearch"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
@@ -499,6 +482,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -509,6 +493,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
         <receiver android:name=".receivers.FcmReceiver" />
         <receiver
             android:name=".receivers.LocationProviderChangedReceiver"
@@ -517,7 +502,6 @@
             <intent-filter>
                 <action android:name="android.location.PROVIDERS_CHANGED" />
                 <action android:name="com.sgo.saldomu.INTENT_ACTION_LOCATION_DATA" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -529,10 +513,10 @@
                 <action
                     android:name="android.intent.action.SIM_STATE_CHANGED"
                     android:enabled="true" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
         <service
             android:name=".services.AgentShopService"
             android:exported="false" /> <!-- Job Dispatcher Service -->
@@ -609,6 +593,7 @@
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
+
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

@@ -3,14 +3,16 @@ package com.sgo.saldomu.activities
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.Dialog
-import android.support.v7.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.FragmentManager
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import android.widget.Toast
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
+import com.sgo.saldomu.coreclass.NoHPFormat
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
@@ -20,8 +22,8 @@ import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseActivity
+import kotlinx.android.synthetic.main.activity_forgot_pin.*
 import kotlinx.android.synthetic.main.dialog_notification.*
-import kotlinx.android.synthetic.main.frag_forgot_pin.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -48,9 +50,14 @@ class ForgotPin : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")!!.isEmpty() && sp.getString(DefineValue.IS_POS, "N").equals("N", ignoreCase = true)) {
-            et_userid.setText(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""))
-            !et_userid.isEnabled
+        initializeToolbar()
+        if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")!!.isNotEmpty() && sp.getString(DefineValue.IS_POS, "N").equals("N", ignoreCase = true)) {
+            et_userid.setText(NoHPFormat.formatTo08(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")))
+            et_userid.isEnabled = false
+        } else if (sp.getString(DefineValue.CURR_USERID,"").isNotEmpty())
+        {
+            et_userid.setText(NoHPFormat.formatTo08(sp.getString(DefineValue.CURR_USERID, "")))
+            et_userid.isEnabled = false
         }
 
         fromFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ID", "INDONESIA"))
@@ -92,9 +99,25 @@ class ForgotPin : BaseActivity() {
 
         btn_submit_forgot_pin.setOnClickListener {
             if (inputValidation()) {
-                sentForgotPin()
+//                sentForgotPin()
+                sentResetPin()
             }
         }
+    }
+
+    private fun initializeToolbar() {
+        setActionBarIcon(R.drawable.ic_arrow_left)
+        setTitle(getString(R.string.forgotpin))
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun inputValidation(): Boolean {
@@ -167,6 +190,7 @@ class ForgotPin : BaseActivity() {
                             try {
                                 val model = getGson().fromJson(response.toString(), jsonModel::class.java)
                                 var code = response.getString(WebParams.ERROR_CODE)
+                                var message = response.getString(WebParams.ERROR_MESSAGE)
                                 Timber.d("isi response forgot pin: $response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
@@ -192,9 +216,8 @@ class ForgotPin : BaseActivity() {
                                     }
                                     else -> {
                                         Timber.d("Error forgot pin:$response")
-                                        code = response.getString(WebParams.ERROR_MESSAGE)
 
-                                        Toast.makeText(this@ForgotPin, code, Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(this@ForgotPin, message, Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             } catch (e: JSONException) {
@@ -231,5 +254,68 @@ class ForgotPin : BaseActivity() {
         }
 
         dialog.show()
+    }
+
+    private fun sentResetPin() {
+        showProgressDialog()
+
+        extraSignature = et_userid.text.toString() + date_dob
+
+        val params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_REQUEST_RESET_PIN, extraSignature)
+
+        params[WebParams.USER_ID] = et_userid.text.toString()
+        params[WebParams.COMM_ID] = MyApiClient.COMM_ID
+        params[WebParams.CUST_BIRTH_DATE] = date_dob
+
+        Timber.d("isi params reset pin:$params")
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQUEST_RESET_PIN, params,
+                object : ObjListeners {
+                    override fun onResponses(response: JSONObject) {
+                        val model = getGson().fromJson(response.toString(), jsonModel::class.java)
+                        var code = response.getString(WebParams.ERROR_CODE)
+                        when (code) {
+                            WebParams.SUCCESS_CODE -> {
+                                val i = Intent(applicationContext, OTPActivity::class.java)
+                                i.putExtra(DefineValue.PROFILE_DOB,date_dob)
+                                i.putExtra(DefineValue.USER_EMAIL,response.getString(WebParams.USER_EMAIL))
+                                i.putExtra(DefineValue.CURR_USERID,et_userid.text.toString())
+                                sp.edit().remove(DefineValue.CURR_USERID).apply()
+                                startActivity(i)
+                                finish()
+                            }
+                            WebParams.LOGOUT_CODE -> {
+                                Timber.d("isi response autologout:$response")
+                                val message = response.getString(WebParams.ERROR_MESSAGE)
+                                val test = AlertDialogLogout.getInstance()
+                                test.showDialoginActivity(this@ForgotPin, message)
+                            }
+                            DefineValue.ERROR_9333 -> {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(this@ForgotPin, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            }
+                            DefineValue.ERROR_0066 -> {
+                                Timber.d("isi response maintenance:$response")
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(this@ForgotPin, model.error_message)
+                            }
+                            else -> {
+                                Timber.d("Error forgot pin:$response")
+                                code = response.getString(WebParams.ERROR_MESSAGE)
+
+                                Toast.makeText(this@ForgotPin, code, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+
+                    override fun onError(throwable: Throwable?) {
+
+                    }
+
+                    override fun onComplete() {
+                        dismissProgressDialog()
+                    }
+                })
     }
 }

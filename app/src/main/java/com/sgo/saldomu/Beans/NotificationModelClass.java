@@ -46,6 +46,25 @@ public class NotificationModelClass {
         this.setId_result(_id_result);
     }
 
+    public NotificationModelClass(String _notif_id, int _image, String _title, String _to_id, String _from_name,
+                                  String _from_id, String _detail, String _time, int _notif_type,
+                                  Boolean _read, String _from_profile_picture,
+                                  String _date_time, String _id_result) {
+        this.setNotif_id(_notif_id);
+        this.setImage(_image);
+        this.setTitle(_title);
+        this.setFrom_name(_from_name);
+        this.setFrom_id(_from_id);
+        this.setDetail(_detail);
+        this.setTime(_time);
+        this.setNotif_type(_notif_type);
+        this.setRead(_read);
+        this.setFrom_profile_picture(_from_profile_picture);
+        this.setDate_time(_date_time);
+        this.setTo_id(_to_id);
+        this.setId_result(_id_result);
+    }
+
     public String getId_result() {
         return id_result;
     }
