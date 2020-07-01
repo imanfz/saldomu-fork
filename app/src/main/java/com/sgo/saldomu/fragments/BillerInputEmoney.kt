@@ -7,7 +7,9 @@ import android.content.Intent
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.IsoDep
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v4.app.FragmentManager
 import android.text.Editable
 import android.text.InputFilter
@@ -51,6 +53,7 @@ import java.io.IOException
 import java.util.*
 
 
+@RequiresApi(Build.VERSION_CODES.KITKAT)
 class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback, NfcAdapter.ReaderCallback {
     private val EMONEYSALDOMU: String = "EMONEYSALDOMU"
 
@@ -957,6 +960,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         fragmentManager!!.popBackStackImmediate(BillerActivity.FRAG_BIL_INPUT, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onResume() {
         super.onResume()
         if (nfcAdapter != null) {
@@ -964,6 +968,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onPause() {
         super.onPause()
         if (nfcAdapter != null) {

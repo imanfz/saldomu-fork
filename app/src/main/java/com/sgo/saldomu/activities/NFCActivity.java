@@ -310,7 +310,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
             params.put(WebParams.SESSION, session);
             params.put(WebParams.MESSAGE, msg);
 
-            Timber.d("isi params UpdateCardBalance:" + params.toString());
+            Timber.wtf("isi params UpdateOldCardBalance:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.UPDATE_CARD_BALANCE, params,
                     new ResponseListener() {
@@ -433,7 +433,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
             params.put(WebParams.MESSAGE, cardMessage);
 
 
-            Timber.d("isi params UpdateCardBalance:" + params.toString());
+            Timber.wtf("isi params UpdateNewCardBalance:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.UPDATE_CARD_BALANCE, params,
                     new ResponseListener() {
