@@ -154,30 +154,34 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                     Log.d("SELECT_RESPONSE : ", Converter.Companion.toHex(selectEmoneyResponse));
                     cardSelect = Converter.Companion.toHex(selectEmoneyResponse);
 
-                    Log.d("CARD_ATTRIBUTE : ", Converter.Companion.toHex(cardAttirbuteResponse));
-                    cardAttribute = Converter.Companion.toHex(cardAttirbuteResponse);
+                    if (cardSelect.equals("9000")) {
+                        Log.d("CARD_ATTRIBUTE : ", Converter.Companion.toHex(cardAttirbuteResponse));
+                        cardAttribute = Converter.Companion.toHex(cardAttirbuteResponse);
 
-                    Log.d("UUID : ", Converter.Companion.toHex(tag.getId()));
-                    cardUid = Converter.Companion.toHex(tag.getId());
+                        Log.d("UUID : ", Converter.Companion.toHex(tag.getId()));
+                        cardUid = Converter.Companion.toHex(tag.getId());
 
-                    Log.d("CARD_INFO : ", Converter.Companion.toHex(cardInfoResponse));
-                    cardInfo = Converter.Companion.toHex(cardInfoResponse);
-                    cardNumber.setText(cardInfo.substring(0, 16));
-                    numberCard = cardInfo.substring(0, 16);
+                        Log.d("CARD_INFO : ", Converter.Companion.toHex(cardInfoResponse));
+                        cardInfo = Converter.Companion.toHex(cardInfoResponse);
+                        cardNumber.setText(cardInfo.substring(0, 16));
+                        numberCard = cardInfo.substring(0, 16);
 
-                    Log.d("LAST_BALANCE : ", Converter.Companion.toHex(lastBalanceResponse));
-                    cardBalance = Converter.Companion.toHex(lastBalanceResponse);
-                    cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
-                    Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
-                    saldo = String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
+                        Log.d("LAST_BALANCE : ", Converter.Companion.toHex(lastBalanceResponse));
+                        cardBalance = Converter.Companion.toHex(lastBalanceResponse);
+                        cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
+                        Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
+                        saldo = String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
 
-                    lyt_gifNfc.setVisibility(View.GONE);
-                    lyt_emonCard.setVisibility(View.VISIBLE);
+                        lyt_gifNfc.setVisibility(View.GONE);
+                        lyt_emonCard.setVisibility(View.VISIBLE);
 
-                    if (cardShifted == true) {
-                        getReversalUpdateCard();
-                    } else {
-                        getCheckCardBalance2();
+                        if (cardShifted == true) {
+                            getReversalUpdateCard();
+                        } else {
+                            getCheckCardBalance2();
+                        }
+                    }else{
+                        Toast.makeText(getBaseContext(), "Kartu anda salah",Toast.LENGTH_SHORT).show();
                     }
                 }
             });

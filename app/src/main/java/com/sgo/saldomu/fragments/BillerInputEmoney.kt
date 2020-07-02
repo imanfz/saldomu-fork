@@ -92,6 +92,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
     private var billerIdNumber: String? = null
     private var billerTypeCode: String? = null
     private var cardInfo: String? = null
+    private var cardSelect: String? = null
     private var cardNumber: String? = null
     private var ccyId: String? = null
     private var custId: String? = null
@@ -981,13 +982,22 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         try {
             isoDep.connect()
 
-            val cardInfoResponse = isoDep.transceive(hexStringToByteArray(
-                    "00B300003F"))
+            val cardSelectResponse = isoDep.transceive(hexStringToByteArray("00A40400080000000000000001"))
+            val cardInfoResponse = isoDep.transceive(hexStringToByteArray("00B300003F"))
+
             activity!!.runOnUiThread {
-                Log.d("CARD_INFO : ", toHex(cardInfoResponse))
-                cardInfo = toHex(cardInfoResponse)
-                cardNumber = cardInfo!!.substring(0, 16)
-                billerinput_et_id_remark.setText(cardNumber)
+
+                Log.d("SELECT_RESPONSE : ", toHex(cardSelectResponse))
+                cardSelect = toHex(cardSelectResponse)
+
+                if(cardSelect.equals("9000")){
+                    Log.d("CARD_INFO : ", toHex(cardInfoResponse))
+                    cardInfo = toHex(cardInfoResponse)
+                    cardNumber = cardInfo!!.substring(0, 16)
+                    billerinput_et_id_remark.setText(cardNumber)
+                }else{
+                    Toast.makeText(activity!!, "Kartu anda salah", Toast.LENGTH_SHORT).show()
+                }
             }
         } catch (e: IOException) {
             e.printStackTrace();
