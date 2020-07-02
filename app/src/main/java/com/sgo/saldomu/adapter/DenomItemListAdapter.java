@@ -1,5 +1,6 @@
 package com.sgo.saldomu.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.sgo.saldomu.Beans.DenomListModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
 
 import java.util.ArrayList;
 
@@ -46,6 +48,7 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
         return new holder(LayoutInflater.from(context).inflate(R.layout.adapter_denom_item_list, parent, false));
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull holder holder, final int position) {
         DenomItemOrderListAdapter adapter = new DenomItemOrderListAdapter(context
@@ -60,6 +63,7 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
 
         holder.itemID.setText(itemList.get(position).getItemID());
         holder.itemName.setText(itemList.get(position).getItemName());
+        holder.itemPrice.setText(context.getString(R.string.rp_) +" "+ CurrencyFormat.format(itemList.get(position).getItemPrice()));
 
         holder.itemQty.addTextChangedListener(new TextWatcher() {
             @Override
@@ -98,7 +102,7 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
 
     class holder extends RecyclerView.ViewHolder {
 
-        TextView itemName, itemID;
+        TextView itemName, itemID, itemPrice;
         EditText itemQty;
         LinearLayout inputDenom;
         RecyclerView orderList;
@@ -110,6 +114,7 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
             itemName = itemView.findViewById(R.id.adapter_denom_item_name_field);
             itemID = itemView.findViewById(R.id.adapter_denom_item_id_field);
             itemQty = itemView.findViewById(R.id.adapter_denom_item_et_qty);
+            itemPrice = itemView.findViewById(R.id.adapter_denom_item_price_field);
             inputDenom = itemView.findViewById(R.id.adapter_denom_item_layout);
             orderList = itemView.findViewById(R.id.adapter_denom_item_list_order_list);
         }

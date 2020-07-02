@@ -762,6 +762,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_fee = inflated.findViewById(R.id.dialog_denom_fee_value);
                 TextView tv_total_amount = inflated.findViewById(R.id.dialog_denom_totalamount_value);
                 TextView tv_store_name = inflated.findViewById(R.id.tv_report_store_name);
+                TextView tv_store_address = inflated.findViewById(R.id.tv_report_store_address);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
@@ -771,13 +772,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                 tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
-                tv_member_code.setText(args.getString(DefineValue.MEMBER_CODE));
+                tv_member_code.setText(args.getString(DefineValue.STORE_CODE));
                 tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
                 tv_bank_order_number.setText(args.getString(DefineValue.ORDER_ID));
                 tv_amount.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee.setText(args.getString(DefineValue.FEE));
                 tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 tv_store_name.setText(args.getString(DefineValue.STORE_NAME));
+                tv_store_address.setText(args.getString(DefineValue.STORE_ADDRESS));
             } else if (buss_scheme_code.equalsIgnoreCase("DGI")) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_dgi);
                 View inflated = stub.inflate();
