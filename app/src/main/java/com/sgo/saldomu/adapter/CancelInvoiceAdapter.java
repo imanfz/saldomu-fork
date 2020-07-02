@@ -39,11 +39,13 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
     OnItemClick listener;
     Context context;
     ArrayList<InvoiceDGI> invoiceDGIModelArrayList;
+    ArrayList<String> reasonCodeArrayList = new ArrayList<>();
     private ArrayList<String> reasonNameArrayList = new ArrayList<>();
     String reason = "";
 
-    public CancelInvoiceAdapter(ArrayList<InvoiceDGI> invoiceDGIModelArrayList, ArrayList<String> reasonNameArrayList, OnItemClick listener) {
+    public CancelInvoiceAdapter(ArrayList<InvoiceDGI> invoiceDGIModelArrayList, ArrayList<String> reasonCodeArrayList, ArrayList<String> reasonNameArrayList, OnItemClick listener) {
         this.invoiceDGIModelArrayList = invoiceDGIModelArrayList;
+        this.reasonCodeArrayList = reasonCodeArrayList;
         this.reasonNameArrayList = reasonNameArrayList;
         this.listener = listener;
     }
@@ -83,7 +85,7 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
                     reason = editable.toString();
                 }
 
-                listener.onEdit(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
+                listener.onEdit(new Invoice(String.valueOf(reasonCodeArrayList.size()), reason, item.getDoc_no()));
             }
         });
 
@@ -110,7 +112,7 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
                     } else {
                         holder.reason_et.setVisibility(View.GONE);
                     }
-                    listener.onEdit(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
+                    listener.onEdit(new Invoice(reasonCodeArrayList.get(i), reason, item.getDoc_no()));
 //                    listener.onCheck(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
                 }
             }
@@ -132,11 +134,11 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
 //                }
 
                 if (!isChecked) {
-                    listener.onUncheck(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
+                    listener.onUncheck(new Invoice(reasonCodeArrayList.get(position), reason, item.getDoc_no()));
                     holder.sp_reason.setVisibility(View.GONE);
                 } else {
                     reason = holder.sp_reason.getItemAtPosition(0).toString();
-                    listener.onCheck(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
+                    listener.onCheck(new Invoice(reasonCodeArrayList.get(position), reason, item.getDoc_no()));
                     holder.sp_reason.setVisibility(View.VISIBLE);
 //                    holder.sp_reason.performClick();
                 }
