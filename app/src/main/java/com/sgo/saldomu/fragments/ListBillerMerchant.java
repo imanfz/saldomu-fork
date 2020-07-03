@@ -22,6 +22,7 @@ import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
+//import com.sgo.saldomu.activities.NFCActivity;
 import com.sgo.saldomu.activities.NFCActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -141,6 +142,7 @@ public class ListBillerMerchant extends ListFragment {
                 if (billerTypeCode.equals("EMON") && nfcAdapter != null) {
                     _data.add("Cek Saldo Emoney");
                 }
+
 
             adapter.notifyDataSetChanged();
         } else

@@ -211,6 +211,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             layout_txId.setVisibility(View.GONE);
         }
 
+
         if (buss_scheme_code.equalsIgnoreCase("TOP")) {
             tv_trans_remark_topup.setVisibility(View.VISIBLE);
         }
@@ -219,7 +220,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         tv_txid_value.setText(args.getString(DefineValue.TX_ID));
 
         trx_id = args.getString(DefineValue.TX_ID);
-
 
         if (buss_scheme_code != null || type != null) {
             if (buss_scheme_code.equalsIgnoreCase("CTA")) {

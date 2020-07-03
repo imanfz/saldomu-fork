@@ -613,6 +613,17 @@ public class WebParams {
     public static String USER_EMAIL = "user_email";
     public static String SUMMARY = "summary";
 
+    //NFC PARAMS
+    public final static String CARD_BALANCE = "card_balance";
+    public final static String CARD_ATTRIBUTE = "card_attribute";
+    public final static String CARD_INFO = "card_info";
+    public final static String CARD_UUID = "card_uuid";
+    public final static String UPDATE_CARD_KEY = "update_card_key";
+    public final static String SESSION = "session";
+    public final static String CARD_NO = "card_no";
+    public final static String MITRA_CODE = "mitra_code";
+    public final static String REVERSE_CARD_KEY = "reverse_card_key";
+
 
     public static String SIGN = "sign";
     public static String STORE_NAME = "store_name";
