@@ -85,7 +85,7 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
                     reason = editable.toString();
                 }
 
-                listener.onEdit(new Invoice(reasonCodeArrayList.get(reasonCodeArrayList.size()), reason, item.getDoc_no()));
+                listener.onEdit(new Invoice(reasonCodeArrayList.get(reasonCodeArrayList.size()-1), reason, item.getDoc_no()));
             }
         });
 
