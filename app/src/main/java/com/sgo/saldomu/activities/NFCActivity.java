@@ -335,6 +335,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                         if (reversalSuccess == false) {
                                             getReversalUpdateCard();
                                         } else {
+                                            Toast.makeText(getBaseContext(), "Mohon untuk dapat melakukan update card minimal 3 kali.", Toast.LENGTH_SHORT).show();
                                             getUpdateOldCard(Converter.Companion.toHex(messageAPDU));
                                         }
                                     } else {
