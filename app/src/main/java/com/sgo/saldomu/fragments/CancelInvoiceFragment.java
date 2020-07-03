@@ -172,11 +172,11 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
 
 
         for (Invoice invoice : selectedCancelInvoice) {
-            if (invoice.getReason_description().equals(getString(R.string.choose_reason))) {
+            if (invoice.getReason_code().equals("00")) {
                 Toast.makeText(getContext(), Objects.requireNonNull(getContext()).getString(R.string.please_choose_reason), Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (invoice.getReason_description().equals("")) {
+            if (invoice.getReason_description().equals("") && invoice.getReason_code().equals(reasonCodeArrayList.get(reasonCodeArrayList.size()-1))) {
                 Toast.makeText(getContext(), Objects.requireNonNull(getContext()).getString(R.string.please_input_description), Toast.LENGTH_SHORT).show();
                 return;
             }
