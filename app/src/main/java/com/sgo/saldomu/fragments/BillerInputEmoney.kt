@@ -996,7 +996,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                     cardNumber = cardInfo!!.substring(0, 16)
                     billerinput_et_id_remark.setText(cardNumber)
                 }else{
-                    Toast.makeText(activity!!, "Kartu anda salah", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity!!, "Kartu anda tidak valid", Toast.LENGTH_SHORT).show()
                 }
             }
         } catch (e: IOException) {
