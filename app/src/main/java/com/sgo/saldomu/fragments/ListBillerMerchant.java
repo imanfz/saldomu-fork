@@ -138,10 +138,10 @@ public class ListBillerMerchant extends ListFragment {
             for (int i = 0; i < mListBillerData.size(); i++) {
                 _data.add(mListBillerData.get(i).getComm_name());
             }
-            if (BuildConfig.FLAVOR.equalsIgnoreCase("production"))
-                if (billerTypeCode.equals("EMON") && nfcAdapter != null) {
-                    _data.add("Cek Saldo Emoney");
-                }
+//            if (BuildConfig.FLAVOR.equalsIgnoreCase("production"))
+//                if (billerTypeCode.equals("EMON") && nfcAdapter != null) {
+//                    _data.add("Cek Saldo Emoney");
+//                }
 
 
             adapter.notifyDataSetChanged();
