@@ -68,9 +68,10 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
     Boolean isPIN = false;
     LinearLayout layout_otp;
     EditText et_otp;
-    String comm_name, member_code, product_name, bank_gateway, comm_code, bank_code, product_code, amount, remark;
+    String comm_name, member_code, product_name, bank_gateway, comm_code, bank_code, product_code, amount, remark, storeName, storeAddress;
     String ccy_id, tx_id, member_id_scadm, member_name, comm_id, bank_name, admin_fee, total_amount, api_key, item_name;
-    TextView tv_community_name, tv_community_code, tv_member_code, tv_product_name, tv_jumlah, tv_remark, tv_admin_fee, tv_total_amount;
+    TextView tv_community_name, tv_community_code, tv_member_code, tv_product_name, tv_jumlah, tv_remark, tv_admin_fee, tv_total_amount,
+    tv_store_name, tv_store_address;
     double dfee = 0;
     double damount = 0;
     double dtotal_amount = 0;
@@ -92,26 +93,28 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
-        Bundle bundle1 = getArguments();
-        tx_id = bundle1.getString(DefineValue.TX_ID, "");
-        member_id_scadm = bundle1.getString(DefineValue.MEMBER_ID_SCADM, "");
-        member_code = bundle1.getString(DefineValue.MEMBER_CODE, "");
-        member_name = bundle1.getString(DefineValue.MEMBER_NAME, "");
-        comm_id = bundle1.getString(DefineValue.COMM_ID_SCADM, "");
-        comm_code = bundle1.getString(DefineValue.COMMUNITY_CODE, "");
-        comm_name = bundle1.getString(DefineValue.COMMUNITY_NAME, "");
-        bank_gateway = bundle1.getString(DefineValue.BANK_GATEWAY, "");
-        bank_code = bundle1.getString(DefineValue.BANK_CODE, "");
-        bank_name = bundle1.getString(DefineValue.BANK_NAME, "");
-        product_code = bundle1.getString(DefineValue.PRODUCT_CODE, "");
-        product_name = bundle1.getString(DefineValue.PRODUCT_NAME, "");
-        ccy_id = bundle1.getString(DefineValue.CCY_ID, "");
-        amount = bundle1.getString(DefineValue.AMOUNT, "");
-        admin_fee = bundle1.getString(DefineValue.FEE, "");
-        total_amount = bundle1.getString(DefineValue.TOTAL_AMOUNT, "");
-        remark = bundle1.getString(DefineValue.REMARK, "");
-        api_key = bundle1.getString(DefineValue.API_KEY, "");
-        attempt = bundle1.getInt(DefineValue.ATTEMPT, -1);
+        Bundle bundle = getArguments();
+        tx_id = bundle.getString(DefineValue.TX_ID, "");
+        member_id_scadm = bundle.getString(DefineValue.MEMBER_ID_SCADM, "");
+        member_code = bundle.getString(DefineValue.MEMBER_CODE, "");
+        member_name = bundle.getString(DefineValue.MEMBER_NAME, "");
+        comm_id = bundle.getString(DefineValue.COMM_ID_SCADM, "");
+        comm_code = bundle.getString(DefineValue.COMMUNITY_CODE, "");
+        comm_name = bundle.getString(DefineValue.COMMUNITY_NAME, "");
+        bank_gateway = bundle.getString(DefineValue.BANK_GATEWAY, "");
+        bank_code = bundle.getString(DefineValue.BANK_CODE, "");
+        bank_name = bundle.getString(DefineValue.BANK_NAME, "");
+        product_code = bundle.getString(DefineValue.PRODUCT_CODE, "");
+        product_name = bundle.getString(DefineValue.PRODUCT_NAME, "");
+        ccy_id = bundle.getString(DefineValue.CCY_ID, "");
+        amount = bundle.getString(DefineValue.AMOUNT, "");
+        admin_fee = bundle.getString(DefineValue.FEE, "");
+        total_amount = bundle.getString(DefineValue.TOTAL_AMOUNT, "");
+        remark = bundle.getString(DefineValue.REMARK, "");
+        api_key = bundle.getString(DefineValue.API_KEY, "");
+        attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
+        storeName = bundle.getString(WebParams.STORE_NAME, "");
+        storeAddress = bundle.getString(WebParams.STORE_ADDRESS, "");
 
 
         tv_community_code = v.findViewById(R.id.community_code);
@@ -125,15 +128,19 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         btn_next = v.findViewById(R.id.btn_next);
         layout_otp = v.findViewById(R.id.layout_otp);
         et_otp = v.findViewById(R.id.et_otp);
+        tv_store_name = v.findViewById(R.id.tv_store_name_topupconfirm);
+        tv_store_address = v.findViewById(R.id.tv_store_address_topupconfirm);
 
+        tv_store_name.setText(storeName);
+        tv_store_address.setText(storeAddress);
         tv_community_code.setText(comm_code);
         tv_community_name.setText(comm_name);
         tv_member_code.setText(member_code);
         tv_product_name.setText(product_name);
         tv_remark.setText(remark);
-        damount = Double.parseDouble(bundle1.getString(DefineValue.AMOUNT, ""));
-        dfee = Double.parseDouble(bundle1.getString(DefineValue.FEE, ""));
-        dtotal_amount = Double.parseDouble(bundle1.getString(DefineValue.TOTAL_AMOUNT, ""));
+        damount = Double.parseDouble(bundle.getString(DefineValue.AMOUNT, ""));
+        dfee = Double.parseDouble(bundle.getString(DefineValue.FEE, ""));
+        dtotal_amount = Double.parseDouble(bundle.getString(DefineValue.TOTAL_AMOUNT, ""));
         tv_jumlah.setText(ccy_id + ". " + CurrencyFormat.format(damount));
         tv_admin_fee.setText(ccy_id + ". " + CurrencyFormat.format(dfee));
         tv_total_amount.setText(ccy_id + ". " + CurrencyFormat.format(dtotal_amount));
