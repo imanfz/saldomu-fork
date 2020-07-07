@@ -56,7 +56,7 @@ public class FragTopUpSCADM extends BaseFragment {
     private ProgressDialog progdialog;
     String memberIDLogin, commIDLogin, userPhoneID, accessKey, member_id_scadm, comm_id_scadm, selectedProductCode, selectedBankCode;
     String tx_id, member_id, member_code, member_name, comm_id, comm_code, comm_name, bank_code, bank_name,
-            product_code, product_name, ccy_id, amount, admin_fee, total_amount, api_key, member_id_finale;
+            product_code, product_name, ccy_id, amount, admin_fee, total_amount, api_key, storeName, storeAddress;
     String bank_gateway, selectedBankGateway;
     private ArrayList<listBankModel> scadmListBankTopUp = new ArrayList<>();
     private ArrayList<String> spinnerContentStrings = new ArrayList<>();
@@ -298,6 +298,8 @@ public class FragTopUpSCADM extends BaseFragment {
                                     amount = response.getString(WebParams.AMOUNT);
                                     admin_fee = response.getString(WebParams.ADMIN_FEE);
                                     total_amount = response.getString(WebParams.TOTAL_AMOUNT);
+                                    storeName = response.getString(WebParams.STORE_NAME);
+                                    storeAddress = response.getString(WebParams.STORE_ADDRESS);
 //                            payment_remark = response.getString(WebParams.PAYMENT_REMARK);
 
                                     changeToConfirmTopup();
@@ -391,6 +393,8 @@ public class FragTopUpSCADM extends BaseFragment {
                                     amount = response.getString(WebParams.AMOUNT);
                                     admin_fee = response.getString(WebParams.ADMIN_FEE);
                                     total_amount = response.getString(WebParams.TOTAL_AMOUNT);
+                                    storeName = response.getString(WebParams.STORE_NAME);
+                                    storeAddress = response.getString(WebParams.STORE_ADDRESS);
 //                            payment_remark = response.getString(WebParams.PAYMENT_REMARK);
 
                                     changeToConfirmTopup();
@@ -463,6 +467,8 @@ public class FragTopUpSCADM extends BaseFragment {
         bundle1.putString(DefineValue.TOTAL_AMOUNT, total_amount);
         bundle1.putString(DefineValue.REMARK, et_pesan.getText().toString());
         bundle1.putString(DefineValue.API_KEY, api_key);
+        bundle1.putString(DefineValue.STORE_NAME, storeName);
+        bundle1.putString(DefineValue.STORE_ADDRESS, storeAddress);
 //        bundle1.putString(DefineValue.PRODUCT_NAME, spinnerContentStrings.get(spinner_bank_product.getSelectedItemPosition()));
         Fragment mFrag = new FragTopUpConfirmSCADM();
         mFrag.setArguments(bundle1);

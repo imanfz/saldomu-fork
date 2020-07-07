@@ -921,6 +921,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.getBuss_scheme_name());
         args.putString(DefineValue.COMMUNITY_CODE, response.getComm_code());
         args.putString(DefineValue.MEMBER_CODE, response.getMember_code());
+        args.putString(DefineValue.MEMBER_ID_CUST, response.getMember_cust_id());
+        args.putString(DefineValue.MEMBER_CUST_NAME, response.getMember_cust_name());
+        args.putString(DefineValue.STORE_NAME, response.getStore_name());
+        args.putString(DefineValue.STORE_ADDRESS, response.getStore_address());
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);

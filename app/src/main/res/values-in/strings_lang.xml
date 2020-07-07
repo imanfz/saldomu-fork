@@ -1609,4 +1609,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="choose_reason">Pilih Alasan</string>
     <string name="invoice">INVOICE</string>
     <string name="due_date">Batas tanggal terakhir :</string>
+    <string name="agent_no">Nomor Agen</string>
 </resources>

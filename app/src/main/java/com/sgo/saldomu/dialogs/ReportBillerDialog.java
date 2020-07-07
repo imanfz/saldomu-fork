@@ -283,8 +283,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 //                    tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
-            } else if (buss_scheme_code.equalsIgnoreCase("CTR"))
-            {
+            } else if (buss_scheme_code.equalsIgnoreCase("CTR")) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_ctr);
                 View inflated = stub.inflate();
                 inflated.setVisibility(View.VISIBLE);
@@ -337,7 +336,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee_value.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
-            }else if (buss_scheme_code.equalsIgnoreCase("ATC")) {
+            } else if (buss_scheme_code.equalsIgnoreCase("ATC")) {
                 if (type.equals(DefineValue.BBS_MEMBER_OTP)) {
                     View inflated;
                     stub.setLayoutResource(R.layout.layout_dialog_report_bbs_member_confirm);
@@ -432,7 +431,51 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 //                    tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
-            } else if (buss_scheme_code.equalsIgnoreCase("EMO") || buss_scheme_code.equalsIgnoreCase("TOP")) {
+            } else if (buss_scheme_code.equalsIgnoreCase("TOP")) {
+                stub.setLayoutResource(R.layout.layout_dialog_report_topup_b2b);
+                View inflated = stub.inflate();
+
+                TextView tv_report_type = inflated.findViewById(R.id.dialog_topup_transaction_type);
+                TextView tv_useerid_value = inflated.findViewById(R.id.dialog_topup_commcode_value);
+                TextView tv_name_value = inflated.findViewById(R.id.dialog_topup_membercode_value);
+                TextView tv_bank_product = inflated.findViewById(R.id.dialog_topup_productbank_value);
+                TextView tv_fee = inflated.findViewById(R.id.dialog_topup_fee_value);
+                TextView tv_amount = inflated.findViewById(R.id.dialog_topup_amount_value);
+                TextView tv_total_amount = inflated.findViewById(R.id.dialog_topup_total_amount_value);
+                TextView tv_agent_name = inflated.findViewById(R.id.dialog_topup_agent_name_value);
+                TextView tv_agent_number = inflated.findViewById(R.id.dialog_topup_agent_number_value);
+                TextView tv_store_name = inflated.findViewById(R.id.dialog_topup_store_name_value);
+                TextView tv_store_address = inflated.findViewById(R.id.dialog_topup_store_address_value);
+                inflated.setVisibility(View.VISIBLE);
+
+                String amount = args.getString(DefineValue.AMOUNT);
+                String fee = args.getString(DefineValue.FEE);
+                String total_amount = args.getString(DefineValue.TOTAL_AMOUNT);
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                if (!isSuccess) {
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
+
+                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
+                tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
+                tv_name_value.setText(args.getString(DefineValue.USER_NAME));
+                tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
+                tv_fee.setText(fee);
+                tv_amount.setText(amount);
+                tv_total_amount.setText(total_amount);
+                tv_useerid_value.setText(args.getString(DefineValue.COMMUNITY_CODE));
+                tv_name_value.setText(args.getString(DefineValue.MEMBER_CODE));
+                tv_agent_name.setText(args.getString(DefineValue.MEMBER_CUST_NAME));
+                tv_agent_number.setText(args.getString(DefineValue.MEMBER_ID_CUST));
+                tv_store_name.setText(args.getString(DefineValue.STORE_NAME));
+                tv_store_address.setText(args.getString(DefineValue.STORE_ADDRESS));
+
+            } else if (buss_scheme_code.equalsIgnoreCase("EMO")) {
 //                if (type.equals(DefineValue.TOPUP) || type.equals(DefineValue.COLLECTION)) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_topup);
                 View inflated = stub.inflate();
@@ -469,12 +512,12 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_amount.setText(amount);
                 tv_total_amount.setText(total_amount);
 
-                if (buss_scheme_code.equalsIgnoreCase("TOP")) {
-                    tv_user_id.setText(getString(R.string.community_code));
-                    tv_nama.setText(getString(R.string.customer_code));
-                    tv_useerid_value.setText(args.getString(DefineValue.COMMUNITY_CODE));
-                    tv_name_value.setText(args.getString(DefineValue.MEMBER_CODE));
-                }
+//                if (buss_scheme_code.equalsIgnoreCase("TOP")) {
+//                    tv_user_id.setText(getString(R.string.community_code));
+//                    tv_nama.setText(getString(R.string.customer_code));
+//                    tv_useerid_value.setText(args.getString(DefineValue.COMMUNITY_CODE));
+//                    tv_name_value.setText(args.getString(DefineValue.MEMBER_CODE));
+//                }
 
                 if (type.equals(DefineValue.COLLECTION)) {
                     View layout_remark = inflated.findViewById(R.id.topup_remark_layout);
