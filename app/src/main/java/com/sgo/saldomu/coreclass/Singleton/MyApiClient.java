@@ -291,11 +291,31 @@ public class MyApiClient {
     public static String LINK_INQUIRY_CUSTOMER_ACCT;
     public static String LINK_CONFIRM_TOKEN_C2R;
     public static String LINK_RESEND_TOKEN_C2R;
+    public static String CHEK_CARD_BALANCE;
+    public static String UPDATE_CARD_BALANCE;
+    public static String CONFIRM_CARD_BALANCE;
+    public static String REVERSE_UPDATE_REPEAT;
+    public static String REVERSE_UPDATE;
     public static String LINK_REQUEST_RESET_PIN;
     public static String LINK_VALIDATE_OTP_RESET_PIN;
     public static String LINK_CONFIRM_RESET_PIN;
 
-    public void InitializeAddress() {
+
+
+    public void InitializeAddress(){
+        LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
+        LINK_REG_STEP1           = headaddressfinal + "RegStep1/Invoke";
+        LINK_REG_STEP2           = headaddressfinal + "RegStep2/Invoke";
+        LINK_REG_STEP3           = headaddressfinal + "RegStep3/Invoke";
+        LINK_VALID_REGISTRASI    = headaddressfinal + "InsertCustomer/Invoke";
+        LINK_LOGIN               = headaddressfinal + "MemberLogin/SignIn";
+        LINK_VALID_TOPUP         = headaddressfinal + "TopUp/Invoke";
+        LINK_LIST_MEMBER         = headaddressfinal + "Member/Retrieve";
+        LINK_REQ_TOKEN_SGOL      = headaddressfinal + "InquiryTrx/Retrieve";
+        LINK_RESEND_TOKEN_SGOL   = headaddressfinal + "InquiryResendToken/Invoke";
+        LINK_INSERT_TRANS_TOPUP  = headaddressfinal + "InsertTrx/Invoke";
+        LINK_INSERT_TRANS_TOPUP_NEW  = headaddressfinal + "InsertTrxNew/Invoke";
+        LINK_SALDO               = headaddressfinal + "Balance/Retrieve";
         LINK_REGISTRASI = headaddressfinal + "RegisterCustomer/Invoke";
         LINK_REG_STEP1 = headaddressfinal + "RegStep1/Invoke";
         LINK_REG_STEP2 = headaddressfinal + "RegStep2/Invoke";
@@ -459,6 +479,7 @@ public class MyApiClient {
         LINK_BBS_SEND_DATA_LKD = headaddressfinal + "BBSTrxCustomer/Submit";
         LINK_BBS_MANDIRI_LKD = headaddressfinal + "RegAgentLKD/Invoke";
 
+
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 //        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";
 
@@ -510,7 +531,15 @@ public class MyApiClient {
 
         LINK_CONFIRM_TOKEN_C2R = headaddressfinal + "ConfirmTokenCTR/Invoke";
         LINK_RESEND_TOKEN_C2R = headaddressfinal + "ResendTokenCTR/Invoke";
+        LINK_CONFIRM_TOKEN_C2R      = headaddressfinal + "ConfirmTokenCTR/Invoke";
+        LINK_RESEND_TOKEN_C2R       = headaddressfinal + "ResendTokenCTR/Invoke";
 
+        //NFC
+        CHEK_CARD_BALANCE = headaddressfinal + "CheckCardBalance/Invoke";
+        UPDATE_CARD_BALANCE = headaddressfinal + "UpdateCardBalance/Invoke";
+        CONFIRM_CARD_BALANCE = headaddressfinal + "ConfirmUpdateCardBalance/Invoke";
+        REVERSE_UPDATE = headaddressfinal + "ReverseUpdateCardBalance/Invoke";
+        REVERSE_UPDATE_REPEAT = headaddressfinal + "ReverseUpdateCardRepeatBalance/Invoke";
         LINK_REQUEST_RESET_PIN = headaddressfinal + "RequestResetPIN/Invoke";
         LINK_VALIDATE_OTP_RESET_PIN = headaddressfinal + "ValidateOTPResetPIN/Invoke";
         LINK_CONFIRM_RESET_PIN = headaddressfinal + "ConfirmResetPIN/Invoke";

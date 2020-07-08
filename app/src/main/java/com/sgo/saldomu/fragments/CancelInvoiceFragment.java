@@ -68,6 +68,7 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
     private String date_visit;
     private ArrayList<InvoiceDGI> invoiceDGIModelArrayList;
     private ArrayList<Invoice> selectedCancelInvoice = new ArrayList<>();
+    private ArrayList<String> reasonCodeArrayList = new ArrayList<>();
     private ArrayList<String> reasonNameArrayList = new ArrayList<>();
     CancelInvoiceAdapter adapter;
 
@@ -104,10 +105,12 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
         try {
             reasonArray = new JSONArray(sp.getString(DefineValue.REJECT_REASON, ""));
             if (reasonArray.length() > 0) {
+                this.reasonCodeArrayList.add("00");
                 this.reasonNameArrayList.add(getContext().getString(R.string.choose_reason));
                 for (int i = 0; i < reasonArray.length(); i++) {
                     JSONObject jsonObjectReason;
                     jsonObjectReason = reasonArray.getJSONObject(i);
+                    reasonCodeArrayList.add(formatStringCamelCase(jsonObjectReason.getString("CODE")));
                     reasonNameArrayList.add(formatStringCamelCase(jsonObjectReason.getString("DESCRIPTION")));
                 }
             }
@@ -123,13 +126,14 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
         invoiceDGIModelArrayList = new ArrayList<>();
         invoiceDGIModelArrayList.addAll(DataManager.getInstance().getListInvoice());
 
-        adapter = new CancelInvoiceAdapter(invoiceDGIModelArrayList, reasonNameArrayList, new CancelInvoiceAdapter.OnItemClick() {
+        adapter = new CancelInvoiceAdapter(invoiceDGIModelArrayList, reasonCodeArrayList, reasonNameArrayList, new CancelInvoiceAdapter.OnItemClick() {
             @Override
             public void onEdit(Invoice obj) {
                 Observable.fromIterable(selectedCancelInvoice)
                         .distinct()
                         .map(item -> {
                                     if (item.getInvoice_number().equals(obj.getInvoice_number())) {
+                                        item.setReason_code(obj.getReason_code());
                                         item.setReason_description(obj.getReason_description());
                                     }
                                     return item;
@@ -168,11 +172,11 @@ public class CancelInvoiceFragment extends BaseFragment implements GoogleApiClie
 
 
         for (Invoice invoice : selectedCancelInvoice) {
-            if (invoice.getReason_description().equals(getString(R.string.choose_reason))) {
+            if (invoice.getReason_code().equals("00")) {
                 Toast.makeText(getContext(), Objects.requireNonNull(getContext()).getString(R.string.please_choose_reason), Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (invoice.getReason_description().equals("")) {
+            if (invoice.getReason_description().equals("") && invoice.getReason_code().equals(reasonCodeArrayList.get(reasonCodeArrayList.size()-1))) {
                 Toast.makeText(getContext(), Objects.requireNonNull(getContext()).getString(R.string.please_input_description), Toast.LENGTH_SHORT).show();
                 return;
             }

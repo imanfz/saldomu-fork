@@ -1644,4 +1644,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="invoice">INVOICE</string>
     <string name="due_date">Due date :</string>
     <string name="item_search">Search Item</string>
+    <string name="agent_no">Agent Number</string>
 </resources>

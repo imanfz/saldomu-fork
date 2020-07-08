@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -49,6 +48,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.utils.Converter;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ import timber.log.Timber;
   Created by Administrator on 3/4/2015.
  */
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-public class BillerInput extends Fragment {
+public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
 
     public final static String TAG = "BILLER_INPUT";
 
@@ -297,7 +297,9 @@ public class BillerInput extends Fragment {
             buy_code = BillerActivity.PURCHASE_TYPE;
             if (biller_comm_code.equals("EMONEYSALDOMU")) {
                 tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Emoney));
-                et_payment_remark.setText("6032984008386579");
+                et_payment_remark.setText("");
+//                6032984084668361
+//                Toast.makeText(getActivity(), "Kartu Anda Diblock Sementara Karena Masih Memiliki Transaksi Pending", Toast.LENGTH_LONG).show();
                 et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(16)});
                 btn_cekSaldo.setVisibility(View.VISIBLE);
             } else {
@@ -614,80 +616,87 @@ public class BillerInput extends Fragment {
         super.onResume();
 
 //        NfcManager manager = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
-        nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
-        if (biller_comm_code.equals("EMONEYSALDOMU")) {
-            if (nfcAdapter != null) {
-                //Yes NFC available
-                lyt_cekSaldo.setVisibility(View.VISIBLE);
+
+        if(nfcAdapter!= null){
+            nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
+
+            nfcAdapter.enableReaderMode(getActivity(), this,
+                    NfcAdapter.FLAG_READER_NFC_A |
+                            NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK, null);
+            if (biller_comm_code.equals("EMONEYSALDOMU")) {
+                if (nfcAdapter != null) {
+                    //Yes NFC available
+                    lyt_cekSaldo.setVisibility(View.VISIBLE);
+                }
             }
+
         }
 
     }
 
-//    @Override
-//    public void onTagDiscovered(Tag tag) {
-//        IsoDep isoDep = IsoDep.get(tag);
-//        try {
-//            isoDep.connect();
-//
-//            byte[] selectEmoneyResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
-//                    "00A40400080000000000000001"));
-//            getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.d("SELECT_RESPONSE : ", Converter.Companion.toHex(selectEmoneyResponse));
-//                    cardSelect = Converter.Companion.toHex(selectEmoneyResponse);
-//                }
-//            });
-//
-//            byte[] cardAttirbuteResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
-//                    "00F210000B"));
-//            getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.d("CARD_ATTRIBUTE : ", Converter.Companion.toHex(cardAttirbuteResponse));
-//                    cardAttribute = Converter.Companion.toHex(cardAttirbuteResponse);
-//                }
-//            });
-//
-//            getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.d("UUID : ", Converter.Companion.toHex(tag.getId()));
-//                    cardUid = Converter.Companion.toHex(tag.getId());
-//                }
-//            });
-//
-//            byte[] cardInfoResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
-//                    "00B300003F"));
-//            getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.d("CARD_INFO : ", Converter.Companion.toHex(cardInfoResponse));
-//                    cardInfo = Converter.Companion.toHex(cardInfoResponse);
-//                    et_payment_remark.setText(cardInfo.substring(0, 16));
-//                    numberCard = cardInfo.substring(0, 16);
-//                }
-//            });
-//
-//
-//            byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
-//                    "00B500000A"));
-//            getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//
-//                    Log.d("LAST_BALANCE : ", Converter.Companion.toHex(lastBalanceResponse));
-//                    cardBalance = Converter.Companion.toHex(lastBalanceResponse);
-////                    cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
-//                    Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
-//                    saldo = String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
-//                }
-//            });
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @Override
+    public void onTagDiscovered(Tag tag) {
+        IsoDep isoDep = IsoDep.get(tag);
+        try {
+            isoDep.connect();
+
+            byte[] selectEmoneyResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00A40400080000000000000001"));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("SELECT_RESPONSE : ", Converter.Companion.toHex(selectEmoneyResponse));
+                    cardSelect = Converter.Companion.toHex(selectEmoneyResponse);
+                }
+            });
+
+            byte[] cardAttirbuteResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00F210000B"));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("CARD_ATTRIBUTE : ", Converter.Companion.toHex(cardAttirbuteResponse));
+                    cardAttribute = Converter.Companion.toHex(cardAttirbuteResponse);
+                }
+            });
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("UUID : ", Converter.Companion.toHex(tag.getId()));
+                    cardUid = Converter.Companion.toHex(tag.getId());
+                }
+            });
+
+            byte[] cardInfoResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00B300003F"));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("CARD_INFO : ", Converter.Companion.toHex(cardInfoResponse));
+                    cardInfo = Converter.Companion.toHex(cardInfoResponse);
+                    et_payment_remark.setText(cardInfo.substring(0, 16));
+                    numberCard = cardInfo.substring(0, 16);
+                }
+            });
+
+
+            byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
+                    "00B500000A"));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    Log.d("LAST_BALANCE : ", Converter.Companion.toHex(lastBalanceResponse));
+                    cardBalance = Converter.Companion.toHex(lastBalanceResponse);
+//                    cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
+                    Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
+                    saldo = String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -1612,4 +1612,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="invoice">INVOICE</string>
     <string name="due_date">Batas tanggal terakhir :</string>
     <string name="item_search">Cari Barang</string>
+    <string name="agent_no">Nomor Agen</string>
 </resources>
