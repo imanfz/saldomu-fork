@@ -78,14 +78,6 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/adapter_denom_item_list_order_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp">
-
-    </android.support.v7.widget.RecyclerView>
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

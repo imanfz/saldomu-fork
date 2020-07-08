@@ -975,6 +975,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="title_cash_out_member">Konfirmasi Tarik Tunai</string>
     <string name="title_bbs_my_orders">My Orders</string>
     <string name="agent_name">Nama Agen</string>
+    <string name="agent_phone">Nomor Agen</string>
     <string name="agent_name_hint">Masukkan nama agent yang diinginkan</string>
     <string name="auto_generate">Auto-generate</string>
     <string name="join_agent">Registrasi Agen</string>
@@ -1606,7 +1607,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="store_name">Nama Toko</string>
     <string name="store_address">Alamat Toko</string>
     <string name="partner_code">Kode Mitra</string>
+    <string name="partner_code_required">Kode Mitra dibutuhkan!</string>
     <string name="choose_reason">Pilih Alasan</string>
     <string name="invoice">INVOICE</string>
     <string name="due_date">Batas tanggal terakhir :</string>
+    <string name="item_search">Cari Barang</string>
 </resources>

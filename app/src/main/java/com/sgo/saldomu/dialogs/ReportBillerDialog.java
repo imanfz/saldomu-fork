@@ -763,6 +763,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_total_amount = inflated.findViewById(R.id.dialog_denom_totalamount_value);
                 TextView tv_store_name = inflated.findViewById(R.id.tv_report_store_name);
                 TextView tv_store_address = inflated.findViewById(R.id.tv_report_store_address);
+                TextView tv_agent_name = inflated.findViewById(R.id.dialog_denom_agent_name);
+                TextView tv_agent_phone = inflated.findViewById(R.id.dialog_denom_agent_phone);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
@@ -780,6 +782,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 tv_store_name.setText(args.getString(DefineValue.STORE_NAME));
                 tv_store_address.setText(args.getString(DefineValue.STORE_ADDRESS));
+                tv_agent_name.setText(args.getString(DefineValue.AGENT_NAME));
+                tv_agent_phone.setText(args.getString(DefineValue.AGENT_PHONE));
             } else if (buss_scheme_code.equalsIgnoreCase("DGI")) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_dgi);
                 View inflated = stub.inflate();

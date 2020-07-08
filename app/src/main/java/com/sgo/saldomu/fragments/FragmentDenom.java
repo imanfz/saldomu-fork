@@ -6,29 +6,20 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.sgo.saldomu.Beans.DenomBankListData;
-import com.sgo.saldomu.Beans.DenomListModel;
-import com.sgo.saldomu.Beans.DenomOrderListModel;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.DenomSCADMActivity;
-import com.sgo.saldomu.adapter.DenomItemListAdapter;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
@@ -37,7 +28,6 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
-import com.sgo.saldomu.dialogs.DenomItemDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
@@ -52,7 +42,7 @@ import java.util.HashMap;
 
 import timber.log.Timber;
 
-public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.listener {
+public class FragmentDenom extends BaseFragment {
 
     View v;
     ArrayAdapter<String> bankProductAdapter;
@@ -60,13 +50,9 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     NestedScrollView nestedScrollView;
     TextView CommCodeTextview, CommNameTextview, MemberCodeTextview, StoreNameTextview, StoreAddressTextview;
     Spinner ProductBankSpinner;
-    RecyclerView itemListRv;
-    DenomItemListAdapter itemListAdapter;
     Button submitBtn;
-    RelativeLayout toogleDenomList;
 
-    ArrayList<DenomListModel> itemList;
-    ArrayList<String> bankProductList, itemListString;
+    ArrayList<String> bankProductList;
     ArrayList<DenomBankListData> bankDataList;
     SCADMCommunityModel obj;
 
@@ -82,9 +68,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         CommNameTextview = v.findViewById(R.id.frag_denom_comm_name_field);
         MemberCodeTextview = v.findViewById(R.id.frag_denom_member_code_field);
         ProductBankSpinner = v.findViewById(R.id.frag_denom_bank_product_spinner);
-        itemListRv = v.findViewById(R.id.frag_denom_list_rv);
         submitBtn = v.findViewById(R.id.frag_denom_submit_btn);
-        toogleDenomList = v.findViewById(R.id.frag_denom_toogle_denom_list);
         StoreNameTextview = v.findViewById(R.id.frag_denom_store_name);
         StoreAddressTextview = v.findViewById(R.id.frag_denom_store_address);
 
@@ -97,19 +81,6 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
         Bundle bundle = getArguments();
         memberCode = bundle.getString(DefineValue.MEMBER_CODE, "");
-        itemList = new ArrayList<>();
-        itemListString = new ArrayList<>();
-        itemListAdapter = new DenomItemListAdapter(getActivity(), itemList, this, false);
-//        denomListSpinAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, itemListString);
-//        denomListSpinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-//        denomListSpinner.setAdapter(denomListSpinAdapter);
-
-        itemListRv.setAdapter(itemListAdapter);
-        itemListRv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        itemListRv.setNestedScrollingEnabled(false);
-        SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(itemListRv);
 
         obj = DataManager.getInstance().getSACDMCommMod();
 
@@ -127,9 +98,8 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkInput()) {
                     nestedScrollView.scrollTo(0, 0);
-                    Fragment frag = new FragmentDenomConfirm();
+                    Fragment frag = new FragmentDenomInputItemList();
 
                     Bundle bundle = new Bundle();
                     bundle.putString(WebParams.BANK_NAME, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankName());
@@ -142,19 +112,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
                     frag.setArguments(bundle);
 
-//                    SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
-                    addFragment(frag, DenomSCADMActivity.DENOM_PAYMENT);
-                } else
-                    Toast.makeText(getActivity(), "Daftar denom kosong", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        toogleDenomList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemListRv.getVisibility() == View.VISIBLE) {
-                    itemListRv.setVisibility(View.GONE);
-                } else itemListRv.setVisibility(View.VISIBLE);
+                    SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
             }
         });
     }
@@ -164,18 +122,6 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         super.onResume();
 
         getBankProductList();
-    }
-
-    boolean checkInput() {
-
-        for (DenomListModel obj : itemList) {
-            if (obj.getOrderList().size() > 0) {
-                DataManager.getInstance().setItemList(itemList);
-                return true;
-            }
-        }
-
-        return false;
     }
 
     void getBankProductList() {
@@ -286,28 +232,8 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                                 Timber.d("isi response get denom list:" + response.toString());
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-
                                     StoreNameTextview.setText(response.getString(WebParams.STORE_NAME));
                                     StoreAddressTextview.setText(response.getString(WebParams.STORE_ADDRESS));
-
-                                    if (itemList.size() > 0) {
-                                        itemList.clear();
-                                        itemListString.clear();
-                                    }
-
-                                    JSONArray dataArr = response.getJSONArray("item");
-
-                                    for (int i = 0; i < dataArr.length(); i++) {
-                                        JSONObject dataObj = dataArr.getJSONObject(i);
-                                        DenomListModel denomObj = new DenomListModel(dataObj);
-
-                                        itemListString.add(denomObj.getItemName());
-                                        itemList.add(denomObj);
-                                    }
-
-                                    itemListAdapter.notifyDataSetChanged();
-//                            denomListSpinAdapter.notifyDataSetChanged();
-
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -347,37 +273,6 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
             Timber.d("httpclient:" + e.getMessage());
         }
 
-    }
-
-    @Override
-    public void onClick(final int pos) {
-//        DenomOrderListModel model = new DenomOrderListModel();
-//        itemList.get(pos).getOrderList().add(model);
-        DenomItemDialog dialog = DenomItemDialog.newDialog(itemList.get(pos).getItemName(), itemList.get(pos).getOrderList(),
-                new DenomItemDialog.listener() {
-                    @Override
-                    public void onOK(ArrayList<DenomOrderListModel> orderList) {
-                        itemList.get(pos).setOrderList(orderList);
-
-                        itemListAdapter.notifyItemChanged(pos);
-                    }
-                });
-        dialog.show(getFragmentManager(), "denom_dialog");
-    }
-
-    @Override
-    public void onDelete(int pos) {
-        itemList.get(pos).getOrderList().remove(pos);
-
-        itemListAdapter.notifyItemChanged(pos);
-        itemListAdapter.notifyItemRangeChanged(pos, itemList.get(pos).getOrderList().size());
-    }
-
-    @Override
-    public void onChangeQty(int pos, String qty) {
-        ArrayList<DenomOrderListModel> orderList = new ArrayList<>();
-        orderList.add(new DenomOrderListModel(memberCode, qty));
-        itemList.get(pos).setOrderList(orderList);
     }
 
     private void showDialog(String msg) {
