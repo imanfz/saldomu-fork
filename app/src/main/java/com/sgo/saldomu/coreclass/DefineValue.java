@@ -458,6 +458,7 @@ public class DefineValue {
     public static String IS_BBS_MEMBER_DATA_UPDATED = "IsBBSMemberDataUpdated";
 
     public static String AGENT_NAME             = "agentName";
+    public static String AGENT_PHONE             = "agentPhone";
     public static String AGENT_SHOP_CLOSED      = "agentShopClosed";
     public static String FCM_SERVER_UUID = "fcmServerUuid";
 

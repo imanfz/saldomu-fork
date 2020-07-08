@@ -983,6 +983,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="title_cash_out_member">Cash Out Confirmation</string>
     <string name="title_bbs_my_orders">My Orders</string>
     <string name="agent_name">Agent Name</string>
+    <string name="agent_phone">Agent Phone</string>
     <string name="agent_name_hint">Input your agent name</string>
     <string name="auto_generate">Auto-generate</string>
     <string name="join_agent">Agent Registration</string>
@@ -1638,8 +1639,10 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="store_name">Store Name</string>
     <string name="store_address">Store Address</string>
     <string name="partner_code">Partner Code</string>
+    <string name="partner_code_required">Partner Code Required!</string>
     <string name="choose_reason">Choose Reason</string>
     <string name="invoice">INVOICE</string>
     <string name="due_date">Due date :</string>
+    <string name="item_search">Search Item</string>
     <string name="agent_no">Agent Number</string>
 </resources>

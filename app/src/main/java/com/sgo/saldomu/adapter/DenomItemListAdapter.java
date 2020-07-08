@@ -3,7 +3,6 @@ package com.sgo.saldomu.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,7 +21,7 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 
 import java.util.ArrayList;
 
-public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdapter.holder> {
+public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdapter.holder> implements Filterable {
 
     Context context;
     ArrayList<DenomListModel> itemList;
@@ -32,7 +33,7 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
 
         void onDelete(int pos);
 
-        void onChangeQty(int pos, String qty);
+        void onChangeQty(String itemId, String qty);
     }
 
     public DenomItemListAdapter(Context _context, ArrayList<DenomListModel> itemList, listener listener, boolean isFragConfirm) {
@@ -51,19 +52,9 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull holder holder, final int position) {
-        DenomItemOrderListAdapter adapter = new DenomItemOrderListAdapter(context
-                , itemList.get(position).getOrderList(), isFragConfirm, new DenomItemOrderListAdapter.listener() {
-            @Override
-            public void delete(int pos) {
-                listener.onDelete(pos);
-            }
-        });
-        holder.orderList.setAdapter(adapter);
-        holder.orderList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-
         holder.itemID.setText(itemList.get(position).getItemID());
         holder.itemName.setText(itemList.get(position).getItemName());
-        holder.itemPrice.setText(context.getString(R.string.rp_) +" "+ CurrencyFormat.format(itemList.get(position).getItemPrice()));
+        holder.itemPrice.setText(context.getString(R.string.rp_) + " " + CurrencyFormat.format(itemList.get(position).getItemPrice()));
 
         holder.itemQty.addTextChangedListener(new TextWatcher() {
             @Override
@@ -78,7 +69,7 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
 
             @Override
             public void afterTextChanged(Editable s) {
-                listener.onChangeQty(position,s.toString());
+                listener.onChangeQty(itemList.get(position).getItemID(), s.toString());
             }
         });
 
@@ -105,7 +96,6 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
         TextView itemName, itemID, itemPrice;
         EditText itemQty;
         LinearLayout inputDenom;
-        RecyclerView orderList;
         View border;
 
         public holder(View itemView) {
@@ -116,7 +106,34 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
             itemQty = itemView.findViewById(R.id.adapter_denom_item_et_qty);
             itemPrice = itemView.findViewById(R.id.adapter_denom_item_price_field);
             inputDenom = itemView.findViewById(R.id.adapter_denom_item_layout);
-            orderList = itemView.findViewById(R.id.adapter_denom_item_list_order_list);
         }
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String charString = constraint.toString().toLowerCase();
+                ArrayList<DenomListModel> temp = new ArrayList<>();
+                if (charString.isEmpty())
+                    temp.addAll(itemList);
+                else
+                    for (DenomListModel model : itemList) {
+                        if (model.getItemName().toLowerCase().contains(charString))
+                            temp.add(model);
+                    }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = temp;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                itemList = new ArrayList<>((ArrayList<DenomListModel>) results.values);
+                notifyDataSetChanged();
+            }
+        };
     }
 }
