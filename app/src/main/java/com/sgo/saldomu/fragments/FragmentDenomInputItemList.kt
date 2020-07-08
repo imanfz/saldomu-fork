@@ -199,7 +199,7 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
     }
 
     private fun checkInput(): Boolean {
-        if (!itemList.isNullOrEmpty()){
+        if (!itemList.isNullOrEmpty()) {
             for (obj in itemList!!) {
                 if (obj.orderList.size > 0) {
                     DataManager.getInstance().itemList = itemList
@@ -222,7 +222,8 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
                 if (!qty.equals(""))
                     itemList!![i].orderList = orderList
                 else
-                    itemList!![i].orderList = null
+                    if (itemList!![i].orderList.size > 0)
+                        itemList!![i].orderList.removeAt(0)
             }
         }
     }

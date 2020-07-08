@@ -25,6 +25,7 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
 
     Context context;
     ArrayList<DenomListModel> itemList;
+    ArrayList<DenomListModel> originalList;
     listener listener;
     boolean isFragConfirm;
 
@@ -39,6 +40,7 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
     public DenomItemListAdapter(Context _context, ArrayList<DenomListModel> itemList, listener listener, boolean isFragConfirm) {
         this.context = _context;
         this.itemList = itemList;
+        originalList = itemList;
         this.listener = listener;
         this.isFragConfirm = isFragConfirm;
     }
@@ -55,6 +57,11 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
         holder.itemID.setText(itemList.get(position).getItemID());
         holder.itemName.setText(itemList.get(position).getItemName());
         holder.itemPrice.setText(context.getString(R.string.rp_) + " " + CurrencyFormat.format(itemList.get(position).getItemPrice()));
+
+        if (!itemList.get(position).getOrderList().isEmpty())
+            holder.itemQty.setText(itemList.get(position).getOrderList().get(0).getPulsa());
+        else
+            holder.itemQty.setText("");
 
         holder.itemQty.addTextChangedListener(new TextWatcher() {
             @Override
@@ -117,9 +124,9 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
                 String charString = constraint.toString().toLowerCase();
                 ArrayList<DenomListModel> temp = new ArrayList<>();
                 if (charString.isEmpty())
-                    temp.addAll(itemList);
+                    temp.addAll(originalList);
                 else
-                    for (DenomListModel model : itemList) {
+                    for (DenomListModel model : originalList) {
                         if (model.getItemName().toLowerCase().contains(charString))
                             temp.add(model);
                     }
