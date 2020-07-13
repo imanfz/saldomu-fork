@@ -25,6 +25,30 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/store_code"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/frag_denom_member_code_field"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="@string/store_name"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/abc_text_size_medium_material"
@@ -112,29 +136,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/partner_code"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/abc_text_size_medium_material"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/frag_denom_member_code_field"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/colorSecondaryDark"
-                    android:textSize="@dimen/abc_text_size_medium_material" />
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

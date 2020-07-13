@@ -12,6 +12,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1.5"
+                    android:gravity="left"
+                    android:padding="3dip"
+                    android:text="@string/store_code"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/member_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:padding="3dip"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -120,32 +148,6 @@
                     android:textSize="18sp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1.5"
-                    android:gravity="left"
-                    android:padding="3dip"
-                    android:text="@string/partner_code"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/member_code"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:gravity="left"
-                    android:padding="3dip"
-                    android:textSize="18sp" />
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

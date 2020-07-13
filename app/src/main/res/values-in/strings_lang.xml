@@ -1613,4 +1613,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="due_date">Batas tanggal terakhir :</string>
     <string name="item_search">Cari Barang</string>
     <string name="agent_no">Nomor Agen</string>
+    <string name="store_code">Kode Toko</string>
 </resources>
