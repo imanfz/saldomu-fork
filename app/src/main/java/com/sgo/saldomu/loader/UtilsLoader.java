@@ -80,13 +80,12 @@ public class UtilsLoader {
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                 params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
-                if (sp.getString(DefineValue.IS_MANUAL,"N").equalsIgnoreCase("Y"))
-                {
-                    params.put(WebParams.IS_MANUAL,"Y");
+                if (sp.getString(DefineValue.IS_MANUAL, "N").equalsIgnoreCase("Y")) {
+                    params.put(WebParams.IS_MANUAL, "Y");
                 }
                 String isAuto = (is_auto) ? DefineValue.STRING_YES : DefineValue.STRING_NO;
                 params.put(WebParams.IS_AUTO, isAuto);
-                params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY,""));
+                params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
 
                 Timber.d("isi params get Balance Loader:" + params.toString());
                 if (!member_id.isEmpty()) {
@@ -109,7 +108,7 @@ public class UtilsLoader {
 //
 //                                            mEditor.apply();
 
-                                            setNotifCount(model.getUnread_notif());
+                                        setNotifCount(model.getUnread_notif());
 //                                        }
 
                                         SecurePreferences.Editor mEditor = sp.edit();
@@ -128,12 +127,10 @@ public class UtilsLoader {
                                         Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
                                         LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
                                     } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                        if (getmActivity().isFinishing()) {
-                                            String message = model.getError_message();
-                                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                            test.showDialoginMain(getmActivity(), message);
-                                        }
-                                    }else if (code.equals(DefineValue.ERROR_9333)) {
+                                        String message = model.getError_message();
+                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                        test.showDialoginMain(getmActivity(), message);
+                                    } else if (code.equals(DefineValue.ERROR_9333)) {
                                         Timber.d("isi response app data:" + model.getApp_data());
                                         final AppDataModel appModel = model.getApp_data();
                                         AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -189,7 +186,7 @@ public class UtilsLoader {
         getFailedPIN(params, mListener);
     }
 
-    void getFailedPIN(HashMap<String, Object> params, final OnLoadDataListener mListener){
+    void getFailedPIN(HashMap<String, Object> params, final OnLoadDataListener mListener) {
         try {
 
             Timber.d("isi params get FailedPin Loader:" + params.toString());
@@ -216,7 +213,7 @@ public class UtilsLoader {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(getmActivity(), model.getError_message());
-                            }else {
+                            } else {
                                 code = model.getError_message();
                                 Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
                                 Bundle bundle = new Bundle();
@@ -357,5 +354,5 @@ public class UtilsLoader {
             Timber.d("httpclient:" + e.getMessage());
         }
     }
-    
+
 }

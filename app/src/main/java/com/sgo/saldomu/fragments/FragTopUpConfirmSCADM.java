@@ -68,7 +68,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
     Boolean isPIN = false;
     LinearLayout layout_otp;
     EditText et_otp;
-    String comm_name, member_code, product_name, bank_gateway, comm_code, bank_code, product_code, amount, remark, storeName, storeAddress;
+    String comm_name, member_code, product_name, bank_gateway, comm_code, bank_code, product_code, amount, remark, storeName, storeAddress, storeCode;
     String ccy_id, tx_id, member_id_scadm, member_name, comm_id, bank_name, admin_fee, total_amount, api_key, item_name;
     TextView tv_community_name, tv_community_code, tv_member_code, tv_product_name, tv_jumlah, tv_remark, tv_admin_fee, tv_total_amount,
     tv_store_name, tv_store_address;
@@ -115,6 +115,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
         storeName = bundle.getString(DefineValue.STORE_NAME, "");
         storeAddress = bundle.getString(DefineValue.STORE_ADDRESS, "");
+        storeCode = bundle.getString(DefineValue.STORE_CODE, "");
 
 
         tv_community_code = v.findViewById(R.id.community_code);
@@ -135,7 +136,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         tv_store_address.setText(storeAddress);
         tv_community_code.setText(comm_code);
         tv_community_name.setText(comm_name);
-        tv_member_code.setText(member_code);
+        tv_member_code.setText(storeCode);
         tv_product_name.setText(product_name);
         tv_remark.setText(remark);
         damount = Double.parseDouble(bundle.getString(DefineValue.AMOUNT, ""));
@@ -459,7 +460,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                                 showReportBillerDialog(model, sp.getString(DefineValue.USER_NAME, ""),
                                         sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
                                         model.getTx_status(), _amount, model.getMember_cust_id(), model.getMember_cust_name(),
-                                        model.getStore_name(), model.getStore_address());
+                                        model.getStore_name(), model.getStore_address(), model.getStore_code());
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
@@ -497,7 +498,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
 
     private void showReportBillerDialog(GetTrxStatusReportModel model, String name, String userId, String txId,
                                         String itemName, String txStatus, String _amount, String member_cust_id, String member_cust_name,
-                                        String store_name, String store_address) {
+                                        String store_name, String store_address, String store_code) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
@@ -542,6 +543,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         args.putString(DefineValue.MEMBER_ID_CUST, member_cust_id);
         args.putString(DefineValue.STORE_NAME, store_name);
         args.putString(DefineValue.STORE_ADDRESS, store_address);
+        args.putString(DefineValue.STORE_CODE, store_code);
 
         dialog.setArguments(args);
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
