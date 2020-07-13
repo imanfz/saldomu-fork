@@ -114,7 +114,7 @@ public class FragShopLocation extends BaseFragment {
         List<List_BBS_Birth_Place> list_bbs_birth_place = new ArrayList<>(realm.copyFromRealm(results));
 
         for (List_BBS_Birth_Place model : list_bbs_birth_place
-                ) {
+        ) {
             locList.add(new CustomAdapterModel(model));
             locLists.add(model.getBirthPlace_city());
         }
@@ -141,11 +141,11 @@ public class FragShopLocation extends BaseFragment {
             et_address.setError("Alamat kosong");
             et_address.requestFocus();
             return false;
-        } else if (!locLists.contains(cityLocField.getText().toString())){
+        } else if (!locLists.contains(cityLocField.getText().toString())) {
             cityLocField.requestFocus();
             cityLocField.setError("Nama kota tidak ditemukan!");
             return false;
-        }else if (cityLocField.getText().toString().trim().length() == 0) {
+        } else if (cityLocField.getText().toString().trim().length() == 0) {
             cityLocField.setError("Kota kosong");
             cityLocField.requestFocus();
             return false;
@@ -187,11 +187,9 @@ public class FragShopLocation extends BaseFragment {
                                     getFragmentManager().popBackStack();
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    if (getActivity().isFinishing()) {
-                                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                        test.showDialoginMain(getActivity(), message);
-                                    }
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:" + model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
@@ -201,7 +199,7 @@ public class FragShopLocation extends BaseFragment {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 }

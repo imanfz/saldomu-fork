@@ -87,12 +87,12 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         try {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-            if ( mLastLocation == null ){
+            if (mLastLocation == null) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             } else {
                 Timber.d("Location Service Location Found" + mLastLocation.toString());
 
-                latitude  = mLastLocation.getLatitude();
+                latitude = mLastLocation.getLatitude();
                 longitude = mLastLocation.getLongitude();
 
                 sp.edit().putDouble(DefineValue.LONGITUDE_UPDATED, longitude).apply();
@@ -101,7 +101,7 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
 
                 Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
-                if ( isAgent )
+                if (isAgent)
                     updateLocation();
 
                 mGoogleApiClient.disconnect();
@@ -129,18 +129,18 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         // Assign the new location
         mLastLocation = location;
 
-        Log.d("Location LAST LONGITUDE", String.valueOf(mLastLocation.getLongitude()) );
-        Log.d("Location LAST LATITUDE", String.valueOf(mLastLocation.getLatitude()) );
+        Log.d("Location LAST LONGITUDE", String.valueOf(mLastLocation.getLongitude()));
+        Log.d("Location LAST LATITUDE", String.valueOf(mLastLocation.getLatitude()));
 
-        longitude   = mLastLocation.getLongitude();
-        latitude    = mLastLocation.getLatitude();
+        longitude = mLastLocation.getLongitude();
+        latitude = mLastLocation.getLatitude();
 
         sp.edit().putDouble(DefineValue.LONGITUDE_UPDATED, longitude).apply();
         sp.edit().putDouble(DefineValue.LATITUDE_UPDATED, latitude).apply();
 
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
-        if ( isAgent )
+        if (isAgent)
             updateLocation();
 
         mGoogleApiClient.disconnect();
@@ -149,14 +149,14 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
 
     /**
      * Method to verify google play services on the device
-     * */
+     */
     private boolean checkPlayServices() {
 
 
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
-        if(result != ConnectionResult.SUCCESS) {
-            if(googleAPI.isUserResolvableError(result)) {
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
                 Toast.makeText(this, "GOOGLE API LOCATION CONNECTION FAILED", Toast.LENGTH_SHORT).show();
             }
 
@@ -168,7 +168,7 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
 
     /**
      * Creating google api client object
-     * */
+     */
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -178,7 +178,7 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
 
     /**
      * Creating location request object
-     * */
+     */
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(DefineValue.AGENT_INTERVAL_LOCATION_REQUEST);
@@ -196,22 +196,22 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
             mEditor.putDouble(DefineValue.LAST_CURRENT_LATITUDE, latitude);
             mEditor.putDouble(DefineValue.LAST_CURRENT_LONGITUDE, longitude);
             mEditor.apply();
-        } catch( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        String extraSignature   = String.valueOf(latitude) + String.valueOf(longitude);
+        String extraSignature = String.valueOf(latitude) + String.valueOf(longitude);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION,
                 "");
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
-        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
-        params.put(WebParams.LONGITUDE, longitude );
-        params.put(WebParams.LATITUDE, latitude );
-        params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, "") );
-        params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, "") );
-        Timber.d("params location update: "+params.toString());
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+        params.put(WebParams.LONGITUDE, longitude);
+        params.put(WebParams.LATITUDE, latitude);
+        params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+        params.put(WebParams.ACCESS_KEY, sp.getString(DefineValue.ACCESS_KEY, ""));
+        Timber.d("params location update: " + params.toString());
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_LOCATION, params,
                 new ObjListeners() {
@@ -219,12 +219,11 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
                     public void onResponses(JSONObject response) {
                         try {
                             String code = response.getString(WebParams.ERROR_CODE);
-                            if (code.equals(WebParams.LOGOUT_CODE))
-                                if (getmActivity().isFinishing()) {
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginMain(getmActivity(), message);
-                                }
+                            if (code.equals(WebParams.LOGOUT_CODE)) {
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginMain(getmActivity(), message);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
