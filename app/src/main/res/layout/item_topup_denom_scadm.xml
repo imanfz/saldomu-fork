@@ -73,35 +73,6 @@
                 android:layout_weight="1"
                 android:textColor="@color/black" />
         </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@string/partner_code"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text=":"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/member_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:layout_weight="1"
-                android:textColor="@color/black" />
-        </TableRow>
     </TableLayout>
 
     <View

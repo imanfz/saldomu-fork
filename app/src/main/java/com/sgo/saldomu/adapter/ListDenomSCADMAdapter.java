@@ -49,7 +49,6 @@ public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAd
     public void onBindViewHolder(@NonNull final ListDenomSCADMAdapter.ViewHolder holder, final int position) {
         holder.communityCode.setText(scadmCommunityModelArrayList.get(position).getComm_code());
         holder.communityName.setText(scadmCommunityModelArrayList.get(position).getComm_name());
-        holder.memberCode.setText(scadmCommunityModelArrayList.get(position).getMember_code());
         holder.view.setVisibility(View.VISIBLE);
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +70,7 @@ public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView communityName, memberCode, communityCode;
+        TextView communityName, communityCode;
         View view;
         LinearLayout layout;
 
@@ -79,7 +78,6 @@ public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAd
             super(itemView);
             communityName = itemView.findViewById(R.id.community_name);
             communityCode = itemView.findViewById(R.id.community_code);
-            memberCode = itemView.findViewById(R.id.member_code);
             view = itemView.findViewById(R.id.view_list_scadm);
             layout = itemView.findViewById(R.id.layout1);
 
