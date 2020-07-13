@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ public class FragTopUpSCADM extends BaseFragment {
     Spinner spinner_bank_product;
     EditText et_jumlah, et_pesan, et_membercode;
     Button btn_next;
+    ImageView iv_clear_partner_code;
     private ProgressDialog progdialog;
     String memberIDLogin, commIDLogin, userPhoneID, accessKey, member_id_scadm, comm_id_scadm, selectedProductCode, selectedBankCode;
     String tx_id, member_id, member_code, member_name, comm_id, comm_code, comm_name, bank_code, bank_name,
@@ -93,8 +95,10 @@ public class FragTopUpSCADM extends BaseFragment {
         et_pesan = v.findViewById(R.id.et_remark);
         et_membercode = v.findViewById(R.id.et_member_code);
         btn_next = v.findViewById(R.id.btn_next);
+        iv_clear_partner_code = v.findViewById(R.id.iv_clear_partner_code);
 
         et_membercode.setText(userPhoneID);
+        iv_clear_partner_code.setOnClickListener(v -> et_membercode.setText(""));
 
         scadmListBankTopUp.clear();
         spinnerContentStrings.clear();
@@ -104,12 +108,10 @@ public class FragTopUpSCADM extends BaseFragment {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (inputValidation())
-                {
-                    if (!member_code.equals(userPhoneID))
-                    {
+                if (inputValidation()) {
+                    if (!member_code.equals(userPhoneID)) {
                         member_code = NoHPFormat.formatTo62(et_membercode.getText().toString());
-                    }else
+                    } else
                         member_code = et_membercode.getText().toString();
 
                     if (selectedProductCode.equalsIgnoreCase("SCASH")) {
@@ -123,16 +125,15 @@ public class FragTopUpSCADM extends BaseFragment {
     }
 
     public boolean inputValidation() {
-        if (et_membercode == null || et_membercode.getText().toString().isEmpty())
-        {
+        if (et_membercode == null || et_membercode.getText().toString().isEmpty()) {
             et_membercode.requestFocus();
             et_membercode.setError(getString(R.string.member_code_validation));
             return false;
-        }else if (et_jumlah == null || et_jumlah.getText().toString().isEmpty()) {
+        } else if (et_jumlah == null || et_jumlah.getText().toString().isEmpty()) {
             et_jumlah.requestFocus();
             et_jumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus));
             return false;
-        }else if ((Integer.parseInt(et_jumlah.getText().toString())%1000)!=0) {
+        } else if ((Integer.parseInt(et_jumlah.getText().toString()) % 1000) != 0) {
             et_jumlah.requestFocus();
             et_jumlah.setError(getString(R.string.amount_validation_scadm));
             return false;
@@ -221,7 +222,7 @@ public class FragTopUpSCADM extends BaseFragment {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
                                     Timber.d("Error isi response get list bank topup scadm:" + response.toString());
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 
@@ -318,7 +319,7 @@ public class FragTopUpSCADM extends BaseFragment {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
                                     Timber.d("Error isi response confirm topup  scadm:" + response.toString());
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 
@@ -413,7 +414,7 @@ public class FragTopUpSCADM extends BaseFragment {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
                                     Timber.d("Error isi response confirm topup  scadm:" + response.toString());
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 

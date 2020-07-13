@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -18,7 +17,6 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:gravity="left"
-            android:padding="3dip"
             android:text="@string/billerinput_text_payment_options"
             android:textSize="18sp" />
 
@@ -26,95 +24,106 @@
             android:id="@+id/spinner_bank_produk"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginTop="12dp"
-            android:spinnerMode="dropdown"
-            android:textAlignment="center">
-        </Spinner>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/margin_10dp">
-        <TextView
-            android:text="@string/partner_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="left"
-            android:layout_gravity="center_vertical"
-            android:padding="3dip"
-            android:textSize="18sp"
-            />
-        <EditText
-            android:id="@+id/et_member_code"
             android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="left"
-            android:padding="3dip"
-            android:textSize="18sp"/>
+            android:spinnerMode="dropdown"
+            android:textAlignment="center"></Spinner>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/margin_10dp">
+        android:layout_margin="@dimen/margin_10dp"
+        android:orientation="horizontal">
+
         <TextView
-            android:text="@string/jumlah"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="left"
             android:layout_gravity="center_vertical"
-            android:padding="3dip"
-            android:textSize="18sp"
-            />
+            android:layout_weight="2"
+            android:gravity="start"
+            android:text="@string/partner_code"
+            android:textSize="18sp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/et_member_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="start"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/iv_clear_partner_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_x" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="2"
+            android:gravity="start"
+            android:text="@string/jumlah"
+            android:textSize="18sp" />
+
         <EditText
             android:id="@+id/et_jumlah"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:gravity="left"
+            android:layout_weight="1"
+            android:gravity="start"
             android:inputType="number"
-            android:padding="3dip"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="10dp">
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
         <TextView
-            android:text="@string/remark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="left"
             android:layout_gravity="center_vertical"
-            android:padding="3dip"
-            android:textSize="18sp"
-            />
+            android:layout_weight="2"
+            android:gravity="start"
+            android:text="@string/remark"
+            android:textSize="18sp" />
+
         <EditText
             android:id="@+id/et_remark"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:gravity="left"
-            android:padding="3dip"
-            android:textSize="18sp"/>
+            android:layout_weight="1"
+            android:gravity="start"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <Button
-        android:layout_margin="30dp"
+        android:id="@+id/btn_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/next"
-        android:id="@+id/btn_next"
         android:layout_gravity="center"
-        android:gravity="center_vertical"/>
+        android:layout_margin="30dp"
+        android:text="@string/next" />
 </LinearLayout>
