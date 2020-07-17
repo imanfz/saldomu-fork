@@ -82,6 +82,10 @@ public class LoginCommunityModel {
     @Expose
     private List<SchemeCodeModel> agent_scheme_codes;
 
+    @SerializedName("agent_biller_codes")
+    @Expose
+    private List<String> agent_biller_codes;
+
     @SerializedName("agent_type")
     @Expose
     private String agent_type;
@@ -320,5 +324,9 @@ public class LoginCommunityModel {
 
     public String getForce_change_pin() {
         return force_change_pin;
+    }
+
+    public List<String> getAgent_biller_codes() {
+        return agent_biller_codes;
     }
 }

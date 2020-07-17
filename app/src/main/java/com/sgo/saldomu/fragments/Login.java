@@ -578,7 +578,9 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.putBoolean(DefineValue.IS_AGENT, commModel.getIsAgent() > 0);
 
                         String arrJson = toJson(commModel.getAgent_scheme_codes()).toString();
+                        String billerCodes = toJson(commModel.getAgent_biller_codes()).toString();
                         mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
+                        mEditor.putString(DefineValue.AGENT_BILLER_CODES, billerCodes);
                         mEditor.putString(DefineValue.IS_AGENT_TRX_REQ, commModel.getIs_agent_trx_request());
                         mEditor.putString(DefineValue.COMM_UPGRADE_MEMBER, commModel.getComm_upgrade_member());
                         mEditor.putString(DefineValue.MEMBER_CREATED, commModel.getMember_created());

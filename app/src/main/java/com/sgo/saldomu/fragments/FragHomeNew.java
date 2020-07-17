@@ -126,8 +126,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Realm realm;
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
-    String shopStatus, isMemberShopDGI, isDormant, agentSchemeCode, memberSchemeCode;
-    Boolean isAgent, isShowB2b=false;
+    String shopStatus, isMemberShopDGI, isDormant, agentSchemeCode, memberSchemeCode, agentBillerCode;
+    Boolean isAgent, isShowB2b = false;
     ProgressBar gridview_progbar;
     ProgressBar progBanner;
     private CarouselView carouselView;
@@ -138,6 +138,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private ArrayList<Drawable> menuDrawables = new ArrayList<>();
 
     private static final int RC_GPS_REQUEST = 1;
+    private static final String BILLER_TYPE_CODE_PLS = "PLS";
+    private static final String BILLER_TYPE_CODE_HP = "HP";
+    private static final String BILLER_TYPE_CODE_TKN = "TKN";
+    private static final String BILLER_TYPE_CODE_PLN = "PLN";
+    private static final String BILLER_TYPE_CODE_BPJS = "BPJS";
+    private static final String BILLER_TYPE_CODE_EMONEY = "EMON";
+    private static final String BILLER_TYPE_CODE_GAME = "GAPP";
+    private static final String BILLER_TYPE_CODE_VOUCHER = "VCHR";
+    private static final String BILLER_TYPE_CODE_PDAM = "AIR";
+    private static final String BILLER_TYPE_CODE_DATA = "DATA";
 
     public FragHomeNew() {
         // Required empty public constructor
@@ -188,6 +198,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
 
         agentSchemeCode = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
+        agentBillerCode = sp.getString(DefineValue.AGENT_BILLER_CODES, "");
 
         realm = RealmManager.getRealmBiller();
 
@@ -390,12 +401,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //                        if (getLvlClass().isLevel1QAC()) {
 //                            getLvlClass().showDialogLevel();
 //                        } else {
-                            if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp))) {
-                                Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
-                                switchActivity(i, MainPage.ACTIVITY_RESULT);
-                            } else {
-                                dialogUnavailable();
-                            }
+                        if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp))) {
+                            Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
+                            switchActivity(i, MainPage.ACTIVITY_RESULT);
+                        } else {
+                            dialogUnavailable();
+                        }
 //                        }
                     }
                 }
@@ -434,7 +445,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         dialogDormant();
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
+                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_PLS);
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.prepaid_title));
                         startActivity(intent);
                     }
@@ -443,7 +454,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         dialogDormant();
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, "DATA");
+                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_DATA);
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.data_title));
                         startActivity(intent);
                     }
@@ -452,7 +463,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         dialogDormant();
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, "TKN");
+                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_TKN);
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.pln_title));
                         startActivity(intent);
                     }
@@ -461,7 +472,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         dialogDormant();
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, "EMON");
+                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_EMONEY);
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_emoney));
                         startActivity(intent);
                     }
@@ -470,7 +481,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         dialogDormant();
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, "BPJS");
+                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_BPJS);
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_bpjs));
                         startActivity(intent);
                     }
@@ -479,7 +490,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         dialogDormant();
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, "GAME");
+                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_GAME);
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_game));
                         startActivity(intent);
                     }
@@ -488,7 +499,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         dialogDormant();
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, "VCHR");
+                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_VOUCHER);
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_voucher));
                         startActivity(intent);
                     }
@@ -497,7 +508,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         dialogDormant();
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, "AIR");
+                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_PDAM);
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_pam));
                         startActivity(intent);
                     }
@@ -1006,6 +1017,53 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //        menuDrawables.add(getResources().getDrawable(R.drawable.ic_transfer_saldo));
     }
 
+    void checkBillerCodeAgent() {
+        try {
+            JSONArray arr = new JSONArray(agentBillerCode);
+            for (int i = 0; i < arr.length(); i++) {
+                String obj = arr.getString(i);
+                switch (obj) {
+                    case BILLER_TYPE_CODE_PLS:
+                    case BILLER_TYPE_CODE_HP:
+                        menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
+                        break;
+                    case BILLER_TYPE_CODE_TKN:
+                    case BILLER_TYPE_CODE_PLN:
+                        menuStrings.add(getResources().getString(R.string.newhome_listrik_pln));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
+                        break;
+                    case BILLER_TYPE_CODE_DATA:
+                        menuStrings.add(getResources().getString(R.string.newhome_data));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_paket_data));
+                        break;
+                    case BILLER_TYPE_CODE_BPJS:
+                        menuStrings.add(getResources().getString(R.string.newhome_bpjs));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_bpjs));
+                        break;
+                    case BILLER_TYPE_CODE_EMONEY:
+                        menuStrings.add(getResources().getString(R.string.newhome_emoney));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
+                        break;
+                    case BILLER_TYPE_CODE_GAME:
+                        menuStrings.add(getResources().getString(R.string.newhome_game));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.game));
+                        break;
+                    case BILLER_TYPE_CODE_VOUCHER:
+                        menuStrings.add(getResources().getString(R.string.newhome_voucher));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.voucher));
+                        break;
+                    case BILLER_TYPE_CODE_PDAM:
+                        menuStrings.add(getResources().getString(R.string.newhome_pam));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_pdam));
+                        break;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     void checkSchemeCodeAgent() {
         try {
             JSONArray arr = new JSONArray(agentSchemeCode);
@@ -1041,62 +1099,24 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     case "BIL":
                         menuStrings.add(getResources().getString(R.string.menu_item_title_buy));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
-
-                        if (mBillerTypeDataPLS != null) {
-                            menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
-                        }
-
-                        if (mBillerTypeDataDATA != null) {
-                            menuStrings.add(getResources().getString(R.string.newhome_data));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_paket_data));
-                        }
-
-                        if (mBillerTypeDataBPJS != null) {
-                            menuStrings.add(getResources().getString(R.string.newhome_bpjs));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_bpjs));
-                        }
-
-                        if (mBillerTypeDataTKN != null) {
-                            menuStrings.add(getResources().getString(R.string.newhome_listrik_pln));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
-                        }
-
-                        if (mBillerTypeDataEMoney != null) {
-                            menuStrings.add(getResources().getString(R.string.newhome_emoney));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
-                        }
-
-                        if (mBillerTypeDataGame != null) {
-                            menuStrings.add(getResources().getString(R.string.newhome_game));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.game));
-                        }
-
-                        if (mBillerTypeDataVoucher != null) {
-                            menuStrings.add(getResources().getString(R.string.newhome_voucher));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.voucher));
-                        }
-
-                        if (mBillerTypeDataPDAM != null) {
-                            menuStrings.add(getResources().getString(R.string.newhome_pam));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_pdam));
-                        }
+                        checkBillerCodeAgent();
                         break;
                     case "TOP":
-                        sp.edit().putBoolean(DefineValue.IS_AGENT_TOP,true).commit();
-                        if (isShowB2b==false) {
+                        sp.edit().putBoolean(DefineValue.IS_AGENT_TOP, true).commit();
+                        if (!isShowB2b) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_menu_b2b));
                             isShowB2b = true;
                         }
                         break;
                     case "BDK":
-                        sp.edit().putBoolean(DefineValue.IS_AGENT_BDK,true).commit();
-                        if (isShowB2b==false) {
+                        sp.edit().putBoolean(DefineValue.IS_AGENT_BDK, true).commit();
+                        if (!isShowB2b) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_menu_b2b));
                             isShowB2b = true;
-                        }break;
+                        }
+                        break;
                 }
             }
         } catch (JSONException e) {
