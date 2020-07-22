@@ -54,7 +54,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -437,7 +436,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 TextView tv_report_type = inflated.findViewById(R.id.dialog_topup_transaction_type);
                 TextView tv_useerid_value = inflated.findViewById(R.id.dialog_topup_commcode_value);
-                TextView tv_name_value = inflated.findViewById(R.id.dialog_topup_membercode_value);
+                TextView tv_store_code_value = inflated.findViewById(R.id.dialog_topup_storecode_value);
                 TextView tv_bank_product = inflated.findViewById(R.id.dialog_topup_productbank_value);
                 TextView tv_fee = inflated.findViewById(R.id.dialog_topup_fee_value);
                 TextView tv_amount = inflated.findViewById(R.id.dialog_topup_amount_value);
@@ -468,7 +467,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_amount.setText(amount);
                 tv_total_amount.setText(total_amount);
                 tv_useerid_value.setText(args.getString(DefineValue.COMMUNITY_CODE));
-                tv_name_value.setText(args.getString(DefineValue.STORE_CODE));
+                tv_store_code_value.setText(args.getString(DefineValue.STORE_CODE));
                 tv_agent_name.setText(args.getString(DefineValue.MEMBER_CUST_NAME));
                 tv_agent_number.setText(args.getString(DefineValue.MEMBER_ID_CUST));
                 tv_store_name.setText(args.getString(DefineValue.STORE_NAME));
@@ -796,7 +795,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 TextView tv_report_type = inflated.findViewById(R.id.tv_report_transaction_type);
                 TextView tv_comm_code = inflated.findViewById(R.id.dialog_denom_comm_code);
-                TextView tv_member_code = inflated.findViewById(R.id.dialog_denom_member_code);
+                TextView tv_store_code = inflated.findViewById(R.id.dialog_denom_store_code);
                 TextView tv_bank_product = inflated.findViewById(R.id.dialog_denom_bank_product);
                 TextView tv_bank_order_number = inflated.findViewById(R.id.dialog_denom_order_number);
 //                RecyclerView rv_denom_item_list = inflated.findViewById(R.id.dialog_denom_item_list_recyclerview);
@@ -816,7 +815,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                 tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
-                tv_member_code.setText(args.getString(DefineValue.STORE_CODE));
+                tv_store_code.setText(args.getString(DefineValue.STORE_CODE));
                 tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
                 tv_bank_order_number.setText(args.getString(DefineValue.ORDER_ID));
                 tv_amount.setText(args.getString(DefineValue.AMOUNT));
