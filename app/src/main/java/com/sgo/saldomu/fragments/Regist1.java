@@ -19,8 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,10 +28,9 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CreatePIN;
-import com.sgo.saldomu.activities.Introduction;
+import com.sgo.saldomu.activities.Perkenalan;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.PasswordRegisterActivity;
-import com.sgo.saldomu.activities.TermsAndCondition;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -170,7 +167,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
 
             @Override
             public void onCancel(DialogFragment dialog) {
-                startActivity(new Intent(getActivity(), Introduction.class));
+                startActivity(new Intent(getActivity(), Perkenalan.class));
                 getActivity().finish();
             }
         });

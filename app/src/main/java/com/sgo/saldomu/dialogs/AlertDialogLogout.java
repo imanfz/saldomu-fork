@@ -8,7 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.Introduction;
+import com.sgo.saldomu.activities.Perkenalan;
 import com.sgo.saldomu.activities.MainPage;
 
 import timber.log.Timber;
@@ -38,7 +38,7 @@ public class AlertDialogLogout {
                     public void onClick(DialogInterface dialog, int which) {
 //                        mContext.setResult(MainPage.RESULT_LOGOUT);
 //                        mContext.finish();
-                        Intent intent = new Intent(mContext, Introduction.class);
+                        Intent intent = new Intent(mContext, Perkenalan.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         mContext.startActivity(intent);
                     }

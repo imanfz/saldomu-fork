@@ -74,7 +74,7 @@ import timber.log.Timber;
 /*
  Created by Lenovo Thinkpad on 12/21/2015.
  */
-public class Introduction extends AppIntro implements EasyPermissions.PermissionCallbacks {
+public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCallbacks {
     private static final int RC_READPHONESTATE_GETACCOUNT_PERM = 500;
     private static final int RC_SENTSMS_PERM = 502;
     private SMSDialog smsDialog;
@@ -148,10 +148,10 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             skipbtn.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Intent i = new Intent(Introduction.this, LoginActivity.class);
+                    Intent i = new Intent(Perkenalan.this, LoginActivity.class);
                     i.putExtra(DefineValue.USER_IS_NEW, -1);
                     startActivity(i);
-                    Introduction.this.finish();
+                    Perkenalan.this.finish();
                     return false;
                 }
             });
@@ -159,10 +159,10 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             donebtn.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Intent i = new Intent(Introduction.this, LoginActivity.class);
+                    Intent i = new Intent(Perkenalan.this, LoginActivity.class);
                     i.putExtra(DefineValue.USER_IS_NEW, -2);
                     startActivity(i);
-                    Introduction.this.finish();
+                    Perkenalan.this.finish();
                     return false;
                 }
             });
@@ -229,11 +229,11 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
                 if (sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
-                    Intent i = new Intent(Introduction.this, LoginActivity.class);
+                    Intent i = new Intent(Perkenalan.this, LoginActivity.class);
                     i.putExtra(DefineValue.USER_IS_NEW, -2);
                     startActivity(i);
                 } else {
-                    Intent i = new Intent(Introduction.this, InsertPIN.class);
+                    Intent i = new Intent(Perkenalan.this, InsertPIN.class);
                     i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
                     i.putExtra(DefineValue.FOR_LOGIN, true);
                     startActivityForResult(i, MainPage.REQUEST_FINISH);
@@ -248,7 +248,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     private Button.OnClickListener POSlistener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent i = new Intent(Introduction.this, LoginActivity.class);
+            Intent i = new Intent(Perkenalan.this, LoginActivity.class);
             i.putExtra(DefineValue.USER_IS_NEW, -2);
             i.putExtra(DefineValue.IS_POS, "Y");
             sp.edit().putString(DefineValue.IS_POS, DefineValue.Y).commit();
@@ -369,8 +369,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             smsclass.isSimExists(new SMSclass.SMS_SIM_STATE() {
                 @Override
                 public void sim_state(Boolean isExist, String msg) {
-                    if (!isExist && !Introduction.this.isFinishing()) {
-                        DefinedDialog.showErrorDialog(Introduction.this, msg, new DefinedDialog.DialogButtonListener() {
+                    if (!isExist && !Perkenalan.this.isFinishing()) {
+                        DefinedDialog.showErrorDialog(Perkenalan.this, msg, new DefinedDialog.DialogButtonListener() {
                             @Override
                             public void onClickButton(View v, boolean isLongClick) {
                                 finish();
@@ -609,7 +609,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                 if (code.equalsIgnoreCase(WebParams.SUCCESS_CODE)) {
                     sp.edit().putString(DefineValue.IS_POS, "N").commit();
                     sp.edit().putString(DefineValue.EXTRA_SIGNATURE, extraSignature).commit();
-                    Toast.makeText(Introduction.this, getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
+                    Toast.makeText(Perkenalan.this, getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
                     setLoginProfile(loginModel);
                 } else if (code.equals(DefineValue.ERROR_0042)) {
                     String message;
@@ -641,13 +641,13 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                     Timber.d("isi response app data:" + loginModel.getApp_data());
                     final AppDataModel appModel = loginModel.getApp_data();
                     AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                    alertDialogUpdateApp.showDialogUpdate(Introduction.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                    alertDialogUpdateApp.showDialogUpdate(Perkenalan.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                 } else if (code.equals(DefineValue.ERROR_0066)) {
                     Timber.d("isi response maintenance:" + response.toString());
                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                    alertDialogMaintenance.showDialogMaintenance(Introduction.this, loginModel.getError_message());
+                    alertDialogMaintenance.showDialogMaintenance(Perkenalan.this, loginModel.getError_message());
                 } else {
-                    Toast.makeText(Introduction.this, loginModel.getError_message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Perkenalan.this, loginModel.getError_message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -782,7 +782,9 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                         mEditor.putBoolean(DefineValue.IS_AGENT, commModel.getIsAgent() > 0);
 
                         String arrJson = toJson(commModel.getAgent_scheme_codes()).toString();
+                        String billerCodes = toJson(commModel.getAgent_biller_codes()).toString();
                         mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
+                        mEditor.putString(DefineValue.AGENT_BILLER_CODES, billerCodes);
                         mEditor.putString(DefineValue.IS_AGENT_TRX_REQ, commModel.getIs_agent_trx_request());
                         mEditor.putString(DefineValue.COMM_UPGRADE_MEMBER, commModel.getComm_upgrade_member());
                         mEditor.putString(DefineValue.MEMBER_CREATED, commModel.getMember_created());
@@ -823,7 +825,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     }
 
     private void changeActivity() {
-        Intent i = new Intent(Introduction.this, MainPage.class);
+        Intent i = new Intent(Perkenalan.this, MainPage.class);
         if (argsBundleNextLogin != null)
             i.putExtras(argsBundleNextLogin);
 
@@ -907,13 +909,13 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                                 Logout(FIRST_SCREEN_INTRO);
 
                             } else {
-                                Toast.makeText(Introduction.this, model.getError_message(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(Perkenalan.this, model.getError_message(), Toast.LENGTH_LONG).show();
                             }
                         }
 
                         @Override
                         public void onError(Throwable throwable) {
-                            Introduction.this.finish();
+                            Perkenalan.this.finish();
                         }
 
                         @Override
@@ -981,7 +983,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                 i = new Intent(this, LoginActivity.class);
                 break;
             case FIRST_SCREEN_INTRO:
-                i = new Intent(this, Introduction.class);
+                i = new Intent(this, Perkenalan.class);
                 break;
             case FIRST_SCREEN_SPLASHSCREEN:
 //                if (LocaleManager.getLocale(getResources()).getLanguage().equals("in")) {

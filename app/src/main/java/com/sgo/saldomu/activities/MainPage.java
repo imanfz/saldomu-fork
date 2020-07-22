@@ -76,7 +76,6 @@ import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.services.UpdateBBSBirthPlace;
 import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
-import com.sgo.saldomu.utils.LocaleManager;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.BaseFragment;
@@ -1125,7 +1124,7 @@ public class MainPage extends BaseActivity {
                 i = new Intent(this, LoginActivity.class);
                 break;
             case FIRST_SCREEN_INTRO:
-                i = new Intent(this, Introduction.class);
+                i = new Intent(this, Perkenalan.class);
                 break;
             case FIRST_SCREEN_SPLASHSCREEN:
 //                if (LocaleManager.getLocale(getResources()).getLanguage().equals("in")) {
