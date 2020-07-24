@@ -955,7 +955,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
 
                 menuStrings.add(getResources().getString(R.string.menu_item_title_buy));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
+                menuDrawables.add(getResources().getDrawable(R.drawable.ic_biller));
 
                 if (mBillerTypeDataPLS != null) {
                     menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
@@ -984,12 +984,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                 if (mBillerTypeDataGame != null) {
                     menuStrings.add(getResources().getString(R.string.newhome_game));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.game));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_game));
                 }
 
                 if (mBillerTypeDataVoucher != null) {
                     menuStrings.add(getResources().getString(R.string.newhome_voucher));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.voucher));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_voucher));
                 }
 
                 if (mBillerTypeDataPDAM != null) {
@@ -1005,7 +1005,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             menuDrawables.add(getResources().getDrawable(R.drawable.ic_laporan));
 
             menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
-            menuDrawables.add(getResources().getDrawable(R.drawable.group));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_history));
 
 //            if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
 //                menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
@@ -1047,11 +1047,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         break;
                     case BILLER_TYPE_CODE_GAME:
                         menuStrings.add(getResources().getString(R.string.newhome_game));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.game));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_game));
                         break;
                     case BILLER_TYPE_CODE_VOUCHER:
                         menuStrings.add(getResources().getString(R.string.newhome_voucher));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.voucher));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_voucher));
                         break;
                     case BILLER_TYPE_CODE_PDAM:
                         menuStrings.add(getResources().getString(R.string.newhome_pam));
@@ -1082,7 +1082,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         break;
                     case "DGI":
                         menuStrings.add(getResources().getString(R.string.menu_item_title_tagih_agent));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_biller));
                         if (sp.getString(DefineValue.AGENT_TYPE, "").equalsIgnoreCase(getString(R.string.agent_type_col))) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_collector_history));
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_history_collector));
@@ -1098,7 +1098,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         break;
                     case "BIL":
                         menuStrings.add(getResources().getString(R.string.menu_item_title_buy));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_belanja));
+                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_biller));
                         checkBillerCodeAgent();
                         break;
                     case "TOP":

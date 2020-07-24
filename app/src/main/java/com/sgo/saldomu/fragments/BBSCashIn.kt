@@ -249,13 +249,13 @@ class BBSCashIn : BaseFragment() {
                     .equalTo(WebParams.COMM_TYPE, BENEF)
                     .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll()
         } else {
-            if (defaultProductCode != "") {
-                listBankBenef = realmBBS!!.where(BBSBankModel::class.java)
+            listBankBenef = if (defaultProductCode != "") {
+                realmBBS!!.where(BBSBankModel::class.java)
                         .equalTo(WebParams.SCHEME_CODE, CTA)
                         .equalTo(WebParams.COMM_TYPE, BENEF)
                         .equalTo(WebParams.PRODUCT_CODE, defaultProductCode).findAll()
             } else {
-                listBankBenef = realmBBS!!.where(BBSBankModel::class.java)
+                realmBBS!!.where(BBSBankModel::class.java)
                         .equalTo(WebParams.SCHEME_CODE, CTA)
                         .equalTo(WebParams.COMM_TYPE, BENEF).findAll()
             }

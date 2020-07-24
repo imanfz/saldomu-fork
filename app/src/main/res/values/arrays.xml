@@ -279,14 +279,14 @@
     <integer-array name="list_menu_icon_frag_scadm">
         <item>@drawable/ic_transfer_saldo</item>
         <item>@drawable/ic_topup</item>
-        <item>@drawable/ic_belanja</item>
+        <item>@drawable/ic_biller</item>
     </integer-array>
 
     <integer-array name="list_menu_icon_frag_new_home">
         <!--<item>@drawable/ic_tambahsaldo</item>-->
         <item>@drawable/ic_transfer_saldo</item>
         <item>@drawable/ic_minta_saldo</item>
-        <item>@drawable/ic_belanja</item>
+        <item>@drawable/ic_biller</item>
         <item>@drawable/ic_laporan</item>
         <item>@drawable/ic_laporan</item>
     </integer-array>
@@ -295,7 +295,7 @@
         <!--<item>@drawable/ic_tariktunai</item>-->
         <!--<item>@drawable/ic_tariktunai</item>-->
         <!--<item>@drawable/ic_location_on_black</item>-->
-        <item>@drawable/tagih_id</item>
+        <item>@drawable/ic_tagih_id</item>
     </integer-array>
     <integer-array name="list_menu_icon_frag_new_home_not_agent">
         <!--<item>@drawable/ic_location_on_black</item>-->

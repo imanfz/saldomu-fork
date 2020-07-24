@@ -480,7 +480,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         models.add(new navdrawmainmenuModel(R.drawable.ic_report, R.drawable.ic_report, getString(R.string.menu_item_title_scadm), MSCADM));              //6
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_report, R.drawable.ic_report, getString(R.string.menu_item_title_report), MREPORT));              //6
         models.add(new navdrawmainmenuModel(R.drawable.ic_user, R.drawable.ic_user, getString(R.string.menu_item_title_help), MHELP));                          //12
-        models.add(new navdrawmainmenuModel(R.drawable.ic_belanja, R.drawable.ic_belanja, getString(R.string.menu_item_title_info_harga), MINFO)); //28                         //15
+        models.add(new navdrawmainmenuModel(R.drawable.ic_biller, R.drawable.ic_biller, getString(R.string.menu_item_title_info_harga), MINFO)); //28                         //15
         models.add(new navdrawmainmenuModel(R.drawable.ic_setting, R.drawable.ic_setting, getString(R.string.menu_item_title_setting), MSETTINGS));                    //11
 //        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_logout)));                                        //13
         models.add(new navdrawmainmenuModel(R.drawable.ic_logout, R.drawable.ic_logout, getString(R.string.menu_item_title_logout), MLOGOUT));                 //14

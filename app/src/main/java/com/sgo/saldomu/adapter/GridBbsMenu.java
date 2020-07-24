@@ -79,7 +79,7 @@ public class GridBbsMenu extends BaseAdapter {
     int getIcons(String item) {
         switch (item) {
             case "Tagihan":
-                return R.drawable.ic_belanja;
+                return R.drawable.ic_biller;
             case "Pengaturan":
                 return R.drawable.ic_setting;
             case "Dalam Proses":
