@@ -40,7 +40,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:src="@drawable/group_4" />
+                android:src="@drawable/ic_call" />
 
             <TextView
                 android:id="@+id/help_phone_value"
@@ -88,7 +88,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:src="@drawable/group_2" />
+                android:src="@drawable/ic_whatsapp" />
 
             <TextView
                 android:id="@+id/help_phone_whatsapp_value"
