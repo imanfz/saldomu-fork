@@ -80,6 +80,7 @@ import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.BaseFragment;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -140,11 +141,11 @@ public class MainPage extends BaseActivity {
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
     private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent, isForeground = false;
-//    public MaterialSheetFab materialSheetFab;
+    //    public MaterialSheetFab materialSheetFab;
     AlertDialog devRootedDeviceAlertDialog;
     private Bundle savedInstanceState;
     private SMSclass smSclass;
-    private String isDormant, userNameLogin, fcm_id, fcmId_encrypted;
+    private String isDormant, userNameLogin, fcm_id, fcmId_encrypted, agentTrxCode;
     private BottomNavigationView bottomNavigationView;
     private MenuItem itemData;
     private NotificationActionView actionView;
@@ -155,6 +156,7 @@ public class MainPage extends BaseActivity {
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
     private String currentTab = "";
+    private JSONArray agentTrxCodeArray;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -187,12 +189,17 @@ public class MainPage extends BaseActivity {
 
         isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
         userNameLogin = sp.getString(DefineValue.USER_NAME, "");
+        agentTrxCode = sp.getString(DefineValue.AGENT_TRX_CODES, "");
+        try {
+            agentTrxCodeArray = new JSONArray(agentTrxCode);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         if (isHasAppPermission())
             InitializeApp();
     }
 
     BottomNavigationView.OnNavigationItemSelectedListener drawerListener = item -> {
-        Intent i;
         switch (item.getItemId()) {
             case R.id.menu_home:
                 currentTab = userNameLogin;
@@ -202,30 +209,28 @@ public class MainPage extends BaseActivity {
                 switchContent(fragmentHome, userNameLogin);
                 return true;
             case R.id.menu_transfer:
-                currentTab = getString(R.string.transfer);
-                if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp))) {
-                        Fragment fragmentTransfer = new ListTransfer();
-                        switchContent(fragmentTransfer, getString(R.string.transfer));
-                        return true;
-                } else
+                if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp)) || agentTrxCodeArray.length() > 0) {
+                    for (int i = 0; i < agentTrxCodeArray.length(); i++) {
+                        try {
+                            if (agentTrxCodeArray.get(i).equals(DefineValue.P2P)) {
+                                currentTab = getString(R.string.transfer);
+                                Fragment fragmentTransfer = new ListTransfer();
+                                switchContent(fragmentTransfer, getString(R.string.transfer));
+                                break;
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return true;
+                } else {
                     dialogUnavailable();
-//                if (isDormant.equalsIgnoreCase("Y")) {
-//                    dialogDormant();
-//                } else {
-//                    if (levelClass.isLevel1QAC()) {
-//                        levelClass.showDialogLevel();
-//                    } else {
-////                        i = new Intent(MainPage.this, ActivityListTransfer.class);
-////                        switchActivity(i, MainPage.ACTIVITY_RESULT);
-//                        Fragment fragmentTransfer = new ListTransfer();
-//                        switchContent(fragmentTransfer, getString(R.string.transfer));
-//                        return true;
-//                    }
-//                }
-                return true;
+                    return false;
+                }
             case R.id.menu_help:
 //                i = new Intent(MainPage.this, ContactActivity.class);
 //                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                currentTab = getString(R.string.help_center);
                 BaseFragment fragmentHelp = new FragHelp();
                 switchContent(fragmentHelp, getString(R.string.help_center));
                 return true;
@@ -292,7 +297,7 @@ public class MainPage extends BaseActivity {
 ////                    initializeDashboard();
 //                }
 //            } else {
-                initializeDashboard();
+            initializeDashboard();
 //            }
         } else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
@@ -1128,7 +1133,7 @@ public class MainPage extends BaseActivity {
                 break;
             case FIRST_SCREEN_SPLASHSCREEN:
 //                if (LocaleManager.getLocale(getResources()).getLanguage().equals("in")) {
-                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
+                CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
 //                } else {
 //                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, false);
 //                }
