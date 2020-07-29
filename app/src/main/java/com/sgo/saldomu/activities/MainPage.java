@@ -140,7 +140,7 @@ public class MainPage extends BaseActivity {
     private BalanceService serviceReferenceBalance;
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
-    private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent, isForeground = false;
+    private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent, isForeground = false, isAgent = false;
     //    public MaterialSheetFab materialSheetFab;
     AlertDialog devRootedDeviceAlertDialog;
     private Bundle savedInstanceState;
@@ -161,6 +161,7 @@ public class MainPage extends BaseActivity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -209,20 +210,20 @@ public class MainPage extends BaseActivity {
                 switchContent(fragmentHome, userNameLogin);
                 return true;
             case R.id.menu_transfer:
-                if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp)) && agentTrxCodeArray.length() > 0) {
-                    if (agentTrxCodeArray.length() > 0) {
-                        for (int i = 0; i < agentTrxCodeArray.length(); i++) {
-                            try {
-                                if (agentTrxCodeArray.get(i).equals(DefineValue.P2P)) {
-                                    transferFragment();
-                                    break;
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                if (isAgent && agentTrxCodeArray.length() > 0) {
+                    for (int i = 0; i < agentTrxCodeArray.length(); i++) {
+                        try {
+                            if (agentTrxCodeArray.get(i).equals(DefineValue.P2P)) {
+                                transferFragment();
+                                break;
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } else
-                        transferFragment();
+                    }
+                    return true;
+                } else if (!isAgent && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2 && sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.LP))) {
+                    transferFragment();
                     return true;
                 } else {
                     dialogUnavailable();
@@ -1040,7 +1041,6 @@ public class MainPage extends BaseActivity {
     }
 
     void setupBBSData() {
-        boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
         if (isAgent) {
             RealmManager.getInstance().setBbsRealm(RealmManager.getRealmBBS());
             RealmManager.getInstance().setRealm(Realm.getDefaultInstance());
