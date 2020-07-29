@@ -977,7 +977,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
                 }
 
-                if (mBillerTypeDataEMoney != null) {
+                if (mBillerTypeDataEMoney != null && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2) {
                     menuStrings.add(getResources().getString(R.string.newhome_emoney));
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
                 }
