@@ -209,19 +209,20 @@ public class MainPage extends BaseActivity {
                 switchContent(fragmentHome, userNameLogin);
                 return true;
             case R.id.menu_transfer:
-                if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp)) || agentTrxCodeArray.length() > 0) {
-                    for (int i = 0; i < agentTrxCodeArray.length(); i++) {
-                        try {
-                            if (agentTrxCodeArray.get(i).equals(DefineValue.P2P)) {
-                                currentTab = getString(R.string.transfer);
-                                Fragment fragmentTransfer = new ListTransfer();
-                                switchContent(fragmentTransfer, getString(R.string.transfer));
-                                break;
+                if (sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.lp)) && agentTrxCodeArray.length() > 0) {
+                    if (agentTrxCodeArray.length() > 0) {
+                        for (int i = 0; i < agentTrxCodeArray.length(); i++) {
+                            try {
+                                if (agentTrxCodeArray.get(i).equals(DefineValue.P2P)) {
+                                    transferFragment();
+                                    break;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-                    }
+                    } else
+                        transferFragment();
                     return true;
                 } else {
                     dialogUnavailable();
@@ -245,6 +246,12 @@ public class MainPage extends BaseActivity {
         }
         return false;
     };
+
+    private void transferFragment() {
+        currentTab = getString(R.string.transfer);
+        Fragment fragmentTransfer = new ListTransfer();
+        switchContent(fragmentTransfer, getString(R.string.transfer));
+    }
 
     private void dialogDormant() {
         Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.title_dialog_dormant),
