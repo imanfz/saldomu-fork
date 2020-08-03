@@ -144,7 +144,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private static final String BILLER_TYPE_CODE_PLN = "PLN";
     private static final String BILLER_TYPE_CODE_BPJS = "BPJS";
     private static final String BILLER_TYPE_CODE_EMONEY = "EMON";
-    private static final String BILLER_TYPE_CODE_GAME = "GAPP";
+    private static final String BILLER_TYPE_CODE_GAME = "GAME";
     private static final String BILLER_TYPE_CODE_VOUCHER = "VCHR";
     private static final String BILLER_TYPE_CODE_PDAM = "AIR";
     private static final String BILLER_TYPE_CODE_DATA = "DATA";
