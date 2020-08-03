@@ -220,6 +220,7 @@
     <string name="menu_item_title_map_member">Member Map</string>
     <string name="menu_item_title_waktu_beroperasi">Operating Time</string>
     <string name="menu_item_title_tutup_manual"> Manual Close</string>
+    <string name="menu_item_title_mandiri_lkd">Mandiri Laku Pandai</string>
     <string name="topup_token_bank_name">Bank Name</string>
     <string name="topup_token_bank_product">Destination Bank Product</string>
     <string name="topup_token_bank_product_sumber">Bank Source Product</string>

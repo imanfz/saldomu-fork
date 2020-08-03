@@ -47,6 +47,7 @@ import com.sgo.saldomu.activities.CashCollectionActivity;
 import com.sgo.saldomu.activities.HistoryActivity;
 import com.sgo.saldomu.activities.ListBuyActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MandiriLPActivity;
 import com.sgo.saldomu.activities.ReportActivity;
 import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
 import com.sgo.saldomu.activities.TagihActivity;
@@ -519,6 +520,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     Intent intent = new Intent(getActivity(), B2BActivity.class);
                     startActivity(intent);
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_mandiri_lkd))) {
+                    Intent intent = new Intent(getActivity(), MandiriLPActivity.class);
+                    startActivity(intent);
                 }
 
                 if (isAgent) {
@@ -933,6 +937,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private void setupIconAndTitle() {
         if (getActivity() != null && isAdded()) {
             if (isAgent) {
+                if (sp.getBoolean(DefineValue.HAS_MANDIRI_LP, false)) {
+                    menuStrings.add(getResources().getString(R.string.menu_item_title_mandiri_lkd));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.logo_mandiri_bank_small));
+                }
                 checkSchemeCodeAgent();
                 if (sp.getString(DefineValue.IS_AGENT_TRX_REQ, "").equalsIgnoreCase("Y")) {
                     menuStrings.add(getResources().getString(R.string.menu_item_title_trx_agent));

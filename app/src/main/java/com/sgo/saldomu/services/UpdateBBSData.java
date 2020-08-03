@@ -246,7 +246,7 @@ public class UpdateBBSData extends IntentService {
                     for (int j = 0; j < tempBankComm.length(); j++) {
                         tempBBSBankModel = realm.createObjectFromJson(BBSBankModel.class, tempBankComm.getJSONObject(j));
                         if (tempBBSBankModel != null && tempBBSBankModel.getProduct_code().equals("MANDIRILKD"))
-                            mEditor.putBoolean(DefineValue.HAS_MANDIRILKD, true);
+                            mEditor.putBoolean(DefineValue.HAS_MANDIRI_LP, true);
                         tempBBSBankModel.setComm_type("SOURCE");
                         tempBBSBankModel.setComm_id(tempBBSCommModel.getComm_id());
                         tempBBSBankModel.setScheme_code(scheme_code);
@@ -262,7 +262,7 @@ public class UpdateBBSData extends IntentService {
                         for (int j = 0; j < tempBankComm.length(); j++) {
                             bbsAccountACTModel = realm.createObjectFromJson(BBSAccountACTModel.class, tempBankComm.getJSONObject(j));
                             if (bbsAccountACTModel != null && bbsAccountACTModel.getProduct_code().equals("MANDIRILKD"))
-                                mEditor.putBoolean(DefineValue.HAS_MANDIRILKD, true);
+                                mEditor.putBoolean(DefineValue.HAS_MANDIRI_LP, true);
                             bbsAccountACTModel.setComm_id(tempBBSCommModel.getComm_id());
                             bbsAccountACTModel.setScheme_code(scheme_code);
                             bbsAccountACTModel.setLast_update(curr_date);
@@ -271,7 +271,7 @@ public class UpdateBBSData extends IntentService {
                         for (int j = 0; j < tempBankComm.length(); j++) {
                             tempBBSBankModel = realm.createObjectFromJson(BBSBankModel.class, tempBankComm.getJSONObject(j));
                             if (tempBBSBankModel != null && tempBBSBankModel.getProduct_code().equals("MANDIRILKD"))
-                                mEditor.putBoolean(DefineValue.HAS_MANDIRILKD, true);
+                                mEditor.putBoolean(DefineValue.HAS_MANDIRI_LP, true);
                             tempBBSBankModel.setComm_type("BENEF");
                             tempBBSBankModel.setComm_id(tempBBSCommModel.getComm_id());
                             tempBBSBankModel.setScheme_code(scheme_code);

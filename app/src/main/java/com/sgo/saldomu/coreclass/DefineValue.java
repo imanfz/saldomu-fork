@@ -552,7 +552,7 @@ public class DefineValue {
     public static String TOKEN_ID = "token_id";
     public static String IS_OWNER = "is_owner";
     public static String IS_POS = "is_pos";
-    public static String HAS_MANDIRILKD = "has_mandirilkd";
+    public static String HAS_MANDIRI_LP = "has_mandiri_lp";
 
 
 

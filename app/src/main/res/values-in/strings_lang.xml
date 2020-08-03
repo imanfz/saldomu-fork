@@ -222,6 +222,7 @@
     <string name="menu_item_title_map_member">Peta Member</string>
     <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
     <string name="menu_item_title_tutup_manual">Tutup Manual</string>
+    <string name="menu_item_title_mandiri_lkd">Mandiri Laku Pandai</string>
     <string name="topup_token_bank_name">Nama Bank</string>
     <string name="topup_token_bank_product">Produk Bank Tujuan</string>
     <string name="topup_token_bank_product_sumber">Produk Bank Sumber</string>
