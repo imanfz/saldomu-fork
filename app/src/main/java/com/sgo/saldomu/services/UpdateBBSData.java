@@ -45,6 +45,7 @@ public class UpdateBBSData extends IntentService {
     final String CTR = "CTR";
 
     SecurePreferences sp;
+    SecurePreferences.Editor mEditor;
     private ResultReceiver localResultReceiver;
     String userID;
     String accessKey;
@@ -65,6 +66,7 @@ public class UpdateBBSData extends IntentService {
         curr_date = DateTimeFormat.getCurrentDate();
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        mEditor = sp.edit();
         userID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         setUpdatingData(true);
@@ -83,7 +85,7 @@ public class UpdateBBSData extends IntentService {
             if (BBSDataManager.isDataCTRNotValid())
                 getBBSdata(CTR);
             else
-                ctrState=true;
+                ctrState = true;
 
 
         } else
@@ -225,7 +227,7 @@ public class UpdateBBSData extends IntentService {
             } else if (scheme_code.equalsIgnoreCase(CTR)) {
                 ctrState = true;
                 setDateDataCTR(curr_date);
-            }else {
+            } else {
                 atcState = true;
                 setDateDataATC(curr_date);
             }
@@ -243,6 +245,8 @@ public class UpdateBBSData extends IntentService {
                 if (tempBankComm != null && tempBankComm.length() > 0) {
                     for (int j = 0; j < tempBankComm.length(); j++) {
                         tempBBSBankModel = realm.createObjectFromJson(BBSBankModel.class, tempBankComm.getJSONObject(j));
+                        if (tempBBSBankModel != null && tempBBSBankModel.getProduct_code().equals("MANDIRILKD"))
+                            mEditor.putBoolean(DefineValue.HAS_MANDIRILKD, true);
                         tempBBSBankModel.setComm_type("SOURCE");
                         tempBBSBankModel.setComm_id(tempBBSCommModel.getComm_id());
                         tempBBSBankModel.setScheme_code(scheme_code);
@@ -256,18 +260,18 @@ public class UpdateBBSData extends IntentService {
                     if (scheme_code.equalsIgnoreCase(ATC)) {
                         BBSAccountACTModel bbsAccountACTModel;
                         for (int j = 0; j < tempBankComm.length(); j++) {
-                            bbsAccountACTModel = realm.createObjectFromJson(BBSAccountACTModel.class,
-                                    tempBankComm.getJSONObject(j));
-
+                            bbsAccountACTModel = realm.createObjectFromJson(BBSAccountACTModel.class, tempBankComm.getJSONObject(j));
+                            if (bbsAccountACTModel != null && bbsAccountACTModel.getProduct_code().equals("MANDIRILKD"))
+                                mEditor.putBoolean(DefineValue.HAS_MANDIRILKD, true);
                             bbsAccountACTModel.setComm_id(tempBBSCommModel.getComm_id());
                             bbsAccountACTModel.setScheme_code(scheme_code);
                             bbsAccountACTModel.setLast_update(curr_date);
                         }
                     } else {
                         for (int j = 0; j < tempBankComm.length(); j++) {
-
                             tempBBSBankModel = realm.createObjectFromJson(BBSBankModel.class, tempBankComm.getJSONObject(j));
-
+                            if (tempBBSBankModel != null && tempBBSBankModel.getProduct_code().equals("MANDIRILKD"))
+                                mEditor.putBoolean(DefineValue.HAS_MANDIRILKD, true);
                             tempBBSBankModel.setComm_type("BENEF");
                             tempBBSBankModel.setComm_id(tempBBSCommModel.getComm_id());
                             tempBBSBankModel.setScheme_code(scheme_code);
@@ -279,8 +283,6 @@ public class UpdateBBSData extends IntentService {
                 e.printStackTrace();
                 realm.cancelTransaction();
             } finally {
-                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                SecurePreferences.Editor mEditor = prefs.edit();
                 mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER, true);
                 mEditor.apply();
             }
