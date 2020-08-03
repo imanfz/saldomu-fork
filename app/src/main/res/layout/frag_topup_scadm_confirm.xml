@@ -316,12 +316,14 @@
 
             <Button
                 android:id="@+id/btn_next"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:layout_margin="30dp"
-                android:gravity="bottom"
-                android:text="@string/next" />
+                android:gravity="center"
+                android:background="@drawable/rounded_background_blue"
+                android:text="@string/next"
+                android:textColor="@color/white"/>
         </LinearLayout>
     </ScrollView>
 

@@ -300,7 +300,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/card_bk"
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
             app:mrl_rippleAlpha="0.2"
@@ -311,14 +310,14 @@
 
             <Button
                 android:id="@+id/frag_denom_confirm_submit_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
+                android:background="@drawable/rounded_background_blue"
                 android:gravity="center"
                 android:text="@string/submit"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/colorPrimaryDark" />
+                android:textColor="@color/white" />
         </com.balysv.materialripple.MaterialRippleLayout>
 
     </LinearLayout>
