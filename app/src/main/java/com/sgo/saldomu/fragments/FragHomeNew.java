@@ -145,7 +145,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private static final String BILLER_TYPE_CODE_PLN = "PLN";
     private static final String BILLER_TYPE_CODE_BPJS = "BPJS";
     private static final String BILLER_TYPE_CODE_EMONEY = "EMON";
-    private static final String BILLER_TYPE_CODE_GAME = "GAPP";
+    private static final String BILLER_TYPE_CODE_GAME = "GAME";
     private static final String BILLER_TYPE_CODE_VOUCHER = "VCHR";
     private static final String BILLER_TYPE_CODE_PDAM = "AIR";
     private static final String BILLER_TYPE_CODE_DATA = "DATA";
@@ -1034,13 +1034,17 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 switch (obj) {
                     case BILLER_TYPE_CODE_PLS:
                     case BILLER_TYPE_CODE_HP:
-                        menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
+                        if (!menuStrings.contains(getResources().getString(R.string.menu_item_title_pulsa_agent))) {
+                            menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
+                        }
                         break;
                     case BILLER_TYPE_CODE_TKN:
                     case BILLER_TYPE_CODE_PLN:
-                        menuStrings.add(getResources().getString(R.string.newhome_listrik_pln));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
+                        if (!menuStrings.contains(getResources().getString(R.string.newhome_listrik_pln))) {
+                            menuStrings.add(getResources().getString(R.string.newhome_listrik_pln));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
+                        }
                         break;
                     case BILLER_TYPE_CODE_DATA:
                         menuStrings.add(getResources().getString(R.string.newhome_data));
