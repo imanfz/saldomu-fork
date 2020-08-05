@@ -93,6 +93,7 @@ class BBSCashIn : BaseFragment() {
     private var isSMSBanking = false
     private var isSimExist = false
     private var isOwner = false
+    private var hasMandiriLP = false
 
     private var realm: Realm? = null
     private var realmBBS: Realm? = null
@@ -140,6 +141,10 @@ class BBSCashIn : BaseFragment() {
                 defaultProductCode = bundle.getString(DefineValue.PRODUCT_CODE, "")
             }
 
+            if (bundle.containsKey(DefineValue.HAS_MANDIRI_LP)) {
+                hasMandiriLP = bundle.getBoolean(DefineValue.HAS_MANDIRI_LP, false)
+            }
+
             val gson = Gson()
             val cashIn = sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "")
             cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel::class.java)
@@ -168,9 +173,7 @@ class BBSCashIn : BaseFragment() {
         if (defaultAmount != "" || noHpPengirim != "") run {
             amount_transfer_edit_text.setText(defaultAmount)
             no_benef_value.setText(noHpPengirim)
-        }
-        else {
-//            if (cashInHistoryModel != null && sp.getString(DefineValue.USERID_PHONE, "").equals(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""))) {
+        } else {
             if (cashInHistoryModel != null) {
                 amount_transfer_edit_text.setText(cashInHistoryModel!!.amount)
 
@@ -198,6 +201,18 @@ class BBSCashIn : BaseFragment() {
                 message_value.setText(cashInHistoryModel!!.pesan)
             }
         }
+
+        if (hasMandiriLP){
+            btn_change_destination.visibility = View.GONE
+            for (i in aListMember!!.indices) {
+                if (aListMember!![i]["txt"]!!.contains("Mandiri Laku Pandai", ignoreCase = true))
+                    changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!),
+                            listBankBenef!![i].product_type,
+                            listBankBenef!![i].product_code,
+                            listBankBenef!![i].product_name)
+            }
+        }
+
         no_source_value.visibility = View.GONE
         if (noBenef != "" && noBenef != null)
             no_benef_value.setText(noBenef)

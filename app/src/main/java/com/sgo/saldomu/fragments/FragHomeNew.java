@@ -937,7 +937,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private void setupIconAndTitle() {
         if (getActivity() != null && isAdded()) {
             if (isAgent) {
-                if (sp.getBoolean(DefineValue.HAS_MANDIRI_LP, false)) {
+                if (sp.getBoolean(DefineValue.HAS_MANDIRI_LP, false) &&
+                        sp.getString(DefineValue.COMPANY_TYPE, "").equals(getString(R.string.LP))) {
                     menuStrings.add(getResources().getString(R.string.menu_item_title_mandiri_lkd));
                     menuDrawables.add(getResources().getDrawable(R.drawable.logo_mandiri_bank_small));
                 }

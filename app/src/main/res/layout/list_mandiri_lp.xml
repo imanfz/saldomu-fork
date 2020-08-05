@@ -28,20 +28,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:orientation="vertical"
             android:padding="16dp">
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_transfer_p2p"
-                android:layout_marginBottom="8dp"/>
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:src="@drawable/cash_in"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:letterSpacing="0.02"
                 android:lineSpacingExtra="5.7sp"
-                android:text="@string/p2p_transfer"
+                android:text="@string/cash_in"
                 android:textColor="#3f6db5"
                 android:textSize="14.3sp" />
         </LinearLayout>
@@ -68,21 +68,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:orientation="vertical"
             android:padding="16dp">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_transfer_bank"
-                android:layout_marginBottom="8dp"/>
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:src="@drawable/cash_out"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:letterSpacing="0.02"
                 android:lineSpacingExtra="5.7sp"
-                android:text="@string/bank_transfer"
+                android:text="@string/cash_out"
                 android:textColor="#5ec8da"
                 android:textSize="14.3sp" />
         </LinearLayout>

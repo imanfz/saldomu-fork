@@ -28,12 +28,14 @@ class FragMandiriLP : BaseFragment() {
             val i = Intent(activity, BBSActivity::class.java)
             i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION)
             i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN)
+            i.putExtra(DefineValue.HAS_MANDIRI_LP, true)
             switchActivity(i)
         }
         card_view_cash_out.setOnClickListener {
             val i = Intent(activity, BBSActivity::class.java)
             i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION)
             i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHOUT)
+            i.putExtra(DefineValue.HAS_MANDIRI_LP, true)
             switchActivity(i)
         }
     }

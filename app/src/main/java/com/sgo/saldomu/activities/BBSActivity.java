@@ -94,6 +94,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             Fragment newFragment = null;
             int index = intent.getIntExtra(DefineValue.INDEX, 0);
             type = intent.getStringExtra(DefineValue.TYPE);
+            boolean hasMandiriLP = intent.getBooleanExtra(DefineValue.HAS_MANDIRI_LP, false);
             String tag = "agent";
             switch (index) {
                 case JOINAGENT:
@@ -113,6 +114,8 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                         newFragment = new BBSCashOut();
 
                     if (bundle != null) {
+                        if (hasMandiriLP)
+                            bundle.putBoolean(DefineValue.HAS_MANDIRI_LP, true);
                         bundle.putString(DefineValue.TRANSACTION, type);
                         newFragment.setArguments(bundle);
                     }
