@@ -93,7 +93,7 @@ class BBSCashIn : BaseFragment() {
     private var isSMSBanking = false
     private var isSimExist = false
     private var isOwner = false
-    private var hasMandiriLP = false
+    private var cashInMandiriLP = false
 
     private var realm: Realm? = null
     private var realmBBS: Realm? = null
@@ -141,8 +141,8 @@ class BBSCashIn : BaseFragment() {
                 defaultProductCode = bundle.getString(DefineValue.PRODUCT_CODE, "")
             }
 
-            if (bundle.containsKey(DefineValue.HAS_MANDIRI_LP)) {
-                hasMandiriLP = bundle.getBoolean(DefineValue.HAS_MANDIRI_LP, false)
+            if (bundle.containsKey(DefineValue.TX_MANDIRI_LP)) {
+                cashInMandiriLP = bundle.getBoolean(DefineValue.TX_MANDIRI_LP, false)
             }
 
             val gson = Gson()
@@ -202,7 +202,7 @@ class BBSCashIn : BaseFragment() {
             }
         }
 
-        if (hasMandiriLP){
+        if (cashInMandiriLP) {
             btn_change_destination.visibility = View.GONE
             for (i in aListMember!!.indices) {
                 if (aListMember!![i]["txt"]!!.contains("Mandiri Laku Pandai", ignoreCase = true))
@@ -264,16 +264,21 @@ class BBSCashIn : BaseFragment() {
                     .equalTo(WebParams.COMM_TYPE, BENEF)
                     .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll()
         } else {
-            listBankBenef = if (defaultProductCode != "") {
+            listBankBenef = if (defaultProductCode != "")
                 realmBBS!!.where(BBSBankModel::class.java)
                         .equalTo(WebParams.SCHEME_CODE, CTA)
                         .equalTo(WebParams.COMM_TYPE, BENEF)
                         .equalTo(WebParams.PRODUCT_CODE, defaultProductCode).findAll()
-            } else {
+            else if (!cashInMandiriLP)
+                realmBBS!!.where(BBSBankModel::class.java)
+                        .equalTo(WebParams.SCHEME_CODE, CTA)
+                        .equalTo(WebParams.COMM_TYPE, BENEF)
+                        .notEqualTo(WebParams.PRODUCT_CODE, "MANDIRILKD").findAll()
+            else
                 realmBBS!!.where(BBSBankModel::class.java)
                         .equalTo(WebParams.SCHEME_CODE, CTA)
                         .equalTo(WebParams.COMM_TYPE, BENEF).findAll()
-            }
+
         }
         setBBSCity()
         setMember(listBankBenef)
@@ -314,9 +319,8 @@ class BBSCashIn : BaseFragment() {
         aListMember!!.clear()
         aListMember!!.addAll(BbsUtil.mappingProductCodeIcons(bankMember))
         for (i in bankMember!!.indices) {
-            if (bankMember[i].product_name.toLowerCase(Locale.getDefault()).contains("saldomu")) {
+            if (bankMember[i].product_name.toLowerCase(Locale.getDefault()).contains("saldomu"))
                 changeDestination(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name)
-            }
         }
     }
 
@@ -564,7 +568,7 @@ class BBSCashIn : BaseFragment() {
                     showDialogLimit(message)
                 } else if ((code == "0296")) {
                     lkd_product_code = model.lkd_product_code
-                    dialogJoinLKD(message)
+                    dialogJoinLP(message)
                 } else if ((code == WebParams.LOGOUT_CODE)) {
                     val test = AlertDialogLogout.getInstance()
                     test.showDialoginActivity(activity, message)
@@ -603,14 +607,14 @@ class BBSCashIn : BaseFragment() {
         dialog!!.show()
     }
 
-    fun dialogJoinLKD(message: String) {
+    fun dialogJoinLP(message: String) {
         val builder1 = android.support.v7.app.AlertDialog.Builder(activity!!)
         builder1.setTitle(R.string.join_lkd)
         builder1.setMessage(message)
         builder1.setCancelable(true)
         builder1.setPositiveButton(
                 "Yes"
-        ) { dialog, id -> joinMemberLKD() }
+        ) { dialog, id -> joinMemberLP() }
         builder1.setNegativeButton(
                 "No"
         ) { dialog, id -> activity!!.finish() }
@@ -618,7 +622,7 @@ class BBSCashIn : BaseFragment() {
         alert11.show()
     }
 
-    private fun joinMemberLKD() {
+    private fun joinMemberLP() {
         try {
             showProgressDialog()
             extraSignature = memberIDLogin + lkd_product_code
@@ -777,7 +781,7 @@ class BBSCashIn : BaseFragment() {
                         if (isSMSBanking)
                             showDialog(model)
                         else if (benef_product_code.equals("MANDIRILKD", ignoreCase = true)) {
-                            dialogBenefLKD(bbsTransModel.tx_id, bbsTransModel.tx_product_code, bbsTransModel.tx_product_name, bbsTransModel.tx_bank_code,
+                            dialogBenefLP(bbsTransModel.tx_id, bbsTransModel.tx_product_code, bbsTransModel.tx_product_name, bbsTransModel.tx_bank_code,
                                     bbsTransModel.amount, bbsTransModel.admin_fee, bbsTransModel.total_amount, bbsTransModel.tx_bank_name,
                                     bbsTransModel.max_resend_token, bbsTransModel.benef_acct_no, bbsTransModel.benef_product_value_name, bbsTransModel.benef_product_value_code)
                         } else {
@@ -955,9 +959,9 @@ class BBSCashIn : BaseFragment() {
         editor.apply()
     }
 
-    fun dialogBenefLKD(_tx_id: String?, _product_code: String?, _product_name: String?, _bank_code: String?,
-                       _amount: String?, _fee: String?, _totalAmount: String?, _bank_name: String?, _max_resend_token: String?,
-                       _benef_acct_no: String?, _benef_acct_name: String?, no_benef: String?) {
+    fun dialogBenefLP(_tx_id: String?, _product_code: String?, _product_name: String?, _bank_code: String?,
+                      _amount: String?, _fee: String?, _totalAmount: String?, _bank_name: String?, _max_resend_token: String?,
+                      _benef_acct_no: String?, _benef_acct_name: String?, no_benef: String?) {
         val builder1 = android.support.v7.app.AlertDialog.Builder(activity!!)
         builder1.setTitle(R.string.c2a_lkd)
         builder1.setMessage("Transfer ke : ")

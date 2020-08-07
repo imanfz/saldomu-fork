@@ -1233,15 +1233,15 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="listatm_topup_bri_4">Pilih YA</string>
     <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP (minimal Rp 10.001).</string>
 
-    <string name="join_lkd">Join Member Mandiri LKD</string>
-    <string name="c2a_lkd">Setor Tunai Mandiri LKD</string>
+    <string name="join_lkd">Join Member Mandiri Laku Pandai</string>
+    <string name="c2a_lkd">Setor Tunai Mandiri Laku Pandai</string>
     <string name="upgrade_member">Upgrade Keanggotaan</string>
     <string name="data_customer">Data Pelanggan</string>
     <string name="upgrade_agent">Upgrade Agen</string>
     <string name="data_member_basic">Data Member Basic</string>
     <string name="data_verified_member">Data Verified Member</string>
     <string name="message_upgrade_member">Apakah anda ingin upgrade menjadi member Gold untuk bisa melakukan transfer antar pengguna Saldomu, minta saldo dan upgrade batas saldo menjadi Rp 10.000.000?</string>
-    <string name="message_join_lkd">Apakah anda ingin menjadi member Mandiri LKD untuk dapat melanjutkan transaksi Setor Tunai dan Tarik Tunai?</string>
+    <string name="message_join_lkd">Apakah anda ingin menjadi member Mandiri LP untuk dapat melanjutkan transaksi Setor Tunai dan Tarik Tunai?</string>
     <string name="message_upgrade_agent">Apakah anda ingin upgrade menjadi agen?</string>
 
     <string name="validation_pulsa">No. Hp tidak ditemukan</string>

@@ -58,6 +58,7 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
+import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -471,6 +472,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.newhome_emoney))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();
+                    } else if (sp.getInt(DefineValue.LEVEL_VALUE, 1) == 1){
+                        LevelClass levelClass = new LevelClass(getActivity());
+                        levelClass.showDialogLevel();
                     } else {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
                         intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_EMONEY);
@@ -986,7 +990,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
                 }
 
-                if (mBillerTypeDataEMoney != null && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2) {
+                if (mBillerTypeDataEMoney != null) {
                     menuStrings.add(getResources().getString(R.string.newhome_emoney));
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
                 }

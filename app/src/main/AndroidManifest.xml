@@ -167,7 +167,8 @@
             android:name=".activities.Perkenalan"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:exported="true"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.ChangePIN"
             android:configChanges="screenSize|keyboardHidden|orientation"

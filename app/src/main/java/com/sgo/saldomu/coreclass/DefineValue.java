@@ -553,6 +553,7 @@ public class DefineValue {
     public static String IS_OWNER = "is_owner";
     public static String IS_POS = "is_pos";
     public static String HAS_MANDIRI_LP = "has_mandiri_lp";
+    public static String TX_MANDIRI_LP = "tx_mandiri_lp";
 
 
 
