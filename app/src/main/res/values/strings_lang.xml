@@ -182,7 +182,7 @@
     <string name="menu_item_title_upgrade_member">Upgrade Member</string>
     <string name="menu_item_title_upgrade_online">Upgrade Online</string>
     <string name="menu_item_title_upgrade_via_agent">Upgrade via Agent</string>
-    <string name="menu_item_title_buy">Biller</string>
+    <string name="menu_item_title_biller">Biller</string>
     <string name="menu_item_title_beli">Purchase</string>
     <string name="menu_item_title_cash_out">Bank Transfer via Cash Deposit</string>
     <string name="menu_item_title_topup" translatable="false">Top Up Balance</string>

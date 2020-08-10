@@ -266,7 +266,7 @@
         <!--<item>@string/newhome_title_topup</item>-->
         <item>@string/menu_item_title_pay_friends</item>
         <item>@string/menu_item_title_ask_for_money</item>
-        <item>@string/menu_item_title_buy</item>
+        <item>@string/menu_item_title_biller</item>
         <item>@string/menu_item_title_report</item>
         <!--<item>@string/menu_item_title_scadm</item>-->
     </string-array>

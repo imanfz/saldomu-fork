@@ -184,7 +184,7 @@
     <string name="menu_item_title_upgrade_member">Upgrade Member</string>
     <string name="menu_item_title_upgrade_online">Upgrade Online</string>
     <string name="menu_item_title_upgrade_via_agent">Upgrade via Agent</string>
-    <string name="menu_item_title_buy">Biller</string>
+    <string name="menu_item_title_biller">Biller</string>
     <string name="menu_item_title_beli">Beli</string>
     <string name="menu_item_title_cash_out">Transfer ke Bank via Setor Tunai</string>
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
