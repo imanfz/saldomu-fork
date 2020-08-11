@@ -53,7 +53,7 @@ import com.sgo.saldomu.activities.BbsMerchantCommunityList;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.ContactActivity;
 import com.sgo.saldomu.activities.InfoHargaWebActivity;
-import com.sgo.saldomu.activities.ListBuyActivity;
+import com.sgo.saldomu.activities.GridBillerActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.PayFriendsActivity;
@@ -548,7 +548,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 if (isDormant.equalsIgnoreCase("Y")) {
                     dialogDormant();
                 } else {
-                    Intent i = new Intent(getActivity(), ListBuyActivity.class);
+                    Intent i = new Intent(getActivity(), GridBillerActivity.class);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
                 break;

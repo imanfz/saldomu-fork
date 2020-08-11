@@ -13,7 +13,7 @@ import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import java.util.ArrayList
 
-class GridBiller(private val mContext: Context, text: ArrayList<String>, drawable: ArrayList<Drawable>) : BaseAdapter() {
+class GridMenu(private val mContext: Context, text: ArrayList<String>, drawable: ArrayList<Drawable>) : BaseAdapter() {
     private var text = ArrayList<String>()
     private var drawable = ArrayList<Drawable>()
 

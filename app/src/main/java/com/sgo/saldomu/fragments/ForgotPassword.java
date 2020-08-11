@@ -166,6 +166,7 @@ public class ForgotPassword extends BaseFragment {
         Intent i = new Intent(getActivity(), InsertPIN.class);
         i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
         i.putExtra(DefineValue.USERID_PHONE, userIDfinale);
+        i.putExtra(DefineValue.NOT_YET_LOGIN, true);
         sp.edit().putString(DefineValue.CURR_USERID, userIDfinale).apply();
         if (_attempt == 1)
             i.putExtra(DefineValue.ATTEMPT, _attempt);

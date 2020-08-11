@@ -41,7 +41,6 @@ import com.google.android.gms.location.LocationServices;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.adapter.TabAgentPagerAdapter;
 import com.sgo.saldomu.adapter.TabSearchAgentAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -1022,18 +1021,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         Double angkaRandom = 0.001 + z;
 
         return angkaRandom;
-    }
-
-    private void setTabViewPager()
-    {
-        TabAgentPagerAdapter tabBbsPagerAdapter = new TabAgentPagerAdapter(getSupportFragmentManager());
-
-        //viewPager = (ViewPager) findViewById(viewPager);
-        //viewPager.setOffscreenPageLimit(4); // use a number higher than half your fragments.
-        //viewPager.setAdapter(tabBbsPagerAdapter);
-
-        //PagerSlidingTabStrip tabPagerSliding = (PagerSlidingTabStrip) findViewById(R.id.tabPagerSliding);
-        // tabPagerSliding.setViewPager(viewPager);
     }
 
     private void searchToko(Double latitude, Double longitude) {

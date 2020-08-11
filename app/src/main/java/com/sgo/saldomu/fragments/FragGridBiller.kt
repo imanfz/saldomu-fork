@@ -11,14 +11,14 @@ import android.widget.TextView
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.BillerActivity
-import com.sgo.saldomu.adapter.GridBiller
+import com.sgo.saldomu.adapter.GridMenu
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.RealmManager
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
 import io.realm.RealmResults
-import kotlinx.android.synthetic.main.frag_grid_biller.*
+import kotlinx.android.synthetic.main.frag_grid.*
 
 class FragGridBiller : BaseFragment() {
 
@@ -28,23 +28,13 @@ class FragGridBiller : BaseFragment() {
     private val menuStrings = ArrayList<String>()
     private val menuDrawables = ArrayList<Drawable>()
     private var billerTypeName = ArrayList<String>()
-    private var adapter: GridBiller? = null
+    private var adapter: GridMenu? = null
 
     var billerType: String? = null
 
-    companion object {
-        fun newInstance(biller_type: String?): FragGridBiller? {
-            val mFrag = FragGridBiller()
-            val bundle = Bundle()
-            bundle.putString(DefineValue.BILLER_TYPE, biller_type)
-            mFrag.arguments = bundle
-            return mFrag
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.frag_grid_biller, container, false)
+        v = inflater.inflate(R.layout.frag_grid, container, false)
         return v
     }
 
@@ -57,15 +47,14 @@ class FragGridBiller : BaseFragment() {
     }
 
     private fun initializeData() {
-        mBillerTypeData = realm!!.where(Biller_Type_Data_Model::class.java).equalTo(WebParams.BILLER_TYPE, billerType)
-                .findAll()
+        mBillerTypeData = realm!!.where(Biller_Type_Data_Model::class.java).equalTo(WebParams.BILLER_TYPE, billerType).findAll()
         if (mBillerTypeData!!.size > 0) {
             for (i in mBillerTypeData!!.indices) {
                 billerTypeName.add(mBillerTypeData!![i]!!.biller_type_name)
             }
         }
 
-        adapter = GridBiller(context!!, menuStrings, menuDrawables)
+        adapter = GridMenu(context!!, menuStrings, menuDrawables)
         grid.adapter = adapter
         grid.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val menuItemName = hardCodeMenuItemName((view!!.findViewById<View>(R.id.grid_text) as TextView).text.toString())
@@ -91,12 +80,12 @@ class FragGridBiller : BaseFragment() {
 
     private fun setTitleandIcon() {
 
-        if (billerTypeName.contains(getString(R.string.credit_card))||billerTypeName.contains("Kartu Kredit")){
+        if (billerTypeName.contains(getString(R.string.credit_card)) || billerTypeName.contains("Kartu Kredit")) {
             menuStrings.add(resources.getString(R.string.credit_card))
             menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_kartu_kredit))
         }
 
-        if (billerTypeName.contains(getString(R.string.installment))||billerTypeName.contains("Cicilan")) {
+        if (billerTypeName.contains(getString(R.string.installment)) || billerTypeName.contains("Cicilan")) {
             menuStrings.add(resources.getString(R.string.installment))
             menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_tagihan_kartu_kredit))
         }
@@ -106,17 +95,17 @@ class FragGridBiller : BaseFragment() {
             menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_telkom))
         }
 
-        if (billerTypeName.contains(getString(R.string.flight_ticket))||billerTypeName.contains("Tiket Pesawat Terbang")) {
+        if (billerTypeName.contains(getString(R.string.flight_ticket)) || billerTypeName.contains("Tiket Pesawat Terbang")) {
             menuStrings.add(resources.getString(R.string.flight_ticket))
             menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_pesawat))
         }
 
-        if (billerTypeName.contains(getString(R.string.train_ticket))||billerTypeName.contains("Tiket Kereta Api")) {
+        if (billerTypeName.contains(getString(R.string.train_ticket)) || billerTypeName.contains("Tiket Kereta Api")) {
             menuStrings.add(resources.getString(R.string.train_ticket))
             menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_kereta))
         }
 
-        if (billerTypeName.contains(getString(R.string.insurance))||billerTypeName.contains("Asuransi")) {
+        if (billerTypeName.contains(getString(R.string.insurance)) || billerTypeName.contains("Asuransi")) {
             menuStrings.add(resources.getString(R.string.insurance))
             menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_asuransi))
         }
@@ -126,7 +115,7 @@ class FragGridBiller : BaseFragment() {
             menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_internet))
         }
 
-        if (billerTypeName.contains(getString(R.string.cable_tv))||billerTypeName.contains("TV Cable")) {
+        if (billerTypeName.contains(getString(R.string.cable_tv)) || billerTypeName.contains("TV Cable")) {
             menuStrings.add(resources.getString(R.string.cable_tv))
             menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_tv))
         }
