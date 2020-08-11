@@ -20,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,6 +76,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
     private EditText passLoginValue;
     private ImageView image_spinner, toogleViewPass, logo;
     private Button btnLogin;
+    private ImageButton btnWarn;
     private Animation frameAnimation;
     //    private MaterialRippleLayout btnLayout;
     private View v;
@@ -98,6 +100,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         image_spinner = v.findViewById(R.id.image_spinning_wheel);
         logo = v.findViewById(R.id.logo);
         tv_version = v.findViewById(R.id.tv_version);
+        btnWarn = v.findViewById(R.id.btn_warn);
         return v;
     }
 
@@ -187,6 +190,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
         btnforgetPass.setOnClickListener(this);
         btnforgetPin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
+        btnWarn.setOnClickListener(this);
         toogleViewPass.setOnClickListener(this);
         passLoginValue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -252,6 +256,10 @@ public class Login extends BaseFragment implements View.OnClickListener {
                     isTexted = false;
                     break;
                 }
+            case R.id.btn_warn:
+                newFrag = new FragReverification();
+                switchFragment(newFrag, "re-verification", true);
+                break;
         }
 
     }
