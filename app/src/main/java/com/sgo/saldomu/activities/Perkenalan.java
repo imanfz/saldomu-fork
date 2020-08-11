@@ -235,7 +235,7 @@ public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCa
                 } else {
                     Intent i = new Intent(Perkenalan.this, InsertPIN.class);
                     i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
-                    i.putExtra(DefineValue.FOR_LOGIN, true);
+                    i.putExtra(DefineValue.NOT_YET_LOGIN, true);
                     startActivityForResult(i, MainPage.REQUEST_FINISH);
                 }
             } else if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {

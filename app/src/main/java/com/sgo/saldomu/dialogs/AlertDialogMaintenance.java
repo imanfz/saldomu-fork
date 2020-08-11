@@ -74,7 +74,7 @@ public class AlertDialogMaintenance {
         if (mActivity == null)
             return;
 
-        MainPage fca = (MainPage) mActivity;
+        MainPage fca = new MainPage();
         fca.switchLogout();
     }
 

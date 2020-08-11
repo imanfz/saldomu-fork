@@ -85,6 +85,7 @@ class BBSCashOut : BaseFragment() {
     private var isSMSBanking = false
     private var isSimExist = false
     private var isOwner = false
+    private var cashOutMandiriLP = false
 
     private var realm: Realm? = null
     private var realmBBS: Realm? = null
@@ -131,6 +132,10 @@ class BBSCashOut : BaseFragment() {
             defaultProductCode = ""
             if (bundle.containsKey(DefineValue.PRODUCT_CODE)) {
                 defaultProductCode = bundle.getString(DefineValue.PRODUCT_CODE, "")
+            }
+
+            if (bundle.containsKey(DefineValue.TX_MANDIRI_LP)) {
+                cashOutMandiriLP = bundle.getBoolean(DefineValue.TX_MANDIRI_LP, false)
             }
 
             val gson = Gson()
@@ -188,6 +193,18 @@ class BBSCashOut : BaseFragment() {
                 message_value.setText(cashOutHistoryModel!!.pesan)
             }
         }
+
+        if (cashOutMandiriLP) {
+            btn_change_source.visibility = View.GONE
+            for (i in aListMember!!.indices) {
+                if (aListMember!![i]["txt"]!!.contains("Mandiri Laku Pandai", ignoreCase = true))
+                    changeSource(Integer.parseInt(aListMember!![i]["flag"]!!),
+                            listBankSource!![i].product_type,
+                            listBankSource!![i].product_code,
+                            listBankSource!![i].product_name,
+                            listBankSource!![i].product_h2h)
+            }
+        }
         no_benef_value.visibility = View.GONE
         city_benef_value.visibility = View.GONE
         if (noSource != "" && noSource != null)
@@ -215,27 +232,16 @@ class BBSCashOut : BaseFragment() {
                         listBankSource!![position].product_code,
                         listBankSource!![position].product_name,
                         listBankSource!![position].product_h2h)
-                if (source_product_type.equals(DefineValue.EMO, ignoreCase = true) && !source_product_code.equals("MANDIRILKD", ignoreCase = true)) {
-                    no_source_value.hint = getString(R.string.number_hp_destination_hint)
-                } else {
-                    if (source_product_code.equals("MANDIRILKD", ignoreCase = true)) {
-                        no_source_value.setHint(R.string.nomor_rekening)
-                    } else {
-                        no_source_value.setHint(R.string.number_destination_hint)
-                    }
-                    no_source_value.setText("")
-                }
-
-                if (source_product_code.equals("tcash", ignoreCase = true))
-                    no_OTP.visibility = View.VISIBLE
-                else
-                    no_OTP.visibility = View.GONE
-
                 dialogBankList!!.dismiss()
             }
         else
-            Toast.makeText(context, "Benef", Toast.LENGTH_SHORT).show()
-
+            dialogBankList = DialogBankList.newDialog(activity, aListAgent) { position ->
+                changeDestination(Integer.parseInt(aListAgent!![position]["flag"]!!),
+                        listBankBenef!![position].product_type,
+                        listBankBenef!![position].product_code,
+                        listBankBenef!![position].product_name)
+                dialogBankList!!.dismiss()
+            }
         dialogBankList!!.show(fragManager, "")
     }
 
@@ -256,12 +262,17 @@ class BBSCashOut : BaseFragment() {
                     .equalTo(WebParams.PRODUCT_NAME, defaultProductCode).findAll()
         } else {
             listBankSource =
-                    if (defaultProductCode != "") {
+                    if (defaultProductCode != "")
                         realmBBS!!.where(BBSBankModel::class.java)
                                 .equalTo(WebParams.SCHEME_CODE, ATC)
                                 .equalTo(WebParams.COMM_TYPE, SOURCE)
                                 .equalTo(WebParams.PRODUCT_CODE, defaultProductCode).findAll()
-                    } else
+                    else if (!cashOutMandiriLP)
+                        realmBBS!!.where(BBSBankModel::class.java)
+                                .equalTo(WebParams.SCHEME_CODE, ATC)
+                                .equalTo(WebParams.COMM_TYPE, SOURCE)
+                                .notEqualTo(WebParams.PRODUCT_CODE, "MANDIRILKD").findAll()
+                    else
                         realmBBS!!.where(BBSBankModel::class.java)
                                 .equalTo(WebParams.SCHEME_CODE, ATC)
                                 .equalTo(WebParams.COMM_TYPE, SOURCE).findAll()
@@ -279,11 +290,8 @@ class BBSCashOut : BaseFragment() {
         aListMember!!.clear()
         aListMember!!.addAll(BbsUtil.mappingProductCodeIcons(bankMember))
         for (i in bankMember!!.indices) {
-            if (bankMember[i].product_name.toLowerCase(Locale.getDefault()).contains("saldomu")) {
+            if (bankMember[i].product_name.toLowerCase(Locale.getDefault()).contains("saldomu"))
                 changeSource(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name, bankMember[i].product_h2h)
-            } else {
-                changeSource(Integer.parseInt(aListMember!![i]["flag"]!!), bankMember[i].product_type, bankMember[i].product_code, bankMember[i].product_name, bankMember[i].product_h2h)
-            }
         }
     }
 
@@ -345,6 +353,22 @@ class BBSCashOut : BaseFragment() {
         source_product_h2h = productH2h
         tv_transfer_source.text = source_product_name
         iv_transfer_source.setImageResource(id)
+
+        if (source_product_type.equals(DefineValue.EMO, ignoreCase = true) && !source_product_code.equals("MANDIRILKD", ignoreCase = true)) {
+            no_source_value.hint = getString(R.string.number_hp_destination_hint)
+        } else {
+            if (source_product_code.equals("MANDIRILKD", ignoreCase = true)) {
+                no_source_value.setHint(R.string.nomor_rekening)
+            } else {
+                no_source_value.setHint(R.string.number_destination_hint)
+            }
+            no_source_value.setText("")
+        }
+
+        if (source_product_code.equals("tcash", ignoreCase = true))
+            no_OTP.visibility = View.VISIBLE
+        else
+            no_OTP.visibility = View.GONE
     }
 
     private fun changeDestination(id: Int, productType: String, productCode: String, productName: String) {

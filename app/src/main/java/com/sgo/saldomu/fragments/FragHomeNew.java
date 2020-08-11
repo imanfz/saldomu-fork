@@ -45,18 +45,20 @@ import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.CashCollectionActivity;
 import com.sgo.saldomu.activities.HistoryActivity;
-import com.sgo.saldomu.activities.ListBuyActivity;
+import com.sgo.saldomu.activities.GridBillerActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MandiriLPActivity;
 import com.sgo.saldomu.activities.ReportActivity;
 import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
-import com.sgo.saldomu.adapter.GridHome;
+import com.sgo.saldomu.adapter.GridMenu;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
+import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -143,8 +145,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private static final String BILLER_TYPE_CODE_TKN = "TKN";
     private static final String BILLER_TYPE_CODE_PLN = "PLN";
     private static final String BILLER_TYPE_CODE_BPJS = "BPJS";
-    private static final String BILLER_TYPE_CODE_EMONEY = "EMON";
-    private static final String BILLER_TYPE_CODE_GAME = "GAPP";
+    public static final String BILLER_TYPE_CODE_EMONEY = "EMON";
+    private static final String BILLER_TYPE_CODE_GAME = "GAME";
     private static final String BILLER_TYPE_CODE_VOUCHER = "VCHR";
     private static final String BILLER_TYPE_CODE_PDAM = "AIR";
     private static final String BILLER_TYPE_CODE_DATA = "DATA";
@@ -219,7 +221,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         if (isAgent) {
             setupIconAndTitle();
-            GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
+            GridMenu adapter = new GridMenu(getActivity(), menuStrings, menuDrawables);
             GridView.setAdapter(adapter);
         } else {
             if (sp.getString(DefineValue.CATEGORY, null) == null) {
@@ -276,7 +278,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 }
 
                                 setupIconAndTitle();
-                                GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
+                                GridMenu adapter = new GridMenu(getActivity(), menuStrings, menuDrawables);
                                 GridView.setAdapter(adapter);
                             }
 
@@ -294,7 +296,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         });
             } else {
                 setupIconAndTitle();
-                GridHome adapter = new GridHome(getActivity(), menuStrings, menuDrawables);
+                GridMenu adapter = new GridMenu(getActivity(), menuStrings, menuDrawables);
                 GridView.setAdapter(adapter);
             }
 
@@ -418,11 +420,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         Intent i = new Intent(getActivity(), SearchMemberToVerifyActivity.class);
                         switchActivity(i, MainPage.ACTIVITY_RESULT);
                     }
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_buy))) {
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_biller))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();
                     } else {
-                        Intent i = new Intent(getActivity(), ListBuyActivity.class);
+                        Intent i = new Intent(getActivity(), GridBillerActivity.class);
+                        i.putExtra(DefineValue.BILLER_TYPE, DefineValue.BIL_TYPE_PAY);
                         switchActivity(i, MainPage.ACTIVITY_RESULT);
                     }
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_report))) {
@@ -470,8 +473,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.newhome_emoney))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();
+                    } else if (sp.getInt(DefineValue.LEVEL_VALUE, 1) == 1){
+                        LevelClass levelClass = new LevelClass(getActivity());
+                        levelClass.showDialogLevel();
                     } else {
-                        Intent intent = new Intent(getActivity(), BillerActivity.class);
+                        Intent intent = new Intent(getActivity(), GridBillerActivity.class);
                         intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_EMONEY);
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_emoney));
                         startActivity(intent);
@@ -518,6 +524,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     startActivity(intent);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     Intent intent = new Intent(getActivity(), B2BActivity.class);
+                    startActivity(intent);
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_mandiri_lkd))) {
+                    Intent intent = new Intent(getActivity(), MandiriLPActivity.class);
                     startActivity(intent);
                 }
 
@@ -933,6 +942,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private void setupIconAndTitle() {
         if (getActivity() != null && isAdded()) {
             if (isAgent) {
+                if (sp.getBoolean(DefineValue.HAS_MANDIRI_LP, false) &&
+                        sp.getString(DefineValue.COMPANY_TYPE, "").equals(getString(R.string.LP))) {
+                    menuStrings.add(getResources().getString(R.string.menu_item_title_mandiri_lkd));
+                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_mandiri));
+                }
                 checkSchemeCodeAgent();
                 if (sp.getString(DefineValue.IS_AGENT_TRX_REQ, "").equalsIgnoreCase("Y")) {
                     menuStrings.add(getResources().getString(R.string.menu_item_title_trx_agent));
@@ -954,7 +968,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 menuStrings.add(getResources().getString(R.string.title_cash_out_member));
                 menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
 
-                menuStrings.add(getResources().getString(R.string.menu_item_title_buy));
+                menuStrings.add(getResources().getString(R.string.menu_item_title_biller));
                 menuDrawables.add(getResources().getDrawable(R.drawable.ic_biller));
 
                 if (mBillerTypeDataPLS != null) {
@@ -977,7 +991,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
                 }
 
-                if (mBillerTypeDataEMoney != null && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2) {
+                if (mBillerTypeDataEMoney != null) {
                     menuStrings.add(getResources().getString(R.string.newhome_emoney));
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
                 }
@@ -1025,13 +1039,17 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 switch (obj) {
                     case BILLER_TYPE_CODE_PLS:
                     case BILLER_TYPE_CODE_HP:
-                        menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
+                        if (!menuStrings.contains(getResources().getString(R.string.menu_item_title_pulsa_agent))) {
+                            menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
+                        }
                         break;
                     case BILLER_TYPE_CODE_TKN:
                     case BILLER_TYPE_CODE_PLN:
-                        menuStrings.add(getResources().getString(R.string.newhome_listrik_pln));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
+                        if (!menuStrings.contains(getResources().getString(R.string.newhome_listrik_pln))) {
+                            menuStrings.add(getResources().getString(R.string.newhome_listrik_pln));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
+                        }
                         break;
                     case BILLER_TYPE_CODE_DATA:
                         menuStrings.add(getResources().getString(R.string.newhome_data));
@@ -1098,7 +1116,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         break;
                     case "BIL":
                         checkBillerCodeAgent();
-                        menuStrings.add(getResources().getString(R.string.menu_item_title_buy));
+                        menuStrings.add(getResources().getString(R.string.menu_item_title_biller));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_biller));
                         break;
                     case "TOP":
