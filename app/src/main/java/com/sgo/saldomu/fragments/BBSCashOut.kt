@@ -37,6 +37,7 @@ import com.sgo.saldomu.models.retrofit.AppDataModel
 import com.sgo.saldomu.models.retrofit.BBSTransModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.utils.BbsUtil
+import com.sgo.saldomu.utils.NumberTextWatcherForThousand
 import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
 import kotlinx.android.synthetic.main.bbs_cash_in_cash_out.*
@@ -152,6 +153,7 @@ class BBSCashOut : BaseFragment() {
         val adapterNominal: ArrayAdapter<String> = ArrayAdapter(context!!, android.R.layout.simple_list_item_1, nominal)
         amount_transfer_edit_text.setAdapter(adapterNominal)
         amount_transfer_edit_text.threshold = 1
+        amount_transfer_edit_text.addTextChangedListener(NumberTextWatcherForThousand(amount_transfer_edit_text))
         amount_transfer_edit_text.setOnTouchListener { v, event ->
             amount_transfer_edit_text.showDropDown()
             false
@@ -499,20 +501,22 @@ class BBSCashOut : BaseFragment() {
                         sentDataReqToken(model)
                         isOwner = true
                     }
-                } else if ((code == "0295")) {
+                } else if (code == "0295") {
                     showDialogLimit(message)
-                } else if ((code == "0296")) {
+                } else if (code == "0296") {
                     lkd_product_code = model.lkd_product_code
                     dialogJoinLKD(message)
-                } else if ((code == WebParams.LOGOUT_CODE)) {
+                } else if (code == "0306") {
+                    showDialogLP(message)
+                } else if (code == WebParams.LOGOUT_CODE) {
                     val test = AlertDialogLogout.getInstance()
                     test.showDialoginActivity(activity, message)
-                } else if ((code == DefineValue.ERROR_9333)) {
+                } else if (code == DefineValue.ERROR_9333) {
                     Timber.d("isi response app data:" + model.app_data)
                     val appModel: AppDataModel = model.app_data
                     val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
                     alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                } else if ((code == DefineValue.ERROR_0066)) {
+                } else if (code == DefineValue.ERROR_0066) {
                     Timber.d("isi response maintenance:" + response.toString())
                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                     alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
@@ -530,6 +534,15 @@ class BBSCashOut : BaseFragment() {
 //                dismissProgressDialog()
             }
         })
+    }
+
+    fun showDialogLP(message: String) {
+        dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.error),
+                message
+        ) { v, isLongClick -> activity!!.finish() }
+        dialog!!.setCanceledOnTouchOutside(false)
+        dialog!!.setCancelable(false)
+        dialog!!.show()
     }
 
     fun showDialogLimit(message: String) {

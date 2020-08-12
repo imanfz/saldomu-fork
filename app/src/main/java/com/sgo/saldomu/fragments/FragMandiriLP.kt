@@ -24,20 +24,28 @@ class FragMandiriLP : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
-        card_view_cash_in.setOnClickListener {
-            val i = Intent(activity, BBSActivity::class.java)
-            i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION)
-            i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN)
-            i.putExtra(DefineValue.TX_MANDIRI_LP, true)
-            switchActivity(i)
-        }
-        card_view_cash_out.setOnClickListener {
-            val i = Intent(activity, BBSActivity::class.java)
-            i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION)
-            i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHOUT)
-            i.putExtra(DefineValue.TX_MANDIRI_LP, true)
-            switchActivity(i)
-        }
+        if (sp.getBoolean(DefineValue.HAS_MANDIRI_LP_CTA, false))
+            card_view_cash_in.setOnClickListener {
+                val i = Intent(activity, BBSActivity::class.java)
+                i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION)
+                i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN)
+                i.putExtra(DefineValue.TX_MANDIRI_LP, true)
+                switchActivity(i)
+            }
+        else
+            card_view_cash_in.visibility = View.GONE
+
+        if (sp.getBoolean(DefineValue.HAS_MANDIRI_LP_ATC, false))
+            card_view_cash_out.setOnClickListener {
+                val i = Intent(activity, BBSActivity::class.java)
+                i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION)
+                i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHOUT)
+                i.putExtra(DefineValue.TX_MANDIRI_LP, true)
+                switchActivity(i)
+            }
+        else
+            card_view_cash_out.visibility = View.GONE
+
     }
 
     private fun switchActivity(mIntent: Intent) {
