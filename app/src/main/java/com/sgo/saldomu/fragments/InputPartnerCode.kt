@@ -29,10 +29,12 @@ class InputPartnerCode : BaseFragment() {
         btn_next.setOnClickListener {
             if (et_partner_code.text!!.isNotEmpty()) {
                 val bundle: Bundle = Bundle()
-                bundle.putString(DefineValue.MEMBER_CODE, et_partner_code.text.toString())
-                val frag: Fragment = FragmentDenom()
-                frag.arguments = bundle
-                SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true)
+                if (bundle != null) {
+                    bundle.putString(DefineValue.MEMBER_CODE, et_partner_code.text.toString())
+                    val frag: Fragment = FragmentDenom()
+                    frag.arguments = bundle
+                    SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true)
+                }
             } else
                 et_partner_code.error = getString(R.string.partner_code_required)
         }

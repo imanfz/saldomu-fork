@@ -55,7 +55,8 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        memberCode = arguments!!.getString(WebParams.MEMBER_REMARK, "")
+        if (arguments != null)
+            memberCode = arguments!!.getString(WebParams.MEMBER_REMARK, "")
         itemList = ArrayList()
         itemListString = ArrayList()
         itemListAdapter = DenomItemListAdapter(activity, itemList, this, false)

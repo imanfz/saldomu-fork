@@ -94,30 +94,30 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Bundle bundle = getArguments();
-        tx_id = bundle.getString(DefineValue.TX_ID, "");
-        member_id_scadm = bundle.getString(DefineValue.MEMBER_ID_SCADM, "");
-        member_code = bundle.getString(DefineValue.MEMBER_CODE, "");
-        member_name = bundle.getString(DefineValue.MEMBER_NAME, "");
-        comm_id = bundle.getString(DefineValue.COMM_ID_SCADM, "");
-        comm_code = bundle.getString(DefineValue.COMMUNITY_CODE, "");
-        comm_name = bundle.getString(DefineValue.COMMUNITY_NAME, "");
-        bank_gateway = bundle.getString(DefineValue.BANK_GATEWAY, "");
-        bank_code = bundle.getString(DefineValue.BANK_CODE, "");
-        bank_name = bundle.getString(DefineValue.BANK_NAME, "");
-        product_code = bundle.getString(DefineValue.PRODUCT_CODE, "");
-        product_name = bundle.getString(DefineValue.PRODUCT_NAME, "");
-        ccy_id = bundle.getString(DefineValue.CCY_ID, "");
-        amount = bundle.getString(DefineValue.AMOUNT, "");
-        admin_fee = bundle.getString(DefineValue.FEE, "");
-        total_amount = bundle.getString(DefineValue.TOTAL_AMOUNT, "");
-        remark = bundle.getString(DefineValue.REMARK, "");
-        api_key = bundle.getString(DefineValue.API_KEY, "");
-        attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
-        storeName = bundle.getString(DefineValue.STORE_NAME, "");
-        storeAddress = bundle.getString(DefineValue.STORE_ADDRESS, "");
-        storeCode = bundle.getString(DefineValue.STORE_CODE, "");
-
-
+        if (bundle!=null) {
+            tx_id = bundle.getString(DefineValue.TX_ID, "");
+            member_id_scadm = bundle.getString(DefineValue.MEMBER_ID_SCADM, "");
+            member_code = bundle.getString(DefineValue.MEMBER_CODE, "");
+            member_name = bundle.getString(DefineValue.MEMBER_NAME, "");
+            comm_id = bundle.getString(DefineValue.COMM_ID_SCADM, "");
+            comm_code = bundle.getString(DefineValue.COMMUNITY_CODE, "");
+            comm_name = bundle.getString(DefineValue.COMMUNITY_NAME, "");
+            bank_gateway = bundle.getString(DefineValue.BANK_GATEWAY, "");
+            bank_code = bundle.getString(DefineValue.BANK_CODE, "");
+            bank_name = bundle.getString(DefineValue.BANK_NAME, "");
+            product_code = bundle.getString(DefineValue.PRODUCT_CODE, "");
+            product_name = bundle.getString(DefineValue.PRODUCT_NAME, "");
+            ccy_id = bundle.getString(DefineValue.CCY_ID, "");
+            amount = bundle.getString(DefineValue.AMOUNT, "");
+            admin_fee = bundle.getString(DefineValue.FEE, "");
+            total_amount = bundle.getString(DefineValue.TOTAL_AMOUNT, "");
+            remark = bundle.getString(DefineValue.REMARK, "");
+            api_key = bundle.getString(DefineValue.API_KEY, "");
+            attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
+            storeName = bundle.getString(DefineValue.STORE_NAME, "");
+            storeAddress = bundle.getString(DefineValue.STORE_ADDRESS, "");
+            storeCode = bundle.getString(DefineValue.STORE_CODE, "");
+        }
         tv_community_code = v.findViewById(R.id.community_code);
         tv_community_name = v.findViewById(R.id.community_name);
         tv_member_code = v.findViewById(R.id.member_code);
