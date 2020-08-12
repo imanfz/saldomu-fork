@@ -111,15 +111,16 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         itemList = DataManager.getInstance().getItemList();
         Bundle bundle = getArguments();
         assert bundle != null;
-        bankGateway = bundle.getString(WebParams.BANK_GATEWAY, "");
-        bankName = bundle.getString(WebParams.BANK_NAME, "");
-        attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
-        bankCode = bundle.getString(WebParams.BANK_CODE, "");
-        productCode = bundle.getString(WebParams.PRODUCT_CODE, "");
-        memberCode = bundle.getString(WebParams.MEMBER_REMARK, "");
-        storeName = bundle.getString(WebParams.STORE_NAME, "");
-        storeAddress = bundle.getString(WebParams.STORE_ADDRESS, "");
-
+        if (bundle != null) {
+            bankGateway = bundle.getString(WebParams.BANK_GATEWAY, "");
+            bankName = bundle.getString(WebParams.BANK_NAME, "");
+            attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
+            bankCode = bundle.getString(WebParams.BANK_CODE, "");
+            productCode = bundle.getString(WebParams.PRODUCT_CODE, "");
+            memberCode = bundle.getString(WebParams.MEMBER_REMARK, "");
+            storeName = bundle.getString(WebParams.STORE_NAME, "");
+            storeAddress = bundle.getString(WebParams.STORE_ADDRESS, "");
+        }
         orderList = new ArrayList<>();
 
         itemListAdapter = new DenomItemOrderListConfirmAdapter(getActivity(), orderList);
@@ -634,7 +635,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                                         txstatus, model.getTx_remark(), _amount, model.getTotal_amount(), model.getTx_fee(), getGson().toJson(model.getDenom_detail()), model.getBuss_scheme_code(),
                                         model.getBuss_scheme_name(), model.getProduct_name(), model.getOrder_id(), model.getComm_code(),
                                         model.getMember_code(), model.getStore_name(), model.getStore_address(), model.getStore_code(),
-                                        model.getMember_cust_name(),model.getMember_cust_id());
+                                        model.getMember_cust_name(), model.getMember_cust_id());
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();

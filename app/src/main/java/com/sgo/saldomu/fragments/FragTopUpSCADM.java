@@ -82,13 +82,15 @@ public class FragTopUpSCADM extends BaseFragment {
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Bundle bundle = getArguments();
-        comm_name = bundle.getString(DefineValue.COMMUNITY_NAME);
-        comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
-        comm_id_scadm = bundle.getString(DefineValue.COMM_ID_SCADM);
-        comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
-        api_key = bundle.getString(DefineValue.API_KEY);
-        member_code = bundle.getString(DefineValue.MEMBER_CODE);
-        member_id_scadm = bundle.getString(DefineValue.MEMBER_ID_SCADM);
+        if (bundle != null) {
+            comm_name = bundle.getString(DefineValue.COMMUNITY_NAME);
+            comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
+            comm_id_scadm = bundle.getString(DefineValue.COMM_ID_SCADM);
+            comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
+            api_key = bundle.getString(DefineValue.API_KEY);
+            member_code = bundle.getString(DefineValue.MEMBER_CODE);
+            member_id_scadm = bundle.getString(DefineValue.MEMBER_ID_SCADM);
+        }
 
         spinner_bank_product = v.findViewById(R.id.spinner_bank_produk);
         et_jumlah = v.findViewById(R.id.et_jumlah);

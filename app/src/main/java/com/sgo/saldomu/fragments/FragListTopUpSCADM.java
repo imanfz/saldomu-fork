@@ -45,7 +45,7 @@ import timber.log.Timber;
  * Created by Lenovo Thinkpad on 5/16/2018.
  */
 
-public class FragListTopUpSCADM extends BaseFragment implements ListTopUpSCADMAdapter.listener{
+public class FragListTopUpSCADM extends BaseFragment implements ListTopUpSCADMAdapter.listener {
     View v;
     SecurePreferences sp;
     private ProgressDialog progdialog;
@@ -68,9 +68,9 @@ public class FragListTopUpSCADM extends BaseFragment implements ListTopUpSCADMAd
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         recyclerView = v.findViewById(R.id.recyclerView);
 
-        memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
-        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
-        userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
+        memberIDLogin = sp.getString(DefineValue.MEMBER_ID, "");
+        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID, "");
+        userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         scadmCommunityModelArrayList.clear();
@@ -82,7 +82,7 @@ public class FragListTopUpSCADM extends BaseFragment implements ListTopUpSCADMAd
     }
 
     private void initializeAdapter() {
-        listTopUpSCADMAdapter = new ListTopUpSCADMAdapter(scadmCommunityModelArrayList,getActivity(), this);
+        listTopUpSCADMAdapter = new ListTopUpSCADMAdapter(scadmCommunityModelArrayList, getActivity(), this);
         recyclerView.setAdapter(listTopUpSCADMAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
     }
@@ -138,7 +138,7 @@ public class FragListTopUpSCADM extends BaseFragment implements ListTopUpSCADMAd
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
-                                }  else if (code.equals(DefineValue.ERROR_9333)) {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:" + model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
                                     AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -147,7 +147,7 @@ public class FragListTopUpSCADM extends BaseFragment implements ListTopUpSCADMAd
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
                                     Timber.d("Error isi response get list community topup scadm:" + response.toString());
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 
@@ -183,15 +183,15 @@ public class FragListTopUpSCADM extends BaseFragment implements ListTopUpSCADMAd
     @Override
     public void onClick(SCADMCommunityModel item) {
         Bundle bundle = new Bundle();
-        bundle.putString(DefineValue.COMMUNITY_NAME,item.getComm_name());
-        bundle.putString(DefineValue.COMM_ID_SCADM,item.getComm_id());
-        bundle.putString(DefineValue.COMMUNITY_CODE,item.getComm_code());
-        bundle.putString(DefineValue.MEMBER_CODE,item.getMember_code());
-        bundle.putString(DefineValue.API_KEY,item.getApi_key());
-        bundle.putString(DefineValue.MEMBER_ID_SCADM,item.getMember_id_scadm());
-        DataManager.getInstance().setSCADMCommMod(item);
-        Fragment frag = new FragTopUpSCADM();
-        frag.setArguments(bundle);
-        SwitchFragmentTop(frag, TopUpSCADMActivity.TOPUP, true);
+            bundle.putString(DefineValue.COMMUNITY_NAME, item.getComm_name());
+            bundle.putString(DefineValue.COMM_ID_SCADM, item.getComm_id());
+            bundle.putString(DefineValue.COMMUNITY_CODE, item.getComm_code());
+            bundle.putString(DefineValue.MEMBER_CODE, item.getMember_code());
+            bundle.putString(DefineValue.API_KEY, item.getApi_key());
+            bundle.putString(DefineValue.MEMBER_ID_SCADM, item.getMember_id_scadm());
+            DataManager.getInstance().setSCADMCommMod(item);
+            Fragment frag = new FragTopUpSCADM();
+            frag.setArguments(bundle);
+            SwitchFragmentTop(frag, TopUpSCADMActivity.TOPUP, true);
     }
 }
