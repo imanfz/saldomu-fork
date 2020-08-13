@@ -48,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/jumlah_transfer_hint"
                         android:inputType="number"
-                        android:maxLength="8"
+                        android:maxLength="15"
                         android:textSize="@dimen/abc_text_size_medium_material" />
                 </LinearLayout>
             </LinearLayout>

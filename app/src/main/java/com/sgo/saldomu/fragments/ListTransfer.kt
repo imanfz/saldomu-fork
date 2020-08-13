@@ -2,13 +2,13 @@ package com.sgo.saldomu.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.CardView
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CashoutActivity
 import com.sgo.saldomu.activities.MainPage
 import com.sgo.saldomu.activities.PayFriendsActivity
-import com.sgo.saldomu.activities.RegisterSMSBankingActivity
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.LevelClass
@@ -16,7 +16,6 @@ import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.dialogs.InformationDialog
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.list_transfer.*
-import java.util.ArrayList
 
 class ListTransfer : BaseFragment() {
     private var dialogI: InformationDialog? = null
@@ -55,7 +54,7 @@ class ListTransfer : BaseFragment() {
     private fun DialogCantCashout() {
         val dialognya = DefinedDialog.MessageDialog(activity, this.getString(R.string.alertbox_title_information),
                 this.getString(R.string.cashout_dialog_message)
-        ) { v, isLongClick ->  }
+        ) { v, isLongClick -> }
 
         dialognya.setCanceledOnTouchOutside(false)
         dialognya.setCancelable(false)

@@ -468,7 +468,7 @@ class BBSCashIn : BaseFragment() {
         member_code = bbsCommModel!!.member_code
         callbackURL = bbsCommModel!!.callback_url
         apiKey = bbsCommModel!!.api_key
-        amount = amount_transfer_edit_text.text.toString()
+        amount = NumberTextWatcherForThousand.trimCommaOfString(amount_transfer_edit_text.text.toString())
         noBenef = no_benef_value.text.toString()
         nameBenef = if (name_value.visibility == View.VISIBLE)
             name_value.text.toString()

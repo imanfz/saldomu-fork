@@ -51,6 +51,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.utils.NumberTextWatcherForThousand;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONArray;
@@ -129,7 +130,7 @@ public class FragAskForMoney extends BaseFragment {
         txtName = v.findViewById(R.id.txtName);
         phoneRetv = v.findViewById(R.id.phone_retv);
         etAmount = v.findViewById(R.id.askformoney_value_amount);
-        etAmount.addTextChangedListener(jumlahChangeListener);
+        etAmount.addTextChangedListener(new NumberTextWatcherForThousand(etAmount));
         etMessage = v.findViewById(R.id.askformoney_value_message);
         txtNumberRecipients = v.findViewById(R.id.askformoney_value_number_recipients);
         btnRequestMoney = v.findViewById(R.id.btn_request_money);
@@ -313,7 +314,7 @@ public class FragAskForMoney extends BaseFragment {
             if (InetHandler.isNetworkAvailable(getActivity())) {
                 if (inputValidation()) {
                     phoneRetv.requestFocus();
-                    String amount = etAmount.getText().toString();
+                    String amount = NumberTextWatcherForThousand.trimCommaOfString(etAmount.getText().toString());
                     String finalNumber;
                     Boolean recipientValidation = true;
                     String message = etMessage.getText().toString();

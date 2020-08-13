@@ -418,7 +418,7 @@ class BBSCashOut : BaseFragment() {
         member_code = bbsCommModel!!.member_code
         callbackURL = bbsCommModel!!.callback_url
         apiKey = bbsCommModel!!.api_key
-        amount = amount_transfer_edit_text.text.toString()
+        amount = NumberTextWatcherForThousand.trimCommaOfString(amount_transfer_edit_text.text.toString())
         noSource = no_source_value.text.toString()
 
         paymentRemark = message_value.text.toString()
