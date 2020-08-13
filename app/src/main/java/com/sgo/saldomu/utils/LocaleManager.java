@@ -75,11 +75,11 @@ public class LocaleManager {
 
         boolean isBahasa;
 
-        if(localeKey.equals(DefineValue.LANGUAGE_CODE_ENG)){
+//        if(localeKey.equals(DefineValue.LANGUAGE_CODE_ENG)){
+//            isBahasa = false;
+//        }else{
             isBahasa = true;
-        }else{
-            isBahasa = true;
-        }
+//        }
         Timber.d("SET LANGUAGE PREFERENCE : "+ localeKey);
 
         CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, isBahasa);
