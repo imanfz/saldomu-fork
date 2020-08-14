@@ -507,7 +507,7 @@ class BBSCashOut : BaseFragment() {
                     lkd_product_code = model.lkd_product_code
                     dialogJoinLKD(message)
                 } else if (code == "0306") {
-                    showDialogLP(message)
+                    showDialogLP()
                 } else if (code == WebParams.LOGOUT_CODE) {
                     val test = AlertDialogLogout.getInstance()
                     test.showDialoginActivity(activity, message)
@@ -536,9 +536,9 @@ class BBSCashOut : BaseFragment() {
         })
     }
 
-    fun showDialogLP(message: String) {
+    fun showDialogLP() {
         dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.error),
-                message
+                getString(R.string.agent_lp_dialog_message)
         ) { v, isLongClick -> activity!!.finish() }
         dialog!!.setCanceledOnTouchOutside(false)
         dialog!!.setCancelable(false)
