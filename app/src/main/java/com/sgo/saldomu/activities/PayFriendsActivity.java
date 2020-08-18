@@ -8,12 +8,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.fragments.FragPayFriends;
 import com.sgo.saldomu.fragments.FragPayFriendsConfirm;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -36,10 +34,10 @@ public class PayFriendsActivity extends BaseActivity {
                 return;
             }
 
-            Intent intent    = getIntent();
+            Intent intent = getIntent();
             Bundle bundle = intent.getBundleExtra("data");
             Fragment newFragment;
-            if (intent.getBooleanExtra(DefineValue.CONFIRM_PAYFRIEND,false)) {
+            if (intent.getBooleanExtra(DefineValue.CONFIRM_PAYFRIEND, false)) {
                 Bundle args = new Bundle();
                 args.putString(WebParams.CUSTOMER_ID, intent.getStringExtra(WebParams.CUSTOMER_ID));
                 args.putString(WebParams.DATA_TRANSFER, intent.getStringExtra(WebParams.DATA_TRANSFER));
@@ -50,10 +48,9 @@ public class PayFriendsActivity extends BaseActivity {
 
                 newFragment = new FragPayFriendsConfirm();
                 newFragment.setArguments(args);
-            }else
-            {
+            } else {
                 Bundle args = new Bundle();
-                if (bundle!=null) {
+                if (bundle != null) {
                     args.putBoolean(DefineValue.CONFIRM_PAYFRIEND, true);
                     args.putString(DefineValue.AMOUNT, bundle.getString(DefineValue.AMOUNT));
                     args.putString(DefineValue.CUST_NAME, bundle.getString(DefineValue.CUST_NAME));
@@ -63,7 +60,7 @@ public class PayFriendsActivity extends BaseActivity {
                     args.putString(DefineValue.REQUEST_ID, bundle.getString(DefineValue.REQUEST_ID));
                 }
 
-                if (getIntent()!= null) {
+                if (getIntent() != null) {
                     args.putString(DefineValue.FAVORITE_CUSTOMER_ID, getIntent().getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
                 }
 
@@ -73,35 +70,33 @@ public class PayFriendsActivity extends BaseActivity {
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.payfriends_confirm_token_content, newFragment,"payfriendconfirmtoken");
+            fragmentTransaction.add(R.id.payfriends_confirm_token_content, newFragment, "payfriendconfirmtoken");
             fragmentTransaction.commit();
             setResult(MainPage.RESULT_NORMAL);
         }
     }
 
-    public void togglerBroadcastReceiver(Boolean _on, BroadcastReceiver _myreceiver){
+    public void togglerBroadcastReceiver(Boolean _on, BroadcastReceiver _myreceiver) {
         Timber.wtf("masuk turnOnBR");
-        if(_on){
+        if (_on) {
             IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-            registerReceiver(_myreceiver,filter);
+            registerReceiver(_myreceiver, filter);
             filter.setPriority(999);
             filter.addCategory("android.intent.category.DEFAULT");
-        }
-        else unregisterReceiver(_myreceiver);
+        } else unregisterReceiver(_myreceiver);
 
     }
 
-    public void switchContent(Fragment mFragment,String fragName,Boolean isBackstack) {
+    public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
 
-        if(isBackstack){
+        if (isBackstack) {
             Timber.d("backstack");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.payfriends_confirm_token_content, mFragment, fragName)
                     .addToBackStack(null)
                     .commit();
-        }
-        else {
+        } else {
             Timber.d("bukan backstack");
             getSupportFragmentManager()
                     .beginTransaction()
@@ -113,10 +108,10 @@ public class PayFriendsActivity extends BaseActivity {
     }
 
     public void switchActivity(Intent mIntent, int j) {
-        switch (j){
+        switch (j) {
             case MainPage.ACTIVITY_RESULT:
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
+                startActivityForResult(mIntent, MainPage.REQUEST_FINISH);
                 break;
             case 2:
                 break;
@@ -128,7 +123,7 @@ public class PayFriendsActivity extends BaseActivity {
         return R.layout.activity_pay_friends_confirm_token;
     }
 
-    private void InitializeToolbar(){
+    private void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.payfriends_ab_title_activity));
     }
@@ -136,8 +131,7 @@ public class PayFriendsActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;

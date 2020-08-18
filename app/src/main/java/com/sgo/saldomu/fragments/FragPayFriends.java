@@ -1,7 +1,6 @@
 package com.sgo.saldomu.fragments;
 
 
-import android.accounts.Account;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -20,21 +19,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.ex.chips.BaseRecipientAdapter;
 import com.android.ex.chips.RecipientEditTextView;
-import com.android.ex.chips.RecipientEntry;
 import com.android.ex.chips.recipientchip.DrawableRecipientChip;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,7 +37,6 @@ import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsActivity;
-import com.sgo.saldomu.activities.PayFriendsConfirmTokenActivity;
 import com.sgo.saldomu.activities.ScanQRActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -61,10 +55,11 @@ import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.QrModel;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.PayfriendDataTrfModel;
 import com.sgo.saldomu.models.retrofit.SentDataPayfriendModel;
-import com.sgo.saldomu.models.QrModel;
+import com.sgo.saldomu.utils.NumberTextWatcherForThousand;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONArray;
@@ -159,7 +154,7 @@ public class FragPayFriends extends BaseFragment {
         txtName = v.findViewById(R.id.txtName);
         phoneRetv = v.findViewById(R.id.phone_retv);
         etAmount = v.findViewById(R.id.payfriends_value_amount);
-        etAmount.addTextChangedListener(jumlahChangeListener);
+        etAmount.addTextChangedListener(new NumberTextWatcherForThousand(etAmount));
         etMessage = v.findViewById(R.id.payfriends_value_message);
         txtNumberRecipients = v.findViewById(R.id.payfriends_value_number_recipients);
         btnGetOTP = v.findViewById(R.id.btn_get_otp);
@@ -299,54 +294,6 @@ public class FragPayFriends extends BaseFragment {
         Timber.d("isi length recipients:" + String.valueOf(phoneRetv.getRecipients().length));
     }
 
-
-    private TextWatcher jumlahChangeListener = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().equals("0")) etAmount.setText("");
-            if (s.length() > 0 && s.charAt(0) == '0') {
-                int i = 0;
-                for (; i < s.length(); i++) {
-                    if (s.charAt(i) != '0') break;
-                }
-                etAmount.setText(s.toString().substring(i));
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
-
-    private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-            privacy = i + 1;
-            if (phoneRetv.hasFocus()) {
-                phoneRetv.clearFocus();
-
-            }
-            setNumberRecipients();
-
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-            if (phoneRetv.hasFocus()) {
-                phoneRetv.clearFocus();
-            }
-            setNumberRecipients();
-        }
-    };
-
     private class TempObjectData {
 
         private String member_code_to;
@@ -414,7 +361,7 @@ public class FragPayFriends extends BaseFragment {
                     Timber.d("isi length recipients button:" + String.valueOf(phoneRetv.getRecipients().length));
                     Timber.d("isi length sort recipients button:" + String.valueOf(phoneRetv.getSortedRecipients().length));
                     phoneRetv.requestFocus();
-                    String amount = etAmount.getText().toString();
+                    String amount = NumberTextWatcherForThousand.trimCommaOfString(etAmount.getText().toString());
                     String message = etMessage.getText().toString();
                     Boolean recipientValidation = true;
                     ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<>();
@@ -712,10 +659,6 @@ public class FragPayFriends extends BaseFragment {
         if (etAmount.getText().toString().length() == 0) {
             etAmount.requestFocus();
             etAmount.setError(getString(R.string.payfriends_amount_validation));
-            return false;
-        } else if (Long.parseLong(etAmount.getText().toString()) < 1) {
-            etAmount.requestFocus();
-            etAmount.setError(getString(R.string.payfriends_amount_zero));
             return false;
         }
 

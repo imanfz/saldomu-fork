@@ -1648,4 +1648,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="agent_no">Agent Number</string>
     <string name="store_code">Store Code</string>
     <string name="reverfication">Re-verification</string>
+
+    <string name="agent_lp_dialog_message">This service is not yet available, you are not yet a Mandiri Laku Pandai Agent</string>
 </resources>

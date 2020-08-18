@@ -53,6 +53,7 @@ import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.utils.NumberTextWatcherForThousand;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.apache.http.Header;
@@ -108,15 +109,15 @@ public class AskForMoneyActivity extends BaseActivity {
         max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS, 5);
         memberLevel = sp.getInt(DefineValue.LEVEL_VALUE,0);
 
-        imgProfile = (ImageView) findViewById(R.id.img_profile);
-        imgRecipients = (ImageView) findViewById(R.id.img_recipients);
-        txtName = (TextView) findViewById(R.id.txtName);
-        phoneRetv = (RecipientEditTextView) findViewById(R.id.phone_retv);
-        etAmount = (EditText) findViewById(R.id.askformoney_value_amount);
-        etAmount.addTextChangedListener(jumlahChangeListener);
-        etMessage = (EditText) findViewById(R.id.askformoney_value_message);
-        txtNumberRecipients = (TextView) findViewById(R.id.askformoney_value_number_recipients);
-        btnRequestMoney = (Button) findViewById(R.id.btn_request_money);
+        imgProfile = findViewById(R.id.img_profile);
+        imgRecipients = findViewById(R.id.img_recipients);
+        txtName = findViewById(R.id.txtName);
+        phoneRetv = findViewById(R.id.phone_retv);
+        etAmount = findViewById(R.id.askformoney_value_amount);
+        etAmount.addTextChangedListener(new NumberTextWatcherForThousand(etAmount));
+        etMessage = findViewById(R.id.askformoney_value_message);
+        txtNumberRecipients = findViewById(R.id.askformoney_value_number_recipients);
+        btnRequestMoney = findViewById(R.id.btn_request_money);
 //        sp_privacy = (Spinner) findViewById(R.id.askformoney_privacy_spinner);
 //
 //        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(this,
@@ -208,30 +209,6 @@ public class AskForMoneyActivity extends BaseActivity {
 //        dialogI.setTargetFragment(this,0);
     }
 
-    private TextWatcher jumlahChangeListener = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(s.toString().equals("0"))etAmount.setText("");
-            if(s.length() > 0 && s.charAt(0) == '0'){
-                int i = 0;
-                for (; i < s.length(); i++){
-                    if(s.charAt(i) != '0')break;
-                }
-                etAmount.setText(s.toString().substring(i));
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
-
     public void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_ask_for_money));
@@ -249,7 +226,7 @@ public class AskForMoneyActivity extends BaseActivity {
         else
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
 
-        Timber.d("isi length recipients:"+String.valueOf(phoneRetv.getRecipients().length));
+        Timber.d("isi length recipients:"+ phoneRetv.getRecipients().length);
     }
 
     private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
@@ -301,7 +278,7 @@ public class AskForMoneyActivity extends BaseActivity {
             if (InetHandler.isNetworkAvailable(AskForMoneyActivity.this)) {
                 if (inputValidation()) {
                     phoneRetv.requestFocus();
-                    String amount = etAmount.getText().toString();
+                    String amount = NumberTextWatcherForThousand.trimCommaOfString(etAmount.getText().toString());
                     String finalNumber;
                     Boolean recipientValidation = true;
                     String message = etMessage.getText().toString();
@@ -477,10 +454,10 @@ public class AskForMoneyActivity extends BaseActivity {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
-        TextView Message_Detail = (TextView)dialog.findViewById(R.id.message_dialog3);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
+        TextView Message_Detail = dialog.findViewById(R.id.message_dialog3);
 
         //clear data in edit text
         phoneRetv.setText("");
