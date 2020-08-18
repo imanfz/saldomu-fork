@@ -96,60 +96,7 @@ public class LevelClass {
         }
     }
 
-    private void getHelpList() {
-        try {
-            String ownerId = getSp().getString(DefineValue.USERID_PHONE, "");
-
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HELP_LIST);
-            params.put(WebParams.USER_ID, ownerId);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            Timber.d("isi params help list:" + params.toString());
-
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_HELP_LIST, params,
-                    new ObjListeners() {
-                        @Override
-                        public void onResponses(JSONObject response) {
-                            try {
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi response help list:" + response.toString());
-
-                                    SecurePreferences.Editor mEditor = getSp().edit();
-                                    mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
-                                    mEditor.apply();
-                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
-                                } else {
-                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                                }
-
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-        } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
-        }
-    }
-
     public void refreshData() {
-        getHelpList();
         String contactCenter = getSp().getString(DefineValue.LIST_CONTACT_CENTER, "");
         if (sp.contains(DefineValue.LEVEL_VALUE)) {
             String i = sp.getString(DefineValue.LEVEL_VALUE, "0");
