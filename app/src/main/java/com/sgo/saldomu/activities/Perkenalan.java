@@ -148,7 +148,8 @@ public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCa
             skipbtn.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Intent i = new Intent(Perkenalan.this, LoginActivity.class);
+//                    Intent i = new Intent(Perkenalan.this, LoginActivity.class);
+                    Intent i = new Intent(Perkenalan.this, OTPVerificationActivity.class);
                     i.putExtra(DefineValue.USER_IS_NEW, -1);
                     startActivity(i);
                     Perkenalan.this.finish();
@@ -240,8 +241,9 @@ public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCa
                 }
             } else if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
                 sendFCM();
-            } else
-                showSmsDialog();
+            }
+//            else
+//                showSmsDialog();
         }
     };
 
@@ -340,7 +342,9 @@ public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCa
                 @Override
                 public void onResponses(JsonObject object) {
                     Timber.d("isi response fcm:" + object);
-                    showSmsDialog();
+//                    showSmsDialog();
+                    Intent i = new Intent(Perkenalan.this, OTPVerificationActivity.class);
+                    startActivity(i);
                 }
 
                 @Override

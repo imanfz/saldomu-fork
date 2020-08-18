@@ -103,6 +103,7 @@ public class LevelClass {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HELP_LIST);
             params.put(WebParams.USER_ID, ownerId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_YES);
             Timber.d("isi params help list:" + params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_HELP_LIST, params,

@@ -31,6 +31,7 @@ import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
+import com.sgo.saldomu.models.retrofit.OTPModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -110,7 +111,7 @@ public class OTPVerification extends BaseFragment {
                     , new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(object, jsonModel.class);
+                            OTPModel model = getGson().fromJson(object, OTPModel.class);
 
                             if (!model.getOn_error()) {
 
@@ -123,6 +124,7 @@ public class OTPVerification extends BaseFragment {
                                     Bundle mBun = new Bundle();
                                     mBun.putString(DefineValue.USER_ID, user_id);
                                     mBun.putString(DefineValue.DEVICE_NAME, getDeviceName());
+                                    mBun.putString(DefineValue.REFFERENCE_ID, model.getRef_id());
                                     mFragment.setArguments(mBun);
                                     switchFragment(mFragment, "OtpConfirmation", true);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {

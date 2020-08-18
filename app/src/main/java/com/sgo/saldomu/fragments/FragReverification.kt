@@ -2,12 +2,16 @@ package com.sgo.saldomu.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.LoginActivity
+import com.sgo.saldomu.activities.OTPVerificationActivity
 import com.sgo.saldomu.activities.Perkenalan
 import com.sgo.saldomu.coreclass.CustomSecurePref
+import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.layout_reverification_fragment.*
 
@@ -23,6 +27,7 @@ class FragReverification : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
         btn_reverification.setOnClickListener { clearAppData() }
+        btn_help.setOnClickListener { openHelp() }
     }
 
     private fun clearAppData() {
@@ -42,5 +47,20 @@ class FragReverification : BaseFragment() {
         sp.edit().clear().commit()
         startActivity(Intent(activity, Perkenalan::class.java))
         activity!!.finish()
+    }
+
+    private fun openHelp()
+    {
+        val bundle = Bundle()
+        bundle.putBoolean(DefineValue.NOT_YET_LOGIN,true)
+        val mFrag: Fragment = FragHelp()
+        mFrag.arguments = bundle
+        switchFragment(mFrag, "Contact", true)
+    }
+
+    private fun switchFragment(i: Fragment, name: String, isBackstack: Boolean) {
+        if (activity == null) return
+        val fca = activity as LoginActivity?
+        fca!!.switchContent(i, name, isBackstack)
     }
 }

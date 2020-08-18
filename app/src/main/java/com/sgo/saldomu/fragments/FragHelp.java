@@ -47,6 +47,7 @@ public class FragHelp extends BaseFragment {
     private ArrayList<HelpModel> listHelp;
     private HelpAdapter mAdapter;
     private ProgressDialog progdialog;
+    private Boolean isnotYetLogin = false;
 
     public static FragHelp newInstance() {
         return new FragHelp();
@@ -62,6 +63,12 @@ public class FragHelp extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        Bundle bundle = getArguments();
+        if (bundle != null)
+            isnotYetLogin = bundle.getBoolean(DefineValue.NOT_YET_LOGIN, false);
+        else
+            isnotYetLogin = false;
         act = getActivity();
         act1 = getActivity();
 
@@ -79,9 +86,19 @@ public class FragHelp extends BaseFragment {
             progdialog = DefinedDialog.CreateProgressDialog(act, "");
             progdialog.show();
 
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HELP_LIST);
-            params.put(WebParams.USER_ID, userPhoneID);
+            HashMap<String, Object> params;
+            if (isnotYetLogin == true) {
+                params = RetrofitService.getInstance().getSignatureSecretKeyPIN(MyApiClient.LINK_HELP_LIST, "", "628");
+                params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_NO);
+                params.put(WebParams.USER_ID, "628");
+            } else {
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HELP_LIST);
+                params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_YES);
+                params.put(WebParams.USER_ID, userPhoneID);
+            }
+
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+
             Timber.d("isi params help list:" + params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_HELP_LIST, params,
@@ -94,12 +111,11 @@ public class FragHelp extends BaseFragment {
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi params help list:"+response.toString());
+                                    Timber.d("isi params help list:" + response.toString());
                                     String count = response.getString(WebParams.COUNT);
-                                    if(count.equals("0")) {
+                                    if (count.equals("0")) {
                                         Timber.d("isi help list kosong");
-                                    }
-                                    else {
+                                    } else {
                                         JSONArray mArrayContact = new JSONArray(response.getString(WebParams.CONTACT_DATA));
 
                                         for (int i = 0; i < mArrayContact.length(); i++) {
@@ -115,12 +131,11 @@ public class FragHelp extends BaseFragment {
                                         mAdapter.notifyDataSetChanged();
                                     }
 
-                                }
-                                else if(code.equals(WebParams.LOGOUT_CODE)){
-                                    Timber.d("isi response autologout:"+response.toString());
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(act,message);
-                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                    test.showDialoginActivity(act, message);
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:" + model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
                                     AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -129,8 +144,7 @@ public class FragHelp extends BaseFragment {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }
-                                else {
+                                } else {
                                     Toast.makeText(act, message, Toast.LENGTH_LONG).show();
                                 }
 
@@ -148,13 +162,12 @@ public class FragHelp extends BaseFragment {
 
                         @Override
                         public void onComplete() {
-                            if(progdialog.isShowing())
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
                     });
-        }
-        catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 

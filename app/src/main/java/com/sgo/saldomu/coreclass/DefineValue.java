@@ -669,5 +669,6 @@ public class DefineValue {
     public static String STORE_NAME = "storeName";
     public static String STORE_ADDRESS = "storeAddress";
     public static String STORE_CODE = "storeCode";
+    public static String REFFERENCE_ID = "refferenceId";
 }
 

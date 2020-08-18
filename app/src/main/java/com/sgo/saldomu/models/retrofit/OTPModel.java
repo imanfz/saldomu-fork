@@ -19,6 +19,11 @@ public class OTPModel extends jsonModel{
     private
     String additional_fee;
 
+    @SerializedName("ref_id")
+    @Expose
+    private
+    String ref_id;
+
     public String getOtp_member() {
         return otp_member;
     }
@@ -29,5 +34,9 @@ public class OTPModel extends jsonModel{
 
     public String getAdditional_fee() {
         return additional_fee;
+    }
+
+    public String getRef_id() {
+        return ref_id;
     }
 }

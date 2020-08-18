@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:gravity="center"
-            android:text="Masukkan kode OTP yang dikirimkan ke nomor"
+            android:text="@string/otp_login_verification1"
             android:textSize="16sp" />
 
         <TextView
@@ -27,6 +27,15 @@
             android:text="08xxxxxxx"
             android:textSize="20sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/otp_reff_id"
+            android:id="@+id/tv_otp_reffid"
+            android:textSize="16sp" />
 
         <com.chaos.view.PinView
             android:id="@+id/pin_view"
@@ -97,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:text="1. Harap selalu mejaga kerahasiaan PASSWORD, PIN dan kode OTP anda, dan tidak memberikan data tersebut kepada siapapun termasuk yang mengatasnamakan PT MPE maupun SALDOMU."
+            android:text="@string/about_apps_desc_pemberitahuan_otp1"
             android:textSize="12sp" />
 
         <TextView
@@ -105,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:text="2. SALDOMU hanya didistribusikan melalui Google Play oleh PT Mitra Pembayaran Elektronik."
+            android:text="@string/about_apps_desc_pemberitahuan_otp2"
             android:textSize="12sp" />
 
         <TextView
@@ -113,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:text="3. Harap TIDAK melakukan login di media lain selain aplikasi resmi untuk menghindari segala jenis penipuan yang mengatasnamakan SALDOMU."
+            android:text="@string/about_apps_desc_pemberitahuan_otp3"
             android:textSize="12sp" />
 
         <TextView
@@ -121,7 +130,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:text="4. Apabila terdapat indikasi penipuan harap melapor kepada kami melalui support@saldomu.com"
+            android:text="@string/about_apps_desc_pemberitahuan_otp4"
             android:textSize="12sp" />
     </LinearLayout>
 
