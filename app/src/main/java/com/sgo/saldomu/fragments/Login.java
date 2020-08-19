@@ -592,6 +592,8 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.putString(DefineValue.AGENT_BILLER_CODES, billerCodes);
                         mEditor.putString(DefineValue.AGENT_TRX_CODES, trxCodes);
                         mEditor.putString(DefineValue.IS_AGENT_TRX_REQ, commModel.getIs_agent_trx_request());
+                        mEditor.putString(DefineValue.IS_AGENT_TRX_ATC_MANDIRI_LP, commModel.getIs_agent_atc_mandirilkd());
+                        mEditor.putString(DefineValue.IS_AGENT_TRX_CTA_MANDIRI_LP, commModel.getIs_agent_cta_mandirilkd());
                         mEditor.putString(DefineValue.COMM_UPGRADE_MEMBER, commModel.getComm_upgrade_member());
                         mEditor.putString(DefineValue.MEMBER_CREATED, commModel.getMember_created());
                         Timber.w("isi comm id yg bener:" + commModel.getCommId());
