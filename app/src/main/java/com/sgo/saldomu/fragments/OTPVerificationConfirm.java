@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.chaos.view.PinView;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -34,6 +35,7 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.OTPModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -47,7 +49,7 @@ import timber.log.Timber;
  */
 public class OTPVerificationConfirm extends BaseFragment {
 
-    TextView tvHpValue;
+    TextView tvHpValue, tvReffIdValue;
     PinView pinView;
     TextView tvCountDown;
     Button btSend, btResend;
@@ -56,8 +58,7 @@ public class OTPVerificationConfirm extends BaseFragment {
     private String is_new;
     private String user_id;
     private String device_name;
-    private String minutes;
-    private String seconds;
+    private String refference_id;
     private SecurePreferences sp;
     private CountDownTimer countDownTimer;
 
@@ -70,6 +71,7 @@ public class OTPVerificationConfirm extends BaseFragment {
         View view = inflater.inflate(R.layout.frag_otp_verification_2, container, false);
         pinView = view.findViewById(R.id.pin_view);
         tvHpValue = view.findViewById(R.id.tv_hp_value);
+        tvReffIdValue = view.findViewById(R.id.tv_otp_reffid);
         tvCountDown = view.findViewById(R.id.tv_countdown);
         btSend = view.findViewById(R.id.btnSend);
         btResend = view.findViewById(R.id.btnResend);
@@ -147,14 +149,16 @@ public class OTPVerificationConfirm extends BaseFragment {
         if (args != null) {
             user_id = args.getString(DefineValue.USER_ID, "");
             device_name = args.getString(DefineValue.DEVICE_NAME, "");
+            refference_id = args.getString(DefineValue.REFFERENCE_ID, "");
         }
 
         tvHpValue.setText(NoHPFormat.formatTo08(user_id));
+        tvReffIdValue.setText(getString(R.string.otp_reff_id) +" : "+ refference_id);
     }
 
     public boolean inputValidation() {
         if (pinView.getText().toString().length() != 6) {
-            Toast.makeText(getActivity(), "Kode OTP harus 6 karakter!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.otp_validation_login), Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
@@ -165,18 +169,28 @@ public class OTPVerificationConfirm extends BaseFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            String encrypted_pin;
+            String key;
             String link = MyApiClient.LINK_CONFIRM_OTP;
             String subStringLink = link.substring(link.indexOf("saldomu/"));
             String uuid;
             String dateTime;
             String pin = pinView.getText().toString();
+
             extraSignature = user_id;
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignatureSecretKey(link, extraSignature);
             uuid = params.get(WebParams.RC_UUID).toString();
             dateTime = params.get(WebParams.RC_DTIME).toString();
+            key = uuid + dateTime + BuildConfig.APP_ID + subStringLink + MyApiClient.COMM_ID + user_id;
+            Timber.d("key : "+key);
+            encrypted_pin = RSA.opensslEncryptLogin(key, pin);
+            Timber.d("encrypted pin : "+encrypted_pin);
+
             params.put(WebParams.USER_ID, user_id);
-            params.put(WebParams.OTP, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, pin, subStringLink));
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.OTP, encrypted_pin);
+
 
             Timber.d("isi params confirm OTP:" + params.toString());
 
@@ -272,7 +286,7 @@ public class OTPVerificationConfirm extends BaseFragment {
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     pinView.setText("");
                                     initiateCountDownTimerForResendOTP();
-                                    Toast.makeText(getActivity(), "OTP baru berhasil dikirim kembali!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), getString(R.string.resend_verification_code), Toast.LENGTH_LONG).show();
                                     btResend.setEnabled(false);
                                     btResend.setBackground(getActivity().getResources().getDrawable(R.color.transparant));
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
