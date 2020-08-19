@@ -76,12 +76,21 @@ class FragGridEmoney : BaseFragment() {
                 menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_linkaja))
             }
 
-            if (mListBillerData!![i].comm_name.contains("Emoney Mandiri")) {
+            if (mListBillerData!![i].comm_name.contains("Emoney Mandiri")||
+                    mListBillerData!![i].comm_name.contains("Mandiri E-Money")) {
                 menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_mandiri))
             }
 
             if (mListBillerData!![i].comm_name.contains("OVO")) {
                 menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_ovo))
+            }
+
+            if (mListBillerData!![i].comm_name.contains("DANA")) {
+                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_dana))
+            }
+
+            if (mListBillerData!![i].comm_name.contains("Gopay")) {
+                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_gopay))
             }
         }
     }
