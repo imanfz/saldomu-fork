@@ -6,9 +6,9 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.LoginActivity
-import com.sgo.saldomu.activities.OTPVerificationActivity
 import com.sgo.saldomu.activities.Perkenalan
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -26,6 +26,7 @@ class FragReverification : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
+        tv_version.text = getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")"
         btn_reverification.setOnClickListener { clearAppData() }
         btn_help.setOnClickListener { openHelp() }
     }

@@ -14,9 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.OTPVerificationActivity;
@@ -56,6 +58,7 @@ public class OTPVerification extends BaseFragment {
 
     Button btn_send;
     EditText et_phone_value;
+    private TextView tv_version;
 
     public OTPVerification() {
         // Required empty public constructor
@@ -75,8 +78,11 @@ public class OTPVerification extends BaseFragment {
 
         getDeviceName();
 
+        tv_version = v.findViewById(R.id.tv_version);
         et_phone_value = v.findViewById(R.id.userID_value);
         btn_send = v.findViewById(R.id.btn_send);
+
+        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" +BuildConfig.VERSION_CODE +")");
 
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
