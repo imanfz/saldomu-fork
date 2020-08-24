@@ -203,7 +203,7 @@ public class OTPVerificationConfirm extends BaseFragment {
             params.put(WebParams.USER_ID, user_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.OTP, encrypted_pin);
-            params.put(WebParams.IMEI_ID, imeiDevice);
+            params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
 
 
             Timber.d("isi params confirm OTP:" + params.toString());

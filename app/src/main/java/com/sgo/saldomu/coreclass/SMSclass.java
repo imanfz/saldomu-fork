@@ -1,6 +1,7 @@
 package com.sgo.saldomu.coreclass;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AppOpsManager;
@@ -306,26 +307,62 @@ public class SMSclass {
         return false;
     }
 
+    @SuppressLint("MissingPermission")
     public String getDeviceIMEI() {
         String imei = "";
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+        {
             imei = Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            SubscriptionManager sm = SubscriptionManager.from(mContext);
-            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
-                if (sis != null)
-                    imei = telephonyManager.getDeviceId(sis.get(0).getSimSlotIndex());
-            }
         } else {
-            if (isPermissionGranted()) {
-                if (telephonyManager.getDeviceId() == null)
-                    imei = "00000";
-                else
-                    imei = telephonyManager.getDeviceId();
+            final TelephonyManager mTelephony = (TelephonyManager) CoreApp.getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (CoreApp.getAppContext().checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    return "";
+                }
+            }
+            assert mTelephony != null;
+            if (mTelephony.getDeviceId() != null)
+            {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                {
+                    imei = mTelephony.getImei();
+                }else {
+                    imei = mTelephony.getDeviceId();
+                }
+            } else {
+                imei = Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
             }
         }
+//        Log.d("deviceId", deviceId);
+//        return deviceId;
+
+//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+//            imei = Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//            if (isPermissionGranted()) {
+//                    if (telephonyManager.getImei() == null)
+//                        imei = "00000";
+//                    else
+//                        imei = telephonyManager.getImei();
+//            }
+//        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+//            SubscriptionManager sm = SubscriptionManager.from(mContext);
+//            if (ContextCompat.checkSelfPermission(getmContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+//                List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
+//                if (sis != null)
+//                    imei = telephonyManager.getDeviceId(sis.get(0).getSimSlotIndex());
+//            }
+//        } else {
+//            if (isPermissionGranted()) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                    if (telephonyManager.getImei() == null)
+//                        imei = "00000";
+//                    else
+//                        imei = telephonyManager.getImei();
+//                }else
+//                    imei = telephonyManager.getDeviceId();
+//            }
+//        }
 
         return imei;
     }
