@@ -122,8 +122,8 @@
     <string name="login_title">MASUK</string>
     <string name="login_text_id" translatable="false">ID</string>
     <string name="login_edithint_id">No HP Anda yang sudah terdaftar</string>
-    <string name="edittext_hint_id">Masukkan No. HP</string>
-    <string name="userid_hint_otp">Masukkan No. HP Anda</string>
+    <string name="edittext_hint_id">Masukkan Nomor Ponsel</string>
+    <string name="userid_hint_otp">Masukan Nomor Ponsel Anda</string>
     <string name="login_text_pass">Kata Sandi</string>
     <string name="login_edithint_pass">Kata Sandi</string>
     <string name="login_button_login">Masuk</string>
@@ -1004,7 +1004,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="kode_tarik_tunai">Kode Tarik Tunai</string>
     <string name="no_tcash">No. Handphone TCASH Agen</string>
     <string name="no_member">No. Handphone Pelanggan</string>
-    <string name="no_member_hint">Masukkan nomor Handphone member</string>
+    <string name="no_member_hint">Masukkan nomor ponsel member</string>
     <string name="no_member_validation">Nomor Member Dibutuhkan !</string>
     <string name="no_rekening">No. Rekening</string>
     <string name="nomor_rekening">Nomor Rekening</string>

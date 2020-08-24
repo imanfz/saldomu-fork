@@ -57,6 +57,7 @@ public class OTPVerification extends BaseFragment {
     String user_id;
 
     Button btn_send;
+    ImageButton btn_warn;
     EditText et_phone_value;
     private TextView tv_version;
 
@@ -81,6 +82,7 @@ public class OTPVerification extends BaseFragment {
         tv_version = v.findViewById(R.id.tv_version);
         et_phone_value = v.findViewById(R.id.userID_value);
         btn_send = v.findViewById(R.id.btn_send);
+        btn_warn = v.findViewById(R.id.btn_warn);
 
         tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" +BuildConfig.VERSION_CODE +")");
 
@@ -92,6 +94,17 @@ public class OTPVerification extends BaseFragment {
                     user_id = NoHPFormat.formatTo62(et_phone_value.getText().toString());
                     getOTP();
                 }
+            }
+        });
+
+        btn_warn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment newFrag = new FragHelp();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(DefineValue.NOT_YET_LOGIN,true);
+                newFrag.setArguments(bundle);
+                switchFragment(newFrag, "Help", true);
             }
         });
 
