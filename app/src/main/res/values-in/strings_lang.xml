@@ -1619,8 +1619,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="agent_lp_dialog_message">Layanan ini belum tersedia, anda belum menjadi agen Mandiri Laku Pandai</string>
     <string name="otp_login_verification1">Masukkan kode akses yang dikirimkan ke nomor</string>
     <string name="otp_reff_id">Reff ID</string>
-    <string name="otp_validation_login">Kode verifikasi harus 6 karakter!</string>
-    <string name="resend_verification_code">Pengiriman ulang kode verifikasi berhasil.</string>
+    <string name="otp_validation_login">Kode akses harus 6 karakter!</string>
+    <string name="resend_verification_code">Pengiriman ulang kode akses berhasil.</string>
 
 
     <string name="about_apps_desc_pemberitahuan_otp1">1. Harap selalu mejaga kerahasiaan PASSWORD, PIN dan kode akses anda, dan tidak memberikan data tersebut kepada siapapun termasuk yang mengatasnamakan PT MPE maupun SALDOMU.</string>

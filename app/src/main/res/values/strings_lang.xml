@@ -1651,8 +1651,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="agent_lp_dialog_message">This service is not yet available, you are not yet a Mandiri Laku Pandai Agent</string>
     <string name="otp_login_verification1">Enter access code that sent to</string>
     <string name="otp_reff_id">Reff ID</string>
-    <string name="otp_validation_login">Verification code must be 6 character!</string>
-    <string name="resend_verification_code">Resend confirmation code succeed.</string>
+    <string name="otp_validation_login">Access code must be 6 character!</string>
+    <string name="resend_verification_code">Resend access code succeed.</string>
 
     <string name="about_apps_desc_pemberitahuan_otp1">1. Please always maintain the credentiality of your PASSWORD, PIN and access code, and do not provide such data to anyone, including those on behalf of PT MPE or SALDOMU.</string>
     <string name="about_apps_desc_pemberitahuan_otp2">2. SALDOMU is only distributed through the Play Store and App Store by PT Mitra Pembayaran Elektronik.</string>
