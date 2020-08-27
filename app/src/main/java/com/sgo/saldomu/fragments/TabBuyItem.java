@@ -3,8 +3,9 @@ package com.sgo.saldomu.fragments;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ListFragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -297,7 +298,7 @@ public final class TabBuyItem extends ListFragment {
 
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack){
+    private void switchFragment(Fragment i, String name, Boolean isBackstack){
         if (getActivity() == null)
             return;
 

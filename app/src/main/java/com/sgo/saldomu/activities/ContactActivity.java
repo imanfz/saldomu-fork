@@ -1,7 +1,7 @@
 package com.sgo.saldomu.activities;
 
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
@@ -31,7 +31,7 @@ public class ContactActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
         if (savedInstanceState == null) {
             final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                     .getDisplayMetrics());
@@ -95,7 +95,7 @@ public class ContactActivity extends BaseActivity {
         }
     }
 
-    public void InitializeToolbar(){
+    public void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_group_title_supports));
     }

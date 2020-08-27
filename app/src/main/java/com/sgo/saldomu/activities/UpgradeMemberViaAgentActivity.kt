@@ -140,7 +140,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
                 ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, provincesList)
 
         province_auto_text.setAdapter(provincesAdapter)
-        province_auto_text.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        province_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
             for (i in 0 until provincesList.size) {
                 provincesObject = JSONObject(provincesArray[i].toString())
                 provincesName = provincesObject.optString("nama_provinsi")
@@ -164,7 +164,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             }
         }
 
-        district_auto_text.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        district_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
             for (i in 0 until kabupatenList.size) {
                 kabupatenObject = JSONObject(kabupatenArray[i].toString())
                 kabupatenName = kabupatenObject.optString("nama_kot_kab")
@@ -188,7 +188,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             }
         }
 
-        sub_district_auto_text.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        sub_district_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
             for (i in 0 until kecamatanList.size) {
                 kecamatanObject = JSONObject(kecamatanArray[i].toString())
                 kecamatanName = kecamatanObject.optString("nama_kecamatan")
@@ -212,7 +212,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             }
         }
 
-        urban_village_auto_text.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        urban_village_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
             for (i in 0 until kelurahanList.size) {
                 kelurahanObject = JSONObject(kelurahanArray[i].toString())
                 kelurahanName = kelurahanObject.optString("nama_lur_des")
@@ -269,7 +269,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
     }
 
     private fun inputValidation(): Boolean {
-        if (nik_edit_text.text.toString().length == 0) {
+        if (nik_edit_text.text.toString().isEmpty()) {
             nik_edit_text.requestFocus()
             nik_edit_text.error = resources.getString(R.string.ktp_warn)
             return false
@@ -277,11 +277,11 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             nik_edit_text.requestFocus()
             nik_edit_text.error = resources.getString(R.string.ktp_warn1)
             return false
-        } else if (fullname_edit_text.text.toString().length == 0) {
+        } else if (fullname_edit_text.text.toString().isEmpty()) {
             fullname_edit_text.requestFocus()
             fullname_edit_text.error = resources.getString(R.string.myprofile_validation_name)
             return false
-        } else if (mothersname_edit_text.text.toString().length == 0) {
+        } else if (mothersname_edit_text.text.toString().isEmpty()) {
             mothersname_edit_text.requestFocus()
             mothersname_edit_text.error = resources.getString(R.string.myprofile_validation_mothers_name)
             return false
@@ -289,7 +289,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             birth_place_list.requestFocus()
             birth_place_list.error = resources.getString(R.string.city_not_found_message)
             return false
-        } else if (birth_place_list.text.toString().trim({ it <= ' ' }).length == 0) run {
+        } else if (birth_place_list.text.toString().trim({ it <= ' ' }).isEmpty()) run {
             birth_place_list.requestFocus()
             birth_place_list.error = resources.getString(R.string.city_empty_message)
             return false
@@ -297,7 +297,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             province_auto_text.requestFocus()
             province_auto_text.error = resources.getString(R.string.province_not_found_message)
             return false
-        } else if (province_auto_text.text.toString().trim({ it <= ' ' }).length == 0) run {
+        } else if (province_auto_text.text.toString().trim({ it <= ' ' }).isEmpty()) run {
             province_auto_text.requestFocus()
             province_auto_text.error = resources.getString(R.string.province_validation)
             return false
@@ -305,7 +305,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             district_auto_text.requestFocus()
             district_auto_text.error = resources.getString(R.string.district_not_found_message)
             return false
-        } else if (district_auto_text.text.toString().trim({ it <= ' ' }).length == 0) run {
+        } else if (district_auto_text.text.toString().trim({ it <= ' ' }).isEmpty()) run {
             district_auto_text.requestFocus()
             district_auto_text.error = resources.getString(R.string.district_validation)
             return false
@@ -313,7 +313,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             sub_district_auto_text.requestFocus()
             sub_district_auto_text.error = resources.getString(R.string.sub_district_not_found_message)
             return false
-        } else if (sub_district_auto_text.text.toString().trim({ it <= ' ' }).length == 0) run {
+        } else if (sub_district_auto_text.text.toString().trim({ it <= ' ' }).isEmpty()) run {
             sub_district_auto_text.requestFocus()
             sub_district_auto_text.error = resources.getString(R.string.sub_district_validation)
             return false
@@ -321,11 +321,11 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             urban_village_auto_text.requestFocus()
             urban_village_auto_text.error = resources.getString(R.string.urban_village_not_found_message)
             return false
-        } else if (urban_village_auto_text.text.toString().trim({ it <= ' ' }).length == 0) run {
+        } else if (urban_village_auto_text.text.toString().trim({ it <= ' ' }).isEmpty()) run {
             urban_village_auto_text.requestFocus()
             urban_village_auto_text.error = resources.getString(R.string.urban_village_validation)
             return false
-        } else if (birthday_text_view.text.toString().length == 0) {
+        } else if (birthday_text_view.text.toString().isEmpty()) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date_empty))
@@ -341,19 +341,19 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             val dialog = builder.create()
             dialog.show()
             return false
-        } else if (address_edit_text.text.toString().length == 0) {
+        } else if (address_edit_text.text.toString().isEmpty()) {
             address_edit_text.requestFocus()
             address_edit_text.error = resources.getString(R.string.myprofile_validation_address)
             return false
-        } else if (rt_edit_text.text.toString().length == 0) {
+        } else if (rt_edit_text.text.toString().isEmpty()) {
             rt_edit_text.requestFocus()
             rt_edit_text.error = resources.getString(R.string.rt_validation)
             return false
-        } else if (rw_edit_text.text.toString().length == 0) {
+        } else if (rw_edit_text.text.toString().isEmpty()) {
             rw_edit_text.requestFocus()
             rw_edit_text.error = resources.getString(R.string.rw_validation)
             return false
-        } else if (religion_spinner.selectedItem.equals(getString(R.string.select_religion))) {
+        } else if (religion_spinner.selectedItem == getString(R.string.select_religion)) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.religion_validation))
@@ -361,7 +361,7 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
             val dialog = builder.create()
             dialog.show()
             return false
-        } else if (job_edit_text.text.toString().length == 0) {
+        } else if (job_edit_text.text.toString().isEmpty()) {
             job_edit_text.requestFocus()
             job_edit_text.error = resources.getString(R.string.job_validation)
             return false
@@ -372,21 +372,21 @@ class UpgradeMemberViaAgentActivity : BaseActivity() {
     @SuppressLint("SetTextI18n")
     private fun birthdayOnClick() {
         val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
+        val yearNow = c.get(Calendar.YEAR)
+        val monthNow = c.get(Calendar.MONTH)
+        val dayNow = c.get(Calendar.DAY_OF_MONTH)
 
         val datePickerDialog =
-                DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                DatePickerDialog(this, { _, year, monthOfYear, dayOfMonth ->
                     val calendar: Calendar = Calendar.getInstance()
                     calendar.set(year, monthOfYear, dayOfMonth)
 
-                    val monthdisplay = monthOfYear + 1
+                    val monthDisplay = monthOfYear + 1
 
-                    birthday_text_view.text = "$dayOfMonth - $monthdisplay - $year"
+                    birthday_text_view.text = "$dayOfMonth - $monthDisplay - $year"
                     fromFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ID", "INDONESIA"))
                     memberDOB = fromFormat.format(calendar.time)
-                }, year, month, day)
+                }, yearNow, monthNow, dayNow)
         datePickerDialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
         datePickerDialog.show()
     }

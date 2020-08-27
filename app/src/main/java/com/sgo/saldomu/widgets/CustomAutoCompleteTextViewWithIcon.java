@@ -11,7 +11,7 @@ import java.util.HashMap;
  * Created by thinkpad on 4/26/2017.
  */
 
-public class CustomAutoCompleteTextViewWithIcon extends android.support.v7.widget.AppCompatAutoCompleteTextView {
+public class CustomAutoCompleteTextViewWithIcon extends androidx.appcompat.widget.AppCompatAutoCompleteTextView {
 
     public CustomAutoCompleteTextViewWithIcon(Context context, AttributeSet attrs) {
         super(context, attrs);

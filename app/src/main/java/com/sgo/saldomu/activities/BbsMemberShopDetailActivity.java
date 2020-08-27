@@ -44,7 +44,7 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
     String[] arrayItems = new String[3];
 
     String[] actualValues = new String[3];
-    String selectedValue    = "", memberType = "";
+    String selectedValue = "", memberType = "";
     ImageView ivLocation, ivCategory, ivCloseShop;
     String flagApprove, setupOpenHour;
 
@@ -52,25 +52,25 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        tvMemberName    = findViewById(R.id.tvMemberName);
-        tvShopName      = findViewById(R.id.tvShopName);
+        tvMemberName = findViewById(R.id.tvMemberName);
+        tvShopName = findViewById(R.id.tvShopName);
         //spPilihan       = (Spinner) findViewById(R.id.spPilihan);
-        ivLocation      = findViewById(R.id.ivLocation);
-        ivCategory      = findViewById(R.id.ivCategory);
-        ivCloseShop     = findViewById(R.id.ivCloseShop);
+        ivLocation = findViewById(R.id.ivLocation);
+        ivCategory = findViewById(R.id.ivCategory);
+        ivCloseShop = findViewById(R.id.ivCloseShop);
 
-        progdialog      = DefinedDialog.CreateProgressDialog(this, "");
-        memberId        = getIntent().getStringExtra("memberId");
-        shopId          = getIntent().getStringExtra("shopId");
-        flagApprove     = getIntent().getStringExtra("flagApprove");
-        setupOpenHour   = "";
-        sp              = CustomSecurePref.getInstance().getmSecurePrefs();
-        shopDetail      = new ShopDetail();
+        progdialog = DefinedDialog.CreateProgressDialog(this, "");
+        memberId = getIntent().getStringExtra("memberId");
+        shopId = getIntent().getStringExtra("shopId");
+        flagApprove = getIntent().getStringExtra("flagApprove");
+        setupOpenHour = "";
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        shopDetail = new ShopDetail();
         initializeToolbar();
 
-        arrayItems[0]   = "Silakan Pilih";
-        arrayItems[1]   = getString(R.string.yes);
-        arrayItems[2]   = getString(R.string.no);
+        arrayItems[0] = "Silakan Pilih";
+        arrayItems[1] = getString(R.string.yes);
+        arrayItems[2] = getString(R.string.no);
 
         actualValues[0] = "";
         actualValues[1] = DefineValue.STRING_YES;
@@ -173,15 +173,15 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
         */
 
         HashMap<String, Object> params = new HashMap<>();
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
-        String customerId       = sp.getString(DefineValue.USERID_PHONE, "");
+        UUID rcUUID = UUID.randomUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String customerId = sp.getString(DefineValue.USERID_PHONE, "");
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
-        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.SHOP_ID, shopId);
         params.put(WebParams.MEMBER_ID, memberId);
         params.put(WebParams.FLAG_APPROVE, flagApprove);
@@ -203,30 +203,30 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
                                 tvShopName.setText(response.getString("shop_name"));
                                 setupOpenHour = response.getString("setup_open_hour");
 
-                                memberType  = response.getString("member_type");
+                                memberType = response.getString("member_type");
                                 int defaultPosition = 0;
 
-                                if ( response.getString("shop_closed").equals(DefineValue.STRING_YES) ) {
+                                if (response.getString("shop_closed").equals(DefineValue.STRING_YES)) {
                                     defaultPosition = 1;
-                                } else if ( response.getString("shop_closed").equals(DefineValue.STRING_NO) ) {
+                                } else if (response.getString("shop_closed").equals(DefineValue.STRING_NO)) {
                                     defaultPosition = 2;
                                 }
 
-                                if ( flagApprove.equals(DefineValue.STRING_NO)  ) {
+                                if (flagApprove.equals(DefineValue.STRING_NO)) {
                                     if (response.getString("shop_latitude").equals("") && response.getString("shop_longitude").equals("")) {
                                         ivLocation.setVisibility(View.VISIBLE);
                                     } else {
                                         ivLocation.setVisibility(View.GONE);
                                     }
 
-                                    if (memberType.equals(DefineValue.SHOP_MERCHANT) ) {
+                                    if (memberType.equals(DefineValue.SHOP_MERCHANT)) {
                                         ivCategory.setVisibility(View.VISIBLE);
                                     } else {
                                         ivCategory.setVisibility(View.GONE);
                                     }
                                     ivCloseShop.setVisibility(View.VISIBLE);
                                 } else {
-                                    if (memberType.equals(DefineValue.SHOP_MERCHANT) ) {
+                                    if (memberType.equals(DefineValue.SHOP_MERCHANT)) {
                                         ivCategory.setVisibility(View.VISIBLE);
                                     } else {
                                         ivCategory.setVisibility(View.GONE);
@@ -237,7 +237,7 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
 
                                 //spPilihan.setSelection(defaultPosition);
 
-                            } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
 
                             } else {
                                 code = response.getString(WebParams.ERROR_MESSAGE);

@@ -1,15 +1,12 @@
 package com.sgo.saldomu.activities;
 
 import android.annotation.TargetApi;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.ClientCertRequest;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -41,7 +38,7 @@ public class InfoHargaWebActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         progbar = findViewById(R.id.progbar);
@@ -62,7 +59,7 @@ public class InfoHargaWebActivity extends BaseActivity {
         return R.layout.activity_info_harga;
     }
 
-    private void InitializeToolbar(){
+    private void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_info_harga));
     }

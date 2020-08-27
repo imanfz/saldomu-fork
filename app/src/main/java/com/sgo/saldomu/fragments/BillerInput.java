@@ -7,9 +7,9 @@ import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
@@ -30,7 +30,6 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
@@ -542,7 +541,7 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
 
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, String
+    private void switchFragment(Fragment i, String name, String
             next_name, Boolean isBackstack, String tag) {
         if (getActivity() == null)
             return;

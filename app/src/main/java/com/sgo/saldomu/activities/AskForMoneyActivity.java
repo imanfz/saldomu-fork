@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,10 +55,8 @@ import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.utils.NumberTextWatcherForThousand;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,7 +101,7 @@ public class AskForMoneyActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS, 5);
         memberLevel = sp.getInt(DefineValue.LEVEL_VALUE,0);
@@ -209,7 +206,7 @@ public class AskForMoneyActivity extends BaseActivity {
 //        dialogI.setTargetFragment(this,0);
     }
 
-    public void InitializeToolbar(){
+    public void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_ask_for_money));
     }

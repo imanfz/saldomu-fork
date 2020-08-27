@@ -9,10 +9,10 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -322,7 +322,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         //startActivity(new Intent(getApplicationContext(), BbsMapViewByAgentActivity.class));
 
         if ( currentLatitude == null || currentLongitude == null ) {
-            android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+            androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).create();
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setTitle(getString(R.string.alertbox_title_information));
             alertDialog.setCancelable(false);

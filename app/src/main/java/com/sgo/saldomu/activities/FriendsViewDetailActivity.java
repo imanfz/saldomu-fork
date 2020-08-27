@@ -2,8 +2,10 @@ package com.sgo.saldomu.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.MenuItem;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
@@ -45,7 +47,7 @@ public class FriendsViewDetailActivity extends BaseActivity {
             email = i.getStringExtra("email");
         }
 
-        InitializeToolbar();
+        initializeToolbar();
 
         if (findViewById(R.id.friend_detail_content) != null) {
             if (savedInstanceState != null) {
@@ -54,7 +56,7 @@ public class FriendsViewDetailActivity extends BaseActivity {
 
             FragFriendsViewDetail mFrag = new FragFriendsViewDetail();
             fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.friend_detail_content, mFrag, "Friend detail");
             fragmentTransaction.commit();
 //            setResult(MainPage.RESULT_NORMAL);
@@ -68,7 +70,7 @@ public class FriendsViewDetailActivity extends BaseActivity {
         return R.layout.activity_friends_view_detail;
     }
 
-    private void InitializeToolbar(){
+    private void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(name);
     }

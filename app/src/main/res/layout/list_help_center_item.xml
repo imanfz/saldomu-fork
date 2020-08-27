@@ -17,7 +17,7 @@
         android:textSize="@dimen/abc_text_size_body_2_material"
         android:textStyle="bold" />
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/phone_card_view"
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -64,9 +64,9 @@
                 android:textSize="@dimen/abc_text_size_medium_material"
                 android:visibility="gone" />
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/whatsup_card_view"
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -99,5 +99,5 @@
                 android:textColor="#99000000"
                 android:textSize="@dimen/abc_text_size_body_2_material" />
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

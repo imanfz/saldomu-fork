@@ -35,7 +35,7 @@ public class PasswordRegisterActivity extends BaseActivity {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        InitializeToolbar();
+        initializeToolbar();
 
         et_pass_new = (EditText) findViewById(R.id.new_pass_value);
         et_pass_retype = (EditText) findViewById(R.id.confirm_pass_value);
@@ -53,7 +53,7 @@ public class PasswordRegisterActivity extends BaseActivity {
     }
 
 
-    private void InitializeToolbar(){
+    private void initializeToolbar(){
         disableHomeIcon();
         setActionBarTitle(getString(R.string.changepass_ab_createpass));
     }

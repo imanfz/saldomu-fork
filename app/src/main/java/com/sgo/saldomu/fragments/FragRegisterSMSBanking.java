@@ -1,11 +1,12 @@
 package com.sgo.saldomu.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +38,7 @@ import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -58,16 +61,13 @@ public class FragRegisterSMSBanking extends BaseFragment {
     private View v;
     private View layout_dll;
 
-    private listBankModel mLB;
     private ArrayList<String> bankName;
     private ProgressDialog progdialog;
     private EditText etPhone;
     private EditText etAccNo;
     private Spinner spinBankName;
     private TextView tvDOB;
-    private Button btnRegister;
 
-    private String dedate = null;
     private String date_dob = null;
     private String custID;
     private String bank_name;
@@ -75,6 +75,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
     private DateFormat fromFormat;
     private DateFormat toFormat2;
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -82,12 +83,14 @@ public class FragRegisterSMSBanking extends BaseFragment {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         custID = sp.getString(DefineValue.CUST_ID,"");
-        bank_name = getArguments().getString(DefineValue.BANK_NAME,"");
+        if (getArguments() != null) {
+            bank_name = getArguments().getString(DefineValue.BANK_NAME,"");
+        }
 
         etPhone = v.findViewById(R.id.rsb_value_phone);
         etAccNo =  v.findViewById(R.id.rsb_value_acc_no);
         tvDOB = v.findViewById(R.id.rsb_value_dob);
-        btnRegister = v.findViewById(R.id.btn_register);
+        Button btnRegister = v.findViewById(R.id.btn_register);
         spinBankName = v.findViewById(R.id.spinner_nameBank);
         layout_dll =  v.findViewById(R.id.layout_dll);
 
@@ -98,7 +101,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
         toFormat2 = new SimpleDateFormat("dd-M-yyyy");
 
         bankName = new ArrayList<>();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, bankName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, bankName);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinBankName.setAdapter(adapter);
         spinBankName.setOnItemSelectedListener(spinnerNamaBankListener);
@@ -112,7 +115,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
         public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
 
             Object item = adapterView.getItemAtPosition(i);
-            Timber.d("isi bank name:" + item.toString());
+            Timber.d("isi bank name:%s", item.toString());
             if(item.toString().toLowerCase().contains("mandiri")) {
                 Timber.d("masuk layout  visible");
                 layout_dll.setVisibility(View.VISIBLE);
@@ -153,7 +156,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
                             try {
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("response Listbank sms regist:"+response.toString());
+                                    Timber.d("response Listbank sms regist:%s", response.toString());
 
                                     JSONArray bank_data = new JSONArray(response.optString(WebParams.BANK_DATA,""));
 
@@ -163,17 +166,17 @@ public class FragRegisterSMSBanking extends BaseFragment {
                                     }
                                     else {
                                         Toast.makeText(getActivity(),getString(R.string.data_not_found),Toast.LENGTH_SHORT).show();
-                                        getActivity().finish();
+                                        Objects.requireNonNull(getActivity()).finish();
                                     }
                                 }
                                 else if(code.equals(WebParams.LOGOUT_CODE)){
-                                    Timber.d("isi response autologout:"+response.toString());
+                                    Timber.d("isi response autologout:%s", response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(),message);
                                 }
                                 else {
-                                    Timber.d("Error ListMember comlist:"+response.toString());
+                                    Timber.d("Error ListMember comlist:%s", response.toString());
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 }
@@ -197,7 +200,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
                         }
                     });
         }catch (Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -205,7 +208,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
     private void insertBankList(JSONArray arrayJson){
         try {
 
-            mLB = new listBankModel();
+            listBankModel mLB = new listBankModel();
             for (int i = 0; i < arrayJson.length(); i++) {
 
                 String temp_bank_name = arrayJson.getJSONObject(i).getString(WebParams.BANK_NAME);
@@ -243,18 +246,20 @@ public class FragRegisterSMSBanking extends BaseFragment {
                     now.get(Calendar.MONTH),
                     now.get(Calendar.DAY_OF_MONTH)
             );
-            dpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
+            if (getFragmentManager() != null) {
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+            }
         }
     };
 
     private DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-            dedate = dayOfMonth+"-"+(monthOfYear+1)+"-"+year;
+            String dedate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
             Timber.d("masuk date picker dob");
             try {
-                date_dob = fromFormat.format(toFormat2.parse(dedate));
-                Timber.d("masuk date picker dob:"+date_dob);
+                date_dob = fromFormat.format(Objects.requireNonNull(toFormat2.parse(dedate)));
+                Timber.d("masuk date picker dob:%s", date_dob);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -265,7 +270,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
     private Button.OnClickListener btnGetTokenListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(InetHandler.isNetworkAvailable(getActivity())) {
+            if(InetHandler.isNetworkAvailable(Objects.requireNonNull(getActivity()))) {
                 if (inputValidation()) {
                     String bankName = spinBankName.getSelectedItem().toString();
 
@@ -292,7 +297,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params get BankList:"+params.toString());
+            Timber.d("isi params get BankList:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_INQUIRY_MOBILE_JATIM, params,
                     new ObjListeners() {
@@ -300,19 +305,18 @@ public class FragRegisterSMSBanking extends BaseFragment {
                         public void onResponses(JSONObject response) {
                             try {
                                 String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("response Listbank:" + response.toString());
+                                    Timber.d("response Listbank:%s", response.toString());
 
                                     showDialog(_bank_name, response.optString(WebParams.NO_HP, ""), response.optString(WebParams.TOKEN_ID, ""));
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    Timber.d("isi response autologout:%s", response.toString());
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
                                 } else {
-                                    Timber.d("Error ListMember comlist:" + response.toString());
-                                    code = response.getString(WebParams.ERROR_MESSAGE);
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    Timber.d("Error ListMember comlist:%s", response.toString());
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 }
 
                             } catch (JSONException e) {
@@ -332,7 +336,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
                         }
                     });
         }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -351,7 +355,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params data SB:"+params.toString());
+            Timber.d("isi params data SB:%s", params.toString());
 
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_INQUIRY_MOBILE, params,
@@ -400,7 +404,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
 
                                         Fragment f = new FragRegisterSMSBankingConfirm();
                                         f.setArguments(args);
-                                        switchFragment(f, getResources().getString(R.string.title_register_sms_banking), false);
+                                        switchFragment(f, getResources().getString(R.string.title_register_sms_banking));
                                     } else if (!flagDOB) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                         builder.setTitle("Alert").setMessage(getResources().getString(R.string.rsb_alert_dob))
@@ -413,15 +417,10 @@ public class FragRegisterSMSBanking extends BaseFragment {
 
                                         AlertDialog alertDialog = builder.create();
                                         alertDialog.show();
-                                    } else if (!flagAccNo) {
+                                    } else {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                         builder.setTitle("Alert").setMessage(getResources().getString(R.string.rsb_alert_acc_no))
-                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                    }
-                                                });
+                                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
 
                                         AlertDialog alertDialog = builder.create();
                                         alertDialog.show();
@@ -429,7 +428,7 @@ public class FragRegisterSMSBanking extends BaseFragment {
 
                                 }
                                 else if(code.equals(WebParams.LOGOUT_CODE)){
-                                    Timber.d("isi response autologout:"+response.toString());
+                                    Timber.d("isi response autologout:%s", response.toString());
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(),message);
                                 }
@@ -453,13 +452,13 @@ public class FragRegisterSMSBanking extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
     private void showDialog(final String _bank_name, final String _no_hp, final String _token_id) {
         // Create custom dialog object
-        final Dialog dialog = new Dialog(getActivity());
+        final Dialog dialog = new Dialog(Objects.requireNonNull(getActivity()));
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCanceledOnTouchOutside(false);
         // Include dialog.xml file
@@ -475,19 +474,16 @@ public class FragRegisterSMSBanking extends BaseFragment {
         Message.setText(getResources().getString(R.string.dialog_token_message_sms));
 
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment f = new FragRegisterSMSBankingConfirm();
-                Bundle mBun = new Bundle();
-                mBun.putString(DefineValue.USERID_PHONE, _no_hp);
-                mBun.putString(DefineValue.TOKEN, _token_id);
-                mBun.putString(DefineValue.BANK_NAME, _bank_name);
-                f.setArguments(mBun);
-                switchFragment(f, getResources().getString(R.string.title_register_sms_banking), false);
+        btnDialogOTP.setOnClickListener(view -> {
+            Fragment f = new FragRegisterSMSBankingConfirm();
+            Bundle mBun = new Bundle();
+            mBun.putString(DefineValue.USERID_PHONE, _no_hp);
+            mBun.putString(DefineValue.TOKEN, _token_id);
+            mBun.putString(DefineValue.BANK_NAME, _bank_name);
+            f.setArguments(mBun);
+            switchFragment(f, getResources().getString(R.string.title_register_sms_banking));
 
-                dialog.dismiss();
-            }
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -514,25 +510,24 @@ public class FragRegisterSMSBanking extends BaseFragment {
         return true;
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack){
+    private void switchFragment(Fragment i, String name){
         if (getActivity() == null)
             return;
 
         RegisterSMSBankingActivity fca = (RegisterSMSBankingActivity) getActivity();
-        fca.switchContent(i, name, isBackstack);
+        fca.switchContent(i, name, false);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().finish();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            Objects.requireNonNull(getActivity()).finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

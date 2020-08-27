@@ -29,7 +29,7 @@ public class ListATM extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
@@ -59,7 +59,7 @@ public class ListATM extends BaseActivity {
 
     }
 
-    private void InitializeToolbar(){
+    private void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.atm));
     }

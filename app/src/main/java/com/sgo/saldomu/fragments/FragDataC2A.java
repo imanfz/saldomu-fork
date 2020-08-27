@@ -9,9 +9,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -249,7 +249,9 @@ public class FragDataC2A extends BaseFragment {
         tv_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dpd.show(getActivity().getFragmentManager(), "asd");
+                if (getFragmentManager() != null) {
+                    dpd.show(getFragmentManager(), "asd");
+                }
             }
         });
 

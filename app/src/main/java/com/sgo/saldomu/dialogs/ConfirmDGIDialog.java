@@ -1,19 +1,15 @@
 package com.sgo.saldomu.dialogs;
 
 import android.app.DialogFragment;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.DefineValue;
 
 public class ConfirmDGIDialog extends DialogFragment {
     View v;

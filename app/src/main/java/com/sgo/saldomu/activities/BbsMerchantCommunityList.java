@@ -47,13 +47,13 @@ public class BbsMerchantCommunityList extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        myRealm                 = getDefaultInstance();
+        myRealm = getDefaultInstance();
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         initializeToolbar();
 
-        progdialog              = DefinedDialog.CreateProgressDialog(this, "");
-        lvCommunityList         = (ListView) findViewById(R.id.lvCommunityList);
+        progdialog = DefinedDialog.CreateProgressDialog(this, "");
+        lvCommunityList = (ListView) findViewById(R.id.lvCommunityList);
 
         lvCommunityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -71,7 +71,7 @@ public class BbsMerchantCommunityList extends BaseActivity {
         lvCommunityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent=new Intent(BbsMerchantCommunityList.this, BbsMemberLocationActivity.class);
+                Intent intent = new Intent(BbsMerchantCommunityList.this, BbsMemberLocationActivity.class);
                 intent.putExtra("memberId", merchantCommunityListModel.get(position).getMemberId());
                 intent.putExtra("shopId", merchantCommunityListModel.get(position).getShopId());
                 startActivity(intent);
@@ -107,8 +107,8 @@ public class BbsMerchantCommunityList extends BaseActivity {
                             myRealm.where(MerchantCommunityList.class).equalTo("memberId", object.getString("member_id"))
                                     .findAll().deleteFirstFromRealm();
 
-                            MerchantCommunityList agentDetailModel = myRealm.createObject(MerchantCommunityList.class, object.getString("member_id") );
-                            agentDetailModel.setMemberName( object.getString("member_name") );
+                            MerchantCommunityList agentDetailModel = myRealm.createObject(MerchantCommunityList.class, object.getString("member_id"));
+                            agentDetailModel.setMemberName(object.getString("member_name"));
                             agentDetailModel.setMemberCode(object.getString("member_code"));
                             agentDetailModel.setMemberType(object.getString("member_type"));
                             agentDetailModel.setCommName(object.getString("comm_name"));
@@ -126,7 +126,7 @@ public class BbsMerchantCommunityList extends BaseActivity {
                         }
                         myRealm.commitTransaction();
 
-                        if ( members.length() == 1 ) {
+                        if (members.length() == 1) {
 
                         }
 

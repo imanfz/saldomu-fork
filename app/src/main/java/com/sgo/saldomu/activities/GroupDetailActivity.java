@@ -52,7 +52,7 @@ public class GroupDetailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        InitializeToolbar();
+        initializeToolbar();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         love = false;
@@ -199,7 +199,7 @@ public class GroupDetailActivity extends BaseActivity {
         return R.layout.activity_group_detail;
     }
 
-    private void InitializeToolbar(){
+    private void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_group_detail));
     }

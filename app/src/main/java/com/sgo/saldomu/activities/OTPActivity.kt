@@ -1,10 +1,12 @@
 package com.sgo.saldomu.activities
 
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.NoHPFormat
@@ -65,12 +67,12 @@ class OTPActivity : BaseActivity() {
                 tv_countdown.text = sisa
 
                 btnResend.isEnabled = false
-                btnResend.background = resources.getDrawable(R.drawable.rounded_background_button_disabled)
+                btnResend.background = ResourcesCompat.getDrawable(resources, R.drawable.rounded_background_button_disabled, null)
             }
 
             override fun onFinish() {
                 btnResend.isEnabled = true
-                btnResend.background = resources.getDrawable(R.drawable.rounded_background_blue)
+                btnResend.background = ResourcesCompat.getDrawable(resources, R.drawable.rounded_background_blue, null)
                 tv_countdown.visibility = View.GONE
             }
         }.start()
@@ -103,8 +105,8 @@ class OTPActivity : BaseActivity() {
                     override fun onResponses(response: JSONObject) {
                         dismissProgressDialog()
                         val model = getGson().fromJson(response.toString(), jsonModel::class.java)
-                        var code = response.getString(WebParams.ERROR_CODE)
-                        var message = response.getString(WebParams.ERROR_MESSAGE)
+                        val code = response.getString(WebParams.ERROR_CODE)
+                        val message = response.getString(WebParams.ERROR_MESSAGE)
                         when (code) {
                             WebParams.SUCCESS_CODE -> {
                                 val i = Intent(applicationContext, CreatePIN::class.java)
@@ -116,7 +118,6 @@ class OTPActivity : BaseActivity() {
                             }
                             WebParams.LOGOUT_CODE -> {
                                 Timber.d("isi response autologout:$response")
-                                val message = response.getString(WebParams.ERROR_MESSAGE)
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(this@OTPActivity, message)
                             }
@@ -155,7 +156,7 @@ class OTPActivity : BaseActivity() {
     private fun getOTP() {
         showProgressDialog()
 
-        extraSignature = userID+ dateDOB
+        extraSignature = userID + dateDOB
 
         val params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_REQUEST_RESET_PIN, extraSignature)
 

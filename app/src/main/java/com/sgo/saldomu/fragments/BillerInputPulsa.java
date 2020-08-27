@@ -11,13 +11,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -98,7 +98,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -152,7 +151,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     private int attempt;
     private int failed;
 
-    private Realm realm2;
+    private Realm realm;
     private BillerItem mBillerData;
     private BillerItem mDenomData;
     private List<DenomDataItem> mListDenomData;
@@ -205,7 +204,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
         args = getArguments();
         biller_type_code = args.getString(DefineValue.BILLER_TYPE, "");
 //        realm = Realm.getInstance(RealmManager.BillerConfiguration);
-        realm2 = Realm.getInstance(RealmManager.realmConfiguration);
+        realm = Realm.getInstance(RealmManager.realmConfiguration);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
@@ -864,7 +863,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     private void initRealm() {
         Log.v(TAG, "initRealm()");
 
-        RealmResults<BillerItem> realmResults = realm2.where(BillerItem.class).equalTo("billerType", biller_type_code).findAll();
+        RealmResults<BillerItem> realmResults = realm.where(BillerItem.class).equalTo("billerType", biller_type_code).findAll();
 
         billerItemList.clear();
         _data.clear();
@@ -1279,7 +1278,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                 BillerDenomResponse response = gson.fromJson(jsonObject, BillerDenomResponse.class);
                 BillerDenomResponse response2 = gson.fromJson(jsonObject2, BillerDenomResponse.class);
 
-                realm2.beginTransaction();
+                realm.beginTransaction();
                 if (response.getErrorCode().equals(WebParams.SUCCESS_CODE)) {
                     for (BillerItem item : response.getBiller()) {
                         _data.add(item.getCommName());
@@ -1287,7 +1286,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
 
                     billerItemList.addAll(response.getBiller());
 
-                    realm2.copyToRealmOrUpdate(response.getBiller());
+                    realm.copyToRealmOrUpdate(response.getBiller());
                     if (args.getString(DefineValue.CUST_ID, "") != "") {
                         et_payment_remark.setText(NoHPFormat.formatTo08(args.getString(DefineValue.CUST_ID, "")));
 
@@ -1300,12 +1299,12 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
                     Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }
                 if (response2.getErrorCode().equals(WebParams.SUCCESS_CODE)) {
-                    realm2.copyToRealmOrUpdate(response2.getBiller());
+                    realm.copyToRealmOrUpdate(response2.getBiller());
                 } else {
                     Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }
 
-                realm2.commitTransaction();
+                realm.commitTransaction();
 
                 if (_data.isEmpty()) {
                     initRealm();

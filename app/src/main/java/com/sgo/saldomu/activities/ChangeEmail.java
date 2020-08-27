@@ -58,7 +58,7 @@ public class ChangeEmail extends BaseActivity {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        InitializeToolbar();
+        initializeToolbar();
 
         tv_curr_email = findViewById(R.id.tv_current_email);
         et_new_email = findViewById(R.id.et_new_email);
@@ -228,7 +228,7 @@ public class ChangeEmail extends BaseActivity {
         return true;
     }
 
-    private void InitializeToolbar() {
+    private void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_setting_change_email));
     }

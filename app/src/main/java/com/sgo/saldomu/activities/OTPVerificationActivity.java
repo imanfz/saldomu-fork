@@ -1,15 +1,14 @@
 package com.sgo.saldomu.activities;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.text.TextUtils;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.Menu;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
-import com.sgo.saldomu.fragments.Login;
 import com.sgo.saldomu.fragments.OTPVerification;
 import com.sgo.saldomu.widgets.BaseActivity;
 
@@ -30,7 +29,7 @@ public class OTPVerificationActivity extends BaseActivity {
 
             Fragment newFrag = new OTPVerification();
             FragmentManager fragmentManager= getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.otpVerificationContent, newFrag, "otpVerification");
             fragmentTransaction.commit();
         }

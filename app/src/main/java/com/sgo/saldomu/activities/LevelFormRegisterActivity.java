@@ -2,8 +2,9 @@ package com.sgo.saldomu.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -19,7 +20,7 @@ public class LevelFormRegisterActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        InitializeToolbar();
+        initializeToolbar();
 
         if (findViewById(R.id.levelFragmentContent) != null) {
             if (savedInstanceState != null) {
@@ -29,7 +30,7 @@ public class LevelFormRegisterActivity extends BaseActivity {
             Fragment mFrag;
             mFrag = new FragLevelFormRegister();
             FragmentManager fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.levelFragmentContent, mFrag, getString(R.string.level_title));
             fragmentTransaction.commitAllowingStateLoss();
             setResult(MainPage.RESULT_NORMAL);
@@ -37,7 +38,7 @@ public class LevelFormRegisterActivity extends BaseActivity {
 
     }
 
-    public void InitializeToolbar(){
+    public void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.level_title));
     }

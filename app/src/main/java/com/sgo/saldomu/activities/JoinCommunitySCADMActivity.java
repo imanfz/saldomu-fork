@@ -1,8 +1,10 @@
 package com.sgo.saldomu.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.MenuItem;
 
 import com.securepreferences.SecurePreferences;
@@ -32,7 +34,7 @@ public class JoinCommunitySCADMActivity extends BaseActivity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
@@ -47,13 +49,13 @@ public class JoinCommunitySCADMActivity extends BaseActivity{
         mContent = newFragment;
 
         fragmentManager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.join_scadm_content, newFragment);
         fragmentTransaction.commitAllowingStateLoss();
         setResult(MainPage.RESULT_NORMAL);
     }
 
-    public void InitializeToolbar() {
+    public void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.scadm_join));
     }

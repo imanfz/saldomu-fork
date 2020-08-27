@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.util.Log;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -66,7 +68,7 @@ public class PulsaAgentActivity extends BaseActivity {
         newFragment.setArguments(mArgs);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.pulsa_agent_content, newFragment,getString(R.string.toolbar_title_pulsa_agent));
         fragmentTransaction.commit();
         setResult(MainPage.RESULT_NORMAL);
@@ -145,7 +147,7 @@ public class PulsaAgentActivity extends BaseActivity {
         setActionBarTitle(_title);
     }
 
-    public void InitializeToolbar(){
+    public void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.toolbar_title_pulsa_agent));
     }

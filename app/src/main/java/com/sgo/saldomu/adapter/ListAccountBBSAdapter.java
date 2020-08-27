@@ -4,24 +4,19 @@ package com.sgo.saldomu.adapter;/*
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
-import com.sgo.saldomu.entityRealm.BBSBankModel;
-
-import java.util.ArrayList;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmBaseAdapter;
-import io.realm.RealmResults;
 
 public class ListAccountBBSAdapter extends RealmBaseAdapter<BBSAccountACTModel> implements ListAdapter{
 

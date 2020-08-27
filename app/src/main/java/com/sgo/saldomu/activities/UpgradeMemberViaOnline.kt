@@ -14,6 +14,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
@@ -198,14 +199,14 @@ class UpgradeMemberViaOnline : BaseActivity() {
         camera_ttd.setOnClickListener { cameraTTDListener() }
 
         submit_button.isEnabled = false
-        submit_button.background = resources.getDrawable(R.drawable.rounded_background_button_disabled)
+        submit_button.background = ResourcesCompat.getDrawable(resources, R.drawable.rounded_background_button_disabled, null)
         cb_termnsncond.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 submit_button.isEnabled = true
-                submit_button.background = resources.getDrawable(R.drawable.rounded_background_blue)
+                submit_button.background = ResourcesCompat.getDrawable(resources, R.drawable.rounded_background_blue, null)
             } else {
                 submit_button.isEnabled = false
-                submit_button.background = resources.getDrawable(R.drawable.rounded_background_button_disabled)
+                submit_button.background = ResourcesCompat.getDrawable(resources, R.drawable.rounded_background_button_disabled, null)
             }
         }
 
@@ -265,7 +266,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
                     val test = AlertDialogLogout.getInstance()
                     test.showDialoginActivity(this@UpgradeMemberViaOnline, message)
                 } else if (code == DefineValue.ERROR_9333) {
-                    Timber.d("isi response app data:" + model.app_data)
+                    Timber.d("isi response app data:%s", model.app_data)
                     val appModel = model.app_data
                     val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
                     alertDialogUpdateApp.showDialogUpdate(this@UpgradeMemberViaOnline, appModel.type, appModel.packageName, appModel.downloadUrl)
@@ -568,7 +569,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
         dobFormat = SimpleDateFormat("dd-MM-yyyy", Locale("ID", "INDONESIA"))
 
         try {
-            birthday_text_view.text = dobFormat.format(fromFormat.parse(sp.getString(DefineValue.PROFILE_DOB, "")))
+            birthday_text_view.text = dobFormat.format(fromFormat.parse(sp.getString(DefineValue.PROFILE_DOB, "")!!)!!)
             birthday_text_view.isEnabled = false
         } catch (e: ParseException) {
             e.printStackTrace()
@@ -635,18 +636,18 @@ class UpgradeMemberViaOnline : BaseActivity() {
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANKCASHOUT, params,
                     object : ResponseListener {
-                        override fun onResponses(`object`: JsonObject) {
+                        override fun onResponses(jsonObject: JsonObject) {
 
                             val gson = Gson()
-                            val model = gson.fromJson(`object`.toString(), jsonModel::class.java)
+                            val model = gson.fromJson(jsonObject.toString(), jsonModel::class.java)
 
-                            Log.e("getBankCashout", `object`.get("bank_cashout").toString())
+                            Log.e("getBankCashout", jsonObject.get("bank_cashout").toString())
 
                             val type = object : TypeToken<List<BankCashoutModel>>() {
 
                             }.type
                             val gson2 = Gson()
-                            listBankCashOut = gson2.fromJson(`object`.get("bank_cashout"), type)
+                            listBankCashOut = gson2.fromJson(jsonObject.get("bank_cashout"), type)
 
                             Log.e("getBankCashout", listBankCashOut.toString())
 
@@ -664,7 +665,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
                     })
 
         } catch (e: Exception) {
-            Timber.d("httpclient:" + e.message)
+            Timber.d("httpclient:%s", e.message)
         }
     }
 
@@ -814,7 +815,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
                     test.showDialoginActivity(this@UpgradeMemberViaOnline, error_message)
                 }
                 error_code == DefineValue.ERROR_9333 -> {
-                    Timber.d("isi response app data:" + model.app_data)
+                    Timber.d("isi response app data:%s", model.app_data)
                     val appModel = model.app_data
                     val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
                     alertDialogUpdateApp.showDialogUpdate(this@UpgradeMemberViaOnline, appModel.type, appModel.packageName, appModel.downloadUrl)

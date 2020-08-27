@@ -5,10 +5,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -71,7 +72,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
         Timber.d("Flag Login BbsActivity ");
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
@@ -184,7 +185,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
 
             fragmentManager = getSupportFragmentManager();
             fragmentManager.addOnBackStackChangedListener(() -> InitializeTitle());
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.bbs_content, newFragment, tag);
             fragmentTransaction.commitAllowingStateLoss();
             setResult(MainPage.RESULT_NORMAL);
@@ -240,7 +241,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
         return R.layout.activity_bbs;
     }
 
-    public void InitializeToolbar() {
+    public void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_bbs));
     }

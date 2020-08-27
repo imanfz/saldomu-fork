@@ -15,7 +15,7 @@ class CustomAutoCompleteAdapter(context: Context, val locList: MutableList<Custo
 
     val locLists: MutableList<CustomAdapterModel>? = locList
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var view : View? = convertView
         if (view == null){
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -45,13 +45,11 @@ class CustomAutoCompleteAdapter(context: Context, val locList: MutableList<Custo
 
         override fun performFiltering(constraint: CharSequence?): Filter.FilterResults {
             if (constraint != null) {
-                var temp: MutableList<CustomAdapterModel>? = ArrayList()
+                val temp: MutableList<CustomAdapterModel>? = ArrayList()
 
-                if (locList != null) {
-                    for (CustomAdapterModel in locList) {
-                        if (CustomAdapterModel.name?.toLowerCase()!!.contains(constraint.toString().toLowerCase())) {
-                            temp?.add(CustomAdapterModel)
-                        }
+                for (CustomAdapterModel in locList) {
+                    if (CustomAdapterModel.name?.toLowerCase(Locale.ROOT)!!.contains(constraint.toString().toLowerCase())) {
+                        temp?.add(CustomAdapterModel)
                     }
                 }
                 val filterResults = Filter.FilterResults()

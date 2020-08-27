@@ -1,12 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +10,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -33,11 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -50,27 +45,15 @@ import timber.log.Timber;
  */
 public class FragTutupManual extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
     public final static String TAG = "com.sgo.saldomu.fragments.Frag_Tutup_Manual";
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private final String DATEFROM = "tagFrom";
     private final String DATETO = "tagTo";
-    private View viewLayout;
     LinearLayout llTanggal, llMulaiDari, llSampaiDengan, llTutupManual;
     EditText etFromDate, etToDate;
     ImageView ivStartDate, ivEndDate;
     int startDay, startMonth, startYear, endDay, endMonth, endYear;
-
-    private DatePickerDialog dateFromPickerDialog;
-    private DatePickerDialog dateToPickerDialog;
-
-    private SimpleDateFormat dateFormatter;
     Calendar calendar, cTanggalAwal, cNextTomorrow;
     Button btnSubmit;
     ProgressDialog progdialog, progdialog2;
@@ -101,70 +84,61 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        viewLayout = inflater.inflate(R.layout.frag_tutup_manual, container, false);
+        View viewLayout = inflater.inflate(R.layout.frag_tutup_manual, container, false);
 
-        calendar        = Calendar.getInstance();
-        sp                      = CustomSecurePref.getInstance().getmSecurePrefs();
+        calendar = Calendar.getInstance();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        btnSubmit       = (Button) viewLayout.findViewById(R.id.btnSubmit);
+        btnSubmit = viewLayout.findViewById(R.id.btnSubmit);
         btnSubmit.setVisibility(View.GONE);
-        llTanggal       = (LinearLayout) viewLayout.findViewById(R.id.llTanggal);
-        llMulaiDari     = (LinearLayout) viewLayout.findViewById(R.id.llMulaiDari);
-        llSampaiDengan  = (LinearLayout) viewLayout.findViewById(R.id.llSampaiDengan);
-        llTutupManual   = (LinearLayout) viewLayout.findViewById(R.id.llTutupManual);
+        llTanggal = viewLayout.findViewById(R.id.llTanggal);
+        llMulaiDari = viewLayout.findViewById(R.id.llMulaiDari);
+        llSampaiDengan = viewLayout.findViewById(R.id.llSampaiDengan);
+        llTutupManual = viewLayout.findViewById(R.id.llTutupManual);
         llTutupManual.setVisibility(View.GONE);
         llTanggal.setVisibility(View.GONE);
         llMulaiDari.setVisibility(View.GONE);
         llSampaiDengan.setVisibility(View.GONE);
 
 
-        ivStartDate     = (ImageView) viewLayout.findViewById(R.id.ivStartDate);
-        ivEndDate       = (ImageView) viewLayout.findViewById(R.id.ivEndDate);
+        ivStartDate = viewLayout.findViewById(R.id.ivStartDate);
+        ivEndDate = viewLayout.findViewById(R.id.ivEndDate);
         //ivStartDate.setOnClickListener(this);
         //ivEndDate.setOnClickListener(this);
 
-        etFromDate      = (EditText) viewLayout.findViewById(R.id.etFromDate);
-        etToDate        = (EditText) viewLayout.findViewById(R.id.etToDate);
+        etFromDate = viewLayout.findViewById(R.id.etFromDate);
+        etToDate = viewLayout.findViewById(R.id.etToDate);
         etFromDate.setEnabled(false);
         etToDate.setEnabled(false);
 
         Calendar cTomorrow = Calendar.getInstance();
         cTomorrow.add(Calendar.DAY_OF_MONTH, 1);
 
-        startDay        = cTomorrow.get(Calendar.DAY_OF_MONTH);
-        startMonth      = cTomorrow.get(Calendar.MONTH);
-        startYear       = cTomorrow.get(Calendar.YEAR);
+        startDay = cTomorrow.get(Calendar.DAY_OF_MONTH);
+        startMonth = cTomorrow.get(Calendar.MONTH);
+        startYear = cTomorrow.get(Calendar.YEAR);
 
         cNextTomorrow = Calendar.getInstance();
         cNextTomorrow.add(Calendar.DAY_OF_MONTH, 2);
 
-        endYear         = cNextTomorrow.get(Calendar.YEAR);
-        endMonth        = cNextTomorrow.get(Calendar.MONTH);
-        endDay          = cNextTomorrow.get(Calendar.DAY_OF_MONTH);
+        endYear = cNextTomorrow.get(Calendar.YEAR);
+        endMonth = cNextTomorrow.get(Calendar.MONTH);
+        endDay = cNextTomorrow.get(Calendar.DAY_OF_MONTH);
 
         cTanggalAwal = Calendar.getInstance();
         cTanggalAwal.set(startYear, startMonth, startDay);
 
-        progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
+        progdialog = DefinedDialog.CreateProgressDialog(getContext(), "");
 
         String extraSignature = DefineValue.STRING_NO;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_MEMBER_SHOP_LIST, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
-        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.CUSTOMER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
         params.put(WebParams.FLAG_APPROVE, DefineValue.STRING_NO);
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
@@ -186,7 +160,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
 
                                 JSONArray members = response.getJSONArray("member");
 
-                                if ( members.length() > 0 ) {
+                                if (members.length() > 0) {
                                     memberId = members.getJSONObject(0).getString("member_id");
                                     shopId = members.getJSONObject(0).getString("shop_id");
 
@@ -216,165 +190,111 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
                     }
                 });
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
+        btnSubmit.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
+            //open
+            boolean hasError = false;
 
-                //open
-                Boolean hasError = false;
+            if (startDateText.equals("") || endDateText.equals("")) {
+                hasError = true;
+            }
 
-                if ( startDateText.equals("") || endDateText.equals("") ) {
-                    hasError = true;
-                }
+            if (!hasError) {
+                updateOpenCloseDate();
+            } else {
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                alertDialog.setCancelable(false);
 
-                if ( !hasError ) {
-                    updateOpenCloseDate();
-                } else {
-                    android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                    alertDialog.setCancelable(false);
-
-                    alertDialog.setMessage(getString(R.string.err_notif_start_or_end_date_empty));
+                alertDialog.setMessage(getString(R.string.err_notif_start_or_end_date_empty));
 
 
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                        (dialog, which) -> dialog.dismiss());
 
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
+                alertDialog.show();
+            }
+        });
 
-                                    dialog.dismiss();
 
-                                }
-                            });
+        ivStartDate.setOnClickListener(v -> {
 
-                    alertDialog.show();
-                }
+            DatePickerDialog dpd = DatePickerDialog.newInstance(
+                    dobPickerSetListener,
+                    startYear,
+                    startMonth,
+                    startDay
+            );
+            Calendar cAwal = Calendar.getInstance();
+            cAwal.set(startYear, startMonth, startDay);//Year,Mounth -1,Day
+            dpd.setMinDate(cAwal);
+
+            Calendar cAkhir = Calendar.getInstance();
+            cAkhir.set(endYear, endMonth, endDay);//Year,Mounth -1,Day
+
+            if (!endDateText.equals("")) {
+                dpd.setMaxDate(cAkhir);
+            }
+
+            if (getFragmentManager() != null) {
+                dpd.show(getFragmentManager(), DATEFROM);
             }
 
         });
 
+        ivEndDate.setOnClickListener(v -> {
 
-        ivStartDate.setOnClickListener(new View.OnClickListener() {
+            DatePickerDialog dpd = DatePickerDialog.newInstance(
+                    dobPickerSetListener,
+                    endYear,
+                    endMonth,
+                    endDay
+            );
+            Calendar cAwal = Calendar.getInstance();
 
-            @Override
-            public void onClick(View v) {
+            cAwal.set(startYear, startMonth, startDay + 1);//Year,Mounth -1,Day
+            //dpd.setMinDate(cAwal);
 
-                DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        dobPickerSetListener,
-                        startYear,
-                        startMonth,
-                        startDay
-                );
-                Calendar cAwal = Calendar.getInstance();
-                cAwal.set(startYear, startMonth, startDay);//Year,Mounth -1,Day
+            Calendar cAkhir = Calendar.getInstance();
+            cAkhir.set(startYear, startMonth, endDay);//Year,Mounth -1,Day
+
+            if (cAkhir.getTimeInMillis() != cTanggalAwal.getTimeInMillis()) {
                 dpd.setMinDate(cAwal);
-
-                Calendar cAkhir = Calendar.getInstance();
-                cAkhir.set(endYear, endMonth, endDay);//Year,Mounth -1,Day
-
-                if ( !endDateText.equals("") ) {
-                    dpd.setMaxDate(cAkhir);
-                }
-
-                dpd.show(getActivity().getFragmentManager(), DATEFROM);
-
+            } else {
+                dpd.setMinDate(cTanggalAwal);
             }
-        });
 
-        ivEndDate.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        dobPickerSetListener,
-                        endYear,
-                        endMonth,
-                        endDay
-                );
-                Calendar cAwal = Calendar.getInstance();
-
-                cAwal.set(startYear, startMonth, startDay+1);//Year,Mounth -1,Day
-                //dpd.setMinDate(cAwal);
-
-                Calendar cAkhir = Calendar.getInstance();
-                cAkhir.set(startYear, startMonth, endDay);//Year,Mounth -1,Day
-
-                if ( cAkhir.getTimeInMillis() != cTanggalAwal.getTimeInMillis() ) {
-                    dpd.setMinDate(cAwal);
-                } else {
-                    dpd.setMinDate(cTanggalAwal);
-                }
-
-                dpd.show(getActivity().getFragmentManager(), DATETO);
-
+            if (getFragmentManager() != null) {
+                dpd.show(getFragmentManager(), DATETO);
             }
+
         });
-
-        dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-
         return viewLayout;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
     }
 
     private DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
 
-            if(view.getTag().equals(DATEFROM)){
-                startYear = year;
-                startMonth = monthOfYear;
-                startDay = dayOfMonth;
-                etFromDate.setText(String.valueOf(dayOfMonth)+"/"+String.valueOf(monthOfYear+1)+"/"+String.valueOf(year) );
-                startDateText = String.valueOf(dayOfMonth)+"/"+String.valueOf(monthOfYear+1)+"/"+String.valueOf(year);
-            }
-            else {
-                endYear = year;
-                endMonth = monthOfYear;
-                endDay = dayOfMonth;
-                etToDate.setText(String.valueOf(dayOfMonth)+"/"+String.valueOf(monthOfYear+1)+"/"+String.valueOf(year) );
-                endDateText = String.valueOf(dayOfMonth)+"/"+String.valueOf(monthOfYear+1)+"/"+String.valueOf(year);
+            if (view.getTag() != null) {
+                String text = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                if (view.getTag().equals(DATEFROM)) {
+                    startYear = year;
+                    startMonth = monthOfYear;
+                    startDay = dayOfMonth;
+                    etFromDate.setText(text);
+                    startDateText = text;
+                } else {
+                    endYear = year;
+                    endMonth = monthOfYear;
+                    endDay = dayOfMonth;
+                    etToDate.setText(text);
+                    endDateText = text;
+                }
             }
         }
     };
-
-    /*@Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-        if ( view.getId() == getId("ivStartDate", R.id.class)) {
-            etFromDate.setText(String.valueOf(dayOfMonth)+"/"+String.valueOf(month)+"/"+String.valueOf(year) );
-        } else if ( view.getId() == getId("ivEndDate", R.id.class) ) {
-            etToDate.setText(String.valueOf(dayOfMonth)+"/"+String.valueOf(month)+"/"+String.valueOf(year) );
-        }
-    }*/
-
-    /*@Override
-    public void onClick(View v) {
-        if ( v == ivStartDate ) {
-            dateFromPickerDialog.show();
-        } else if ( v == ivEndDate ) {
-            dateFromPickerDialog.show();
-        }
-    }*/
 
     public static int getId(String resourceName, Class<?> c) {
         try {
@@ -399,7 +319,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
 
     private void backToPreviousFragment() {
         //redirect back to fragment - BBSActivity;
-        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+        androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(Objects.requireNonNull(getContext())).create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setTitle(getString(R.string.alertbox_title_information));
         alertDialog.setCancelable(false);
@@ -407,16 +327,8 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
         alertDialog.setMessage(getString(R.string.message_notif_not_registered_agent));
 
 
-
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        getActivity().onBackPressed();
-                        //getActivity().finish();
-
-                    }
-                });
+                (dialog, which) -> Objects.requireNonNull(getActivity()).onBackPressed());
 
         alertDialog.show();
     }
@@ -424,12 +336,10 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
 
     private void updateOpenCloseDate() {
         //closed
-        try{
-            progdialog2             = DefinedDialog.CreateProgressDialog(getContext(), "");
+        try {
+            progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-            UUID rcUUID             = UUID.randomUUID();
-            String  dtime           = DateTimeFormat.getCurrentDateTime();
-            String shopStatus       = DefineValue.SHOP_CLOSE;
+            String shopStatus = DefineValue.SHOP_CLOSE;
 
             String extraSignature = memberId + shopId + shopStatus;
             HashMap<String, Object> params2 = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO,
@@ -441,19 +351,19 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
             params2.put(WebParams.SHOP_ID, shopId);
             params2.put(WebParams.MEMBER_ID, memberId);
 
-            String idxStartMonth   = String.valueOf(startMonth+1);
-            String idxStartDay     = String.valueOf(startDay);
-            String idxEndMonth     = String.valueOf(endMonth+1);
-            String idxEndDay       = String.valueOf(endDay);
+            String idxStartMonth = String.valueOf(startMonth + 1);
+            String idxStartDay = String.valueOf(startDay);
+            String idxEndMonth = String.valueOf(endMonth + 1);
+            String idxEndDay = String.valueOf(endDay);
 
-            if ( idxStartMonth.length() == 1) idxStartMonth = "0"+idxStartMonth;
-            if ( idxStartDay.length() == 1) idxStartDay = "0"+idxStartDay;
-            if ( idxEndMonth.length() == 1) idxEndMonth = "0"+idxEndMonth;
-            if ( idxEndDay.length() == 1) idxEndDay = "0"+idxEndDay;
+            if (idxStartMonth.length() == 1) idxStartMonth = "0" + idxStartMonth;
+            if (idxStartDay.length() == 1) idxStartDay = "0" + idxStartDay;
+            if (idxEndMonth.length() == 1) idxEndMonth = "0" + idxEndMonth;
+            if (idxEndDay.length() == 1) idxEndDay = "0" + idxEndDay;
 
 
-            params2.put(WebParams.SHOP_START_DATE, String.valueOf(startYear)+"-"+idxStartMonth+"-"+idxStartDay);
-            params2.put(WebParams.SHOP_END_DATE, String.valueOf(endYear)+"-"+idxEndMonth+"-"+idxEndDay);
+            params2.put(WebParams.SHOP_START_DATE, startYear + "-" + idxStartMonth + "-" + idxStartDay);
+            params2.put(WebParams.SHOP_END_DATE, endYear + "-" + idxEndMonth + "-" + idxEndDay);
 
             params2.put(WebParams.SHOP_STATUS, shopStatus);
             params2.put(WebParams.SHOP_REMARK, "");
@@ -468,31 +378,23 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
                                 String code = response.getString(WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                                    AlertDialog alertDialog = new AlertDialog.Builder(Objects.requireNonNull(getContext())).create();
                                     alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
                                     alertDialog.setMessage(getString(R.string.message_notif_update_tutup_manual_success));
                                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    getActivity().onBackPressed();
-                                                }
-                                            });
+                                            (dialog, which) -> Objects.requireNonNull(getActivity()).onBackPressed());
                                     alertDialog.show();
 
                                 } else {
                                     //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
 
-                                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                                    AlertDialog alertDialog = new AlertDialog.Builder(Objects.requireNonNull(getContext())).create();
                                     alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
                                     alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
                                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                }
-                                            });
+                                            (dialog, which) -> dialog.dismiss());
                                     alertDialog.show();
 
                                 }
@@ -514,8 +416,8 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
                         }
                     });
 
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:%s", e.getMessage());
         }
 
     }

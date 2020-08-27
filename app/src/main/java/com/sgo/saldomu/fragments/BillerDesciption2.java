@@ -1,14 +1,13 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -903,7 +902,7 @@ public class BillerDesciption2 extends BaseFragment {
         switchFragment(newFrag, BillerActivity.FRAG_BIL_DESCRIPTION, null, true, BillerConfirm.TAG);
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
+    private void switchFragment(Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
         if (getActivity() == null)
             return;
 

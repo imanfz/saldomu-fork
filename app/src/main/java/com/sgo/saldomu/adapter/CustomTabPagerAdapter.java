@@ -3,8 +3,9 @@ package com.sgo.saldomu.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.sgo.saldomu.fragments.FragKelolaAgent;
 import com.sgo.saldomu.fragments.FragKelolaMerchant;
@@ -23,7 +24,7 @@ public class CustomTabPagerAdapter extends FragmentPagerAdapter {
     private String[] menuItems;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
 
-    public CustomTabPagerAdapter(android.support.v4.app.FragmentManager fm, Context context, String[] menuItems, ArrayList<ShopDetail> shopDetails) {
+    public CustomTabPagerAdapter(FragmentManager fm, Context context, String[] menuItems, ArrayList<ShopDetail> shopDetails) {
         super(fm);
         this.context        = context;
         this.menuItems      = menuItems;

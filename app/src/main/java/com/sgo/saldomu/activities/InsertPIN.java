@@ -8,7 +8,7 @@ import android.graphics.Color;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -120,7 +120,7 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
             keyboardPin.hideFingerprint();
         }
 
-        InitializeToolbar();
+        initializeToolbar();
 
         final Boolean is_md5 = getIntent().getBooleanExtra(DefineValue.IS_MD5, false);
         IsForgotPassword = getIntent().getBooleanExtra(DefineValue.IS_FORGOT_PASSWORD, false);
@@ -180,7 +180,7 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
         return R.layout.insert_pin;
     }
 
-    public void InitializeToolbar() {
+    public void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.input_pin));
     }

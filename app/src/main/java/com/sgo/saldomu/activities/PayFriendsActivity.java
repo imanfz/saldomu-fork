@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.Menu;
 
 import com.sgo.saldomu.R;
@@ -27,7 +29,7 @@ public class PayFriendsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        InitializeToolbar();
+        initializeToolbar();
 
         if (findViewById(R.id.payfriends_confirm_token_content) != null) {
             if (savedInstanceState != null) {
@@ -69,7 +71,7 @@ public class PayFriendsActivity extends BaseActivity {
             }
 
             FragmentManager fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.payfriends_confirm_token_content, newFragment, "payfriendconfirmtoken");
             fragmentTransaction.commit();
             setResult(MainPage.RESULT_NORMAL);
@@ -123,7 +125,7 @@ public class PayFriendsActivity extends BaseActivity {
         return R.layout.activity_pay_friends_confirm_token;
     }
 
-    private void InitializeToolbar() {
+    private void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.payfriends_ab_title_activity));
     }

@@ -1,7 +1,7 @@
 package com.sgo.saldomu.coreclass.Singleton;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,15 +14,12 @@ import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.coreclass.CoreApp;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.OkHttpTLSSocketFactory;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.interfaces.ArrListeners;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;

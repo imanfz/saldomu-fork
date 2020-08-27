@@ -1,11 +1,9 @@
 package com.sgo.saldomu.activities;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.Menu;
@@ -73,7 +71,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         if (intent.hasExtra(DefineValue.IS_FIRST))
             is_first_time = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
 
-        InitializeToolbar();
+        initializeToolbar();
 
         et_pass_current = findViewById(R.id.current_pass_value);
         btnForgetPass = findViewById(R.id.btn_forgetPass);
@@ -100,7 +98,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         return R.layout.activity_change_password;
     }
 
-    private void InitializeToolbar() {
+    private void initializeToolbar() {
         if (is_first_time) disableHomeIcon();
         else setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_setting_change_pass));

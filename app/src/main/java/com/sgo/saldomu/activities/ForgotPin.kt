@@ -5,7 +5,6 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
@@ -54,8 +53,7 @@ class ForgotPin : BaseActivity() {
         if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")!!.isNotEmpty() && sp.getString(DefineValue.IS_POS, "N").equals("N", ignoreCase = true)) {
             et_userid.setText(NoHPFormat.formatTo08(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")))
             et_userid.isEnabled = false
-        } else if (sp.getString(DefineValue.CURR_USERID,"").isNotEmpty())
-        {
+        } else if (sp.getString(DefineValue.CURR_USERID, "")!!.isNotEmpty()) {
             et_userid.setText(NoHPFormat.formatTo08(sp.getString(DefineValue.CURR_USERID, "")))
             et_userid.isEnabled = false
         }
@@ -70,18 +68,18 @@ class ForgotPin : BaseActivity() {
 
         tv_dob_forgotpin.setOnClickListener {
             val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val yearNow = calendar.get(Calendar.YEAR)
+            val monthNow = calendar.get(Calendar.MONTH)
+            val dayNow = calendar.get(Calendar.DAY_OF_MONTH)
 
             val datePickerDialog =
                     DatePickerDialog(
                             this,
-                            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                            { _, year, monthOfYear, dayOfMonth ->
                                 dedate = dayOfMonth.toString() + "-" + (monthOfYear + 1) + "-" + year
                                 Timber.d("masuk date picker dob")
                                 try {
-                                    date_dob = (fromFormat as SimpleDateFormat).format((toFormat2 as SimpleDateFormat).parse(dedate))
+                                    date_dob = (fromFormat as SimpleDateFormat).format((toFormat2 as SimpleDateFormat).parse(dedate!!)!!)
                                     Timber.d("masuk date picker dob masuk tanggal : $date_dob")
                                 } catch (e: ParseException) {
                                     e.printStackTrace()
@@ -89,9 +87,9 @@ class ForgotPin : BaseActivity() {
 
                                 tv_dob_forgotpin.text = dedate
                             },
-                            year,
-                            month,
-                            day
+                            yearNow,
+                            monthNow,
+                            dayNow
                     )
             datePickerDialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
             datePickerDialog.show()
@@ -126,8 +124,8 @@ class ForgotPin : BaseActivity() {
             var dob: Date? = null
             var now: Date? = null
             try {
-                dob = fromFormat?.parse(date_dob)
-                now = fromFormat?.parse(dateNow)
+                dob = fromFormat?.parse(date_dob!!)
+                now = fromFormat?.parse(dateNow!!)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
@@ -147,7 +145,7 @@ class ForgotPin : BaseActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date_empty))
-                    .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             val dialog = builder.create()
             dialog.show()
             return false
@@ -155,7 +153,7 @@ class ForgotPin : BaseActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date_empty))
-                    .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             val dialog = builder.create()
             dialog.show()
             return false
@@ -163,7 +161,7 @@ class ForgotPin : BaseActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date))
-                    .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             val dialog = builder.create()
             dialog.show()
             return false
@@ -189,8 +187,8 @@ class ForgotPin : BaseActivity() {
                         override fun onResponses(response: JSONObject) {
                             try {
                                 val model = getGson().fromJson(response.toString(), jsonModel::class.java)
-                                var code = response.getString(WebParams.ERROR_CODE)
-                                var message = response.getString(WebParams.ERROR_MESSAGE)
+                                val code = response.getString(WebParams.ERROR_CODE)
+                                val message = response.getString(WebParams.ERROR_MESSAGE)
                                 Timber.d("isi response forgot pin: $response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
@@ -199,7 +197,6 @@ class ForgotPin : BaseActivity() {
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
-                                        val message = response.getString(WebParams.ERROR_MESSAGE)
                                         val test = AlertDialogLogout.getInstance()
                                         test.showDialoginActivity(this@ForgotPin, message)
                                     }
@@ -276,9 +273,9 @@ class ForgotPin : BaseActivity() {
                         when (code) {
                             WebParams.SUCCESS_CODE -> {
                                 val i = Intent(applicationContext, OTPActivity::class.java)
-                                i.putExtra(DefineValue.PROFILE_DOB,date_dob)
-                                i.putExtra(DefineValue.USER_EMAIL,response.getString(WebParams.USER_EMAIL))
-                                i.putExtra(DefineValue.CURR_USERID,et_userid.text.toString())
+                                i.putExtra(DefineValue.PROFILE_DOB, date_dob)
+                                i.putExtra(DefineValue.USER_EMAIL, response.getString(WebParams.USER_EMAIL))
+                                i.putExtra(DefineValue.CURR_USERID, et_userid.text.toString())
                                 sp.edit().remove(DefineValue.CURR_USERID).apply()
                                 startActivity(i)
                                 finish()

@@ -1,22 +1,12 @@
 package com.sgo.saldomu.activities
 
 import android.Manifest
-import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
-import android.net.Uri
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.support.v4.content.FileProvider
 import android.view.MenuItem
-import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.google.gson.JsonObject
-import com.securepreferences.SecurePreferences
-import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -28,23 +18,18 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.DefinedDialog
-import com.sgo.saldomu.interfaces.ObjListener
 import com.sgo.saldomu.interfaces.ResponseListener
-import com.sgo.saldomu.models.retrofit.SentExecCustModel
 import com.sgo.saldomu.models.retrofit.UploadFotoModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.utils.PickAndCameraUtil
 import com.sgo.saldomu.utils.camera.CameraActivity
 import com.sgo.saldomu.widgets.BaseActivity
-import com.sgo.saldomu.widgets.BlinkingEffectClass
 import com.sgo.saldomu.widgets.ProgressRequestBody
 import kotlinx.android.synthetic.main.activity_detail_member_to_verify.*
 import kotlinx.android.synthetic.main.activity_detail_member_to_verify.submit_button
-import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import java.io.File
@@ -138,12 +123,12 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                             var code = model.error_code
                             if (code == WebParams.SUCCESS_CODE) {
 
-                                DialogSuccessUploadPhoto()
+                                dialogSuccessUploadPhoto()
                             } else if (code == WebParams.LOGOUT_CODE) {
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(this@DetailMemberToVerifyActivity, message)
-                            }  else if (code == DefineValue.ERROR_9333) run {
+                            } else if (code == DefineValue.ERROR_9333) run {
                                 Timber.d("isi response app data:" + model.app_data)
                                 val appModel = model.app_data
                                 val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
@@ -152,7 +137,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                                 Timber.d("isi response maintenance:$response")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                                 alertDialogMaintenance.showDialogMaintenance(this@DetailMemberToVerifyActivity, model.error_message)
-                            }else {
+                            } else {
                                 var msg = model.error_message
 
                                 Toast.makeText(this@DetailMemberToVerifyActivity, msg, Toast.LENGTH_LONG).show()
@@ -175,10 +160,10 @@ class DetailMemberToVerifyActivity : BaseActivity() {
 
     }
 
-    private fun DialogSuccessUploadPhoto() {
+    private fun dialogSuccessUploadPhoto() {
         val dialognya = DefinedDialog.MessageDialog(this@DetailMemberToVerifyActivity, this.getString(R.string.upgrade_member),
                 this.getString(R.string.success_upgrade_member_via_agent)
-        ) { v, isLongClick -> finish() }
+        ) { _, _ -> finish() }
 
         dialognya.setCanceledOnTouchOutside(false)
         dialognya.setCancelable(false)
@@ -223,42 +208,6 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                         Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
                     }
                 }
-
-//            RESULT_CAMERA_KTP ->
-//                if (resultCode == Activity.RESULT_OK) {
-//                    if (pickAndCameraUtil!!.getCaptureImageUri() != null) {
-//                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//                            ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.getCaptureImageUri()))
-//                        } else {
-//                            ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil!!.getCurrentPhotoPath())
-//                        }
-//                    } else {
-//                        Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
-//                        camera_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
-//                    }
-//                }
-//            RESULT_CAMERA_CUST_KTP ->
-//                if (resultCode == Activity.RESULT_OK && pickAndCameraUtil!!.getCaptureImageUri() != null) {
-//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//                        ImageCompressionAsyncTask(CUST_AND_KTP_TYPE).execute(pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.getCaptureImageUri()))
-//                    } else {
-//                        ImageCompressionAsyncTask(CUST_AND_KTP_TYPE).execute(pickAndCameraUtil!!.getCurrentPhotoPath())
-//                    }
-//                } else {
-//                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
-//                    camera_selfie_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
-//                }
-//            RESULT_CAMERA_TTD ->
-//                if (resultCode == Activity.RESULT_OK && pickAndCameraUtil!!.getCaptureImageUri() != null) {
-//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//                        ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.getCaptureImageUri()))
-//                    } else {
-//                        ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil!!.getCurrentPhotoPath())
-//                    }
-//                } else {
-//                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
-//                    camera_ttd.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
-//                }
         }
     }
 
@@ -320,11 +269,6 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                 if (flag == KTP_TYPE) {
                     camera_ktp_paspor_via_agent.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
                 }
-//                else if (flag == CUST_AND_KTP_TYPE) {
-//                    camera_selfie_ktp_paspor.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
-//                } else
-//                    camera_ttd.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
-
             }
         }
 
@@ -348,16 +292,6 @@ class DetailMemberToVerifyActivity : BaseActivity() {
                     ktp = file
                     uploadFileToServer(ktp!!, KTP_TYPE)
                 }
-//                CUST_AND_KTP_TYPE -> {
-//                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_selfie_ktp_paspor)
-//                    custAndKTP = file
-//                    uploadFileToServer(custAndKTP!!, CUST_AND_KTP_TYPE)
-//                }
-//                TTD_TYPE -> {
-//                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_ttd)
-//                    ttd = file
-//                    uploadFileToServer(ttd!!, TTD_TYPE)
-//                }
             }
         }
     }

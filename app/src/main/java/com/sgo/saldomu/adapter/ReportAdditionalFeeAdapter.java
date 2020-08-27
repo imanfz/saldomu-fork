@@ -2,7 +2,7 @@ package com.sgo.saldomu.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +12,8 @@ import android.widget.TextView;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
-import com.sgo.saldomu.models.ReportListCommFeeModel;
-import com.sgo.saldomu.models.retrofit.GetReportDataModel;
 import com.sgo.saldomu.models.retrofit.ReportDataModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

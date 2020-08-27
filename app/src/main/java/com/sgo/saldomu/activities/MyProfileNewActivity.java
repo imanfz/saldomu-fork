@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -212,7 +212,7 @@ public class MyProfileNewActivity extends BaseActivity {
         contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
         isUpgradeAgent = sp.getBoolean(DefineValue.IS_UPGRADE_AGENT, false);
 
-        InitializeToolbar();
+        initializeToolbar();
 
         View v = this.findViewById(android.R.id.content);
 
@@ -255,7 +255,7 @@ public class MyProfileNewActivity extends BaseActivity {
 //        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
         if (!is_agent && !levelClass.isLevel1QAC() && !isUpgradeAgent) {
-            android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
+            androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(MyProfileNewActivity.this);
             builder1.setTitle(R.string.level_dialog_agent);
             builder1.setMessage(R.string.level_dialog_agent1);
             builder1.setCancelable(false);
@@ -287,7 +287,7 @@ public class MyProfileNewActivity extends BaseActivity {
                         }
                     });
 
-            android.support.v7.app.AlertDialog alert11 = builder1.create();
+            androidx.appcompat.app.AlertDialog alert11 = builder1.create();
             alert11.show();
         }
 
@@ -391,7 +391,7 @@ public class MyProfileNewActivity extends BaseActivity {
     }
 
 
-    private void InitializeToolbar() {
+    private void initializeToolbar() {
         if (is_first_time) disableHomeIcon();
         else {
             setActionBarIcon(R.drawable.ic_arrow_left);
@@ -401,13 +401,12 @@ public class MyProfileNewActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
-                if (!is_first_time) {
-                    closethis();
-                }
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
+            if (!is_first_time) {
+                closethis();
+            }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -416,7 +415,7 @@ public class MyProfileNewActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
 
-            dpd.show(getFragmentManager(), "Datepickerdialog");
+            dpd.show(getSupportFragmentManager(), "Datepickerdialog");
         }
     };
 

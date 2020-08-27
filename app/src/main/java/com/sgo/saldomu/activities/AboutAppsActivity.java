@@ -26,7 +26,7 @@ public class AboutAppsActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        InitializeToolbar();
+        initializeToolbar();
 
         Realm realmBBS = RealmManager.getRealmBBS();
         Realm realmBiller = RealmManager.getRealmBiller();
@@ -92,7 +92,7 @@ public class AboutAppsActivity extends BaseActivity {
         RESULT = MainPage.RESULT_NORMAL;
     }
 
-    private void InitializeToolbar(){
+    private void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.title_about_app));
     }

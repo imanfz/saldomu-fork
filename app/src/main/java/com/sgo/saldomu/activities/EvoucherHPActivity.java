@@ -2,8 +2,10 @@ package com.sgo.saldomu.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.Menu;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -21,7 +23,7 @@ public class EvoucherHPActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
 
         if (findViewById(R.id.evoucher_content) != null) {
             if (savedInstanceState != null) {
@@ -30,7 +32,7 @@ public class EvoucherHPActivity extends BaseActivity {
 
             ListEvoucherHP mFrag = new ListEvoucherHP();
             fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.evoucher_content, mFrag,"evoucher");
             fragmentTransaction.commit();
             setResult(MainPage.RESULT_NORMAL);
@@ -42,7 +44,7 @@ public class EvoucherHPActivity extends BaseActivity {
         return R.layout.activity_list_evoucher_hp;
     }
 
-    private void InitializeToolbar(){
+    private void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setToolbarTitle(getString(R.string.evoucherhp_ab_title));
     }

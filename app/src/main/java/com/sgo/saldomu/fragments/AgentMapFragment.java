@@ -13,9 +13,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -44,7 +44,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
-import com.sgo.saldomu.adapter.AgentListArrayAdapter;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
@@ -62,8 +61,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import timber.log.Timber;
 
 /**
  * Created by Lenovo Thinkpad on 12/1/2016.

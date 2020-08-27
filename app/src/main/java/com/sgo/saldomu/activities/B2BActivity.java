@@ -1,11 +1,11 @@
 package com.sgo.saldomu.activities;
 
-import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,7 +13,6 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragB2B;
-import com.sgo.saldomu.fragments.ListTransfer;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
@@ -25,7 +24,7 @@ public class B2BActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
 
         if (findViewById(R.id.b2b_activity_content) != null) {
             if (savedInstanceState != null) {
@@ -35,7 +34,7 @@ public class B2BActivity extends BaseActivity {
             newFragment = new FragB2B();
 
             fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.b2b_activity_content, newFragment,"b2b");
             fragmentTransaction.commit();
             setResult(MainPage.RESULT_NORMAL);
@@ -47,7 +46,7 @@ public class B2BActivity extends BaseActivity {
         return R.layout.activity_b2b;
     }
 
-    public void InitializeToolbar(){
+    public void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_scadm));
     }

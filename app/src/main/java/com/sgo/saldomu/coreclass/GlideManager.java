@@ -32,7 +32,7 @@ public class GlideManager {
                 .centerCrop()
                 .fitCenter()
                 .error(errorDrawable)
-                .transform(new CircleTransform(context))
+                .transform(new CircleTransform())
                 .placeholder(R.drawable.progress_animation)
                 .into(target);
     }

@@ -1,26 +1,24 @@
 package com.sgo.saldomu.dialogs;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
-import com.sgo.saldomu.entityRealm.BBSBankModel;
-import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.DateFormat;
@@ -29,9 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class PaymentRemarkDialog extends DialogFragment {
@@ -43,14 +41,10 @@ public class PaymentRemarkDialog extends DialogFragment {
     LinearLayout layoutNoId, layoutDueDate;
     Realm realmBBS;
     onTap listener;
-    BBSCommModel comm;
-    private RealmResults<BBSBankModel> listbank;
-    private ArrayAdapter<String> bankAdapter;
     private com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd;
     private String dateNow;
-    private String dedate="";
+    private String dedate;
     private String due_date;
-    private String noId="";
     private DateFormat fromFormat;
     private DateFormat toFormat2;
     private TextView tvDueDate;
@@ -71,13 +65,14 @@ public class PaymentRemarkDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        Window dialog = getDialog().getWindow();
+        Window dialog = Objects.requireNonNull(getDialog()).getWindow();
         if (dialog != null) {
             dialog.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //            dialog.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -112,7 +107,7 @@ public class PaymentRemarkDialog extends DialogFragment {
 
         Calendar c = Calendar.getInstance();
         dateNow = fromFormat.format(c.getTime());
-        Timber.d("date now profile:" + dateNow);
+        Timber.d("date now profile:%s", dateNow);
 
         dpd = DatePickerDialog.newInstance(
                 dobPickerSetListener,
@@ -121,54 +116,28 @@ public class PaymentRemarkDialog extends DialogFragment {
                 c.get(Calendar.DAY_OF_MONTH)
         );
 
-        tvDueDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dpd.show(getActivity().getFragmentManager(), "asd");
+        tvDueDate.setOnClickListener(view -> {
+            if (getFragmentManager() != null) {
+                dpd.show(getFragmentManager(), "asd");
             }
         });
 
         return v;
     }
 
-//    public void initBankList() {
-//        comm = realmBBS.where(BBSCommModel.class)
-//                .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA).findFirst();
-//
-//        listbank = realmBBS.where(BBSBankModel.class)
-//                .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
-//                .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
-//
-//        ArrayList<String> productNameArrayList = new ArrayList<>();
-//        for (int i = 0; i < listbank.size(); i++) {
-//            productNameArrayList.add(listbank.get(i).getProduct_name());
-//        }
-//
-//        bankAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_text_primary_dark, productNameArrayList);
-//        spBank.setAdapter(bankAdapter);
-//    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (inputValidation())
-                {
-                    listener.onOK(inputMsg.getText().toString(), etNoId.getText().toString(), dedate);
-                    dismiss();
-                }
-            }
-        });
-
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ok.setOnClickListener(v -> {
+            if (inputValidation())
+            {
+                listener.onOK(inputMsg.getText().toString(), etNoId.getText().toString(), dedate);
                 dismiss();
             }
         });
+
+        cancel.setOnClickListener(v -> dismiss());
     }
 
     public boolean inputValidation() {
@@ -188,7 +157,7 @@ public class PaymentRemarkDialog extends DialogFragment {
                     compare = duedate.compareTo(now);
                 }
             }
-            Timber.d("compare date:" + Integer.toString(compare));
+            Timber.d("compare date:%s", Integer.toString(compare));
         }
 
         if (!paymentCode.equalsIgnoreCase("CT")) {
@@ -203,12 +172,7 @@ public class PaymentRemarkDialog extends DialogFragment {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Alert")
                             .setMessage("Tanggal efektif harus diisi")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
+                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
                     AlertDialog dialog = builder.create();
                     dialog.show();
                     return false;
@@ -217,12 +181,7 @@ public class PaymentRemarkDialog extends DialogFragment {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Alert")
                             .setMessage("Tanggal tidak boleh kurang dari hari ini")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
+                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
                     AlertDialog dialog = builder.create();
                     dialog.show();
                     return false;
@@ -240,8 +199,8 @@ public class PaymentRemarkDialog extends DialogFragment {
             dedate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
             Timber.d("masuk date picker duedate");
             try {
-                due_date = fromFormat.format(toFormat2.parse(dedate));
-                Timber.d("masuk date picker duedate masuk tanggal : " + due_date);
+                due_date = fromFormat.format(Objects.requireNonNull(toFormat2.parse(dedate)));
+                Timber.d("masuk date picker duedate masuk tanggal : %s", due_date);
             } catch (ParseException e) {
                 e.printStackTrace();
             }

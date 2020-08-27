@@ -2,8 +2,10 @@ package com.sgo.saldomu.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.Menu;
 
 import com.securepreferences.SecurePreferences;
@@ -11,13 +13,11 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
-import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragGridBiller;
 import com.sgo.saldomu.fragments.FragGridEmoney;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import io.realm.Realm;
-import timber.log.Timber;
 
 import static com.sgo.saldomu.fragments.FragHomeNew.BILLER_TYPE_CODE_EMONEY;
 
@@ -64,7 +64,7 @@ public class GridBillerActivity extends BaseActivity {
         bundle.putString(DefineValue.BILLER_TYPE, billerType);
         fragment.setArguments(bundle);
         fragmentManager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, fragment);
         fragmentTransaction.commitAllowingStateLoss();
 

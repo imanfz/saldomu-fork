@@ -3,9 +3,9 @@ package com.sgo.saldomu.fragments;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +19,6 @@ import android.widget.ListView;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
 //import com.sgo.saldomu.activities.NFCActivity;
@@ -186,7 +185,7 @@ public class ListBillerMerchant extends ListFragment {
         switchFragment(billerInput, BillerActivity.FRAG_BIL_LIST_MERCHANT, fragName, true, BillerInput.TAG);
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
+    private void switchFragment(Fragment i, String name, String next_name, Boolean isBackstack, String tag) {
         if (getActivity() == null)
             return;
 

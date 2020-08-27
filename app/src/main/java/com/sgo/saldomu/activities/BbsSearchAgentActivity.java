@@ -18,10 +18,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -325,7 +325,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         setActionBarTitle(title);
     }
 
-    private void customInitializeToolbar()
+    private void custominitializeToolbar()
     {
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
@@ -858,7 +858,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private void displayErrorLayout(String errorDesc)
     {
         setContentView(R.layout.display_error_agent);
-        customInitializeToolbar();
+        custominitializeToolbar();
 
         errorMsg = findViewById(R.id.errorMsg);
         errorMsg.setText(errorDesc);
@@ -1148,7 +1148,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                         imgDelete.setVisibility(View.VISIBLE);
 
                                         //popup
-                                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                        androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
                                         alertDialog.setCanceledOnTouchOutside(false);
                                         alertDialog.setCancelable(false);
                                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
@@ -1157,7 +1157,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                         alertDialog.setMessage(getString(R.string.message_notif_waiting_agent_approval));
 
 
-                                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                                                 new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         dialog.dismiss();
@@ -1172,14 +1172,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                     }
 
                                 } else if (code.equals(WebParams.INPROGRESS_CODE)) {
-                                    android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                    androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
                                     alertDialog.setCanceledOnTouchOutside(false);
                                     alertDialog.setCancelable(false);
                                     alertDialog.setTitle(getString(R.string.alertbox_title_information));
                                     String tempMessage = getString(R.string.alertbox_message_search_agent_inprogress_trx);
                                     alertDialog.setMessage(tempMessage);
 
-                                    alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                    alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     dialog.dismiss();
@@ -1200,14 +1200,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                                     if (mobility.equals(DefineValue.STRING_YES)) {
 
-                                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                        androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
                                         alertDialog.setCanceledOnTouchOutside(false);
                                         alertDialog.setCancelable(false);
                                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
                                         String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
                                         alertDialog.setMessage(tempMessage);
 
-                                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                                        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
                                                 new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         dialog.dismiss();
@@ -1242,7 +1242,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
 
 
-                                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                                        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
                                                 new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         dialog.dismiss();
@@ -1781,14 +1781,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                                         handler.removeCallbacks(runnable);
 
-                                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                        androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
                                         alertDialog.setCanceledOnTouchOutside(false);
                                         alertDialog.setCancelable(false);
                                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
                                         String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
                                         alertDialog.setMessage(tempMessage);
 
-                                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                                        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
                                                 new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         dialog.dismiss();
@@ -1826,7 +1826,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                                     }
                                                 });
 
-                                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                                        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
                                                 new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         dialog.dismiss();

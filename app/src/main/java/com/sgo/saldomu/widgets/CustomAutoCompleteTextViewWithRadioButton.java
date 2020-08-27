@@ -2,7 +2,7 @@ package com.sgo.saldomu.widgets;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.widget.Button;
@@ -12,7 +12,7 @@ import android.widget.RadioGroup;
 /**
  * Created by Lenovo Thinkpad on 12/1/2016.
  */
-public class CustomAutoCompleteTextViewWithRadioButton extends android.support.v7.widget.AppCompatAutoCompleteTextView {
+public class CustomAutoCompleteTextViewWithRadioButton extends androidx.appcompat.widget.AppCompatAutoCompleteTextView {
 
     private Button btn;
     private RadioGroup locationRadioGroup;

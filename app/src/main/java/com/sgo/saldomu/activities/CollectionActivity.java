@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.Menu;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.*;
@@ -44,7 +46,7 @@ public class CollectionActivity extends BaseActivity {
             Fragment mFrag = new ListCollectionPayment();
             mFrag.setArguments(mArgs);
             FragmentManager fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.collection_content, mFrag,mBun.getString(DefineValue.COMMUNITY_NAME,""));
             fragmentTransaction.commit();
             setResult(MainPage.RESULT_NORMAL);

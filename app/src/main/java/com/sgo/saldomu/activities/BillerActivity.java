@@ -6,8 +6,10 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
@@ -26,7 +28,6 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.fragments.BillerActivityRF;
 import com.sgo.saldomu.fragments.BillerDesciption;
 import com.sgo.saldomu.fragments.BillerInput;
 import com.sgo.saldomu.fragments.ListBillerMerchant;
@@ -132,7 +133,7 @@ public class BillerActivity extends BaseActivity {
             IdNumber = intent.getStringExtra(DefineValue.BILLER_ID_NUMBER);
         }
         Timber.d("isi biller activity " + intent.getExtras().toString());
-        InitializeToolbar();
+        initializeToolbar();
 
         initializeData();
 
@@ -288,7 +289,7 @@ public class BillerActivity extends BaseActivity {
 
         mLBM.setArguments(mArgs);
         fragmentManager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.biller_content, mLBM, tag);
         fragmentTransaction.commitAllowingStateLoss();
         setResult(MainPage.RESULT_NORMAL);
@@ -368,7 +369,7 @@ public class BillerActivity extends BaseActivity {
 
     }
 
-    private void InitializeToolbar() {
+    private void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.biller_ab_title));
     }

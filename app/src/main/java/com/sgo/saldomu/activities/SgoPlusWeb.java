@@ -7,10 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.ClientCertRequest;
-import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -50,7 +47,7 @@ import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.IOUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -86,7 +83,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE, "");
@@ -242,7 +239,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
                 if (!message.isEmpty()) {
                     try {
-                        String content = IOUtils.toString(getAssets().open("webnotavailable.html"))
+                        String content = IOUtil.toString(getAssets().open("webnotavailable.html"))
                                 .replaceAll("%ERR_DESC%", message);
                         view.loadDataWithBaseURL("file:///android_asset/webnotavailable.html", content, "text/html", "UTF-8", null);
                     } catch (IOException e) {
@@ -611,7 +608,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         return super.onKeyDown(keyCode, event);
     }
 
-    private void InitializeToolbar() {
+    private void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.sgoplusweb_ab_title_saldomu));
     }

@@ -2,8 +2,10 @@ package com.sgo.saldomu.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.MenuItem;
 
 import com.securepreferences.SecurePreferences;
@@ -41,7 +43,7 @@ public class TagihActivity extends BaseActivity {
             anchorName = intent.getStringExtra(DefineValue.ANCHOR_NAME_PG);
             txIdPG = intent.getStringExtra(DefineValue.TXID_PG);
         }
-        InitializeToolbar();
+        initializeToolbar();
 
         if (findViewById(R.id.layout_tagih) != null) {
             if (savedInstanceState != null) {
@@ -64,14 +66,14 @@ public class TagihActivity extends BaseActivity {
         mContent = newFragment;
 
         fragmentManager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.layout_tagih, newFragment);
         fragmentTransaction.commitAllowingStateLoss();
         setResult(MainPage.RESULT_NORMAL);
 
     }
 
-    public void InitializeToolbar() {
+    public void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_tagih_agent));
     }
