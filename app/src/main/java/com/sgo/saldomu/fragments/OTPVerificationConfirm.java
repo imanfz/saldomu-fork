@@ -24,6 +24,7 @@ import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -50,14 +51,14 @@ public class OTPVerificationConfirm extends BaseFragment {
 
     TextView tvHpValue, tvReffIdValue;
     PinView pinView;
-    TextView tvCountDown;
+    TextView tvCountDown, tv_version;
     Button btSend, btResend;
 
     private ProgressDialog progdialog;
     private String is_new;
     private String user_id;
     private String device_name;
-    private String refference_id;
+    private String refference_id, imeiDevice, ICCIDDevice;
     private SecurePreferences sp;
     private CountDownTimer countDownTimer;
 
@@ -72,9 +73,17 @@ public class OTPVerificationConfirm extends BaseFragment {
         tvHpValue = view.findViewById(R.id.tv_hp_value);
         tvReffIdValue = view.findViewById(R.id.tv_otp_reffid);
         tvCountDown = view.findViewById(R.id.tv_countdown);
+        tv_version = view.findViewById(R.id.tv_version);
         btSend = view.findViewById(R.id.btnSend);
         btResend = view.findViewById(R.id.btnResend);
         btResend.setEnabled(false);
+        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" +BuildConfig.VERSION_CODE +")");
+
+        SMSclass test = new SMSclass(getActivity());
+        imeiDevice = test.getDeviceIMEI();
+        ICCIDDevice = test.getDeviceICCID();
+        Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
+
         initiateData();
         initiateCountDownTimerForResendOTP();
         return view;
@@ -89,20 +98,19 @@ public class OTPVerificationConfirm extends BaseFragment {
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (inputValidation())
-                {
+                if (inputValidation()) {
                     confirmOTP();
                 }
             }
         });
 
-            btResend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    pinView.setText("");
-                    getOTP();
-                }
-            });
+        btResend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pinView.setText("");
+                getOTP();
+            }
+        });
 
         if (!btResend.isEnabled())
             btResend.setBackground(getActivity().getResources().getDrawable(R.color.transparant));
@@ -113,25 +121,26 @@ public class OTPVerificationConfirm extends BaseFragment {
         countDownTimer = new CountDownTimer(300000, 1000) {
 
             String sisa;
+
             @Override
             public void onTick(long l) {
-                tvCountDown.setText("Sisa Waktu: " +(TimeUnit.MILLISECONDS.toMinutes(l)
+                tvCountDown.setText("Sisa Waktu: " + (TimeUnit.MILLISECONDS.toMinutes(l)
                         - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(l))) + ":"
-                        +(TimeUnit.MILLISECONDS.toSeconds(l)
+                        + (TimeUnit.MILLISECONDS.toSeconds(l)
                         - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l))));
                 sisa = (TimeUnit.MILLISECONDS.toMinutes(l)
                         - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(l))) + ":"
-                        +(TimeUnit.MILLISECONDS.toSeconds(l)
+                        + (TimeUnit.MILLISECONDS.toSeconds(l)
                         - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l)));
-                Timber.d("sisa ontick timer " +sisa);
+                Timber.d("sisa ontick timer " + sisa);
                 btResend.setEnabled(false);
             }
 
             @Override
             public void onFinish() {
-                    Timber.d("sisa onfinish timer " +sisa);
-                    btResend.setEnabled(true);
-                    btResend.setBackground(getActivity().getResources().getDrawable(R.drawable.rounded_background_blue));
+                Timber.d("sisa onfinish timer " + sisa);
+                btResend.setEnabled(true);
+                btResend.setBackground(getActivity().getResources().getDrawable(R.drawable.rounded_background_blue));
             }
         }.start();
     }
@@ -148,11 +157,15 @@ public class OTPVerificationConfirm extends BaseFragment {
         if (args != null) {
             user_id = args.getString(DefineValue.USER_ID, "");
             device_name = args.getString(DefineValue.DEVICE_NAME, "");
-            refference_id = args.getString(DefineValue.REFFERENCE_ID, "");
+//            refference_id = args.getString(DefineValue.REFFERENCE_ID, "");
         }
 
         tvHpValue.setText(NoHPFormat.formatTo08(user_id));
-        tvReffIdValue.setText(getString(R.string.otp_reff_id) +" : "+ refference_id);
+
+        if (refference_id==null)
+            tvReffIdValue.setText(getString(R.string.otp_reff_id) + " : " + args.getString(DefineValue.REFFERENCE_ID, ""));
+        else
+            tvReffIdValue.setText(getString(R.string.otp_reff_id) + " : " + refference_id);
     }
 
     public boolean inputValidation() {
@@ -182,13 +195,14 @@ public class OTPVerificationConfirm extends BaseFragment {
             uuid = params.get(WebParams.RC_UUID).toString();
             dateTime = params.get(WebParams.RC_DTIME).toString();
             key = uuid + dateTime + BuildConfig.APP_ID + subStringLink + MyApiClient.COMM_ID + user_id;
-            Timber.d("key : "+key);
+            Timber.d("key : " + key);
             encrypted_pin = RSA.opensslEncryptLogin(key, pin);
-            Timber.d("encrypted pin : "+encrypted_pin);
+            Timber.d("encrypted pin : " + encrypted_pin);
 
             params.put(WebParams.USER_ID, user_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.OTP, encrypted_pin);
+            params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
 
 
             Timber.d("isi params confirm OTP:" + params.toString());
@@ -216,7 +230,7 @@ public class OTPVerificationConfirm extends BaseFragment {
                                     } else {
                                         intent.putExtra(DefineValue.USER_IS_NEW, -2);
                                     }
-
+                                    intent.putExtra(DefineValue.IS_POS, "N");
                                     startActivity(intent);
                                     getActivity().finish();
 
@@ -232,7 +246,7 @@ public class OTPVerificationConfirm extends BaseFragment {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }else {
+                                } else {
                                     Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                                 }
                             } else {
@@ -255,8 +269,7 @@ public class OTPVerificationConfirm extends BaseFragment {
         }
     }
 
-    public void  getOTP()
-    {
+    public void getOTP() {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -275,15 +288,18 @@ public class OTPVerificationConfirm extends BaseFragment {
                     , new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(object, jsonModel.class);
+                            OTPModel model = getGson().fromJson(object, OTPModel.class);
+
 
                             if (!model.getOn_error()) {
 
                                 String code = model.getError_code();
-                                Timber.d("isi response get OTP : "+object.toString());
+                                Timber.d("isi response get OTP : " + object.toString());
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     pinView.setText("");
+                                    refference_id = model.getRef_id();
+                                    initiateData();
                                     initiateCountDownTimerForResendOTP();
                                     Toast.makeText(getActivity(), getString(R.string.resend_verification_code), Toast.LENGTH_LONG).show();
                                     btResend.setEnabled(false);
@@ -291,7 +307,7 @@ public class OTPVerificationConfirm extends BaseFragment {
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), model.getError_message());
-                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:" + model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
                                     AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -300,8 +316,7 @@ public class OTPVerificationConfirm extends BaseFragment {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }
-                                else {
+                                } else {
                                     Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                                 }
                             } else {
@@ -318,7 +333,7 @@ public class OTPVerificationConfirm extends BaseFragment {
                         public void onComplete() {
                             progdialog.dismiss();
                         }
-                    } );
+                    });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }

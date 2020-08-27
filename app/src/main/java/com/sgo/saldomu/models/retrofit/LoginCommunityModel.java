@@ -110,6 +110,15 @@ public class LoginCommunityModel {
     @Expose
     private String force_change_pin;
 
+    @SerializedName("is_agent_cta_mandirilkd")
+    @Expose
+    private String is_agent_cta_mandirilkd;
+
+    @SerializedName("is_agent_atc_mandirilkd")
+    @Expose
+    private String is_agent_atc_mandirilkd;
+
+
     public String getCommId() {
         return commId;
     }
@@ -336,5 +345,13 @@ public class LoginCommunityModel {
 
     public List<String> getAgent_trx_codes() {
         return agent_trx_codes;
+    }
+
+    public String getIs_agent_atc_mandirilkd() {
+        return is_agent_atc_mandirilkd;
+    }
+
+    public String getIs_agent_cta_mandirilkd() {
+        return is_agent_cta_mandirilkd;
     }
 }

@@ -24,7 +24,7 @@ class FragMandiriLP : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
-        if (sp.getBoolean(DefineValue.HAS_MANDIRI_LP_CTA, false))
+        if (sp.getString(DefineValue.IS_AGENT_TRX_CTA_MANDIRI_LP, "").equals("Y"))
             card_view_cash_in.setOnClickListener {
                 val i = Intent(activity, BBSActivity::class.java)
                 i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION)
@@ -35,7 +35,7 @@ class FragMandiriLP : BaseFragment() {
         else
             card_view_cash_in.visibility = View.GONE
 
-        if (sp.getBoolean(DefineValue.HAS_MANDIRI_LP_ATC, false))
+        if (sp.getString(DefineValue.IS_AGENT_TRX_ATC_MANDIRI_LP, "").equals("Y"))
             card_view_cash_out.setOnClickListener {
                 val i = Intent(activity, BBSActivity::class.java)
                 i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION)

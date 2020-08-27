@@ -328,7 +328,7 @@ public class RetrofitService {
         String msgnya = uuidnya + dtime + BuildConfig.APP_ID + webServiceName + commid + userphoneid + extraSignature;
         String hash = SHA.SHA256(secretKey, msgnya);
 
-        Log.d("okhttp retrofit", "msg : " + msgnya + ", hashed : " + hash + ", access key : " + secretKey);
+//        Log.d("okhttp retrofit", "msg : " + msgnya + ", hashed : " + hash + ", access key : " + secretKey);
 
         HashMap<String, Object> params = new HashMap<>();
         params.put(WebParams.RC_UUID, uuidnya);
@@ -351,7 +351,7 @@ public class RetrofitService {
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = Md5.hashMd5(uuidnya + dtime + gcmID + deviceId + appID);
-        Timber.d("isi messageSignatureFCM : " + msgnya);
+//        Timber.d("isi messageSignatureFCM : " + msgnya);
 
 
         String hash = SHA.SHA1(msgnya);
@@ -383,7 +383,7 @@ public class RetrofitService {
         String msgnya = uuidnya + dtime + BuildConfig.APP_ID + webServiceName + commid + userphoneid + extraSignature;
         String hash = SHA.SHA256(secretKey, msgnya);
 
-        Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash);
+//        Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash);
 
         HashMap<String, RequestBody> params = new HashMap<>();
         RequestBody req1 = RequestBody.create(MediaType.parse("text/plain"),

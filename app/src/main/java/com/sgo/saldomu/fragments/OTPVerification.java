@@ -13,9 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.OTPVerificationActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -52,7 +55,9 @@ public class OTPVerification extends BaseFragment {
     String user_id;
 
     Button btn_send;
+    ImageButton btn_warn;
     EditText et_phone_value;
+    private TextView tv_version;
 
     public OTPVerification() {
         // Required empty public constructor
@@ -72,8 +77,12 @@ public class OTPVerification extends BaseFragment {
 
         getDeviceName();
 
+        tv_version = v.findViewById(R.id.tv_version);
         et_phone_value = v.findViewById(R.id.userID_value);
         btn_send = v.findViewById(R.id.btn_send);
+        btn_warn = v.findViewById(R.id.btn_warn);
+
+        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" +BuildConfig.VERSION_CODE +")");
 
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +92,17 @@ public class OTPVerification extends BaseFragment {
                     user_id = NoHPFormat.formatTo62(et_phone_value.getText().toString());
                     getOTP();
                 }
+            }
+        });
+
+        btn_warn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment newFrag = new FragHelp();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(DefineValue.NOT_YET_LOGIN,true);
+                newFrag.setArguments(bundle);
+                switchFragment(newFrag, "Help", true);
             }
         });
 

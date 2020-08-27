@@ -595,6 +595,8 @@ public class DefineValue {
     public static String COMM_NAME_PG= "commNamePG";
     public static String ANCHOR_NAME_PG= "anchorNamePG";
     public static String IS_AGENT_TRX_REQ= "isAgentTrxReq";
+    public static String IS_AGENT_TRX_CTA_MANDIRI_LP= "isAgentTrxCTAMandiriLP";
+    public static String IS_AGENT_TRX_ATC_MANDIRI_LP= "isAgentTrxATCMandiriLP";
 
     public static String TEMP_ICCID = "temp_iccid";
     public static String TEMP_IMEI = "temp_imei";

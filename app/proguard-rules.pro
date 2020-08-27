@@ -33,6 +33,8 @@
 -keepattributes Signature
 -keepattributes InnerClasses
 -keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
 
 -keep public class com.sgo.saldomu.Beans.** extends com.activeandroid.Model { *; }
 -keep public class com.sgo.saldomu.Beans.** { *; }

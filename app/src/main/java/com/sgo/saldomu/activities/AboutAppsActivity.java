@@ -37,6 +37,7 @@ public class AboutAppsActivity extends BaseActivity {
         {
             StringBuilder stringBuilder = new StringBuilder();
             String app_ver = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
+            String app_ver_code = String.valueOf(this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode);
             String bbs_ver = "";
             BBSCommModel bbsCommModel = realmBBS.where(BBSCommModel.class).findFirst();
             if (bbsCommModel!=null)
@@ -63,6 +64,7 @@ public class AboutAppsActivity extends BaseActivity {
             {
                 stringBuilder.append(app_ver);
                 stringBuilder.append("-");
+                stringBuilder.append("(" +app_ver_code + ")");
             }
             if (bbs_ver!=null && !bbs_ver.isEmpty())
             {

@@ -192,8 +192,12 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
                     i.putExtra(DefineValue.NOT_YET_LOGIN, true);
                     startActivityForResult(i, MainPage.REQUEST_FINISH);
                 }
-            } else if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
-                sendFCM();
+            } else {
+//                if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
+//                sendFCM();
+                Intent i = new Intent(Perkenalan.this, OTPVerificationActivity.class);
+                i.putExtra(DefineValue.IS_POS, "N");
+                startActivity(i);
             }
 //            else
 //                showSmsDialog();
@@ -452,15 +456,16 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
             public void onResponses(JSONObject response) {
                 try {
                     String errorCode = response.getString(WebParams.ERROR_CODE);
-                    if (errorCode.equals(WebParams.SUCCESS_CODE)) {
-                        LoginModel loginModel = getGson().fromJson(response.toString(), LoginModel.class);
 
+                    LoginModel loginModel = getGson().fromJson(response.toString(), LoginModel.class);
+                    if (errorCode.equals(WebParams.SUCCESS_CODE)) {
                         Toast.makeText(getApplicationContext(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
                         setLoginProfile(loginModel);
                     } else if (errorCode.equals("0324")) {
                         sp.edit().remove(DefineValue.PREVIOUS_LOGIN_USER_ID).apply();
-                        getSMSContent();
-                        showSmsDialog();
+                        showDialog(loginModel.getError_message());
+//                        getSMSContent();
+//                        showSmsDialog();
                     } else {
                         Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                     }
@@ -555,6 +560,11 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
                     Timber.d("isi response maintenance:" + response.toString());
                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                     alertDialogMaintenance.showDialogMaintenance(Perkenalan.this, loginModel.getError_message());
+                } else if (code.equals("0324")) {
+                    sp.edit().remove(DefineValue.PREVIOUS_LOGIN_USER_ID).apply();
+                    showDialog(loginModel.getError_message());
+//                        getSMSContent();
+//                        showSmsDialog();
                 } else {
                     Toast.makeText(Perkenalan.this, loginModel.getError_message(), Toast.LENGTH_SHORT).show();
                 }

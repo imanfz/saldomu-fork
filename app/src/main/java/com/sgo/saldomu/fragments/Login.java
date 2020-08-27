@@ -31,6 +31,7 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.Perkenalan;
 import com.sgo.saldomu.activities.TermsAndCondition;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -396,7 +397,10 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         Timber.d("isi response maintenance:" + response.toString());
                         AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                         alertDialogMaintenance.showDialogMaintenance(getActivity(), loginModel.getError_message());
-                    } else {
+                    }else if (code.equals("0324")) {
+                        sp.edit().remove(DefineValue.PREVIOUS_LOGIN_USER_ID).apply();
+                        showDialogBackToPerkenalan(loginModel.getError_message());
+                    }  else {
                         Toast.makeText(getActivity(), loginModel.getError_message(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -450,6 +454,35 @@ public class Login extends BaseFragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showDialogBackToPerkenalan(String message) {
+        // Create custom dialog object
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        // Include dialog.xml file
+        dialog.setContentView(R.layout.dialog_notification);
+
+        // set values for custom dialog components - text, image and button
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
+
+        Message.setVisibility(View.VISIBLE);
+        Title.setText(getString(R.string.login_failed_attempt_title));
+        Message.setText(message);
+
+
+        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), Perkenalan.class);
+                startActivity(i);
             }
         });
 
@@ -592,6 +625,8 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.putString(DefineValue.AGENT_BILLER_CODES, billerCodes);
                         mEditor.putString(DefineValue.AGENT_TRX_CODES, trxCodes);
                         mEditor.putString(DefineValue.IS_AGENT_TRX_REQ, commModel.getIs_agent_trx_request());
+                        mEditor.putString(DefineValue.IS_AGENT_TRX_ATC_MANDIRI_LP, commModel.getIs_agent_atc_mandirilkd());
+                        mEditor.putString(DefineValue.IS_AGENT_TRX_CTA_MANDIRI_LP, commModel.getIs_agent_cta_mandirilkd());
                         mEditor.putString(DefineValue.COMM_UPGRADE_MEMBER, commModel.getComm_upgrade_member());
                         mEditor.putString(DefineValue.MEMBER_CREATED, commModel.getMember_created());
                         Timber.w("isi comm id yg bener:" + commModel.getCommId());
