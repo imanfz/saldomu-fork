@@ -61,7 +61,7 @@ public class CreateGroupActivity extends BaseActivity {
         return R.layout.activity_create_group;
     }
 
-    private void InitializeToolbar(){
+    private void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_my_groups));
     }
@@ -70,7 +70,7 @@ public class CreateGroupActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        InitializeToolbar();
+        initializeToolbar();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");

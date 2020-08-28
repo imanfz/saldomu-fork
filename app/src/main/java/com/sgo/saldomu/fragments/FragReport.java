@@ -1,17 +1,12 @@
 package com.sgo.saldomu.fragments;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -26,12 +21,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.ListFragment;
+
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.Beans.SummaryAdditionalFeeModel;
 import com.sgo.saldomu.Beans.SummaryReportFeeModel;
 import com.sgo.saldomu.R;
@@ -60,7 +57,7 @@ import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.ReportDataModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import org.json.JSONArray;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -71,6 +68,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
@@ -89,10 +87,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     public static int REPORT_ADDITIONAL_FEE = 0x0299397;
     private final String DATEFROM = "tagFrom";
     private final String DATETO = "tagTo";
-    final private String ITEM_DESC_LISTRIK = "Listrik";
-    final private String ITEM_DESC_PLN = "Voucher Token Listrik";
-    final private String ITEM_DESC_NON = "PLN Non-Taglis";
-    final private String ITEM_DESC_BPJS = "BPJS";
 
     private TextView tv_date_from, tv_date_to, sumTotalTrx, sumRelAmount, sumRelTrx, sumUnrelTrx, sumUnrelAmount, sumTotalAmount;
 
@@ -100,7 +94,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private LinearLayout layout_filter, layout_summary;
     TableLayout tableCommFee, tableAdditionalFee;
     private int height;
-    private String OrifromDate, comm_id_tagih;
+    private String OrifromDate;
     private String OritoDate;
     private ListView lv_report;
     private ViewGroup footerLayout;
@@ -108,7 +102,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private ImageView spining_progress;
     private MaterialRippleLayout btn_loadmore;
 
-    private ProgressDialog out;
+    private ProgressDialog progressDialog;
     private ListAdapter UniAdapter = null;
     private SecurePreferences sp;
     private Calendar date_from;
@@ -116,7 +110,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private Calendar bak_date_to;
     private Calendar bak_date_from;
     private Animation frameAnimation;
-    private Button btn_refresh;
     private int page;
     private int report_type;
     private PtrFrameLayout mPtrFrame;
@@ -135,7 +128,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     ReportAskListAdapter reportAskListAdapter;
     ReportCommFeeAdapter reportCommFeeAdapter;
     ReportAdditionalFeeAdapter reportAdditionalFeeAdapter;
-    private ArrayList<SummaryAdditionalFeeModel> summaryAdditionalFeeModelArrayList = new ArrayList<>();
 
     private Gson gson;
 
@@ -164,13 +156,13 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         layout_filter.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         height = layout_filter.getMeasuredHeight();
         filter_btn = getV().findViewById(R.id.filter_toggle_btn);
-        footerLayout = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.footer_loadmore, lv_report, false);
+        footerLayout = (ViewGroup) Objects.requireNonNull(getActivity()).getLayoutInflater().inflate(R.layout.footer_loadmore, lv_report, false);
         footerLayout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, ListView.LayoutParams.WRAP_CONTENT));
         spining_progress = footerLayout.findViewById(R.id.image_spinning_wheel);
         btn_loadmore = footerLayout.findViewById(R.id.btn_loadmore);
         emptyLayout = getV().findViewById(R.id.empty_layout);
         emptyLayout.setVisibility(View.GONE);
-        btn_refresh = emptyLayout.findViewById(R.id.btnRefresh);
+        Button btn_refresh = emptyLayout.findViewById(R.id.btnRefresh);
         layout_summary = getV().findViewById(R.id.table_summary);
 //        layout_summary_additionalfee = getV().findViewById(R.id.table_summary_additionalfee);
         tableCommFee = getV().findViewById(R.id.table_summary_commfee);
@@ -189,19 +181,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         filter_btn.setOnClickListener(filterBtnListener);
 
-        btn_loadmore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDataReport(page, CalToString(date_from), CalToString(date_to), false);
-            }
-        });
+        btn_loadmore.setOnClickListener(v -> getDataReport(page, CalToString(date_from), CalToString(date_to), false));
 
-        btn_refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPtrFrame.autoRefresh();
-            }
-        });
+        btn_refresh.setOnClickListener(v -> mPtrFrame.autoRefresh());
 
         date_from = StringToCal(OrifromDate);
         date_to = StringToCal(OritoDate);
@@ -213,34 +195,32 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         dedate = getString(R.string.to) + " :\n" + date_to.get(Calendar.DAY_OF_MONTH) + "-" + (date_to.get(Calendar.MONTH) + 1) + "-" + date_to.get(Calendar.YEAR);
         tv_date_to.setText(dedate);
 
-        tv_date_from.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        tv_date_from.setOnClickListener(v -> {
 
-                filter_btn.setChecked(false);
-                DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        dobPickerSetListener,
-                        date_from.get(Calendar.YEAR),
-                        date_from.get(Calendar.MONTH),
-                        date_from.get(Calendar.DAY_OF_MONTH)
-                );
+            filter_btn.setChecked(false);
+            DatePickerDialog dpd = DatePickerDialog.newInstance(
+                    dobPickerSetListener,
+                    date_from.get(Calendar.YEAR),
+                    date_from.get(Calendar.MONTH),
+                    date_from.get(Calendar.DAY_OF_MONTH)
+            );
 
-                dpd.show(getActivity().getFragmentManager(), DATEFROM);
+            if (getFragmentManager() != null) {
+                dpd.show(getFragmentManager(), DATEFROM);
             }
         });
 
-        tv_date_to.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filter_btn.setChecked(false);
-                DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        dobPickerSetListener,
-                        date_to.get(Calendar.YEAR),
-                        date_to.get(Calendar.MONTH),
-                        date_to.get(Calendar.DAY_OF_MONTH)
-                );
+        tv_date_to.setOnClickListener(v -> {
+            filter_btn.setChecked(false);
+            DatePickerDialog dpd = DatePickerDialog.newInstance(
+                    dobPickerSetListener,
+                    date_to.get(Calendar.YEAR),
+                    date_to.get(Calendar.MONTH),
+                    date_to.get(Calendar.DAY_OF_MONTH)
+            );
 
-                dpd.show(getActivity().getFragmentManager(), DATETO);
+            if (getFragmentManager() != null) {
+                dpd.show(getFragmentManager(), DATETO);
             }
         });
 
@@ -312,12 +292,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         });
 
         //getDataReport(0, from, to, true);
-        mPtrFrame.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mPtrFrame.autoRefresh(false);
-            }
-        }, 50);
+        mPtrFrame.postDelayed(() -> mPtrFrame.autoRefresh(false), 50);
     }
 
     private boolean canScroolUp() {
@@ -325,7 +300,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.filter, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -335,7 +310,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         Calendar tempCalendar = Calendar.getInstance();
 
         try {
-            tempCalendar.setTime(format.parse(src));
+            tempCalendar.setTime(Objects.requireNonNull(format.parse(src)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -367,16 +342,18 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
             String dedate;
 
-            if (view.getTag().equals(DATEFROM)) {
-                dedate = getString(R.string.from) + " :\n" + dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
-                bak_date_from = (Calendar) date_from.clone();
-                date_from.set(year, monthOfYear, dayOfMonth);
-                tv_date_from.setText(dedate);
-            } else {
-                dedate = getString(R.string.to) + " :\n" + dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
-                bak_date_to = (Calendar) date_to.clone();
-                date_to.set(year, monthOfYear, dayOfMonth);
-                tv_date_to.setText(dedate);
+            if (view.getTag() != null) {
+                if (view.getTag().equals(DATEFROM)) {
+                    dedate = getString(R.string.from) + " :\n" + dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+                    bak_date_from = (Calendar) date_from.clone();
+                    date_from.set(year, monthOfYear, dayOfMonth);
+                    tv_date_from.setText(dedate);
+                } else {
+                    dedate = getString(R.string.to) + " :\n" + dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+                    bak_date_to = (Calendar) date_to.clone();
+                    date_to.set(year, monthOfYear, dayOfMonth);
+                    tv_date_to.setText(dedate);
+                }
             }
         }
     };
@@ -387,8 +364,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 Timber.wtf("masuk ptr");
             } else if (isRefresh) {
                 Timber.wtf("masuk refresh");
-                out = DefinedDialog.CreateProgressDialog(getActivity(), null);
-                out.show();
+                progressDialog = DefinedDialog.CreateProgressDialog(getActivity(), null);
+                if (progressDialog != null) {
+                    progressDialog.show();
+                }
                 mPtrFrame.setEnabled(true);
                 mPtrFrame.setVisibility(View.VISIBLE);
             } else {
@@ -428,12 +407,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
             } else if (report_type == REPORT_ESPAY) {
                 params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
-            } else if (report_type == REPORT_ASK) {
             } else if (report_type == REPORT_FEE || report_type==REPORT_ADDITIONAL_FEE) {
                 params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
                 params.put(WebParams.OFFSET, sp.getString(DefineValue.OFFSET, ""));
             }
-            Timber.d("isi param report : " + params);
+            Timber.d("isi param report : %s", params);
             RetrofitService.getInstance().PostObjectRequest(url, params,
                     new ResponseListener() {
                         @Override
@@ -459,7 +437,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                 if (isAdded()) {
                                     if (isRefresh != null) {
                                         if (isRefresh)
-                                            out.dismiss();
+                                            progressDialog.dismiss();
                                     }
 
 
@@ -491,26 +469,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
                                         if (report_type == REPORT_ADDITIONAL_FEE) {
                                             summaryAdditionalFeeModel = new SummaryAdditionalFeeModel();
-//
-//                                            temp.optString(WebParams.SUMMARY).add(summaryAdditionalFeeModel);
-//
-//                                            setSummaryAdditionalFee(summaryAdditionalFeeModel);
-                                            JSONArray mArraySummary = new JSONArray(temp.getString(WebParams.SUMMARY));
-
-                                            for (int i = 0; i < mArraySummary.length(); i++) {
-//                                                String ccy_id = mArraySummary.getJSONObject(i).getString(WebParams.CCY_ID);
-                                                String total_trx = mArraySummary.getJSONObject(i).getString(WebParams.TOTAL_TRX);
-                                                String count_trx = mArraySummary.getJSONObject(i).getString(WebParams.COUNT_TRX);
-
-//                                                summaryAdditionalFeeModel.setCcy_id(ccy_id);
-                                                summaryAdditionalFeeModel.setTotal_transaction(count_trx);
-                                                summaryAdditionalFeeModel.setTotal_amount(total_trx);
-                                                summaryAdditionalFeeModelArrayList.add(summaryAdditionalFeeModel);
-                                            }
                                             setSummaryAdditionalFee(summaryAdditionalFeeModel);
                                         }
 
-                                        int _page = Integer.valueOf(reportListModel.getNext());
+                                        int _page = Integer.parseInt(reportListModel.getNext());
                                         if (_page != 0) {
                                             page++;
                                             setLoadMore(false);
@@ -542,12 +504,12 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                         emptyLayout.setVisibility(View.VISIBLE);
                                         NotifyDataChange();
                                     } else if (code.equals(DefineValue.ERROR_9333)) {
-                                        Timber.d("isi response app data:" + reportListModel.getApp_data());
+                                        Timber.d("isi response app data:%s", reportListModel.getApp_data());
                                         final AppDataModel appModel = reportListModel.getApp_data();
                                         AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
                                         alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                     } else if (code.equals(DefineValue.ERROR_0066)) {
-                                        Timber.d("isi response maintenance:" + object.toString());
+                                        Timber.d("isi response maintenance:%s", object.toString());
                                         AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                         alertDialogMaintenance.showDialogMaintenance(getActivity(), reportListModel.getError_message());
                                     } else {
@@ -584,14 +546,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
                         @Override
                         public void onComplete() {
-                            if (out != null && out.isShowing())
-                                out.dismiss();
+                            if (progressDialog != null && progressDialog.isShowing())
+                                progressDialog.dismiss();
 
                             filter_btn.setOnClickListener(filterBtnListener);
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -599,10 +561,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         String a = model.getAmount();
         if (model.getStatus().equalsIgnoreCase("Released")) {
             obj.setReleased_trx(obj.getReleased_trx() + 1);
-            obj.setReleased_amount(obj.getReleased_amount() + Integer.valueOf(a));
+            obj.setReleased_amount(obj.getReleased_amount() + Integer.parseInt(a));
         } else if (model.getStatus().equalsIgnoreCase("Unreleased")) {
             obj.setUnreleased_trx(obj.getUnreleased_trx() + 1);
-            obj.setUnreleased_amount(obj.getUnreleased_amount() + Integer.valueOf(a));
+            obj.setUnreleased_amount(obj.getUnreleased_amount() + Integer.parseInt(a));
         }
     }
 
@@ -651,13 +613,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
     private void getTrxStatus(final ReportDataModel _object) {
         try {
-            out = DefinedDialog.CreateProgressDialog(getActivity(), null);
-            out.show();
+            progressDialog = DefinedDialog.CreateProgressDialog(getActivity(), null);
+            if (progressDialog != null) {
+                progressDialog.show();
+            }
 
             String _tx_id = "";
             String _comm_id = "";
             String tx_type = DefineValue.EMO;
-            boolean isdetail = false;
             boolean call = true;
 
 
@@ -690,7 +653,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.TX_TYPE, tx_type);
                 params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);
-                Timber.d("isi params sent get Trx Status:" + params.toString());
+                Timber.d("isi params sent get Trx Status:%s", params.toString());
 
                 RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
                         new ResponseListener() {
@@ -708,12 +671,12 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginMain(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
                                     AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
                                     alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
+                                    Timber.d("isi response maintenance:%s", object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                     alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
                                 } else {
@@ -730,13 +693,13 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
                             @Override
                             public void onComplete() {
-                                if (out.isShowing())
-                                    out.dismiss();
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
                             }
                         });
             }
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -744,32 +707,29 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private void ShowDialog(ReportDataModel _object, GetTrxStatusReportModel response) {
         if (report_type == REPORT_SCASH) {
             String ccyId = response.getCcy_id();
-            if (_object.getBuss_scheme_code().equals("OC")) {
-
-                showReportCashOutBankDialog(sp.getString(DefineValue.USER_NAME, ""),
-                        DateTimeFormat.getCurrentDateTime(),
-                        sp.getString(DefineValue.USERID_PHONE, ""), ccyId,
-                        response);
-
-            } else if (_object.getBuss_scheme_code().equals("OR") || _object.getBuss_scheme_code().equals("ORP")) {
-                showReportBillerDialog(_object, response, ccyId);
-            } else if (_object.getBuss_scheme_code().equals("IR")) {
-                showReportBillerDialog(_object, response, ccyId);
+            switch (_object.getBuss_scheme_code()) {
+                case "OC":
+                    showReportCashOutBankDialog(sp.getString(DefineValue.USER_NAME, ""),
+                            DateTimeFormat.getCurrentDateTime(),
+                            sp.getString(DefineValue.USERID_PHONE, ""), ccyId,
+                            response);
+                    break;
+                case "OR":
+                case "ORP":
+                case "IR":
+                    showReportBillerDialog(_object, response, ccyId);
+                    break;
             }
         } else if (report_type == REPORT_ESPAY) {
             if (_object.getBuss_scheme_code().equals("BIL")) {
                 showReportEspayBillerDialog(sp.getString(DefineValue.USER_NAME, ""), response);
-//
             } else if (_object.getBuss_scheme_code().equals("CTA")) {
-                if (sp.getString(DefineValue.USERID_PHONE, "").equals(response.getMember_phone())) {
-                    showReportCTADialog(response);
-                } else {
+                if (!sp.getString(DefineValue.USERID_PHONE, "").equals(response.getMember_phone())) {
                     isMemberCTA = true;
-                    showReportCTADialog(response);
                 }
-
+                showReportCTADialog(response);
             } else if (_object.getBuss_scheme_code().equals("ATC")) {
-                Timber.d(sp.getString(DefineValue.USERID_PHONE, "") + "user_id");
+                Timber.d("%suser_id", sp.getString(DefineValue.USERID_PHONE, ""));
                 if (sp.getString(DefineValue.USERID_PHONE, "").equals(response.getMember_phone())) {
                     showReportATCAgentDialog(response);
                 } else {
@@ -823,7 +783,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
+        dialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
     private void showReportATCMemberDialog(GetTrxStatusReportModel response) {
@@ -831,7 +791,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
 
         args.putString(DefineValue.USER_NAME, response.getMember_name());
-        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response.getCreated()));
+        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(Objects.requireNonNull(response.getCreated())));
         args.putString(DefineValue.TX_ID, response.getTx_id());
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BBS_CASHOUT);
         args.putString(DefineValue.USERID_PHONE, response.getMember_phone());
@@ -842,20 +802,22 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdditional_fee()));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_amount()));
 
-        Boolean txStat = false;
+        boolean txStat = false;
         String txStatus = response.getTx_status();
-        if (txStatus.equals(DefineValue.SUCCESS)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+        if (txStatus != null) {
+            if (txStatus.equals(DefineValue.SUCCESS)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+            } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+            } else if (txStatus.equals(DefineValue.SUSPECT)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+            } else if (!txStatus.equals(DefineValue.FAILED)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+            } else {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+            }
         }
         args.putString(DefineValue.OTP_MEMBER, response.getOtp_member());
         args.putString(DefineValue.MEMBER_PHONE, response.getMember_phone());
@@ -878,14 +840,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
+        dialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
     private void showReportEMODialog(GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, response.getMember_name());
-        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response.getCreated()));
+        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(Objects.requireNonNull(response.getCreated())));
         args.putString(DefineValue.TX_ID, response.getTx_id());
         args.putString(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
         args.putString(DefineValue.USERID_PHONE, response.getMember_phone());
@@ -893,26 +855,28 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
 
-        double dAmount = Double.valueOf(response.getTx_amount());
-        double dFee = Double.valueOf(response.getAdmin_fee());
+        double dAmount = Double.parseDouble(Objects.requireNonNull(response.getTx_amount()));
+        double dFee = Double.parseDouble(Objects.requireNonNull(response.getAdmin_fee()));
         double total_amount = dAmount + dFee;
 
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
 
-        Boolean txStat = false;
+        boolean txStat = false;
         String txStatus = response.getTx_status();
-        if (txStatus.equals(DefineValue.SUCCESS)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+        if (txStatus != null) {
+            if (txStatus.equals(DefineValue.SUCCESS)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+            } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+            } else if (txStatus.equals(DefineValue.SUSPECT)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+            } else if (!txStatus.equals(DefineValue.FAILED)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+            } else {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+            }
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
@@ -929,7 +893,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
+        dialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
     private void showReportBDKDialog(GetTrxStatusReportModel response) {
@@ -937,7 +901,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
 
         args.putString(DefineValue.USER_NAME, response.getMember_name());
-        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response.getCreated()));
+        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(Objects.requireNonNull(response.getCreated())));
         args.putString(DefineValue.TX_ID, response.getTx_id());
         args.putString(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
         args.putString(DefineValue.USERID_PHONE, response.getMember_phone());
@@ -945,26 +909,28 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
 
-        double dAmount = Double.valueOf(response.getTx_amount());
-        double dFee = Double.valueOf(response.getAdmin_fee());
+        double dAmount = Double.parseDouble(Objects.requireNonNull(response.getTx_amount()));
+        double dFee = Double.parseDouble(Objects.requireNonNull(response.getAdmin_fee()));
         double total_amount = dAmount + dFee;
 
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
 
-        Boolean txStat = false;
+        boolean txStat = false;
         String txStatus = response.getTx_status();
-        if (txStatus.equals(DefineValue.SUCCESS)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+        if (txStatus != null) {
+            if (txStatus.equals(DefineValue.SUCCESS)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+            } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+            } else if (txStatus.equals(DefineValue.SUSPECT)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+            } else if (!txStatus.equals(DefineValue.FAILED)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+            } else {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+            }
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
@@ -983,14 +949,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
+        dialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
     private void showReportATCAgentDialog(GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, response.getMember_name());
-        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response.getCreated()));
+        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(Objects.requireNonNull(response.getCreated())));
         args.putString(DefineValue.TX_ID, response.getTx_id());
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BBS_CASHOUT);
         args.putString(DefineValue.USERID_PHONE, response.getMember_phone());
@@ -1001,20 +967,22 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdditional_fee()));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_amount()));
 
-        Boolean txStat = false;
+        boolean txStat = false;
         String txStatus = response.getTx_status();
-        if (txStatus.equals(DefineValue.SUCCESS)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+        if (txStatus != null) {
+            if (txStatus.equals(DefineValue.SUCCESS)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+            } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+            } else if (txStatus.equals(DefineValue.SUSPECT)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+            } else if (!txStatus.equals(DefineValue.FAILED)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+            } else {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+            }
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
@@ -1036,14 +1004,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
+        dialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
     private void showReportCTADialog(GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, response.getMember_name());
-        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response.getCreated()));
+        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(Objects.requireNonNull(response.getCreated())));
         args.putString(DefineValue.TX_ID, response.getTx_id());
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BBS_CASHIN);
         args.putString(DefineValue.USERID_PHONE, response.getMember_phone());
@@ -1054,20 +1022,22 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdditional_fee()));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_amount()));
 
-        Boolean txStat = false;
+        boolean txStat = false;
         String txStatus = response.getTx_status();
-        if (txStatus.equals(DefineValue.SUCCESS)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+        if (txStatus != null) {
+            if (txStatus.equals(DefineValue.SUCCESS)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+            } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+            } else if (txStatus.equals(DefineValue.SUSPECT)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+            } else if (!txStatus.equals(DefineValue.FAILED)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+            } else {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+            }
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
@@ -1087,31 +1057,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
-    }
-
-    private void showReportAskDialog(String date, String detail, String txId, String type, String description,
-                                     String amount, String ccyId, String remark, String alias, String status,
-                                     String reason, String buss_scheme_code, String buss_scheme_name) {
-        Bundle args = new Bundle();
-        args.putString(DefineValue.DATE_TIME, date);
-        args.putString(DefineValue.TX_ID, txId);
-        args.putString(DefineValue.DETAIL, detail);
-        args.putString(DefineValue.TYPE, type);
-        args.putString(DefineValue.REMARK, remark);
-        args.putString(DefineValue.DESCRIPTION, description);
-        args.putString(DefineValue.AMOUNT, ccyId + " " + CurrencyFormat.format(amount));
-        args.putString(DefineValue.REPORT_TYPE, DefineValue.REQUEST);
-        args.putString(DefineValue.CONTACT_ALIAS, alias);
-        args.putString(DefineValue.STATUS, status);
-        args.putString(DefineValue.REASON, reason);
-        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
-        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
-
-        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
-        dialog.setArguments(args);
-//        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
+        dialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
     private void showReportBillerDialog(ReportDataModel _object, GetTrxStatusReportModel response, String ccyId) {
@@ -1135,20 +1081,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_amount()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
 
-        showBillerDialog(args, response.getTx_status(), response.getTx_remark());
+        showBillerDialog(args, Objects.requireNonNull(response.getTx_status()), response.getTx_remark());
     }
 
     private void showReportEspayBillerDialog(String name, GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
-        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response.getCreated()));
+        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(Objects.requireNonNull(response.getCreated())));
         args.putString(DefineValue.TX_ID, response.getTx_id());
         args.putString(DefineValue.USERID_PHONE, response.getMember_cust_id());
         args.putString(DefineValue.DENOM_DATA, response.getPayment_name());
-        double amount = Double.parseDouble(response.getTotal_amount()) -
-                Double.parseDouble(response.getAdmin_fee()) -
-                Double.parseDouble(response.getAdditional_fee());
+        double amount = Double.parseDouble(Objects.requireNonNull(response.getTotal_amount())) -
+                Double.parseDouble(Objects.requireNonNull(response.getAdmin_fee())) -
+                Double.parseDouble(Objects.requireNonNull(response.getAdditional_fee()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER);
         args.putString(DefineValue.PRODUCT_NAME, response.getProduct_name());
@@ -1158,20 +1104,22 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 //        args.putString(DefineValue.DESTINATION_REMARK, userId);
 //        args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
 
-        Boolean txStat = false;
+        boolean txStat = false;
         String txStatus = response.getTx_status();
-        if (txStatus.equals(DefineValue.SUCCESS)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
-            txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+        if (txStatus != null) {
+            if (txStatus.equals(DefineValue.SUCCESS)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+            } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
+                txStat = true;
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+            } else if (txStatus.equals(DefineValue.SUSPECT)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+            } else if (!txStatus.equals(DefineValue.FAILED)) {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+            } else {
+                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+            }
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
@@ -1187,15 +1135,13 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         if (!String.valueOf(response.getBiller_detail()).equalsIgnoreCase("")) {
             JsonParser jsonParser = new JsonParser();
             Gson gson = new Gson();
-            args.putString(DefineValue.BILLER_DETAIL, jsonParser.parse(gson.toJson(response.getBiller_detail())).toString()
-//                response.getBiller_detail().getPhoneNumber()
-            );
+            args.putString(DefineValue.BILLER_DETAIL, jsonParser.parse(gson.toJson(response.getBiller_detail())).toString());
         }
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.getBuss_scheme_name());
 
         dialog.setArguments(args);
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        FragmentTransaction ft = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
         ft.add(dialog, ReportBillerDialog.TAG);
         ft.commitAllowingStateLoss();
     }
@@ -1219,7 +1165,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.TOTAL_AMOUNT)));
             args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, true);
 
-            Boolean txStat = false;
+            boolean txStat = false;
             if (txStatus.equals(DefineValue.SUCCESS)) {
                 txStat = true;
                 args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
@@ -1253,7 +1199,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             dialog.setArguments(args);
 //        dialog.show(getFragmentManager(), "report biller dialog");
 //        dialog.setTargetFragment(this, 0);
-            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            FragmentTransaction ft = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
             ft.add(dialog, ReportBillerDialog.TAG);
             ft.commitAllowingStateLoss();
         } catch (JSONException e) {
@@ -1264,7 +1210,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private void showBillerDialog(Bundle args, String txStatus, String txRemark) {
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
 
-        Boolean txStat = false;
+        boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
@@ -1284,7 +1230,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
+        dialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), ReportBillerDialog.TAG);
 
     }
 
@@ -1303,7 +1249,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.ADMIN_FEE)));
             args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.optString(WebParams.TOTAL_AMOUNT)));
 
-            Boolean txStat = false;
+            boolean txStat = false;
             if (txStatus.equals(DefineValue.SUCCESS)) {
                 txStat = true;
                 args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
@@ -1330,7 +1276,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             dialog.setArguments(args);
 //        dialog.show(getFragmentManager(), "report biller dialog");
 //        dialog.setTargetFragment(this, 0);
-            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            FragmentTransaction ft = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
             ft.add(dialog, ReportBillerDialog.TAG);
             ft.commitAllowingStateLoss();
         } catch (JSONException e) {
@@ -1348,13 +1294,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_filter:
-                slidingView(layout_filter);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_filter) {
+            slidingView(layout_filter);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private View getV() {

@@ -40,8 +40,8 @@ class MyQRActivity : BaseActivity() {
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, resources.displayMetrics.widthPixels)
         iv_qr.layoutParams = layoutParams
 
-        sourceAcct = intent.getStringExtra("sourceAcct")
-        sourceAcctName = intent.getStringExtra("sourceAcctName")
+        sourceAcct = intent.getStringExtra(DefineValue.SOURCE_ACCT)!!
+        sourceAcctName = intent.getStringExtra(DefineValue.SOURCE_ACCT_NAME)!!
         imageBitmap = ScanQRUtils.getInstance(this).generateQRCode(DefineValue.QR_TYPE_FROM_DEFAULT_ACCOUNT, sourceAcct, sourceAcctName)
         name_text_view.text = sourceAcctName
         phone_number_text_view.text = sourceAcct
@@ -84,17 +84,15 @@ class MyQRActivity : BaseActivity() {
     }
 
     private fun getOutputMediaFile(): File? {
-        var mediaStorageDir = File(Environment.getExternalStorageDirectory().path, this.getString(R.string.appname) + "Image")
+        val mediaStorageDir = File(Environment.getExternalStorageDirectory().path, this.getString(R.string.appname) + "Image")
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 return null
             }
         }
-        var mediaFile: File
         val mImageName: String = "SALDOMU_" + System.currentTimeMillis() + ".jpg"
-        mediaFile = File(mediaStorageDir.path + File.separator + mImageName)
-        return mediaFile
+        return File(mediaStorageDir.path + File.separator + mImageName)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

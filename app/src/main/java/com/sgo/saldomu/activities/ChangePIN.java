@@ -50,7 +50,7 @@ public class ChangePIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        InitializeToolbar();
+        initializeToolbar();
 
         View v = this.findViewById(android.R.id.content);
         assert v != null;
@@ -67,7 +67,7 @@ public class ChangePIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
         return R.layout.change_pin;
     }
 
-    private void InitializeToolbar() {
+    private void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.changepin_ab_changepin));
     }

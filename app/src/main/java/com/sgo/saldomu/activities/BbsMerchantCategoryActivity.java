@@ -1,8 +1,10 @@
 package com.sgo.saldomu.activities;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.os.Bundle;
 
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -24,7 +26,7 @@ public class BbsMerchantCategoryActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
 
         memberId        = getIntent().getStringExtra("memberId");
         shopId          = getIntent().getStringExtra("shopId");
@@ -54,7 +56,7 @@ public class BbsMerchantCategoryActivity extends BaseActivity {
             }
 
             fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.category_content, newFragment, "merchant_category");
             fragmentTransaction.commit();
             setResult(MainPage.RESULT_NORMAL);
@@ -67,7 +69,7 @@ public class BbsMerchantCategoryActivity extends BaseActivity {
         return R.layout.activity_bbs_merchant_category;
     }
 
-    private void InitializeToolbar() {
+    private void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.merchant_category));
     }

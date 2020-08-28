@@ -4,18 +4,17 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.Menu;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivityOTP;
-import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragCashOut;
-import com.sgo.saldomu.fragments.FragCashOutAgen;
-import com.sgo.saldomu.fragments.FragCashoutMember;
 import com.sgo.saldomu.interfaces.TransactionResult;
 
 import timber.log.Timber;
@@ -36,7 +35,7 @@ public class CashoutActivity extends BaseActivityOTP implements TransactionResul
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
 
         if (findViewById(R.id.cashout_confirm_content) != null) {
             if (savedInstanceState != null) {
@@ -63,7 +62,7 @@ public class CashoutActivity extends BaseActivityOTP implements TransactionResul
 //                newFragment = new FragCashoutMember();
 
             fragmentManager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.cashout_confirm_content, newFragment,"cashout");
             fragmentTransaction.commit();
             setResult(MainPage.RESULT_NORMAL);
@@ -87,7 +86,7 @@ public class CashoutActivity extends BaseActivityOTP implements TransactionResul
         return R.layout.activity_cashout_confirm;
     }
 
-    public void InitializeToolbar(){
+    public void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_cash_out));
     }

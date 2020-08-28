@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,7 +45,6 @@ import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.BlinkingEffectClass;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -143,7 +142,7 @@ public class UpgradeAgentActivity extends BaseActivity {
 //            }
 //        }
 
-        InitializeToolbar();
+        initializeToolbar();
 
         cb_termsncond.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -640,7 +639,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         this.finish();
     }
 
-    private void InitializeToolbar() {
+    private void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.upgrade_agent));
     }

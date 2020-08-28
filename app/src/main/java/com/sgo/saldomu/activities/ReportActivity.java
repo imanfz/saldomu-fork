@@ -1,9 +1,9 @@
 package com.sgo.saldomu.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.ListFragment;
-import android.support.v4.view.ViewPager;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.ListFragment;
+import androidx.viewpager.widget.ViewPager;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
@@ -40,7 +40,7 @@ public class ReportActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
@@ -106,7 +106,7 @@ public class ReportActivity extends BaseActivity {
 
 
 
-    public void InitializeToolbar(){
+    public void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_report));
     }

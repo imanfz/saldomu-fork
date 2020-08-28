@@ -1,10 +1,9 @@
 package com.sgo.saldomu.fragments;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.BbsMemberListAdapter;
 import com.sgo.saldomu.adapter.GridViewIconAdapter;
 import com.sgo.saldomu.adapter.KelolaAgentAdapter;

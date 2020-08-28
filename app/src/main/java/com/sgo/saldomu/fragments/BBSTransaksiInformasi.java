@@ -9,9 +9,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -804,7 +804,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     }
 
     public void dialogJoinLKD() {
-        android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
         builder1.setTitle(R.string.join_lkd);
         builder1.setMessage(message);
         builder1.setCancelable(true);
@@ -825,14 +825,14 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                     }
                 });
 
-        android.support.v7.app.AlertDialog alert11 = builder1.create();
+        androidx.appcompat.app.AlertDialog alert11 = builder1.create();
         alert11.show();
     }
 
     public void dialogBenefLKD(String _tx_id, String _product_code, String _product_name, String _bank_code,
                                String _amount, String _fee, String _totalAmount, String _bank_name, String _max_resend_token,
                                String _benef_acct_no, String _benef_acct_name, String no_benef) {
-        android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
         builder1.setTitle(R.string.c2a_lkd);
         builder1.setMessage("Transfer ke : ");
         builder1.setCancelable(true);
@@ -859,7 +859,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                     }
                 });
 
-        android.support.v7.app.AlertDialog alert11 = builder1.create();
+        androidx.appcompat.app.AlertDialog alert11 = builder1.create();
         alert11.show();
     }
 

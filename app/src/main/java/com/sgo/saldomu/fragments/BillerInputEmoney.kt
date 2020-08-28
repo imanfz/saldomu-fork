@@ -9,15 +9,14 @@ import android.nfc.Tag
 import android.nfc.tech.IsoDep
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v4.app.FragmentManager
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.FragmentManager
 import com.google.gson.JsonObject
 import com.sgo.saldomu.Beans.Biller_Data_Model
 import com.sgo.saldomu.Beans.Denom_Data_Model
@@ -194,7 +193,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         billerinput_layout_payment_method.visibility = View.GONE
         billerinput_layout_detail.visibility = View.GONE
 
-        favorite_switch.setOnCheckedChangeListener { buttonView, isChecked ->
+        favorite_switch.setOnCheckedChangeListener { _, isChecked ->
             notes_edit_text.visibility = if (isChecked) View.VISIBLE else View.GONE
             notes_edit_text.isEnabled = isChecked
         }
@@ -241,7 +240,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
             for (i in listDenomData!!.indices) {
                 denomData?.add(listDenomData!![i].item_name)
             }
-            denomAdapter = ArrayAdapter<String>(context!!, android.R.layout.simple_spinner_item, denomData)
+            denomAdapter = ArrayAdapter<String>(context!!, android.R.layout.simple_spinner_item, denomData!!)
             denomAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             billerinput_spinner_denom.adapter = denomAdapter
             billerinput_spinner_denom.onItemSelectedListener = spinnerDenomListener
@@ -258,7 +257,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                 } else
                     paymentData?.add(listBankBiller!![i].product_name)
             }
-            paymentAdapter = ArrayAdapter<String>(context!!, android.R.layout.simple_spinner_item, paymentData)
+            paymentAdapter = ArrayAdapter<String>(context!!, android.R.layout.simple_spinner_item, paymentData!!)
             paymentAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             billerinput_spinner_payment_options.adapter = paymentAdapter
             billerinput_spinner_payment_options.onItemSelectedListener = spinnerPaymentListener
@@ -266,8 +265,8 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> {
                 if (fragmentManager!!.backStackEntryCount > 0)
                     fragmentManager!!.popBackStack()
@@ -563,7 +562,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                                     sentInquiryBiller()
                                 }
                                 dialogFrag.setTargetFragment(this@BillerInputEmoney, 0)
-                                dialogFrag.show(activity?.supportFragmentManager, AlertDialogFrag.TAG)
+                                dialogFrag.show(activity!!.supportFragmentManager, AlertDialogFrag.TAG)
                             }
                             "0059" -> showDialogSMS(bankName)
                             else -> {
@@ -585,7 +584,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
     }
 
     private fun showDialogSMS(bankName: String?) {
-        val dialog = Dialog(activity)
+        val dialog = Dialog(activity!!)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
@@ -598,14 +597,14 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         if (levelClass.isLevel1QAC)
             btn_dialog_notification_ok.text = getString(R.string.ok)
 
-        btn_dialog_notification_ok.setOnClickListener(View.OnClickListener {
+        btn_dialog_notification_ok.setOnClickListener {
             if (!levelClass.isLevel1QAC) {
                 val intent = Intent(activity, RegisterSMSBankingActivity::class.java)
                 intent.putExtra(DefineValue.BANK_NAME, bankName)
                 switchActivity(intent)
             }
             dialog.dismiss()
-        })
+        }
     }
 
     private fun switchActivity(intent: Intent) {
@@ -622,7 +621,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
 
     @SuppressLint("SetTextI18n")
     private fun showDialog() {
-        val dialog = Dialog(activity)
+        val dialog = Dialog(activity!!)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
@@ -688,7 +687,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
     private fun onSaveToFavorite() {
         showProgressDialog()
         extraSignature = custId + billerTypeCode + "BIL"
-        Log.e("extraSignature params ", extraSignature)
+        Timber.tag("extraSignature params ").e(extraSignature)
         val url = MyApiClient.LINK_TRX_FAVORITE_SAVE
         val params = RetrofitService.getInstance().getSignature(url, extraSignature)
         params[WebParams.USER_ID] = userPhoneID
@@ -699,14 +698,14 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         params[WebParams.NOTES] = notes_edit_text.text.toString()
         params[WebParams.DENOM_ITEM_ID] = itemId
 
-        Log.e("params ", params.toString())
+        Timber.tag("params ").e(params.toString())
 
         RetrofitService.getInstance().PostJsonObjRequest(url, params,
                 object : ObjListeners {
                     override fun onResponses(response: JSONObject) {
                         try {
                             val model = RetrofitService.getInstance().gson.fromJson(response.toString(), jsonModel::class.java)
-                            Log.e("onResponses ", response.toString())
+                            Timber.tag("onResponses ").e(response.toString())
                             val code = response.getString(WebParams.ERROR_CODE)
                             val message = response.getString(WebParams.ERROR_MESSAGE)
                             when (code) {
@@ -733,7 +732,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                     }
 
                     override fun onError(throwable: Throwable) {
-                        Log.e("onResponses ", throwable.localizedMessage)
+                        Timber.tag("onResponses ").e(throwable.localizedMessage!!)
                         throwable.printStackTrace()
                     }
 
@@ -772,7 +771,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                             when (code) {
                                 WebParams.SUCCESS_CODE -> {
                                     getTrxStatus()
-                                    setResultActivity(MainPage.RESULT_BALANCE)
+                                    setResultActivity()
                                 }
                                 WebParams.LOGOUT_CODE -> {
                                     val test = AlertDialogLogout.getInstance()
@@ -804,16 +803,16 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                         }
                     })
         } catch (e: Exception) {
-            Timber.d("httpclient:" + e.message)
+            Timber.d("httpclient:%s", e.message)
         }
     }
 
-    private fun setResultActivity(result: Int) {
+    private fun setResultActivity() {
         if (activity == null)
             return
 
         val fca = activity as BillerActivity?
-        fca!!.setResultActivity(result)
+        fca!!.setResultActivity(MainPage.RESULT_BALANCE)
     }
 
     private fun getTrxStatus() {
@@ -987,11 +986,11 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
 
             activity!!.runOnUiThread {
 
-                Log.d("SELECT_RESPONSE : ", toHex(cardSelectResponse))
+                Timber.tag("SELECT_RESPONSE : ").d(toHex(cardSelectResponse))
                 cardSelect = toHex(cardSelectResponse)
 
-                if(cardSelect.equals("9000")){
-                    Log.d("CARD_INFO : ", toHex(cardInfoResponse))
+                if(cardSelect.equals("9000")) {
+                    Timber.tag("CARD_INFO : ").d(toHex(cardInfoResponse))
                     cardInfo = toHex(cardInfoResponse)
                     cardNumber = cardInfo!!.substring(0, 16)
                     billerinput_et_id_remark.setText(cardNumber)
@@ -1000,7 +999,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                 }
             }
         } catch (e: IOException) {
-            e.printStackTrace();
+            e.printStackTrace()
         }
     }
 }

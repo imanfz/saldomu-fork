@@ -14,7 +14,8 @@
         android:noHistory="true"
         android:theme="@style/Theme.MyTheme"
         android:usesCleartextTraffic="true"
-        tools:replace="android:label,allowBackup,theme">
+        android:appComponentFactory="androidx"
+        tools:replace="android:label,allowBackup,appComponentFactory,theme">
         <activity
             android:name=".activities.OTPActivity"
             android:screenOrientation="portrait" />
@@ -490,7 +491,7 @@
             android:resource="@color/colorPrimary" />
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:enabled="true"
             android:exported="false"

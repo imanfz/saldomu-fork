@@ -58,40 +58,40 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
         initializeToolbar();
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        tbOpenClosed    = (ToggleButton) findViewById(R.id.tbOpenClosed);
+        tbOpenClosed = (ToggleButton) findViewById(R.id.tbOpenClosed);
         tbOpenClosed.setTextOn(getString(R.string.shop_open));
         tbOpenClosed.setTextOff(getString(R.string.shop_close));
 
 
         llSetupHourForm = (LinearLayout) findViewById(R.id.llSetupHourForm);
-        llSetupHourFormEnd  = (LinearLayout) findViewById(R.id.llSetupHourFormEnd);
-        llHourForm      = (LinearLayout) findViewById(R.id.llHourForm);
-        tvOpen24Hours      = (TextView) findViewById(R.id.tvOpen24Hours);
+        llSetupHourFormEnd = (LinearLayout) findViewById(R.id.llSetupHourFormEnd);
+        llHourForm = (LinearLayout) findViewById(R.id.llHourForm);
+        tvOpen24Hours = (TextView) findViewById(R.id.tvOpen24Hours);
         tvOpen24Hours.setText(getString(R.string.set_shop_closing_date));
 
         llSetupHourForm.setVisibility(View.GONE);
         llSetupHourFormEnd.setVisibility(View.GONE);
         llHourForm.setVisibility(View.GONE);
 
-        shopStatus      = DefineValue.SHOP_CLOSE;
-        shopRemark      = "";
-        shopStartOpenHour   = "";
-        shopEndOpenHour     = "";
+        shopStatus = DefineValue.SHOP_CLOSE;
+        shopRemark = "";
+        shopStartOpenHour = "";
+        shopEndOpenHour = "";
 
-        memberId        = getIntent().getStringExtra("memberId");
-        shopId          = getIntent().getStringExtra("shopId");
+        memberId = getIntent().getStringExtra("memberId");
+        shopId = getIntent().getStringExtra("shopId");
 
-        tvStartHour     = (TextView) findViewById(R.id.tvStartHour);
-        tvEndHour       = (TextView) findViewById(R.id.tvEndHour);
+        tvStartHour = (TextView) findViewById(R.id.tvStartHour);
+        tvEndHour = (TextView) findViewById(R.id.tvEndHour);
 
-        btnShopDate     = (Button) findViewById(R.id.btnShopDate);
+        btnShopDate = (Button) findViewById(R.id.btnShopDate);
         btnShopDate.setOnClickListener(btnShopDateListener);
 
-        btnOpenHour     = (Button) findViewById(R.id.btnOpenHour);
+        btnOpenHour = (Button) findViewById(R.id.btnOpenHour);
         btnOpenHour.setOnClickListener(btnOpenHourListener);
 
-        btnProses       = (Button) findViewById(R.id.btnProses);
-        tvDate          = (TextView) findViewById(R.id.tvDate);
+        btnProses = (Button) findViewById(R.id.btnProses);
+        tvDate = (TextView) findViewById(R.id.tvDate);
 
         tbOpenClosed.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -124,9 +124,9 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
                             Toast.makeText(getApplication(), R.string.err_empty_shop_date, Toast.LENGTH_SHORT).show();
                         }
 
-                        if ( !isClosed ) {
+                        if (!isClosed) {
 
-                            if ( shopStartOpenHour.equals("") || shopEndOpenHour.equals("") ) {
+                            if (shopStartOpenHour.equals("") || shopEndOpenHour.equals("")) {
                                 hasError = true;
                                 Toast.makeText(getApplication(), R.string.err_empty_shop_hour, Toast.LENGTH_SHORT).show();
                             }
@@ -148,7 +148,7 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
                             params.put(WebParams.MEMBER_ID, memberId);
                             params.put(WebParams.SHOP_STATUS, shopStatus);
                             params.put(WebParams.SHOP_REMARK, shopRemark);
-                            if( !isClosed ) {
+                            if (!isClosed) {
                                 params.put(WebParams.SHOP_START_OPEN_HOUR, shopStartOpenHour);
                                 params.put(WebParams.SHOP_END_OPEN_HOUR, shopEndOpenHour);
                             }
@@ -205,7 +205,7 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
             args.putSerializable("selectDates", selectedDates);
             args.putSerializable("listDates", listDates);
             openCloseDatePickerFragment.setArguments(args);
-            openCloseDatePickerFragment.show(getFragmentManager(), OpenCloseDatePickerFragment.TAG  );
+            openCloseDatePickerFragment.show(getFragmentManager(), OpenCloseDatePickerFragment.TAG);
         }
     };
 
@@ -217,13 +217,13 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
             Bundle bundle = new Bundle();
             bundle.putString("startHour", shopStartOpenHour);
             bundle.putString("endHour", shopEndOpenHour);
-            bundle.putInt("iStartHour", iStartHour );
-            bundle.putInt("iStartMinute", iStartMinute );
-            bundle.putInt("iEndHour", iEndHour );
-            bundle.putInt("iEndMinute", iEndMinute );
+            bundle.putInt("iStartHour", iStartHour);
+            bundle.putInt("iStartMinute", iStartMinute);
+            bundle.putInt("iEndHour", iEndHour);
+            bundle.putInt("iEndMinute", iEndMinute);
             openHourPickerFragment.setArguments(bundle);
 
-            openHourPickerFragment.show(getFragmentManager(), OpenHourPickerFragment.TAG  );
+            openHourPickerFragment.show(getFragmentManager(), OpenHourPickerFragment.TAG);
         }
     };
 
@@ -255,7 +255,7 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
     public void onOkDatePickerClick(ArrayList<String> selectedDates, ArrayList<Date> listDates) {
         this.selectedDates = selectedDates;
 
-        ArrayList<String>   tempDates = new ArrayList<>();
+        ArrayList<String> tempDates = new ArrayList<>();
         //Collections.sort(listDates);
 
         /*for(int i = 0; i < listDates.size(); i++) {
@@ -265,7 +265,7 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
 
         ArrayList<String> tempStringDates = new ArrayList<>();
 
-        for(int j = 0; j < listDates.size(); j++ ) {
+        for (int j = 0; j < listDates.size(); j++) {
             //String testonly  = listDates.get(j).toString();
             tempStringDates.add(DateTimeFormat.convertDatetoString(listDates.get(j), "dd MMMM yyyy"));
 

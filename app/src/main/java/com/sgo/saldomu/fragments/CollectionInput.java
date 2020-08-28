@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -559,7 +559,7 @@ public class CollectionInput extends BaseFragment {
     }
 
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack) {
+    private void switchFragment(Fragment i, String name, Boolean isBackstack) {
         if (getActivity() == null)
             return;
 

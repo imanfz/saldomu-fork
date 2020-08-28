@@ -8,10 +8,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.securepreferences.SecurePreferences
 import com.sgo.saldomu.R
-import com.sgo.saldomu.coreclass.CustomSecurePref
-import java.util.ArrayList
+import java.util.*
 
 class GridMenu(private val mContext: Context, text: ArrayList<String>, drawable: ArrayList<Drawable>) : BaseAdapter() {
     private var text = ArrayList<String>()
@@ -35,8 +33,8 @@ class GridMenu(private val mContext: Context, text: ArrayList<String>, drawable:
         return position.toLong()
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var convertView = convertView
+    override fun getView(position: Int, view: View?, parent: ViewGroup): View {
+        var convertView = view
         val holder: ViewHolder
         if (convertView == null) {
             holder = ViewHolder()
@@ -56,9 +54,9 @@ class GridMenu(private val mContext: Context, text: ArrayList<String>, drawable:
         return convertView
     }
 
-    private inner class ViewHolder {
-        internal var textView: TextView? = null
-        internal var imageView: ImageView? = null
+    private class ViewHolder {
+        var textView: TextView? = null
+        var imageView: ImageView? = null
     }
 
 }

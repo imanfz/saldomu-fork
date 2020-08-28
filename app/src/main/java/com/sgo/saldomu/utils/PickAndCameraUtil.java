@@ -3,28 +3,21 @@ package com.sgo.saldomu.utils;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.FileProvider;
 
-import com.desmond.squarecamera.CameraActivity;
 import com.sgo.saldomu.BuildConfig;
-import com.sgo.saldomu.CameraViewActivity;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.GeneralizeImage;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 import timber.log.Timber;
 

@@ -164,7 +164,9 @@ private EditText et_email;
         tv_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dpd.show(getActivity().getFragmentManager(), "Datepickerdialog");
+                if (getFragmentManager() != null) {
+                    dpd.show(getFragmentManager(), "Datepickerdialog");
+                }
             }
         });
 

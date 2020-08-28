@@ -1,15 +1,10 @@
 package com.sgo.saldomu.activities;
 
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
@@ -28,16 +25,12 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.CheckCardBalanceModel;
 import com.sgo.saldomu.models.retrofit.UpdateCardModel;
 import com.sgo.saldomu.utils.Converter;
-import com.sgo.saldomu.utils.NFCManager;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.HashMap;
 
 import timber.log.Timber;
-
-import static org.apache.commons.io.Charsets.UTF_16BE;
 
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallback {
@@ -85,7 +78,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 //        nfcMger = new NFCManager(this);
 
@@ -95,7 +88,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
         lyt_emonCard = findViewById(R.id.lyt_emonCard);
     }
 
-    private void InitializeToolbar() {
+    private void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle("Cek Saldo");
     }

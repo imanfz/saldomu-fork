@@ -12,10 +12,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.text.Html;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -207,7 +207,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                 new View.OnClickListener() {
                     public void onClick(View v) {
 
-                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsMapViewByMemberActivity.this).create();
+                        androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(BbsMapViewByMemberActivity.this).create();
                         alertDialog.setCanceledOnTouchOutside(false);
                         alertDialog.setCancelable(false);
                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
@@ -217,7 +217,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
                         alertDialog.setMessage(newCancelMessage);
 
-                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         //dialog.dismiss();

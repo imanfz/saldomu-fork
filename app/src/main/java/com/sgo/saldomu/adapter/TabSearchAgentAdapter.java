@@ -3,9 +3,9 @@ package com.sgo.saldomu.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import com.sgo.saldomu.fragments.AgentListFragment;
 import com.sgo.saldomu.fragments.AgentMapFragment;
 import com.sgo.saldomu.models.ShopDetail;
@@ -26,7 +26,7 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
     private String mobility, completeAddress;
     private AgentListFragment.OnListAgentItemClick mOnListAgentItemClickMap;
 
-    public TabSearchAgentAdapter(android.support.v4.app.FragmentManager fm, Context context, String[] menuItems, ArrayList<ShopDetail> shopDetails,
+    public TabSearchAgentAdapter(FragmentManager fm, Context context, String[] menuItems, ArrayList<ShopDetail> shopDetails,
                                  Double currentLatitude, Double currentLongitude, String mobility, String completeAddress) {
         super(fm);
         this.fm = fm;

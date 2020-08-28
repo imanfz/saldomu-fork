@@ -1,10 +1,9 @@
 package com.sgo.saldomu;
 
-import android.app.Activity;
 import android.hardware.Camera;
 import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;

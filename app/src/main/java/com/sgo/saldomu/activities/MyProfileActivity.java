@@ -12,7 +12,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,7 +130,7 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
         isLevel1 = i == 1;
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL,false);
 
-        InitializeToolbar();
+        initializeToolbar();
 
         View v = this.findViewById(android.R.id.content);
 
@@ -248,7 +248,7 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
         return R.layout.activity_myprofile;
     }
 
-    private void InitializeToolbar(){
+    private void initializeToolbar(){
         if(is_first_time)disableHomeIcon();
         else {
             setActionBarIcon(R.drawable.ic_arrow_left);
@@ -440,7 +440,7 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
         @Override
         public void onClick(View v) {
 
-            dpd.show(getFragmentManager(), "Datepickerdialog");
+            dpd.show(getSupportFragmentManager(), "Datepickerdialog");
         }
     };
 

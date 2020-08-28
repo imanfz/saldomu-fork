@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import com.google.gson.JsonObject
-import com.securepreferences.SecurePreferences
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -43,23 +42,23 @@ class UpgradeMemberActivity : BaseActivity() {
 
         upgrade_online_button.setOnClickListener {
             if (sp.getString(DefineValue.COMM_UPGRADE_MEMBER, "").equals("A")) {
-                DialogCantUpgrade()
+                dialogCantUpgrade()
             } else
                 startActivity(Intent(this, UpgradeMemberViaOnline::class.java))
         }
 
         upgrade_via_agent_button.setOnClickListener {
             if (sp.getString(DefineValue.COMM_UPGRADE_MEMBER, "").equals("O")) {
-                DialogCantUpgrade()
+                dialogCantUpgrade()
             } else
                 reqUpgradeViaAgent()
         }
     }
 
-    private fun DialogCantUpgrade() {
+    private fun dialogCantUpgrade() {
         val dialognya = DefinedDialog.MessageDialog(this, this.getString(R.string.alertbox_title_information),
                 this.getString(R.string.cashout_dialog_message)
-        ) { v, isLongClick -> }
+        ) { _, _ -> }
 
         dialognya.setCanceledOnTouchOutside(false)
         dialognya.setCancelable(false)

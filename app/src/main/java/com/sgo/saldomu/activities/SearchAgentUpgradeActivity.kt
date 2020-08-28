@@ -137,54 +137,48 @@ class SearchAgentUpgradeActivity : BaseActivity(),
 
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient)
 
-                if (mLastLocation == null) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this)
+                latitude = mLastLocation.latitude
+                longitude = mLastLocation.longitude
 
-                } else {
-                    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this)
-                    latitude = mLastLocation.getLatitude()
-                    longitude = mLastLocation.getLongitude()
+                Timber.d("GPS TEST Onconnected : Latitude : $latitude, Longitude : $longitude")
 
-                    Timber.d("GPS TEST Onconnected : Latitude : $latitude, Longitude : $longitude")
+                if (googleMap != null) {
 
-                    if (googleMap != null) {
+                    //disable map gesture untuk sementara sampai camera position selesai
+                    googleMap?.uiSettings?.setAllGesturesEnabled(true)
+                    googleMap?.uiSettings?.isMapToolbarEnabled = false
+                    googleMap?.isIndoorEnabled = false
+                    googleMap?.isMyLocationEnabled = false
 
-                        //disable map gesture untuk sementara sampai camera position selesai
-                        googleMap?.uiSettings?.setAllGesturesEnabled(true)
-                        googleMap?.uiSettings?.isMapToolbarEnabled = false
-                        googleMap?.isIndoorEnabled = false
-                        googleMap?.isMyLocationEnabled = false
+                    val latLng = LatLng(latitude, longitude)
+                    googleMap?.moveCamera(CameraUpdateFactory.newLatLng(latLng))
 
-                        if (latitude != null && longitude != null) {
-                            val latLng = LatLng(latitude, longitude)
-                            googleMap?.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                    //add camera position and configuration
+                    val cameraPosition = CameraPosition.Builder()
+                            .target(latLng) // Center Set
+                            .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                            .build() // Creates a CameraPosition from the builder
 
-                            //add camera position and configuration
-                            val cameraPosition = CameraPosition.Builder()
-                                    .target(latLng) // Center Set
-                                    .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
-                                    .build() // Creates a CameraPosition from the builder
-
-                            googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), object : GoogleMap.CancelableCallback {
-                                override fun onFinish() {
-                                    //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
-                                    googleMap?.uiSettings?.setAllGesturesEnabled(true)
-                                    isZoomedAlready = true
-                                }
-
-                                override fun onCancel() {}
-                            })
-
-                            if (markerCurrent != null) markerCurrent?.remove()
-
-                            val markerOptions = MarkerOptions()
-                                    .position(latLng)
-                                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)))
-                            markerCurrent = googleMap?.addMarker(markerOptions)
-
+                    googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), object : GoogleMap.CancelableCallback {
+                        override fun onFinish() {
+                            //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                            googleMap?.uiSettings?.setAllGesturesEnabled(true)
+                            isZoomedAlready = true
                         }
-                    }
-                    getAgentLoc()
+
+                        override fun onCancel() {}
+                    })
+
+                    if (markerCurrent != null) markerCurrent?.remove()
+
+                    val markerOptions = MarkerOptions()
+                            .position(latLng)
+                            .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)))
+                    markerCurrent = googleMap?.addMarker(markerOptions)
+
                 }
+                getAgentLoc()
             }
         } catch (se: SecurityException) {
             se.printStackTrace()
@@ -471,11 +465,11 @@ class SearchAgentUpgradeActivity : BaseActivity(),
         val builder = AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton(getString(R.string.yes)) { dialog, id ->
+                .setPositiveButton(getString(R.string.yes)) { _, _ ->
                     val ilocation = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                     startActivityForResult(ilocation, RC_GPS_REQUEST)
                 }
-                .setNegativeButton(getString(R.string.no)) { dialog, id ->
+                .setNegativeButton(getString(R.string.no)) { dialog, _ ->
                     dialog.cancel()
                     startActivity(Intent(applicationContext, MainPage::class.java))
                 }

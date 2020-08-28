@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import com.sgo.saldomu.R;
@@ -33,12 +33,12 @@ public class ActivitySearch extends BaseActivity {
 
         content = findViewById(R.id.content);
 
-        InitializeToolbar();
+        initializeToolbar();
         InitializeData();
         InitializeDashboard();
     }
 
-    public void InitializeToolbar() {
+    public void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.listcontact_text_title));
     }

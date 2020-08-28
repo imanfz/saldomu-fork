@@ -6,9 +6,9 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -179,7 +179,7 @@ public class TimePickerFragment extends DialogFragment {
                         int iEndTime    = iEndHour + iEndMinute;
 
                         if ( iStartTime >= iEndTime ) {
-                            android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                            androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).create();
                             alertDialog.setCanceledOnTouchOutside(false);
                             alertDialog.setTitle(getString(R.string.alertbox_title_information));
                             alertDialog.setCancelable(false);

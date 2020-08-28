@@ -2,8 +2,10 @@ package com.sgo.saldomu.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.MenuItem;
 
 import com.sgo.saldomu.R;
@@ -35,12 +37,12 @@ public class BBSRegAccountActivity extends BaseActivity implements BBSRegisterAc
             newFragment.setArguments(intent.getExtras());
 
 
-            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.bbsreg_content, newFragment, BBSRegisterAcct.TAG);
             fragmentTransaction.commit();
             setResult(MainPage.RESULT_NORMAL);
         }
-        InitializeToolbar();
+        initializeToolbar();
     }
 
     @Override
@@ -48,7 +50,7 @@ public class BBSRegAccountActivity extends BaseActivity implements BBSRegisterAc
         return R.layout.activity_bbs_reg;
     }
 
-    public void InitializeToolbar(){
+    public void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.register_bank_account));
         if(getIntent().getExtras().containsKey(DefineValue.IS_UPDATE)){

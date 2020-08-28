@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import androidx.core.content.res.ResourcesCompat
 import com.sgo.saldomu.Beans.Biller_Data_Model
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model
 import com.sgo.saldomu.R
@@ -30,7 +31,7 @@ class FragGridEmoney : BaseFragment() {
     private var adapter: GridMenu? = null
 
     private var billerTypeCode: String? = null
-    var gridBillerActivity : GridBillerActivity? = null
+    private var gridBillerActivity: GridBillerActivity? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -57,7 +58,7 @@ class FragGridEmoney : BaseFragment() {
 
         adapter = GridMenu(context!!, menuStrings, menuDrawables)
         grid.adapter = adapter
-        grid.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        grid.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             changeToInputBiller(mListBillerData!![position].comm_id,
                     mListBillerData!![position].comm_name,
                     mListBillerData!![position].item_id,
@@ -72,26 +73,21 @@ class FragGridEmoney : BaseFragment() {
         menuDrawables.clear()
         for (i in mListBillerData!!.indices) {
             menuStrings.add(mListBillerData!![i].comm_name)
-            if (mListBillerData!![i].comm_name.contains("LinkAja")) {
-                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_linkaja))
-            }
+            if (mListBillerData!![i].comm_name.contains("LinkAja"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_linkaja, null)!!)
 
-            if (mListBillerData!![i].comm_name.contains("Emoney Mandiri")||
-                    mListBillerData!![i].comm_name.contains("Mandiri E-Money")) {
-                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_mandiri))
-            }
+            if (mListBillerData!![i].comm_name.contains("Emoney Mandiri") ||
+                    mListBillerData!![i].comm_name.contains("Mandiri E-Money"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_mandiri, null)!!)
 
-            if (mListBillerData!![i].comm_name.contains("OVO")) {
-                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_ovo))
-            }
+            if (mListBillerData!![i].comm_name.contains("OVO"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_ovo, null)!!)
 
-            if (mListBillerData!![i].comm_name.contains("DANA")) {
-                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_dana))
-            }
+            if (mListBillerData!![i].comm_name.contains("DANA"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_dana, null)!!)
 
-            if (mListBillerData!![i].comm_name.contains("Gopay")) {
-                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_gopay))
-            }
+            if (mListBillerData!![i].comm_name.contains("Gopay"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_gopay, null)!!)
         }
     }
 

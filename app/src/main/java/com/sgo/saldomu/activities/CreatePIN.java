@@ -62,7 +62,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         tokenID = i.getStringExtra(DefineValue.TOKEN_ID);
         userID = i.getStringExtra(DefineValue.CURR_USERID);
 
-        InitializeToolbar();
+        initializeToolbar();
 
         PinFragmentConfiguration config = new PinFragmentConfiguration(this)
                 .pinSaver(new PinSaver() {
@@ -101,7 +101,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         return R.layout.create_pin;
     }
 
-    private void InitializeToolbar() {
+    private void initializeToolbar() {
         if (!isRegist) setActionBarIcon(R.drawable.ic_arrow_left);
         else disableHomeIcon();
         setActionBarTitle(getString(R.string.create_pin));

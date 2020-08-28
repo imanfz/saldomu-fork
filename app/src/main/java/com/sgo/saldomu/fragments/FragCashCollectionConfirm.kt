@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
@@ -30,7 +31,6 @@ import com.sgo.saldomu.securities.RSA
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.dialog_cash_collection.*
 import kotlinx.android.synthetic.main.dialog_notification.*
-import kotlinx.android.synthetic.main.frag_cash_collection.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -59,24 +59,25 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         return viewLayout
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val args = arguments
-        txId = args!!.getString(DefineValue.TX_ID)
-        commId = args!!.getString(DefineValue.COMMUNITY_ID)
-        benefProductValueCode = args!!.getString(DefineValue.BENEF_PRODUCT_VALUE_CODE)
-        benefProductValueName = args!!.getString(DefineValue.BENEF_PRODUCT_VALUE_NAME)
-        commCode = args!!.getString(DefineValue.COMMUNITY_CODE)
-        memberCode = args!!.getString(DefineValue.MEMBER_CODE)
-        productCode = args!!.getString(DefineValue.PRODUCT_CODE)
-        amount = args!!.getString(DefineValue.AMOUNT)
-        fee = args!!.getString(DefineValue.FEE)
+        val args = arguments!!
+        txId = args.getString(DefineValue.TX_ID)!!
+        commId = args.getString(DefineValue.COMMUNITY_ID)!!
+        benefProductValueCode = args.getString(DefineValue.BENEF_PRODUCT_VALUE_CODE)!!
+        benefProductValueName = args.getString(DefineValue.BENEF_PRODUCT_VALUE_NAME)!!
+        commCode = args.getString(DefineValue.COMMUNITY_CODE)!!
+        memberCode = args.getString(DefineValue.MEMBER_CODE)!!
+        productCode = args.getString(DefineValue.PRODUCT_CODE)!!
+        amount = args.getString(DefineValue.AMOUNT)!!
+        fee = args.getString(DefineValue.FEE)!!
 
-        dialog_cash_collection_tv_name.setText(benefProductValueName)
-        dialog_cash_collection_tv_acc_no.setText(benefProductValueCode)
-        dialog_cash_collection_tv_amount_deposit.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(amount))
-        dialog_cash_collection_tv_fee.setText(getString(R.string.rp_) + " " + CurrencyFormat.format(fee))
+        dialog_cash_collection_tv_name.text = benefProductValueName
+        dialog_cash_collection_tv_acc_no.text = benefProductValueCode
+        dialog_cash_collection_tv_amount_deposit.text = getString(R.string.rp_) + " " + CurrencyFormat.format(amount)
+        dialog_cash_collection_tv_fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(fee)
         tv_resend_otp.text = getString(R.string.resend_confirmation_code) + "(" + countResend + "/3)"
 
         dialog_cash_collection_btn_ok.setOnClickListener {
@@ -115,8 +116,8 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) = try {
                             val model = getGson().fromJson(response.toString(), jsonModel::class.java)
-                            var code = response.getString(WebParams.ERROR_CODE)
-                            var msg = response.getString(WebParams.ERROR_MESSAGE)
+                            val code = response.getString(WebParams.ERROR_CODE)
+                            val msg = response.getString(WebParams.ERROR_MESSAGE)
                             Timber.d("isi response confirmTokenC2R: $response")
                             when (code) {
                                 WebParams.SUCCESS_CODE -> {
@@ -136,7 +137,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                                     showDialog(msg)
                                 }
                                 DefineValue.ERROR_9333 -> {
-                                    Timber.d("isi response app data:" + model.app_data)
+                                    Timber.d("isi response app data:%s", model.app_data)
                                     val appModel = model.app_data
                                     val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
                                     alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
@@ -165,7 +166,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                         }
                     })
         } catch (e: Exception) {
-            Timber.d("httpclient:" + e.message)
+            Timber.d("httpclient:%s", e.message)
         }
 
     }
@@ -186,10 +187,11 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_RESEND_TOKEN_C2R, params,
                     object : ObjListeners {
+                        @SuppressLint("SetTextI18n")
                         override fun onResponses(response: JSONObject) = try {
                             val model = getGson().fromJson(response.toString(), jsonModel::class.java)
-                            var code = response.getString(WebParams.ERROR_CODE)
-                            var msg = response.getString(WebParams.ERROR_MESSAGE)
+                            val code = response.getString(WebParams.ERROR_CODE)
+                            val msg = response.getString(WebParams.ERROR_MESSAGE)
                             Timber.d("isi response resendTokenC2R: $response")
                             when (code) {
                                 WebParams.SUCCESS_CODE -> {
@@ -211,7 +213,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                                     showDialog(msg)
                                 }
                                 DefineValue.ERROR_9333 -> {
-                                    Timber.d("isi response app data:" + model.app_data)
+                                    Timber.d("isi response app data:%s", model.app_data)
                                     val appModel = model.app_data
                                     val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
                                     alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
@@ -240,7 +242,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                         }
                     })
         } catch (e: Exception) {
-            Timber.d("httpclient:" + e.message)
+            Timber.d("httpclient:%s", e.message)
         }
     }
 
@@ -261,15 +263,13 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         })
 
         if (isPIN!!) {
-            callPINInput(-1)
+            callPINInput()
         }
     }
 
 
-    private fun callPINInput(attempt: Int) {
+    private fun callPINInput() {
         val i = Intent(activity, InsertPIN::class.java)
-        if (attempt == 1)
-            i.putExtra(DefineValue.ATTEMPT, attempt)
         startActivityForResult(i, MainPage.REQUEST_FINISH)
     }
 
@@ -305,21 +305,18 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                         override fun onResponses(response: JsonObject) {
                             val model = getGson().fromJson(response, FailedPinModel::class.java)
 
-                            var code = model.error_code
+                            val code = model.error_code
+                            val message = model.error_message
                             if (code == WebParams.SUCCESS_CODE) {
                                 activity!!.setResult(MainPage.RESULT_BALANCE)
-
                                 getTrxStatus(sp.getString(DefineValue.USER_NAME, ""), txId, userPhoneID)
-
                             } else if (code == WebParams.LOGOUT_CODE) {
-                                val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(activity, message)
                             } else if (code == "0061") {
-                                val code_msg = model.error_message
-                                Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
+                                Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
                             } else if (code == DefineValue.ERROR_9333) {
-                                Timber.d("isi response app data:" + model.app_data)
+                                Timber.d("isi response app data:%s", model.app_data)
                                 val appModel = model.app_data
                                 val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
                                 alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
@@ -328,7 +325,6 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                                 alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                             } else {
-                                val message = model.error_message
                                 if (isPIN!!) {
                                     Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
                                     //pin tidak sesuai errorcode 0097
@@ -345,7 +341,6 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                                     } else {
                                         activity!!.setResult(MainPage.RESULT_BALANCE)
                                         getTrxStatus(sp.getString(DefineValue.USER_NAME, ""), txId, userPhoneID)
-                                        //                                    onOkButton();
                                     }
                                 } else {
                                     activity!!.setResult(MainPage.RESULT_BALANCE)
@@ -363,7 +358,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                         }
                     })
         } catch (e: Exception) {
-            Timber.d("httpclient:" + e.message)
+            Timber.d("httpclient:%s", e.message)
         }
     }
 
@@ -397,7 +392,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                                 val test = AlertDialogLogout.getInstance()
                                 test.showDialoginActivity(activity, message)
                             } else if (code == DefineValue.ERROR_9333) {
-                                Timber.d("isi response app data:" + model.app_data)
+                                Timber.d("isi response app data:%s", model.app_data)
                                 val appModel = model.app_data
                                 val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
                                 alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
@@ -422,7 +417,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
                         }
                     })
         } catch (e: Exception) {
-            Timber.d("httpclient:" + e.message)
+            Timber.d("httpclient:%s", e.message)
         }
     }
 
@@ -487,7 +482,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
     private fun inputValidation(): Boolean {
         if (et_otp_cashcollection.text.isNullOrEmpty()) {
             et_otp_cashcollection.requestFocus()
-            et_otp_cashcollection.setError(getString(R.string.regist3_validation_otp))
+            et_otp_cashcollection.error = getString(R.string.regist3_validation_otp)
             return false
         }
 

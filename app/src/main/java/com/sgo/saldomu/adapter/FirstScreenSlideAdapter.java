@@ -3,10 +3,10 @@ package com.sgo.saldomu.adapter;/*
  */
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.sgo.saldomu.fragments.ImageSlide;
 import com.sgo.saldomu.fragments.TermsNConditionWeb;

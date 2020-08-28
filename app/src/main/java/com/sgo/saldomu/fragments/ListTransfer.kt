@@ -43,22 +43,22 @@ class ListTransfer : BaseFragment() {
             switchActivity(i)
         }
         card_view2.setOnClickListener {
-            if (sp.getBoolean(DefineValue.IS_AGENT, false) == false) {
+            if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
                 val i = Intent(activity, CashoutActivity::class.java)
                 switchActivity(i)
             } else
-                DialogCantCashout()
+                dialogCantCashout()
         }
     }
 
-    private fun DialogCantCashout() {
-        val dialognya = DefinedDialog.MessageDialog(activity, this.getString(R.string.alertbox_title_information),
+    private fun dialogCantCashout() {
+        val dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.alertbox_title_information),
                 this.getString(R.string.cashout_dialog_message)
-        ) { v, isLongClick -> }
+        ) { _, _ -> }
 
-        dialognya.setCanceledOnTouchOutside(false)
-        dialognya.setCancelable(false)
-        dialognya.show()
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setCancelable(false)
+        dialog.show()
 
     }
 

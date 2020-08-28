@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.BillerActivity
@@ -56,7 +57,7 @@ class FragGridBiller : BaseFragment() {
 
         adapter = GridMenu(context!!, menuStrings, menuDrawables)
         grid.adapter = adapter
-        grid.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        grid.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
             val menuItemName = hardCodeMenuItemName((view!!.findViewById<View>(R.id.grid_text) as TextView).text.toString())
             mBillerType = realm!!.where(Biller_Type_Data_Model::class.java).equalTo(WebParams.BILLER_TYPE_NAME, menuItemName).findFirst()
             val i = Intent(activity, BillerActivity::class.java)
@@ -82,42 +83,42 @@ class FragGridBiller : BaseFragment() {
 
         if (billerTypeName.contains(getString(R.string.credit_card)) || billerTypeName.contains("Kartu Kredit")) {
             menuStrings.add(resources.getString(R.string.credit_card))
-            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_kartu_kredit))
+            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_kartu_kredit, null)!!)
         }
 
         if (billerTypeName.contains(getString(R.string.installment)) || billerTypeName.contains("Cicilan")) {
             menuStrings.add(resources.getString(R.string.installment))
-            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_tagihan_kartu_kredit))
+            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_tagihan_kartu_kredit, null)!!)
         }
 
         if (billerTypeName.contains(getString(R.string.telkom))) {
             menuStrings.add(resources.getString(R.string.telkom))
-            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_telkom))
+            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_telkom, null)!!)
         }
 
         if (billerTypeName.contains(getString(R.string.flight_ticket)) || billerTypeName.contains("Tiket Pesawat Terbang")) {
             menuStrings.add(resources.getString(R.string.flight_ticket))
-            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_pesawat))
+            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_pesawat, null)!!)
         }
 
         if (billerTypeName.contains(getString(R.string.train_ticket)) || billerTypeName.contains("Tiket Kereta Api")) {
             menuStrings.add(resources.getString(R.string.train_ticket))
-            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_kereta))
+            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_kereta, null)!!)
         }
 
         if (billerTypeName.contains(getString(R.string.insurance)) || billerTypeName.contains("Asuransi")) {
             menuStrings.add(resources.getString(R.string.insurance))
-            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_asuransi))
+            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_asuransi, null)!!)
         }
 
         if (billerTypeName.contains(getString(R.string.internet))) {
             menuStrings.add(resources.getString(R.string.internet))
-            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_internet))
+            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_internet, null)!!)
         }
 
         if (billerTypeName.contains(getString(R.string.cable_tv)) || billerTypeName.contains("TV Cable")) {
             menuStrings.add(resources.getString(R.string.cable_tv))
-            menuDrawables.add(resources.getDrawable(R.drawable.icon_biller_tv))
+            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_tv, null)!!)
         }
     }
 }

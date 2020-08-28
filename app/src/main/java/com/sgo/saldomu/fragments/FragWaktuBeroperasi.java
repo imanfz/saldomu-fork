@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -448,7 +448,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                                             String code = response.getString(WebParams.ERROR_CODE);
                                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                                android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                                                androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).create();
                                                 alertDialog.setCanceledOnTouchOutside(false);
                                                 alertDialog.setTitle(getString(R.string.alertbox_title_information));
                                                 alertDialog.setCancelable(false);
@@ -520,7 +520,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                     }
 
                 } else {
-                    android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                    androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).create();
                     alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.setTitle(getString(R.string.alertbox_title_information));
                     alertDialog.setCancelable(false);
@@ -697,7 +697,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
             if ( chkBox.isChecked() ) {
                 showTimeDialog(selectedPosition);
             } else {
-                android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).create();
                 alertDialog.setCanceledOnTouchOutside(false);
                 alertDialog.setTitle(getString(R.string.alertbox_title_information));
                 alertDialog.setCancelable(false);
@@ -837,7 +837,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
     private void backToPreviousFragment() {
         //redirect back to fragment - BBSActivity;
-        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+        androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setTitle(getString(R.string.alertbox_title_information));
         alertDialog.setCancelable(false);

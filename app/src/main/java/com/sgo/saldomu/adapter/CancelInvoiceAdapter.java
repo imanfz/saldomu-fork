@@ -1,8 +1,8 @@
 package com.sgo.saldomu.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -17,17 +17,12 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.models.Invoice;
 import com.sgo.saldomu.models.InvoiceDGI;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Completable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public interface OnItemClick {

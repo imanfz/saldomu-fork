@@ -7,12 +7,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -170,7 +170,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                         InitializeTitle();
                     }
                 });
-                android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
                 if ( menuName.equals(getString(R.string.setup_agent_open_hour)) ) {
                     newFragment = new FragWaktuBeroperasi();
@@ -361,7 +361,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             } else {
 
                                 //redirect back to fragment - BBSActivity;
-                                android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                                androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).create();
                                 alertDialog.setCanceledOnTouchOutside(false);
                                 alertDialog.setTitle(getString(R.string.alertbox_title_information));
                                 alertDialog.setCancelable(false);

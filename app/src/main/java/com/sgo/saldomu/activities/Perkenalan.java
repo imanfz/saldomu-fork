@@ -6,20 +6,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.paolorotolo.appintro.AppIntro;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -43,7 +39,6 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
-import com.sgo.saldomu.fragments.IntroPage;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
@@ -54,6 +49,7 @@ import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.utils.LocaleManager;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,7 +70,7 @@ import timber.log.Timber;
 /*
  Created by Lenovo Thinkpad on 12/21/2015.
  */
-public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCallbacks {
+public class Perkenalan extends BaseActivity implements EasyPermissions.PermissionCallbacks {
     private static final int RC_READPHONESTATE_GETACCOUNT_PERM = 500;
     private static final int RC_SENTSMS_PERM = 502;
     private SMSDialog smsDialog;
@@ -93,95 +89,53 @@ public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCa
     private final static int FIRST_SCREEN_INTRO = 2;
     private final static int FIRST_SCREEN_SPLASHSCREEN = 3;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    Button btnStartNow, btnPOS;
 
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.perkenalan;
     }
 
     @Override
-    public void init(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         if (InetHandler.isNetworkAvailable(this))
             new UtilsLoader(this).getAppVersion();
         AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-                        Timber.d("Token intro : " + token);
-                        SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.FCM_ID, token);
-                        mEditor.putString(DefineValue.FCM_ENCRYPTED, Md5.hashMd5(token));
-                        mEditor.apply();
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        return;
                     }
+
+                    // Get new Instance ID token
+                    String token = task.getResult().getToken();
+                    Timber.d("Token intro : " + token);
+                    SecurePreferences.Editor mEditor = sp.edit();
+                    mEditor.putString(DefineValue.FCM_ID, token);
+                    mEditor.putString(DefineValue.FCM_ENCRYPTED, Md5.hashMd5(token));
+                    mEditor.apply();
                 });
-
-
-//        if (sp.getString(DefineValue.USERID_PHONE, "").isEmpty()) {
-//            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
-//            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
-//            addSlide(IntroPage.newInstance(R.layout.intro_fragment));
-//        } else
-        addSlide(IntroPage.newInstance(R.layout.intro_fragment));
-
 
         sp.edit().remove(DefineValue.SENDER_ID).commit();
 
-        setFlowAnimation();
-        Button skipbtn = (Button) skipButton;
-        Button donebtn = (Button) doneButton;
-        skipbtn.setText(getString(R.string.start_now));
-        donebtn.setText("");
-//        skipbtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-//        donebtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        btnStartNow = findViewById(R.id.btn_start_now);
+        btnPOS = findViewById(R.id.btn_pos);
 
-        if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
-            //cheat kalo diteken lama skip ke register (-1)
-            skipbtn.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-//                    Intent i = new Intent(Perkenalan.this, LoginActivity.class);
-                    Intent i = new Intent(Perkenalan.this, OTPVerificationActivity.class);
-                    i.putExtra(DefineValue.USER_IS_NEW, -1);
-                    startActivity(i);
-                    Perkenalan.this.finish();
-                    return false;
-                }
-            });
-            //cheat kalo diteken lama next ke Login (-2)
-            donebtn.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Intent i = new Intent(Perkenalan.this, LoginActivity.class);
-                    i.putExtra(DefineValue.USER_IS_NEW, -2);
-                    startActivity(i);
-                    Perkenalan.this.finish();
-                    return false;
-                }
-            });
-        }
-
-        donebtn.setOnClickListener(POSlistener);
-        skipbtn.setOnClickListener(VerifyListener);
+        btnStartNow.setOnClickListener(VerifyListener);
+        btnPOS.setOnClickListener(POSlistener);
 
         perms = new String[]{Manifest.permission.READ_CONTACTS,
                 Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE};
 
-        if (EasyPermissions.hasPermissions(this, perms)) {
-//            InitializeSmsClass();
-        } else {
+        if (!EasyPermissions.hasPermissions(this, perms)) {
             EasyPermissions.requestPermissions(this,
                     getString(R.string.rational_readphonestate_readcontacts),
                     RC_READPHONESTATE_GETACCOUNT_PERM, perms);
         }
+
         SMSclass smsClass = new SMSclass(this);
         imeiDevice = smsClass.getDeviceIMEI();
 
@@ -207,7 +161,6 @@ public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCa
 
             @Override
             public void onSuccess(String product_value) {
-
 
             }
         });
@@ -302,29 +255,6 @@ public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCa
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
-//    private void doAction(){
-//        if(InetHandler.isNetworkAvailable(this)) {
-//            if (smsclass.isSimSameSP()) {
-//                openLogin(-1);
-//            } else {
-//                smsDialog.show();
-//            }
-//        }
-//        else DefinedDialog.showErrorDialog(this, getString(R.string.inethandler_dialog_message), null);
-//    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        if (EasyPermissions.hasPermissions(this, perms))
-//            checkIsSimExist();
-//        else {
-//            EasyPermissions.requestPermissions(this,
-//                    getString(R.string.rational_readphonestate_readcontacts),
-//                    RC_READPHONESTATE_GETACCOUNT_PERM, perms);
-//        }
-    }
-
     SecurePreferences getSP() {
         if (sp == null)
             sp = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -341,11 +271,11 @@ public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCa
             params.put(WebParams.FCM_ID, fcm_id);
             params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
             params.put(WebParams.REFERENCE_ID, sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED, ""));
-            Timber.d("isi params fcm:" + params.toString());
+            Timber.d("isi params fcm:%s", params.toString());
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_FCM, params, new ResponseListener() {
                 @Override
                 public void onResponses(JsonObject object) {
-                    Timber.d("isi response fcm:" + object);
+                    Timber.d("isi response fcm:%s", object);
 //                    showSmsDialog();
                     Intent i = new Intent(Perkenalan.this, OTPVerificationActivity.class);
                     startActivity(i);
@@ -353,7 +283,7 @@ public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCa
 
                 @Override
                 public void onError(Throwable throwable) {
-                    Timber.d("isi error fcm intro:" + throwable);
+                    Timber.d("isi error fcm intro:%s", throwable);
                 }
 
                 @Override
@@ -362,7 +292,7 @@ public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCa
                 }
             });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -397,31 +327,6 @@ public class Perkenalan extends AppIntro implements EasyPermissions.PermissionCa
         } else {
             progdialog.dismiss();
         }
-
-    }
-
-    @Override
-    public void onSkipPressed() {
-//        doAction();
-    }
-
-    @Override
-    public void onNextPressed() {
-
-    }
-
-    @Override
-    public void onDonePressed() {
-//        doAction();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
-    @Override
-    public void onSlideChanged() {
 
     }
 

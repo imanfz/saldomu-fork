@@ -12,9 +12,9 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
@@ -307,7 +307,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
 
     private void checkIsLv1() {
         if (levelClass.isLevel1QAC()) {
-            android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(getActivity());
+            androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
             builder1.setTitle(R.string.upgrade_member);
             builder1.setMessage(R.string.message_upgrade_member);
             builder1.setCancelable(true);
@@ -319,7 +319,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
                     "No",
                     (dialog, id) -> dialog.dismiss());
 
-            android.support.v7.app.AlertDialog alert11 = builder1.create();
+            androidx.appcompat.app.AlertDialog alert11 = builder1.create();
             alert11.show();
 
         }

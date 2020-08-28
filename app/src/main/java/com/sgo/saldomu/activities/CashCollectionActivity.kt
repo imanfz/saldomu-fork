@@ -1,8 +1,8 @@
 package com.sgo.saldomu.activities
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import android.view.MenuItem
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
@@ -34,8 +34,8 @@ class CashCollectionActivity : BaseActivity() {
         val intent = intent
         val is_search = intent.getBooleanExtra(DefineValue.IS_SEARCH_CTR, false)
         if (is_search) {
-            bankCode = intent.getStringExtra(DefineValue.BANK_CODE)
-            amount = intent.getStringExtra(DefineValue.AMOUNT)
+            bankCode = intent.getStringExtra(DefineValue.BANK_CODE)!!
+            amount = intent.getStringExtra(DefineValue.AMOUNT)!!
         }
 
         newFragment = FragCashCollection()
@@ -86,10 +86,6 @@ class CashCollectionActivity : BaseActivity() {
 
         }
         actionBarTitle = fragName
-    }
-
-    fun setResultActivity(result: Int) {
-        setResult(MainPage.RESULT_BALANCE)
     }
 
 }

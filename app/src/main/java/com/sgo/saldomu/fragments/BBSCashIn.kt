@@ -9,13 +9,11 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.sgo.saldomu.Beans.CashInHistoryModel
@@ -26,7 +24,6 @@ import com.sgo.saldomu.activities.RegisterSMSBankingActivity
 import com.sgo.saldomu.activities.TopUpActivity
 import com.sgo.saldomu.activities.TutorialActivity
 import com.sgo.saldomu.coreclass.*
-import com.sgo.saldomu.coreclass.SMSclass.SMS_SIM_STATE
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.dialogs.*
@@ -164,7 +161,7 @@ class BBSCashIn : BaseFragment() {
         amount_transfer_edit_text.setAdapter(adapterNominal)
         amount_transfer_edit_text.threshold = 1
         amount_transfer_edit_text.addTextChangedListener(NumberTextWatcherForThousand(amount_transfer_edit_text))
-        amount_transfer_edit_text.setOnTouchListener { v, event ->
+        amount_transfer_edit_text.setOnTouchListener { _, _ ->
             amount_transfer_edit_text.showDropDown()
             false
         }
@@ -308,12 +305,12 @@ class BBSCashIn : BaseFragment() {
                 val cityAdapter: ArrayAdapter<String> = ArrayAdapter<String>(context!!, android.R.layout.select_dialog_item, list_name_bbs_cities!!)
                 city_benef_value.threshold = 1
                 city_benef_value.setAdapter(cityAdapter)
-                activity!!.runOnUiThread(Runnable {
+                activity!!.runOnUiThread {
                     cityAdapter.notifyDataSetChanged()
                     val defaultValue = "KOTA JAKARTA"
                     city_benef_value.setText(defaultValue)
                     cityAutocompletePosition = list_name_bbs_cities!!.indexOf(defaultValue)
-                })
+                }
             }
         }
         proses.run()
@@ -537,7 +534,7 @@ class BBSCashIn : BaseFragment() {
                             override fun onClickOkButton(v: View, isLongClick: Boolean) {
                                 if (EasyPermissions.hasPermissions(activity!!, Manifest.permission.CAMERA)) {
                                     smsDialog!!.sentSms()
-                                    regSimCardReceiver(true)
+                                    regSimCardReceiver()
                                 } else {
                                     EasyPermissions.requestPermissions(this@BBSCashIn, getString(R.string.rationale_send_sms),
                                             RC_SEND_SMS, Manifest.permission.CAMERA)
@@ -556,7 +553,7 @@ class BBSCashIn : BaseFragment() {
                                 sentDataReqToken(model)
                             }
                         })
-                        if (isSimExist) smsDialog!!.show(fragmentManager, "")
+                        if (isSimExist) smsDialog!!.show(fragmentManager!!, "")
                     } else if (source_product_h2h.equals("Y", ignoreCase = true) && source_product_type.equals(DefineValue.EMO, ignoreCase = true)) {
                         if (code == WebParams.SUCCESS_CODE && !source_product_code.equals("tcash", ignoreCase = true)
                                 && !source_product_code.equals("MANDIRILKD", ignoreCase = true)) {
@@ -579,17 +576,16 @@ class BBSCashIn : BaseFragment() {
                     val test = AlertDialogLogout.getInstance()
                     test.showDialoginActivity(activity, message)
                 } else if (code == DefineValue.ERROR_9333) {
-                    Timber.d("isi response app data:" + model.app_data)
+                    Timber.d("isi response app data:%s", model.app_data)
                     val appModel: AppDataModel = model.app_data
                     val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
                     alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                 } else if (code == DefineValue.ERROR_0066) {
-                    Timber.d("isi response maintenance:" + response.toString())
+                    Timber.d("isi response maintenance:%s", response.toString())
                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                     alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                 } else {
-                    val code_msg: String = model.error_message
-                    Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
                     dismissProgressDialog()
                 }
             }
@@ -607,7 +603,7 @@ class BBSCashIn : BaseFragment() {
     fun showDialogLP() {
         dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.error),
                 getString(R.string.agent_lp_dialog_message)
-        ) { v, isLongClick -> activity!!.finish() }
+        ) { _, _ -> activity!!.finish() }
         dialog!!.setCanceledOnTouchOutside(false)
         dialog!!.setCancelable(false)
         dialog!!.show()
@@ -616,23 +612,23 @@ class BBSCashIn : BaseFragment() {
     fun showDialogLimit(message: String) {
         dialog = DefinedDialog.MessageDialog(activity, this.getString(R.string.error),
                 message
-        ) { v, isLongClick -> dialog!!.dismiss() }
+        ) { _, _ -> dialog!!.dismiss() }
         dialog!!.setCanceledOnTouchOutside(false)
         dialog!!.setCancelable(false)
         dialog!!.show()
     }
 
     fun dialogJoinLP(message: String) {
-        val builder1 = android.support.v7.app.AlertDialog.Builder(activity!!)
+        val builder1 = androidx.appcompat.app.AlertDialog.Builder(activity!!)
         builder1.setTitle(R.string.join_lkd)
         builder1.setMessage(message)
         builder1.setCancelable(true)
         builder1.setPositiveButton(
                 "Yes"
-        ) { dialog, id -> joinMemberLP() }
+        ) { _, _ -> joinMemberLP() }
         builder1.setNegativeButton(
                 "No"
-        ) { dialog, id -> activity!!.finish() }
+        ) { _, _ -> activity!!.finish() }
         val alert11 = builder1.create()
         alert11.show()
     }
@@ -665,7 +661,7 @@ class BBSCashIn : BaseFragment() {
                                         test.showDialoginActivity(activity, message)
                                     }
                                     DefineValue.ERROR_9333 -> {
-                                        Timber.d("isi response app data:" + model.app_data)
+                                        Timber.d("isi response app data:%s", model.app_data)
                                         val appModel = model.app_data
                                         val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
                                         alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
@@ -693,24 +689,17 @@ class BBSCashIn : BaseFragment() {
                         }
                     })
         } catch (e: java.lang.Exception) {
-            Timber.d("httpclient:" + e.message)
+            Timber.d("httpclient:%s", e.message)
         }
     }
 
-    private fun regSimCardReceiver(isReg: Boolean) {
+    private fun regSimCardReceiver() {
         if (isSMSBanking) {
-            if (isReg) {
-                try {
-                    activity!!.unregisterReceiver(customSimcardListener)
-                } catch (ignored: Exception) {
-                }
-                activity!!.registerReceiver(customSimcardListener, SMSclass.simStateIntentFilter)
-            } else {
-                try {
-                    activity!!.unregisterReceiver(customSimcardListener)
-                } catch (ignored: Exception) {
-                }
+            try {
+                activity!!.unregisterReceiver(customSimcardListener)
+            } catch (ignored: Exception) {
             }
+            activity!!.registerReceiver(customSimcardListener, SMSclass.simStateIntentFilter)
         }
     }
 
@@ -756,17 +745,17 @@ class BBSCashIn : BaseFragment() {
 
     private fun initializeSmsClass() {
         if (smsClass == null) smsClass = SMSclass(activity, customSimcardListener)
-        smsClass!!.isSimExists(SMS_SIM_STATE { isExist, msg ->
+        smsClass!!.isSimExists { isExist, msg ->
             if (!isExist) {
                 isSimExist = false
                 val builder = AlertDialog.Builder(activity)
                 builder.setMessage(msg)
                         .setCancelable(false)
-                        .setPositiveButton(getString(R.string.ok)) { dialog, which -> dialog.dismiss() }
+                        .setPositiveButton(getString(R.string.ok)) { dialog, _ -> dialog.dismiss() }
                 val alertDialog = builder.create()
                 alertDialog.show()
             } else isSimExist = true
-        })
+        }
     }
 
     fun sentDataReqToken(bbsTransModel: BBSTransModel?) {
@@ -798,13 +787,13 @@ class BBSCashIn : BaseFragment() {
                         else if (benef_product_code.equals("MANDIRILKD", ignoreCase = true)) {
                             dialogBenefLP(bbsTransModel.tx_id, bbsTransModel.tx_product_code, bbsTransModel.tx_product_name, bbsTransModel.tx_bank_code,
                                     bbsTransModel.amount, bbsTransModel.admin_fee, bbsTransModel.total_amount, bbsTransModel.tx_bank_name,
-                                    bbsTransModel.max_resend_token, bbsTransModel.benef_acct_no, bbsTransModel.benef_product_value_name, bbsTransModel.benef_product_value_code)
+                                    bbsTransModel.max_resend_token, bbsTransModel.benef_product_value_name, bbsTransModel.benef_product_value_code)
                         } else {
                             if (!isAgentLKD) {
                                 isOwner = true
                                 changeToDataMandiriLKD(bbsTransModel.tx_id, bbsTransModel.tx_product_code, bbsTransModel.tx_product_name, bbsTransModel.tx_bank_code,
                                         bbsTransModel.amount, bbsTransModel.admin_fee, bbsTransModel.total_amount, bbsTransModel.tx_bank_name,
-                                        bbsTransModel.max_resend_token, bbsTransModel.benef_acct_no, bbsTransModel.benef_product_value_name, bbsTransModel.benef_product_value_code, isOwner)
+                                        bbsTransModel.max_resend_token, bbsTransModel.benef_product_value_name, bbsTransModel.benef_product_value_code, isOwner)
                             } else changeToConfirm(bbsTransModel)
                         }
                     } else {
@@ -815,20 +804,20 @@ class BBSCashIn : BaseFragment() {
                                 val builder = AlertDialog.Builder(activity)
                                 builder.setTitle("Alert")
                                         .setMessage(getString(R.string.member_saldo_not_enough))
-                                        .setPositiveButton("OK") { dialog, which -> activity!!.finish() }
+                                        .setPositiveButton("OK") { _, _ -> activity!!.finish() }
                                 val dialog = builder.create()
                                 dialog.show()
                             } else {
                                 val messageDialog = "\"" + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname))
                                 val dialogFrag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
                                         messageDialog, getString(R.string.ok), getString(R.string.cancel), false)
-                                dialogFrag.okListener = DialogInterface.OnClickListener { dialog, which ->
+                                dialogFrag.okListener = DialogInterface.OnClickListener { _, _ ->
                                     val mI = Intent(activity, TopUpActivity::class.java)
                                     mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true)
                                     activity!!.startActivityForResult(mI, MainPage.ACTIVITY_RESULT)
                                 }
                                 dialogFrag.setTargetFragment(this@BBSCashIn, 0)
-                                dialogFrag.show(fragmentManager, AlertDialogFrag.TAG)
+                                dialogFrag.show(fragmentManager!!, AlertDialogFrag.TAG)
                             }
                         } else {
                             code = model.error_code + " : " + model.error_message
@@ -850,7 +839,7 @@ class BBSCashIn : BaseFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun showDialog(model: BBSTransModel) {
-        val dialog = Dialog(activity)
+        val dialog = Dialog(activity!!)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
@@ -908,7 +897,7 @@ class BBSCashIn : BaseFragment() {
 
     private fun changeToDataMandiriLKD(_tx_id: String, _product_code: String, _product_name: String, _bank_code: String,
                                        _amount: String, fee: String, totalAmount: String, _bank_name: String, _max_resend_token: String,
-                                       _benef_acct_no: String, _benef_acct_name: String, no_benef: String, isOwner: Boolean) {
+                                       _benef_acct_name: String, no_benef: String, isOwner: Boolean) {
         val mArgs = Bundle()
         if (benef_product_type.equals(DefineValue.ACCT, ignoreCase = true)) {
             mArgs.putString(DefineValue.BENEF_CITY, cityName)
@@ -976,33 +965,33 @@ class BBSCashIn : BaseFragment() {
 
     fun dialogBenefLP(_tx_id: String?, _product_code: String?, _product_name: String?, _bank_code: String?,
                       _amount: String?, _fee: String?, _totalAmount: String?, _bank_name: String?, _max_resend_token: String?,
-                      _benef_acct_no: String?, _benef_acct_name: String?, no_benef: String?) {
-        val builder1 = android.support.v7.app.AlertDialog.Builder(activity!!)
+                      _benef_acct_name: String?, no_benef: String?) {
+        val builder1 = androidx.appcompat.app.AlertDialog.Builder(activity!!)
         builder1.setTitle(R.string.c2a_lkd)
         builder1.setMessage("Transfer ke : ")
         builder1.setCancelable(true)
         builder1.setPositiveButton(
                 "Diri Sendiri"
-        ) { dialog, id ->
+        ) { _, _ ->
             isOwner = true
             changeToDataMandiriLKD(_tx_id!!, _product_code!!, _product_name!!, _bank_code!!,
                     _amount!!, _fee!!, _totalAmount!!, _bank_name!!, _max_resend_token!!,
-                    _benef_acct_no!!, _benef_acct_name!!, no_benef!!, isOwner)
+                    _benef_acct_name!!, no_benef!!, isOwner)
         }
         builder1.setNegativeButton(
                 "Orang Lain"
-        ) { dialog, id ->
+        ) { _, _ ->
             isOwner = false
             changeToDataMandiriLKD(_tx_id!!, _product_code!!, _product_name!!, _bank_code!!,
                     _amount!!, _fee!!, _totalAmount!!, _bank_name!!, _max_resend_token!!,
-                    _benef_acct_no!!, _benef_acct_name!!, no_benef!!, isOwner)
+                    _benef_acct_name!!, no_benef!!, isOwner)
         }
         val alert11 = builder1.create()
         alert11.show()
     }
 
     fun showDialogErrorSMS(nama_bank: String?, error_code: String, error_msg: String?) { // Create custom dialog object
-        val dialog = Dialog(activity)
+        val dialog = Dialog(activity!!)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCanceledOnTouchOutside(false)
         // Include dialog.xml file

@@ -1,8 +1,8 @@
 package com.sgo.saldomu.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.ActivitySearch;
 import com.sgo.saldomu.models.ContactList;
 
 import java.util.ArrayList;

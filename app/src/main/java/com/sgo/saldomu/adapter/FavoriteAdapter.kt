@@ -1,17 +1,16 @@
 package com.sgo.saldomu.adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
-import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.models.retrofit.FavoriteModel
-import com.sgo.saldomu.models.retrofit.HistoryModel
+import timber.log.Timber
 
 class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     internal lateinit var context: Context
@@ -55,19 +54,17 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
 
         holder.customerIdText.text = model.customer_id
         holder.messageText.text = model.notes
-        if (model.item_name != null) {
-            holder.customerNameText.text = model.item_name
-        }
+        holder.customerNameText.text = model.item_name
 
         if (model.tx_favorite_type == "BBS") {
-            if (model.product_type.equals("CTA")) {
+            if (model.product_type == "CTA") {
                 holder.customerNameText.text = context.getText(R.string.cash_in)
             } else {
                 holder.customerNameText.text = context.getText(R.string.cash_out)
             }
         }
 
-        Log.e("model.product_type : ", model.product_type)
+        Timber.e(model.product_type)
 
         holder.itemLinearLayout.setOnClickListener {
             if (model.tx_favorite_type == "TRF") {

@@ -42,7 +42,7 @@ public class BbsListSettingKelolaActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
 
         menu                    = new ArrayList<>();
         _data                   = getResources().getStringArray(R.array.list_bbs_setting_kelola);
@@ -177,7 +177,7 @@ public class BbsListSettingKelolaActivity extends BaseActivity {
         return R.layout.activity_bbs_list_setting_kelola;
     }
 
-    public void InitializeToolbar(){
+    public void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_setting));
     }

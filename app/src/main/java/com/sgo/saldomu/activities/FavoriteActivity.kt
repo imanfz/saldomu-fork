@@ -3,10 +3,10 @@ package com.sgo.saldomu.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v7.app.AlertDialog
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.appcompat.app.AlertDialog
 import android.view.MenuItem
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
@@ -20,7 +20,7 @@ private const val TAG = "FavoriteActivity"
 class FavoriteActivity : BaseActivity() {
     private var isAgent: Boolean = false
     fun startBillerActivity(model: FavoriteModel) {
-        var intent = Intent(this, BillerActivity::class.java)
+        val intent = Intent(this, BillerActivity::class.java)
         intent.putExtra(DefineValue.BILLER_TYPE, model.product_type)
         if (model.product_type == "DATA")
             intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.data_title))
@@ -52,7 +52,7 @@ class FavoriteActivity : BaseActivity() {
     }
 
     fun startBBSActivity(model: FavoriteModel) {
-        var intent = Intent(this, BBSActivity::class.java)
+        val intent = Intent(this, BBSActivity::class.java)
 
         intent.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION)
         // CTA = cash in
@@ -125,23 +125,23 @@ class FavoriteActivity : BaseActivity() {
 
 
         override fun getCount(): Int {
-            if (isAgent) {
-                return PAGE_COUNTagent
+            return if (isAgent) {
+                PAGE_COUNTagent
             } else
-                return PAGE_COUNT
+                PAGE_COUNT
         }
 
         override fun getItem(position: Int): Fragment {
-            if (isAgent) {
+            return if (isAgent) {
                 when (position) {
-                    0 -> return bilFragment
-                    1 -> return bbsFragment
-                    else -> return trfFragment
+                    0 -> bilFragment
+                    1 -> bbsFragment
+                    else -> trfFragment
                 }
             } else {
                 when (position) {
-                    0 -> return bilFragment
-                    else -> return trfFragment
+                    0 -> bilFragment
+                    else -> trfFragment
                 }
             }
         }
@@ -154,10 +154,10 @@ class FavoriteActivity : BaseActivity() {
 
         override fun getPageTitle(position: Int): CharSequence {
             // Generate title based on item position
-            if (isAgent)
-                return tabTitlesAgent[position]
+            return if (isAgent)
+                tabTitlesAgent[position]
             else
-                return tabTitles[position]
+                tabTitles[position]
         }
     }
 }

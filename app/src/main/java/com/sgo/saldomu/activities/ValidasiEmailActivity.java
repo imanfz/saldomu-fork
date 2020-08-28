@@ -56,7 +56,7 @@ public class ValidasiEmailActivity extends BaseActivity {
                 setResult(MainPage.RESULT_FIRST_TIME);
         }
 
-        InitializeToolbar();
+        initializeToolbar();
 
         change_layout = findViewById(R.id.change_email_layout);
         etToken = (EditText) findViewById(R.id.token_value);
@@ -292,7 +292,7 @@ public class ValidasiEmailActivity extends BaseActivity {
         this.finish();
     }
 
-    public void InitializeToolbar(){
+    public void initializeToolbar(){
         if(is_first_time) disableHomeIcon();
         else setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.verifikasi_email));

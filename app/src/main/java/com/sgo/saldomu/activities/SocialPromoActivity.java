@@ -3,10 +3,8 @@ package com.sgo.saldomu.activities;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 /**
  * Created by thinkpad on 4/22/2015.
@@ -31,7 +28,7 @@ public class SocialPromoActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        InitializeToolbar();
+        initializeToolbar();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         Intent i = getIntent();
@@ -113,7 +110,7 @@ public class SocialPromoActivity extends BaseActivity {
         return R.layout.activity_social_promo;
     }
 
-    private void InitializeToolbar(){
+    private void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.social_promo));
     }

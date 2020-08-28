@@ -1,15 +1,12 @@
 package com.sgo.saldomu.activities;
 
 import android.annotation.TargetApi;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.ClientCertRequest;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -43,7 +40,7 @@ public class TermsAndCondition extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         progbar = findViewById(R.id.progbar);
@@ -53,7 +50,7 @@ public class TermsAndCondition extends BaseActivity {
         loadUrl(MyApiClient.domainPrivacyPolicy);
     }
 
-    private void InitializeToolbar(){
+    private void initializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.terms_and_condition));
     }

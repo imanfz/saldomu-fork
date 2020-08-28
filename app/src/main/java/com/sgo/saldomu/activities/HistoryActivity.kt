@@ -1,11 +1,11 @@
 package com.sgo.saldomu.activities
 
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -75,11 +75,10 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         showProgressDialog()
 
         extraSignature = memberIDLogin
-        var url = ""
-        if (agentCOL) {
-            url = MyApiClient.LINK_HISTORY_COLLECTOR
+        val url = if (agentCOL) {
+            MyApiClient.LINK_HISTORY_COLLECTOR
         } else {
-            url = MyApiClient.LINK_HISTORY
+            MyApiClient.LINK_HISTORY
         }
         params = RetrofitService.getInstance().getSignature(url, extraSignature)
         params[WebParams.USER_ID] = userPhoneID
@@ -370,11 +369,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.DETAILS_BILLER, response.detail)
 
         if (!response.biller_detail.toString().equals("", ignoreCase = true)) {
-            val jsonParser = JsonParser()
-            val gson = Gson()
-            args.putString(DefineValue.BILLER_DETAIL, jsonParser.parse(gson.toJson(response.biller_detail)).toString()
-                    //                response.getBiller_detail().getPhoneNumber()
-            )
+            args.putString(DefineValue.BILLER_DETAIL, JsonParser().parse(Gson().toJson(response.biller_detail)).toString())
         }
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.buss_scheme_code)
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.buss_scheme_name)

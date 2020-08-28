@@ -3,8 +3,14 @@ package com.sgo.saldomu.adapter;/*
  */
 
 import android.content.Context;
-import android.support.v4.app.*;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.ListFragment;
+
 import com.viewpagerindicator.IconPagerAdapter;
 
 import java.util.List;
@@ -18,7 +24,7 @@ public class ReportTabAdapter extends FragmentStatePagerAdapter implements IconP
     private ListFragment mCurrentFragment;
     private List<ListFragment> mListFrag;
 
-    public ReportTabAdapter(FragmentManager fm, Context _context, List<ListFragment> _mListFrag,String[] _titles) {
+    public ReportTabAdapter(FragmentManager fm, Context _context, List<ListFragment> _mListFrag, String[] _titles) {
         super(fm);
         mContext = _context;
         mListFrag = _mListFrag;

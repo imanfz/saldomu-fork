@@ -1,21 +1,15 @@
 package com.sgo.saldomu.activities
 
-import android.app.PendingIntent.getActivity
 import android.app.ProgressDialog
-import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Menu
-import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.sgo.saldomu.Beans.SCADMCommunityModel
 import com.sgo.saldomu.R
-import com.sgo.saldomu.adapter.HistoryAdapter
-import com.sgo.saldomu.adapter.ListJoinSCADMAdapter
 import com.sgo.saldomu.adapter.StarterKitListFileAdapter
 import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -24,20 +18,12 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.DefinedDialog
-import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.StarterKitFileModel
-import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel
-import com.sgo.saldomu.models.retrofit.HistoryModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseActivity
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import timber.log.Timber
 import java.net.URLDecoder
-import java.net.URLEncoder
-import java.util.ArrayList
 
 class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.StarterKitListener {
     private lateinit var levelClass: LevelClass
@@ -56,7 +42,7 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        InitializeToolbar()
+        initializeToolbar()
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
         levelClass = LevelClass(this, sp)
 
@@ -232,7 +218,7 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
         private const val TAG = "StarterKitActivity"
     }
 
-    fun InitializeToolbar() {
+    fun initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left)
         actionBarTitle = getString(R.string.menu_item_title_starterkit)
     }
@@ -248,12 +234,12 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
     }
 
     override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 finish()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

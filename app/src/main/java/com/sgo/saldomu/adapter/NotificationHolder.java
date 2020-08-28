@@ -2,7 +2,7 @@ package com.sgo.saldomu.adapter;/*
   Created by Administrator on 5/6/2015.
  */
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;

@@ -4,7 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -513,7 +513,7 @@ public class BuyEVoucherHPInput extends BaseFragment {
         fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack) {
+    private void switchFragment(Fragment i, String name, Boolean isBackstack) {
         if (getActivity() == null)
             return;
 

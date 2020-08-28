@@ -71,31 +71,31 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
         //memberId = "003SGO";
         //shopId      = "003";
 
-        progdialog          = new ProgressDialog(BbsSetupOpenHourActivity.this);
-        memberId        = getIntent().getStringExtra("memberId");
-        shopId          = getIntent().getStringExtra("shopId");
-        setupOpenHour   = new SetupOpenHour();
+        progdialog = new ProgressDialog(BbsSetupOpenHourActivity.this);
+        memberId = getIntent().getStringExtra("memberId");
+        shopId = getIntent().getStringExtra("shopId");
+        setupOpenHour = new SetupOpenHour();
 
         initializeToolbar();
 
-        gridview            = (GridView) findViewById(R.id.simpleGridView);
-        llSettingTutupToko  = (LinearLayout) findViewById(R.id.llSettingTutupToko);
-        llSetupHours        = (LinearLayout) findViewById(R.id.llSetupHours);
-        llSetupOpeningHour  = (LinearLayout) findViewById(R.id.llSetupOpeningHour);
+        gridview = (GridView) findViewById(R.id.simpleGridView);
+        llSettingTutupToko = (LinearLayout) findViewById(R.id.llSettingTutupToko);
+        llSetupHours = (LinearLayout) findViewById(R.id.llSetupHours);
+        llSetupOpeningHour = (LinearLayout) findViewById(R.id.llSetupOpeningHour);
 
         //llTutupToko         = (LinearLayout) findViewById(R.id.llTutupToko);
 
-        swOpen24Hours       = (Switch) findViewById(R.id.swOpen24Hours);
-        btnProses           = (Button) findViewById(R.id.btnProses);
+        swOpen24Hours = (Switch) findViewById(R.id.swOpen24Hours);
+        btnProses = (Button) findViewById(R.id.btnProses);
         swOpen24Hours.setChecked(true);
-        selectedDate        = new ArrayList<>();
-        selectedDays        = new ArrayList<>();
+        selectedDate = new ArrayList<>();
+        selectedDays = new ArrayList<>();
 
-        swTutupToko         = (Switch) findViewById(R.id.swTutupToko);
-        llSetupClosedType   = (LinearLayout) findViewById(R.id.llSetupClosedType);
-        tvSelectedInfo      = (TextView) findViewById(R.id.tvSelectedInfo);
+        swTutupToko = (Switch) findViewById(R.id.swTutupToko);
+        llSetupClosedType = (LinearLayout) findViewById(R.id.llSetupClosedType);
+        tvSelectedInfo = (TextView) findViewById(R.id.tvSelectedInfo);
 
-        spClosedType        = (Spinner) findViewById(R.id.spClosedType);
+        spClosedType = (Spinner) findViewById(R.id.spClosedType);
         spClosedType.setOnItemSelectedListener(this);
 
         llSetupHours.setVisibility(View.GONE);
@@ -118,7 +118,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                     llSetupOpeningHour.setVisibility(View.VISIBLE);
                     //llTutupToko.setVisibility(View.VISIBLE);
 
-                    if ( swTutupToko.isChecked() ) {
+                    if (swTutupToko.isChecked()) {
                         llSetupClosedType.setVisibility(View.VISIBLE);
                     }
                 }
@@ -156,14 +156,14 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                 bundle.putString("NamaHari", setupOpenHour.getSetupOpenHours().get(position).getNamaHari());
                 bundle.putString("startHour", setupOpenHour.getSetupOpenHours().get(position).getStartHour());
                 bundle.putString("endHour", setupOpenHour.getSetupOpenHours().get(position).getEndHour());
-                bundle.putInt("iStartHour", setupOpenHour.getSetupOpenHours().get(position).getiStartHour() );
-                bundle.putInt("iStartMinute", setupOpenHour.getSetupOpenHours().get(position).getiStartMinute() );
-                bundle.putInt("iEndHour", setupOpenHour.getSetupOpenHours().get(position).getiEndHour() );
-                bundle.putInt("iEndMinute", setupOpenHour.getSetupOpenHours().get(position).getiEndMinute() );
+                bundle.putInt("iStartHour", setupOpenHour.getSetupOpenHours().get(position).getiStartHour());
+                bundle.putInt("iStartMinute", setupOpenHour.getSetupOpenHours().get(position).getiStartMinute());
+                bundle.putInt("iEndHour", setupOpenHour.getSetupOpenHours().get(position).getiEndHour());
+                bundle.putInt("iEndMinute", setupOpenHour.getSetupOpenHours().get(position).getiEndMinute());
 
                 timePickerFragment.setArguments(bundle);
                 timePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-                timePickerFragment.show(getSupportFragmentManager(),TimePickerFragment.TAG  );
+                timePickerFragment.show(getSupportFragmentManager(), TimePickerFragment.TAG);
 
 
             }
@@ -212,7 +212,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
 
-        if ( pos > 0 ) {
+        if (pos > 0) {
             ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment();
 
             String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
@@ -237,28 +237,28 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
     public void onOkClosedTypePickerClick(int position, ArrayList<String> selectedDays, ArrayList<String> selectedDate) {
         this.selectedDays = selectedDays;
         this.selectedDate = selectedDate;
-        if ( position == 1 ) {
+        if (position == 1) {
 
             selectedPos = position;
 
             ArrayList<String> tempData = new ArrayList<>();
-            for(int x = 0; x < selectedDays.size(); x++) {
+            for (int x = 0; x < selectedDays.size(); x++) {
                 Integer idx = Integer.valueOf(selectedDays.get(x)) + 1;
 
                 tempData.add(setupOpenHour.getSetupOpenHours().get(idx).getNamaHari());
             }
-            tvSelectedInfo.setText("Hari : "+ android.text.TextUtils.join(", ", tempData));
+            tvSelectedInfo.setText("Hari : " + android.text.TextUtils.join(", ", tempData));
 
 
-        } else if ( position == 2 ) {
+        } else if (position == 2) {
             selectedPos = position;
 
             ArrayList<String> tempData = new ArrayList<>();
-            for(int x = 0; x < selectedDate.size(); x++) {
+            for (int x = 0; x < selectedDate.size(); x++) {
                 String idx = String.valueOf(Integer.valueOf(selectedDate.get(x)) + 1);
                 tempData.add(idx);
             }
-            tvSelectedInfo.setText("Tanggal : "+ android.text.TextUtils.join(", ", tempData));
+            tvSelectedInfo.setText("Tanggal : " + android.text.TextUtils.join(", ", tempData));
         }
     }
 
@@ -271,15 +271,14 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
         @Override
         public void onClick(View v) {
             if (InetHandler.isNetworkAvailable(getApplicationContext())) {
-                Boolean hasError    = false;
+                Boolean hasError = false;
                 String errorMessage = "";
 
-                if ( !swOpen24Hours.isChecked() ) {
-                    for(int j = 0; j < setupOpenHour.getSetupOpenHours().size(); j++)
-                    {
-                        if ( j > 0 ){
-                            if ( setupOpenHour.getSetupOpenHours().get(j).getStartHour().equals("")
-                                    || setupOpenHour.getSetupOpenHours().get(j).getEndHour().equals("") ) {
+                if (!swOpen24Hours.isChecked()) {
+                    for (int j = 0; j < setupOpenHour.getSetupOpenHours().size(); j++) {
+                        if (j > 0) {
+                            if (setupOpenHour.getSetupOpenHours().get(j).getStartHour().equals("")
+                                    || setupOpenHour.getSetupOpenHours().get(j).getEndHour().equals("")) {
                                 hasError = true;
 
                             }
@@ -287,19 +286,19 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
 
                     }
 
-                    if ( hasError ) {
+                    if (hasError) {
                         errorMessage = getString(R.string.err_empty_hour);
                     }
                 }
 
-                if ( !hasError && swTutupToko.isChecked() ) {
-                    if ( selectedPos == 1 ) {
-                        if ( selectedDays.size() == 0 ) {
+                if (!hasError && swTutupToko.isChecked()) {
+                    if (selectedPos == 1) {
+                        if (selectedDays.size() == 0) {
                             hasError = true;
                             errorMessage = getString(R.string.err_empty_closed_days);
                         }
-                    } else if ( selectedPos == 2 ){
-                        if ( selectedDate.size() == 0 ) {
+                    } else if (selectedPos == 2) {
+                        if (selectedDate.size() == 0) {
                             hasError = true;
                             errorMessage = getString(R.string.err_empty_closed_dates);
                         }
@@ -307,14 +306,14 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                 }
 
                 if (!hasError) {
-                    try{
+                    try {
                         progdialog = DefinedDialog.CreateProgressDialog(BbsSetupOpenHourActivity.this, "");
                         progdialog.show();
 
                         HashMap<String, Object> params = new HashMap<>();
 
-                        UUID rcUUID             = UUID.randomUUID();
-                        String  dtime           = DateTimeFormat.getCurrentDateTime();
+                        UUID rcUUID = UUID.randomUUID();
+                        String dtime = DateTimeFormat.getCurrentDateTime();
 
                         params.put(WebParams.RC_UUID, rcUUID);
                         params.put(WebParams.RC_DATETIME, dtime);
@@ -324,15 +323,15 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                         params.put(WebParams.SHOP_ID, shopId);
                         params.put(WebParams.MEMBER_ID, memberId);
 
-                        if ( swOpen24Hours.isChecked() ) {
+                        if (swOpen24Hours.isChecked()) {
                             params.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_YES);
                         } else {
                             params.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_NO);
 
-                            for(int j =0; j < setupOpenHour.getSetupOpenHours().size(); j++ ) {
-                                if ( j > 0 ) {
+                            for (int j = 0; j < setupOpenHour.getSetupOpenHours().size(); j++) {
+                                if (j > 0) {
                                     OpenHourDays ohd = setupOpenHour.getSetupOpenHours().get(j);
-                                    switch(j) {
+                                    switch (j) {
                                         case 1:
                                             params.put(WebParams.OPEN_START_HOUR_SUN, ohd.getStartHour());
                                             params.put(WebParams.OPEN_END_HOUR_SUN, ohd.getEndHour());
@@ -369,13 +368,13 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
 
                         Gson gson = new Gson();
                         ArrayList<String> tempData = new ArrayList<>();
-                        if ( swTutupToko.isChecked() ) {
+                        if (swTutupToko.isChecked()) {
 
 
-                            if ( selectedPos == 0 ) {
+                            if (selectedPos == 0) {
 
 
-                                for(int x = 0; x < selectedDays.size(); x++) {
+                                for (int x = 0; x < selectedDays.size(); x++) {
                                     Integer idx = Integer.valueOf(selectedDays.get(x)) + 1;
 
                                     tempData.add(setupOpenHour.getSetupOpenHours().get(idx).getKodeHari());
@@ -384,7 +383,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                                 params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_DAY);
                             } else {
 
-                                for(int x = 0; x < selectedDate.size(); x++) {
+                                for (int x = 0; x < selectedDate.size(); x++) {
                                     String idx = String.valueOf(Integer.valueOf(selectedDate.get(x)) + 1);
                                     tempData.add(idx);
                                 }
@@ -409,15 +408,13 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                                         try {
                                             String code = response.getString(WebParams.ERROR_CODE);
                                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                                Intent intent=new Intent(getApplicationContext(),BbsMerchantCommunityList.class);
+                                                Intent intent = new Intent(getApplicationContext(), BbsMerchantCommunityList.class);
                                                 startActivity(intent);
-                                            }
-                                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                                 String message = response.getString(WebParams.ERROR_MESSAGE);
                                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                                 //test.showDialoginActivity(getApplication(),message);
-                                            }
-                                            else {
+                                            } else {
                                                 code = response.getString(WebParams.ERROR_MESSAGE);
                                                 Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
                                             }
@@ -437,8 +434,8 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                                             progdialog.dismiss();
                                     }
                                 });
-                    }catch (Exception e){
-                        Timber.d("httpclient:"+e.getMessage());
+                    } catch (Exception e) {
+                        Timber.d("httpclient:" + e.getMessage());
                     }
                 } else {
                     //DefinedDialog.showErrorDialog(getApplicationContext(), errorMessage);
@@ -446,9 +443,8 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                 }
 
 
-
-            }
-            else DefinedDialog.showErrorDialog(getApplicationContext(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getApplicationContext(), getString(R.string.inethandler_dialog_message));
         }
     };
 

@@ -2,10 +2,10 @@ package com.sgo.saldomu.fragments
 
 import android.app.Dialog
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.LinearSnapHelper
-import android.support.v7.widget.SnapHelper
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.SnapHelper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -179,7 +179,7 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
 
     private fun showDialog(msg: String) {
         // Create custom dialog object
-        val dialog = Dialog(activity)
+        val dialog = Dialog(activity!!)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCanceledOnTouchOutside(false)
         // Include dialog.xml file

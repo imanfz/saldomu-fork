@@ -3,8 +3,8 @@ package com.sgo.saldomu.activities;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 
 import com.securepreferences.SecurePreferences;
@@ -44,7 +44,7 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        InitializeToolbar();
+        initializeToolbar();
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
@@ -106,7 +106,7 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
         }
     }
 
-    public void InitializeToolbar() {
+    public void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_setting));
     }

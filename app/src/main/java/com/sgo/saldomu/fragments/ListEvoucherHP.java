@@ -1,9 +1,9 @@
 package com.sgo.saldomu.fragments;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import androidx.fragment.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,7 +62,7 @@ public class ListEvoucherHP extends ListFragment {
         }
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack){
+    private void switchFragment(Fragment i, String name, Boolean isBackstack){
         if (getActivity() == null)
             return;
 

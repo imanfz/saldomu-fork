@@ -3,10 +3,10 @@ package com.sgo.saldomu.fragments
 import `in`.srain.cube.views.ptr.PtrFrameLayout
 import `in`.srain.cube.views.ptr.PtrHandler
 import android.os.Bundle
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.ItemDecoration
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -26,7 +26,6 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.NotifModel
-import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.empty_notification.*
 import kotlinx.android.synthetic.main.frag_notification.*
@@ -130,10 +129,10 @@ class FragMessage : BaseFragment() {
         Timber.d("isi params Retrieve Notif All:$params")
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_NOTIF_RETRIEVE_ALL, params,
                 object : ResponseListener {
-                    override fun onResponses(`object`: JsonObject?) {
+                    override fun onResponses(jsonObject: JsonObject?) {
                         dismissProgressDialog()
 
-                        val model = getGson().fromJson(`object`, NotifModel::class.java)
+                        val model = getGson().fromJson(jsonObject, NotifModel::class.java)
 
                         val code = model.error_code
                         if (code == WebParams.SUCCESS_CODE) {
@@ -147,14 +146,14 @@ class FragMessage : BaseFragment() {
                             var detail: String?
                             var time: String?
                             var toId: String?
-                            var fromName: String? = ""
+                            val fromName: String? = ""
                             var fromId: String?
                             var notifId: String?
-                            var fromProfilePicture: String? = ""
+                            val fromProfilePicture: String? = ""
                             var dateTime: String?
                             var idResult: String?
                             var notifType: Int
-                            var image = 0
+                            var image: Int
                             var read: Boolean
                             var time1: Date
                             val p = PrettyTime(Locale(DefineValue.sDefSystemLanguage))
@@ -202,12 +201,12 @@ class FragMessage : BaseFragment() {
                             val test = AlertDialogLogout.getInstance()
                             test.showDialoginActivity(activity, message)
                         } else if (code == DefineValue.ERROR_9333) {
-                            Timber.d("isi response app data:" + model.app_data)
+                            Timber.d("isi response app data:%s", model.app_data)
                             val appModel = model.app_data
                             val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
                             alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                         } else if (code == DefineValue.ERROR_0066) {
-                            Timber.d("isi response maintenance:" + `object`.toString())
+                            Timber.d("isi response maintenance:%s", jsonObject.toString())
                             val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                             alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                         } else {
@@ -233,17 +232,11 @@ class FragMessage : BaseFragment() {
                 })
     }
 
-//    private fun notificationItemClickAction(position: Int) {
-//        val mObj = mData!![position]
-//        sentReadNotif(mObj.notif_id, position)
-//        activity!!.finish()
-//    }
-
     private fun canScroolUp(): Boolean {
         try {
             return mAdapter?.itemCount == 0 || notification_recycle_list == null || mLayoutManager.findFirstCompletelyVisibleItemPosition() == 0 && notification_recycle_list!!.getChildAt(0).top == 0
         } catch (ex: Exception) {
-            Timber.wtf("Exception checkCandoRefresh:" + ex.message)
+            Timber.wtf("Exception checkCandoRefresh:%s", ex.message)
         }
         return false
     }
@@ -257,66 +250,4 @@ class FragMessage : BaseFragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-//    private fun sentReadNotif(_notif_id: String, position: Int) {
-//        try {
-//            extraSignature = _notif_id
-//            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_READ, extraSignature)
-//            params[WebParams.USER_ID] = userId
-//            params[WebParams.NOTIF_ID_READ] = _notif_id
-//            params[WebParams.MEMBER_ID] = memberId
-//            params[WebParams.COMM_ID] = MyApiClient.COMM_ID
-//            params[WebParams.DATE_TIME] = DateTimeFormat.getCurrentDateTime()
-//            Timber.d("isi params Read Notif:$params")
-//            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_NOTIF_READ, params,
-//                    object : ResponseListener {
-//                        override fun onResponses(`object`: JsonObject) {
-//                            val model = getGson().fromJson(`object`, jsonModel::class.java)
-//                            var code = model.error_code
-//                            if (code == WebParams.SUCCESS_CODE) {
-//                                if (activity != null) {
-//                                    mData!![position].isRead = true
-//                                    activity!!.setResult(MainPage.RESULT_NOTIF)
-//                                    mAdapter!!.notifyItemChanged(position)
-//                                    checkNotification()
-//                                }
-//                            } else if (code == WebParams.LOGOUT_CODE) {
-//                                val message = model.error_message
-//                                val test = AlertDialogLogout.getInstance()
-//                                test.showDialoginActivity(activity, message)
-//                            } else if (code == DefineValue.ERROR_9333) {
-//                                Timber.d("isi response app data:" + model.app_data)
-//                                val appModel = model.app_data
-//                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-//                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-//                            } else if (code == DefineValue.ERROR_0066) {
-//                                Timber.d("isi response maintenance:$`object`")
-//                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-//                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
-//                            } else {
-//                                code = model.error_code + ":" + model.error_message
-//                                Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
-//                            }
-//                        }
-//
-//                        override fun onError(throwable: Throwable) {}
-//                        override fun onComplete() {}
-//                    })
-//        } catch (e: java.lang.Exception) {
-//            Timber.d("httpclient:" + e.message)
-//        }
-//    }
-
-//    private fun checkNotification() {
-//        val mth: Thread = object : Thread() {
-//            override fun run() {
-//                val mContext = activity!!.parent
-//                if (mContext is MainPage) {
-//                    val mNoHand = NotificationHandler(mContext, sp)
-//                    mNoHand.sentRetrieveNotif()
-//                }
-//            }
-//        }
-//        mth.start()
-//    }
 }
