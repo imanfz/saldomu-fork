@@ -936,6 +936,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HELP_LIST);
             params.put(WebParams.USER_ID, ownerId);
+            params.put(WebParams.FLAG_LOGIN, sp.getString(DefineValue.FLAG_LOGIN,""));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 
