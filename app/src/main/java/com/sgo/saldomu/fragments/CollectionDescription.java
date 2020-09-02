@@ -440,7 +440,7 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
 
                                 showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""), DateTimeFormat.formatToID(model.getCreated()),
                                         sp.getString(DefineValue.USERID_PHONE, ""), bankName, productName, txId, remark,
-                                        model.getTx_status(), model.getTx_remark(), _amount);
+                                        model.getTx_status(), model.getTx_remark(), _amount, model);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -506,7 +506,7 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
     }
 
     private void showReportBillerDialog(String userName, String date, String userId, String _bank_name, String _product_name,
-                                        String _tx_id, String _remark, String txStatus, String txRemark, String _amount) {
+                                        String _tx_id, String _remark, String txStatus, String txRemark, String _amount, GetTrxStatusReportModel model) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
@@ -526,18 +526,20 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         }
+//        else if (txStatus.equals(DefineValue.SUSPECT)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//        } else if (!txStatus.equals(DefineValue.FAILED)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, model.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
 
         dialog.setArguments(args);

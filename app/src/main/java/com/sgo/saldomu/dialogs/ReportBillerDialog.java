@@ -239,7 +239,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                     Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
-                    tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                    tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                     if (!isSuccess) {
                         String transRemark = args.getString(DefineValue.TRX_REMARK);
                         tv_trans_remark_sub.setVisibility(View.VISIBLE);
@@ -299,7 +299,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
-                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                 if (!isSuccess) {
                     String transRemark = args.getString(DefineValue.TRX_REMARK);
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
@@ -357,7 +357,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_member_shop_phone = inflated.findViewById(R.id.dialog_reportbbs_member_shop_phone);
                     Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
-                    tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                    tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                     if (!isSuccess) {
                         String transRemark = args.getString(DefineValue.TRX_REMARK);
                         tv_trans_remark_sub.setVisibility(View.VISIBLE);
@@ -393,7 +393,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     inflated.setVisibility(View.VISIBLE);
                     Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
-                    tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                    tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                     if (!isSuccess) {
                         String transRemark = args.getString(DefineValue.TRX_REMARK);
                         tv_trans_remark_sub.setVisibility(View.VISIBLE);
@@ -452,7 +452,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 String total_amount = args.getString(DefineValue.TOTAL_AMOUNT);
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
-                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                 if (!isSuccess) {
                     String transRemark = args.getString(DefineValue.TRX_REMARK);
 
@@ -494,7 +494,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 String total_amount = args.getString(DefineValue.TOTAL_AMOUNT);
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
-                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                 if (!isSuccess) {
                     String transRemark = args.getString(DefineValue.TRX_REMARK);
 
@@ -571,7 +571,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 createTableDesc(args.getString(DefineValue.BILLER_DETAIL, ""), mTableLayout, type);
 
-                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                 if (!isSuccess) {
                     String transRemark = args.getString(DefineValue.TRX_REMARK);
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
@@ -677,6 +677,13 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     mLayoutFailed.setVisibility(View.VISIBLE);
                     tv_error_recipient_value.setText(args.getString(DefineValue.RECIPIENTS_ERROR));
                 }
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
+                if (!isSuccess) {
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
             } else if (buss_scheme_code.equals("OR") || buss_scheme_code.equals("ORP")) {
 //                    laporan transfer yg out
 
@@ -698,7 +705,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
-                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                 if (!isSuccess) {
                     String transRemark = args.getString(DefineValue.TRX_REMARK);
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
@@ -738,7 +745,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
-                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                 if (!isSuccess) {
                     String transRemark = args.getString(DefineValue.TRX_REMARK);
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
@@ -788,6 +795,13 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_nominal_value.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee_value.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
+                if (!isSuccess) {
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
             } else if (buss_scheme_code.equals("BDK")) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_denom);
                 View inflated = stub.inflate();
@@ -811,7 +825,13 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 mTableLayout.setVisibility(View.VISIBLE);
 
                 createTableDenom(args.getString(DefineValue.DENOM_DETAIL, ""), mTableLayout);
-
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
+                if (!isSuccess) {
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
 
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                 tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
@@ -856,7 +876,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 createTableDGI(args.getString(DefineValue.INVOICE, ""), mTableLayout);
 
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
-                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                 if (!isSuccess) {
                     String transRemark = args.getString(DefineValue.TRX_REMARK);
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
@@ -882,7 +902,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
 
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
-                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                 if (!isSuccess) {
                     String transRemark = args.getString(DefineValue.TRX_REMARK);
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);

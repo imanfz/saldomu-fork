@@ -446,19 +446,20 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         when {
             txStatus == DefineValue.SUCCESS -> {
                 txStat = true
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
             }
             txStatus == DefineValue.ONRECONCILED -> {
                 txStat = true
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
             }
-            txStatus == DefineValue.SUSPECT -> args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-            txStatus != DefineValue.FAILED -> args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-            else -> args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            txStatus == DefineValue.SUSPECT -> args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//            txStatus != DefineValue.FAILED -> args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//            else -> args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response?.tx_remark)
         args.putString(DefineValue.MEMBER_NAME, response?.member_name)
+        args.putString(DefineValue.TRX_STATUS_REMARK, response?.tx_status_remark)
         args.putString(DefineValue.SOURCE_ACCT, response?.source_bank_name)
         args.putString(DefineValue.SOURCE_ACCT_NO, response?.source_acct_no)
         args.putString(DefineValue.SOURCE_ACCT_NAME, response?.source_acct_name)

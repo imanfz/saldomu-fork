@@ -820,6 +820,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.REPORT_TYPE, DefineValue.CASHOUT);
         args.putString(DefineValue.BUSS_SCHEME_CODE, model.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, model.getBuss_scheme_name());
+        args.putString(DefineValue.TRX_STATUS_REMARK, model.getTx_status_remark());
+
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
@@ -846,17 +848,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         String txStatus = response.getTx_status();
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         }
+//        else if (txStatus.equals(DefineValue.SUSPECT)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//        } else if (!txStatus.equals(DefineValue.FAILED)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//        }
+
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.getTx_status_remark());
         args.putString(DefineValue.OTP_MEMBER, response.getOtp_member());
         args.putString(DefineValue.MEMBER_PHONE, response.getMember_phone());
         args.putBoolean(DefineValue.IS_REPORT, isReport);
@@ -903,18 +908,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         String txStatus = response.getTx_status();
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         }
+//        else if (txStatus.equals(DefineValue.SUSPECT)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//        } else if (!txStatus.equals(DefineValue.FAILED)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
 
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.getBuss_scheme_code());
@@ -955,18 +962,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         String txStatus = response.getTx_status();
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         }
+//        else if (txStatus.equals(DefineValue.SUSPECT)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//        } else if (!txStatus.equals(DefineValue.FAILED)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
 
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.getBuss_scheme_code());
@@ -1005,18 +1014,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         String txStatus = response.getTx_status();
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         }
+//        else if (txStatus.equals(DefineValue.SUSPECT)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//        } else if (!txStatus.equals(DefineValue.FAILED)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
         args.putString(DefineValue.MEMBER_SHOP_NAME, response.getMember_shop_name());
         args.putString(DefineValue.MEMBER_SHOP_NO, response.getMember_shop_phone());
@@ -1058,18 +1069,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         String txStatus = response.getTx_status();
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         }
+//        else if (txStatus.equals(DefineValue.SUSPECT)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//        } else if (!txStatus.equals(DefineValue.FAILED)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
         args.putString(DefineValue.MEMBER_NAME, response.getMember_name());
         args.putString(DefineValue.SOURCE_ACCT, response.getSource_bank_name());
@@ -1134,6 +1147,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_amount()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.getTx_status_remark());
 
         showBillerDialog(args, response.getTx_status(), response.getTx_remark());
     }
@@ -1162,18 +1176,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         String txStatus = response.getTx_status();
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         }
+//        else if (txStatus.equals(DefineValue.SUSPECT)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//        } else if (!txStatus.equals(DefineValue.FAILED)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
 
 
@@ -1222,18 +1238,21 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             Boolean txStat = false;
             if (txStatus.equals(DefineValue.SUCCESS)) {
                 txStat = true;
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
             } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
                 txStat = true;
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-            } else if (txStatus.equals(DefineValue.SUSPECT)) {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-            } else if (!txStatus.equals(DefineValue.FAILED)) {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-            } else {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
             }
+//            else if (txStatus.equals(DefineValue.SUSPECT)) {
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//            } else if (!txStatus.equals(DefineValue.FAILED)) {
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//            } else {
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            }
             args.putBoolean(DefineValue.TRX_STATUS, txStat);
+
+            args.putString(DefineValue.TRX_STATUS_REMARK, resp.getTx_status_remark());
             if (!txStat)
                 args.putString(DefineValue.TRX_REMARK, response.optString(WebParams.TX_REMARK));
 
@@ -1271,13 +1290,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
+//        else if (txStatus.equals(DefineValue.SUSPECT)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//        } else if (!txStatus.equals(DefineValue.FAILED)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
         args.getString(DefineValue.TX_ID, args.getString(DefineValue.TX_ID));
@@ -1306,18 +1326,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             Boolean txStat = false;
             if (txStatus.equals(DefineValue.SUCCESS)) {
                 txStat = true;
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
             } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
                 txStat = true;
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-            } else if (txStatus.equals(DefineValue.SUSPECT)) {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-            } else if (!txStatus.equals(DefineValue.FAILED)) {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-            } else {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
             }
+//            else if (txStatus.equals(DefineValue.SUSPECT)) {
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//            } else if (!txStatus.equals(DefineValue.FAILED)) {
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//            } else {
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            }
             args.putBoolean(DefineValue.TRX_STATUS, txStat);
+            args.putString(DefineValue.TRX_STATUS_REMARK, resp.getTx_status_remark());
             if (!txStat)
                 args.putString(DefineValue.TRX_REMARK, response.optString(WebParams.TX_REMARK));
 

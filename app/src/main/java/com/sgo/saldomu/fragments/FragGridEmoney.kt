@@ -2,6 +2,7 @@ package com.sgo.saldomu.fragments
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.v4.content.res.ResourcesCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,26 +73,24 @@ class FragGridEmoney : BaseFragment() {
         menuDrawables.clear()
         for (i in mListBillerData!!.indices) {
             menuStrings.add(mListBillerData!![i].comm_name)
-            if (mListBillerData!![i].comm_name.contains("LinkAja")) {
-                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_linkaja))
-            }
+            if (mListBillerData!![i].comm_name.contains("LinkAja"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_linkaja, null)!!)
 
-            if (mListBillerData!![i].comm_name.contains("Emoney Mandiri")||
-                    mListBillerData!![i].comm_name.contains("Mandiri E-Money")) {
-                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_mandiri))
-            }
+            if (mListBillerData!![i].comm_name.contains("Emoney Mandiri") ||
+                    mListBillerData!![i].comm_name.contains("Mandiri E-Money"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_mandiri, null)!!)
 
-            if (mListBillerData!![i].comm_name.contains("OVO")) {
-                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_ovo))
-            }
+            if (mListBillerData!![i].comm_name.contains("OVO"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_ovo, null)!!)
 
-            if (mListBillerData!![i].comm_name.contains("DANA")) {
-                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_dana))
-            }
+            if (mListBillerData!![i].comm_name.contains("DANA"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_dana, null)!!)
 
-            if (mListBillerData!![i].comm_name.contains("Gopay")) {
-                menuDrawables.add(resources.getDrawable(R.drawable.icon_emoney_gopay))
-            }
+            if (mListBillerData!![i].comm_name.contains("Gopay"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_gopay, null)!!)
+
+            if (mListBillerData!![i].comm_name.contains("ShopeePay"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_shopeepay, null)!!)
         }
     }
 

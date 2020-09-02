@@ -305,7 +305,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                             txstatus, response.getString(WebParams.TX_REMARK),
                                             reportType, response.getString(WebParams.BUSS_SCHEME_CODE), response.getString(WebParams.BUSS_SCHEME_NAME),
                                             response, response.optString(WebParams.COMM_CODE, ""), response.optString(WebParams.MEMBER_CODE, ""),
-                                            response.optString(WebParams.ORDER_ID, ""));
+                                            response.optString(WebParams.ORDER_ID, ""), model);
                                 } else if (code.equals("0288")) {
                                     Timber.d("isi error sent trx status bbs:" + response.toString());
                                     String code_msg = response.getString(WebParams.ERROR_MESSAGE);
@@ -333,7 +333,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                                 DefineValue.FAILED, getString(R.string.transaction_failed_tx_id), reportType,
                                                 response.getString(WebParams.BUSS_SCHEME_CODE), response.getString(WebParams.BUSS_SCHEME_NAME), response,
                                                 response.optString(WebParams.COMM_CODE, ""), response.optString(WebParams.MEMBER_CODE, ""),
-                                                response.optString(WebParams.ORDER_ID, ""));
+                                                response.optString(WebParams.ORDER_ID, ""), model);
                                     } else
                                         showDialog(msg);
                                 }
@@ -402,7 +402,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                     showReportBillerDialog(userName, DateTimeFormat.formatToID(model.getCreated()), txId, userId, totalAmount, fee, amount,
                                             txstatus, model.getTx_remark(),
                                             reportType, model.getBuss_scheme_code(), model.getBuss_scheme_name(), new JSONObject(gson.toJson(model)),
-                                            model.getComm_code(), model.getMember_code(), model.getOrder_id());
+                                            model.getComm_code(), model.getMember_code(), model.getOrder_id(), model);
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -421,7 +421,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                         showReportBillerDialog(userName, date, txId, userId, totalAmount, fee, amount,
                                                 DefineValue.FAILED, getString(R.string.transaction_failed_tx_id), reportType, model.getBuss_scheme_code(),
                                                 model.getBuss_scheme_name(), new JSONObject(gson.toJson(model)), model.getComm_code(),
-                                                model.getMember_code(), model.getOrder_id());
+                                                model.getMember_code(), model.getOrder_id(), model);
                                     } else
                                         showDialog(message);
                                 }
@@ -479,7 +479,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     private void showReportBillerDialog(String userName, String date, String txId, String userId, String total_amount,
                                         String fee, String amount, String txStatus, String txRemark, String reportType,
                                         String buss_scheme_code, String buss_scheme_name,
-                                        JSONObject response, String comm_code, String member_code, String order_id) throws JSONException {
+                                        JSONObject response, String comm_code, String member_code, String order_id, GetTrxStatusReportModel model) throws JSONException {
 
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         Bundle args = dialog.getArguments();
@@ -502,18 +502,20 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         }
+//        else if (txStatus.equals(DefineValue.SUSPECT)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//        } else if (!txStatus.equals(DefineValue.FAILED)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, model.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
 
         if (response.optString(WebParams.BUSS_SCHEME_CODE).equalsIgnoreCase("BDK")) {

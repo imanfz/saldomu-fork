@@ -520,18 +520,19 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
         } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
         } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
         args.putString(DefineValue.MEMBER_NAME, response.getMember_name());
         args.putString(DefineValue.SOURCE_ACCT, response.getSource_bank_name());

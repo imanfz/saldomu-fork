@@ -48,8 +48,6 @@ import kotlinx.android.synthetic.main.frag_biller_input_new.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
-import java.util.*
-import kotlin.collections.ArrayList
 
 class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
@@ -1229,19 +1227,21 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         var txStat: Boolean? = false
         if (txStatus == DefineValue.SUCCESS) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
         } else if (txStatus == DefineValue.ONRECONCILED) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
-        } else if (txStatus == DefineValue.SUSPECT) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-        } else if (txStatus != DefineValue.FAILED) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
         }
+//        else if (txStatus == DefineValue.SUSPECT) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//        } else if (txStatus != DefineValue.FAILED) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
         if (!txStat) args.putString(DefineValue.TRX_REMARK, model.tx_remark)
+        args.putString(DefineValue.TRX_STATUS_REMARK, model.tx_status_remark)
 
         var _isi_amount_desired = ""
         if (is_input_amount!!)

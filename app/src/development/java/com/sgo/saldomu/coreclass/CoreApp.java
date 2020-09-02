@@ -102,7 +102,7 @@ public class CoreApp extends MultiDexApplication {
         }
 
         myApiClient.InitializeAddress();
-        Timber.wtf("isi headaddressfinal:" + MyApiClient.headaddressfinal);
+//        Timber.wtf("isi headaddressfinal:" + MyApiClient.headaddressfinal);
 //        Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
 //        configurationBuilder.addModelClasses(
 //                friendModel.class,

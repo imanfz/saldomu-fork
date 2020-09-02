@@ -894,23 +894,24 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         when {
             txStatus == DefineValue.SUCCESS -> {
                 txStat = true
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
             }
             txStatus == DefineValue.ONRECONCILED -> {
                 txStat = true
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
             }
-            txStatus == DefineValue.SUSPECT -> {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-            }
-            txStatus != DefineValue.FAILED -> {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-            }
-            else -> {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
-            }
+//            txStatus == DefineValue.SUSPECT -> {
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//            }
+//            txStatus != DefineValue.FAILED -> {
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//            }
+//            else -> {
+//                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            }
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
+        args.putString(DefineValue.TRX_STATUS_REMARK, model.tx_status_remark)
         if (!txStat) args.putString(DefineValue.TRX_REMARK, model.tx_remark)
 
         args.putString(DefineValue.DETAILS_BILLER, model.product_name)
