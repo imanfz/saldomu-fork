@@ -19,8 +19,12 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+
 import com.sgo.saldomu.R;
+
 import java.io.IOException;
+
+import timber.log.Timber;
 
 public class CameraActivity extends Activity implements View.OnClickListener {
 
@@ -80,9 +84,9 @@ public class CameraActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         type = getIntent().getIntExtra("type", 0);
         if (type == TYPE_COMPANY_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
         setContentView(R.layout.activity_camera);
         cameraPreview = (CameraPreview) findViewById(R.id.camera_surface);
@@ -201,12 +205,14 @@ public class CameraActivity extends Activity implements View.OnClickListener {
                                 top = ((float) containerView.getTop() - (float) cameraPreview.getTop()) / (float) cameraPreview.getHeight();
                                 right = (float) cropView.getRight() / (float) cameraPreview.getWidth();
                                 bottom = (float) containerView.getBottom() / (float) cameraPreview.getHeight();
+
                             } else {
                                 left = ((float) containerView.getLeft() - (float) cameraPreview.getLeft()) / (float) cameraPreview.getWidth();
                                 top = (float) cropView.getTop() / (float) cameraPreview.getHeight();
                                 right = (float) containerView.getRight() / (float) cameraPreview.getWidth();
                                 bottom = (float) cropView.getBottom() / (float) cameraPreview.getHeight();
                             }
+
                             //裁剪及保存到文件
                             Bitmap cropBitmap;
                             if (bitmap.getWidth() < bitmap.getHeight()) {
@@ -224,7 +230,26 @@ public class CameraActivity extends Activity implements View.OnClickListener {
 //                                        (int) ((right - left - 0.12f) * (float) bitmap.getWidth()),
 //                                        (int) ((bottom - top + 0.1f) * (float) bitmap.getHeight()));
 
-                                cropBitmap = Bitmap.createBitmap(bitmap,0,0,cameraPreview.getWidth(),cameraPreview.getHeight());
+                                cropBitmap = Bitmap.createBitmap(bitmap, 0, 0, cameraPreview.getWidth(), cameraPreview.getHeight());
+
+//                                int width = (int) ((right - left - 0.12f) * (float) bitmap.getWidth());
+//                                if (width < 0) {
+//                                    width = (int) ((right - left) * (float) bitmap.getWidth());
+//                                }
+//                                int height = (int) ((bottom - top + 0.1f) * (float) bitmap.getHeight());
+//                                if (height < 0) {
+//                                    height = (int) ((bottom - top) * (float) bitmap.getHeight());
+//                                }
+//
+//                                int y = (int) ((top) * (float) bitmap.getHeight());
+//
+//                                Timber.d("y : ", y);
+//                                Timber.d("height : ", height);
+//                                cropBitmap = Bitmap.createBitmap(bitmap,
+//                                        (int) ((left) * (float) bitmap.getWidth()),
+//                                        y,
+//                                        width,
+//                                        height);
                             }
 
 

@@ -654,7 +654,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                             response.optString(WebParams.BENEF_BANK_NAME, ""), response.optString(WebParams.BENEF_ACCT_NO, ""),
                                             response.optString(WebParams.BENEF_ACCT_NAME, ""), response.optString(WebParams.MEMBER_SHOP_PHONE, ""),
                                             response.optString(WebParams.MEMBER_SHOP_NAME, ""), otp_member, response.optString(WebParams.BUSS_SCHEME_CODE),
-                                            response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.MEMBER_PHONE, ""), response.optString(WebParams.ADDITIONAL_FEE, "0"));
+                                            response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.MEMBER_PHONE, ""),
+                                            response.optString(WebParams.ADDITIONAL_FEE, "0"), model);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -710,7 +711,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                         String source_bank_name, String member_shop_no, String source_acct_name,
                                         String benef_bank_name, String benef_acct_no, String benef_acct_name, String member_shop_phone,
                                         String member_shop_name, String otp_member, String buss_scheme_code, String buss_scheme_name, String member_phone,
-                                        String additional_fee) {
+                                        String additional_fee, GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
@@ -740,6 +741,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
         args.putString(DefineValue.MEMBER_NAME, member_name);
         args.putString(DefineValue.SOURCE_ACCT, source_bank_name);

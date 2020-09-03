@@ -17,6 +17,10 @@ public class PayFriendConfirmModel extends jsonModel {
     @Expose
     private
     String buss_scheme_name;
+    @SerializedName("tx_status_remark")
+    @Expose
+    private
+    String tx_status_remark;
     @SerializedName("transfer_data")
     @Expose
     private
@@ -46,5 +50,9 @@ public class PayFriendConfirmModel extends jsonModel {
 
     public Object getData() {
         return data;
+    }
+
+    public String getTx_status_remark() {
+        return tx_status_remark;
     }
 }

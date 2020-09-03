@@ -2,6 +2,7 @@ package com.sgo.saldomu.fragments
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.v4.content.res.ResourcesCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,6 +89,9 @@ class FragGridEmoney : BaseFragment() {
 
             if (mListBillerData!![i].comm_name.contains("Gopay"))
                 menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_gopay, null)!!)
+
+            if (mListBillerData!![i].comm_name.contains("ShopeePay"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_shopeepay, null)!!)
         }
     }
 

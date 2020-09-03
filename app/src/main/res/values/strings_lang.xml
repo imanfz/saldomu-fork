@@ -286,7 +286,8 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="changepass_text_firsttime_msg">Before using the application, please change your password for security reasons.</string>
 
     <string name="forgotpass_text_title">Forgot Password</string>
-    <string name="forgotpass_text_instruction">%1$s will send the Forgot Password procedure. Select the type of Forgot Password notification that you want to process.</string>
+<!--    <string name="forgotpass_text_instruction">%1$s will send the Forgot Password procedure. Select the type of Forgot Password notification that you want to process.</string>-->
+    <string name="forgotpass_text_instruction">%1$s will send the Forgot Password procedure via SMS to your phone number.</string>
     <!--    <string name="forgotpass_text_title">Forgot Password</string>-->
     <!--    <string name="forgotpass_text_instruction">%1$s will send the Forgot Password procedure. Select the type of Forgot Password notification that you want to process.</string>-->
 

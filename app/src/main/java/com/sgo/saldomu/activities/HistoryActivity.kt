@@ -310,18 +310,20 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         val txStatus = response.tx_status
         if (txStatus == SUCCESS) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
         } else if (txStatus == DefineValue.ONRECONCILED) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
-        } else if (txStatus == DefineValue.SUSPECT) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-        } else if (txStatus != DefineValue.FAILED) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
         }
+//        else if (txStatus == DefineValue.SUSPECT) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//        } else if (txStatus != DefineValue.FAILED) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.tx_status_remark)
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.tx_remark)
         dialog.arguments = args
         val ft = this.supportFragmentManager.beginTransaction()
@@ -348,18 +350,20 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         val txStatus = response.tx_status
         if (txStatus == SUCCESS) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
         } else if (txStatus == DefineValue.ONRECONCILED) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
-        } else if (txStatus == DefineValue.SUSPECT) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-        } else if (txStatus != DefineValue.FAILED) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
         }
+//        else if (txStatus == DefineValue.SUSPECT) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//        } else if (txStatus != DefineValue.FAILED) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.tx_status_remark)
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.tx_remark)
 
 
@@ -399,18 +403,20 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         val txStatus = response.tx_status
         if (txStatus == SUCCESS) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
         } else if (txStatus == DefineValue.ONRECONCILED) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
-        } else if (txStatus == DefineValue.SUSPECT) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-        } else if (txStatus != DefineValue.FAILED) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
         }
+//        else if (txStatus == DefineValue.SUSPECT) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//        } else if (txStatus != DefineValue.FAILED) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.tx_status_remark)
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.tx_remark)
         args.putString(DefineValue.MEMBER_NAME, response.member_name)
         args.putString(DefineValue.SOURCE_ACCT, response.source_bank_name)
@@ -451,18 +457,20 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         val txStatus = response.tx_status
         if (txStatus == SUCCESS) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
         } else if (txStatus == DefineValue.ONRECONCILED) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
-        } else if (txStatus == DefineValue.SUSPECT) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-        } else if (txStatus != DefineValue.FAILED) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
         }
+//        else if (txStatus == DefineValue.SUSPECT) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//        } else if (txStatus != DefineValue.FAILED) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.tx_status_remark)
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.tx_remark)
         args.putString(DefineValue.MEMBER_SHOP_NAME, response.member_shop_name)
         args.putString(DefineValue.MEMBER_SHOP_NO, response.member_shop_phone)
@@ -505,17 +513,19 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         val txStatus = response.tx_status
         if (txStatus == SUCCESS) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
         } else if (txStatus == DefineValue.ONRECONCILED) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
-        } else if (txStatus == DefineValue.SUSPECT) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-        } else if (txStatus != DefineValue.FAILED) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
         }
+//        else if (txStatus == DefineValue.SUSPECT) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//        } else if (txStatus != DefineValue.FAILED) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//        }
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.tx_status_remark)
         args.putString(DefineValue.OTP_MEMBER, response.otp_member)
         args.putString(DefineValue.MEMBER_PHONE, response.member_phone)
         args.putBoolean(DefineValue.IS_REPORT, isReport!!)
@@ -561,18 +571,20 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         val txStatus = response.tx_status
         if (txStatus == SUCCESS) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
         } else if (txStatus == DefineValue.ONRECONCILED) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
-        } else if (txStatus == DefineValue.SUSPECT) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-        } else if (txStatus != DefineValue.FAILED) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
         }
+//        else if (txStatus == DefineValue.SUSPECT) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//        } else if (txStatus != DefineValue.FAILED) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.tx_status_remark)
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.tx_remark)
 
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.buss_scheme_code)
@@ -612,18 +624,20 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         val txStatus = response.tx_status
         if (txStatus == SUCCESS) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
         } else if (txStatus == DefineValue.ONRECONCILED) {
             txStat = true
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
-        } else if (txStatus == DefineValue.SUSPECT) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-        } else if (txStatus != DefineValue.FAILED) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
         }
+//        else if (txStatus == DefineValue.SUSPECT) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//        } else if (txStatus != DefineValue.FAILED) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.tx_status_remark)
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.tx_remark)
 
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.buss_scheme_code)
@@ -664,18 +678,20 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             var txStat: Boolean? = false
             if (txStatus == SUCCESS) {
                 txStat = true
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
             } else if (txStatus == DefineValue.ONRECONCILED) {
                 txStat = true
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
-            } else if (txStatus == DefineValue.SUSPECT) {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-            } else if (txStatus != DefineValue.FAILED) {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-            } else {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
             }
+//        else if (txStatus == DefineValue.SUSPECT) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//        } else if (txStatus != DefineValue.FAILED) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//        }
             args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
+            args.putString(DefineValue.TRX_STATUS_REMARK, response.optString(WebParams.TX_STATUS_REMARK))
             if (!txStat)
                 args.putString(DefineValue.TRX_REMARK, response.optString(WebParams.TX_REMARK))
 
@@ -720,18 +736,20 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             var txStat: Boolean? = false
             if (txStatus == SUCCESS) {
                 txStat = true
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success))
             } else if (txStatus == DefineValue.ONRECONCILED) {
                 txStat = true
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
-            } else if (txStatus == DefineValue.SUSPECT) {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
-            } else if (txStatus != DefineValue.FAILED) {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
-            } else {
-                args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending))
             }
+//        else if (txStatus == DefineValue.SUSPECT) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect))
+//        } else if (txStatus != DefineValue.FAILED) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus)
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed))
+//        }
             args.putBoolean(DefineValue.TRX_STATUS, txStat!!)
+            args.putString(DefineValue.TRX_STATUS_REMARK, response.optString(WebParams.TX_STATUS_REMARK))
             if (!txStat)
                 args.putString(DefineValue.TRX_REMARK, response.optString(WebParams.TX_REMARK))
 
