@@ -79,7 +79,7 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
         }
 
         if (getIntent().getBooleanExtra(DefineValue.NOT_YET_LOGIN, false)) {
-            tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME);
+            tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" +BuildConfig.VERSION_CODE +")");
             if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("") && !sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty())
                 showDialogFingerprint();
             new UtilsLoader(this, sp).getFailedPINNo(userId, new OnLoadDataListener() {

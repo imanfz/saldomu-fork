@@ -29,12 +29,14 @@ android {
             keyPassword 'saldomukey590'
             storePassword 'saldomustore590'
             storeFile file('saldomu-key.jks')
+            v1SigningEnabled false
         }
     }
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
 
     defaultConfig {
+        resConfigs "en"
         applicationId "com.sgo.saldomu"
         minSdkVersion 19
         targetSdkVersion 29
