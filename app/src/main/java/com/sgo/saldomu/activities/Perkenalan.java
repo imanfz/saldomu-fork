@@ -127,6 +127,25 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         btnStartNow.setOnClickListener(VerifyListener);
         btnPOS.setOnClickListener(POSlistener);
 
+        if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
+            //cheat kalo diteken lama skip ke register (-1)
+            btnStartNow.setOnLongClickListener(v -> {
+                Intent i = new Intent(Perkenalan.this, OTPVerificationActivity.class);
+                i.putExtra(DefineValue.USER_IS_NEW, -1);
+                startActivity(i);
+                Perkenalan.this.finish();
+                return false;
+            });
+            //cheat kalo diteken lama next ke Login (-2)
+            btnPOS.setOnLongClickListener(v -> {
+                Intent i = new Intent(Perkenalan.this, LoginActivity.class);
+                i.putExtra(DefineValue.USER_IS_NEW, -2);
+                startActivity(i);
+                Perkenalan.this.finish();
+                return false;
+            });
+        }
+
         perms = new String[]{Manifest.permission.READ_CONTACTS,
                 Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE};
 

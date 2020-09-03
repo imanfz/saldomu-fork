@@ -87,7 +87,7 @@ public class FragHelp extends BaseFragment {
             progdialog.show();
 
             HashMap<String, Object> params;
-            if (isnotYetLogin == true) {
+            if (isnotYetLogin) {
                 params = RetrofitService.getInstance().getSignatureSecretKeyPIN(MyApiClient.LINK_HELP_LIST, "", "628");
                 params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_NO);
                 params.put(WebParams.USER_ID, "628");

@@ -937,7 +937,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HELP_LIST);
             params.put(WebParams.USER_ID, ownerId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            Timber.d("isi params help list:" + params.toString());
+            params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_YES);
+            Timber.d("isi params help list:%s", params.toString());
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_HELP_LIST, params,
                     new ObjListeners() {
@@ -948,13 +949,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    Timber.d("isi response help list:" + response.toString());
+                                    Timber.d("isi response help list:%s", response.toString());
 
                                     SecurePreferences.Editor mEditor = sp.edit();
                                     mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
                                     mEditor.apply();
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
+                                    Timber.d("isi response autologout:%s", response.toString());
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
                                 } else {
@@ -978,7 +979,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
