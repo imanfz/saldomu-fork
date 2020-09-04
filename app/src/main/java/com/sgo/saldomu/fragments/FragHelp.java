@@ -67,8 +67,8 @@ public class FragHelp extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null)
             isnotYetLogin = bundle.getBoolean(DefineValue.NOT_YET_LOGIN, false);
-        else
-            isnotYetLogin = false;
+//        else
+//            isnotYetLogin = false;
         act = getActivity();
         act1 = getActivity();
 
@@ -87,7 +87,7 @@ public class FragHelp extends BaseFragment {
             progdialog.show();
 
             HashMap<String, Object> params;
-            if (isnotYetLogin) {
+            if (sp.getString(DefineValue.FLAG_LOGIN,"").equalsIgnoreCase(DefineValue.STRING_NO)) {
                 params = RetrofitService.getInstance().getSignatureSecretKeyPIN(MyApiClient.LINK_HELP_LIST, "", "628");
                 params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_NO);
                 params.put(WebParams.USER_ID, "628");

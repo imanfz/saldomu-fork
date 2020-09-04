@@ -88,6 +88,9 @@ class FragGridEmoney : BaseFragment() {
 
             if (mListBillerData!![i].comm_name.contains("Gopay"))
                 menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_gopay, null)!!)
+
+            if (mListBillerData!![i].comm_name.contains("ShopeePay"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_shopeepay, null)!!)
         }
     }
 

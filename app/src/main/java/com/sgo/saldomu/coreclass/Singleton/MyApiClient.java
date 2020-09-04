@@ -79,7 +79,7 @@ public class MyApiClient {
 
     //    public static final String headaddressDEV = "http://116.90.162.173:18080/akardaya/";
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
-    public static String headaddressfinal = BuildConfig.HEAD_ADDRESSS + "saldomu/";
+    private static String headaddressfinal = BuildConfig.HEAD_ADDRESSS + "saldomu/";
 
     public static String headaodaddressfinal = BuildConfig.HEAD_ADDRESSS + "saldomu/agentlocation/";
     public static String urlMNotif = BuildConfig.URL_MNOTIF;
@@ -636,8 +636,8 @@ public class MyApiClient {
 
     public static String APP_ID = BuildConfig.APP_ID;
     public static String CCY_VALUE = "IDR";
-    public static String DEV_MEMBER_ID_PULSA_RETAIL = "EFENDI1421144347BPFIM";
-    public static String PROD_MEMBER_ID_PULSA_RETAIL = "EFENDI1421205049F0018";
+//    public static String DEV_MEMBER_ID_PULSA_RETAIL = "EFENDI1421144347BPFIM";
+//    public static String PROD_MEMBER_ID_PULSA_RETAIL = "EFENDI1421205049F0018";
     public static String URL_INFO_HARGA_DEV = "http://192.168.86.55:20080/misc/biller/index/";
     public static String URL_INFO_HARGA_PROD = "https://bo.saldomu.com/misc/biller/index/";
     public static String domainSgoPlusDev = "https://sandbox-kit.espay.id/";

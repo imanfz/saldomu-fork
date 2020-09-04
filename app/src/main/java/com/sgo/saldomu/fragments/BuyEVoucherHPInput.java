@@ -275,13 +275,13 @@ public class BuyEVoucherHPInput extends BaseFragment {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
-            String _member_id;
+            String _member_id="";
             _noHPdestination = NoHPFormat.formatTo62(noHP_value.getText().toString());
             String denomPattern = _noHPdestination + "|" + _denomPayment;
 
             if (topupType.equals(DefineValue.INTERNET_BANKING)) {
-                if (MyApiClient.IS_PROD) _member_id = MyApiClient.PROD_MEMBER_ID_PULSA_RETAIL;
-                else _member_id = MyApiClient.DEV_MEMBER_ID_PULSA_RETAIL;
+//                if (MyApiClient.IS_PROD) _member_id = MyApiClient.PROD_MEMBER_ID_PULSA_RETAIL;
+//                else _member_id = MyApiClient.DEV_MEMBER_ID_PULSA_RETAIL;
             } else _member_id = member_pulsa_id;
 
             String url;

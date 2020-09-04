@@ -106,7 +106,7 @@ public class CoreApp extends Application {
         }
 
         myApiClient.InitializeAddress();
-        Timber.wtf("isi headaddressfinal:"+MyApiClient.headaddressfinal);
+//        Timber.wtf("isi headaddressfinal:"+MyApiClient.headaddressfinal);
 //        Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
 //        configurationBuilder.addModelClasses(
 //                communityModel.class,

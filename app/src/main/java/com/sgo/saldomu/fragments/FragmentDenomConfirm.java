@@ -635,7 +635,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                                         txstatus, model.getTx_remark(), _amount, model.getTotal_amount(), model.getTx_fee(), getGson().toJson(model.getDenom_detail()), model.getBuss_scheme_code(),
                                         model.getBuss_scheme_name(), model.getProduct_name(), model.getOrder_id(), model.getComm_code(),
                                         model.getMember_code(), model.getStore_name(), model.getStore_address(), model.getStore_code(),
-                                        model.getMember_cust_name(), model.getMember_cust_id());
+                                        model.getMember_cust_name(), model.getMember_cust_id(),model);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -675,7 +675,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                                         String txRemark, String _amount, String totalAmount, String txFee, String denom_detail,
                                         String buss_scheme_code, String buss_scheme_name, String product_name, String order_id,
                                         String comm_code, String member_code, String store_name, String store_address, String store_code,
-                                        String agent_name, String agent_phone) {
+                                        String agent_name, String agent_phone, GetTrxStatusReportModel model) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
@@ -691,18 +691,20 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
-        } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         }
+//        else if (txStatus.equals(DefineValue.SUSPECT)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//        } else if (!txStatus.equals(DefineValue.FAILED)) {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//        } else {
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//        }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, model.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
 
 
