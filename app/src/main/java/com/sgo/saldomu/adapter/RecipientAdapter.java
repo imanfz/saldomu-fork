@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.sgo.saldomu.Beans.RecepientModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;

@@ -4,7 +4,6 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 
 import java.io.ByteArrayInputStream;

@@ -43,7 +43,7 @@ public class PaymentRemarkDialog extends DialogFragment {
     onTap listener;
     private com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd;
     private String dateNow;
-    private String dedate;
+    private String dedate = "";
     private String due_date;
     private DateFormat fromFormat;
     private DateFormat toFormat2;

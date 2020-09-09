@@ -6,7 +6,6 @@ import com.sgo.saldomu.Beans.Account_Collection_Model;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.Denom_Data_Model;
-import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.Beans.bank_biller_model;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -18,7 +17,6 @@ import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
-import com.sgo.saldomu.models.TagihCommunityModel;
 
 import java.io.File;
 import java.io.FileOutputStream;

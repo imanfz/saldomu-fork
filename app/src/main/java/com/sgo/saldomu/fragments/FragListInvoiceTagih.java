@@ -1,11 +1,6 @@
 package com.sgo.saldomu.fragments;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -28,6 +23,12 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.bank_biller_model;
@@ -36,6 +37,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.adapter.BankCashoutAdapter;
 import com.sgo.saldomu.adapter.InvoiceDGIAdapter;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DividerItemDecoration;
@@ -189,12 +191,12 @@ public class FragListInvoiceTagih extends BaseFragment {
                         @Override
                         public void onOK(String msg, String s, String dedate) {
                             paymentRemark = msg;
-                            if (s.isEmpty() || s==null) {
+                            if (s.isEmpty()) {
                                 noId = "";
                             } else
                                 noId = s;
 
-                            if (dedate.isEmpty() || dedate==null)
+                            if (dedate.isEmpty())
                             {
                                 due_date = "";
                             }else
@@ -253,12 +255,7 @@ public class FragListInvoiceTagih extends BaseFragment {
 
     public void initializeRecyclerview() {
         invoiceDGIAdapter = new InvoiceDGIAdapter(invoiceDGIModelArrayList, getActivity(),
-                new InvoiceDGIAdapter.OnTap() {
-                    @Override
-                    public void onTap(InvoiceDGI model) {
-                        showInputDialog(model);
-                    }
-                });
+                this::showInputDialog);
         listMenu.setAdapter(invoiceDGIAdapter);
         listMenu.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listMenu.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.row_divider),
@@ -268,17 +265,14 @@ public class FragListInvoiceTagih extends BaseFragment {
     void showInputDialog(InvoiceDGI model) {
         int pos = invoiceDGIModelArrayList.indexOf(model);
         InputAmountTagihBillerDialog dialog = InputAmountTagihBillerDialog.newDialog(pos, invoiceDGIModelArrayList.get(pos), partialPayment,
-                new InputAmountTagihBillerDialog.OnTap() {
-                    @Override
-                    public void onTap(int pos, String value) {
-                        invoiceDGIModelArrayList.get(pos).setInput_amount(value);
-                        invoiceDGIAdapter.notifyItemChanged(pos);
+                (pos1, value) -> {
+                    invoiceDGIModelArrayList.get(pos1).setInput_amount(value);
+                    invoiceDGIAdapter.notifyItemChanged(pos1);
 
-                        countTotalPrice();
+                    countTotalPrice();
 
-                        bundle1.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(total));
+                    bundle1.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(total));
 
-                    }
                 });
 
         dialog.show(getFragmentManager(), "input dialog");
@@ -288,12 +282,12 @@ public class FragListInvoiceTagih extends BaseFragment {
         total = 0;
         for (InvoiceDGI obj : invoiceDGIModelArrayList
         ) {
-            if (Integer.valueOf(obj.getInput_amount()) != 0) {
-                total += Integer.valueOf(obj.getInput_amount());
+            if (Integer.parseInt(obj.getInput_amount()) != 0) {
+                total += Integer.parseInt(obj.getInput_amount());
             }
         }
 
-        lbl_total_pay_amount.setText(String.valueOf(total));
+        lbl_total_pay_amount.setText(CurrencyFormat.format(total));
     }
 
     void resetData() {

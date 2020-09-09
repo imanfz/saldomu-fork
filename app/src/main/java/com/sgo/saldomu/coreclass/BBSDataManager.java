@@ -2,8 +2,9 @@ package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;

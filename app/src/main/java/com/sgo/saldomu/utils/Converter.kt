@@ -1,11 +1,9 @@
 package com.sgo.saldomu.utils
 
-import java.nio.ByteOrder.LITTLE_ENDIAN
-import android.R.attr.order
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-
 import java.nio.ByteOrder.BIG_ENDIAN
+import java.nio.ByteOrder.LITTLE_ENDIAN
 
 class Converter {
     companion object {

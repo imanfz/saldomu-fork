@@ -1,17 +1,17 @@
 package com.sgo.saldomu.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+
+import androidx.fragment.app.Fragment;
+
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragmentSearch;
-import com.sgo.saldomu.utils.LocaleManager;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
@@ -113,11 +113,7 @@ public class ActivitySearch extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(LocaleManager.setLocale(newBase));
 
-    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

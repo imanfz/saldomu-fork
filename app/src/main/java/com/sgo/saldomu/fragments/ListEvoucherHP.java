@@ -1,14 +1,16 @@
 package com.sgo.saldomu.fragments;
 
 import android.content.Intent;
-import androidx.fragment.app.Fragment;
 import android.os.Bundle;
-import androidx.fragment.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
+
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.EvoucherHPActivity;
 import com.sgo.saldomu.activities.MainPage;

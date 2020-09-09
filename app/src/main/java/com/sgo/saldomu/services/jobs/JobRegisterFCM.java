@@ -1,13 +1,8 @@
 package com.sgo.saldomu.services.jobs;
 
-import android.os.Bundle;
-
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
-import com.sgo.saldomu.coreclass.BBSDataManager;
-import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fcm.FCMWebServiceLoader;
-import com.sgo.saldomu.receivers.LocalResultReceiver;
 
 import timber.log.Timber;
 

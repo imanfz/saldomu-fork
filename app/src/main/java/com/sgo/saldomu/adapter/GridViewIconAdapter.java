@@ -2,15 +2,15 @@ package com.sgo.saldomu.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsListSettingKelolaActivity;

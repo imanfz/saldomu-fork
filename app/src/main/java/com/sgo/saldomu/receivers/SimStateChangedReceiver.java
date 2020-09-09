@@ -6,7 +6,6 @@ import android.content.Intent;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.activities.ErrorActivity;
-import com.sgo.saldomu.coreclass.CoreApp;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.LifeCycleHandler;

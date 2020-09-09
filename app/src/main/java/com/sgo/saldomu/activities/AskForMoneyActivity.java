@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -24,6 +23,8 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.android.ex.chips.BaseRecipientAdapter;
 import com.android.ex.chips.RecipientEditTextView;
@@ -76,7 +77,7 @@ public class AskForMoneyActivity extends BaseActivity {
     private TextView txtName;
     private TextView txtNumberRecipients;
     private RecipientEditTextView phoneRetv;
-//    private Spinner sp_privacy;
+    //    private Spinner sp_privacy;
     private Button btnRequestMoney;
     private EditText etAmount;
     private EditText etMessage;
@@ -92,6 +93,7 @@ public class AskForMoneyActivity extends BaseActivity {
     private SecurePreferences sp;
     private DrawableRecipientChip[] chips;
     private int memberLevel;
+    private String amount;
 
     @Override
     protected int getLayoutResource() {
@@ -104,7 +106,7 @@ public class AskForMoneyActivity extends BaseActivity {
         initializeToolbar();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS, 5);
-        memberLevel = sp.getInt(DefineValue.LEVEL_VALUE,0);
+        memberLevel = sp.getInt(DefineValue.LEVEL_VALUE, 0);
 
         imgProfile = findViewById(R.id.img_profile);
         imgRecipients = findViewById(R.id.img_recipients);
@@ -127,15 +129,15 @@ public class AskForMoneyActivity extends BaseActivity {
         RoundImageTransformation roundedImageRecipients = new RoundImageTransformation(bmRecipients);
         imgRecipients.setImageDrawable(roundedImageRecipients);
 
-        _memberId = sp.getString(DefineValue.MEMBER_ID,"");
-        _userid = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        _memberId = sp.getString(DefineValue.MEMBER_ID, "");
+        _userid = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         setImageProfPic();
 
         txtName.setText(sp.getString(DefineValue.USER_NAME, ""));
 
         phoneRetv.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-        BaseRecipientAdapter adapter = new BaseRecipientAdapter(BaseRecipientAdapter.QUERY_TYPE_PHONE,this.getApplicationContext());
+        BaseRecipientAdapter adapter = new BaseRecipientAdapter(BaseRecipientAdapter.QUERY_TYPE_PHONE, this.getApplicationContext());
         phoneRetv.setAdapter(adapter);
         phoneRetv.dismissDropDownOnItemSelected(true);
 
@@ -144,7 +146,7 @@ public class AskForMoneyActivity extends BaseActivity {
         etAmount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) {
+                if (hasFocus) {
                     setNumberRecipients();
                 }
             }
@@ -185,7 +187,7 @@ public class AskForMoneyActivity extends BaseActivity {
         });
 
         Intent intent = this.getIntent();
-        if(intent != null) {
+        if (intent != null) {
             final String name = intent.getStringExtra("name");
             final String phone = intent.getStringExtra("phone");
 
@@ -206,35 +208,35 @@ public class AskForMoneyActivity extends BaseActivity {
 //        dialogI.setTargetFragment(this,0);
     }
 
-    public void initializeToolbar(){
+    public void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_ask_for_money));
     }
 
-    private void setNumberRecipients(){
+    private void setNumberRecipients() {
         if (phoneRetv.getSortedRecipients().length == 0) {
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
         } else {
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        if(phoneRetv.length() == 0)
+        if (phoneRetv.length() == 0)
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
         else
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
 
-        Timber.d("isi length recipients:"+ phoneRetv.getRecipients().length);
+        Timber.d("isi length recipients:" + phoneRetv.getRecipients().length);
     }
 
     private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            privacy = i+1;
-            if(phoneRetv.hasFocus())
+            privacy = i + 1;
+            if (phoneRetv.hasFocus())
                 phoneRetv.clearFocus();
             setNumberRecipients();
 
-            if(phoneRetv.length() == 0)
+            if (phoneRetv.length() == 0)
                 txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
             else
                 txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
@@ -242,25 +244,25 @@ public class AskForMoneyActivity extends BaseActivity {
 
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
-            if(phoneRetv.hasFocus())
+            if (phoneRetv.hasFocus())
                 phoneRetv.clearFocus();
             setNumberRecipients();
 
-            if(phoneRetv.length() == 0)
+            if (phoneRetv.length() == 0)
                 txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
             else
                 txtNumberRecipients.setText(String.valueOf(phoneRetv.getRecipients().length));
         }
     };
 
-    private class TempObjectData{
+    private class TempObjectData {
 
         private String send_to;
         private String ccy_id;
         private String amount;
         private String recipient_name;
 
-        public TempObjectData(String _send_to, String _ccy_id, String _amount,String _recipient_name){
+        public TempObjectData(String _send_to, String _ccy_id, String _amount, String _recipient_name) {
             this.send_to = _send_to;
             this.ccy_id = _ccy_id;
             this.amount = _amount;
@@ -273,9 +275,9 @@ public class AskForMoneyActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             if (InetHandler.isNetworkAvailable(AskForMoneyActivity.this)) {
+                amount = NumberTextWatcherForThousand.trimCommaOfString(etAmount.getText().toString());
                 if (inputValidation()) {
                     phoneRetv.requestFocus();
-                    String amount = NumberTextWatcherForThousand.trimCommaOfString(etAmount.getText().toString());
                     String finalNumber;
                     Boolean recipientValidation = true;
                     String message = etMessage.getText().toString();
@@ -319,8 +321,8 @@ public class AskForMoneyActivity extends BaseActivity {
                     }
 
                 }
-            }
-            else DefinedDialog.showErrorDialog(AskForMoneyActivity.this, getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(AskForMoneyActivity.this, getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -357,7 +359,7 @@ public class AskForMoneyActivity extends BaseActivity {
                             String code = model.getError_code();
 
 
-                            Log.wtf("asd", "code"+code);
+                            Log.wtf("asd", "code" + code);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 JSONArray mArrayData;
@@ -394,7 +396,7 @@ public class AskForMoneyActivity extends BaseActivity {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
                                 alertDialogMaintenance.showDialogMaintenance(AskForMoneyActivity.this, model.getError_message());
-                            }else {
+                            } else {
                                 if (code.equals("0998")) {
                                     phoneRetv.requestFocus();
                                     phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
@@ -423,14 +425,14 @@ public class AskForMoneyActivity extends BaseActivity {
         }
     }
 
-    private void preDialog(final String _message, final String _data){
-        String message = getString(R.string.askfriends_predialog_msg1)+" "+chips.length+" "+getString(R.string.askfriends_predialog_msg2);
+    private void preDialog(final String _message, final String _data) {
+        String message = getString(R.string.askfriends_predialog_msg1) + " " + chips.length + " " + getString(R.string.askfriends_predialog_msg2);
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.askfriends_predialog_title))
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        sentData(_message,_data);
+                        sentData(_message, _data);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -466,8 +468,6 @@ public class AskForMoneyActivity extends BaseActivity {
         txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
 
 
-
-
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.askfriends_dialog_title));
         Message.setText(getResources().getString(R.string.askfriends_dialog_msg));
@@ -485,25 +485,25 @@ public class AskForMoneyActivity extends BaseActivity {
         dialog.show();
     }
 
-    private boolean inputValidation(){
-        if(phoneRetv.getText().toString().length()==0){
+    private boolean inputValidation() {
+        if (phoneRetv.getText().toString().length() == 0) {
             phoneRetv.requestFocus();
             phoneRetv.setError(getString(R.string.payfriends_recipients_validation));
             return false;
         }
-        if(phoneRetv.isFocused()){
+        if (phoneRetv.isFocused()) {
             phoneRetv.clearFocus();
         }
-        if(phoneRetv.getText().toString().charAt(0) == ' '){
+        if (phoneRetv.getText().toString().charAt(0) == ' ') {
             phoneRetv.requestFocus();
             phoneRetv.setError(getString(R.string.payfriends_recipients_validation));
             return false;
         }
-        if(etAmount.getText().toString().length()==0){
+        if (amount.length() == 0) {
             etAmount.requestFocus();
             etAmount.setError(getString(R.string.payfriends_amount_validation));
             return false;
-        } else if(Long.parseLong(etAmount.getText().toString()) < 1){
+        } else if (Long.parseLong(amount) < 1) {
             etAmount.requestFocus();
             etAmount.setError(getString(R.string.payfriends_amount_zero));
             return false;
@@ -511,15 +511,15 @@ public class AskForMoneyActivity extends BaseActivity {
         return true;
     }
 
-    private void setImageProfPic(){
+    private void setImageProfPic() {
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
-        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
-        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
+        if (density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
+        else if (density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
         else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
 
-        Timber.wtf("url prof pic:"+_url_profpic);
+        Timber.wtf("url prof pic:" + _url_profpic);
 
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
@@ -530,11 +530,10 @@ public class AskForMoneyActivity extends BaseActivity {
 //        else
 //            mPic= Picasso.with(getActivity());
 
-        if(_url_profpic != null && _url_profpic.isEmpty()){
+        if (_url_profpic != null && _url_profpic.isEmpty()) {
             GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, imgProfile);
 
-        }
-        else {
+        } else {
             GlideManager.sharedInstance().initializeGlide(this, _url_profpic, roundedImage, imgProfile);
 
         }
@@ -543,10 +542,9 @@ public class AskForMoneyActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_information:
-                if(!dialogI.isAdded())
+                if (!dialogI.isAdded())
                     dialogI.show(this.getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
             case android.R.id.home:

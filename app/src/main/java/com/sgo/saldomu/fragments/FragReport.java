@@ -866,7 +866,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         boolean txStat = false;
         String txStatus = response.getTx_status();
-
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
 //            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));

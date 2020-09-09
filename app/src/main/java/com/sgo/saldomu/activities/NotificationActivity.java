@@ -2,11 +2,12 @@ package com.sgo.saldomu.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
 import android.view.Menu;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.NotificationTabAdapter;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;

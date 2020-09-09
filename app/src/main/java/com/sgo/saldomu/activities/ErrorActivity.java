@@ -1,8 +1,9 @@
 package com.sgo.saldomu.activities;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;

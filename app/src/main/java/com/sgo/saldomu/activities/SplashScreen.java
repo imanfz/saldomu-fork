@@ -4,20 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.annotation.Nullable;
 
 import com.github.paolorotolo.appintro.AppIntro;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.fragments.IntroPage;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.utils.LocaleManager;
-
-import timber.log.Timber;
 
 public class SplashScreen extends AppIntro {
     private SecurePreferences sp;
@@ -83,15 +83,6 @@ public class SplashScreen extends AppIntro {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        Timber.d("Logging attachBaseContext.....");
-        //Timber.d("is Firt time : " + sp.getString(DefineValue.IS_FIRST, ""));
-
-//        if (sp.getString(DefineValue.IS_FIRST, "").equalsIgnoreCase(DefineValue.YES)) {
-//            if (LocaleManager.getLocale(getResources()).getLanguage().equals("id")) {
-//                CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
-//            }
-//        }
-
-        super.attachBaseContext(LocaleManager.setLocale(newBase));
+        super.attachBaseContext(LocaleManager.setNewLocale(newBase, DefineValue.LANGUAGE_CODE_IND));
     }
 }

@@ -1,7 +1,8 @@
 package com.sgo.saldomu.BluetoothPrinter.zj;
 
-import zj.com.customize.sdk.Other;
 import android.graphics.Bitmap;
+
+import zj.com.customize.sdk.Other;
 
 public class PrintPicture {
 

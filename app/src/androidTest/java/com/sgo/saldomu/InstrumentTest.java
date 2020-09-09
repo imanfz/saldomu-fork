@@ -1,8 +1,9 @@
 package com.sgo.saldomu;
 
 import android.content.Context;
-import androidx.test.filters.MediumTest;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
 
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.PrefixOperatorValidator;
@@ -13,8 +14,6 @@ import org.junit.runner.RunWith;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * Created by yuddistirakiki on 6/14/17.

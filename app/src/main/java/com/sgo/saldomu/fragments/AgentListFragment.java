@@ -5,26 +5,27 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import androidx.fragment.app.Fragment;
+
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.adapter.AgentListArrayAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
-//import com.sgo.saldomu.dialogs.AgentDetailFragmentDialog;
 import com.sgo.saldomu.models.ShopDetail;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+
+//import com.sgo.saldomu.dialogs.AgentDetailFragmentDialog;
 
 /**
  * Created by Lenovo Thinkpad on 12/5/2016.

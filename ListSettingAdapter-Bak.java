@@ -9,10 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.BbsListSettingKelolaActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
-import com.sgo.saldomu.activities.BbsMerchantSetupHourActivity;
-import com.sgo.saldomu.activities.BbsRegisterOpenClosedShopActivity;
 
 import java.util.ArrayList;
 

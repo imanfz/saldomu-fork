@@ -7,7 +7,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.io.IOException;
-import java.util.List;
 
 public class Preview extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "Preview";

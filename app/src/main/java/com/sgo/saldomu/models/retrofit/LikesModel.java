@@ -4,8 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class LikesModel extends GetCountModel {
 
     @SerializedName("data_likes")

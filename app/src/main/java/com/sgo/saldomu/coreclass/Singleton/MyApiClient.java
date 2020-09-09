@@ -1,7 +1,6 @@
 package com.sgo.saldomu.coreclass.Singleton;
 
 import android.content.Context;
-import android.os.Looper;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
@@ -11,7 +10,6 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.utils.LocaleManager;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.UUID;
 
 /**

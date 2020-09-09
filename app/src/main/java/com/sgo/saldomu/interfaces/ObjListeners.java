@@ -1,7 +1,5 @@
 package com.sgo.saldomu.interfaces;
 
-import com.google.gson.JsonObject;
-
 import org.json.JSONObject;
 
 public interface ObjListeners {

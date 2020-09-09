@@ -5,8 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.fragment.app.ListFragment;
-import androidx.core.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Toast;
+
+import androidx.core.view.ViewCompat;
+import androidx.fragment.app.ListFragment;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.MyGroupObject;

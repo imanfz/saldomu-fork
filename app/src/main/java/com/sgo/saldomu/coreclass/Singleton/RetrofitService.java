@@ -1,9 +1,9 @@
 package com.sgo.saldomu.coreclass.Singleton;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;

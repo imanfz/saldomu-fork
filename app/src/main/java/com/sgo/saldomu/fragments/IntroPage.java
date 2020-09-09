@@ -1,11 +1,12 @@
 package com.sgo.saldomu.fragments;
 
-import androidx.fragment.app.Fragment;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 /**
  * Created by Lenovo Thinkpad on 12/21/2015.

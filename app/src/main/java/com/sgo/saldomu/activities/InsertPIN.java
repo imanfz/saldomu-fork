@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.core.app.ActivityCompat;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -19,6 +18,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.core.app.ActivityCompat;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;

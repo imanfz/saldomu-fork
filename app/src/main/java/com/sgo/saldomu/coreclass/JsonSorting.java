@@ -1,14 +1,7 @@
 package com.sgo.saldomu.coreclass;
 
-import com.google.gson.Gson;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yuddistirakiki on 10/27/17.

@@ -2,12 +2,12 @@ package com.sgo.saldomu.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.fragment.app.Fragment
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.DenomSCADMActivity
 import com.sgo.saldomu.coreclass.DefineValue

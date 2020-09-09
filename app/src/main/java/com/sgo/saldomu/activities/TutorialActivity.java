@@ -2,10 +2,9 @@ package com.sgo.saldomu.activities;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
-
-import android.widget.Button;
 
 import com.github.paolorotolo.appintro.AppIntro;
 import com.securepreferences.SecurePreferences;
