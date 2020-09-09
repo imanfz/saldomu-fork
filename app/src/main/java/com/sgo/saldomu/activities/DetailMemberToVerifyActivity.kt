@@ -26,7 +26,6 @@ import com.sgo.saldomu.utils.camera.CameraActivity
 import com.sgo.saldomu.widgets.BaseActivity
 import com.sgo.saldomu.widgets.ProgressRequestBody
 import kotlinx.android.synthetic.main.activity_detail_member_to_verify.*
-import kotlinx.android.synthetic.main.activity_detail_member_to_verify.submit_button
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

@@ -2,7 +2,6 @@ package com.sgo.saldomu.entityRealm;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by yuddistirakiki on 4/21/17.

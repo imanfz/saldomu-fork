@@ -15,8 +15,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -32,6 +30,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BluetoothPrinter.zj.BluetoothService;

@@ -3,7 +3,10 @@ package com.sgo.saldomu.services;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
-import android.os.*;
+import android.os.Binder;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.os.Process;
 
 import com.sgo.saldomu.loader.UtilsLoader;

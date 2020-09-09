@@ -3,13 +3,16 @@ package com.sgo.saldomu.adapter;/*
  */
 
 import android.content.Context;
+import android.view.ViewGroup;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
-import android.view.ViewGroup;
+
 import com.sgo.saldomu.fragments.ImageSlide;
 import com.sgo.saldomu.fragments.TermsNConditionWeb;
+
 import timber.log.Timber;
 
 public class FirstScreenSlideAdapter extends FragmentStatePagerAdapter {

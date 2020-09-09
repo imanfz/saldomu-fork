@@ -2,14 +2,15 @@ package com.sgo.saldomu.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.ListFragment;
-import androidx.viewpager.widget.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;

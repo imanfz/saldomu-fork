@@ -2,14 +2,16 @@ package com.sgo.saldomu.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragLevelFormRegister;
+import com.sgo.saldomu.widgets.BaseActivity;
+
 import timber.log.Timber;
 
 /*

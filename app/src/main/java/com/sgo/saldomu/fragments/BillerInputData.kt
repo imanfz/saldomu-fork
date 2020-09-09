@@ -46,6 +46,8 @@ import kotlinx.android.synthetic.main.frag_biller_input_new.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 
 class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 

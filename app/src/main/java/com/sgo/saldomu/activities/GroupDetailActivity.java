@@ -9,13 +9,21 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.GroupCommentObject;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GroupCommentAdapter;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlideManager;
+import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.RoundedQuickContactBadge;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import java.util.ArrayList;

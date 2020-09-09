@@ -3,8 +3,6 @@ package com.sgo.saldomu.models.retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class jsonModel {
     @SerializedName("error_code")
     private String error_code;

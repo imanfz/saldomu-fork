@@ -294,4 +294,10 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
         Timber.d("Logging attachBaseContext.....");
         super.attachBaseContext(LocaleManager.setLocale(newBase));
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.clear();
+    }
 }

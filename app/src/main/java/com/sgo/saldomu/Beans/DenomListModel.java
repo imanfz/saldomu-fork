@@ -1,7 +1,5 @@
 package com.sgo.saldomu.Beans;
 
-import com.google.gson.JsonObject;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

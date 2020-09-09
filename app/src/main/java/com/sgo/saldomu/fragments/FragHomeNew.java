@@ -10,10 +10,6 @@ import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +27,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
@@ -38,14 +39,14 @@ import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.PromoObject;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.B2BActivity;
 import com.sgo.saldomu.activities.AskForMoneyActivity;
+import com.sgo.saldomu.activities.B2BActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.CashCollectionActivity;
-import com.sgo.saldomu.activities.HistoryActivity;
 import com.sgo.saldomu.activities.GridBillerActivity;
+import com.sgo.saldomu.activities.HistoryActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MandiriLPActivity;
 import com.sgo.saldomu.activities.ReportActivity;
@@ -958,7 +959,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:%s", response.toString());
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    test.showDialoginMain(getActivity(), message);
                                 } else {
                                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 }

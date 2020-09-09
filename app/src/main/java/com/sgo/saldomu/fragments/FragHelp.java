@@ -3,12 +3,13 @@ package com.sgo.saldomu.fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.sgo.saldomu.Beans.HelpModel;
 import com.sgo.saldomu.R;
@@ -87,14 +88,14 @@ public class FragHelp extends BaseFragment {
             progdialog.show();
 
             HashMap<String, Object> params;
-            if (sp.getString(DefineValue.FLAG_LOGIN,"").equalsIgnoreCase(DefineValue.STRING_NO)) {
-                params = RetrofitService.getInstance().getSignatureSecretKeyPIN(MyApiClient.LINK_HELP_LIST, "", "628");
-                params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_NO);
-                params.put(WebParams.USER_ID, "628");
-            } else {
+            if (sp.getString(DefineValue.FLAG_LOGIN,"").equalsIgnoreCase(DefineValue.STRING_YES)) {
                 params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HELP_LIST);
                 params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_YES);
                 params.put(WebParams.USER_ID, userPhoneID);
+            } else {
+                params = RetrofitService.getInstance().getSignatureSecretKeyPIN(MyApiClient.LINK_HELP_LIST, "", "628");
+                params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_NO);
+                params.put(WebParams.USER_ID, "628");
             }
 
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -157,7 +158,8 @@ public class FragHelp extends BaseFragment {
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
                         }
 
                         @Override

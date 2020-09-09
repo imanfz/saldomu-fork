@@ -3,10 +3,6 @@ import com.sgo.saldomu.coreclass.NoHPFormat;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * Created by yuddistirakiki on 6/13/17.

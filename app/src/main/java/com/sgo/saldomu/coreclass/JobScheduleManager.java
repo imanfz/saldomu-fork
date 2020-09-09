@@ -1,7 +1,6 @@
 package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;

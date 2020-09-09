@@ -1,6 +1,5 @@
 package com.sgo.saldomu.activities;
 
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,7 +23,6 @@ import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.KeyboardPin;
-import com.venmo.android.pin.PinFragmentConfiguration;
 
 import org.json.JSONException;
 import org.json.JSONObject;

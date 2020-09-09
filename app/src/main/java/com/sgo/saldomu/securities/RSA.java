@@ -2,7 +2,6 @@ package com.sgo.saldomu.securities;
 
 import android.util.Base64;
 
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 

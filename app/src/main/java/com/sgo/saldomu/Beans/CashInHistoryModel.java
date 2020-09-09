@@ -1,13 +1,5 @@
 package com.sgo.saldomu.Beans;
 
-import android.util.Log;
-import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import io.realm.RealmObject;
-
 /**
  * Created by Lenovo Thinkpad on 8/2/2017.
  */

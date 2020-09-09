@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
-//import com.facebook.stetho.Stetho;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.sgo.saldomu.BuildConfig;
@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import timber.log.Timber;
+
+//import com.facebook.stetho.Stetho;
 
 /*
   Created by Administrator on 8/15/2014.

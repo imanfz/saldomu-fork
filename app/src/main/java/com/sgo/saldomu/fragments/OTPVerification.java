@@ -4,9 +4,6 @@ package com.sgo.saldomu.fragments;
 import android.app.ProgressDialog;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.gson.JsonObject;
 import com.sgo.saldomu.BuildConfig;
@@ -36,11 +36,13 @@ import com.sgo.saldomu.models.retrofit.OTPModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import java.util.HashMap;
+
+import timber.log.Timber;
+
 //
 //import butterknife.BindView;
 //import butterknife.ButterKnife;
 //import butterknife.OnClick;
-import timber.log.Timber;
 
 
 /**

@@ -3,7 +3,6 @@ package com.sgo.saldomu.activities;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -48,7 +47,6 @@ import com.sgo.saldomu.models.retrofit.LoginModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
-import com.sgo.saldomu.utils.LocaleManager;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.json.JSONException;
@@ -772,12 +770,6 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(i);
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        Timber.d("Logging attachBaseContext.....");
-        super.attachBaseContext(LocaleManager.setLocale(newBase));
     }
 
     private void showDialog(String message) {

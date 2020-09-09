@@ -16,7 +16,6 @@ import com.sgo.saldomu.fcm.FCMManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import timber.log.Timber;
 

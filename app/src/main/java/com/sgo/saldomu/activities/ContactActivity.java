@@ -1,10 +1,11 @@
 package com.sgo.saldomu.activities;
 
 import android.os.Bundle;
-import androidx.viewpager.widget.ViewPager;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
+
+import androidx.viewpager.widget.ViewPager;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;

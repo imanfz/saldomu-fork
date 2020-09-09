@@ -3,8 +3,6 @@ package com.sgo.saldomu.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.models.SetupOpenHour;
