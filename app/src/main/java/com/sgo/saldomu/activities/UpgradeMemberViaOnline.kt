@@ -688,9 +688,9 @@ class UpgradeMemberViaOnline : BaseActivity() {
         val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
         if (EasyPermissions.hasPermissions(this, *perms)) {
             set_result_photo?.let {
-                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD)
-                    CameraActivity.openCertificateCamera(this, CameraActivity.TYPE_COMPANY_PORTRAIT)
-                else
+//                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD)
+//                    CameraActivity.openCertificateCamera(this, CameraActivity.TYPE_COMPANY_PORTRAIT)
+//                else
                     pickAndCameraUtil!!.runCamera(set_result_photo!!)
 //                pickAndCameraUtil.runCamera(it)
             }
@@ -718,6 +718,22 @@ class UpgradeMemberViaOnline : BaseActivity() {
                             processImage(TTD_TYPE, path)
                     }
                 }
+            }
+            RESULT_CAMERA_KTP -> {
+                if (pickAndCameraUtil!!.captureImageUri != null && resultCode == Activity.RESULT_OK)
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                        processImage(KTP_TYPE, pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.captureImageUri))
+                    else
+                        processImage(KTP_TYPE, pickAndCameraUtil!!.currentPhotoPath)
+
+            }
+            RESULT_CAMERA_TTD -> {
+                if (pickAndCameraUtil!!.captureImageUri != null && resultCode == Activity.RESULT_OK)
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                        processImage(TTD_TYPE, pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.captureImageUri))
+                    else
+                        processImage(TTD_TYPE, pickAndCameraUtil!!.currentPhotoPath)
+
             }
             RESULT_SELFIE -> {
                 if (pickAndCameraUtil!!.captureImageUri != null && resultCode == Activity.RESULT_OK)

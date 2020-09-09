@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -35,6 +36,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -43,6 +45,7 @@ import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.RootUtil;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
@@ -279,34 +282,34 @@ public class MainPage extends BaseActivity {
 
     private void InitializeApp() {
         if (GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
-//            if (RootUtil.isDeviceRooted()) {
-//                if (BuildConfig.FLAVOR.equals("production")) {
-//
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
-//                    builder.setMessage("Apakah anda ingin melewati pengecekan device?")
-//                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    initializeDashboard();
-//                                }
-//                            });
-//                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
-//                        }
-//                    });
-//                    builder.setCancelable(false);
-//                    devRootedDeviceAlertDialog = builder.create();
-//                    if (!isFinishing())
-//                        devRootedDeviceAlertDialog.show();
-//                } else {
-//                    switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
-////                    initializeDashboard();
-//                }
-//            } else {
+            if (RootUtil.isDeviceRooted()) {
+                if (BuildConfig.FLAVOR.equals("production")) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
+                    builder.setMessage("Apakah anda ingin melewati pengecekan device?")
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    initializeDashboard();
+                                }
+                            });
+                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
+                        }
+                    });
+                    builder.setCancelable(false);
+                    devRootedDeviceAlertDialog = builder.create();
+                    if (!isFinishing())
+                        devRootedDeviceAlertDialog.show();
+                } else {
+                    switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
+//                    initializeDashboard();
+                }
+            } else {
             initializeDashboard();
-//            }
+            }
         } else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
         }

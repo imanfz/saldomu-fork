@@ -310,29 +310,29 @@ public class SMSclass {
     public String getDeviceIMEI() {
         String imei = "";
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-        {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+//        {
             imei = Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        } else {
-            final TelephonyManager mTelephony = (TelephonyManager) CoreApp.getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (CoreApp.getAppContext().checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    return "";
-                }
-            }
-            assert mTelephony != null;
-            if (mTelephony.getDeviceId() != null)
-            {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                {
-                    imei = mTelephony.getImei();
-                }else {
-                    imei = mTelephony.getDeviceId();
-                }
-            } else {
-                imei = Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-            }
-        }
+//        } else {
+//            final TelephonyManager mTelephony = (TelephonyManager) CoreApp.getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                if (CoreApp.getAppContext().checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+//                    return "";
+//                }
+//            }
+//            assert mTelephony != null;
+//            if (mTelephony.getDeviceId() != null)
+//            {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+//                {
+//                    imei = mTelephony.getImei();
+//                }else {
+//                    imei = mTelephony.getDeviceId();
+//                }
+//            } else {
+//                imei = Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+//            }
+//        }
 //        Log.d("deviceId", deviceId);
 //        return deviceId;
 
