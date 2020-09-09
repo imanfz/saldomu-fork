@@ -3,7 +3,6 @@ package com.sgo.saldomu.fragments;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;

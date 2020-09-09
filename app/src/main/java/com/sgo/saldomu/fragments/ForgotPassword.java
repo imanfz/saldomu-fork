@@ -4,8 +4,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +16,9 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
@@ -86,7 +87,7 @@ public class ForgotPassword extends BaseFragment {
         }
 
         if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) { //untuk shorcut dari tombol di activity LoginActivity
-            et_user_id.setEnabled(true);
+            et_user_id.setEnabled(false);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_item_white,
@@ -190,8 +191,8 @@ public class ForgotPassword extends BaseFragment {
             params.put(WebParams.USER_ID, userIDfinale);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PIN, RSA.opensslEncrypt(uuid, dateTime, userIDfinale, value_pin, subStringLink));
-            params.put(WebParams.IS_EMAIL, is_email);
-            params.put(WebParams.IS_SMS, is_sms);
+            params.put(WebParams.IS_EMAIL, "N");
+            params.put(WebParams.IS_SMS, "Y");
 
             Timber.d(params.toString());
 

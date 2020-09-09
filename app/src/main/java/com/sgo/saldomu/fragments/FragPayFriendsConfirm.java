@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,17 +29,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.sgo.saldomu.Beans.RecepientModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.ChangePIN;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsActivity;
-import com.sgo.saldomu.activities.PayFriendsConfirmTokenActivity;
 import com.sgo.saldomu.adapter.RecipientAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -401,7 +397,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     }
 
     private void showReportBillerDialog(String name, String date, String userId, String txId, String recipients, String amountEach, String amount,
-                                        String fee, String totalAmount, String message, String errorRecipients, PayFriendConfirmModel model) {
+                                        String fee, String totalAmount, String message, String errorRecipients, String txStatusRemark, PayFriendConfirmModel model) {
 
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
@@ -422,6 +418,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
 //        getGson().toJson(model.getTransfer_data());
         String trfData = getGson().toJson(model.getTransfer_data());
         args.putString(DefineValue.TRANSFER_DATA, trfData);
+        args.putString(DefineValue.TRX_STATUS_REMARK, txStatusRemark);
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
@@ -503,7 +500,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                                     int isFailed = 0;
                                     String error_msg = "";
 
-                                    String _txid = "", _recipient = "", _recipient_error = null, _message;
+                                    String _txid = "", _recipient = "", _recipient_error = null, _message, _txStatusRemark = "";
                                     double _Amount = 0.0, _fee = 0.0, _total_amount = 0.0, _total_wc = 0.0;
                                     _message = message;
                                     JsonParser jsonParser = new JsonParser();
@@ -545,6 +542,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
 
                                             }
                                         }
+                                        _txStatusRemark = obj.getTx_status_remark();
                                     }
 
                                     if (isFailed != temp.size()) {
@@ -565,7 +563,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                                                     MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_fee),
                                                     MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_total_amount),
                                                     _message,
-                                                    _recipient_error, model);
+                                                    _recipient_error, _txStatusRemark, model);
 //                                            response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.TRANSFER_DATA)
                                         }
                                     } else showDialog(error_msg);

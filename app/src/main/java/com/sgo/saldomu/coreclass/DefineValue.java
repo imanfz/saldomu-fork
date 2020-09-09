@@ -170,6 +170,7 @@ public class DefineValue {
     public static String TRX = "trx";
     public static String REQUEST_ID = "requestID";
     public static String TRX_STATUS = "transStatus";
+    public static String TRX_STATUS_REMARK = "transStatusRemark";
     public static String TRX_MESSAGE = "transMessage";
     public static String TRX_REMARK = "transRemark";
     public static String COUNT = "10";

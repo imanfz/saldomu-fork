@@ -31,4 +31,7 @@ open class GetTrxStatusModel : jsonModel() {
     @SerializedName("detail")
     @Expose
     val detail: String? = null
+    @SerializedName("tx_status_remark")
+    @Expose
+    val tx_status_remark: String? = ""
 }

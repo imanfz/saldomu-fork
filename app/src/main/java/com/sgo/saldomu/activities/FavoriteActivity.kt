@@ -3,11 +3,11 @@ package com.sgo.saldomu.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.appcompat.app.AlertDialog
-import android.view.MenuItem
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.fragments.FavoriteFragment

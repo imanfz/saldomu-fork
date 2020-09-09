@@ -4,13 +4,14 @@ package com.sgo.saldomu.adapter;/*
 
 import android.app.Activity;
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;

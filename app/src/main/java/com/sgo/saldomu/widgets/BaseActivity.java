@@ -5,16 +5,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
@@ -292,5 +293,11 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     protected void attachBaseContext(Context newBase) {
         Timber.d("Logging attachBaseContext.....");
         super.attachBaseContext(LocaleManager.setLocale(newBase));
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.clear();
     }
 }

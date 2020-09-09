@@ -1,4 +1,5 @@
 package com.sgo.saldomu.coreclass;
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,7 +8,6 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.Menu;
@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 
 public class NotificationActionView extends RelativeLayout

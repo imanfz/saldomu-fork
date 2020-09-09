@@ -6,9 +6,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Window;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-import android.view.Window;
 
 public class AlertDialogFrag extends DialogFragment {
 

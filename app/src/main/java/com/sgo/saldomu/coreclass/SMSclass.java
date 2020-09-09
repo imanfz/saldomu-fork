@@ -16,12 +16,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.provider.Settings;
-import androidx.core.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;

@@ -4,7 +4,6 @@ package com.sgo.saldomu.coreclass;/*
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -13,9 +12,7 @@ import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
 
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 
 import java.io.File;

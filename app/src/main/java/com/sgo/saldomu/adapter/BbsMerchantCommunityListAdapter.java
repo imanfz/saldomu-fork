@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
+
 import java.util.ArrayList;
+
 import io.realm.Realm;
 
 

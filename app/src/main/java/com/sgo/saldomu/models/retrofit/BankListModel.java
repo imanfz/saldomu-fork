@@ -4,8 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONObject;
-
 public class BankListModel extends jsonModel {
     @SerializedName("other_atm")
     @Expose

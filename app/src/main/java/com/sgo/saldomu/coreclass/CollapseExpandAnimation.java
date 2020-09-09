@@ -3,10 +3,10 @@ package com.sgo.saldomu.coreclass;/*
  */
 
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
-import android.view.ViewGroup.LayoutParams;
 
 public class CollapseExpandAnimation extends Animation {
 

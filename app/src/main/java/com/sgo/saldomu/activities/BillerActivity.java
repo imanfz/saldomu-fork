@@ -6,23 +6,18 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.fragments.BillerInputData;
-import com.sgo.saldomu.fragments.BillerInputEmoney;
-import com.sgo.saldomu.fragments.BillerInputPLN;
-import com.sgo.saldomu.fragments.BillerInputPulsa;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
@@ -30,7 +25,12 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.fragments.BillerDesciption;
 import com.sgo.saldomu.fragments.BillerInput;
+import com.sgo.saldomu.fragments.BillerInputData;
+import com.sgo.saldomu.fragments.BillerInputEmoney;
+import com.sgo.saldomu.fragments.BillerInputPLN;
+import com.sgo.saldomu.fragments.BillerInputPulsa;
 import com.sgo.saldomu.fragments.ListBillerMerchant;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import java.util.List;
 

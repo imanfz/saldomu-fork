@@ -1,9 +1,10 @@
 package com.sgo.saldomu.widgets;
 
 import android.content.Context;
-import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
+import androidx.viewpager.widget.ViewPager;
 
 public class CustomViewPager extends ViewPager {
     private Boolean disable = false;

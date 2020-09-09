@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class UpdateBBSBirthPlace extends IntentService {

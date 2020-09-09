@@ -2,10 +2,6 @@ package com.sgo.saldomu.dialogs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
-import android.util.Patterns;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;

@@ -2,10 +2,12 @@ package com.sgo.saldomu.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.core.view.ViewCompat;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+
+import androidx.core.view.ViewCompat;
+
 import com.hb.views.PinnedSectionListView;
 import com.sgo.saldomu.Beans.HomeGroupObject;
 import com.sgo.saldomu.R;

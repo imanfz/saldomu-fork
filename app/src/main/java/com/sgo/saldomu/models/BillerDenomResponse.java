@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import io.realm.RealmList;
-
 public class BillerDenomResponse {
 
 	@SerializedName("error_message")

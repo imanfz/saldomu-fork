@@ -1,8 +1,6 @@
 package com.sgo.saldomu.fcm;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;

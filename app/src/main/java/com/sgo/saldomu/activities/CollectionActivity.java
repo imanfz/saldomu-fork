@@ -4,13 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.Menu;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.view.Menu;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.ListCollectionPayment;
 import com.sgo.saldomu.widgets.BaseActivity;
 

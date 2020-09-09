@@ -1,7 +1,6 @@
 package com.sgo.saldomu.BluetoothPrinter.zj;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;

@@ -10,11 +10,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
-import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.os.Bundle;
-import androidx.core.app.ActivityCompat;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,6 +21,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -42,9 +43,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
-import com.sgo.saldomu.coreclass.DefineValue;
 
 import java.io.IOException;
 import java.util.ArrayList;

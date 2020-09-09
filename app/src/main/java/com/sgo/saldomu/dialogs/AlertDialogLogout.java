@@ -8,8 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.Perkenalan;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.Perkenalan;
 
 import timber.log.Timber;
 

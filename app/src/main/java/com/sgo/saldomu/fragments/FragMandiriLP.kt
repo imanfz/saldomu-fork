@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.*
+import com.sgo.saldomu.activities.BBSActivity
+import com.sgo.saldomu.activities.MainPage
+import com.sgo.saldomu.activities.MandiriLPActivity
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.widgets.BaseFragment

@@ -1,12 +1,5 @@
 package com.sgo.saldomu.fcm;
 
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
-
-import java.io.IOException;
-
-import timber.log.Timber;
-
 /**
  * Created by yuddistirakiki on 8/15/17.
  */

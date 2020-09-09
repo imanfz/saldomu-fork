@@ -16,6 +16,10 @@ public class PayfriendDataModel {
     @Expose
     private
     String tx_remark;
+    @SerializedName("tx_status_remark")
+    @Expose
+    private
+    String tx_status_remark;
 
     public String getTx_id() {
         return tx_id;
@@ -27,5 +31,9 @@ public class PayfriendDataModel {
 
     public String getTx_remark() {
         return tx_remark;
+    }
+
+    public String getTx_status_remark() {
+        return tx_status_remark;
     }
 }

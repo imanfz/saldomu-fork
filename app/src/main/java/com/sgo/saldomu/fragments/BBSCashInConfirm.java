@@ -8,9 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +21,10 @@ import android.widget.Switch;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
@@ -901,18 +902,19 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         String txStatus = response.getTx_status();
         if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
         } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
         } else if (txStatus.equals(DefineValue.SUSPECT)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
         } else if (!txStatus.equals(DefineValue.FAILED)) {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
         } else {
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+//            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.getTx_status_remark());
         if (!txStat) args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
         args.putString(DefineValue.MEMBER_NAME, response.getMember_name());
         args.putString(DefineValue.SOURCE_ACCT, response.getSource_bank_name());

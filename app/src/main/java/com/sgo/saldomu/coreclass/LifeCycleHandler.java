@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
-
 import java.util.Locale;
 
 import timber.log.Timber;

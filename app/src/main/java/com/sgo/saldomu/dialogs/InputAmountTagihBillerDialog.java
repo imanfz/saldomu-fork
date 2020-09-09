@@ -3,11 +3,6 @@ package com.sgo.saldomu.dialogs;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +13,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.models.InvoiceDGI;
+import com.sgo.saldomu.utils.NumberTextWatcherForThousand;
 
 public class InputAmountTagihBillerDialog extends DialogFragment {
 
@@ -66,7 +66,7 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
 
         getDialog().setTitle(getString(R.string.invoice_dgi_payment));
         inpAmount = view.findViewById(R.id.inpAmount);
-//        inpAmount.addTextChangedListener(textWatcher);
+        inpAmount.addTextChangedListener(new NumberTextWatcherForThousand(inpAmount));
         btnDone = view.findViewById(R.id.btnDone);
         btnCancel = view.findViewById(R.id.btnCancel);
         inputInvLayout = view.findViewById(R.id.tableInvoiceAmount);
@@ -105,31 +105,6 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
         return view;
     }
 
-    TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            inpAmount.addTextChangedListener(null);
-
-            if (charSequence.toString().substring(0, 1).equalsIgnoreCase("0")) {
-                inpAmount.setText("");
-            } else {
-//                inpAmount.setText(editable);
-            }
-
-            inpAmount.addTextChangedListener(this);
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-
-        }
-    };
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -142,22 +117,19 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
             lbl_partial.setText("Over/Bisa Lebih");
         } else lbl_partial.setText("No");
 
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String input = inpAmount.getText().toString().trim();
+        btnDone.setOnClickListener(v -> {
+            String input = NumberTextWatcherForThousand.trimCommaOfString(inpAmount.getText().toString());
 
-                if (input.equalsIgnoreCase("") || inpAmount.getVisibility() == View.GONE) {
-                    input = obj.getRemain_amount();
-                }
-
-                if (checkInput(input)) {
-                    listener.onTap(pos, input);
-
-                    dismiss();
-                } else
-                    Toast.makeText(getActivity(), "Jumlah input tidak sesuai", Toast.LENGTH_SHORT).show();
+            if (input.equalsIgnoreCase("") || inpAmount.getVisibility() == View.GONE) {
+                input = obj.getRemain_amount();
             }
+
+            if (checkInput(input)) {
+                listener.onTap(pos, input);
+
+                dismiss();
+            } else
+                Toast.makeText(getActivity(), "Jumlah input tidak sesuai", Toast.LENGTH_SHORT).show();
         });
 
         btnCancel.setOnClickListener(new View.OnClickListener() {

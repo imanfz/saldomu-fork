@@ -4,8 +4,6 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 
-import timber.log.Timber;
-
 /**
  * Created by yuddistirakiki on 1/11/18.
  */

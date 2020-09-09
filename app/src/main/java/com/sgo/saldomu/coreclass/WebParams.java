@@ -130,6 +130,7 @@ public class WebParams {
     public static String DENOM_ITEM_REMARK = "item_remark";
 
     public static String TX_STATUS = "tx_status";
+    public static String TX_STATUS_REMARK = "tx_status_remark";
     public static String TX_REMARK = "tx_remark";
 
     public static String IMG_URL = "img_url";

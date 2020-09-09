@@ -2,11 +2,12 @@ package com.sgo.saldomu.widgets;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import android.view.View;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

@@ -5,9 +5,11 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+
 import androidx.multidex.MultiDex;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.sgo.saldomu.BuildConfig;
@@ -20,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
-import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 //import com.facebook.stetho.Stetho;
@@ -64,15 +65,13 @@ public class CoreApp extends Application {
 
 
         set_instance(this);
-
-        Fabric.with(this, new Crashlytics());
-
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+        FirebaseAnalytics.getInstance(this);
 //        Stetho.initialize(
 //                Stetho.newInitializerBuilder(this)
 //                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
 //                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
 //                        .build());
-
 
         Iconify.with(new FontAwesomeModule());
         CustomSecurePref.initialize(this);
@@ -107,7 +106,7 @@ public class CoreApp extends Application {
         }
 
         myApiClient.InitializeAddress();
-        Timber.wtf("isi headaddressfinal:"+MyApiClient.headaddressfinal);
+//        Timber.wtf("isi headaddressfinal:"+MyApiClient.headaddressfinal);
 //        Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
 //        configurationBuilder.addModelClasses(
 //                communityModel.class,

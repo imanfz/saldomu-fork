@@ -2,7 +2,6 @@ package com.sgo.saldomu.coreclass;
 
 import io.realm.DynamicRealm;
 import io.realm.RealmMigration;
-import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
 
 /**
