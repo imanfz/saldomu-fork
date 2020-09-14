@@ -313,7 +313,7 @@ public class SMSclass {
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
 //        {
-            imei = Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        imei = Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 //        } else {
 //            final TelephonyManager mTelephony = (TelephonyManager) CoreApp.getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -397,8 +397,10 @@ public class SMSclass {
             SubscriptionManager sm = SubscriptionManager.from(mContext);
             if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
-                SubscriptionInfo si = sis.get(0);
-                iccId = si.getIccId();
+                if (sis != null) {
+                    SubscriptionInfo si = sis.get(0);
+                    iccId = si.getIccId();
+                }
             }
         } else {
             if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED && telephonyManager.getSimSerialNumber() == null)
