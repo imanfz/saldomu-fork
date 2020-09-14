@@ -214,7 +214,7 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
                                     showReportBillerDialog(name, response.optString(WebParams.RC_DTIME), userPhoneID, txId, bankName, accNo,
                                             accName, ccyId + " " + CurrencyFormat.format(nominal),
                                             ccyId + " " + CurrencyFormat.format(fee), ccyId + " " + CurrencyFormat.format(total),
-                                            response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
+                                            response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response);
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:" + response.toString());
@@ -275,12 +275,22 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
         }
     }
 
-    private void showReportBillerDialog(String _name,String _date,String _userId, String _txId, String _bankName,String _accNo,
-                                        String _accName, String _nominal, String _fee,String _totalAmount, String buss_scheme_code,
-                                        String buss_scheme_name) {
+    private void showReportBillerDialog(String _name, String _date, String _userId, String _txId, String _bankName, String _accNo,
+                                        String _accName, String _nominal, String _fee, String _totalAmount, String buss_scheme_code,
+                                        String buss_scheme_name, JSONObject model) {
 
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
+        Boolean txStat = false;
+        String txStatus = model.optString(WebParams.TX_STATUS);
+        if (txStatus.equals(DefineValue.SUCCESS)) {
+            txStat = true;
+        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
+            txStat = true;
+        }
+        args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        args.putString(DefineValue.TRX_STATUS_REMARK, model.optString(WebParams.TX_STATUS_REMARK));
+        if (!txStat) args.putString(DefineValue.TRX_REMARK, model.optString(WebParams.TX_REMARK));
         args.putString(DefineValue.USER_NAME,_name);
         args.putString(DefineValue.DATE_TIME,_date);
         args.putString(DefineValue.USERID_PHONE,_userId);
