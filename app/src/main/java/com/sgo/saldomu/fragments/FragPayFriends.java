@@ -129,14 +129,12 @@ public class FragPayFriends extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_information:
-                if (!dialogI.isAdded())
-                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_information) {
+            if (!dialogI.isAdded())
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -711,25 +709,20 @@ public class FragPayFriends extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case REQUEST_QR_FROM_PAY_FRIENDS:
-                if (resultCode == Activity.RESULT_OK) {
-                    if (data != null) {
-                        qrObj = data.getParcelableExtra(DefineValue.QR_OBJ);
-                        setBundleViewQR();
-                    }
+        if (requestCode == REQUEST_QR_FROM_PAY_FRIENDS) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    qrObj = data.getParcelableExtra(DefineValue.QR_OBJ);
+                    setBundleViewQR();
                 }
-                break;
-
+            }
         }
 
     }
 
     private void setBundleViewQR() {
         Timber.d("Isi qrOBJ name:" + qrObj.getSourceName() + " id:" + qrObj.getSourceAcct() + " type:" + qrObj.getQrType());
-        phoneRetv.setText("+" + NoHPFormat.formatTo62(qrObj.getSourceAcct()));
-        phoneRetv.requestFocus();
-
-
+        phoneRetv.append("+" + NoHPFormat.formatTo62(qrObj.getSourceAcct()));
+        phoneRetv.requestFocus(phoneRetv.getText().length());
     }
 }

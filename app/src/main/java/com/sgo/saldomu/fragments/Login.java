@@ -484,6 +484,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), Perkenalan.class);
                 startActivity(i);
+                getActivity().finish();
             }
         });
 
