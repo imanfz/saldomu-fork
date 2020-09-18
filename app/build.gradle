@@ -28,7 +28,6 @@ android {
             keyPassword 'saldomukey590'
             storePassword 'saldomustore590'
             storeFile file('saldomu-key.jks')
-            v1SigningEnabled false
         }
     }
     compileSdkVersion 29

@@ -405,7 +405,7 @@ public class MyProfileNewActivity extends BaseActivity {
         if (item.getItemId() == android.R.id.home) {
             RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
             if (!is_first_time) {
-                closethis();
+//                closethis();
             }
             return true;
         }
@@ -737,9 +737,10 @@ public class MyProfileNewActivity extends BaseActivity {
     public void onBackPressed() {
         if (is_first_time) {
             RESULT = MainPage.RESULT_FIRST_TIME;
+//            moveTaskToBack(true);
         } else {
             RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
-            closethis();
+//            closethis();
         }
     }
 
@@ -1274,4 +1275,6 @@ public class MyProfileNewActivity extends BaseActivity {
             Timber.d("httpclient:" + e.getMessage());
         }
     }
+
+
 }

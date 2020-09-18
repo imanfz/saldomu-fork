@@ -30,26 +30,27 @@ public class AlertDialogLogout {
 
 
     public void showDialoginActivity(final Activity mContext, String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        if(mContext != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)
+                    .setCancelable(false)
+                    .setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 //                        mContext.setResult(MainPage.RESULT_LOGOUT);
 //                        mContext.finish();
-                        Intent intent = new Intent(mContext, Perkenalan.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        mContext.startActivity(intent);
-                    }
-                });
-        if(getAdInstance() == null ) {
-            setAdInstance(builder.create());
-            getAdInstance().show();
-        }
-        else if(!getAdInstance().isShowing()) {
-            setAdInstance(builder.create());
-            getAdInstance().show();
+                            Intent intent = new Intent(mContext, Perkenalan.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            mContext.startActivity(intent);
+                        }
+                    });
+            if (getAdInstance() == null) {
+                setAdInstance(builder.create());
+                getAdInstance().show();
+            } else if (!getAdInstance().isShowing()) {
+                setAdInstance(builder.create());
+                getAdInstance().show();
+            }
         }
     }
 

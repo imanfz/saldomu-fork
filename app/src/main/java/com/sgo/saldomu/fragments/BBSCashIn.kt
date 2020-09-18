@@ -489,7 +489,11 @@ class BBSCashIn : BaseFragment() {
         params[WebParams.SOURCE_PRODUCT_TYPE] = source_product_type!!
         params[WebParams.BENEF_PRODUCT_CODE] = benef_product_code!!
         params[WebParams.BENEF_PRODUCT_TYPE] = benef_product_type!!
-        params[WebParams.BENEF_PRODUCT_VALUE_CODE] = noBenef
+        if (benef_product_code!!.contains("SALDOMU")) {
+
+            params[WebParams.BENEF_PRODUCT_VALUE_CODE] = NoHPFormat.formatTo62(noBenef)
+        } else
+            params[WebParams.BENEF_PRODUCT_VALUE_CODE] = noBenef
         params[WebParams.BENEF_PRODUCT_VALUE_NAME] = nameBenef
         params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
         params[WebParams.AMOUNT] = amount

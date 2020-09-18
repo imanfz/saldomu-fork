@@ -185,8 +185,8 @@ class DetailMemberToVerifyActivity : BaseActivity() {
         val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
         if (EasyPermissions.hasPermissions(this, *perms)) {
             set_result_photo?.let {
-                CameraActivity.openCertificateCamera(this, CameraActivity.TYPE_COMPANY_PORTRAIT)
-//                pickAndCameraUtil.runCamera(it)
+//                CameraActivity.openCertificateCamera(this, CameraActivity.TYPE_COMPANY_PORTRAIT)
+                pickAndCameraUtil.runCamera(it)
             }
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
