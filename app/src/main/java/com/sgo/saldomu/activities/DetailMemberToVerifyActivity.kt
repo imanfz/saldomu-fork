@@ -1,8 +1,10 @@
 package com.sgo.saldomu.activities
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -26,6 +28,8 @@ import com.sgo.saldomu.utils.camera.CameraActivity
 import com.sgo.saldomu.widgets.BaseActivity
 import com.sgo.saldomu.widgets.ProgressRequestBody
 import kotlinx.android.synthetic.main.activity_detail_member_to_verify.*
+import kotlinx.android.synthetic.main.activity_detail_member_to_verify.submit_button
+import kotlinx.android.synthetic.main.activity_upgrade_member_via_agent.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -185,8 +189,7 @@ class DetailMemberToVerifyActivity : BaseActivity() {
         val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
         if (EasyPermissions.hasPermissions(this, *perms)) {
             set_result_photo?.let {
-//                CameraActivity.openCertificateCamera(this, CameraActivity.TYPE_COMPANY_PORTRAIT)
-                pickAndCameraUtil.runCamera(it)
+                pickAndCameraUtil!!.runCamera(set_result_photo!!)
             }
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
@@ -199,14 +202,39 @@ class DetailMemberToVerifyActivity : BaseActivity() {
         when (requestCode) {
             CameraActivity.REQUEST_CODE ->
                 if (data != null) {
+
                     if (CameraActivity.getResult(data) != null) {
                         val path = CameraActivity.getResult(data)
-                        ImageCompressionAsyncTask(KTP_TYPE).execute(path)
-                    } else {
+                        if (set_result_photo == RESULT_CAMERA_KTP)
+                            processImage(KTP_TYPE, path)
+                    }
+//                    if (CameraActivity.getResult(data) != null) {
+//                        val path = CameraActivity.getResult(data)
+//                        ImageCompressionAsyncTask(KTP_TYPE).execute(path)
+//                    }
+                    else {
                         camera_ktp_paspor_via_agent.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
                         Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
                     }
                 }
+            RESULT_CAMERA_KTP -> {
+                if (pickAndCameraUtil!!.captureImageUri != null && resultCode == Activity.RESULT_OK)
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                        processImage(KTP_TYPE, pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.captureImageUri))
+                    else
+                        processImage(KTP_TYPE, pickAndCameraUtil!!.currentPhotoPath)
+
+            }
+        }
+    }
+
+    private fun processImage(type: Int, uri: String?) {
+        when (type) {
+            KTP_TYPE -> {
+                ktp = pickAndCameraUtil?.compressImage(uri)
+                GlideManager.sharedInstance().initializeGlideProfile(this, ktp, camera_ktp_paspor_via_agent)
+                uploadFileToServer(ktp!!, KTP_TYPE)
+            }
         }
     }
 
@@ -278,21 +306,21 @@ class DetailMemberToVerifyActivity : BaseActivity() {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    inner class ImageCompressionAsyncTask internal constructor(private val type: Int) : AsyncTask<String, Void, File>() {
-
-        override fun doInBackground(vararg params: String): File {
-            return pickAndCameraUtil!!.compressImage(params[0])
-        }
-
-        override fun onPostExecute(file: File) {
-            when (type) {
-                KTP_TYPE -> {
-                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_ktp_paspor_via_agent)
-                    ktp = file
-                    uploadFileToServer(ktp!!, KTP_TYPE)
-                }
-            }
-        }
-    }
+//    inner class ImageCompressionAsyncTask internal constructor(private val type: Int) : AsyncTask<String, Void, File>() {
+//
+//        override fun doInBackground(vararg params: String): File {
+//            return pickAndCameraUtil!!.compressImage(params[0])
+//        }
+//
+//        override fun onPostExecute(file: File) {
+//            when (type) {
+//                KTP_TYPE -> {
+//                    GlideManager.sharedInstance().initializeGlideProfile(this@DetailMemberToVerifyActivity, file, camera_ktp_paspor_via_agent)
+//                    ktp = file
+//                    uploadFileToServer(ktp!!, KTP_TYPE)
+//                }
+//            }
+//        }
+//    }
 
 }
