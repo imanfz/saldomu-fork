@@ -2,6 +2,7 @@ package com.sgo.saldomu.models.retrofit;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sgo.saldomu.Beans.SummaryAdditionalFeeModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,11 @@ public class GetReportDataModel extends jsonModel {
     private
     List<ReportDataModel> report_data = new ArrayList<>();
 
+    @SerializedName("summary")
+    @Expose
+    private
+    List<SummaryAdditionalFeeModel> summary = new ArrayList<>();
+
     @SerializedName("next")
     @Expose
     private
@@ -19,6 +25,10 @@ public class GetReportDataModel extends jsonModel {
 
     public List<ReportDataModel> getReport_data() {
         return report_data;
+    }
+
+    public List<SummaryAdditionalFeeModel> getSummary() {
+        return summary;
     }
 
     public String getNext() {

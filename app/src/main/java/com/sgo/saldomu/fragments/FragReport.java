@@ -469,6 +469,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
                                         if (report_type == REPORT_ADDITIONAL_FEE) {
                                             summaryAdditionalFeeModel = new SummaryAdditionalFeeModel();
+                                            List<SummaryAdditionalFeeModel> summaryAdditionalFeeModelList = reportListModel.getSummary();
+                                            summaryAdditionalFeeModel.setCount_trx(summaryAdditionalFeeModelList.get(0).getCount_trx());
+                                            summaryAdditionalFeeModel.setTotal_trx(summaryAdditionalFeeModelList.get(0).getTotal_trx());
                                             setSummaryAdditionalFee(summaryAdditionalFeeModel);
                                         }
 
@@ -580,8 +583,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     }
 
     private void setSummaryAdditionalFee(SummaryAdditionalFeeModel obj) {
-        sumTotalTrx.setText(String.valueOf(obj.getTotal_transaction()));
-        sumTotalAmount.setText(CurrencyFormat.format(String.valueOf(obj.getTotal_amount())));
+        sumTotalTrx.setText(obj.getCount_trx());
+        sumTotalAmount.setText(CurrencyFormat.format(obj.getTotal_trx()));
 
         layout_summary.setVisibility(View.VISIBLE);
         tableAdditionalFee.setVisibility(View.VISIBLE);
