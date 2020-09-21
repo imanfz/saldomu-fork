@@ -3,22 +3,22 @@ package com.sgo.saldomu.Beans;
 import com.sgo.saldomu.models.retrofit.ReportDataModel;
 
 public class SummaryAdditionalFeeModel extends ReportDataModel {
-    private String total_transaction;
-    private String total_amount;
+    private String count_trx;
+    private String total_trx;
 
-    public void setTotal_transaction(String total_transaction) {
-        this.total_transaction = total_transaction;
+    public String getCount_trx() {
+        return count_trx;
     }
 
-    public String getTotal_transaction() {
-        return total_transaction;
+    public void setCount_trx(String count_trx) {
+        this.count_trx = count_trx;
     }
 
-    public void setTotal_amount(String total_amount) {
-        this.total_amount = total_amount;
+    public String getTotal_trx() {
+        return total_trx;
     }
 
-    public String getTotal_amount() {
-        return total_amount;
+    public void setTotal_trx(String total_trx) {
+        this.total_trx = total_trx;
     }
 }
