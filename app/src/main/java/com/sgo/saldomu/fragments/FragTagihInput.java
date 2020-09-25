@@ -94,7 +94,12 @@ public class FragTagihInput extends BaseFragment {
 
         isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.LKD));
 
-        getBalanceCollector();
+        if (sp.getString(DefineValue.USE_DEPOSIT_COL, "").equals("LIMIT")) {
+            getBalanceCollector();
+        } else if (sp.getString(DefineValue.USE_DEPOSIT_COL, "").equals("REG")) {
+            balanceCollector = sp.getString(DefineValue.BALANCE_AMOUNT, "0");
+            tv_saldo_collector.setText(CurrencyFormat.format(balanceCollector));
+        }
 
         anchorDataList.clear();
         getAnchor();
@@ -341,15 +346,8 @@ public class FragTagihInput extends BaseFragment {
                                         jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                                         String code = response.getString(WebParams.ERROR_CODE);
                                         if (code.equals(WebParams.SUCCESS_CODE)) {
-
                                             balanceCollector = response.getString(WebParams.AMOUNT);
-
                                             tv_saldo_collector.setText(CurrencyFormat.format(balanceCollector));
-
-//                                    SecurePreferences.Editor mEditor = sp.edit();
-//                                    mEditor.putString(DefineValue.BALANCE_COLLECTOR_AMOUNT, response.optString(WebParams.AMOUNT, ""));
-//                                    mEditor.commit();
-
                                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                             String message = response.getString(WebParams.ERROR_MESSAGE);
                                             AlertDialogLogout test = AlertDialogLogout.getInstance();

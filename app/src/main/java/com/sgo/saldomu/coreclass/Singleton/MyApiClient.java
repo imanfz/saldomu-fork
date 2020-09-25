@@ -276,6 +276,7 @@ public class MyApiClient {
     public static String LINK_DOWNLOAD_FILE;
     public static String LINK_HISTORY;
     public static String LINK_HISTORY_COLLECTOR;
+    public static String LINK_HISTORY_COLLECTOR_LIMIT;
 
     public static String LINK_TRX_FAVORITE_LIST;
     public static String LINK_TRX_FAVORITE_SAVE;
@@ -297,6 +298,8 @@ public class MyApiClient {
     public static String LINK_REQUEST_RESET_PIN;
     public static String LINK_VALIDATE_OTP_RESET_PIN;
     public static String LINK_CONFIRM_RESET_PIN;
+    public static String LINK_INQUIRY_LENDING_DATA;
+    public static String LINK_SALDO_CASH_COLLECTOR;
 
 
 
@@ -495,6 +498,7 @@ public class MyApiClient {
         LINK_CONFIRM_PAYMENT_DGI = headaddressfinal + "invoice/Payment/Invoke";
         LINK_CANCEL_SEARCH_DGI = headaddressfinal + "invoice/Payment/Reject";
         LINK_SALDO_COLLECTOR = headaddressfinal + "Balancecollector/Retrieve";
+        LINK_SALDO_CASH_COLLECTOR = headaddressfinal + "Balancecashcollector/Retrieve";
         LINK_SET_MEMBER_LOC = headaddressfinal + "invoice/Setmemberlocation/Invoke";
 
         //OTP
@@ -541,6 +545,9 @@ public class MyApiClient {
         LINK_REQUEST_RESET_PIN = headaddressfinal + "RequestResetPIN/Invoke";
         LINK_VALIDATE_OTP_RESET_PIN = headaddressfinal + "ValidateOTPResetPIN/Invoke";
         LINK_CONFIRM_RESET_PIN = headaddressfinal + "ConfirmResetPIN/Invoke";
+
+        LINK_INQUIRY_LENDING_DATA = headaddressfinal + "LendingProvider/Retrieve";
+        LINK_HISTORY_COLLECTOR_LIMIT = headaddressfinal + "HistoryCashCollector/Retrieve";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());

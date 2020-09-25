@@ -8,16 +8,14 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.google.gson.JsonObject
 import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CashCollectionActivity
-import com.sgo.saldomu.coreclass.DefineValue
-import com.sgo.saldomu.coreclass.NoHPFormat
-import com.sgo.saldomu.coreclass.RealmManager
+import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
-import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
@@ -56,6 +54,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
     private var sourceProductCode: String? = null
     private var benefProductType: String? = null
     private var benefProductCode: String? = null
+    private var balanceCollector: String? = null
     private var cityId: String? = null
     private var txId: String? = null
     private var productCode: String? = null
@@ -96,6 +95,16 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         commCode = comm?.comm_code
         memberCode = comm?.member_code
 
+        if (sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equals("LIMIT"))
+            getBalanceCollector()
+        else if (sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equals("REG"))
+        {
+            val balance = sp.getString(DefineValue.BALANCE_AMOUNT, "0")
+            tv_saldoCollector.setText(CurrencyFormat.format(balance))
+        }
+
+
+
 //        sourceProductType = listbankSource?.get(0)?.product_type
 //        sourceProductCode = listbankSource?.get(0)?.product_code
         sourceProductType = getString(R.string.EMO)
@@ -135,7 +144,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         }
 
         btn_submit.setOnClickListener {
-            if (inputValidation()){
+            if (inputValidation()) {
                 amount = et_amount_deposit.text.toString()
                 sentInsertC2R()
             }
@@ -486,5 +495,58 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    fun getBalanceCollector() {
+        try {
+            showProgressDialog()
+            if (!memberIDLogin.isEmpty()) {
+                extraSignature = memberIDLogin
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_SALDO_CASH_COLLECTOR, extraSignature)
+                params[WebParams.MEMBER_ID] = memberIDLogin
+                params[WebParams.USER_ID] = userPhoneID
+                params[WebParams.COMM_ID] = MyApiClient.COMM_ID
+                params[WebParams.IS_AUTO] = "Y"
+                if (!memberIDLogin.isEmpty()) {
+                    RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SALDO_CASH_COLLECTOR, params,
+                            object : ObjListeners {
+                                override fun onResponses(response: JSONObject) {
+                                    try {
+                                        val model = getGson().fromJson(response.toString(), jsonModel::class.java)
+                                        var code = response.getString(WebParams.ERROR_CODE)
+                                        if (code == WebParams.SUCCESS_CODE) {
+                                            balanceCollector = response.getString(WebParams.AMOUNT)
+                                            tv_saldoCollector.setText(CurrencyFormat.format(balanceCollector))
+                                        } else if (code == WebParams.LOGOUT_CODE) {
+                                            val message = response.getString(WebParams.ERROR_MESSAGE)
+                                            val test = AlertDialogLogout.getInstance()
+                                            test.showDialoginMain(activity, message)
+                                        } else if (code == DefineValue.ERROR_9333) {
+                                            Timber.d("isi response app data:" + model.app_data)
+                                            val appModel = model.app_data
+                                            val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                            alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                        } else if (code == DefineValue.ERROR_0066) {
+                                            Timber.d("isi response maintenance:$response")
+                                            val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                            alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                        } else {
+                                            code = response.getString(WebParams.ERROR_MESSAGE)
+                                            Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
+                                        }
+                                    } catch (e: JSONException) {
+                                        e.printStackTrace()
+                                    }
+                                }
+
+                                override fun onError(throwable: Throwable) {}
+                                override fun onComplete() {
+                                    dismissProgressDialog()
+                                }
+                            })
+                }
+            }
+        } catch (e: java.lang.Exception) {
+            Timber.d("httpclient:" + e.message)
+        }
+    }
 
 }

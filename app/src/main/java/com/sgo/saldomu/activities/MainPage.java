@@ -1255,7 +1255,8 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.IS_INQUIRY_SMS);
         mEditor.remove(DefineValue.AGENT_COL);
         mEditor.remove(DefineValue.IS_AGENT_TOP);
-        mEditor.remove(DefineValue.IS_AGENT_BDK);
+        mEditor.remove(DefineValue.USE_DEPOSIT_CCOL);
+        mEditor.remove(DefineValue.USE_DEPOSIT_COL);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();

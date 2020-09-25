@@ -728,6 +728,8 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
                         mEditor.putString(DefineValue.IS_AGENT_TRX_CTA_MANDIRI_LP, commModel.getIs_agent_cta_mandirilkd());
                         mEditor.putString(DefineValue.COMM_UPGRADE_MEMBER, commModel.getComm_upgrade_member());
                         mEditor.putString(DefineValue.MEMBER_CREATED, commModel.getMember_created());
+                        mEditor.putString(DefineValue.USE_DEPOSIT_CCOL, commModel.getUse_deposit_ccol());
+                        mEditor.putString(DefineValue.USE_DEPOSIT_COL, commModel.getUse_deposit_col());
 
                         break;
                     }

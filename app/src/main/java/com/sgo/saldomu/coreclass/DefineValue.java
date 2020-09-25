@@ -673,5 +673,9 @@ public class DefineValue {
     public static String STORE_ADDRESS = "storeAddress";
     public static String STORE_CODE = "storeCode";
     public static String REFFERENCE_ID = "refferenceId";
+    public static String USE_DEPOSIT_CCOL = "useDepositCashCol";
+    public static String USE_DEPOSIT_COL = "useDepositCol";
+    public static String IS_AGENT_DGI = "isAgentDGI";
+    public static String IS_AGENT_CTR = "isAgentCTR";
 }
 

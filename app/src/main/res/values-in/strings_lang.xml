@@ -206,6 +206,7 @@
     <string name="menu_item_contact_list">Daftar Kontak</string>
     <string name="menu_item_timeline_detail">LINI WAKTU</string>
     <string name="menu_item_history_detail">Riwayat</string>
+    <string name="menu_item_lending">Pinjaman</string>
     <string name="menu_item_favorite">Favorit</string>
     <string name="menu_item_group_detail">GRUP</string>
     <string name="menu_item_share">Bagikan</string>
@@ -1461,6 +1462,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="other_acct">Rekening Lainnya</string>
     <string name="agent_type_col">COL</string>
     <string name="menu_item_title_collector_history">Riwayat Collector</string>
+    <string name="menu_item_title_cash_collector_history">Riwayat Cash Collector</string>
 
     <string name="lbl_lang_ind">ID</string>
     <string name="lbl_lang_eng">EN</string>

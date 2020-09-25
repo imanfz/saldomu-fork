@@ -811,7 +811,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         if (activity == null)
             return
 
-        val fca = activity as BillerActivity?
+        val fca = activity as GridBillerActivity?
         fca!!.setResultActivity(MainPage.RESULT_BALANCE)
     }
 

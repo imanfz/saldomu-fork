@@ -204,6 +204,7 @@
     <string name="menu_item_contact_list">Contact List</string>
     <string name="menu_item_timeline_detail">TIMELINE</string>
     <string name="menu_item_history_detail">History</string>
+    <string name="menu_item_lending">Lending</string>
     <string name="menu_item_favorite">Favorite</string>
     <string name="menu_item_group_detail">Group</string>
     <string name="menu_item_share">Share</string>
@@ -1468,6 +1469,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="other_acct">Other Account</string>
     <string name="agent_type_col">COL</string>
     <string name="menu_item_title_collector_history">Collector History</string>
+    <string name="menu_item_title_cash_collector_history">Cash Collector History</string>
 
     <string name="EMO">EMO</string>
     <string name="EMOSALDOMU">EMOSALDOMU</string>
