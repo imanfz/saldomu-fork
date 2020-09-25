@@ -118,6 +118,14 @@ public class LoginCommunityModel {
     @Expose
     private String is_agent_atc_mandirilkd;
 
+    @SerializedName("use_deposit_ccol")
+    @Expose
+    private String use_deposit_ccol;
+
+    @SerializedName("use_deposit_col")
+    @Expose
+    private String use_deposit_col;
+
 
     public String getCommId() {
         return commId;
@@ -353,5 +361,21 @@ public class LoginCommunityModel {
 
     public String getIs_agent_cta_mandirilkd() {
         return is_agent_cta_mandirilkd;
+    }
+
+    public String getUse_deposit_ccol() {
+        return use_deposit_ccol;
+    }
+
+    public void setUse_deposit_ccol(String use_deposit_ccol) {
+        this.use_deposit_ccol = use_deposit_ccol;
+    }
+
+    public String getUse_deposit_col() {
+        return use_deposit_col;
+    }
+
+    public void setUse_deposit_col(String use_deposit_col) {
+        this.use_deposit_col = use_deposit_col;
     }
 }

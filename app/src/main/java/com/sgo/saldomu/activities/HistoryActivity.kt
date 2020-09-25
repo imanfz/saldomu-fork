@@ -58,11 +58,10 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         mRecyclerView = findViewById(R.id.recycler_view)
         swipeRefresh = findViewById(R.id.swipeRefresh)
 
-        agentCOL = intent.getBooleanExtra(DefineValue.AGENT_COL, false)
-        if (agentCOL==true)
-        {
-            sp.edit().putBoolean(DefineValue.AGENT_COL,true).commit()
-        }
+//        agentCOL = intent.getBooleanExtra(DefineValue.AGENT_COL, false)
+//        if (agentCOL == true) {
+//            sp.edit().putBoolean(DefineValue.AGENT_COL, true).commit()
+//        }
 
 
         initialize()
@@ -75,8 +74,10 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         showProgressDialog()
 
         extraSignature = memberIDLogin
-        val url = if (agentCOL) {
-            MyApiClient.LINK_HISTORY_COLLECTOR
+        val url = if (intent.getBooleanExtra(DefineValue.IS_AGENT_DGI, false)==true && sp.getString(DefineValue.USE_DEPOSIT_COL, "").equals("LIMIT")) {
+                MyApiClient.LINK_HISTORY_COLLECTOR
+        } else if (intent.getBooleanExtra(DefineValue.IS_AGENT_CTR, false)==true && sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equals("LIMIT")) {
+            MyApiClient.LINK_HISTORY_COLLECTOR_LIMIT
         } else {
             MyApiClient.LINK_HISTORY
         }

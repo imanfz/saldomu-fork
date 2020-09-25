@@ -630,4 +630,8 @@ public class WebParams {
     public static String STORE_NAME = "store_name";
     public static String STORE_ADDRESS = "store_address";
     public static String STORE_CODE = "store_code";
+    public static String PROVIDER = "provider";
+    public static String LENDING_CODE = "lending_code";
+    public static String LENDING_NAME = "lending_name";
+    public static String REVIEW_URL = "review_url";
 }

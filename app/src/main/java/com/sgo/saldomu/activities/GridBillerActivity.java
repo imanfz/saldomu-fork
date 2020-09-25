@@ -109,4 +109,8 @@ public class GridBillerActivity extends BaseActivity {
     public void setToolbarTitle(String title) {
         setActionBarTitle(title);
     }
+
+    public void setResultActivity(int result) {
+        setResult(MainPage.RESULT_BALANCE);
+    }
 }

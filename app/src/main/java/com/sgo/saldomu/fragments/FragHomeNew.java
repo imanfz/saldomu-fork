@@ -46,6 +46,7 @@ import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.CashCollectionActivity;
 import com.sgo.saldomu.activities.GridBillerActivity;
+import com.sgo.saldomu.activities.GridLendingActivity;
 import com.sgo.saldomu.activities.HistoryActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MandiriLPActivity;
@@ -474,7 +475,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.newhome_emoney))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
                         dialogDormant();
-                    } else if (sp.getInt(DefineValue.LEVEL_VALUE, 1) == 1){
+                    } else if (sp.getInt(DefineValue.LEVEL_VALUE, 1) == 1) {
                         LevelClass levelClass = new LevelClass(getActivity());
                         levelClass.showDialogLevel();
                     } else {
@@ -528,6 +529,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     startActivity(intent);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_mandiri_lkd))) {
                     Intent intent = new Intent(getActivity(), MandiriLPActivity.class);
+                    startActivity(intent);
+                } else if (menuItemName.equals(getString(R.string.menu_item_lending))) {
+                    Intent intent = new Intent(getActivity(), GridLendingActivity.class);
                     startActivity(intent);
                 }
 
@@ -600,8 +604,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             startActivity(new Intent(getActivity(), CashCollectionActivity.class));
                     } else if (menuItemName.equals(getString(R.string.menu_item_title_collector_history))) {
                         Intent intent = new Intent(getActivity(), HistoryActivity.class);
-                        intent.putExtra(DefineValue.AGENT_COL, true);
+                        intent.putExtra(DefineValue.IS_AGENT_DGI, true);
                         intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_collector_history));
+                        startActivity(intent);
+                    } else if (menuItemName.equals(getString(R.string.menu_item_title_cash_collector_history))) {
+                        Intent intent = new Intent(getActivity(), HistoryActivity.class);
+                        intent.putExtra(DefineValue.IS_AGENT_CTR, true);
+                        intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_cash_collector_history));
                         startActivity(intent);
                     } else {
                         posIdx = -1;
@@ -937,7 +946,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_HELP_LIST);
             params.put(WebParams.USER_ID, ownerId);
-            params.put(WebParams.FLAG_LOGIN, sp.getString(DefineValue.FLAG_LOGIN,""));
+            params.put(WebParams.FLAG_LOGIN, sp.getString(DefineValue.FLAG_LOGIN, ""));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.FLAG_LOGIN, DefineValue.STRING_YES);
             Timber.d("isi params help list:%s", params.toString());
@@ -999,7 +1008,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (getActivity() != null && isAdded()) {
             if (isAgent) {
                 if (((sp.getString(DefineValue.IS_AGENT_TRX_CTA_MANDIRI_LP, "N").equalsIgnoreCase("Y"))
-                        || sp.getString(DefineValue.IS_AGENT_TRX_ATC_MANDIRI_LP, "N").equalsIgnoreCase("Y"))&&
+                        || sp.getString(DefineValue.IS_AGENT_TRX_ATC_MANDIRI_LP, "N").equalsIgnoreCase("Y")) &&
                         sp.getString(DefineValue.COMPANY_TYPE, "").equals(getString(R.string.LP))) {
                     menuStrings.add(getResources().getString(R.string.menu_item_title_mandiri_lkd));
                     menuDrawables.add(getResources().getDrawable(R.drawable.ic_mandiri));
@@ -1076,6 +1085,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
             menuDrawables.add(getResources().getDrawable(R.drawable.ic_laporan));
 
             menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_history));
+
+            menuStrings.add(getResources().getString(R.string.menu_item_lending));
             menuDrawables.add(getResources().getDrawable(R.drawable.ic_history));
 
 //            if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
@@ -1158,7 +1170,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     case "DGI":
                         menuStrings.add(getResources().getString(R.string.menu_item_title_tagih_agent));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_biller));
-                        if (sp.getString(DefineValue.AGENT_TYPE, "").equalsIgnoreCase(getString(R.string.agent_type_col))) {
+//                        if (sp.getString(DefineValue.AGENT_TYPE, "").equalsIgnoreCase(getString(R.string.agent_type_col))) {
+                        if (sp.getString(DefineValue.USE_DEPOSIT_COL, "").equalsIgnoreCase("LIMIT")) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_collector_history));
                             menuDrawables.add(getResources().getDrawable(R.drawable.ic_history_collector));
                         }
@@ -1170,6 +1183,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     case "CTR":
                         menuStrings.add(getResources().getString(R.string.menu_title_cash_collection));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_cash_collection));
+                        if (sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equalsIgnoreCase("LIMIT")) {
+                            menuStrings.add(getResources().getString(R.string.menu_item_title_cash_collector_history));
+                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_history_collector));
+                        }
                         break;
                     case "BIL":
                         checkBillerCodeAgent();

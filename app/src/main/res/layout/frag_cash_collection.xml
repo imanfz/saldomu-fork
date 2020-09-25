@@ -11,8 +11,51 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_background_white">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/balance_layout">
+            <TextView
+            android:id="@+id/tv_collector_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:gravity="center"
+            android:text="@string/balance"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_above="@+id/ll_collector_balance"/>
+
+            <LinearLayout
+                android:id="@+id/ll_collector_balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_collector_balance"
+                android:layout_marginBottom="25dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/currency"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/tv_saldoCollector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="24sp" />
+            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
+            android:layout_below="@id/balance_layout"
             android:id="@+id/layout_id_no"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
