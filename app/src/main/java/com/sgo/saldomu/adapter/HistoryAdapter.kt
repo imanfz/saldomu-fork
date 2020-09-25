@@ -46,7 +46,7 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
         val holder = viewHolder as Holder
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
-        agentCOL = sp.getBoolean(DefineValue.AGENT_COL, false)
+//        agentCOL = sp.getBoolean(DefineValue.AGENT_COL, false)
 
         if (position == itemList.size - 1) {
             holder.dividerView.visibility = View.GONE
@@ -74,7 +74,7 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
         }
 
         if (model.end_balance == "" || model.end_balance == null) {
-            if (agentCOL == true) {
+            if (sp.getBoolean(DefineValue.IS_AGENT_DGI, true)==true || sp.getBoolean(DefineValue.IS_AGENT_CTR,false)==true) {
                 holder.endBalanceText.visibility=View.GONE
             } else
                 holder.endBalanceText.text = "Rp. " + CurrencyFormat.format1(0.00)
