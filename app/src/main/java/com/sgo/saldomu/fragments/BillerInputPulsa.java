@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -706,7 +705,7 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     public void initLayout() {
         tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
         tv_denom.setText(getString(R.string.billerinput_text_spinner_pulsa));
-        et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
+//        et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
         et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         radioGroup.setVisibility(View.VISIBLE);
         layout_payment_method.setVisibility(View.VISIBLE);

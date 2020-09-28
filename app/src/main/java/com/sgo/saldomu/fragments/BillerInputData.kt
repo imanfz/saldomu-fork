@@ -256,7 +256,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     private fun initLayout() {
         buy_type = BillerActivity.PURCHASE_TYPE
         billerinput_text_denom.text = getString(R.string.billerinput_text_spinner_data)
-        billerinput_et_id_remark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(13))
+//        billerinput_et_id_remark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(13))
         billerinput_et_id_remark.inputType = InputType.TYPE_CLASS_NUMBER
         billerinput_et_add_fee.inputType = InputType.TYPE_CLASS_NUMBER
         billerinput_detail_layout_add_fee.visibility = View.GONE
