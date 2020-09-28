@@ -605,11 +605,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     } else if (menuItemName.equals(getString(R.string.menu_item_title_collector_history))) {
                         Intent intent = new Intent(getActivity(), HistoryActivity.class);
                         intent.putExtra(DefineValue.IS_AGENT_DGI, true);
+                        sp.edit().putBoolean(DefineValue.IS_AGENT_DGI, true).commit();
                         intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_collector_history));
                         startActivity(intent);
                     } else if (menuItemName.equals(getString(R.string.menu_item_title_cash_collector_history))) {
                         Intent intent = new Intent(getActivity(), HistoryActivity.class);
                         intent.putExtra(DefineValue.IS_AGENT_CTR, true);
+                        sp.edit().putBoolean(DefineValue.IS_AGENT_CTR, true).commit();
                         intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_cash_collector_history));
                         startActivity(intent);
                     } else {

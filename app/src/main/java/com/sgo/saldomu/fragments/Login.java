@@ -632,6 +632,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.putString(DefineValue.COMM_UPGRADE_MEMBER, commModel.getComm_upgrade_member());
                         mEditor.putString(DefineValue.MEMBER_CREATED, commModel.getMember_created());
                         mEditor.putString(DefineValue.USE_DEPOSIT_CCOL, commModel.getUse_deposit_ccol());
+                        mEditor.putString(DefineValue.USE_DEPOSIT_COL, commModel.getUse_deposit_col());
                         Timber.w("isi comm id yg bener:" + commModel.getCommId());
 
                         break;
