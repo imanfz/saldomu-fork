@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.sgo.saldomu.R
@@ -20,6 +21,7 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.retrofit.ProviderModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
+import kotlinx.android.synthetic.main.frag_grid.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -42,6 +44,11 @@ class FragGridLendingMenu : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         inquiryLendingData()
+        adapter = GridMenu(context!!, menuStrings, menuDrawables)
+        grid.adapter = adapter
+        grid.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+
+        }
     }
 
     private fun inquiryLendingData() {
@@ -77,7 +84,7 @@ class FragGridLendingMenu : BaseFragment() {
                                     LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
                                         val test = AlertDialogLogout.getInstance()
-                                        test.showDialoginActivity(activity, message)
+                                        test.showDialoginMain(activity, message)
                                     }
                                     DefineValue.ERROR_9333 -> {
                                         Timber.d("isi response app data:%s", model.app_data)
@@ -118,16 +125,17 @@ class FragGridLendingMenu : BaseFragment() {
         menuDrawables.clear()
         for (i in providerModelArraylist.indices) {
             menuStrings.add(providerModelArraylist[i].lending_code!!)
-            if (providerModelArraylist[i].lending_code!!.contains("LinkAja"))
-                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_linkaja, null)!!)
+            if (providerModelArraylist[i].lending_code!!.contains("INVESTREE"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.menu_lending_investree, null)!!)
 
-            if (providerModelArraylist[i].lending_code!!.contains("Emoney Mandiri") ||
-                    providerModelArraylist[i].lending_code!!.contains("Mandiri E-Money"))
-                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_mandiri, null)!!)
+            if (providerModelArraylist[i].lending_code!!.contains("AMARTHA"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.menu_lending_amartha, null)!!)
 
-            if (providerModelArraylist[i].lending_code!!.contains("OVO"))
-                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_emoney_ovo, null)!!)
+            if (providerModelArraylist[i].lending_code!!.contains("DANAMAS"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.menu_lending_danamas, null)!!)
 
+            if (providerModelArraylist[i].lending_code!!.contains("BATUMBU"))
+                menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.menu_lending_batumbu, null)!!)
         }
     }
 

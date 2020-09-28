@@ -533,6 +533,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.menu_item_lending))) {
                     Intent intent = new Intent(getActivity(), GridLendingActivity.class);
                     startActivity(intent);
+                } else if (menuItemName.equals(getString(R.string.more))) {
+                    Toast.makeText(getActivity(), "Fitur Belum Tersedia", Toast.LENGTH_LONG).show();
                 }
 
                 if (isAgent) {
@@ -1089,8 +1091,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
             menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
             menuDrawables.add(getResources().getDrawable(R.drawable.ic_history));
 
-//            menuStrings.add(getResources().getString(R.string.menu_item_lending));
-//            menuDrawables.add(getResources().getDrawable(R.drawable.ic_history));
+            menuStrings.add(getResources().getString(R.string.menu_item_lending));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_lending));
+
+            menuStrings.add(getResources().getString(R.string.more));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_more));
 
 //            if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
 //                menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));

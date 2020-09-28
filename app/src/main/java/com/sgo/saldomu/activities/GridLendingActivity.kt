@@ -36,7 +36,7 @@ class GridLendingActivity : BaseActivity() {
     fun switchContent(mFragment: Fragment?, fragName: String?, tag: String?) {
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.content, mFragment!!)
+                .replace(R.id.content_lending, mFragment!!)
                 .addToBackStack(tag)
                 .commitAllowingStateLoss()
         actionBarTitle = fragName
