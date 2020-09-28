@@ -94,13 +94,6 @@ public class FragTagihInput extends BaseFragment {
 
         isAgentLKD = sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.LKD));
 
-        if (sp.getString(DefineValue.USE_DEPOSIT_COL, "").equals("LIMIT")) {
-            getBalanceCollector();
-        } else if (sp.getString(DefineValue.USE_DEPOSIT_COL, "").equals("REG")) {
-            balanceCollector = sp.getString(DefineValue.BALANCE_AMOUNT, "0");
-            tv_saldo_collector.setText(CurrencyFormat.format(balanceCollector));
-        }
-
         anchorDataList.clear();
         getAnchor();
         initializeView();
@@ -211,6 +204,13 @@ public class FragTagihInput extends BaseFragment {
         btn_regShop = v.findViewById(R.id.bt_registTokoDGI);
         tv_saldo_collector = v.findViewById(R.id.tv_saldoCollector);
         ll_komunitas = v.findViewById(R.id.ll_komunitas);
+
+        if (sp.getString(DefineValue.USE_DEPOSIT_COL, "").equals("LIMIT")) {
+            getBalanceCollector();
+        } else if (sp.getString(DefineValue.USE_DEPOSIT_COL, "").equals("REG")) {
+            balanceCollector = sp.getString(DefineValue.BALANCE_AMOUNT, "0");
+            tv_saldo_collector.setText(CurrencyFormat.format(balanceCollector));
+        }
 
         if (is_search) {
             Timber.d("is_search initialize");
