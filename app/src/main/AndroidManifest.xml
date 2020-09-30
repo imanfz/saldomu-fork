@@ -15,6 +15,7 @@
         android:theme="@style/Theme.MyTheme"
         android:usesCleartextTraffic="true"
         android:appComponentFactory="androidx"
+        android:requestLegacyExternalStorage="true"
         tools:replace="android:label,allowBackup,appComponentFactory,theme">
         <activity
             android:name=".activities.OTPActivity"
