@@ -1089,8 +1089,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
             menuDrawables.add(getResources().getDrawable(R.drawable.ic_history));
 
-//            menuStrings.add(getResources().getString(R.string.menu_item_lending));
-//            menuDrawables.add(getResources().getDrawable(R.drawable.ic_history));
+            menuStrings.add(getResources().getString(R.string.menu_item_lending));
+            menuDrawables.add(getResources().getDrawable(R.drawable.ic_history));
 
 //            if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
 //                menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
