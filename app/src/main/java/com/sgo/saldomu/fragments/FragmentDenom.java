@@ -81,6 +81,7 @@ public class FragmentDenom extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = getArguments();
+        Timber.d("isi bundle : " +bundle.toString());
         memberCode = bundle.getString(DefineValue.MEMBER_CODE, "");
 
         obj = DataManager.getInstance().getSACDMCommMod();
@@ -99,21 +100,29 @@ public class FragmentDenom extends BaseFragment {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    nestedScrollView.scrollTo(0, 0);
-                    Fragment frag = new FragmentDenomInputItemList();
+                nestedScrollView.scrollTo(0, 0);
+                Fragment frag = new FragmentDenomInputItemList();
 
-                    Bundle bundle = new Bundle();
-                    bundle.putString(WebParams.BANK_NAME, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankName());
-                    bundle.putString(WebParams.BANK_GATEWAY, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankGateway());
-                    bundle.putString(WebParams.BANK_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankCode());
-                    bundle.putString(WebParams.PRODUCT_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getProductCode());
-                    bundle.putString(WebParams.MEMBER_REMARK, memberCode);
-                    bundle.putString(WebParams.STORE_NAME, StoreNameTextview.getText().toString());
-                    bundle.putString(WebParams.STORE_ADDRESS, StoreAddressTextview.getText().toString());
+                Bundle bundle1 = new Bundle();
+                bundle1.putString(WebParams.BANK_NAME, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankName());
+                bundle1.putString(WebParams.BANK_GATEWAY, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankGateway());
+                bundle1.putString(WebParams.BANK_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankCode());
+                bundle1.putString(WebParams.PRODUCT_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getProductCode());
+                bundle1.putString(WebParams.MEMBER_REMARK, memberCode);
+                bundle1.putString(WebParams.STORE_NAME, StoreNameTextview.getText().toString());
+                bundle1.putString(WebParams.STORE_ADDRESS, StoreAddressTextview.getText().toString());
 
-                    frag.setArguments(bundle);
+                if (bundle.getBoolean(DefineValue.IS_FAVORITE) == true) {
+                    bundle1.putBoolean(DefineValue.IS_FAVORITE, true);
+                    bundle1.putString(DefineValue.CUST_ID, bundle.getString(DefineValue.CUST_ID));
+                    bundle1.putString(DefineValue.NOTES, bundle.getString(DefineValue.NOTES));
+                    bundle1.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.B2B);
+                    bundle1.putString(DefineValue.PRODUCT_TYPE, DefineValue.DENOM_B2B);
+                }
 
-                    SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
+                frag.setArguments(bundle1);
+
+                SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
             }
         });
     }

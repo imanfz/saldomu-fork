@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,9 +79,9 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     ArrayList<DenomListModel> itemList;
     ArrayList<DenomOrderListModel> orderList;
     String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount, ccyID, bankGateway, bankName, txID, remark,
-            apiKey, memberIdSACDM, memberName = "", commID, item_name = "", storeName, storeAddress;
+            apiKey, memberIdSACDM, memberName = "", commID, item_name = "", storeName, storeAddress, cust_id, product_type, tx_favorite_type, notes;
     int attempt, failed;
-    Boolean isPIN = false;
+    Boolean isPIN = false, isFav = false;
 
     @Nullable
     @Override
@@ -113,6 +114,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         Bundle bundle = getArguments();
         assert bundle != null;
         if (bundle != null) {
+            Timber.d("isi bundle : " +bundle.toString());
             bankGateway = bundle.getString(WebParams.BANK_GATEWAY, "");
             bankName = bundle.getString(WebParams.BANK_NAME, "");
             attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
@@ -121,6 +123,13 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             memberCode = bundle.getString(WebParams.MEMBER_REMARK, "");
             storeName = bundle.getString(WebParams.STORE_NAME, "");
             storeAddress = bundle.getString(WebParams.STORE_ADDRESS, "");
+            if (bundle.getBoolean(DefineValue.IS_FAVORITE) == true) {
+                isFav = true;
+                notes = bundle.getString(DefineValue.NOTES, "");
+                cust_id = bundle.getString(DefineValue.CUST_ID, "");
+                tx_favorite_type = bundle.getString(DefineValue.TX_FAVORITE_TYPE, "");
+                product_type = bundle.getString(DefineValue.PRODUCT_TYPE, "");
+            }
         }
         orderList = new ArrayList<>();
 
@@ -153,7 +162,10 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             @Override
             public void onClick(View v) {
 //                sentInquiry();
-                confirmToken();
+                if (isFav) {
+                    onSaveToFavorite();
+                } else
+                    confirmToken();
             }
         });
 
@@ -636,7 +648,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                                         txstatus, model.getTx_remark(), _amount, model.getTotal_amount(), model.getTx_fee(), getGson().toJson(model.getDenom_detail()), model.getBuss_scheme_code(),
                                         model.getBuss_scheme_name(), model.getProduct_name(), model.getOrder_id(), model.getComm_code(),
                                         model.getMember_code(), model.getStore_name(), model.getStore_address(), model.getStore_code(),
-                                        model.getMember_cust_name(), model.getMember_cust_id(),model);
+                                        model.getMember_cust_name(), model.getMember_cust_id(), model);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -812,6 +824,62 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void onSaveToFavorite() {
+        extraSignature = cust_id + product_type + tx_favorite_type;
+        Log.e("extraSignature params ", extraSignature);
+        String url = MyApiClient.LINK_TRX_FAVORITE_SAVE;
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(url, extraSignature);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.PRODUCT_TYPE, product_type);
+        params.put(WebParams.CUSTOMER_ID, cust_id);
+        params.put(WebParams.TX_FAVORITE_TYPE, tx_favorite_type);
+        params.put(WebParams.COMM_ID, commID);
+        params.put(WebParams.NOTES, notes);
+        params.put(WebParams.DENOM_ITEM_ID, "");
+
+        Log.e("params fav b2btopup :", params.toString());
+
+        RetrofitService.getInstance().PostJsonObjRequest(url, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(response.toString(), jsonModel.class);
+                            Log.e("onResponse fav b2btopup", response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            } else {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.e("onResponse fav b2btopup", throwable.getLocalizedMessage());
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        confirmToken();
+                    }
+                });
     }
 
     @Override

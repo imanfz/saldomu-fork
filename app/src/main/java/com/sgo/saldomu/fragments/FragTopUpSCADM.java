@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -64,6 +65,8 @@ public class FragTopUpSCADM extends BaseFragment {
     private ArrayList<listBankModel> scadmListBankTopUp = new ArrayList<>();
     private ArrayList<String> spinnerContentStrings = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter;
+    private Switch favoriteSwitch;
+    private EditText notesEditText;
 
     @Nullable
     @Override
@@ -99,6 +102,8 @@ public class FragTopUpSCADM extends BaseFragment {
         et_membercode = v.findViewById(R.id.et_member_code);
         btn_next = v.findViewById(R.id.btn_next);
         iv_clear_partner_code = v.findViewById(R.id.iv_clear_partner_code);
+        favoriteSwitch = v.findViewById(R.id.favorite_switch);
+        notesEditText = v.findViewById(R.id.notes_edit_text);
 
         et_membercode.setText(userPhoneID);
         iv_clear_partner_code.setOnClickListener(v -> et_membercode.setText(""));
@@ -121,9 +126,15 @@ public class FragTopUpSCADM extends BaseFragment {
                         sentInsertTopUpSCASH();
                     } else
                         sentInsertTopUp();
+
                 }
 
             }
+        });
+
+        favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            notesEditText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            notesEditText.setEnabled(isChecked);
         });
     }
 
@@ -139,6 +150,10 @@ public class FragTopUpSCADM extends BaseFragment {
         } else if ((Integer.parseInt(et_jumlah.getText().toString()) % 1000) != 0) {
             et_jumlah.requestFocus();
             et_jumlah.setError(getString(R.string.amount_validation_scadm));
+            return false;
+        }else if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
+            notesEditText.requestFocus();
+            notesEditText.setError(getString(R.string.payfriends_notes_zero));
             return false;
         }
         return true;
@@ -476,6 +491,14 @@ public class FragTopUpSCADM extends BaseFragment {
         bundle1.putString(DefineValue.STORE_NAME, storeName);
         bundle1.putString(DefineValue.STORE_ADDRESS, storeAddress);
         bundle1.putString(DefineValue.STORE_CODE, storeCode);
+        if (favoriteSwitch.isChecked())
+        {
+            bundle1.putBoolean(DefineValue.IS_FAVORITE, true);
+            bundle1.putString(DefineValue.CUST_ID, member_code);
+            bundle1.putString(DefineValue.NOTES, notesEditText.getText().toString());
+            bundle1.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.B2B);
+            bundle1.putString(DefineValue.PRODUCT_TYPE, DefineValue.TOPUP_B2B);
+        }
 //        bundle1.putString(DefineValue.PRODUCT_NAME, spinnerContentStrings.get(spinner_bank_product.getSelectedItemPosition()));
         Fragment mFrag = new FragTopUpConfirmSCADM();
         mFrag.setArguments(bundle1);

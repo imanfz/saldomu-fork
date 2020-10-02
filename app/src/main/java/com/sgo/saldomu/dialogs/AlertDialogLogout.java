@@ -55,27 +55,30 @@ public class AlertDialogLogout {
     }
 
     public void showDialoginMain(final Activity mContext, String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switchLogout(mContext);
-                    }
-                });
+      if (mContext!=null)
+      {
+          AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+          builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)
+                  .setCancelable(false)
+                  .setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                          switchLogout(mContext);
+                      }
+                  });
 
-        Timber.d("showDialoginMain");
-        if(getAdInstance() == null ) {
-            Timber.d("showDialoginMain");
-            setAdInstance(builder.create());
-            getAdInstance().show();
-        }
-        else if(!getAdInstance().isShowing()) {
-            Timber.d("showDialoginMain");
-            setAdInstance(builder.create());
-            getAdInstance().show();
-        }
+          Timber.d("showDialoginMain");
+          if(getAdInstance() == null ) {
+              Timber.d("showDialoginMain");
+              setAdInstance(builder.create());
+              getAdInstance().show();
+          }
+          else if(!getAdInstance().isShowing()) {
+              Timber.d("showDialoginMain");
+              setAdInstance(builder.create());
+              getAdInstance().show();
+          }
+      }
     }
 
 
