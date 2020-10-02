@@ -2,9 +2,7 @@ package com.sgo.saldomu.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.B2BActivity
 import com.sgo.saldomu.activities.DenomSCADMActivity
@@ -48,6 +46,27 @@ class FragB2B : BaseFragment() {
         if (activity == null) return
         val fca = activity as B2BActivity?
         fca!!.switchActivity(mIntent, MainPage.ACTIVITY_RESULT)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        activity!!.menuInflater.inflate(R.menu.ab_notification, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.favorite).isVisible = true
+        menu.findItem(R.id.notifications).isVisible = false
+        menu.findItem(R.id.settings).isVisible = false
+        menu.findItem(R.id.search).isVisible = false
+        menu.findItem(R.id.cancel).isVisible = false
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.favorite) {
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,12 +70,13 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
     LinearLayout layout_otp;
     EditText et_otp;
     String comm_name, member_code, product_name, bank_gateway, comm_code, bank_code, product_code, amount, remark, storeName, storeAddress, storeCode;
-    String ccy_id, tx_id, member_id_scadm, member_name, comm_id, bank_name, admin_fee, total_amount, api_key, item_name;
+    String ccy_id, tx_id, member_id_scadm, member_name, comm_id, bank_name, admin_fee, total_amount, api_key, item_name, notes, cust_id, tx_favorite_type, product_type;
     TextView tv_community_name, tv_community_code, tv_member_code, tv_product_name, tv_jumlah, tv_remark, tv_admin_fee, tv_total_amount,
-    tv_store_name, tv_store_address;
+            tv_store_name, tv_store_address;
     double dfee = 0;
     double damount = 0;
     double dtotal_amount = 0;
+    Boolean isFav = false;
 
     @Nullable
     @Override
@@ -94,7 +96,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Bundle bundle = getArguments();
-        if (bundle!=null) {
+        if (bundle != null) {
             tx_id = bundle.getString(DefineValue.TX_ID, "");
             member_id_scadm = bundle.getString(DefineValue.MEMBER_ID_SCADM, "");
             member_code = bundle.getString(DefineValue.MEMBER_CODE, "");
@@ -117,6 +119,13 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
             storeName = bundle.getString(DefineValue.STORE_NAME, "");
             storeAddress = bundle.getString(DefineValue.STORE_ADDRESS, "");
             storeCode = bundle.getString(DefineValue.STORE_CODE, "");
+            if (bundle.getBoolean(DefineValue.IS_FAVORITE) == true) {
+                isFav = true;
+                notes = bundle.getString(DefineValue.NOTES, "");
+                cust_id = bundle.getString(DefineValue.CUST_ID, "");
+                tx_favorite_type = bundle.getString(DefineValue.TX_FAVORITE_TYPE, "");
+                product_type = bundle.getString(DefineValue.PRODUCT_TYPE, "");
+            }
         }
         tv_community_code = v.findViewById(R.id.community_code);
         tv_community_name = v.findViewById(R.id.community_name);
@@ -175,11 +184,19 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                             String.valueOf(damount), String.valueOf(dfee), String.valueOf(dtotal_amount), bank_name);
                 } else if (bank_gateway.equalsIgnoreCase("Y")) {
                     if (product_code.equalsIgnoreCase("SCASH")) {
-                        confirmToken();
-                        btn_next.setEnabled(true);
+                        if (isFav == true) {
+                            onSaveToFavorite();
+                        } else {
+                            confirmToken();
+//                            btn_next.setEnabled(true);
+                        }
+
                     } else {
                         if (inputValidation()) {
-                            sentInsertTransTopup(et_otp.getText().toString(), amount);
+                            if (isFav == true) {
+                                onSaveToFavorite();
+                            } else
+                                sentInsertTransTopup(et_otp.getText().toString(), amount);
 //                            confirmToken();
                         } else btn_next.setEnabled(true);
                     }
@@ -230,7 +247,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                             Timber.d("response confirm payment topup scadm : " + response.toString());
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 sentInquiry();
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -294,7 +311,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
-                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:" + model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
                                     AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -368,7 +385,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -429,7 +446,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                 _amount = amount;
                 //    Log.d("onActivity result", "Biller Fragment result pin value");
                 sentInsertTransTopup(value_pin, _amount);
-            }else
+            } else
                 backToTopUpSACDM();
         }
     }
@@ -464,7 +481,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -622,6 +639,65 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         });
 
         dialog.show();
+    }
+
+    private void onSaveToFavorite() {
+        extraSignature = cust_id + product_type + tx_favorite_type;
+        Log.e("extraSignature params ", extraSignature);
+        String url = MyApiClient.LINK_TRX_FAVORITE_SAVE;
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(url, extraSignature);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.PRODUCT_TYPE, product_type);
+        params.put(WebParams.CUSTOMER_ID, cust_id);
+        params.put(WebParams.TX_FAVORITE_TYPE, tx_favorite_type);
+        params.put(WebParams.COMM_ID, comm_id);
+        params.put(WebParams.NOTES, notes);
+        params.put(WebParams.DENOM_ITEM_ID, "");
+
+        Log.e("params fav b2btopup :", params.toString());
+
+        RetrofitService.getInstance().PostJsonObjRequest(url, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(response.toString(), jsonModel.class);
+                            Log.e("onResponse fav b2btopup", response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            } else {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.e("onResponse fav b2btopup", throwable.getLocalizedMessage());
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (product_code.equalsIgnoreCase("SCASH")) {
+                            confirmToken();
+                        } else
+                            sentInsertTransTopup(et_otp.getText().toString(), amount);
+                    }
+                });
     }
 
     @Override

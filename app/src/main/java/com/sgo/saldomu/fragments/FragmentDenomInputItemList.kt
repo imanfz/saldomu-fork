@@ -57,6 +57,8 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
         super.onViewCreated(view, savedInstanceState)
         if (arguments != null)
             memberCode = arguments!!.getString(WebParams.MEMBER_REMARK, "")
+
+        Timber.d("isi bundle : "+arguments.toString())
         itemList = ArrayList()
         itemListString = ArrayList()
         itemListAdapter = DenomItemListAdapter(activity, itemList, this, false)
@@ -92,6 +94,13 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
                 bundle.putString(WebParams.MEMBER_REMARK, memberCode)
                 bundle.putString(WebParams.STORE_NAME, arguments!!.getString(WebParams.STORE_NAME, ""))
                 bundle.putString(WebParams.STORE_ADDRESS, arguments!!.getString(WebParams.STORE_ADDRESS, ""))
+                if (arguments!!.getBoolean(DefineValue.IS_FAVORITE) == true) {
+                    bundle.putBoolean(DefineValue.IS_FAVORITE, true)
+                    bundle.putString(DefineValue.CUST_ID, arguments!!.getString(DefineValue.CUST_ID))
+                    bundle.putString(DefineValue.NOTES, arguments!!.getString(DefineValue.NOTES))
+                    bundle.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.B2B)
+                    bundle.putString(DefineValue.PRODUCT_TYPE, DefineValue.DENOM_B2B)
+                }
 
                 frag.arguments = bundle
 

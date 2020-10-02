@@ -677,5 +677,11 @@ public class DefineValue {
     public static String USE_DEPOSIT_COL = "useDepositCol";
     public static String IS_AGENT_DGI = "isAgentDGI";
     public static String IS_AGENT_CTR = "isAgentCTR";
+    public static String IS_FAVORITE = "isFavorite";
+    public static String TX_FAVORITE_TYPE = "trxFavoriteType";
+    public static String NOTES = "notes";
+    public static String B2B = "B2B";
+    public static String TOPUP_B2B = "TOP";
+    public static String DENOM_B2B = "BDK";
 }
 
