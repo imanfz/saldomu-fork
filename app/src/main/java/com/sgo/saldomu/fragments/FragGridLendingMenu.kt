@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.GridLendingActivity
 import com.sgo.saldomu.adapter.GridMenu
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -34,6 +35,7 @@ class FragGridLendingMenu : BaseFragment() {
     private val menuDrawables = ArrayList<Drawable>()
     private var adapter: GridMenu? = null
     private val providerModelArraylist = ArrayList<ProviderModel>()
+    private var gridLendingActivity: GridLendingActivity? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -43,11 +45,12 @@ class FragGridLendingMenu : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        gridLendingActivity = activity as GridLendingActivity
         inquiryLendingData()
         adapter = GridMenu(context!!, menuStrings, menuDrawables)
         grid.adapter = adapter
         grid.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-
+            gridLendingActivity!!.showWebView(providerModelArraylist[position].review_url!!)
         }
     }
 
@@ -68,11 +71,11 @@ class FragGridLendingMenu : BaseFragment() {
                                 when (code) {
                                     SUCCESS_CODE -> {
                                         val mArrayProvider = response!!.getJSONArray(PROVIDER)
-
                                         for (i in 0 until mArrayProvider.length()) {
                                             val lendingName = mArrayProvider.getJSONObject(i).getString(LENDING_NAME)
                                             val lendingCode = mArrayProvider.getJSONObject(i).getString(LENDING_CODE)
-                                            val reviewUrl = mArrayProvider.getJSONObject(i).getString(REVIEW_URL)
+                                            val reviewUrl = mArrayProvider.getJSONObject(i).getString(REVIEW_URL)+
+                                                    "?mobilephone="+userPhoneID+"&email="+sp.getString(DefineValue.PROFILE_EMAIL, "")
                                             val providerModel = ProviderModel()
                                             providerModel.lending_code = lendingCode
                                             providerModel.lending_name = lendingName
@@ -115,7 +118,7 @@ class FragGridLendingMenu : BaseFragment() {
                             dismissProgressDialog()
                         }
                     })
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
             Timber.d("httpclient:%s", e.message)
         }
     }
@@ -137,6 +140,7 @@ class FragGridLendingMenu : BaseFragment() {
             if (providerModelArraylist[i].lending_code!!.contains("BATUMBU"))
                 menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.menu_lending_batumbu, null)!!)
         }
+        adapter!!.notifyDataSetChanged()
     }
 
 }
