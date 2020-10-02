@@ -4,8 +4,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-import java.util.StringTokenizer;
-
 public class NumberTextWatcherForThousand implements TextWatcher {
 
     EditText editText;
@@ -29,20 +27,12 @@ public class NumberTextWatcherForThousand implements TextWatcher {
         try {
             editText.removeTextChangedListener(this);
             String value = editText.getText().toString();
-
-
             if (!value.equals("")) {
-
-                if (value.startsWith(".")) {
-                    editText.setText("0.");
-                }
                 if (value.startsWith("0") && !value.startsWith("0.")) {
                     editText.setText("");
-
                 }
 
-
-                String str = editText.getText().toString().replaceAll(",", "");
+                String str = trimCommaOfString(value);
                 editText.setText(getDecimalFormattedString(str));
                 editText.setSelection(editText.getText().toString().length());
             }
@@ -54,39 +44,25 @@ public class NumberTextWatcherForThousand implements TextWatcher {
     }
 
     public static String getDecimalFormattedString(String value) {
-        StringTokenizer lst = new StringTokenizer(value, ".");
-        String str1 = value;
-        String str2 = "";
-        if (lst.countTokens() > 1) {
-            str1 = lst.nextToken();
-            str2 = lst.nextToken();
-        }
-        String str3 = "";
+        String temp = "";
         int i = 0;
-        int j = -1 + str1.length();
-        if (str1.charAt(-1 + str1.length()) == '.') {
-            j--;
-            str3 = ".";
-        }
+        int j = -1 + value.length();
         for (int k = j; ; k--) {
-            if (k < 0) {
-                if (str2.length() > 0)
-                    str3 = str3 + "." + str2;
-                return str3;
-            }
+            if (k < 0)
+                return temp;
+
             if (i == 3) {
-                str3 = "," + str3;
+                temp = "." + temp;
                 i = 0;
             }
-            str3 = str1.charAt(k) + str3;
+            temp = value.charAt(k) + temp;
             i++;
         }
-
     }
 
     public static String trimCommaOfString(String string) {
-        if (string.contains(",")) {
-            return string.replace(",", "");
+        if (string.contains(".")) {
+            return string.replaceAll("\\.", "");
         } else {
             return string;
         }

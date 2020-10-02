@@ -39,6 +39,7 @@
     <string name="share_options">Share Options</string>
     <string name="from">From</string>
     <string name="to">To</string>
+    <string name="more">More</string>
     <string name="load_more">Load More</string>
     <string name="empty">Empty</string>
     <string name="scash" translatable="false">S-Cash</string>
