@@ -32,11 +32,21 @@ import timber.log.Timber
 class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, SwipeRefreshLayout.OnRefreshListener {
     internal lateinit var adapter: FavoriteAdapter
     lateinit var key: String
+    lateinit var productType: String
     internal lateinit var dialog: AlertDialog
 
     fun newInstance(key: String): FavoriteFragment {
         val args = Bundle()
         args.putString("key", key)
+        val fragment = FavoriteFragment()
+        fragment.arguments = args
+        return fragment
+    }
+
+    fun newInstanceB2B(key: String, productType: String): FavoriteFragment {
+        val args = Bundle()
+        args.putString("key", key)
+        args.putString("productType", productType)
         val fragment = FavoriteFragment()
         fragment.arguments = args
         return fragment
@@ -71,6 +81,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
         swipeRefresh.setOnRefreshListener(this)
         swipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark)
         key = this.arguments!!.getString("key").toString()
+        productType = this.arguments!!.getString("productType").toString()
         adapter = FavoriteAdapter(this)
     }
 
@@ -88,6 +99,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_ID] = memberIDLogin
         params[WebParams.TX_FAVORITE_TYPE] = key
+        params[WebParams.PRODUCT_TYPE] = productType
         Timber.e("params: $params")
 
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TRX_FAVORITE_LIST, params,

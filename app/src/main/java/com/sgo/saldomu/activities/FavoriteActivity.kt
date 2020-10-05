@@ -19,6 +19,9 @@ private const val TAG = "FavoriteActivity"
 
 class FavoriteActivity : BaseActivity() {
     private var isAgent: Boolean = false
+    private var isAgentBDK: Boolean = false
+    private var isAgentTOP: Boolean = false
+    private var isFavB2B: Boolean = false
     fun startBillerActivity(model: FavoriteModel) {
         val intent = Intent(this, BillerActivity::class.java)
         intent.putExtra(DefineValue.BILLER_TYPE, model.product_type)
@@ -92,6 +95,10 @@ class FavoriteActivity : BaseActivity() {
         actionBarTitle = getString(R.string.menu_item_favorite)
 
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false)
+        isAgentBDK = sp.getBoolean(DefineValue.IS_AGENT_BDK, false)
+        isAgentTOP = sp.getBoolean(DefineValue.IS_AGENT_TOP, false)
+
+        isFavB2B = intent.getBooleanExtra(DefineValue.IS_FAV_B2B, false)
 
         val builder = AlertDialog.Builder(this)
         builder.setView(R.layout.progress)
@@ -116,27 +123,55 @@ class FavoriteActivity : BaseActivity() {
 
     inner class FavoritePagerAdapter(fm: FragmentManager, private val context: Context) : FragmentStatePagerAdapter(fm) {
         private val PAGE_COUNTagent = 3
+        private val PAGE_COUNTagentB2B = 4
         private val PAGE_COUNT = 2
+        private val PAGE_COUNT_FAV_B2B = 2
         private val tabTitlesAgent = arrayOf("Biller", "Setor Dan Tarik", "Transfer")
+        private val tabTitlesAgentB2B = arrayOf("Biller", "Setor Dan Tarik", "Transfer", "B2B")
         private val tabTitles = arrayOf("Biller", "Transfer")
+        private val tabTitlesFavB2B = arrayOf(getString(R.string.scadm_topup), getString(R.string.scadm_denom))
         private val bilFragment: FavoriteFragment = FavoriteFragment().newInstance("BIL")
         private val bbsFragment: FavoriteFragment = FavoriteFragment().newInstance("BBS")
         private val trfFragment: FavoriteFragment = FavoriteFragment().newInstance("TRF")
+        private val b2bFragment: FavoriteFragment = FavoriteFragment().newInstance("B2B")
+        private val b2bTopUpFragment: FavoriteFragment = FavoriteFragment().newInstanceB2B("B2B", "TOP")
+        private val b2bDenomFragment: FavoriteFragment = FavoriteFragment().newInstanceB2B("B2B", "BDK")
 
 
         override fun getCount(): Int {
             return if (isAgent) {
-                PAGE_COUNTagent
+                if (isAgentBDK || isAgentTOP)
+                    if (isFavB2B)
+                        PAGE_COUNT_FAV_B2B
+                    else
+                        PAGE_COUNTagentB2B
+                else
+                    PAGE_COUNTagent
             } else
                 PAGE_COUNT
         }
 
         override fun getItem(position: Int): Fragment {
             return if (isAgent) {
-                when (position) {
-                    0 -> bilFragment
-                    1 -> bbsFragment
-                    else -> trfFragment
+                if (isAgentBDK || isAgentTOP) {
+                    if (isFavB2B) {
+                        when (position) {
+                            0 -> b2bTopUpFragment
+                            else -> b2bDenomFragment
+                        }
+                    } else
+                        when (position) {
+                            0 -> bilFragment
+                            1 -> bbsFragment
+                            2 -> trfFragment
+                            else -> b2bFragment
+                        }
+                } else {
+                    when (position) {
+                        0 -> bilFragment
+                        1 -> bbsFragment
+                        else -> trfFragment
+                    }
                 }
             } else {
                 when (position) {
@@ -146,16 +181,16 @@ class FavoriteActivity : BaseActivity() {
             }
         }
 
-//        override fun getItem(position: Int): Fragment = when (position) {
-//            0 -> bilFragment
-//            1 -> trfFragment
-//            else -> bbsFragment
-//        }
-
         override fun getPageTitle(position: Int): CharSequence {
             // Generate title based on item position
             return if (isAgent)
-                tabTitlesAgent[position]
+                if (isAgentTOP || isAgentBDK) {
+                    if (isFavB2B) {
+                        tabTitlesFavB2B[position]
+                    } else
+                        tabTitlesAgentB2B[position]
+                } else
+                    tabTitlesAgent[position]
             else
                 tabTitles[position]
         }
