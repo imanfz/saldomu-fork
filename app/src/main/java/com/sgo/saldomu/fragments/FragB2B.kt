@@ -4,10 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.B2BActivity
-import com.sgo.saldomu.activities.DenomSCADMActivity
-import com.sgo.saldomu.activities.MainPage
-import com.sgo.saldomu.activities.TopUpSCADMActivity
+import com.sgo.saldomu.activities.*
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.widgets.BaseFragment
@@ -64,7 +61,9 @@ class FragB2B : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.favorite) {
-
+            val i = Intent(activity, FavoriteActivity::class.java)
+            i.putExtra(DefineValue.IS_FAV_B2B, true)
+            switchActivity(i)
         }
         return super.onOptionsItemSelected(item)
     }

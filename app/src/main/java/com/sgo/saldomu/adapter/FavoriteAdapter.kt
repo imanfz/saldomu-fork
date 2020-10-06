@@ -73,6 +73,8 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
                 listener.onShowBillerActivity(model)
             } else if (model.tx_favorite_type == "BBS") {
                 listener.onStartBBSActivity(model)
+            }else if (model.tx_favorite_type == "BBS") {
+                listener.onStartBBSActivity(model)
             }
         }
 
