@@ -14,6 +14,7 @@
     <string name="unknown">Unknown</string>
     <string name="proses">Proses</string>
     <string name="save">Simpan</string>
+    <string name="edit">Ganti</string>
     <string name="close">Tutup</string>
     <string name="currency" translatable="false">Rp.</string>
     <string name="text_copyright" translatable="false">Copyright &#169; 2019. All Rights Reserved.</string>
@@ -1655,4 +1656,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="LP">LP</string>
     <string name="LKD">LKD</string>
     <string name="success_forgot_pin">PIN baru akan dikirimkan melalui SMS.</string>
+
+    <string name="favorite_menu_title">Layanan <b><font>SALDOMU</font></b></string>
+    <string name="favorite_menu_other">Layanan <b><font>SALDOMU</font></b> Lainnya</string>
+    <string name="favorite_menu_message">Hilangkan satu menu sebelum menambahkan menu baru.</string>
 </resources>

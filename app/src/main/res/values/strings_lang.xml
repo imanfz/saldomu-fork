@@ -14,6 +14,7 @@
     <string name="unknown">Unknown</string>
     <string name="proses">Process</string>
     <string name="save">Save</string>
+    <string name="edit">Edit</string>
     <string name="close">Close</string>
     <string name="currency" translatable="false">Rp.</string>
     <string name="text_copyright" translatable="false">Copyright &#169; 2019. All Rights Reserved.</string>
@@ -1663,4 +1664,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="about_apps_desc_pemberitahuan_otp3">3. Please DO NOT log in other media besides the official application to avoid any type of fraud in the name of SALDOMU. </string>
     <string name="about_apps_desc_pemberitahuan_otp4">4. If there are indications of fraud, please report to us via support@saldomu.com</string>
 
+    <string name="favorite_menu_title"><b><font>SALDOMU</font></b> Service</string>
+    <string name="favorite_menu_other">Other <b><font>SALDOMU</font></b> Service</string>
+    <string name="favorite_menu_message">Remove one of the service before adding another one.</string>
 </resources>
