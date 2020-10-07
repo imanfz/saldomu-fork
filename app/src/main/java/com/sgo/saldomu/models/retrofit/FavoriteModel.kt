@@ -47,4 +47,16 @@ class FavoriteModel : jsonModel(){
     @SerializedName("benef_bank_code")
     @Expose
     val benef_bank_code: String = ""
+
+    @SerializedName("api_key")
+    @Expose
+    val api_key : String = ""
+
+    @SerializedName("member_code")
+    @Expose
+    val member_code : String = ""
+
+    @SerializedName("member_id")
+    @Expose
+    val member_id : String = ""
 }

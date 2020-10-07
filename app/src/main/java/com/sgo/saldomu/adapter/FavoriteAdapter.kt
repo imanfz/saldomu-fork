@@ -20,6 +20,7 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
         fun onShowBillerActivity(model: FavoriteModel)
         fun onShowTransferActivity(model: FavoriteModel)
         fun onStartBBSActivity(model: FavoriteModel)
+        fun onStartB2BActivity(model: FavoriteModel)
         fun onDeleteFavorite(model: FavoriteModel)
     }
 
@@ -73,8 +74,8 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
                 listener.onShowBillerActivity(model)
             } else if (model.tx_favorite_type == "BBS") {
                 listener.onStartBBSActivity(model)
-            }else if (model.tx_favorite_type == "BBS") {
-                listener.onStartBBSActivity(model)
+            } else if (model.tx_favorite_type == "B2B") {
+                listener.onStartB2BActivity(model)
             }
         }
 

@@ -24,12 +24,15 @@ class InputPartnerCode : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        et_partner_code.setText(userPhoneID)
+        if (arguments!!.containsKey(DefineValue.CUST_ID))
+            et_partner_code.setText(arguments!!.getString(DefineValue.CUST_ID))
+        else
+            et_partner_code.setText(userPhoneID)
         et_partner_code.onRightDrawableClicked { it.text.clear() }
 
         favorite_switch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView: CompoundButton?, isChecked: Boolean ->
-            notes_edit_text.setVisibility(if (isChecked) View.VISIBLE else View.GONE)
-            notes_edit_text.setEnabled(isChecked)
+            notes_edit_text.visibility = if (isChecked) View.VISIBLE else View.GONE
+            notes_edit_text.isEnabled = isChecked
         })
 
         btn_next.setOnClickListener {

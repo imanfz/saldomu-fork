@@ -9,10 +9,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.fragments.FragListTopUpSCADM;
+import com.sgo.saldomu.fragments.FragTopUpSCADM;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
@@ -24,7 +29,6 @@ import timber.log.Timber;
 public class TopUpSCADMActivity extends BaseActivity {
     private SecurePreferences sp;
     FragmentManager fragmentManager;
-    Fragment mContent;
     Fragment newFragment = null;
     public static String TOPUP = "topup";
 
@@ -44,11 +48,37 @@ public class TopUpSCADMActivity extends BaseActivity {
             if (savedInstanceState != null) {
                 return;
             }
+            Intent intent = getIntent();
+            if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
+                String comm_id = intent.getStringExtra(DefineValue.COMM_ID_SCADM);
+                String comm_code = intent.getStringExtra(DefineValue.COMMUNITY_CODE);
+                String comm_name = intent.getStringExtra(DefineValue.COMMUNITY_NAME);
+                String api_key = intent.getStringExtra(DefineValue.API_KEY);
+                String member_code = intent.getStringExtra(DefineValue.MEMBER_CODE);
+                String member_id_scadm = intent.getStringExtra(DefineValue.MEMBER_ID_SCADM);
 
-            newFragment = new FragListTopUpSCADM();
+                SCADMCommunityModel scadmCommunityModel = new SCADMCommunityModel();
+                scadmCommunityModel.setComm_id(comm_id);
+                scadmCommunityModel.setComm_code(comm_code);
+                scadmCommunityModel.setComm_name(comm_name);
+                scadmCommunityModel.setApi_key(api_key);
+                scadmCommunityModel.setMember_code(member_code);
+                scadmCommunityModel.setMember_id_scadm(member_id_scadm);
+                DataManager.getInstance().setSCADMCommMod(scadmCommunityModel);
+
+                Bundle bundle = new Bundle();
+                bundle.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+                bundle.putString(DefineValue.COMMUNITY_NAME, comm_name);
+                bundle.putString(DefineValue.COMM_ID_SCADM, comm_id);
+                bundle.putString(DefineValue.COMMUNITY_CODE, comm_code);
+                bundle.putString(DefineValue.API_KEY, api_key);
+                bundle.putString(DefineValue.MEMBER_CODE, member_code);
+                bundle.putString(DefineValue.MEMBER_ID_SCADM, member_id_scadm);
+                newFragment = new FragTopUpSCADM();
+                newFragment.setArguments(bundle);
+            } else
+                newFragment = new FragListTopUpSCADM();
         }
-
-        mContent = newFragment;
 
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
