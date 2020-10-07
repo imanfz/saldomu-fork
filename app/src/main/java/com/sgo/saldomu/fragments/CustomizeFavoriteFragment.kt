@@ -8,14 +8,22 @@ import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sgo.saldomu.R
+import com.sgo.saldomu.models.EditFavoriteModel
 import io.realm.Realm
 import kotlinx.android.synthetic.main.edit_favorites_layout.*
 
-class CustomizeMenuFragment(onClick: OnClick) : BottomSheetDialogFragment() {
+class CustomizeFavoriteFragment(onClick: OnClick) : BottomSheetDialogFragment() {
+    var v: View? = null
     var realm: Realm? = null
     var listener: OnClick? = onClick
     private var isEdit = false
-    var v: View? = null
+
+//    var editAdapt: AdapterEditFavorite? = null
+//    var mainAdapt: AdapterCurrFavorite? = null
+
+    var itemList: List<EditFavoriteModel>? = null
+    var editList: List<EditFavoriteModel>? = null
+    var subtItemList: List<EditFavoriteModel>? = null
 
     interface OnClick {
         fun onEditTap()

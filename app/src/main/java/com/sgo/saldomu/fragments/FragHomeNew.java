@@ -1546,7 +1546,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private void openCustomizeMenu() {
-        CustomizeMenuFragment customizeMenuFragment = new CustomizeMenuFragment(new CustomizeMenuFragment.OnClick(){
+        CustomizeFavoriteFragment customizeFavoriteFragment = new CustomizeFavoriteFragment(new CustomizeFavoriteFragment.OnClick(){
             @Override
             public void onEditTap() {
 
@@ -1557,6 +1557,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             }
         });
-        customizeMenuFragment.show(getFragManager(),"CustomizeMenuFragment");
+        customizeFavoriteFragment.show(getFragManager(),"CustomizeMenuFragment");
     }
 }
