@@ -85,17 +85,6 @@ public class FragTopUpSCADM extends BaseFragment {
         userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            comm_name = bundle.getString(DefineValue.COMMUNITY_NAME);
-            comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
-            comm_id_scadm = bundle.getString(DefineValue.COMM_ID_SCADM);
-            comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
-            api_key = bundle.getString(DefineValue.API_KEY);
-            member_code = bundle.getString(DefineValue.MEMBER_CODE);
-            member_id_scadm = bundle.getString(DefineValue.MEMBER_ID_SCADM);
-        }
-
         spinner_bank_product = v.findViewById(R.id.spinner_bank_produk);
         et_jumlah = v.findViewById(R.id.et_jumlah);
         et_pesan = v.findViewById(R.id.et_remark);
@@ -105,7 +94,20 @@ public class FragTopUpSCADM extends BaseFragment {
         favoriteSwitch = v.findViewById(R.id.favorite_switch);
         notesEditText = v.findViewById(R.id.notes_edit_text);
 
-        et_membercode.setText(userPhoneID);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            comm_name = bundle.getString(DefineValue.COMMUNITY_NAME);
+            comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
+            comm_id_scadm = bundle.getString(DefineValue.COMM_ID_SCADM);
+            api_key = bundle.getString(DefineValue.API_KEY);
+            member_code = bundle.getString(DefineValue.MEMBER_CODE);
+            member_id_scadm = bundle.getString(DefineValue.MEMBER_ID_SCADM);
+            if (bundle.containsKey(DefineValue.CUST_ID))
+                et_membercode.setText(bundle.getString(DefineValue.CUST_ID));
+            else
+                et_membercode.setText(userPhoneID);
+        }
+
         iv_clear_partner_code.setOnClickListener(v -> et_membercode.setText(""));
 
         scadmListBankTopUp.clear();

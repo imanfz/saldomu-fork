@@ -534,7 +534,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent intent = new Intent(getActivity(), GridLendingActivity.class);
                     startActivity(intent);
                 } else if (menuItemName.equals(getString(R.string.more))) {
-                    Toast.makeText(getActivity(), "Fitur Belum Tersedia", Toast.LENGTH_LONG).show();
+                    openCustomizeMenu();
                 }
 
                 if (isAgent) {
@@ -1543,5 +1543,20 @@ public class FragHomeNew extends BaseFragmentMainPage {
         );
 
         dialognya.show();
+    }
+
+    private void openCustomizeMenu() {
+        CustomizeFavoriteFragment customizeFavoriteFragment = new CustomizeFavoriteFragment(new CustomizeFavoriteFragment.OnClick(){
+            @Override
+            public void onEditTap() {
+
+            }
+
+            @Override
+            public void onFeatureTap(boolean isEdit, int id) {
+
+            }
+        });
+        customizeFavoriteFragment.show(getFragManager(),"CustomizeMenuFragment");
     }
 }
