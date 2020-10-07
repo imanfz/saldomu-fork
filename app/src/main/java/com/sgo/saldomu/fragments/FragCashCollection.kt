@@ -1,18 +1,20 @@
 package com.sgo.saldomu.fragments
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.CompoundButton
 import android.widget.Toast
 import com.google.gson.JsonObject
 import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.B2BActivity
 import com.sgo.saldomu.activities.CashCollectionActivity
+import com.sgo.saldomu.activities.FavoriteActivity
+import com.sgo.saldomu.activities.MainPage
 import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -76,6 +78,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
     private lateinit var cashCollectionModel: CashCollectionModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         viewLayout = inflater.inflate(R.layout.frag_cash_collection, container, false)
         return viewLayout
     }
@@ -118,6 +121,11 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
         cityId = "KOTAJAKARTA"
         initlayout()
+
+        favorite_switch!!.setOnCheckedChangeListener { buttonView: CompoundButton?, isChecked: Boolean ->
+            notes_edit_text!!.visibility = if (isChecked) View.VISIBLE else View.GONE
+            notes_edit_text.isEnabled = isChecked
+        }
 
         btn_search.setOnClickListener {
             if (inputValidation()) {
@@ -415,6 +423,13 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                         bundle.putString(DefineValue.PRODUCT_CODE, productCode)
                                         bundle.putString(DefineValue.AMOUNT, amount)
                                         bundle.putString(DefineValue.FEE, fee)
+                                        if (favorite_switch.isChecked()) {
+                                            bundle.putBoolean(DefineValue.IS_FAVORITE, true)
+                                            bundle.putString(DefineValue.CUST_ID, et_id_member.getText().toString())
+                                            bundle.putString(DefineValue.NOTES, notes_edit_text.getText().toString())
+                                            bundle.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.CTR)
+                                            bundle.putString(DefineValue.PRODUCT_TYPE, DefineValue.CTR)
+                                        }
 
                                         newFrag.arguments = bundle
                                         if (activity == null) {
@@ -469,6 +484,10 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         if (et_id_member.text.length == 0) {
             et_id_member.requestFocus()
             et_id_member.error = getString(R.string.no_member_validation)
+            return false
+        } else if (favorite_switch.isChecked() && notes_edit_text.getText().toString().length == 0) {
+            notes_edit_text.requestFocus()
+            notes_edit_text.setError(getString(R.string.payfriends_notes_zero))
             return false
         }
         return true
@@ -547,6 +566,35 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         } catch (e: java.lang.Exception) {
             Timber.d("httpclient:" + e.message)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        activity!!.menuInflater.inflate(R.menu.ab_notification, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.favorite).isVisible = true
+        menu.findItem(R.id.notifications).isVisible = false
+        menu.findItem(R.id.settings).isVisible = false
+        menu.findItem(R.id.search).isVisible = false
+        menu.findItem(R.id.cancel).isVisible = false
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.favorite) {
+            val i = Intent(activity, FavoriteActivity::class.java)
+            i.putExtra(DefineValue.IS_FAV_CTR, true)
+            switchActivity(i)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun switchActivity(mIntent: Intent) {
+        if (activity == null) return
+        val fca = activity as CashCollectionActivity?
+        fca!!.switchActivity(mIntent, MainPage.ACTIVITY_RESULT)
     }
 
 }

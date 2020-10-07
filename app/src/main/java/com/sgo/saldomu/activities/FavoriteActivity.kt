@@ -22,6 +22,7 @@ class FavoriteActivity : BaseActivity() {
     private var isAgentBDK: Boolean = false
     private var isAgentTOP: Boolean = false
     private var isFavB2B: Boolean = false
+    private var isFavDGI: Boolean = false
     fun startBillerActivity(model: FavoriteModel) {
         val intent = Intent(this, BillerActivity::class.java)
         intent.putExtra(DefineValue.BILLER_TYPE, model.product_type)
@@ -99,6 +100,7 @@ class FavoriteActivity : BaseActivity() {
         isAgentTOP = sp.getBoolean(DefineValue.IS_AGENT_TOP, false)
 
         isFavB2B = intent.getBooleanExtra(DefineValue.IS_FAV_B2B, false)
+        isFavDGI = intent.getBooleanExtra(DefineValue.IS_FAV_DGI, false)
 
         val builder = AlertDialog.Builder(this)
         builder.setView(R.layout.progress)
@@ -126,14 +128,17 @@ class FavoriteActivity : BaseActivity() {
         private val PAGE_COUNTagentB2B = 4
         private val PAGE_COUNT = 2
         private val PAGE_COUNT_FAV_B2B = 2
+        private val PAGE_COUNT_FAV_DGI = 1
         private val tabTitlesAgent = arrayOf("Biller", "Setor Dan Tarik", "Transfer")
         private val tabTitlesAgentB2B = arrayOf("Biller", "Setor Dan Tarik", "Transfer", "B2B")
         private val tabTitles = arrayOf("Biller", "Transfer")
         private val tabTitlesFavB2B = arrayOf(getString(R.string.scadm_topup), getString(R.string.scadm_denom))
+        private val tabTitlesFavDGI = arrayOf(getString(R.string.menu_item_title_tagih_agent))
         private val bilFragment: FavoriteFragment = FavoriteFragment().newInstance("BIL")
         private val bbsFragment: FavoriteFragment = FavoriteFragment().newInstance("BBS")
         private val trfFragment: FavoriteFragment = FavoriteFragment().newInstance("TRF")
         private val b2bFragment: FavoriteFragment = FavoriteFragment().newInstance("B2B")
+        private val tagihFragment: FavoriteFragment = FavoriteFragment().newInstanceB2B("DGI", "DGI")
         private val b2bTopUpFragment: FavoriteFragment = FavoriteFragment().newInstanceB2B("B2B", "TOP")
         private val b2bDenomFragment: FavoriteFragment = FavoriteFragment().newInstanceB2B("B2B", "BDK")
 
@@ -145,6 +150,8 @@ class FavoriteActivity : BaseActivity() {
                         PAGE_COUNT_FAV_B2B
                     else
                         PAGE_COUNTagentB2B
+                else if (isFavDGI)
+                    PAGE_COUNT_FAV_DGI
                 else
                     PAGE_COUNTagent
             } else
@@ -159,6 +166,8 @@ class FavoriteActivity : BaseActivity() {
                             0 -> b2bTopUpFragment
                             else -> b2bDenomFragment
                         }
+                    } else if (isFavDGI) {
+                        tagihFragment
                     } else
                         when (position) {
                             0 -> bilFragment
@@ -184,10 +193,12 @@ class FavoriteActivity : BaseActivity() {
         override fun getPageTitle(position: Int): CharSequence {
             // Generate title based on item position
             return if (isAgent)
-                if (isAgentTOP || isAgentBDK) {
+                if (isAgentTOP || isAgentBDK || isFavDGI) {
                     if (isFavB2B) {
                         tabTitlesFavB2B[position]
-                    } else
+                    } else if (isFavDGI) {
+                        tabTitlesFavDGI[position]
+                    }
                         tabTitlesAgentB2B[position]
                 } else
                     tabTitlesAgent[position]

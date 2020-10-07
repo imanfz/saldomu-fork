@@ -1,5 +1,6 @@
 package com.sgo.saldomu.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
@@ -86,6 +87,15 @@ class CashCollectionActivity : BaseActivity() {
 
         }
         actionBarTitle = fragName
+    }
+
+    fun switchActivity(mIntent: Intent?, j: Int) {
+        ToggleKeyboard.hide_keyboard(this)
+        when (j) {
+            MainPage.ACTIVITY_RESULT -> startActivityForResult(mIntent, MainPage.REQUEST_FINISH)
+            2 -> {
+            }
+        }
     }
 
 }

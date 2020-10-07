@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,7 +48,12 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
     private var otp: String = ""
     private var amount: String = ""
     private var fee: String = ""
+    private var cust_id: String = ""
+    private var notes: String = ""
+    private var product_type: String = ""
+    private var tx_favorite_type: String = ""
     private var isPIN: Boolean? = false
+    private var isFav: Boolean? = false
     private var attempt = 0
     private var failed = 0
     private var countResend = 0
@@ -74,6 +80,14 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         amount = args.getString(DefineValue.AMOUNT)!!
         fee = args.getString(DefineValue.FEE)!!
 
+        if (args.getBoolean(DefineValue.IS_FAVORITE) == true) {
+            isFav = true
+            notes = args.getString(DefineValue.NOTES, "")
+            cust_id = args.getString(DefineValue.CUST_ID, "")
+            tx_favorite_type = args.getString(DefineValue.TX_FAVORITE_TYPE, "")
+            product_type = args.getString(DefineValue.PRODUCT_TYPE, "")
+        }
+
         dialog_cash_collection_tv_name.text = benefProductValueName
         dialog_cash_collection_tv_acc_no.text = benefProductValueCode
         dialog_cash_collection_tv_amount_deposit.text = getString(R.string.rp_) + " " + CurrencyFormat.format(amount)
@@ -83,7 +97,10 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         dialog_cash_collection_btn_ok.setOnClickListener {
             if (inputValidation()) {
                 otp = et_otp_cashcollection.text.toString()
-                confirmTokenC2R()
+                if (isFav==true) {
+                    onSaveToFavorite()
+                } else
+                    confirmTokenC2R()
             }
         }
 
@@ -244,6 +261,56 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         } catch (e: Exception) {
             Timber.d("httpclient:%s", e.message)
         }
+    }
+
+    private fun onSaveToFavorite() {
+        extraSignature = cust_id + product_type + tx_favorite_type
+        Log.e("extraSignature params ", extraSignature)
+        val url = MyApiClient.LINK_TRX_FAVORITE_SAVE
+        val params = RetrofitService.getInstance().getSignature(url, extraSignature)
+        params[WebParams.USER_ID] = userPhoneID
+        params[WebParams.PRODUCT_TYPE] = product_type
+        params[WebParams.CUSTOMER_ID] = cust_id
+        params[WebParams.TX_FAVORITE_TYPE] = tx_favorite_type
+        params[WebParams.COMM_ID] = MyApiClient.COMM_ID_TAGIH
+        params[WebParams.NOTES] = notes
+        params[WebParams.DENOM_ITEM_ID] = ""
+        Log.e("params fav CTR :", params.toString())
+        RetrofitService.getInstance().PostJsonObjRequest(url, params,
+                object : ObjListeners {
+                    override fun onResponses(response: JSONObject) {
+                        try {
+                            val model = RetrofitService.getInstance().gson.fromJson(response.toString(), jsonModel::class.java)
+                            Log.e("onResponse fav CTR", response.toString())
+                            val code = response.getString(WebParams.ERROR_CODE)
+                            val message = response.getString(WebParams.ERROR_MESSAGE)
+                            if (code == WebParams.SUCCESS_CODE) {
+                            } else if (code == DefineValue.ERROR_9333) {
+                                Timber.d("isi response app data:" + model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            } else if (code == DefineValue.ERROR_0066) {
+                                Timber.d("isi response maintenance:$response")
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                            } else {
+                                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+                            }
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        Log.e("onResponse fav CTR", throwable.localizedMessage)
+                        throwable.printStackTrace()
+                    }
+
+                    override fun onComplete() {
+                        confirmTokenC2R()
+                    }
+                })
     }
 
     private fun inputPIN() {

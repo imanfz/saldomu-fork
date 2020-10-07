@@ -684,5 +684,7 @@ public class DefineValue {
     public static String TOPUP_B2B = "TOP";
     public static String DENOM_B2B = "BDK";
     public static String IS_FAV_B2B = "isFavB2B";
+    public static String IS_FAV_DGI = "isFavDGI";
+    public static String IS_FAV_CTR = "isFavCTR";
 }
 

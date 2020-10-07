@@ -1,9 +1,13 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -12,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +28,8 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.B2BActivity;
+import com.sgo.saldomu.activities.FavoriteActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -65,10 +72,13 @@ public class FragTagihInput extends BaseFragment {
     ProgressDialog progdialog;
     private ArrayList<TagihModel> anchorDataList = new ArrayList<>();
     private ArrayList<TagihCommunityModel> communityDataList = new ArrayList<>();
+    private Switch favoriteSwitch;
+    private EditText notesEditText;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         v = inflater.inflate(R.layout.frag_tagih_input, container, false);
         return v;
     }
@@ -101,6 +111,10 @@ public class FragTagihInput extends BaseFragment {
 
         btn_submit.setOnClickListener(submitListener);
         btn_regShop.setOnClickListener(registrationListener);
+        favoriteSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            notesEditText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            notesEditText.setEnabled(isChecked);
+        });
     }
 
     private void getAnchor() {
@@ -204,6 +218,8 @@ public class FragTagihInput extends BaseFragment {
         btn_regShop = v.findViewById(R.id.bt_registTokoDGI);
         tv_saldo_collector = v.findViewById(R.id.tv_saldoCollector);
         ll_komunitas = v.findViewById(R.id.ll_komunitas);
+        favoriteSwitch = v.findViewById(R.id.favorite_switch);
+        notesEditText = v.findViewById(R.id.notes_edit_text);
 
         if (sp.getString(DefineValue.USE_DEPOSIT_COL, "").equals("LIMIT")) {
             getBalanceCollector();
@@ -319,6 +335,10 @@ public class FragTagihInput extends BaseFragment {
             sp_communtiy.requestFocus();
             Toast.makeText(getActivity(), getString(R.string.error_input_community), Toast.LENGTH_SHORT).show();
             return false;
+        }else if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
+            notesEditText.requestFocus();
+            notesEditText.setError(getString(R.string.payfriends_notes_zero));
+            return false;
         }
         return true;
     }
@@ -419,6 +439,14 @@ public class FragTagihInput extends BaseFragment {
                                 bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
                                 bundle.putString(DefineValue.RESPONSE, responseListInvoice);
                                 bundle.putString(DefineValue.TXID_PG, txIdPG);
+                                if (favoriteSwitch.isChecked())
+                                {
+                                    bundle.putBoolean(DefineValue.IS_FAVORITE, true);
+                                    bundle.putString(DefineValue.CUST_ID, et_memberCode.getText().toString());
+                                    bundle.putString(DefineValue.NOTES, notesEditText.getText().toString());
+                                    bundle.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.DGI);
+                                    bundle.putString(DefineValue.PRODUCT_TYPE, DefineValue.DGI);
+                                }
 
                                 SecurePreferences.Editor mEditor = sp.edit();
                                 mEditor.putString(DefineValue.COMM_CODE_DGI, response.getString(WebParams.COMM_CODE_DGI));
@@ -461,5 +489,29 @@ public class FragTagihInput extends BaseFragment {
                 });
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        getActivity().getMenuInflater().inflate(R.menu.ab_notification, menu);
+    }
 
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.favorite).setVisible(true);
+        menu.findItem(R.id.notifications).setVisible(false);
+        menu.findItem(R.id.settings).setVisible(false);
+        menu.findItem(R.id.search).setVisible(false);
+        menu.findItem(R.id.cancel).setVisible(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.favorite){
+            Intent intent = new Intent(getActivity(), FavoriteActivity.class);
+            intent.putExtra(DefineValue.IS_FAV_DGI, true);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

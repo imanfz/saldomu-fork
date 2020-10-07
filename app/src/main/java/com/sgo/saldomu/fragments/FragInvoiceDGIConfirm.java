@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -66,12 +68,12 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
     ConfirmDGIDialog confirmDGIDialog;
     int attempt = 0, failed = 0;
     DetailInvoiceTagihDialog detailInvoiceTagihDialog;
-
+    String notes, cust_id, tx_favorite_type, product_type;
     TextView tv_total, tv_desc;
-
     String paymentType, remark, phone, total, product_code, paymentTypeCode;
     Bundle bundle;
     Boolean click = false;
+    Boolean isFav = false;
 
     private ArrayList<InvoiceDGI> invoiceDGIModelArrayList;
 
@@ -97,6 +99,13 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
             phone = bundle.getString(DefineValue.MOBILE_PHONE, "");
             attempt = bundle.getInt(DefineValue.ATTEMPT, -1);
             paymentTypeCode = bundle.getString(DefineValue.PAYMENT_TYPE);
+            if (bundle.getBoolean(DefineValue.IS_FAVORITE) == true) {
+                isFav = true;
+                notes = bundle.getString(DefineValue.NOTES, "");
+                cust_id = bundle.getString(DefineValue.CUST_ID, "");
+                tx_favorite_type = bundle.getString(DefineValue.TX_FAVORITE_TYPE, "");
+                product_type = bundle.getString(DefineValue.PRODUCT_TYPE, "");
+            }
         }
 
         listInvoice = view.findViewById(R.id.listMenu);
@@ -187,7 +196,10 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
         @Override
         public void onClick(View v) {
             if (inputValidation())
-                confirmToken();
+                if (isFav) {
+                    onSaveToFavorite();
+                } else
+                    confirmToken();
         }
     };
 
@@ -336,7 +348,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     if (!paymentTypeCode.equalsIgnoreCase(DefineValue.CT_CODE)) {
                                         sentInsertTrxNew();
-                                    } else{
+                                    } else {
                                         getFailedPin();
                                         CallPINinput(attempt);
                                     }
@@ -662,6 +674,62 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
+    }
+
+    private void onSaveToFavorite() {
+        extraSignature = cust_id + product_type + tx_favorite_type;
+        Log.e("extraSignature params ", extraSignature);
+        String url = MyApiClient.LINK_TRX_FAVORITE_SAVE;
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(url, extraSignature);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.PRODUCT_TYPE, product_type);
+        params.put(WebParams.CUSTOMER_ID, cust_id);
+        params.put(WebParams.TX_FAVORITE_TYPE, tx_favorite_type);
+        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID_TAGIH);
+        params.put(WebParams.NOTES, notes);
+        params.put(WebParams.DENOM_ITEM_ID, "");
+
+        Log.e("params fav DGI :", params.toString());
+
+        RetrofitService.getInstance().PostJsonObjRequest(url, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(response.toString(), jsonModel.class);
+                            Log.e("onResponse fav DGI", response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            } else {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.e("onResponse fav DGI", throwable.getLocalizedMessage());
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        confirmToken();
+                    }
+                });
     }
 
     private void showReportBillerDialog(JSONObject response) {

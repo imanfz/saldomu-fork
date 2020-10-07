@@ -78,11 +78,50 @@
                 android:textColor="@color/grey_1000w" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_below="@+id/layout_id_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="6dp"
+            android:orientation="horizontal"
+            android:id="@+id/layout_save">
+
+            <Switch
+                android:id="@+id/favorite_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save_as_favorite_text_message"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/notes_edit_text"
+            android:layout_below="@id/layout_save"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Notes"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="6dp"
+            android:visibility="gone"
+            android:inputType="text"
+            android:enabled="false"
+            android:textSize="@dimen/abc_text_size_medium_material" />
+
         <View
             android:id="@+id/divider_id"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@id/layout_id_no"
+            android:layout_below="@id/notes_edit_text"
             android:layout_margin="8dp"
             android:background="@color/grey_300"
             android:visibility="gone"/>

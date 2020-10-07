@@ -91,6 +91,7 @@ public class FragListInvoiceTagih extends BaseFragment {
     Spinner sp_payment_type, sp_phone_number, sp_payment_method;
     String mobile_phone, paymentCode, paymentName, ccy_id, buyer_fee, seller_fee, commission_fee, min_amount, max_amount, noId;
     String callback_url, paymentMethod, buss_scheme_code, doc_no, doc_id, remain_amount, amount, due_date, bank_code, bank_name;
+    String notes, cust_id, tx_favorite_type, product_type;
     private ArrayList<MobilePhoneModel> mobilePhoneModelArrayList = new ArrayList<>();
     private ArrayList<bank_biller_model> bankBillerModelArrayList = new ArrayList<>();
     private ArrayList<PaymentTypeDGIModel> paymentTypeDGIModelArrayList = new ArrayList<>();
@@ -110,6 +111,7 @@ public class FragListInvoiceTagih extends BaseFragment {
     List<BankCashoutModel> listBankCashOut = new ArrayList<>();
     BankCashoutAdapter adapter;
     boolean isSearchVissible = false;
+    boolean isFav = false;
 
     @Nullable
     @Override
@@ -132,6 +134,13 @@ public class FragListInvoiceTagih extends BaseFragment {
             memberCode = bundle.getString(DefineValue.MEMBER_CODE, "");
             commCodeTagih = bundle.getString(DefineValue.COMMUNITY_CODE, "");
             txIdPG = bundle.getString(DefineValue.TXID_PG, "");
+            if (bundle.getBoolean(DefineValue.IS_FAVORITE) == true) {
+                isFav = true;
+                notes = bundle.getString(DefineValue.NOTES, "");
+                cust_id = bundle.getString(DefineValue.CUST_ID, "");
+                tx_favorite_type = bundle.getString(DefineValue.TX_FAVORITE_TYPE, "");
+                product_type = bundle.getString(DefineValue.PRODUCT_TYPE, "");
+            }
         }
 
         prgLoading = view.findViewById(R.id.prgLoading);
@@ -541,6 +550,14 @@ public class FragListInvoiceTagih extends BaseFragment {
         bundle1.putString(DefineValue.PRODUCT_CODE, "SCASH");
         bundle1.putString(DefineValue.REMARK, remark);
         bundle1.putString(DefineValue.MOBILE_PHONE, phone_no);
+        if (isFav==true)
+        {
+            bundle1.putBoolean(DefineValue.IS_FAVORITE, true);
+            bundle1.putString(DefineValue.CUST_ID, cust_id);
+            bundle1.putString(DefineValue.NOTES, notes);
+            bundle1.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.DGI);
+            bundle1.putString(DefineValue.PRODUCT_TYPE, DefineValue.DGI);
+        }
         newFrag.setArguments(bundle1);
         if (getActivity() == null) {
             return;
