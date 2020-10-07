@@ -72,10 +72,28 @@ class FavoriteActivity : BaseActivity() {
         startActivity(intent)
     }
 
-
     fun startTransferActivity(model: FavoriteModel) {
-        var intent = Intent(this, PayFriendsActivity::class.java)
+        val intent = Intent(this, PayFriendsActivity::class.java)
         intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
+        startActivity(intent)
+    }
+
+    fun startB2BActivity(model: FavoriteModel) {
+        var intent = intent
+
+        intent = when (model.product_type) {
+            "TOP" -> Intent(this, TopUpSCADMActivity::class.java)
+            "BDK" -> Intent(this, DenomSCADMActivity::class.java)
+            else -> Intent(this, B2BActivity::class.java)
+        }
+
+        intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
+        intent.putExtra(DefineValue.COMMUNITY_NAME, model.comm_name)
+        intent.putExtra(DefineValue.COMM_ID_SCADM, model.comm_id)
+        intent.putExtra(DefineValue.COMMUNITY_CODE, model.comm_code)
+        intent.putExtra(DefineValue.API_KEY, model.api_key)
+        intent.putExtra(DefineValue.MEMBER_CODE, model.member_code)
+        intent.putExtra(DefineValue.MEMBER_ID_SCADM, model.member_id)
         startActivity(intent)
     }
 

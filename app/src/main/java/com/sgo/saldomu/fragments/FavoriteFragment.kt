@@ -37,7 +37,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
 
     fun newInstance(key: String): FavoriteFragment {
         val args = Bundle()
-        args.putString("key", key)
+        args.putString(DefineValue.KEY, key)
         val fragment = FavoriteFragment()
         fragment.arguments = args
         return fragment
@@ -45,8 +45,8 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
 
     fun newInstanceB2B(key: String, productType: String): FavoriteFragment {
         val args = Bundle()
-        args.putString("key", key)
-        args.putString("productType", productType)
+        args.putString(DefineValue.KEY, key)
+        args.putString(DefineValue.PRODUCT_TYPE, productType)
         val fragment = FavoriteFragment()
         fragment.arguments = args
         return fragment
@@ -80,8 +80,11 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
 
         swipeRefresh.setOnRefreshListener(this)
         swipeRefresh.setColorSchemeResources(R.color.colorPrimaryDark)
-        key = this.arguments!!.getString("key").toString()
-        productType = this.arguments!!.getString("productType").toString()
+        key = arguments!!.getString(DefineValue.KEY).toString()
+        productType = if (arguments!!.containsKey(DefineValue.PRODUCT_TYPE))
+            arguments!!.getString(DefineValue.PRODUCT_TYPE).toString()
+        else
+            ""
         adapter = FavoriteAdapter(this)
     }
 
@@ -230,6 +233,10 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
 
     override fun onStartBBSActivity(model: FavoriteModel) {
         (activity as FavoriteActivity).startBBSActivity(model)
+    }
+
+    override fun onStartB2BActivity(model: FavoriteModel) {
+        (activity as FavoriteActivity).startB2BActivity(model)
     }
 
     override fun onDeleteFavorite(model: FavoriteModel) {

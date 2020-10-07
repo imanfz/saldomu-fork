@@ -686,5 +686,6 @@ public class DefineValue {
     public static String IS_FAV_B2B = "isFavB2B";
     public static String IS_FAV_DGI = "isFavDGI";
     public static String IS_FAV_CTR = "isFavCTR";
+    public static String KEY = "key";
 }
 
