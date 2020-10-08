@@ -1,31 +1,32 @@
 package com.sgo.saldomu.models
 
+import android.graphics.drawable.Drawable
 import io.realm.RealmObject
 
-class EditFavoriteModel : RealmObject() {
+open class EditFavoriteModel : RealmObject() {
 
-    private var title: Int? = null
-    private var img: Int? = null
+    private var title: String? = null
+    private var img: Drawable? = null
 
 
-    fun EditFavoriteModel(title: Int?, img: Int) {
+    fun EditFavoriteModel(title: String, img: Drawable) {
         this.title = title
         this.img = img
     }
 
-    fun getTitle(): Int? {
+    fun getTitle(): String? {
         return title
     }
 
-    fun setTitle(title: Int?) {
+    fun setTitle(title: String?) {
         this.title = title
     }
 
-    fun getImg(): Int? {
+    fun getImg(): Drawable? {
         return img
     }
 
-    fun setImg(img: Int?) {
+    fun setImg(img: Drawable?) {
         this.img = img
     }
 }
