@@ -34,6 +34,7 @@ public class TagihActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
+        Bundle bundle = new Bundle();
         Boolean is_search = intent.getBooleanExtra(DefineValue.IS_SEARCH_DGI, false);
         Timber.d("is search tagih activity : ", is_search.toString());
         if (intent.hasExtra(DefineValue.MEMBER_CODE_PG)) {
@@ -43,6 +44,9 @@ public class TagihActivity extends BaseActivity {
             anchorName = intent.getStringExtra(DefineValue.ANCHOR_NAME_PG);
             txIdPG = intent.getStringExtra(DefineValue.TXID_PG);
         }
+        if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
+            bundle.putString(DefineValue.FAVORITE_CUSTOMER_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+        }
         initializeToolbar();
 
         if (findViewById(R.id.layout_tagih) != null) {
@@ -51,7 +55,6 @@ public class TagihActivity extends BaseActivity {
             }
 
             newFragment = new FragTagihInput();
-            Bundle bundle = new Bundle();
             bundle.putBoolean(DefineValue.IS_SEARCH_DGI, is_search);
             if (memberCode != null || commCode != null || commName!=null || anchorName!=null) {
                 bundle.putString(DefineValue.MEMBER_CODE_PG, memberCode);

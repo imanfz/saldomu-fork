@@ -47,6 +47,10 @@ class CashCollectionActivity : BaseActivity() {
             bundle.putString(DefineValue.BANK_CODE, bankCode)
             bundle.putString(DefineValue.AMOUNT, amount)
         }
+
+        if (getIntent() != null) {
+            bundle.putString(DefineValue.FAVORITE_CUSTOMER_ID, getIntent().getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID))
+        }
         newFragment.arguments = bundle
 
         fragmentManager = supportFragmentManager

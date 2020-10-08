@@ -239,6 +239,14 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
         (activity as FavoriteActivity).startB2BActivity(model)
     }
 
+    override fun onStartCashCollectionActivity(model: FavoriteModel) {
+        (activity as FavoriteActivity).startCashCollectionActivity(model)
+    }
+
+    override fun onStartTagihActivity(model: FavoriteModel) {
+        (activity as FavoriteActivity).startTagihActivity(model)
+    }
+
     override fun onDeleteFavorite(model: FavoriteModel) {
         val dialogFrag: AlertDialogFrag = AlertDialogFrag.newInstance(activity!!.getString(R.string.menu_item_favorite),
                 activity!!.getString(R.string.delete_item_favorite_dialog), activity!!.getString(R.string.yes),

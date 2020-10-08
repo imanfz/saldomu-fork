@@ -98,6 +98,9 @@ public class FragTagihInput extends BaseFragment {
                 memberCode = bundle.getString(DefineValue.MEMBER_CODE_PG, "");
                 txIdPG = bundle.getString(DefineValue.TXID_PG, "");
             }
+            if (bundle.containsKey(DefineValue.FAVORITE_CUSTOMER_ID)){
+                memberCode = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID,"");
+            }
         }
 
         sp = CustomSecurePref.getInstance().getSecurePrefsInstance();
@@ -228,7 +231,7 @@ public class FragTagihInput extends BaseFragment {
             tv_saldo_collector.setText(CurrencyFormat.format(balanceCollector));
         }
 
-        if (is_search) {
+        if (memberCode!=null) {
             Timber.d("is_search initialize");
             et_memberCode.setText(memberCode);
         }
@@ -236,6 +239,8 @@ public class FragTagihInput extends BaseFragment {
         if (isAgentLKD) {
             btn_regShop.setVisibility(View.GONE);
         }
+
+
 
         mitraNameArrayList.clear();
 
