@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
 import com.sgo.saldomu.models.EditFavoriteModel
@@ -16,9 +17,9 @@ class AdapterCurrFavorite : RecyclerView.Adapter<AdapterCurrFavorite.Holder>() {
     var itemList: List<EditFavoriteModel>? = null
     var subItemList: List<EditFavoriteModel>? = null
     var context: Context? = null
-    var listener: onClick? = null
+    var listener: OnClick? = null
 
-    fun AdapterCurrFavorite(isEdit: Boolean, context: Context?, itemList: List<EditFavoriteModel>?, subItemList: List<EditFavoriteModel>?, listener: onClick?) {
+    fun AdapterCurrFavorite(isEdit: Boolean, context: Context?, itemList: List<EditFavoriteModel>?, subItemList: List<EditFavoriteModel>?, listener: OnClick?) {
         this.itemList = itemList
         this.subItemList = subItemList
         this.listener = listener
@@ -26,14 +27,14 @@ class AdapterCurrFavorite : RecyclerView.Adapter<AdapterCurrFavorite.Holder>() {
         this.isEdit = isEdit
     }
 
-    fun AdapterCurrFavorite(isEdit: Boolean, context: Context?, itemList: List<EditFavoriteModel>?, listener: onClick?) {
+    fun AdapterCurrFavorite(isEdit: Boolean, context: Context?, itemList: List<EditFavoriteModel>?, listener: OnClick?) {
         this.itemList = itemList
         this.listener = listener
         this.context = context
         this.isEdit = isEdit
     }
 
-    interface onClick {
+    interface OnClick {
         fun onTap(pos: Int, isEdit: Boolean)
     }
 
@@ -43,7 +44,7 @@ class AdapterCurrFavorite : RecyclerView.Adapter<AdapterCurrFavorite.Holder>() {
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.itemView.tv_fav_title.text = itemList!![position].getTitle()
-        holder.itemView.img.setImageDrawable(itemList!![position].getImg())
+        holder.itemView.img.setImageDrawable(ResourcesCompat.getDrawable(context!!.resources, itemList!![position].getImg()!!, null))
     }
 
     override fun getItemCount(): Int {

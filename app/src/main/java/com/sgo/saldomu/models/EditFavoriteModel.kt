@@ -6,10 +6,10 @@ import io.realm.RealmObject
 open class EditFavoriteModel : RealmObject() {
 
     private var title: String? = null
-    private var img: Drawable? = null
+    private var img: Int? = null
 
 
-    fun EditFavoriteModel(title: String, img: Drawable) {
+    fun EditFavoriteModel(title: String, img: Int) {
         this.title = title
         this.img = img
     }
@@ -22,11 +22,11 @@ open class EditFavoriteModel : RealmObject() {
         this.title = title
     }
 
-    fun getImg(): Drawable? {
+    fun getImg(): Int? {
         return img
     }
 
-    fun setImg(img: Drawable?) {
+    fun setImg(img: Int?) {
         this.img = img
     }
 }
