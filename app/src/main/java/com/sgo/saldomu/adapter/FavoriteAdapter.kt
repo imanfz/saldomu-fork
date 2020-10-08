@@ -22,6 +22,8 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
         fun onStartBBSActivity(model: FavoriteModel)
         fun onStartB2BActivity(model: FavoriteModel)
         fun onDeleteFavorite(model: FavoriteModel)
+        fun onStartTagihActivity(model: FavoriteModel)
+        fun onStartCashCollectionActivity(model: FavoriteModel)
     }
 
     fun updateAdapter(itemList: List<FavoriteModel>) {
@@ -76,6 +78,10 @@ class FavoriteAdapter(internal var listener: FavoriteListener) : RecyclerView.Ad
                 listener.onStartBBSActivity(model)
             } else if (model.tx_favorite_type == "B2B") {
                 listener.onStartB2BActivity(model)
+            }else if (model.tx_favorite_type == "DGI") {
+                listener.onStartTagihActivity(model)
+            }else if (model.tx_favorite_type == "CTR") {
+                listener.onStartCashCollectionActivity(model)
             }
         }
 

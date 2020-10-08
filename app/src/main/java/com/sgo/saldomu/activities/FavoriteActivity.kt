@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.google.android.material.tabs.TabLayout
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.fragments.FavoriteFragment
@@ -113,6 +114,20 @@ class FavoriteActivity : BaseActivity() {
         startActivity(intent)
     }
 
+    fun startTagihActivity(model: FavoriteModel) {
+        val intent = Intent(this, TagihActivity::class.java)
+        intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
+        startActivity(intent)
+    }
+
+
+    fun startCashCollectionActivity(model: FavoriteModel) {
+        val intent = Intent(this, CashCollectionActivity::class.java)
+        intent.putExtra(DefineValue.FAVORITE_CUSTOMER_ID, model.customer_id)
+        startActivity(intent)
+    }
+
+
     internal lateinit var dialog: AlertDialog
     internal lateinit var adapter: FavoritePagerAdapter
 
@@ -150,7 +165,7 @@ class FavoriteActivity : BaseActivity() {
 
         // Give the TabLayout the ViewPager
         tab_layout.setupWithViewPager(viewPager)
-
+        tab_layout.tabMode = TabLayout.MODE_AUTO
     }
 
     fun countPageAgent() {
@@ -167,7 +182,7 @@ class FavoriteActivity : BaseActivity() {
             tabTitlesAgent = tabTitlesAgent + tabTitlesAgentCTR
         }
 
-        Log.d(TAG,"count page agent : "+PAGE_COUNTagent)
+        Log.d(TAG, "count page agent : " + PAGE_COUNTagent)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -198,27 +213,16 @@ class FavoriteActivity : BaseActivity() {
 
         override fun getCount(): Int {
             return if (isAgent) {
-                if (isAgentBDK || isAgentTOP) {
+                if (isAgentBDK || isAgentTOP || isAgentDGI || isAgentCTR) {
                     if (isFavB2B)
                         PAGE_COUNT_FAV_B2B
-                    else {
-                        PAGE_COUNTagent
-                    }
-                }else
-                if (isAgentDGI) {
-                    if (isFavDGI)
+                    else if (isFavDGI)
                         PAGE_COUNT_FAV_DGI
-                    else
-                        PAGE_COUNTagent
-                }
-                else
-                if (isAgentCTR) {
-                    if (isFavCTR)
+                    else if (isFavCTR)
                         PAGE_COUNT_FAV_CTR
                     else
                         PAGE_COUNTagent
-                }
-                else
+                } else
                     PAGE_COUNTagent
             } else
                 PAGE_COUNT
@@ -226,25 +230,41 @@ class FavoriteActivity : BaseActivity() {
 
         override fun getItem(position: Int): Fragment {
             return if (isAgent) {
-                if (isAgentBDK || isAgentTOP) {
+                if (isAgentBDK || isAgentTOP || isAgentDGI || isAgentCTR) {
                     if (isFavB2B) {
                         when (position) {
                             0 -> b2bTopUpFragment
                             else -> b2bDenomFragment
                         }
-                    } else
-                        when (position) {
-                            0 -> bilFragment
-                            1 -> bbsFragment
-                            2 -> trfFragment
-                            else -> b2bFragment
-                        }
-                }else
-                if (isAgentDGI) {
-                    if (isFavDGI) {
+                    } else if (isFavDGI) {
                         dgiFragment
-                    } else
-                        if ((isAgentBDK || isAgentTOP)) {
+                    } else if (isFavCTR) {
+                        ctrFragment
+                    } else if (PAGE_COUNTagent == 4) {
+                        if (isAgentTOP || isAgentBDK) {
+                            when (position) {
+                                0 -> bilFragment
+                                1 -> bbsFragment
+                                2 -> trfFragment
+                                else -> b2bFragment
+                            }
+                        } else if (isAgentDGI) {
+                            when (position) {
+                                0 -> bilFragment
+                                1 -> bbsFragment
+                                2 -> trfFragment
+                                else -> dgiFragment
+                            }
+                        } else {
+                            when (position) {
+                                0 -> bilFragment
+                                1 -> bbsFragment
+                                2 -> trfFragment
+                                else -> ctrFragment
+                            }
+                        }
+                    } else if (PAGE_COUNTagent == 5) {
+                        if ((isAgentTOP || isAgentBDK) && isAgentDGI) {
                             when (position) {
                                 0 -> bilFragment
                                 1 -> bbsFragment
@@ -252,19 +272,7 @@ class FavoriteActivity : BaseActivity() {
                                 3 -> b2bFragment
                                 else -> dgiFragment
                             }
-                        } else
-                            when (position) {
-                                0 -> bilFragment
-                                1 -> bbsFragment
-                                2 -> trfFragment
-                                else -> dgiFragment
-                            }
-                }else
-                if (isAgentCTR) {
-                    if (isFavCTR) {
-                        ctrFragment
-                    } else if (PAGE_COUNTagent == 5) {
-                        if (isAgentTOP || isAgentBDK) {
+                        } else if ((isAgentTOP || isAgentBDK) && isAgentCTR) {
                             when (position) {
                                 0 -> bilFragment
                                 1 -> bbsFragment
@@ -290,13 +298,14 @@ class FavoriteActivity : BaseActivity() {
                             4 -> dgiFragment
                             else -> ctrFragment
                         }
-                    } else
+                    } else {
                         when (position) {
                             0 -> bilFragment
                             1 -> bbsFragment
                             2 -> trfFragment
-                            else -> ctrFragment
+                            else -> b2bFragment
                         }
+                    }
                 } else {
                     when (position) {
                         0 -> bilFragment
@@ -314,38 +323,40 @@ class FavoriteActivity : BaseActivity() {
 
         override fun getPageTitle(position: Int): CharSequence {
             // Generate title based on item position
-            return if (isAgent){
-                if (isAgentTOP || isAgentBDK) {
+            return if (isAgent) {
+                if (isAgentTOP || isAgentBDK || isAgentDGI || isAgentCTR) {
                     if (isFavB2B) {
                         tabTitlesFavB2B[position]
-                    }
-                    else
-                        tabTitlesAgent[position]
-                } else if (isAgentDGI) {
-                    if (isFavDGI) {
+                    } else if (isFavDGI) {
                         tabTitlesFavDGI[position]
-//                    } else if (isAgentTOP || isAgentBDK) {
-//                        tabTitlesAgent[position] + tabTitlesAgentB2B[position] + tabTitlesFavDGI[position]
-                    } else
-                        tabTitlesAgent[position]
-                } else if (isAgentCTR) {
-                    if (isFavCTR) {
-                        tabTitlesFavCTR[position]
-//                    } else if (PAGE_COUNTagent == 5) {
-//                        if (isAgentBDK || isAgentTOP){
-//                            tabTitlesAgent[position] + tabTitlesAgentB2B[position] + tabTitlesFavCTR[position]
-//                        } else if(isAgentDGI){
-//                            tabTitlesAgent[position] + tabTitlesFavDGI[position] + tabTitlesFavCTR[position]
-//                        }
-                    } else
+                    }else if (isFavCTR)
                     {
+                        tabTitlesFavCTR[position]
+                    }else if (PAGE_COUNTagent == 4)
+                    {
+                        if (isAgentTOP||isAgentBDK)
+                        {
+                            tabTitlesAgent[position] + tabTitlesAgentB2B[position]
+                        }else if (isAgentDGI)
+                            tabTitlesAgent[position] + tabTitlesFavDGI[position]
+                        else{
+                            tabTitlesAgent[position] + tabTitlesFavCTR[position]
+                        }
+                    }else if (PAGE_COUNTagent == 5)
+                    {
+                        if ((isAgentTOP||isAgentBDK)&&isAgentDGI)
+                        {
+                            tabTitlesAgent[position] + tabTitlesAgentB2B[position]+ tabTitlesFavDGI[position]
+                        }else if ((isAgentTOP||isAgentBDK)&&isAgentCTR)
+                            tabTitlesAgent[position] + tabTitlesAgentB2B[position]+ tabTitlesFavCTR[position]
+                        else{
+                            tabTitlesAgent[position] + tabTitlesFavDGI[position]+ tabTitlesFavCTR[position]
+                        }
+                    }else
                         tabTitlesAgent[position]
-                    }
                 } else
                     tabTitlesAgent[position]
-            }
-
-            else
+            } else
                 tabTitles[position]
         }
     }

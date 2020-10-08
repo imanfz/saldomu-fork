@@ -11,7 +11,6 @@ import android.widget.Toast
 import com.google.gson.JsonObject
 import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.B2BActivity
 import com.sgo.saldomu.activities.CashCollectionActivity
 import com.sgo.saldomu.activities.FavoriteActivity
 import com.sgo.saldomu.activities.MainPage
@@ -98,6 +97,12 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
         commCode = comm?.comm_code
         memberCode = comm?.member_code
 
+
+        if (arguments!!.containsKey(DefineValue.FAVORITE_CUSTOMER_ID) && arguments!!.getString(DefineValue.FAVORITE_CUSTOMER_ID, null) != null) {
+            et_id_member.setText(arguments!!.getString(DefineValue.FAVORITE_CUSTOMER_ID))
+            et_id_member.requestFocus()
+        }
+
         if (sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equals("LIMIT"))
             getBalanceCollector()
         else if (sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equals("REG"))
@@ -105,9 +110,6 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
             val balance = sp.getString(DefineValue.BALANCE_AMOUNT, "0")
             tv_saldoCollector.setText(CurrencyFormat.format(balance))
         }
-
-
-
 //        sourceProductType = listbankSource?.get(0)?.product_type
 //        sourceProductCode = listbankSource?.get(0)?.product_code
         sourceProductType = getString(R.string.EMO)
@@ -162,6 +164,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
     private fun initlayout() {
         detail_cash_collection.visibility = View.GONE
         layout_acc_amount.visibility = View.GONE
+
     }
 
     private fun searchMember() {
@@ -425,7 +428,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                         bundle.putString(DefineValue.FEE, fee)
                                         if (favorite_switch.isChecked()) {
                                             bundle.putBoolean(DefineValue.IS_FAVORITE, true)
-                                            bundle.putString(DefineValue.CUST_ID, et_id_member.getText().toString())
+                                            bundle.putString(DefineValue.CUST_ID, customerId)
                                             bundle.putString(DefineValue.NOTES, notes_edit_text.getText().toString())
                                             bundle.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.CTR)
                                             bundle.putString(DefineValue.PRODUCT_TYPE, DefineValue.CTR)
