@@ -2,7 +2,7 @@ package com.sgo.saldomu.models
 
 import io.realm.RealmObject
 
-class EditFavoriteModel : RealmObject() {
+open class EditFavoriteModel : RealmObject() {
 
     private var title: Int? = null
     private var img: Int? = null

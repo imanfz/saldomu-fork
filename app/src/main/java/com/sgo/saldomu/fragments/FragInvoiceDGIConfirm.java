@@ -70,7 +70,7 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
     DetailInvoiceTagihDialog detailInvoiceTagihDialog;
     String notes, cust_id, tx_favorite_type, product_type;
     TextView tv_total, tv_desc;
-    String paymentType, remark, phone, total, product_code, paymentTypeCode;
+    String paymentType, remark, phone, total, product_code, paymentTypeCode, anchorId, commCode;
     Bundle bundle;
     Boolean click = false;
     Boolean isFav = false;
@@ -105,6 +105,8 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
                 cust_id = bundle.getString(DefineValue.CUST_ID, "");
                 tx_favorite_type = bundle.getString(DefineValue.TX_FAVORITE_TYPE, "");
                 product_type = bundle.getString(DefineValue.PRODUCT_TYPE, "");
+                commCode = bundle.getString(DefineValue.COMMUNITY_CODE, "");
+                anchorId = bundle.getString(DefineValue.ANCHOR_ID, "");
             }
         }
 
@@ -688,6 +690,8 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID_TAGIH);
         params.put(WebParams.NOTES, notes);
         params.put(WebParams.DENOM_ITEM_ID, "");
+        params.put(WebParams.GROUP_CODE, commCode);
+        params.put(WebParams.COMPANY_CODE, anchorId);
 
         Log.e("params fav DGI :", params.toString());
 

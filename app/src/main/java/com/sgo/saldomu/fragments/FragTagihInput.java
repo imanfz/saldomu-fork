@@ -68,7 +68,7 @@ public class FragTagihInput extends BaseFragment {
     private ArrayList<TagihModel> mitraNameData = new ArrayList<>();
     private ArrayAdapter<String> communityAdapter;
     private ArrayList<String> communityNameArrayList = new ArrayList<>();
-    String commCodeTagih, balanceCollector, commNamePG, commCodePG, anchorNamePG, memberCode, txIdPG;
+    String commCodeTagih, balanceCollector, commNamePG, commCodePG, anchorNamePG, memberCode, txIdPG, anchorId;
     ProgressDialog progdialog;
     private ArrayList<TagihModel> anchorDataList = new ArrayList<>();
     private ArrayList<TagihCommunityModel> communityDataList = new ArrayList<>();
@@ -267,7 +267,10 @@ public class FragTagihInput extends BaseFragment {
                 if (position != 0) {
                     ll_komunitas.setVisibility(View.VISIBLE);
                     initializeCommunity(position - 1);
+                    anchorId = anchorDataList.get(position-1).getId();
+
                 }
+                Timber.d("anchor_id : " +anchorId);
             }
 
             @Override
@@ -446,6 +449,7 @@ public class FragTagihInput extends BaseFragment {
                                     bundle.putString(DefineValue.NOTES, notesEditText.getText().toString());
                                     bundle.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.DGI);
                                     bundle.putString(DefineValue.PRODUCT_TYPE, DefineValue.DGI);
+                                    bundle.putString(DefineValue.ANCHOR_ID, anchorId);
                                 }
 
                                 SecurePreferences.Editor mEditor = sp.edit();

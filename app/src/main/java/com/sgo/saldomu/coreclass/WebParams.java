@@ -634,4 +634,6 @@ public class WebParams {
     public static String LENDING_CODE = "lending_code";
     public static String LENDING_NAME = "lending_name";
     public static String REVIEW_URL = "review_url";
+    public static String GROUP_CODE = "group_code";
+    public static String COMPANY_CODE = "company_code";
 }
