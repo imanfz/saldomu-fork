@@ -35,9 +35,10 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
     OnItemClick listener;
     Context context;
     ArrayList<InvoiceDGI> invoiceDGIModelArrayList;
-    ArrayList<String> reasonCodeArrayList = new ArrayList<>();
-    private ArrayList<String> reasonNameArrayList = new ArrayList<>();
+    ArrayList<String> reasonCodeArrayList;
+    private ArrayList<String> reasonNameArrayList;
     String reason = "";
+    ArrayList<Boolean> checked;
 
     public CancelInvoiceAdapter(ArrayList<InvoiceDGI> invoiceDGIModelArrayList, ArrayList<String> reasonCodeArrayList, ArrayList<String> reasonNameArrayList, OnItemClick listener) {
         this.invoiceDGIModelArrayList = invoiceDGIModelArrayList;
@@ -108,7 +109,7 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
                     } else {
                         holder.reason_et.setVisibility(View.GONE);
                     }
-                    listener.onEdit(new Invoice(reasonCodeArrayList.get(i), "", item.getDoc_no()));
+                    listener.onEdit(new Invoice(reasonCodeArrayList.get(i), reasonNameArrayList.get(i), item.getDoc_no()));
 //                    listener.onCheck(new Invoice(String.valueOf(position), reason, item.getDoc_no()));
                 }
             }
@@ -118,7 +119,8 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             }
         });
-
+        holder.checkBox.setOnCheckedChangeListener(null);
+        holder.checkBox.setChecked(item.getSelected());
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -128,13 +130,14 @@ public class CancelInvoiceAdapter extends RecyclerView.Adapter<RecyclerView.View
 //                    }
 //                    reason = holder.reason_et.getText().toString();
 //                }
-
+                item.setSelected(isChecked);
                 if (!isChecked) {
-                    listener.onUncheck(new Invoice(reasonCodeArrayList.get(position), "", item.getDoc_no()));
+                    listener.onUncheck(new Invoice(reasonCodeArrayList.get(0), "", item.getDoc_no()));
                     holder.sp_reason.setVisibility(View.GONE);
+                    holder.reason_et.setVisibility(View.GONE);
                 } else {
                     reason = holder.sp_reason.getItemAtPosition(0).toString();
-                    listener.onCheck(new Invoice(reasonCodeArrayList.get(position), "", item.getDoc_no()));
+                    listener.onCheck(new Invoice(reasonCodeArrayList.get(0), "", item.getDoc_no()));
                     holder.sp_reason.setVisibility(View.VISIBLE);
 //                    holder.sp_reason.performClick();
                 }

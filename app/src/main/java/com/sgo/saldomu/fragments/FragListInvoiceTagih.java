@@ -258,7 +258,7 @@ public class FragListInvoiceTagih extends BaseFragment {
             bundle2.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
             newFrag.setArguments(bundle2);
             TagihActivity ftf = (TagihActivity) getActivity();
-            ftf.switchContent(newFrag, "Pembatalan Transaksi", true);
+            ftf.switchContent(newFrag, getString(R.string.cancel_transaction), true);
         }
         return super.onOptionsItemSelected(item);
     }
