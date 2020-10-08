@@ -1175,6 +1175,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_setor_tunai));
                         break;
                     case "DGI":
+                        sp.edit().putBoolean(DefineValue.IS_AGENT_DGI, true).commit();
                         menuStrings.add(getResources().getString(R.string.menu_item_title_tagih_agent));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_biller));
 //                        if (sp.getString(DefineValue.AGENT_TYPE, "").equalsIgnoreCase(getString(R.string.agent_type_col))) {
@@ -1188,6 +1189,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_upgrade));
                         break;
                     case "CTR":
+                        sp.edit().putBoolean(DefineValue.IS_AGENT_CTR, true).commit();
                         menuStrings.add(getResources().getString(R.string.menu_title_cash_collection));
                         menuDrawables.add(getResources().getDrawable(R.drawable.ic_cash_collection));
                         if (sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equalsIgnoreCase("LIMIT")) {

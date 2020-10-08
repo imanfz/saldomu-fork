@@ -3,6 +3,7 @@ package com.sgo.saldomu.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -21,8 +22,23 @@ class FavoriteActivity : BaseActivity() {
     private var isAgent: Boolean = false
     private var isAgentBDK: Boolean = false
     private var isAgentTOP: Boolean = false
+    private var isAgentDGI: Boolean = false
+    private var isAgentCTR: Boolean = false
     private var isFavB2B: Boolean = false
     private var isFavDGI: Boolean = false
+    private var isFavCTR: Boolean = false
+    private var PAGE_COUNTagent = 3
+    private var PAGE_COUNT = 2
+    private var PAGE_COUNT_FAV_B2B = 2
+    private var PAGE_COUNT_FAV_DGI = 1
+    private var PAGE_COUNT_FAV_CTR = 1
+    var tabTitlesAgent = arrayOf("Biller", "Setor Dan Tarik", "Transfer")
+    var tabTitlesAgentB2B = arrayOf("B2B")
+    var tabTitlesAgentDGI = arrayOf("Tagihan")
+    var tabTitlesAgentCTR = arrayOf("Cash Collection")
+
+
+    var page: Int = 0
     fun startBillerActivity(model: FavoriteModel) {
         val intent = Intent(this, BillerActivity::class.java)
         intent.putExtra(DefineValue.BILLER_TYPE, model.product_type)
@@ -116,9 +132,14 @@ class FavoriteActivity : BaseActivity() {
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false)
         isAgentBDK = sp.getBoolean(DefineValue.IS_AGENT_BDK, false)
         isAgentTOP = sp.getBoolean(DefineValue.IS_AGENT_TOP, false)
+        isAgentDGI = sp.getBoolean(DefineValue.IS_AGENT_DGI, false)
+        isAgentCTR = sp.getBoolean(DefineValue.IS_AGENT_CTR, false)
 
         isFavB2B = intent.getBooleanExtra(DefineValue.IS_FAV_B2B, false)
         isFavDGI = intent.getBooleanExtra(DefineValue.IS_FAV_DGI, false)
+        isFavCTR = intent.getBooleanExtra(DefineValue.IS_FAV_CTR, false)
+
+        countPageAgent()
 
         val builder = AlertDialog.Builder(this)
         builder.setView(R.layout.progress)
@@ -129,6 +150,24 @@ class FavoriteActivity : BaseActivity() {
 
         // Give the TabLayout the ViewPager
         tab_layout.setupWithViewPager(viewPager)
+
+    }
+
+    fun countPageAgent() {
+        if (isAgentTOP || isAgentBDK) {
+            PAGE_COUNTagent = PAGE_COUNTagent + 1
+            tabTitlesAgent = tabTitlesAgent + tabTitlesAgentB2B
+        }
+        if (isAgentDGI) {
+            PAGE_COUNTagent = PAGE_COUNTagent + 1
+            tabTitlesAgent = tabTitlesAgent + tabTitlesAgentDGI
+        }
+        if (isAgentCTR) {
+            PAGE_COUNTagent = PAGE_COUNTagent + 1
+            tabTitlesAgent = tabTitlesAgent + tabTitlesAgentCTR
+        }
+
+        Log.d(TAG,"count page agent : "+PAGE_COUNTagent)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -142,34 +181,43 @@ class FavoriteActivity : BaseActivity() {
     }
 
     inner class FavoritePagerAdapter(fm: FragmentManager, private val context: Context) : FragmentStatePagerAdapter(fm) {
-        private val PAGE_COUNTagent = 3
-        private val PAGE_COUNTagentB2B = 4
-        private val PAGE_COUNT = 2
-        private val PAGE_COUNT_FAV_B2B = 2
-        private val PAGE_COUNT_FAV_DGI = 1
-        private val tabTitlesAgent = arrayOf("Biller", "Setor Dan Tarik", "Transfer")
-        private val tabTitlesAgentB2B = arrayOf("Biller", "Setor Dan Tarik", "Transfer", "B2B")
+
         private val tabTitles = arrayOf("Biller", "Transfer")
         private val tabTitlesFavB2B = arrayOf(getString(R.string.scadm_topup), getString(R.string.scadm_denom))
         private val tabTitlesFavDGI = arrayOf(getString(R.string.menu_item_title_tagih_agent))
+        private val tabTitlesFavCTR = arrayOf(getString(R.string.menu_title_cash_collection))
         private val bilFragment: FavoriteFragment = FavoriteFragment().newInstance("BIL")
         private val bbsFragment: FavoriteFragment = FavoriteFragment().newInstance("BBS")
         private val trfFragment: FavoriteFragment = FavoriteFragment().newInstance("TRF")
         private val b2bFragment: FavoriteFragment = FavoriteFragment().newInstance("B2B")
-        private val tagihFragment: FavoriteFragment = FavoriteFragment().newInstanceB2B("DGI", "DGI")
+        private val dgiFragment: FavoriteFragment = FavoriteFragment().newInstanceB2B("DGI", "DGI")
+        private val ctrFragment: FavoriteFragment = FavoriteFragment().newInstanceB2B("CTR", "CTR")
         private val b2bTopUpFragment: FavoriteFragment = FavoriteFragment().newInstanceB2B("B2B", "TOP")
         private val b2bDenomFragment: FavoriteFragment = FavoriteFragment().newInstanceB2B("B2B", "BDK")
 
 
         override fun getCount(): Int {
             return if (isAgent) {
-                if (isAgentBDK || isAgentTOP)
+                if (isAgentBDK || isAgentTOP) {
                     if (isFavB2B)
                         PAGE_COUNT_FAV_B2B
+                    else {
+                        PAGE_COUNTagent
+                    }
+                }else
+                if (isAgentDGI) {
+                    if (isFavDGI)
+                        PAGE_COUNT_FAV_DGI
                     else
-                        PAGE_COUNTagentB2B
-                else if (isFavDGI)
-                    PAGE_COUNT_FAV_DGI
+                        PAGE_COUNTagent
+                }
+                else
+                if (isAgentCTR) {
+                    if (isFavCTR)
+                        PAGE_COUNT_FAV_CTR
+                    else
+                        PAGE_COUNTagent
+                }
                 else
                     PAGE_COUNTagent
             } else
@@ -184,14 +232,70 @@ class FavoriteActivity : BaseActivity() {
                             0 -> b2bTopUpFragment
                             else -> b2bDenomFragment
                         }
-                    } else if (isFavDGI) {
-                        tagihFragment
                     } else
                         when (position) {
                             0 -> bilFragment
                             1 -> bbsFragment
                             2 -> trfFragment
                             else -> b2bFragment
+                        }
+                }else
+                if (isAgentDGI) {
+                    if (isFavDGI) {
+                        dgiFragment
+                    } else
+                        if ((isAgentBDK || isAgentTOP)) {
+                            when (position) {
+                                0 -> bilFragment
+                                1 -> bbsFragment
+                                2 -> trfFragment
+                                3 -> b2bFragment
+                                else -> dgiFragment
+                            }
+                        } else
+                            when (position) {
+                                0 -> bilFragment
+                                1 -> bbsFragment
+                                2 -> trfFragment
+                                else -> dgiFragment
+                            }
+                }else
+                if (isAgentCTR) {
+                    if (isFavCTR) {
+                        ctrFragment
+                    } else if (PAGE_COUNTagent == 5) {
+                        if (isAgentTOP || isAgentBDK) {
+                            when (position) {
+                                0 -> bilFragment
+                                1 -> bbsFragment
+                                2 -> trfFragment
+                                3 -> b2bFragment
+                                else -> ctrFragment
+                            }
+                        } else {
+                            when (position) {
+                                0 -> bilFragment
+                                1 -> bbsFragment
+                                2 -> trfFragment
+                                3 -> dgiFragment
+                                else -> ctrFragment
+                            }
+                        }
+                    } else if (PAGE_COUNTagent == 6) {
+                        when (position) {
+                            0 -> bilFragment
+                            1 -> bbsFragment
+                            2 -> trfFragment
+                            3 -> b2bFragment
+                            4 -> dgiFragment
+                            else -> ctrFragment
+                        }
+                    } else
+                        when (position) {
+                            0 -> bilFragment
+                            1 -> bbsFragment
+                            2 -> trfFragment
+                            else -> ctrFragment
                         }
                 } else {
                     when (position) {
@@ -210,16 +314,37 @@ class FavoriteActivity : BaseActivity() {
 
         override fun getPageTitle(position: Int): CharSequence {
             // Generate title based on item position
-            return if (isAgent)
-                if (isAgentTOP || isAgentBDK || isFavDGI) {
+            return if (isAgent){
+                if (isAgentTOP || isAgentBDK) {
                     if (isFavB2B) {
                         tabTitlesFavB2B[position]
-                    } else if (isFavDGI) {
-                        tabTitlesFavDGI[position]
                     }
-                        tabTitlesAgentB2B[position]
+                    else
+                        tabTitlesAgent[position]
+                } else if (isAgentDGI) {
+                    if (isFavDGI) {
+                        tabTitlesFavDGI[position]
+//                    } else if (isAgentTOP || isAgentBDK) {
+//                        tabTitlesAgent[position] + tabTitlesAgentB2B[position] + tabTitlesFavDGI[position]
+                    } else
+                        tabTitlesAgent[position]
+                } else if (isAgentCTR) {
+                    if (isFavCTR) {
+                        tabTitlesFavCTR[position]
+//                    } else if (PAGE_COUNTagent == 5) {
+//                        if (isAgentBDK || isAgentTOP){
+//                            tabTitlesAgent[position] + tabTitlesAgentB2B[position] + tabTitlesFavCTR[position]
+//                        } else if(isAgentDGI){
+//                            tabTitlesAgent[position] + tabTitlesFavDGI[position] + tabTitlesFavCTR[position]
+//                        }
+                    } else
+                    {
+                        tabTitlesAgent[position]
+                    }
                 } else
                     tabTitlesAgent[position]
+            }
+
             else
                 tabTitles[position]
         }

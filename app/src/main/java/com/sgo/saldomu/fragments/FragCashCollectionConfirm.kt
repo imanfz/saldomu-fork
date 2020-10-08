@@ -272,7 +272,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
         params[WebParams.PRODUCT_TYPE] = product_type
         params[WebParams.CUSTOMER_ID] = cust_id
         params[WebParams.TX_FAVORITE_TYPE] = tx_favorite_type
-        params[WebParams.COMM_ID] = MyApiClient.COMM_ID_TAGIH
+        params[WebParams.COMM_ID] = commId
         params[WebParams.NOTES] = notes
         params[WebParams.DENOM_ITEM_ID] = ""
         Log.e("params fav CTR :", params.toString())

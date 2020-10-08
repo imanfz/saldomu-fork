@@ -687,5 +687,6 @@ public class DefineValue {
     public static String IS_FAV_DGI = "isFavDGI";
     public static String IS_FAV_CTR = "isFavCTR";
     public static String KEY = "key";
+    public static String ANCHOR_ID = "anchorID";
 }
 
