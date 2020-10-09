@@ -44,6 +44,7 @@ import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.BankCashoutModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.utils.NumberTextWatcherForThousand;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONArray;
@@ -151,6 +152,8 @@ public class FragCashOut extends BaseFragment {
         sp_bank = v.findViewById(R.id.cashout_spinner_nameBank);
         btnProcess = v.findViewById(R.id.cashout_btn_process);
 
+        etNominal.addTextChangedListener(new NumberTextWatcherForThousand(etNominal));
+
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.privacy_list, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -176,7 +179,7 @@ public class FragCashOut extends BaseFragment {
             if(InetHandler.isNetworkAvailable(getActivity())) {
 
                 String accNo = etAccNo.getText().toString();
-                String nominal = etNominal.getText().toString();
+                String nominal = NumberTextWatcherForThousand.trimCommaOfString(etNominal.getText().toString());
                 String accName = etAccName.getText().toString();
 
                 if (inputValidation()) {

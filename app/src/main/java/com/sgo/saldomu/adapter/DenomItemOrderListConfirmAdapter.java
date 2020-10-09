@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sgo.saldomu.Beans.DenomOrderListModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import java.util.ArrayList;
 
@@ -36,8 +38,9 @@ public class DenomItemOrderListConfirmAdapter extends RecyclerView.Adapter<Denom
     @Override
     public void onBindViewHolder(@NonNull holder holder, final int position) {
         holder.itemName.setText(itemList.get(position).getItemName());
-        holder.pulsa.setText(itemList.get(position).getPulsa());
         holder.itemID.setText(itemList.get(position).getItemID());
+        holder.pulsa.setText("Jumlah barang : "+ itemList.get(position).getPulsa());
+        holder.itemPrice.setText(("Harga per item : " +MyApiClient.CCY_VALUE + " " + CurrencyFormat.format(itemList.get(position).getItemPrice())));
     }
 
     @Override
@@ -47,13 +50,14 @@ public class DenomItemOrderListConfirmAdapter extends RecyclerView.Adapter<Denom
 
     class holder extends RecyclerView.ViewHolder{
 
-        TextView itemName, pulsa, itemID;
+        TextView itemName, pulsa, itemID, itemPrice;
 
         public holder(View itemView) {
             super(itemView);
             itemName = itemView.findViewById(R.id.adapter_denom_item_order_list_confirm_item_name);
             pulsa = itemView.findViewById(R.id.adapter_denom_item_order_list_confirm_pulsa);
             itemID = itemView.findViewById(R.id.adapter_denom_item_order_list_confirm_item_id);
+            itemPrice = itemView.findViewById(R.id.adapter_denom_item_order_list_confirm_item_price);
         }
     }
 }

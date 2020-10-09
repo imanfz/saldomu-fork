@@ -8,6 +8,7 @@ public class DenomOrderListModel {
     private String pulsa;
     private String itemID;
     private String itemName;
+    private String itemPrice;
 
     public DenomOrderListModel(String phoneNumber, String total){
         setPhoneNumber(phoneNumber);
@@ -20,6 +21,7 @@ public class DenomOrderListModel {
             setPulsa(obj.getString("item_qty"));
             setItemID(obj.getString("item_id"));
             setItemName(obj.getString("item_name"));
+            setItemPrice(obj.getString("item_price"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -56,5 +58,13 @@ public class DenomOrderListModel {
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
+    }
+
+    public String getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(String itemPrice) {
+        this.itemPrice = itemPrice;
     }
 }

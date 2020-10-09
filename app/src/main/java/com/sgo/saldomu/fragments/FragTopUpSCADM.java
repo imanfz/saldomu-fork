@@ -35,6 +35,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.utils.NumberTextWatcherForThousand;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONArray;
@@ -67,6 +68,7 @@ public class FragTopUpSCADM extends BaseFragment {
     private ArrayAdapter<String> arrayAdapter;
     private Switch favoriteSwitch;
     private EditText notesEditText;
+    NumberTextWatcherForThousand numberTextWatcherForThousand;
 
     @Nullable
     @Override
@@ -115,9 +117,14 @@ public class FragTopUpSCADM extends BaseFragment {
         initiateAdapterAndSpinner();
         getListBank();
 
+        et_jumlah.addTextChangedListener(new NumberTextWatcherForThousand(et_jumlah));
+        amount = NumberTextWatcherForThousand.trimCommaOfString(et_jumlah.getText().toString());
+
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                amount = NumberTextWatcherForThousand.trimCommaOfString(et_jumlah.getText().toString());
                 if (inputValidation()) {
                     if (!member_code.equals(userPhoneID)) {
                         member_code = NoHPFormat.formatTo62(et_membercode.getText().toString());
@@ -141,6 +148,8 @@ public class FragTopUpSCADM extends BaseFragment {
     }
 
     public boolean inputValidation() {
+
+        amount = NumberTextWatcherForThousand.trimCommaOfString(et_jumlah.getText().toString());
         if (et_membercode == null || et_membercode.getText().toString().isEmpty()) {
             et_membercode.requestFocus();
             et_membercode.setError(getString(R.string.member_code_validation));
@@ -149,7 +158,7 @@ public class FragTopUpSCADM extends BaseFragment {
             et_jumlah.requestFocus();
             et_jumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus));
             return false;
-        } else if ((Integer.parseInt(et_jumlah.getText().toString()) % 1000) != 0) {
+        } else if ((Integer.parseInt(amount) % 1000) != 0) {
             et_jumlah.requestFocus();
             et_jumlah.setError(getString(R.string.amount_validation_scadm));
             return false;
@@ -288,7 +297,7 @@ public class FragTopUpSCADM extends BaseFragment {
             params.put(WebParams.BANK_GATEWAY, selectedBankGateway);
             params.put(WebParams.PRODUCT_CODE, selectedProductCode);
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
-            params.put(WebParams.AMOUNT, et_jumlah.getText().toString());
+            params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.PAYMENT_REMARK, et_pesan.getText().toString());
             params.put(WebParams.MEMBER_REMARK, member_code);
 
@@ -377,7 +386,7 @@ public class FragTopUpSCADM extends BaseFragment {
         try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            extraSignature = member_id_scadm + selectedProductCode + MyApiClient.CCY_VALUE + et_jumlah.getText().toString();
+            extraSignature = member_id_scadm + selectedProductCode + MyApiClient.CCY_VALUE + amount;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOPUP_SCADM, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID_SCADM, member_id_scadm);
@@ -385,7 +394,7 @@ public class FragTopUpSCADM extends BaseFragment {
             params.put(WebParams.BANK_GATEWAY, selectedBankGateway);
             params.put(WebParams.PRODUCT_CODE, selectedProductCode);
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
-            params.put(WebParams.AMOUNT, et_jumlah.getText().toString());
+            params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.PAYMENT_REMARK, et_pesan.getText().toString());
 
             Timber.d("isi params confirm topup scadm:" + params.toString());

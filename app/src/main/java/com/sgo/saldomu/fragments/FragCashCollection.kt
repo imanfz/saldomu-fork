@@ -29,6 +29,7 @@ import com.sgo.saldomu.models.retrofit.AccountsModel
 import com.sgo.saldomu.models.retrofit.BBSTransModel
 import com.sgo.saldomu.models.retrofit.CashCollectionModel
 import com.sgo.saldomu.models.retrofit.jsonModel
+import com.sgo.saldomu.utils.NumberTextWatcherForThousand
 import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
 import kotlinx.android.synthetic.main.dialog_notification.*
@@ -155,7 +156,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
         btn_submit.setOnClickListener {
             if (inputValidation()) {
-                amount = et_amount_deposit.text.toString()
+                amount = NumberTextWatcherForThousand.trimCommaOfString(et_amount_deposit.getText().toString())
                 sentInsertC2R()
             }
         }
@@ -211,6 +212,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
 
                         detail_cash_collection.visibility = View.VISIBLE
                         layout_acc_amount.visibility = View.VISIBLE
+                        et_amount_deposit.addTextChangedListener(NumberTextWatcherForThousand(et_amount_deposit))
                         btn_submit.visibility = View.VISIBLE
                     }
                     WebParams.LOGOUT_CODE -> {

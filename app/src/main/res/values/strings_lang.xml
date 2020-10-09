@@ -386,7 +386,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="payfriends_hint_recipients">Input recipient</string>
     <string name="payfriends_hint_amount">Input Amount</string>
     <string name="payfriends_hint_message">Input message</string>
-    <string name="payfriends_amount" translatable="false">* example 200,000</string>
+    <string name="payfriends_amount" translatable="false">* example 200.000</string>
     <string name="payfriends_message">* max. 30 character</string>
     <string name="payfriends_number_recipients">* Number of Recipients</string>
     <string name="payfriends_otp">* max. 10 character</string>
@@ -444,7 +444,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="askformoney_hint_amount">Input Amount</string>
     <string name="askformoney_hint_message">Input Message</string>
     <string name="askformoney_hint_otp">Enter the OTP code that has been through the message</string>
-    <string name="askformoney_amount">* ex 200,000</string>
+    <string name="askformoney_amount">* ex 200.000</string>
     <string name="askformoney_message">* max. 50 character</string>
     <string name="askformoney_number_recipients">* Number of Request Recipients</string>
     <string name="askformoney_otp">* max. 6 character</string>
@@ -1253,7 +1253,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="upgrade_agent">Upgrade Agent</string>
     <string name="data_member_basic">Basic Data Member</string>
     <string name="data_verified_member">Data Verified Member</string>
-    <string name="message_upgrade_member">Do you want to upgrade to become a Gold member to be able to make transfers between your local users, request a balance and upgrade the balance limit to IDR 10,000,000?</string>
+    <string name="message_upgrade_member">Do you want to upgrade to become a Gold member to be able to make transfers between your local users, request a balance and upgrade the balance limit to IDR 10.000.000?</string>
     <string name="message_join_lkd">Do you want to become a member of Mandiri LKD to be able to continue Cash Deposit and Cash Withdrawal transactions?</string>
     <string name="message_upgrade_agent">Do you want to upgrade to become an agent?</string>
 

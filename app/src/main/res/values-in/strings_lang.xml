@@ -382,7 +382,7 @@
     <string name="payfriends_hint_recipients">Masukkan penerima</string>
     <string name="payfriends_hint_amount">Masukkan jumlah</string>
     <string name="payfriends_hint_message">Masukkan pesan</string>
-    <string name="payfriends_amount" translatable="false">* contoh 200,000</string>
+    <string name="payfriends_amount" translatable="false">* contoh 200.000</string>
     <string name="payfriends_message">* maks. 30 karakter</string>
     <string name="payfriends_number_recipients">* Jumlah Penerima</string>
     <string name="payfriends_otp">* maks. 10 karakter</string>
@@ -440,7 +440,7 @@
     <string name="askformoney_hint_amount">Masukkan jumlah</string>
     <string name="askformoney_hint_message">Masukkan pesan</string>
     <string name="askformoney_hint_otp">Masukkan kode OTP yang telah dikirimkan ke nomor ponsel Anda</string>
-    <string name="askformoney_amount">* contoh 200,000</string>
+    <string name="askformoney_amount">* contoh 200.000</string>
     <string name="askformoney_message">* maks. 50 karakter</string>
     <string name="askformoney_number_recipients">* Jumlah Penerima Permintaan</string>
     <string name="askformoney_otp">* maks. 6 karakter</string>
