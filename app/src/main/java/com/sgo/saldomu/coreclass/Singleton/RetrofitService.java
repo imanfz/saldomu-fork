@@ -1,6 +1,7 @@
 package com.sgo.saldomu.coreclass.Singleton;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -328,7 +329,7 @@ public class RetrofitService {
         String msgnya = uuidnya + dtime + BuildConfig.APP_ID + webServiceName + commid + userphoneid + extraSignature;
         String hash = SHA.SHA256(secretKey, msgnya);
 
-//        Log.d("okhttp retrofit", "msg : " + msgnya + ", hashed : " + hash + ", access key : " + secretKey);
+        Log.d("okhttp retrofit", "msg : " + msgnya + ", hashed : " + hash + ", access key : " + secretKey);
 
         HashMap<String, Object> params = new HashMap<>();
         params.put(WebParams.RC_UUID, uuidnya);

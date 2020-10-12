@@ -252,7 +252,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         } else if (item.getItemId() == R.id.cancel) {
             DataManager.getInstance().setListInvoice(invoiceDGIModelArrayList);
 
-            Fragment newFrag = new CancelInvoiceFragment();
+            Fragment newFrag = new ListCancelDGI();
             Bundle bundle2 = new Bundle();
             bundle2.putString(DefineValue.MEMBER_CODE, memberCode);
             bundle2.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);

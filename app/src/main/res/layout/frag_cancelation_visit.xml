@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/reason"
+        android:textSize="18sp"
+        android:layout_margin="@dimen/margin_10dp"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLength="100"
+        android:hint="@string/text_reason"
+        android:layout_margin="@dimen/margin_10dp"
+        android:id="@+id/et_reason"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/next_visit"
+        android:textSize="18sp"
+        android:layout_margin="@dimen/margin_10dp"/>
+    <TextView
+        android:id="@+id/tv_nextVisit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        android:padding="10dp"
+        android:textSize="14dp"
+        android:enabled="true"
+        android:text="@string/choose_date"/>
+
+
+    <Button
+        android:id="@+id/btnProses"
+        android:background="@drawable/rounded_background_blue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="@string/proses"
+        android:textColor="@color/white"/>
+</LinearLayout>

@@ -1602,6 +1602,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="please_choose_date">Mohon input tanggal</string>
     <string name="please_input_description">Mohon input deskripsi</string>
     <string name="please_choose_reason">Alasan belum dipilih</string>
+    <string name="please_fill_reason">Alasan dibutuhkan.</string>
 
     <string name="signature">Tanda Tangan</string>
     <string name="signature_cash_in">Tanda Tangan Penyetor</string>
@@ -1660,4 +1661,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="favorite_menu_title">Layanan <b><font>SALDOMU</font></b></string>
     <string name="favorite_menu_other">Layanan <b><font>SALDOMU</font></b> Lainnya</string>
     <string name="favorite_menu_message">Hilangkan satu menu sebelum menambahkan menu baru.</string>
+    <string name="cancelation_visit">Pembatalan Kunjungan</string>
+    <string name="cancelation_success">Pembatalan Berhasil!</string>
+    <string name="cancelation_transaction">Pembatalan Transaksi</string>
+    <string name="reason">Alasan</string>
 </resources>

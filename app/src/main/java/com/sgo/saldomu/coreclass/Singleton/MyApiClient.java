@@ -262,6 +262,7 @@ public class MyApiClient {
     public static String LINK_REQ_TOKEN_INVOICE_DGI;
     public static String LINK_CANCEL_SEARCH_DGI;
     public static String LINK_SET_MEMBER_LOC;
+    public static String LINK_CANCEL_VISIT_DGI;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
     public static String LINK_GOOGLE_MAPS_API_GEOCODE_BASE;
@@ -500,6 +501,7 @@ public class MyApiClient {
         LINK_SALDO_COLLECTOR = headaddressfinal + "Balancecollector/Retrieve";
         LINK_SALDO_CASH_COLLECTOR = headaddressfinal + "Balancecashcollector/Retrieve";
         LINK_SET_MEMBER_LOC = headaddressfinal + "invoice/Setmemberlocation/Invoke";
+        LINK_CANCEL_VISIT_DGI = headaddressfinal + "invoice/Canceltrxv2/Invoke";
 
         //OTP
         LINK_GET_OTP = headaddressfinal + "VerifySIMCardByOTP/Retrieve";
