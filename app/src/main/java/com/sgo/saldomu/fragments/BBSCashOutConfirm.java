@@ -64,7 +64,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
     private String userID, accessKey, comm_code, tx_product_code, source_product_type,
             source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             tx_id, amount, share_type, comm_id, benef_product_name,
-            userId_source, remark, source_product_name, transaksi, fee, totalAmount, additionalFee, benef_bank_code;
+            userId_source, remark, source_product_name, transaksi, fee, totalAmount, additionalFee, benef_bank_code, source_product_code;
     private Boolean retryToken = false;
 //    private TextView tv_additionalFee;
     private Switch favoriteSwitch;
@@ -131,6 +131,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
             userId_source = bundle.getString(DefineValue.USER_ID);
             remark = bundle.getString(DefineValue.REMARK);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
+            source_product_code = bundle.getString(DefineValue.SOURCE_PRODUCT_CODE);
 //            additionalFee = bundle.getString(DefineValue.ADDITIONAL_FEE,"0");
 
             benef_bank_code = bundle.getString(DefineValue.BENEF_BANK_CODE,"");
@@ -601,7 +602,7 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
         params.put(WebParams.TX_FAVORITE_TYPE, "BBS");
         params.put(WebParams.COMM_ID, comm_id);
         params.put(WebParams.NOTES, notesEditText.getText().toString());
-        params.put(WebParams.BENEF_BANK_CODE, source_product_name);
+        params.put(WebParams.BENEF_BANK_CODE, source_product_code);
         params.put(WebParams.SOURCE_BANK_CODE, tx_bank_code);
 
         Log.e("params ", params.toString());
