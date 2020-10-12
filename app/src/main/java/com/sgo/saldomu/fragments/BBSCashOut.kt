@@ -126,7 +126,7 @@ class BBSCashOut : BaseFragment() {
             noSource = NoHPFormat.formatTo08(bundle.getString(DefineValue.KEY_CODE, ""))
 
             if (bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, "") != "") {
-                noSource = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, "")
+                noSource = NoHPFormat.formatTo08(bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, ""))
             }
 
             defaultProductCode = ""
@@ -788,6 +788,7 @@ class BBSCashOut : BaseFragment() {
         mArgs.putBoolean(DefineValue.MANDIRI_LKD_VALIDATION, mandiriLKDValidation)
         mArgs.putBoolean(DefineValue.CODE_SUCCESS, codeSuccess)
         mArgs.putString(DefineValue.USER_ID, noSource)
+        mArgs.putString(DefineValue.SOURCE_PRODUCT_CODE, source_product_code)
         proses_btn.isEnabled = true
         cashOutHistory()
         val mFrag: Fragment = BBSCashOutConfirm()
