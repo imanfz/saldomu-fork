@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content_rl"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="90dp">
+    android:layout_height="96dp">
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -11,34 +10,35 @@
         android:layout_height="wrap_content" />
 
     <LinearLayout
-        android:layout_toRightOf="@+id/checkBox"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@+id/checkBox"
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/invoice_tv"
             android:layout_width="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp" />
 
         <Spinner
+            android:id="@+id/sp_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:id="@+id/sp_reason"
-            android:visibility="gone"
-            android:layout_gravity="left"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:visibility="gone" />
 
         <EditText
             android:id="@+id/reason_et"
-            android:background="@null"
-            android:visibility="gone"
-            android:layout_marginLeft="8dp"
-            android:maxLines="1"
-            android:hint="@string/text_reason"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@null"
+            android:hint="@string/text_reason"
+            android:maxLines="1"
+            android:visibility="gone" />
     </LinearLayout>
 
     <View

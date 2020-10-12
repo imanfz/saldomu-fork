@@ -13,7 +13,7 @@ public class InvoiceDGI {
     String due_date;
     String datetime;
     String app_id;
-    String active;
+    boolean selected;
 
 
 //    public InvoiceDGI(String buss_scheme_code, String doc_no, String doc_id, String amount, String remain_amount, String hold_amount,
@@ -88,8 +88,8 @@ public class InvoiceDGI {
         return app_id;
     }
 
-    public String getActive() {
-        return active;
+    public boolean getSelected() {
+        return selected;
     }
 
     public void setBuss_scheme_code(String buss_scheme_code) {
@@ -140,7 +140,7 @@ public class InvoiceDGI {
         this.app_id = app_id;
     }
 
-    public void setActive(String active) {
-        this.active = active;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
