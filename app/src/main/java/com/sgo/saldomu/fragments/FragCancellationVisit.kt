@@ -94,8 +94,8 @@ class FragCancellationVisit : BaseFragment() {
             params[WebParams.COMM_CODE] = commCode
             params[WebParams.MEMBER_CODE] = memberCode
             params[WebParams.NEXT_VISIT_DATE] = date_visit
-            params[WebParams.LATITUDE] = sp.getString(DefineValue.LATITUDE_UPDATED, "")
-            params[WebParams.LONGITUDE] = sp.getString(DefineValue.LONGITUDE_UPDATED, "")
+            params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
+            params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
             params[WebParams.REASON] = et_reason.text.toString()
             params[WebParams.APP_ID] = BuildConfig.APP_ID
             Timber.d("isi params cancel visit:$params")
