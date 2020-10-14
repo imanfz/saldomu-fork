@@ -253,10 +253,10 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
     }
 
     private fun showDialog(_object: HistoryModel, response: GetTrxStatusReportModel) {
-        if (_object.buss_scheme_code == "BIL") {
+        if (_object.buss_scheme_code == DefineValue.BIL) {
             showReportEspayBillerDialog(sp.getString(DefineValue.USER_NAME, ""), response)
             //
-        } else if (_object.buss_scheme_code == "CTA" || _object.buss_scheme_code == "CTR") {
+        } else if (_object.buss_scheme_code == DefineValue.CTA || _object.buss_scheme_code == DefineValue.CTR) {
             if (sp.getString(DefineValue.USERID_PHONE, "") == response.member_phone) {
                 showReportCTADialog(response)
             } else {
@@ -264,7 +264,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                 showReportCTADialog(response)
             }
 
-        } else if (_object.buss_scheme_code == "ATC") {
+        } else if (_object.buss_scheme_code == DefineValue.ATC) {
             Timber.d(sp.getString(DefineValue.USERID_PHONE, "")!! + "user_id")
             if (sp.getString(DefineValue.USERID_PHONE, "") == response.member_phone) {
                 showReportATCAgentDialog(response)
@@ -272,15 +272,15 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                 isReport = true
                 showReportATCMemberDialog(response)
             }
-        } else if (_object.buss_scheme_code == "EMO" || _object.buss_scheme_code.equals("TOP", ignoreCase = true)) {
+        } else if (_object.buss_scheme_code == DefineValue.EMO || _object.buss_scheme_code == DefineValue.TOPUP_B2B) {
             showReportEMODialog(response)
-        } else if (_object.buss_scheme_code == "BDK") {
+        } else if (_object.buss_scheme_code == DefineValue.DENOM_B2B) {
             showReportBDKDialog(response)
-        } else if (_object.buss_scheme_code == "DGI") {
+        } else if (_object.buss_scheme_code == DefineValue.DGI) {
             showReportCollectorDialog(response)
-        } else if (_object.buss_scheme_code == "SG3") {
+        } else if (_object.buss_scheme_code == DefineValue.SG3) {
             showReportSOFDialog(response)
-        } else if (_object.buss_scheme_code == "OR" || _object.buss_scheme_code == "ORP" || _object.buss_scheme_code == "IR" || _object.buss_scheme_code == "OC") run {
+        } else if (_object.buss_scheme_code == DefineValue.OR || _object.buss_scheme_code == DefineValue.ORP || _object.buss_scheme_code == DefineValue.IR || _object.buss_scheme_code == DefineValue.OC || _object.buss_scheme_code == DefineValue.AJC || _object.buss_scheme_code == DefineValue.AJD) run {
             showReportBillerDialog(response)
         }
     }
