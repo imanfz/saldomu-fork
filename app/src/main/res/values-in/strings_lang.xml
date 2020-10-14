@@ -1665,4 +1665,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="cancelation_success">Pembatalan Berhasil!</string>
     <string name="cancelation_transaction">Pembatalan Transaksi</string>
     <string name="reason">Alasan</string>
+    <string name="promo_code">Kode Promo : </string>
 </resources>

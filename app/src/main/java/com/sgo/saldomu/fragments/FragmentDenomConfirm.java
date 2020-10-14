@@ -79,7 +79,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     ArrayList<DenomListModel> itemList;
     ArrayList<DenomOrderListModel> orderList;
     String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount, ccyID, bankGateway, bankName, txID, remark,
-            apiKey, memberIdSACDM, memberName = "", commID, item_name = "", storeName, storeAddress, cust_id, product_type, tx_favorite_type, notes;
+            apiKey, memberIdSACDM, memberName = "", commID, item_name = "", storeName, storeAddress, cust_id, product_type, tx_favorite_type, notes, promoCode;
     int attempt, failed;
     Boolean isPIN = false, isFav = false;
 
@@ -123,6 +123,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             memberCode = bundle.getString(WebParams.MEMBER_REMARK, "");
             storeName = bundle.getString(WebParams.STORE_NAME, "");
             storeAddress = bundle.getString(WebParams.STORE_ADDRESS, "");
+            promoCode = bundle.getString(WebParams.PROMO_CODE, "");
             if (bundle.getBoolean(DefineValue.IS_FAVORITE) == true) {
                 isFav = true;
                 notes = bundle.getString(DefineValue.NOTES, "");
@@ -131,6 +132,13 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                 product_type = bundle.getString(DefineValue.PRODUCT_TYPE, "");
             }
         }
+
+        try {
+            JSONArray jArray = new JSONArray(promoCode);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         orderList = new ArrayList<>();
 
         itemListAdapter = new DenomItemOrderListConfirmAdapter(getActivity(), orderList);
@@ -400,6 +408,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         params.put(WebParams.PRODUCT_CODE, productCode);
         params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
         params.put(WebParams.MEMBER_REMARK, memberCode);
+        params.put(WebParams.PROMO_CODE, promoCode);
 
         Timber.d("isi params sent get denom invoke:" + params.toString());
 

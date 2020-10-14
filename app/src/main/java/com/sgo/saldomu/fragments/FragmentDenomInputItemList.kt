@@ -34,6 +34,7 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.fragment_denom_input_item_list.*
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -86,6 +87,10 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
                 frag_denom_input_item_list_field.scrollTo(0, 0)
                 val frag: Fragment = FragmentDenomConfirm()
 
+                var originalString = et_promo_code.text.toString();
+                var splittedString = originalString.split(",")
+                var jsonArray = JSONArray(splittedString)
+
                 val bundle = Bundle()
                 bundle.putString(WebParams.BANK_NAME, arguments!!.getString(WebParams.BANK_NAME, ""))
                 bundle.putString(WebParams.BANK_GATEWAY, arguments!!.getString(WebParams.BANK_GATEWAY, ""))
@@ -94,6 +99,7 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
                 bundle.putString(WebParams.MEMBER_REMARK, memberCode)
                 bundle.putString(WebParams.STORE_NAME, arguments!!.getString(WebParams.STORE_NAME, ""))
                 bundle.putString(WebParams.STORE_ADDRESS, arguments!!.getString(WebParams.STORE_ADDRESS, ""))
+                bundle.putString(WebParams.PROMO_CODE, jsonArray.toString())
                 if (arguments!!.getBoolean(DefineValue.IS_FAVORITE) == true) {
                     bundle.putBoolean(DefineValue.IS_FAVORITE, true)
                     bundle.putString(DefineValue.CUST_ID, arguments!!.getString(DefineValue.CUST_ID))

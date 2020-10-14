@@ -246,6 +246,7 @@ public class WebParams {
     public static String BILLER_PARENT_API_KEY= "biller_parent_api_key";
 
 	public static String PROMO_DATA= "promo_data";
+	public static String PROMO_CODE= "promo_codes";
     public static String NAME = "name";
     public static String BANNER_PIC = "banner_pic";
     public static String TARGET_URL = "target_url";
