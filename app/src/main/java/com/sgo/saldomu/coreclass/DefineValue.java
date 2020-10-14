@@ -589,7 +589,7 @@ public class DefineValue {
     public static String IS_DORMANT= "is_dormant";
     public static String ADDITIONAL_FEE= "additionalFee";
     public static String ENABLED_ADDITIONAL_FEE= "enabledAdditionalFee";
-    public static String SG3= "sg3";
+    public static String SG3= "SG3";
     public static String IS_INAPP= "is_inapp";
     public static String MEMBER_CODE_PG= "memberCodePG";
     public static String COMM_CODE_PG= "commCodePG";
@@ -688,5 +688,12 @@ public class DefineValue {
     public static String IS_FAV_CTR = "isFavCTR";
     public static String KEY = "key";
     public static String ANCHOR_ID = "anchorID";
+    public static String BIL = "BIL";
+    public static String OR = "OR";
+    public static String ORP = "ORP";
+    public static String IR = "IR";
+    public static String OC = "OC";
+    public static String AJC = "AJC";
+    public static String AJD = "AJD";
 }
 

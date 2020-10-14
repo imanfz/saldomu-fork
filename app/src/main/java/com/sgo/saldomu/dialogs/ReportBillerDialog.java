@@ -207,12 +207,12 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         TextView tv_trans_remark_sub = view.findViewById(R.id.dialog_report_transaction_remark_sub);
         TextView tv_trans_remark_topup = view.findViewById(R.id.dialog_report_transaction_remark_topup);
 
-        if (buss_scheme_code.equals("P2P") || type.equals(DefineValue.PAYFRIENDS)) {
+        if (buss_scheme_code.equals(DefineValue.P2P) || type.equals(DefineValue.PAYFRIENDS)) {
             layout_txId.setVisibility(View.GONE);
         }
 
 
-        if (buss_scheme_code.equalsIgnoreCase("TOP")) {
+        if (buss_scheme_code.equalsIgnoreCase(DefineValue.TOPUP_B2B)) {
             tv_trans_remark_topup.setVisibility(View.VISIBLE);
         }
 
@@ -222,7 +222,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         trx_id = args.getString(DefineValue.TX_ID);
 
         if (buss_scheme_code != null || type != null) {
-            if (buss_scheme_code.equalsIgnoreCase("CTA")) {
+            if (buss_scheme_code.equalsIgnoreCase(DefineValue.CTA)) {
                 if (type.equals(DefineValue.BBS_CASHIN)) {
                     stub.setLayoutResource(R.layout.layout_dialog_report_bbs_cashin);
                     View inflated = stub.inflate();
@@ -283,7 +283,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 //                    tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
-            } else if (buss_scheme_code.equalsIgnoreCase("CTR")) {
+            } else if (buss_scheme_code.equalsIgnoreCase(DefineValue.CTR)) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_ctr);
                 View inflated = stub.inflate();
                 inflated.setVisibility(View.VISIBLE);
@@ -336,7 +336,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee_value.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
-            } else if (buss_scheme_code.equalsIgnoreCase("ATC")) {
+            } else if (buss_scheme_code.equalsIgnoreCase(DefineValue.ATC)) {
                 if (type.equals(DefineValue.BBS_MEMBER_OTP)) {
                     View inflated;
                     stub.setLayoutResource(R.layout.layout_dialog_report_bbs_member_confirm);
@@ -431,7 +431,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 //                    tv_additionalFee.setText(args.getString(DefineValue.ADDITIONAL_FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
-            } else if (buss_scheme_code.equalsIgnoreCase("TOP")) {
+            } else if (buss_scheme_code.equalsIgnoreCase(DefineValue.TOPUP_B2B)) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_topup_b2b);
                 View inflated = stub.inflate();
 
@@ -474,7 +474,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_store_name.setText(args.getString(DefineValue.STORE_NAME));
                 tv_store_address.setText(args.getString(DefineValue.STORE_ADDRESS));
 
-            } else if (buss_scheme_code.equalsIgnoreCase("EMO")) {
+            } else if (buss_scheme_code.equalsIgnoreCase(DefineValue.EMO)) {
 //                if (type.equals(DefineValue.TOPUP) || type.equals(DefineValue.COLLECTION)) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_topup);
                 View inflated = stub.inflate();
@@ -525,7 +525,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_remark.setText(args.getString(DefineValue.REMARK));
                 }
 //                }
-            } else if (buss_scheme_code.equalsIgnoreCase("BIL")) {
+            } else if (buss_scheme_code.equalsIgnoreCase(DefineValue.BIL)) {
 //                if (type.equals(DefineValue.BILLER) || type.equals(DefineValue.BILLER_BPJS) || type.equals(DefineValue.BILLER_PLN)) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_biller);
                 View inflated = stub.inflate();
@@ -641,7 +641,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 //                            }
 //                        }
 //                }
-            } else if (buss_scheme_code.equals("P2P") || type.equals(DefineValue.PAYFRIENDS)) {
+            } else if (buss_scheme_code.equals(DefineValue.P2P) || type.equals(DefineValue.PAYFRIENDS)) {
                 //payfriend
 
                 stub.setLayoutResource(R.layout.layout_dialog_report_payfriends);
@@ -685,7 +685,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }
-            } else if (buss_scheme_code.equals("OR") || buss_scheme_code.equals("ORP")) {
+            } else if (buss_scheme_code.equals(DefineValue.OR) || buss_scheme_code.equals(DefineValue.ORP) || buss_scheme_code.equals(DefineValue.AJD)) {
 //                    laporan transfer yg out
 
                 stub.setLayoutResource(R.layout.layout_dialog_report_transaction);
@@ -724,7 +724,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 tv_detail.setText(detail);
 
-            } else if (buss_scheme_code.equals("IR")) {
+            } else if (buss_scheme_code.equals(DefineValue.IR) || buss_scheme_code.equals(DefineValue.AJC)) {
 //                  transfer in
                 stub.setLayoutResource(R.layout.layout_dialog_report_transaction);
                 View inflated = stub.inflate();
@@ -769,7 +769,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 tv_detail.setText(detail);
 
-            } else if (buss_scheme_code.equals("OC") || type.equals(DefineValue.CASHOUT)) {
+            } else if (buss_scheme_code.equals(DefineValue.OC) || type.equals(DefineValue.CASHOUT)) {
 //                    //cashout ke bank
 
 //                      View report_layout = view.findViewById(R.id.report_cashout);
@@ -803,7 +803,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }
-            } else if (buss_scheme_code.equals("BDK")) {
+            } else if (buss_scheme_code.equals(DefineValue.DENOM_B2B)) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_denom);
                 View inflated = stub.inflate();
                 inflated.setVisibility(View.VISIBLE);
@@ -846,7 +846,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_store_address.setText(args.getString(DefineValue.STORE_ADDRESS));
                 tv_agent_name.setText(args.getString(DefineValue.AGENT_NAME));
                 tv_agent_phone.setText(args.getString(DefineValue.AGENT_PHONE));
-            } else if (buss_scheme_code.equalsIgnoreCase("DGI")) {
+            } else if (buss_scheme_code.equalsIgnoreCase(DefineValue.DGI)) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_dgi);
                 View inflated = stub.inflate();
                 inflated.setVisibility(View.VISIBLE);
@@ -883,7 +883,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }
-            } else if (buss_scheme_code.equalsIgnoreCase("SG3")) {
+            } else if (buss_scheme_code.equalsIgnoreCase(DefineValue.SG3)) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_sof);
                 View inflated = stub.inflate();
                 inflated.setVisibility(View.VISIBLE);
