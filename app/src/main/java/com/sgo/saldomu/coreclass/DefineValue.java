@@ -695,5 +695,6 @@ public class DefineValue {
     public static String OC = "OC";
     public static String AJC = "AJC";
     public static String AJD = "AJD";
+    public static String IS_SHOW = "isShow";
 }
 

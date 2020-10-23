@@ -1660,7 +1660,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="favorite_menu_title">Layanan <b><font>SALDOMU</font></b></string>
     <string name="favorite_menu_other">Layanan <b><font>SALDOMU</font></b> Lainnya</string>
-    <string name="favorite_menu_message">Hilangkan satu menu sebelum menambahkan menu baru.</string>
+    <string name="favorite_menu_message">Ketuk salah satu menu untuk menghilangkan menu dari tampilan awal.</string>
     <string name="cancelation_visit">Pembatalan Kunjungan</string>
     <string name="cancelation_success">Pembatalan Berhasil!</string>
     <string name="cancelation_transaction">Pembatalan Transaksi</string>
