@@ -1667,7 +1667,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="favorite_menu_title"><b><font>SALDOMU</font></b> Service</string>
     <string name="favorite_menu_other">Other <b><font>SALDOMU</font></b> Service</string>
-    <string name="favorite_menu_message">Remove one of the service before adding another one.</string>
+    <string name="favorite_menu_message">Tap one of the menu to remove from home.</string>
     <string name="cancelation_visit">Visit Cancelation</string>
     <string name="cancelation_success">Cancelation Success!</string>
     <string name="cancelation_transaction">Transaction Cancelation</string>

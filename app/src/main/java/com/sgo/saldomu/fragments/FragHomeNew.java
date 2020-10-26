@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -73,6 +74,7 @@ import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.EditMenuModel;
 import com.sgo.saldomu.models.ShopCategory;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.CategoriesModel;
@@ -92,6 +94,7 @@ import java.util.HashMap;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
@@ -99,23 +102,12 @@ import timber.log.Timber;
  */
 public class FragHomeNew extends BaseFragmentMainPage {
     GridView GridView;
-    Button btn_beli, btn_topup;
+    Button btn_topup;
     TextView tv_balance;
     TextView tv_saldo;
     EditText input;
-    TextView tv_pulsa;
-    TextView tv_bpjs;
-    TextView tv_listrikPLN;
-    TextView tv_greetings;
-    View view_pulsa;
-    View view_bpjs;
-    View view_listrikPLN;
     View v;
-    View BPJS;
-    View PLS;
-    View TKN;
     ImageView refreshBtn;
-    ImageView img_greetings;
     private Animation frameAnimation;
     private SecurePreferences sp;
     ArrayList<ShopCategory> shopCategories = new ArrayList<>();
@@ -127,6 +119,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Biller_Type_Data_Model mBillerTypeDataVoucher;
     private Biller_Type_Data_Model mBillerTypeDataPDAM;
     private Biller_Type_Data_Model mBillerTypeDataDATA;
+    private EditMenuModel editMenuModel;
     private Realm realm;
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
@@ -135,11 +128,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
     ProgressBar gridview_progbar;
     ProgressBar progBanner;
     private CarouselView carouselView;
-    private ArrayList<PromoObject> listPromo = new ArrayList<>();
+    private final ArrayList<PromoObject> listPromo = new ArrayList<>();
 
-    private HashMap<String, Drawable> menuStringAndIconHashMap = new HashMap<>();
-    private ArrayList<String> menuStrings = new ArrayList<>();
-    private ArrayList<Drawable> menuDrawables = new ArrayList<>();
+    private final ArrayList<String> menuStrings = new ArrayList<>();
+    private final ArrayList<Drawable> menuDrawables = new ArrayList<>();
+
+    GridMenu gridMenuAdapter;
 
     private static final int RC_GPS_REQUEST = 1;
     private static final String BILLER_TYPE_CODE_PLS = "PLS";
@@ -204,9 +198,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
         agentSchemeCode = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
         agentBillerCode = sp.getString(DefineValue.AGENT_BILLER_CODES, "");
 
-        realm = RealmManager.getRealmBiller();
-
-        getRealmData();
+        getRealmBillerData();
+        getRealmCustomMenuData();
+        setMenuAdapter();
 
         CheckNotification();
 
@@ -220,11 +214,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         }
 
-
         if (isAgent) {
-            setupIconAndTitle();
-            GridMenu adapter = new GridMenu(getActivity(), menuStrings, menuDrawables);
-            GridView.setAdapter(adapter);
+            setupTitleMenu();
         } else {
             if (sp.getString(DefineValue.CATEGORY, null) == null) {
                 HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
@@ -279,9 +270,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                     Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                                 }
 
-                                setupIconAndTitle();
-                                GridMenu adapter = new GridMenu(getActivity(), menuStrings, menuDrawables);
-                                GridView.setAdapter(adapter);
+                                setupTitleMenu();
                             }
 
                             @Override
@@ -297,13 +286,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             }
                         });
             } else {
-                setupIconAndTitle();
-                GridMenu adapter = new GridMenu(getActivity(), menuStrings, menuDrawables);
-                GridView.setAdapter(adapter);
+                setupTitleMenu();
             }
-
         }
-
 
         btn_topup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -697,11 +682,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
 
             swSettingOnline.setOnCheckedChangeListener(null);
-            if (sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO)) {
-                swSettingOnline.setChecked(true);
-            } else {
-                swSettingOnline.setChecked(false);
-            }
+            swSettingOnline.setChecked(sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO));
             swSettingOnline.setOnCheckedChangeListener(switchListener);
         }
 
@@ -729,7 +710,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         getHelpList();
     }
 
-    private void getRealmData() {
+    private void getRealmBillerData() {
+        realm = RealmManager.getRealmBiller();
         mBillerTypeDataPLS = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "PLS")
                 .findFirst();
@@ -764,9 +746,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
     }
 
+    private void getRealmCustomMenuData() {
+        setRealmToDefault();
+        editMenuModel = realm.where(EditMenuModel.class).findFirst();
+    }
+
     public void getBalance(Boolean isAuto) {
-
-
         animateRefrestBtn(true);
 
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(MainPage.HOME_BALANCE_ANIMATE));
@@ -1008,94 +993,69 @@ public class FragHomeNew extends BaseFragmentMainPage {
         }
     }
 
-    private void setupIconAndTitle() {
+    private void setupTitleMenu() {
         if (getActivity() != null && isAdded()) {
-            if (isAgent) {
-                if (((sp.getString(DefineValue.IS_AGENT_TRX_CTA_MANDIRI_LP, "N").equalsIgnoreCase("Y"))
-                        || sp.getString(DefineValue.IS_AGENT_TRX_ATC_MANDIRI_LP, "N").equalsIgnoreCase("Y")) &&
-                        sp.getString(DefineValue.COMPANY_TYPE, "").equals(getString(R.string.LP))) {
-                    menuStrings.add(getResources().getString(R.string.menu_item_title_mandiri_lkd));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_mandiri));
-                }
-                checkSchemeCodeAgent();
-                if (sp.getString(DefineValue.IS_AGENT_TRX_REQ, "").equalsIgnoreCase("Y")) {
-                    menuStrings.add(getResources().getString(R.string.menu_item_title_trx_agent));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
-                }
-                menuStrings.add(getResources().getString(R.string.title_bbs_list_account_bbs));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_rekening_saya));
+            if (editMenuModel == null) {
+                if (isAgent) {
+                    if (((sp.getString(DefineValue.IS_AGENT_TRX_CTA_MANDIRI_LP, "N").equalsIgnoreCase("Y"))
+                            || sp.getString(DefineValue.IS_AGENT_TRX_ATC_MANDIRI_LP, "N").equalsIgnoreCase("Y")) &&
+                            sp.getString(DefineValue.COMPANY_TYPE, "").equals(getString(R.string.LP)))
+                        menuStrings.add(getResources().getString(R.string.menu_item_title_mandiri_lkd));
 
-                menuStrings.add(getResources().getString(R.string.menu_item_title_onprogress_agent));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_dalam_proses));
+                    checkSchemeCodeAgent();
+
+                    if (sp.getString(DefineValue.IS_AGENT_TRX_REQ, "").equalsIgnoreCase("Y"))
+                        menuStrings.add(getResources().getString(R.string.menu_item_title_trx_agent));
+
+                    menuStrings.add(getResources().getString(R.string.title_bbs_list_account_bbs));
+
+                    menuStrings.add(getResources().getString(R.string.menu_item_title_onprogress_agent));
 
 
-            } else {
-                checkSchemeCodeMember();
+                } else {
+                    checkSchemeCodeMember();
 //                menuStrings.add(getResources().getString(R.string.title_search_agent));
 //                menuDrawables.add(getResources().getDrawable(R.drawable.ic_search_agent));
 
 
-                menuStrings.add(getResources().getString(R.string.title_cash_out_member));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_permintaan_transaksi));
+                    menuStrings.add(getResources().getString(R.string.title_cash_out_member));
 
-                menuStrings.add(getResources().getString(R.string.menu_item_title_biller));
-                menuDrawables.add(getResources().getDrawable(R.drawable.ic_biller));
+                    menuStrings.add(getResources().getString(R.string.menu_item_title_biller));
 
-                if (mBillerTypeDataPLS != null) {
-                    menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
+                    if (mBillerTypeDataPLS != null)
+                        menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
+
+                    if (mBillerTypeDataDATA != null)
+                        menuStrings.add(getResources().getString(R.string.newhome_data));
+
+                    if (mBillerTypeDataBPJS != null)
+                        menuStrings.add(getResources().getString(R.string.newhome_bpjs));
+
+                    if (mBillerTypeDataTKN != null)
+                        menuStrings.add(getResources().getString(R.string.newhome_listrik_pln));
+
+                    if (mBillerTypeDataEMoney != null)
+                        menuStrings.add(getResources().getString(R.string.newhome_emoney));
+
+                    if (mBillerTypeDataGame != null)
+                        menuStrings.add(getResources().getString(R.string.newhome_game));
+
+                    if (mBillerTypeDataVoucher != null)
+                        menuStrings.add(getResources().getString(R.string.newhome_voucher));
+
+                    if (mBillerTypeDataPDAM != null)
+                        menuStrings.add(getResources().getString(R.string.newhome_pam));
+
                 }
+                menuStrings.add(getResources().getString(R.string.menu_item_title_ask_for_money));
 
-                if (mBillerTypeDataDATA != null) {
-                    menuStrings.add(getResources().getString(R.string.newhome_data));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_paket_data));
-                }
+                menuStrings.add(getResources().getString(R.string.menu_item_title_report));
 
-                if (mBillerTypeDataBPJS != null) {
-                    menuStrings.add(getResources().getString(R.string.newhome_bpjs));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_bpjs));
-                }
+                menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
 
-                if (mBillerTypeDataTKN != null) {
-                    menuStrings.add(getResources().getString(R.string.newhome_listrik_pln));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
-                }
-
-                if (mBillerTypeDataEMoney != null) {
-                    menuStrings.add(getResources().getString(R.string.newhome_emoney));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
-                }
-
-                if (mBillerTypeDataGame != null) {
-                    menuStrings.add(getResources().getString(R.string.newhome_game));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_game));
-                }
-
-                if (mBillerTypeDataVoucher != null) {
-                    menuStrings.add(getResources().getString(R.string.newhome_voucher));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_voucher));
-                }
-
-                if (mBillerTypeDataPDAM != null) {
-                    menuStrings.add(getResources().getString(R.string.newhome_pam));
-                    menuDrawables.add(getResources().getDrawable(R.drawable.ic_pdam));
-                }
-
-            }
-            menuStrings.add(getResources().getString(R.string.menu_item_title_ask_for_money));
-            menuDrawables.add(getResources().getDrawable(R.drawable.ic_minta_saldo));
-
-            menuStrings.add(getResources().getString(R.string.menu_item_title_report));
-            menuDrawables.add(getResources().getDrawable(R.drawable.ic_laporan));
-
-            menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
-            menuDrawables.add(getResources().getDrawable(R.drawable.ic_history));
-
-            menuStrings.add(getResources().getString(R.string.menu_item_lending));
-            menuDrawables.add(getResources().getDrawable(R.drawable.ic_lending));
-
-            menuStrings.add(getResources().getString(R.string.more));
-            menuDrawables.add(getResources().getDrawable(R.drawable.ic_more));
+                menuStrings.add(getResources().getString(R.string.menu_item_lending));
+            } else
+                getTitleMenu();
 
 //            if (BuildConfig.FLAVOR.equalsIgnoreCase("development")) {
 //                menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
@@ -1103,6 +1063,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //            }
         }
 
+        menuStrings.add(getResources().getString(R.string.more));
+        setupIconMenu();
 //        menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));
 //        menuDrawables.add(getResources().getDrawable(R.drawable.ic_transfer_saldo));
     }
@@ -1115,41 +1077,32 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 switch (obj) {
                     case BILLER_TYPE_CODE_PLS:
                     case BILLER_TYPE_CODE_HP:
-                        if (!menuStrings.contains(getResources().getString(R.string.menu_item_title_pulsa_agent))) {
+                        if (!menuStrings.contains(getResources().getString(R.string.menu_item_title_pulsa_agent)))
                             menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_pulsa));
-                        }
                         break;
                     case BILLER_TYPE_CODE_TKN:
                     case BILLER_TYPE_CODE_PLN:
                         if (!menuStrings.contains(getResources().getString(R.string.newhome_listrik_pln))) {
                             menuStrings.add(getResources().getString(R.string.newhome_listrik_pln));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_listrik_pln));
                         }
                         break;
                     case BILLER_TYPE_CODE_DATA:
                         menuStrings.add(getResources().getString(R.string.newhome_data));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_paket_data));
                         break;
                     case BILLER_TYPE_CODE_BPJS:
                         menuStrings.add(getResources().getString(R.string.newhome_bpjs));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_bpjs));
                         break;
                     case BILLER_TYPE_CODE_EMONEY:
                         menuStrings.add(getResources().getString(R.string.newhome_emoney));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_emoney));
                         break;
                     case BILLER_TYPE_CODE_GAME:
                         menuStrings.add(getResources().getString(R.string.newhome_game));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_game));
                         break;
                     case BILLER_TYPE_CODE_VOUCHER:
                         menuStrings.add(getResources().getString(R.string.newhome_voucher));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_voucher));
                         break;
                     case BILLER_TYPE_CODE_PDAM:
                         menuStrings.add(getResources().getString(R.string.newhome_pam));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_pdam));
                         break;
                 }
             }
@@ -1168,45 +1121,34 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 switch (objs) {
                     case "ATC":
                         menuStrings.add(getResources().getString(R.string.cash_out));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_tarik_tunai));
                         break;
                     case "CTA":
                         menuStrings.add(getResources().getString(R.string.cash_in));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_setor_tunai));
                         break;
                     case "DGI":
                         sp.edit().putBoolean(DefineValue.IS_AGENT_DGI, true).commit();
                         menuStrings.add(getResources().getString(R.string.menu_item_title_tagih_agent));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_biller));
 //                        if (sp.getString(DefineValue.AGENT_TYPE, "").equalsIgnoreCase(getString(R.string.agent_type_col))) {
-                        if (sp.getString(DefineValue.USE_DEPOSIT_COL, "").equalsIgnoreCase("LIMIT")) {
+                        if (sp.getString(DefineValue.USE_DEPOSIT_COL, "").equalsIgnoreCase("LIMIT"))
                             menuStrings.add(getResources().getString(R.string.menu_item_title_collector_history));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_history_collector));
-                        }
                         break;
                     case "UPG":
                         menuStrings.add(getResources().getString(R.string.menu_item_title_upgrade_member));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_upgrade));
                         break;
                     case "CTR":
                         sp.edit().putBoolean(DefineValue.IS_AGENT_CTR, true).commit();
                         menuStrings.add(getResources().getString(R.string.menu_title_cash_collection));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_cash_collection));
-                        if (sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equalsIgnoreCase("LIMIT")) {
+                        if (sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equalsIgnoreCase("LIMIT"))
                             menuStrings.add(getResources().getString(R.string.menu_item_title_cash_collector_history));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_history_collector));
-                        }
                         break;
                     case "BIL":
                         checkBillerCodeAgent();
                         menuStrings.add(getResources().getString(R.string.menu_item_title_biller));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_biller));
                         break;
                     case "TOP":
                         sp.edit().putBoolean(DefineValue.IS_AGENT_TOP, true).commit();
                         if (!isShowB2b) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_menu_b2b));
                             isShowB2b = true;
                         }
                         break;
@@ -1214,7 +1156,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         sp.edit().putBoolean(DefineValue.IS_AGENT_BDK, true).commit();
                         if (!isShowB2b) {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
-                            menuDrawables.add(getResources().getDrawable(R.drawable.ic_menu_b2b));
                             isShowB2b = true;
                         }
                         break;
@@ -1235,11 +1176,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 switch (objs) {
                     case "ATC":
                         menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_in));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_tarik_tunai));
                         break;
                     case "CTA":
                         menuStrings.add(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_out));
-                        menuDrawables.add(getResources().getDrawable(R.drawable.ic_setor_tunai));
                         break;
                     case "BIL":
                         break;
@@ -1322,7 +1261,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private IntentFilter filter = new IntentFilter(BalanceService.INTENT_ACTION_BALANCE);
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1348,18 +1287,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
                     Timber.d("Receiver AgentShop " + sp.getString(DefineValue.AGENT_SHOP_CLOSED, ""));
                     swSettingOnline.setOnCheckedChangeListener(null);
-                    if (sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO)) {
-                        swSettingOnline.setChecked(true);
-                    } else {
-                        swSettingOnline.setChecked(false);
-                    }
+                    swSettingOnline.setChecked(sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO));
                     swSettingOnline.setOnCheckedChangeListener(switchListener);
                 }
             }
         }
     };
 
-    private BroadcastReceiver refBtnReciever = new BroadcastReceiver() {
+    private final BroadcastReceiver refBtnReciever = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1374,11 +1309,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
 
             swSettingOnline.setOnCheckedChangeListener(null);
-            if (sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO)) {
-                swSettingOnline.setChecked(true);
-            } else {
-                swSettingOnline.setChecked(false);
-            }
+            swSettingOnline.setChecked(sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO));
             swSettingOnline.setOnCheckedChangeListener(switchListener);
         }
 
@@ -1548,17 +1479,113 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private void openCustomizeMenu() {
-        CustomizeFavoriteFragment customizeFavoriteFragment = new CustomizeFavoriteFragment(new CustomizeFavoriteFragment.OnClick(){
-            @Override
-            public void onEditTap() {
-
+        if (editMenuModel == null) {
+            setRealmToDefault();
+            realm.beginTransaction();
+            for (int i = 0; i < menuStrings.size() - 1; i++) {
+                editMenuModel = realm.createObject(EditMenuModel.class);
+                editMenuModel.setTitle(menuStrings.get(i));
+                editMenuModel.setIsShow(true);
             }
 
-            @Override
-            public void onFeatureTap(boolean isEdit, int id) {
+            if (realm.isInTransaction())
+                realm.commitTransaction();
+        }
+        CustomizeMenuFragment customizeMenuFragment = new CustomizeMenuFragment(this::setupTitleMenu);
+        customizeMenuFragment.show(getFragManager(), "CustomizeMenuFragment");
+    }
 
+    private void setRealmToDefault() {
+        if (Realm.getDefaultConfiguration() != null) {
+            realm = Realm.getInstance(Realm.getDefaultConfiguration());
+        }
+    }
+
+    private void setMenuAdapter() {
+        gridMenuAdapter = new GridMenu(getContext(), menuStrings, menuDrawables);
+        GridView.setAdapter(gridMenuAdapter);
+    }
+
+    private void getTitleMenu() {
+        setRealmToDefault();
+        RealmResults<EditMenuModel> realmResults = realm.where(EditMenuModel.class).equalTo(DefineValue.IS_SHOW, true).findAll();
+        if (realmResults != null) {
+            menuStrings.clear();
+            for (int i = 0; i < realmResults.size(); i++) {
+                menuStrings.add(realmResults.get(i).getTitle());
             }
-        });
-        customizeFavoriteFragment.show(getFragManager(),"CustomizeMenuFragment");
+        }
+        setupIconMenu();
+    }
+
+    private void setupIconMenu() {
+        menuDrawables.clear();
+        for (int i = 0; i < menuStrings.size(); i++) {
+            menuDrawables.add(ResourcesCompat.getDrawable(getResources(), getImageMenu(menuStrings.get(i)), null));
+        }
+        gridMenuAdapter.notifyDataSetChanged();
+    }
+
+    public int getImageMenu(String titleMenu) {
+        if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_mandiri_lkd)))
+            return R.drawable.ic_mandiri;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_trx_agent)))
+            return R.drawable.ic_permintaan_transaksi;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
+            return R.drawable.ic_rekening_saya;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_onprogress_agent)))
+            return R.drawable.ic_dalam_proses;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.cash_out)))
+            return R.drawable.ic_tarik_tunai;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.cash_in)))
+            return R.drawable.ic_setor_tunai;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_tagih_agent)))
+            return R.drawable.ic_biller;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_collector_history)))
+            return R.drawable.ic_history_collector;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_upgrade_member)))
+            return R.drawable.ic_upgrade;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_title_cash_collection)))
+            return R.drawable.ic_cash_collection;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_cash_collector_history)))
+            return R.drawable.ic_history_collector;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_pulsa_agent)))
+            return R.drawable.ic_pulsa;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.newhome_listrik_pln)))
+            return R.drawable.ic_listrik_pln;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.newhome_data)))
+            return R.drawable.ic_paket_data;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.newhome_bpjs)))
+            return R.drawable.ic_bpjs;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.newhome_emoney)))
+            return R.drawable.ic_emoney;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.newhome_game)))
+            return R.drawable.ic_game;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.newhome_voucher)))
+            return R.drawable.ic_voucher;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.newhome_pam)))
+            return R.drawable.ic_pdam;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_biller)))
+            return R.drawable.ic_biller;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_scadm)))
+            return R.drawable.ic_menu_b2b;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_in)))
+            return R.drawable.ic_tarik_tunai;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_out)))
+            return R.drawable.ic_setor_tunai;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+            return R.drawable.ic_permintaan_transaksi;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_ask_for_money)))
+            return R.drawable.ic_minta_saldo;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_report)))
+            return R.drawable.ic_laporan;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_history_detail)))
+            return R.drawable.ic_history;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_lending)))
+            return R.drawable.ic_lending;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.more)))
+            return R.drawable.ic_more;
+        else
+            return R.drawable.ic_x;
     }
 }
