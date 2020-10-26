@@ -24,7 +24,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dp"
                 android:background="#bcbcbc">
 
             </View>
@@ -47,56 +46,56 @@
 
             </LinearLayout>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/submit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/line1"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
-                app:cardBackgroundColor="@color/colorPrimary"
-                app:cardCornerRadius="6dp">
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:id="@+id/submit"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@+id/line1"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_marginTop="16dp"-->
+<!--                android:visibility="gone"-->
+<!--                app:cardBackgroundColor="@color/colorPrimary"-->
+<!--                app:cardCornerRadius="6dp">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:lineSpacingExtra="3sp"
-                    android:paddingLeft="24dp"
-                    android:paddingTop="4dp"
-                    android:paddingRight="24dp"
-                    android:paddingBottom="4dp"
-                    android:text="@string/save"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:visibility="visible" />
-            </androidx.cardview.widget.CardView>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:lineSpacingExtra="3sp"-->
+<!--                    android:paddingLeft="24dp"-->
+<!--                    android:paddingTop="4dp"-->
+<!--                    android:paddingRight="24dp"-->
+<!--                    android:paddingBottom="4dp"-->
+<!--                    android:text="@string/save"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="10sp"-->
+<!--                    android:visibility="visible" />-->
+<!--            </androidx.cardview.widget.CardView>-->
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/line1"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="16dp"
-                app:cardBackgroundColor="@color/colorPrimary"
-                app:cardCornerRadius="6dp">
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:id="@+id/edit"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@+id/line1"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_marginTop="16dp"-->
+<!--                app:cardBackgroundColor="@color/colorPrimary"-->
+<!--                app:cardCornerRadius="6dp">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:lineSpacingExtra="3sp"
-                    android:paddingLeft="24dp"
-                    android:paddingTop="4dp"
-                    android:paddingRight="24dp"
-                    android:paddingBottom="4dp"
-                    android:text="@string/edit"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:visibility="visible" />
-            </androidx.cardview.widget.CardView>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:lineSpacingExtra="3sp"-->
+<!--                    android:paddingLeft="24dp"-->
+<!--                    android:paddingTop="4dp"-->
+<!--                    android:paddingRight="24dp"-->
+<!--                    android:paddingBottom="4dp"-->
+<!--                    android:text="@string/edit"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="10sp"-->
+<!--                    android:visibility="visible" />-->
+<!--            </androidx.cardview.widget.CardView>-->
 
             <TextView
                 android:id="@+id/description_text_view"
@@ -124,7 +123,7 @@
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/current_favorite"
+                    android:id="@+id/current_menu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -147,7 +146,7 @@
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/edit_favorite"
+                    android:id="@+id/sub_menu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"

@@ -17,6 +17,7 @@ import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
+import com.sgo.saldomu.models.EditMenuModel;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -78,7 +79,7 @@ public class RealmManager {
     private static class BillerModule {
     }
 
-    @RealmModule(classes = { List_BBS_City.class, AgentDetail.class, AgentServiceDetail.class, MerchantCommunityList.class})
+    @RealmModule(classes = { List_BBS_City.class, AgentDetail.class, AgentServiceDetail.class, MerchantCommunityList.class, EditMenuModel.class})
     private static class AppModule {
     }
 
@@ -110,6 +111,7 @@ public class RealmManager {
                 .schemaVersion(BuildConfig.REALM_SCHEME_APP_VERSION)
                 .modules(new AppModule())
                 .migration(new AppRealMigration())
+                .deleteRealmIfMigrationNeeded()
                 .build();
 
         Realm.setDefaultConfiguration(config);
