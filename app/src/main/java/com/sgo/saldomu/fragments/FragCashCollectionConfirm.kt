@@ -96,6 +96,7 @@ class FragCashCollectionConfirm : BaseFragment(), ReportBillerDialog.OnDialogOkC
 
         dialog_cash_collection_btn_ok.setOnClickListener {
             if (inputValidation()) {
+                dialog_cash_collection_btn_ok.setEnabled(false)
                 otp = et_otp_cashcollection.text.toString()
                 if (isFav==true) {
                     onSaveToFavorite()

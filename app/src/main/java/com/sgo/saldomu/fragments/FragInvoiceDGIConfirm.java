@@ -197,11 +197,13 @@ public class FragInvoiceDGIConfirm extends BaseFragment implements ReportBillerD
     private Button.OnClickListener btnConfirmListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (inputValidation())
+            if (inputValidation()){
+                btn_confirm.setEnabled(false);
                 if (isFav) {
                     onSaveToFavorite();
                 } else
                     confirmToken();
+            }
         }
     };
 

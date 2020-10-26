@@ -184,15 +184,16 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                             String.valueOf(damount), String.valueOf(dfee), String.valueOf(dtotal_amount), bank_name);
                 } else if (bank_gateway.equalsIgnoreCase("Y")) {
                     if (product_code.equalsIgnoreCase("SCASH")) {
+                        btn_next.setEnabled(false);
                         if (isFav == true) {
                             onSaveToFavorite();
                         } else {
                             confirmToken();
-//                            btn_next.setEnabled(true);
                         }
 
                     } else {
                         if (inputValidation()) {
+                            btn_next.setEnabled(false);
                             if (isFav == true) {
                                 onSaveToFavorite();
                             } else

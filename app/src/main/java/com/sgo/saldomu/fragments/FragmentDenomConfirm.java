@@ -169,6 +169,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                submitBtn.setEnabled(false);
 //                sentInquiry();
                 if (isFav) {
                     onSaveToFavorite();

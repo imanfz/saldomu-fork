@@ -57,6 +57,7 @@
         android:textSize="20sp" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/adapter_denom_item_order_list_confirm_item_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
