@@ -1053,7 +1053,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                 menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
 
-                menuStrings.add(getResources().getString(R.string.menu_item_lending));
+//                menuStrings.add(getResources().getString(R.string.menu_item_lending));
             } else
                 getTitleMenu();
 
