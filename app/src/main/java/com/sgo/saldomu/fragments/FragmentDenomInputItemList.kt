@@ -85,11 +85,8 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
         frag_denom_input_item_submit_btn.setOnClickListener {
             if (checkInput()) {
                 frag_denom_input_item_list_field.scrollTo(0, 0)
-                val frag: Fragment = FragmentDenomConfirm()
-
-                var originalString = et_promo_code.text.toString();
-                var splittedString = originalString.split(",")
-                var jsonArray = JSONArray(splittedString)
+//                val frag: Fragment = FragmentDenomConfirm()
+                val frag: Fragment = FragmentDenomInputPromoCode()
 
                 val bundle = Bundle()
                 bundle.putString(WebParams.BANK_NAME, arguments!!.getString(WebParams.BANK_NAME, ""))
@@ -99,8 +96,7 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
                 bundle.putString(WebParams.MEMBER_REMARK, memberCode)
                 bundle.putString(WebParams.STORE_NAME, arguments!!.getString(WebParams.STORE_NAME, ""))
                 bundle.putString(WebParams.STORE_ADDRESS, arguments!!.getString(WebParams.STORE_ADDRESS, ""))
-                bundle.putString(WebParams.PROMO_CODE, jsonArray.toString())
-                if (arguments!!.getBoolean(DefineValue.IS_FAVORITE) == true) {
+                if (arguments!!.getBoolean(DefineValue.IS_FAVORITE)) {
                     bundle.putBoolean(DefineValue.IS_FAVORITE, true)
                     bundle.putString(DefineValue.CUST_ID, arguments!!.getString(DefineValue.CUST_ID))
                     bundle.putString(DefineValue.NOTES, arguments!!.getString(DefineValue.NOTES))

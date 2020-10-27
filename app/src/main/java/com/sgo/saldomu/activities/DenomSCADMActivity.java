@@ -16,8 +16,8 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragListDenomSCADM;
-import com.sgo.saldomu.fragments.FragTopUpSCADM;
 import com.sgo.saldomu.fragments.FragmentDenomConfirm;
+import com.sgo.saldomu.fragments.FragmentDenomInputPromoCode;
 import com.sgo.saldomu.fragments.InputPartnerCode;
 import com.sgo.saldomu.widgets.BaseActivity;
 
@@ -150,11 +150,10 @@ public class DenomSCADMActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         Fragment fragment = fragmentManager.findFragmentById(R.id.denom_scadm_content);
-        if (fragment instanceof FragmentDenomConfirm) {
+        if (fragment instanceof FragmentDenomInputPromoCode || fragment instanceof FragmentDenomConfirm ) {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.remove(fragment).commit();
-        } else {
+        } else
             super.onBackPressed();
-        }
     }
 }
