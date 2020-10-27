@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.DenomSCADMActivity
 import com.sgo.saldomu.coreclass.DefineValue
@@ -28,12 +29,16 @@ class InputPartnerCode : BaseFragment() {
             et_partner_code.setText(arguments!!.getString(DefineValue.CUST_ID))
         else
             et_partner_code.setText(userPhoneID)
+
+        if (BuildConfig.FLAVOR.equals("development", ignoreCase = true))
+            et_partner_code.setText("toko 006")
+
         et_partner_code.onRightDrawableClicked { it.text.clear() }
 
-        favorite_switch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView: CompoundButton?, isChecked: Boolean ->
+        favorite_switch.setOnCheckedChangeListener { buttonView: CompoundButton?, isChecked: Boolean ->
             notes_edit_text.visibility = if (isChecked) View.VISIBLE else View.GONE
             notes_edit_text.isEnabled = isChecked
-        })
+        }
 
         btn_next.setOnClickListener {
 //            if (et_partner_code.text!!.isNotEmpty()) {

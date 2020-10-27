@@ -1672,5 +1672,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="cancelation_success">Cancelation Success!</string>
     <string name="cancelation_transaction">Transaction Cancelation</string>
     <string name="reason">Reason</string>
-    <string name="promo_code">Promo Code : </string>
+    <string name="promo_code">Promo Code</string>
+    <string name="add_promo_code">Add Promo</string>
+    <string name="invalid_promo_code">Promo Code not Complete</string>
 </resources>
