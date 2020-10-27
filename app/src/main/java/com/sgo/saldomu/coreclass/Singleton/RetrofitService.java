@@ -341,7 +341,7 @@ public class RetrofitService {
         String language = LocaleManager.getLanguagePref();
         if (language.equals(DefineValue.LANGUAGE_CODE_IND))
             language = "id";
-        params.put(WebParams.LANG, language);
+        params.put(WebParams.LANG, "ID");
 
         return params;
     }
@@ -367,7 +367,7 @@ public class RetrofitService {
         String language = LocaleManager.getLanguagePref();
         if (language.equals("in"))
             language = "ID";
-        params.put(WebParams.LANG, language);
+        params.put(WebParams.LANG, "ID");
 
         return params;
     }

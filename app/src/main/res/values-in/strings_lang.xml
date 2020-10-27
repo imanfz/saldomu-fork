@@ -40,6 +40,7 @@
     <string name="share_options">Pilihan pembagian</string>
     <string name="from">Dari</string>
     <string name="to">Ke</string>
+    <string name="more">Lainnya</string>
     <string name="load_more">Memuat Lebih</string>
     <string name="empty">Kosong</string>
     <string name="scash" translatable="false">S-Cash</string>
