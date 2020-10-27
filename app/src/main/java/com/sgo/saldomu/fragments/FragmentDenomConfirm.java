@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -63,6 +64,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -124,7 +126,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             storeName = bundle.getString(WebParams.STORE_NAME, "");
             storeAddress = bundle.getString(WebParams.STORE_ADDRESS, "");
             promoCode = bundle.getString(WebParams.PROMO_CODE, "");
-            if (bundle.getBoolean(DefineValue.IS_FAVORITE) == true) {
+            if (bundle.getBoolean(DefineValue.IS_FAVORITE)) {
                 isFav = true;
                 notes = bundle.getString(DefineValue.NOTES, "");
                 cust_id = bundle.getString(DefineValue.CUST_ID, "");
@@ -916,7 +918,14 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     }
 
     void backToDenomSACDM() {
-        getActivity().onBackPressed();
+//        getActivity().onBackPressed();
+        List<Fragment> frags = getFragmentManager().getFragments();
+        for (Fragment f : frags) {
+            if (f.getTag().equals(DenomSCADMActivity.DENOM_PAYMENT)){
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.remove(f).commit();
+            }
+        }
         getFragManager().popBackStack(DenomSCADMActivity.DENOM_PAYMENT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }
