@@ -167,7 +167,6 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
             notesEditText.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             notesEditText.setEnabled(isChecked);
         });
-
     }
 
     Button.OnClickListener backListener = new Button.OnClickListener() {
@@ -583,12 +582,9 @@ public class BBSCashOutConfirm extends BaseFragment implements ReportBillerDialo
         Fragment mFrag = new BBSCashOut();
         Bundle args = new Bundle();
         args.putString(DefineValue.TRANSACTION, transaksi);
-//            args.putString(DefineValue.TX_STATUS, tx_status);
+//      args.putString(DefineValue.TX_STATUS, tx_status);
         mFrag.setArguments(args);
         getFragmentManager().popBackStack(getFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        getFragmentManager().beginTransaction()
-                .replace(R.id.bbs_content, mFrag, BBSTransaksiAmount.TAG)
-                .addToBackStack(TAG).commit();
     }
 
     private void onSaveToFavorite() {

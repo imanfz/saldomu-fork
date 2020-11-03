@@ -110,7 +110,6 @@ public class FragDataC2A extends BaseFragment {
     private Integer CityAutocompletePos = -1;
     SignaturePad signaturePad;
     ImageButton ibRefresh;
-    Boolean signed = false;
     File photoFile;
     MultipartBody.Part photoFilePart;
 
@@ -263,22 +262,6 @@ public class FragDataC2A extends BaseFragment {
         sp_sumberdana.setOnItemSelectedListener(spinnerSumberDana);
 
         ibRefresh.setOnClickListener(v -> signaturePad.clear());
-        signaturePad.setOnSignedListener(new SignaturePad.OnSignedListener() {
-            @Override
-            public void onStartSigning() {
-                signed = true;
-            }
-
-            @Override
-            public void onSigned() {
-
-            }
-
-            @Override
-            public void onClear() {
-                signed = false;
-            }
-        });
         btn_submit.setOnClickListener(submitlistener);
         btn_cancel.setOnClickListener(cancellistener);
 
@@ -625,7 +608,7 @@ public class FragDataC2A extends BaseFragment {
             et_sumberdana.requestFocus();
             et_sumberdana.setError("Sumber Dana dibutuhkan!");
             return false;
-        } else if (!signed) {
+        } else if (signaturePad.isEmpty()) {
             Toast.makeText(getActivity(), getString(R.string.put_a_signature), Toast.LENGTH_SHORT).show();
             return false;
         }
