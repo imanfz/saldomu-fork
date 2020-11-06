@@ -45,6 +45,8 @@ android {
             debugSymbolLevel 'SYMBOL_TABLE'
         }
 
+        android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
+
         // Enabling multidex support.
         multiDexEnabled true
         buildConfigField 'String', "flavorDev", "\"development\""
