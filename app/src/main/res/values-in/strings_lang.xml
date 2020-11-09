@@ -1670,4 +1670,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="add_promo_code">Tambah Promo</string>
     <string name="invalid_promo_code">Kode Promo tidak lengkap</string>
     <string name="no_bpjs">Nomor BPJS</string>
+    <string name="destination_no">Nomor Tujuan</string>
 </resources>

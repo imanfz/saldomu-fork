@@ -1,259 +1,304 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/padding_small"
     android:layout_marginTop="@dimen/text_size_medium_material"
-    android:visibility="visible"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:visibility="visible">
 
-    <TableLayout android:layout_width="match_parent"
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:stretchColumns="1">
+
         <TableRow>
+
             <TextView
-                android:text="@string/report_transaction_type"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:padding="3dip"
-                />
+                android:text="@string/report_transaction_type" />
+
             <TextView
                 android:id="@+id/dialog_reportbiller_buss_scheme_name"
-                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="2"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="8dp"
-            android:background="@color/grey_300"/>
+            android:background="@color/grey_300" />
 
-        <TableRow
-            android:orientation="horizontal">
+        <TableRow android:orientation="horizontal">
+
             <TextView
-                android:text="@string/report_dialog_text_userid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:minEms="10"
                 android:padding="3dip"
-                />
+                android:text="@string/report_dialog_text_userid" />
+
             <TextView
                 android:id="@+id/dialog_reportbiller_userid_value"
-                android:text="6281285229384"
-                android:minEms="15"
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:gravity="right"
-                android:padding="3dip" />
+                android:minEms="15"
+                android:padding="3dip"
+                android:text="6281285229384" />
         </TableRow>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="8dp"
-            android:background="@color/grey_300"/>
+            android:background="@color/grey_300" />
 
         <TableRow>
+
             <TextView
-                android:text="@string/biller_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:padding="3dip"
-                />
+                android:text="@string/biller_name" />
+
             <TextView
                 android:id="@+id/dialog_reportbiller_name_value"
-                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="2"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>
-
 
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="8dp"
-            android:background="@color/grey_300"/>
+            android:background="@color/grey_300" />
 
         <TableRow>
+
             <TextView
                 android:id="@+id/dialog_reportbiller_text_denom"
-		android:layout_width="0dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/category"
                 android:layout_weight="1"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:text="@string/category" />
+
             <TextView
                 android:id="@+id/dialog_reportbiller_denomretail_value"
-                android:text="Axis 1000"
-                android:layout_weight="2"
-                android:layout_gravity="center_vertical"
                 android:layout_width="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="2"
                 android:gravity="right"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:text="Axis 1000" />
         </TableRow>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="8dp"
-            android:background="@color/grey_300"/>
+            android:background="@color/grey_300"
+            android:id="@+id/view_destination_no_emon"
+            android:visibility="gone"/>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/tv_destination_no_emon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:padding="3dip"
+                android:text="@string/destination_no"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tv_destination_no_emon_value"
+                android:layout_width="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="2"
+                android:gravity="right"
+                android:padding="3dip"
+                android:text="Axis 1000"
+                android:visibility="gone"/>
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300" />
 
         <TableLayout
             android:id="@+id/billertoken_layout_destination"
             android:visibility="gone">
+
             <TableRow>
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/number_hp_destination_hint"
                     android:layout_weight="1"
-                    android:padding="3dip" />
+                    android:padding="3dip"
+                    android:text="@string/number_hp_destination_hint" />
+
                 <TextView
                     android:id="@+id/dialog_reportbiller_destination_value"
-                    android:text="0812xxxxxx"
-                    android:layout_weight="2"
-                    android:layout_gravity="center_vertical"
                     android:layout_width="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="2"
                     android:gravity="right"
-                    android:padding="3dip" />
+                    android:padding="3dip"
+                    android:text="0812xxxxxx" />
             </TableRow>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_margin="8dp"
-                android:background="@color/grey_300"/>
+                android:background="@color/grey_300" />
         </TableLayout>
         <!--<TableRow>-->
 
-            <!--<TextView-->
-                <!--android:id="@+id/dialog_reportbiller_text_dest_remark"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:layout_weight="1"-->
-                <!--android:padding="3dip"-->
-                <!--android:text="@string/billerinput_text_keterangan" />-->
-            <!--<TextView-->
-                <!--android:id="@+id/dialog_reportbiller_dest_remark_value"-->
-                <!--android:text="82389238923"-->
-                <!--android:layout_weight="2"-->
-                <!--android:layout_gravity="center_vertical"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:gravity="right"-->
-                <!--android:padding="3dip" />-->
+        <!--<TextView-->
+        <!--android:id="@+id/dialog_reportbiller_text_dest_remark"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:layout_weight="1"-->
+        <!--android:padding="3dip"-->
+        <!--android:text="@string/billerinput_text_keterangan" />-->
+        <!--<TextView-->
+        <!--android:id="@+id/dialog_reportbiller_dest_remark_value"-->
+        <!--android:text="82389238923"-->
+        <!--android:layout_weight="2"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:gravity="right"-->
+        <!--android:padding="3dip" />-->
         <!--</TableRow>-->
 
-        <TableLayout android:id="@+id/billertoken_layout_table"
+        <TableLayout
+            android:id="@+id/billertoken_layout_table"
             android:layout_width="match_parent"
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_marginRight="4dp"
-            android:stretchColumns="1">
+            android:stretchColumns="1"
+            android:visibility="gone">
 
 
         </TableLayout>
 
         <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="1dp"-->
-            <!--android:layout_margin="8dp"-->
-            <!--android:background="@color/grey_300"/>-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_margin="8dp"-->
+        <!--android:background="@color/grey_300"/>-->
 
         <TableRow>
+
             <TextView
-                android:text="@string/report_bank_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:minEms="10"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:text="@string/report_bank_product" />
+
             <TextView
                 android:id="@+id/dialog_reportbiller_payment_options_value"
-                android:text="Rp. 200000"
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
+                android:layout_weight="1"
                 android:gravity="right"
+                android:maxLines="1"
                 android:padding="3dip"
-                android:maxLines="1" />
+                android:text="Rp. 200000" />
         </TableRow>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="8dp"
-            android:background="@color/grey_300"/>
+            android:background="@color/grey_300" />
 
         <TableRow>
+
             <TextView
-                android:text="@string/amount"
                 android:layout_weight="1"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:text="@string/amount" />
+
             <TextView
                 android:id="@+id/dialog_reportbiller_amount_value"
-                android:text="Rp. 200000"
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
+                android:layout_weight="1"
                 android:gravity="right"
+                android:maxLines="1"
                 android:padding="3dip"
-                android:maxLines="1" />
+                android:text="Rp. 200000" />
         </TableRow>
 
         <TableRow
-            android:visibility="gone"
             android:id="@+id/dialog_reportbiller_amount_desired_layout"
-            >
+            android:visibility="gone">
 
-            <LinearLayout android:orientation="vertical"
-                android:layout_span="2"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
+                android:layout_span="2"
+                android:orientation="vertical">
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_margin="8dp"
-                    android:background="@color/grey_300"/>
+                    android:background="@color/grey_300" />
 
-                <LinearLayout android:orientation="horizontal"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    >
+                    android:orientation="horizontal">
+
                     <TextView
-                        android:text="@string/reportbiller_text_amount_to_be_paid"
-                        android:layout_weight="0"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="3dip" />
+                        android:layout_weight="0"
+                        android:padding="3dip"
+                        android:text="@string/reportbiller_text_amount_to_be_paid" />
+
                     <TextView
                         android:id="@+id/dialog_reportbiller_amount_desired_value"
-                        android:text="Toufan"
-                        android:layout_weight="2"
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
                         android:gravity="right"
+                        android:maxLines="1"
                         android:padding="3dip"
-                        android:maxLines="1" />
+                        android:text="Toufan" />
 
                 </LinearLayout>
 
@@ -264,107 +309,112 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="8dp"
-            android:background="@color/grey_300"/>
+            android:background="@color/grey_300" />
 
         <TableRow>
+
             <TextView
-                android:text="@string/topup_token_fee"
                 android:layout_weight="1"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:text="@string/topup_token_fee" />
+
             <TextView
                 android:id="@+id/dialog_reportbiller_fee_value"
-                android:text="Rp. 200000"
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
+                android:layout_weight="1"
                 android:gravity="right"
+                android:maxLines="1"
                 android:padding="3dip"
-                android:maxLines="1" />
+                android:text="Rp. 200000" />
         </TableRow>
 
         <View
+            android:id="@+id/view_additionalFee"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="8dp"
-            android:visibility="gone"
             android:background="@color/grey_300"
-            android:id="@+id/view_additionalFee"/>
+            android:visibility="gone" />
 
         <TableRow>
+
             <TextView
-                android:text="@string/additional_fee"
+                android:id="@+id/tv_additionalFee"
                 android:layout_weight="1"
-                android:visibility="gone"
                 android:padding="3dip"
-                android:id="@+id/tv_additionalFee"/>
+                android:text="@string/additional_fee"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/dialog_reportbiller_additionalfee_value"
-                android:text="Rp. 200000"
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
+                android:layout_weight="1"
                 android:gravity="right"
-                android:padding="3dip"
                 android:maxLines="1"
-                android:visibility="gone"/>
+                android:padding="3dip"
+                android:text="Rp. 200000"
+                android:visibility="gone" />
         </TableRow>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="8dp"
-            android:background="@color/grey_300"/>
+            android:background="@color/grey_300" />
 
         <TableRow>
+
             <TextView
-                android:text="@string/topup_token_total_amount"
                 android:layout_weight="1"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:text="@string/topup_token_total_amount" />
+
             <TextView
                 android:id="@+id/dialog_reportbiller_total_amount_value"
-                android:text="Rp. 200000"
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
+                android:layout_weight="1"
                 android:gravity="right"
+                android:maxLines="1"
                 android:padding="3dip"
-                android:maxLines="1" />
+                android:text="Rp. 200000" />
         </TableRow>
 
     </TableLayout>
 
-    <LinearLayout android:id="@+id/dialog_reportbiller_layout_desc"
+    <LinearLayout
+        android:id="@+id/dialog_reportbiller_layout_desc"
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:visibility="gone">
 
         <RelativeLayout
             android:id="@+id/billertoken_layout_deskripsi"
-            android:clickable="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clickable="true">
 
-            <TextView android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
                 android:layout_centerVertical="true"
+                android:layout_gravity="left"
                 android:text="@string/description"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_size_medium_material"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
 
-            <ImageView android:id="@+id/billertoken_arrow_desc"
+            <ImageView
+                android:id="@+id/billertoken_arrow_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="8dp"
                 android:clickable="true"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_circle_arrow_down"
-                />
+                android:src="@drawable/ic_circle_arrow_down" />
         </RelativeLayout>
-
-
 
 
     </LinearLayout>
