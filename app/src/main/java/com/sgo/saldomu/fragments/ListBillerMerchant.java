@@ -1,6 +1,5 @@
 package com.sgo.saldomu.fragments;
 
-import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,16 +17,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.Biller_Data_Model;
-import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
-import com.sgo.saldomu.activities.NFCActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
-import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.models.BillerItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +46,8 @@ public class ListBillerMerchant extends ListFragment {
     private String accessKey;
     private String billerType;
     private String billerTypeCode, billerIdNumber;
-    private List<Biller_Data_Model> mListBillerData;
-    private Biller_Type_Data_Model mBillerType;
+    private String billerMerchantName;
+    private List<BillerItem> billerData;
     private EasyAdapter adapter;
     private ArrayList<String> _data;
     private RealmChangeListener realmListener;
@@ -74,6 +70,10 @@ public class ListBillerMerchant extends ListFragment {
         userID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
+        Bundle args = getArguments();
+        billerTypeCode = args.getString(DefineValue.BILLER_TYPE, "");
+        billerIdNumber = args.getString(DefineValue.BILLER_ID_NUMBER, "");
+        billerMerchantName = args.getString(DefineValue.BILLER_NAME, "");
 //        realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
 //        _data = new ArrayList<>();
@@ -85,19 +85,10 @@ public class ListBillerMerchant extends ListFragment {
         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                if (position == mListBillerData.size() && nfcAdapter != null) {
-                    Intent intent = new Intent(getActivity(), NFCActivity.class);
-                    startActivity(intent);
-                } else {
-                    onListItemClick(listView1, view, position, id);
-                }
+                onListItemClick(listView1, view, position, id);
             }
         });
-
-        if (mBillerType != null)
-            setActionBarTitle(getString(R.string.biller_ab_title) + " - " + mBillerType.getBiller_type_name());
-
+        setActionBarTitle(getString(R.string.biller_ab_title) + " - " + billerMerchantName);
 //        if(!realm.isInTransaction())
 //            initializeData();
 
@@ -123,46 +114,29 @@ public class ListBillerMerchant extends ListFragment {
     }
 
     private void initializeData() {
-        Bundle args = getArguments();
-        billerTypeCode = args.getString(DefineValue.BILLER_TYPE, "");
-        billerIdNumber = args.getString(DefineValue.BILLER_ID_NUMBER, "");
+        billerData = realm.where(BillerItem.class).findAll();
 
-        mBillerType = realm.where(Biller_Type_Data_Model.class).
-                equalTo(WebParams.BILLER_TYPE_CODE, billerTypeCode).
-                findFirst();
-
-        if (mBillerType != null) {
-            mListBillerData = mBillerType.getBiller_data_models();
-            setActionBarTitle(getString(R.string.biller_ab_title) + " - " + mBillerType.getBiller_type_name());
+        if (billerData != null) {
             _data.clear();
 
-            for (int i = 0; i < mListBillerData.size(); i++) {
-                _data.add(mListBillerData.get(i).getComm_name());
+            for (int i = 0; i < billerData.size(); i++) {
+                _data.add(billerData.get(i).getCommName());
             }
-//            if (BuildConfig.FLAVOR.equalsIgnoreCase("production"))
-//                if (billerTypeCode.equals("EMON") && nfcAdapter != null) {
-//                    _data.add("Cek Saldo Emoney");
-//                }
-
 
             adapter.notifyDataSetChanged();
-        } else
-            mListBillerData = new ArrayList<>();
-
-
+        }
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        changeToInputBiller(mListBillerData.get(position).getComm_id(),
-                mListBillerData.get(position).getComm_name(),
-                mListBillerData.get(position).getItem_id(),
-                mListBillerData.get(position).getComm_code(),
-                mListBillerData.get(position).getApi_key(),
-                mBillerType.getBiller_type());
+        changeToInputBiller(billerData.get(position).getCommId(),
+                billerData.get(position).getCommName(),
+                billerData.get(position).getItemId(),
+                billerData.get(position).getCommCode(),
+                billerData.get(position).getApiKey());
     }
 
-    private void changeToInputBiller(String comm_id, String comm_name, String item_id, String comm_code, String api_key, String buy_type) {
+    private void changeToInputBiller(String comm_id, String comm_name, String item_id, String comm_code, String api_key) {
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, comm_name);
@@ -171,7 +145,6 @@ public class ListBillerMerchant extends ListFragment {
         mArgs.putString(DefineValue.BILLER_API_KEY, api_key);
         mArgs.putString(DefineValue.BILLER_TYPE, billerTypeCode);
         mArgs.putString(DefineValue.BILLER_ID_NUMBER, billerIdNumber);
-        mArgs.putString(DefineValue.BUY_TYPE, buy_type);
 
         Fragment billerInput;
         String fragName;
@@ -179,7 +152,7 @@ public class ListBillerMerchant extends ListFragment {
             fragName = comm_name;
             billerInput = new BillerInputEmoney();
         } else {
-            fragName = mBillerType.getBiller_type_name() + " - " + comm_name;
+            fragName = getString(R.string.biller_ab_title) + " - " + comm_name;
             billerInput = new BillerInput();
         }
 
@@ -224,7 +197,8 @@ public class ListBillerMerchant extends ListFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
-        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+//        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+        realm = Realm.getInstance(RealmManager.realmConfiguration);
         _data = new ArrayList<>();
         adapter = new EasyAdapter(getActivity(), R.layout.list_view_item_with_arrow, _data);
 

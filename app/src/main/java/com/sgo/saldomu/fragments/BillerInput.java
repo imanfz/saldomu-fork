@@ -34,8 +34,6 @@ import androidx.fragment.app.Fragment;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
-import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
-import com.sgo.saldomu.Beans.Denom_Data_Model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.NFCActivity;
@@ -44,9 +42,11 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.RealmManager;
-import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.models.BillerItem;
+import com.sgo.saldomu.models.DenomDataItem;
 import com.sgo.saldomu.utils.Converter;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -55,13 +55,12 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import timber.log.Timber;
 
 /*
   Created by Administrator on 3/4/2015.
  */
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
+public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallback {
 
     public final static String TAG = "BILLER_INPUT";
 
@@ -83,7 +82,7 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
             "NON",  // PLN Nont-Taglis  14
             "SPP",  // SPP   15
             "RMH",  //Perumahan  16
-            "BPJS", //BILLER_TYPE_BPJS 17
+            "BPJS", //BPJS 17
             "GAPP", // Game 18
             "EMON", // Emoney 19
             "VCHR",// voucher 20
@@ -119,11 +118,11 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
     private String final_payment_remark;
     private String buy_type;
     private int buy_code;
-    private ArrayList<String> _denomData;
+    private ArrayList<String> _denomData = new ArrayList<>();
     private ArrayList<String> _monthData;
     private Biller_Data_Model mBillerData;
-    private Biller_Type_Data_Model mBillerTypeData;
-    private List<Denom_Data_Model> mListDenomData;
+    private BillerItem billerItem;
+    private List<DenomDataItem> mListDenomData = new ArrayList<>();
     private RealmChangeListener realmListener;
     private Boolean isToken;
     Boolean isHaveItemID;
@@ -212,46 +211,13 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
-        realm = Realm.getInstance(RealmManager.BillerConfiguration);
-        initializeRealm();
+//        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+        realm = Realm.getInstance(RealmManager.realmConfiguration);
         initializeLayout();
-        if (!biller_type_code.equalsIgnoreCase(billerType[0]))
-            initializeSpinnerDenom();
-
-        realmListener = new RealmChangeListener() {
-            @Override
-            public void onChange(Object element) {
-
-                if (isVisible()) {
-
-                    initializeLayout();
-                    initializeSpinnerDenom();
-
-                    if (_denomData != null) {
-                        Timber.d("Masuk realm listener denomdata isi");
-                        _denomData.clear();
-                        for (int i = 0; i < mListDenomData.size(); i++) {
-                            _denomData.add(mListDenomData.get(i).getItem_name());
-                        }
-
-                        layout_denom.setVisibility(View.VISIBLE);
-                        spin_denom.setVisibility(View.VISIBLE);
-                        adapterDenom.notifyDataSetChanged();
-                    }
-
-                    if (progdialog != null && progdialog.isShowing()) {
-                        progdialog.dismiss();
-                    }
-                }
-            }
-        };
-        realm.addChangeListener(realmListener);
-
+        initializeRealm();
     }
 
     private void initializeLayout() {
-
-
         String[] _buy_type = getResources().getStringArray(R.array.buy_vpi_title);
 
         if (biller_type_code.equals(billerType[17])) {
@@ -265,6 +231,7 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
             spin_month.setOnItemSelectedListener(spinnerMonthListener);
             spin_month.setVisibility(View.GONE);
             tv_month.setVisibility(View.GONE);
+            tv_payment_remark.setText(getString(R.string.no_bpjs));
         } else {
             layout_month.setVisibility(View.GONE);
         }
@@ -345,50 +312,18 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
     }
 
     private void initializeRealm() {
-        mBillerTypeData = new Biller_Type_Data_Model();
-        mBillerTypeData = realm.where(Biller_Type_Data_Model.class).
-                equalTo(WebParams.BILLER_TYPE_CODE, biller_type_code).
-                findFirst();
+        billerItem = new BillerItem();
+        billerItem = realm.where(BillerItem.class).findFirst();
 
-        if (mBillerTypeData.getBiller_data_models().size() == 1) {
-            biller_comm_id = mBillerTypeData.getBiller_data_models().get(0).getComm_id();
-            biller_comm_name = mBillerTypeData.getBiller_data_models().get(0).getComm_name();
-            biller_item_id = mBillerTypeData.getBiller_data_models().get(0).getItem_id();
-            biller_info = mBillerTypeData.getBiller_data_models().get(0).getBiller_info();
-        }
+        if (billerItem != null)
+            if (billerItem.getDenomData() != null)
+                mListDenomData = billerItem.getDenomData();
 
-        mBillerData = new Biller_Data_Model();
-
-        if (!biller_type_code.equalsIgnoreCase("EMON")) {
-            mBillerData = realm.where(Biller_Data_Model.class).
-                    equalTo(WebParams.COMM_ID, biller_comm_id).
-                    equalTo(WebParams.COMM_NAME, biller_comm_name).
-                    equalTo(WebParams.DENOM_ITEM_ID, biller_item_id).
-                    equalTo(WebParams.DENOM_COMM_CODE, biller_comm_code).
-                    findFirst();
-        } else {
-            mBillerData = realm.where(Biller_Data_Model.class).
-                    equalTo(WebParams.COMM_ID, biller_comm_id).
-                    findFirst();
-        }
-
-        if (mBillerData.getBiller_info() != null || !mBillerData.getBiller_info().equals("")) {
-            tv_notes.setVisibility(View.VISIBLE);
-            tv_notes.setText(mBillerData.getBiller_info());
-        }
-
-        if (mBillerData == null || mBillerData.getItem_id().isEmpty() && mBillerData.getDenom_data_models().size() == 0) {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-        }
-
-        if (mBillerData != null)
-            mListDenomData = realm.copyFromRealm(mBillerData.getDenom_data_models());
-
+        initializeSpinnerDenom();
     }
 
     private void initializeSpinnerDenom() {
         if (mListDenomData.size() > 0) {
-            _denomData = new ArrayList<>();
             adapterDenom = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, _denomData);
             adapterDenom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spin_denom.setAdapter(adapterDenom);
@@ -403,7 +338,7 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
                 public void run() {
                     _denomData.clear();
                     for (int i = 0; i < mListDenomData.size(); i++) {
-                        _denomData.add(mListDenomData.get(i).getItem_name());
+                        _denomData.add(mListDenomData.get(i).getItemName());
                     }
 
                     getActivity().runOnUiThread(new Runnable() {
@@ -421,7 +356,7 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
 
         } else {
             layout_denom.setVisibility(View.GONE);
-            denom_item_id = mBillerData.getItem_id();
+            denom_item_id = biller_item_id;
         }
 
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
@@ -448,7 +383,7 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
     private Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            denom_item_id = mListDenomData.get(i).getItem_id();
+            denom_item_id = mListDenomData.get(i).getItemId();
         }
 
         @Override
@@ -605,7 +540,6 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
     @Override
     public void onDestroy() {
         if (!realm.isInTransaction() && !realm.isClosed()) {
-            realm.removeChangeListener(realmListener);
             realm.close();
         }
         super.onDestroy();
@@ -617,7 +551,7 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
 
 //        NfcManager manager = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
 
-        if(nfcAdapter!= null){
+        if (nfcAdapter != null) {
             nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
 
             nfcAdapter.enableReaderMode(getActivity(), this,
@@ -698,5 +632,4 @@ public class BillerInput extends Fragment implements NfcAdapter.ReaderCallback {
             e.printStackTrace();
         }
     }
-
 }

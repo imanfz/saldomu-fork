@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.*
@@ -475,7 +474,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private fun initRealm() {
         Timber.tag(TAG).v("initRealm()")
-        val realmResults: RealmResults<BillerItem>? = realm?.where(BillerItem::class.java)?.equalTo(DefineValue.BILLER_TYPE, "DATA")?.findAll()
+        val realmResults: RealmResults<BillerItem>? = realm?.where(BillerItem::class.java)?.equalTo(DefineValue.BILLER_TYPE, billerTypeCode)?.findAll()
 
         billerItemList.clear()
         _data.clear()
@@ -867,11 +866,11 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     }
 
     private fun getBillerDenom() {
-        extraSignature = "DATA"
+        extraSignature = billerTypeCode
         val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.COMM_ID] = MyApiClient.COMM_ID
-        params[WebParams.BILLER_TYPE] = "DATA"
+        params[WebParams.BILLER_TYPE] = billerTypeCode
 
         Timber.tag(TAG).v("getBillerDenom : $params")
 

@@ -340,7 +340,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="billerinput_text_denom" translatable="false">Denom Retail</string>
     <string name="billerinput_text_dest_remark">Porpose Description</string>
     <string name="billerinput_text_keterangan">Description</string>
-    <string name="billerinput_text_payment_remark">Customer ID</string>
+    <string name="billerinput_text_payment_remark">Customer Number</string>
     <string name="billerinput_text_payment_remark_Pulsa">Phone Number</string>
     <string name="billerinput_text_payment_remark_Emoney">Card Number</string>
     <string name="billerinput_text_payment_remark_Listrik">Meter Number</string>
@@ -1675,4 +1675,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="promo_code">Promo Code</string>
     <string name="add_promo_code">Add Promo</string>
     <string name="invalid_promo_code">Promo Code not Complete</string>
+    <string name="no_bpjs">BPJS Number</string>
 </resources>

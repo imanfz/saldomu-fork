@@ -14,13 +14,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.Biller_Data_Model;
-import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.fragments.BillerDesciption;
@@ -30,8 +32,13 @@ import com.sgo.saldomu.fragments.BillerInputEmoney;
 import com.sgo.saldomu.fragments.BillerInputPLN;
 import com.sgo.saldomu.fragments.BillerInputPulsa;
 import com.sgo.saldomu.fragments.ListBillerMerchant;
+import com.sgo.saldomu.interfaces.ResponseListener;
+import com.sgo.saldomu.models.BillerDenomResponse;
+import com.sgo.saldomu.models.BillerItem;
+import com.sgo.saldomu.models.DenomDataItem;
 import com.sgo.saldomu.widgets.BaseActivity;
 
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
@@ -57,8 +64,8 @@ public class BillerActivity extends BaseActivity {
     public String _biller_type_code;
     private Boolean isOneBiller;
     private Boolean isEmptyBiller;
-    private Biller_Type_Data_Model mBillerTypeData;
-    private List<Biller_Data_Model> mListBillerData;
+    private List<BillerItem> billerData;
+    private List<DenomDataItem> denomDataItems;
     private Realm realm;
     private RealmChangeListener realmListener;
     //    BillerActivityRF mWorkFragment;
@@ -78,7 +85,8 @@ public class BillerActivity extends BaseActivity {
         }
 
         Intent intent = getIntent();
-        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+//        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+        realm = Realm.getInstance(RealmManager.realmConfiguration);
 //        if (intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID) != null) {
 //
 //            setActionBarIcon(R.drawable.ic_arrow_left);
@@ -134,8 +142,7 @@ public class BillerActivity extends BaseActivity {
         }
         Timber.d("isi biller activity " + intent.getExtras().toString());
         initializeToolbar();
-
-        initializeData();
+        getBillerData();
 
         Log.wtf("onCreate BillerActivity", "onCreate BillerActivity");
 
@@ -184,36 +191,58 @@ public class BillerActivity extends BaseActivity {
 //        });
     }
 
+    private void getBillerData() {
+        showProgressDialog();
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_BILLER_DENOM, _biller_type_code);
+        params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+        params.put(WebParams.BILLER_TYPE, _biller_type_code);
+
+        Timber.d("param getBillerDenom : %s", params);
+
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_BILLER_DENOM, params, new ResponseListener() {
+            @Override
+            public void onResponses(JsonObject object) {
+                Gson gson = new Gson();
+                BillerDenomResponse billerDenomResponse = gson.fromJson(object, BillerDenomResponse.class);
+
+                if (billerDenomResponse.getErrorCode().equals(WebParams.SUCCESS_CODE)) {
+                    realm.beginTransaction();
+                    realm.delete(BillerItem.class);
+                    realm.copyToRealmOrUpdate(billerDenomResponse.getBiller());
+                    realm.commitTransaction();
+                } else
+                    Toast.makeText(getApplicationContext(), billerDenomResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onComplete() {
+                dismissProgressDialog();
+                initializeData();
+            }
+        });
+    }
+
     private void initializeData() {
-        mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
-                .equalTo(WebParams.BILLER_TYPE_CODE, _biller_type_code)
-                .findFirst();
+        billerData = realm.where(BillerItem.class).findAll();
 
+        if (billerData != null) {
+            Timber.d("isi billeractivity isinya " + billerData.size());
 
-        if (mBillerTypeData != null) {
-            Timber.d("isi billeractivity isinya " + mBillerTypeData.getBiller_data_models().size());
-            mListBillerData = mBillerTypeData.getBiller_data_models();
-
-            if (mListBillerData != null) {
-                if (mListBillerData.size() != 0) {
-                    if (findViewById(R.id.biller_content) != null) {
-                        isEmptyBiller = false;
-                        isOneBiller = mListBillerData.size() <= 1;
-                        initializeListBiller();
-                    }
-                } else {
-                    Toast.makeText(this, getString(R.string.biller_empty_data), Toast.LENGTH_SHORT).show();
-                    this.finish();
+            if (billerData.size() != 0) {
+                if (findViewById(R.id.biller_content) != null) {
+                    isEmptyBiller = false;
+                    isOneBiller = billerData.size() <= 1;
+                    initializeListBiller();
                 }
-//                if(!isEmptyBiller) {
-//                    progdialog = DefinedDialog.CreateProgressDialog(this, "");
-//                    isOneBiller = false;
-//                    isEmptyBiller = true;
-//                }
-//                else {
-//                    isEmptyBiller = false;
-//                    finish();
-//                }
+            } else {
+                Toast.makeText(this, getString(R.string.biller_empty_data), Toast.LENGTH_SHORT).show();
+                this.finish();
             }
         }
     }
@@ -222,6 +251,7 @@ public class BillerActivity extends BaseActivity {
     private void initializeListBiller() {
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.BILLER_TYPE, _biller_type_code);
+        mArgs.putString(DefineValue.BILLER_NAME, _biller_merchant_name);
         Fragment mLBM;
         String tag;
         Intent intent = getIntent();
@@ -232,10 +262,10 @@ public class BillerActivity extends BaseActivity {
             if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
                 mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
             }
-            mArgs.putString(DefineValue.COMMUNITY_ID, mListBillerData.get(0).getComm_id());
-            mArgs.putString(DefineValue.COMMUNITY_NAME, mListBillerData.get(0).getComm_name());
-            mArgs.putString(DefineValue.BILLER_ITEM_ID, mListBillerData.get(0).getItem_id());
-            mArgs.putString(DefineValue.BILLER_COMM_CODE, mListBillerData.get(0).getComm_code());
+            mArgs.putString(DefineValue.COMMUNITY_ID, billerData.get(0).getCommId());
+            mArgs.putString(DefineValue.COMMUNITY_NAME, billerData.get(0).getCommName());
+            mArgs.putString(DefineValue.BILLER_ITEM_ID, billerData.get(0).getItemId());
+            mArgs.putString(DefineValue.BILLER_COMM_CODE, billerData.get(0).getCommCode());
 
             tag = BillerInput.TAG;
         } else {

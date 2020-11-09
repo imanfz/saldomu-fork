@@ -339,7 +339,7 @@
     <string name="billerinput_text_denom" translatable="false">Denom Retail</string>
     <string name="billerinput_text_dest_remark">Keterangan Tujuan</string>
     <string name="billerinput_text_keterangan">Keterangan</string>
-    <string name="billerinput_text_payment_remark">ID Pelanggan</string>
+    <string name="billerinput_text_payment_remark">Nomor Pelanggan</string>
     <string name="billerinput_text_payment_remark_Pulsa">Nomor Handphone</string>
     <string name="billerinput_text_payment_remark_Emoney">Nomor Kartu</string>
     <string name="billerinput_text_payment_remark_Listrik">Nomor Meter</string>
@@ -1669,4 +1669,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="promo_code">Kode Promo</string>
     <string name="add_promo_code">Tambah Promo</string>
     <string name="invalid_promo_code">Kode Promo tidak lengkap</string>
+    <string name="no_bpjs">Nomor BPJS</string>
 </resources>
