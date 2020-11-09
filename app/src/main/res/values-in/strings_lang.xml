@@ -1669,4 +1669,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="promo_code">Kode Promo</string>
     <string name="add_promo_code">Tambah Promo</string>
     <string name="invalid_promo_code">Kode Promo tidak lengkap</string>
+    <string name="destination_no">Nomor Tujuan</string>
 </resources>

@@ -1675,4 +1675,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="promo_code">Promo Code</string>
     <string name="add_promo_code">Add Promo</string>
     <string name="invalid_promo_code">Promo Code not Complete</string>
+    <string name="destination_no">Destination Number</string>
 </resources>

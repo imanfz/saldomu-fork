@@ -34,10 +34,7 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.interfaces.OnLoadDataListener
 import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.loader.UtilsLoader
-import com.sgo.saldomu.models.retrofit.GetTrxStatusModel
-import com.sgo.saldomu.models.retrofit.InqBillerModel
-import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel
-import com.sgo.saldomu.models.retrofit.jsonModel
+import com.sgo.saldomu.models.retrofit.*
 import com.sgo.saldomu.securities.RSA
 import com.sgo.saldomu.utils.Converter.Companion.hexStringToByteArray
 import com.sgo.saldomu.utils.Converter.Companion.toHex
@@ -833,7 +830,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
                 object : ResponseListener {
                     override fun onResponses(response: JsonObject) {
-                        val model = getGson().fromJson(response, GetTrxStatusModel::class.java)
+                        val model = getGson().fromJson(response, GetTrxStatusReportModel::class.java)
 
                         val code = model.error_code
                         val message = model.error_message
@@ -870,7 +867,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                 })
     }
 
-    private fun showReportBillerDialog(model: GetTrxStatusModel) {
+    private fun showReportBillerDialog(model: GetTrxStatusReportModel) {
         val args = Bundle()
         val txStatus = model.tx_status
         val dialog = ReportBillerDialog.newInstance(this)
@@ -915,12 +912,13 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
 
         args.putString(DefineValue.DETAILS_BILLER, model.product_name)
 
-        if (model.product_name == null) {
-            args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_PLN)
-            if (billerTypeCode.equals(DefineValue.BILLER_TYPE_BPJS, ignoreCase = true))
-                args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_BPJS)
-            args.putString(DefineValue.BILLER_TYPE, billerTypeCode)
-        }
+//        if (model.product_name == null) {
+//            args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_PLN)
+//            if (billerTypeCode.equals(DefineValue.BILLER_TYPE_BPJS, ignoreCase = true))
+//                args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_BPJS)
+            args.putString(DefineValue.BILLER_TYPE, model.biller_type)
+            args.putString(DefineValue.PAYMENT_REMARK, model.payment_remark)
+//        }
 
         args.putString(DefineValue.BILLER_DETAIL, toJson(model.biller_detail).toString())
         args.putString(DefineValue.BUSS_SCHEME_CODE, model.buss_scheme_code)
