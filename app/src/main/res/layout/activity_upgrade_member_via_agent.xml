@@ -444,6 +444,7 @@
                         android:layout_height="96dp"
                         android:layout_below="@+id/tv_foto_ktp_paspor"
                         android:id="@+id/camera_ktp"
+                        android:scaleType="centerCrop"
                         android:layout_centerInParent="true"
                         android:background="@drawable/ktp_new"/>
 
@@ -543,6 +544,7 @@
                         android:layout_height="96dp"
                         android:layout_below="@+id/tv_ttd"
                         android:layout_centerInParent="true"
+                        android:scaleType="centerCrop"
                         android:background="@drawable/new_signature" />
 
                     <TextView

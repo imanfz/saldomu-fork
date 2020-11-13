@@ -32,6 +32,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.CameraViewActivity;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.BankCashoutAdapter;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -78,6 +79,8 @@ import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
+
+import static com.sgo.saldomu.activities.MainPage.REQUEST_FINISH;
 
 /**
  * Created by Lenovo Thinkpad on 10/23/2017.
@@ -528,7 +531,10 @@ public class MyProfileNewActivity extends BaseActivity {
 //                            } else
                             if (which == 0) {
                                 if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
-                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
+//                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
+                                    Intent i = new Intent(MyProfileNewActivity.this, CameraViewActivity.class);
+                                    startActivityForResult(i, set_result_photo);
+
                                 } else {
                                     pickAndCameraUtil.runCamera(set_result_photo);
                                 }
@@ -1045,7 +1051,7 @@ public class MyProfileNewActivity extends BaseActivity {
                     public void onClickButton(View v, boolean isLongClick) {
                         finish();
                         Intent i = new Intent(getApplicationContext(),MainPage.class);
-                        startActivityForResult(i, MainPage.REQUEST_FINISH);
+                        startActivityForResult(i, REQUEST_FINISH);
                     }
                 }
         );

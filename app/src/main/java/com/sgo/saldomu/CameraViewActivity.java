@@ -1,10 +1,14 @@
 package com.sgo.saldomu;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,58 +31,68 @@ public class CameraViewActivity extends AppCompatActivity {
     Camera camera;
     Preview preview;
     FloatingActionButton buttonSnap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_view);
-        camera=getCameraInstance();
+        camera = getCameraInstance();
 
-        preview=new Preview(this,camera);
-        ((FrameLayout)findViewById(R.id.frameLayout)).addView(preview);
+        preview = new Preview(this, camera);
+        ((FrameLayout) findViewById(R.id.frameLayout)).addView(preview);
 
-        buttonSnap=findViewById(R.id.take_picture);
+        buttonSnap = findViewById(R.id.take_picture);
         buttonSnap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                camera.takePicture(null,null,mPicture);
+                camera.takePicture(null, null, mPicture);
             }
         });
     }
-    public static Camera getCameraInstance(){
+
+    public static Camera getCameraInstance() {
         Camera c = null;
         try {
-            c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
+            c = Camera.open();
+            Camera.Parameters cameraParameters = c.getParameters();
+            cameraParameters.setFocusMode("continuous-picture");
+            cameraParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            c.setParameters(cameraParameters);
+        } catch (Exception e) {
             // Camera is not available (in use or does not exist)
         }
         return c; // returns null if camera is unavailable
     }
 
-    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
+    private Camera.PictureCallback mPicture = (data, camera) -> {
+        File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+        if (pictureFile == null) {
+            Log.d(TAG, "Error creating media file, check storage permissions");
+            return;
+        }
 
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            fos.write(data);
+            fos.close();
 
-            File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-            if (pictureFile == null){
-                Log.d(TAG, "Error creating media file, check storage permissions");
-                return;
-            }
+            Uri uri = Uri.fromFile(pictureFile);
 
-            try {
-                FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                Log.d(TAG, "File not found: " + e.getMessage());
-            } catch (IOException e) {
-                Log.d(TAG, "Error accessing file: " + e.getMessage());
-            }
+            setResult(Activity.RESULT_OK,
+                    new Intent().putExtra("imagePath", pictureFile.getAbsolutePath()));
+            finish();
+            Log.d(TAG, "File Path: " + pictureFile.getAbsolutePath());
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d(TAG, "Error accessing file: " + e.getMessage());
         }
     };
-    /** Create a File for saving an image or video */
-    private static File getOutputMediaFile(int type){
+
+    /**
+     * Create a File for saving an image or video
+     */
+    private static File getOutputMediaFile(int type) {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
 
@@ -88,8 +102,8 @@ public class CameraViewActivity extends AppCompatActivity {
         // between applications and persist after your app has been uninstalled.
 
         // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
                 Log.d("MyCameraApp", "failed to create directory");
                 return null;
             }
@@ -98,12 +112,12 @@ public class CameraViewActivity extends AppCompatActivity {
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE){
+        if (type == MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".jpg");
-        } else if(type == MEDIA_TYPE_VIDEO) {
+                    "IMG_" + timeStamp + ".jpg");
+        } else if (type == MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_"+ timeStamp + ".mp4");
+                    "VID_" + timeStamp + ".mp4");
         } else {
             return null;
         }
