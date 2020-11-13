@@ -60,7 +60,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".CameraViewActivity"
-            android:screenOrientation="portrait" /> <!-- <activity android:name="com.desmond.squarecamera.CameraActivity" /> -->
+            android:screenOrientation="landscape" /> <!-- <activity android:name="com.desmond.squarecamera.CameraActivity" /> -->
         <activity
             android:name=".activities.MainPage"
             android:configChanges="screenSize|keyboardHidden|orientation"

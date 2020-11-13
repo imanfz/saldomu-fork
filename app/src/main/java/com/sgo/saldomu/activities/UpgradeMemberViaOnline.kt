@@ -19,6 +19,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.sgo.saldomu.Beans.CustomAdapterModel
+import com.sgo.saldomu.CameraViewActivity
 import com.sgo.saldomu.R
 import com.sgo.saldomu.adapter.BankCashoutAdapter
 import com.sgo.saldomu.adapter.CustomAutoCompleteAdapter
@@ -397,7 +398,7 @@ class UpgradeMemberViaOnline : BaseActivity() {
         } else if (ktp == null && layout_foto_ktp.visibility == View.VISIBLE) {
             DefinedDialog.showErrorDialog(this@UpgradeMemberViaOnline, getString(R.string.ktp_photo))
             return false
-        } else if (selfie == null  && layout_selfie.visibility == View.VISIBLE) {
+        } else if (selfie == null && layout_selfie.visibility == View.VISIBLE) {
             DefinedDialog.showErrorDialog(this@UpgradeMemberViaOnline, getString(R.string.selfie_ktp_photo))
             return false
         } else if (ttd == null && layout_ttd.visibility == View.VISIBLE) {
@@ -688,11 +689,14 @@ class UpgradeMemberViaOnline : BaseActivity() {
         val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
         if (EasyPermissions.hasPermissions(this, *perms)) {
             set_result_photo?.let {
-//                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD)
-//                    CameraActivity.openCertificateCamera(this, CameraActivity.TYPE_COMPANY_PORTRAIT)
-//                else
+                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
+
+//                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
+                    val i = Intent(this, CameraViewActivity::class.java)
+                    startActivityForResult(i, set_result_photo!!)
+                } else
                     pickAndCameraUtil!!.runCamera(set_result_photo!!)
-//                pickAndCameraUtil.runCamera(it)
+//                pickAndCameraUtil!!.runCamera(it)
             }
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage),
@@ -720,19 +724,20 @@ class UpgradeMemberViaOnline : BaseActivity() {
                 }
             }
             RESULT_CAMERA_KTP -> {
-                if (pickAndCameraUtil!!.captureImageUri != null && resultCode == Activity.RESULT_OK)
+                if (resultCode == Activity.RESULT_OK)
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-                        processImage(KTP_TYPE, pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.captureImageUri))
+                        processImage(KTP_TYPE, pickAndCameraUtil!!.getRealPathFromURI(data!!.getStringExtra("imagePath")))
                     else
-                        processImage(KTP_TYPE, pickAndCameraUtil!!.currentPhotoPath)
+                        processImage(KTP_TYPE, data!!.getStringExtra("imagePath"))
+
 
             }
             RESULT_CAMERA_TTD -> {
-                if (pickAndCameraUtil!!.captureImageUri != null && resultCode == Activity.RESULT_OK)
+                if (resultCode == Activity.RESULT_OK)
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-                        processImage(TTD_TYPE, pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.captureImageUri))
+                        processImage(TTD_TYPE, pickAndCameraUtil!!.getRealPathFromURI(data!!.getStringExtra("imagePath")))
                     else
-                        processImage(TTD_TYPE, pickAndCameraUtil!!.currentPhotoPath)
+                        processImage(TTD_TYPE, data!!.getStringExtra("imagePath"))
 
             }
             RESULT_SELFIE -> {
