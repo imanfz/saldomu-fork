@@ -256,7 +256,7 @@ public class BillerActivity extends BaseActivity {
         String tag;
         Intent intent = getIntent();
 
-        if (isOneBiller && !_biller_type_code.equalsIgnoreCase("DATA")
+        if (isOneBiller && !_biller_type_code.equalsIgnoreCase("DATA") && !_biller_type_code.equalsIgnoreCase("PLS")
                 && !_biller_type_code.equalsIgnoreCase("TKN") && !_biller_type_code.equalsIgnoreCase("EMON")) {
             mLBM = new BillerInput();
             if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {

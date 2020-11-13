@@ -542,10 +542,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_additionalFee = inflated.findViewById(R.id.tv_additionalFee);
                 TextView tv_additionalFeeValue = inflated.findViewById(R.id.dialog_reportbiller_additionalfee_value);
                 TextView tv_destinationValue = inflated.findViewById(R.id.dialog_reportbiller_destination_value);
-                TextView tv_destinationEmon= inflated.findViewById(R.id.tv_destination_no_emon);
+                TextView tv_destinationEmon = inflated.findViewById(R.id.tv_destination_no_emon);
                 TextView tv_destinationEmonValue = inflated.findViewById(R.id.tv_destination_no_emon_value);
                 View viewAdditional = inflated.findViewById(R.id.view_additionalFee);
-                View viewEmon= inflated.findViewById(R.id.view_destination_no_emon);
+                View viewEmon = inflated.findViewById(R.id.view_destination_no_emon);
                 TableLayout tableLayoutDestination = inflated.findViewById(R.id.billertoken_layout_destination);
 
                 TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
@@ -566,12 +566,13 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_destinationValue.setText(args.getString(DefineValue.DESTINATION_REMARK));
                 }
 
-                if (args.getString(DefineValue.BILLER_TYPE).equalsIgnoreCase("EMON")) {
-                    viewEmon.setVisibility(View.VISIBLE);
-                    tv_destinationEmon.setVisibility(View.VISIBLE);
-                    tv_destinationEmonValue.setVisibility(View.VISIBLE);
-                    tv_destinationEmonValue.setText(args.getString(DefineValue.PAYMENT_REMARK));
-                }
+                if (args.containsKey(DefineValue.BILLER_TYPE))
+                    if (args.getString(DefineValue.BILLER_TYPE).equalsIgnoreCase("EMON")) {
+                        viewEmon.setVisibility(View.VISIBLE);
+                        tv_destinationEmon.setVisibility(View.VISIBLE);
+                        tv_destinationEmonValue.setVisibility(View.VISIBLE);
+                        tv_destinationEmonValue.setText(args.getString(DefineValue.PAYMENT_REMARK));
+                    }
 
                 if (isAgent) {
                     viewAdditional.setVisibility(View.VISIBLE);
