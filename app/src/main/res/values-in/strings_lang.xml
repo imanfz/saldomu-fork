@@ -566,7 +566,8 @@
 
     <string name="about_apps">Tentang Aplikasi</string>
     <string name="about_apps_desc"><b>Saldomu</b> adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
-    <string name="about_apps_desc_2">SALDOMU terdaftar sebagai PENYELENGGARA TEKNOLOGI FINANSIAL di Bank Indonesia dengan Nomor 20/85/DKSP/Srt/B tertanggal 8 Maret 2018.</string>
+    <string name="about_apps_desc_2">Izin Penerbit Uang Elektronik dan Penyelenggara Layanan Keuangan Digital Badan Hukum tanggal 3 November 2020 No. 22/583/DSKP/Srt/B \n\n
+        Izin Penyelenggara Transfer Dana Dalam Rangka Penyedia Fitur Transfer Dana Melalui Uang Elektronik tanggal 3 November 2020 No. 22/584/DKSP/Srt/B</string>
     <string name="about_apps_desc_pemberitahuan">Pemberitahuan :</string>
     <string name="about_apps_desc_pemberitahuan_1">1. SALDOMU hanya didistribusikan melalui Play Store dan App Store oleh PT Mitra Pembayaran Elektronik.</string>
     <string name="about_apps_desc_pemberitahuan_2">2. Harap TIDAK melakukan login di media lain selain aplikasi resmi untuk menghindari segala jenis penipuan yang mengatasnamakan SALDOMU.</string>
