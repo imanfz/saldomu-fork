@@ -211,7 +211,7 @@ class FragMessage : BaseFragment() {
                             alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                         } else {
                             if (code == "0003") {
-                                Toast.makeText(activity, getString(R.string.notifications_empty), Toast.LENGTH_LONG).show()
+//                                Toast.makeText(activity, getString(R.string.notifications_empty), Toast.LENGTH_LONG).show()
                                 notification_recycle_list.visibility = View.GONE
                                 empty_layout.visibility = View.VISIBLE
                                 mData!!.clear()
