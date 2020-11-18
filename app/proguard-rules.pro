@@ -146,3 +146,4 @@
 
 #-ignorewarnings -keep class * { public private *; }
 -keep class com.sgo.saldomu.models.Invoice { *; }
+-keep class com.sgo.saldomu.models.PromoCodeModel { *; }
