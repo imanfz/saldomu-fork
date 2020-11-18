@@ -226,7 +226,7 @@ public class MainPage extends BaseActivity {
                         }
                     }
                     return true;
-                } else if (!isAgent && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2 && sp.getString(DefineValue.COMPANY_TYPE, "").equalsIgnoreCase(getString(R.string.LP))) {
+                } else if (!isAgent && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2) {
                     transferFragment();
                     return true;
                 } else {
