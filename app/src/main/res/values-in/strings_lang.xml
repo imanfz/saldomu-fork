@@ -477,6 +477,7 @@
     <string name="add_to_group">Tambah ke Grup</string>
     <string name="amount">Jumlah</string>
     <string name="fee">Biaya Admin</string>
+    <string name="total_discount">Total Diskon</string>
     <string name="total_amount">Total Jumlah</string>
     <string name="block">Blok</string>
     <string name="delete">Hapus</string>

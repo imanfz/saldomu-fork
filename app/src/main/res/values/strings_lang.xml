@@ -481,6 +481,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
 
     <string name="amount">Amount</string>
     <string name="fee">Fee</string>
+    <string name="total_discount">Total Discount</string>
 
     <string name="total_amount">Total Amount</string>
     <string name="block">Block</string>
