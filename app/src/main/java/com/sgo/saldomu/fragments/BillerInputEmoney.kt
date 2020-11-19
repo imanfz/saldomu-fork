@@ -940,7 +940,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         dialog.setContentView(R.layout.dialog_notification)
 
         // set values for custom dialog components - text, image and button
-        val btnDialogOTP = dialog.findViewById<Button>(R.id.btn_dialog_notification_ok)
+        val btnDialog = dialog.findViewById<Button>(R.id.btn_dialog_notification_ok)
         val Title = dialog.findViewById<TextView>(R.id.title_dialog)
         val Message = dialog.findViewById<TextView>(R.id.message_dialog)
 
@@ -948,7 +948,7 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
         Title.text = getString(R.string.error)
         Message.text = msg
 
-        btnDialogOTP.setOnClickListener { view -> dialog.dismiss() }
+        btnDialog.setOnClickListener { dialog.dismiss() }
 
         dialog.show()
     }

@@ -1,5 +1,8 @@
 package com.sgo.saldomu.activities;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
@@ -17,9 +20,11 @@ import androidx.annotation.RequiresApi;
 
 import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fragments.PopUpNFC;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.CheckCardBalanceModel;
@@ -161,7 +166,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 
                         Log.d("LAST_BALANCE : ", Converter.Companion.toHex(lastBalanceResponse));
                         cardBalance = Converter.Companion.toHex(lastBalanceResponse);
-                        cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
+                        cardBalanceResult.setText("RP. " + CurrencyFormat.format(Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8))));
                         Log.d("SALDO : ", String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8))));
                         saldo = String.valueOf(Converter.Companion.toLittleEndian(cardBalance.substring(0, 8)));
 
@@ -225,7 +230,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.ORDER_ID, numberCard);
-            params.put(WebParams.TX_ID, "BIL15663768983V9LL");
+//            params.put(WebParams.TX_ID, "BIL15663768983V9LL");
             params.put(WebParams.CARD_BALANCE, saldo);
             params.put(WebParams.CARD_ATTRIBUTE, cardAttribute);
             params.put(WebParams.CARD_INFO, cardInfo);
@@ -298,7 +303,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.ORDER_ID, numberCard);
-            params.put(WebParams.TX_ID, "BIL15663768983V9LL");
+//            params.put(WebParams.TX_ID, "BIL15663768983V9LL");
             params.put(WebParams.CARD_BALANCE, saldo);
             params.put(WebParams.CARD_ATTRIBUTE, cardAttribute);
             params.put(WebParams.CARD_INFO, cardInfo);
@@ -336,7 +341,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                         getConfirmCardBalance();
                                         byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                                                 "00B500000A"));
-                                        cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8)));
+                                        cardBalanceResult.setText("RP. " + CurrencyFormat.format(Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8))));
                                         Log.d("SALDO BARU : ", String.valueOf(Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8))));
 
                                         dismissProgressDialog();
@@ -350,13 +355,12 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
 //                                    getReversalUpdateCard();
                                     return;
                                 }
-                            } else if (code.equals("0031")) { //Tidak Ada Pending Saldo.................
-                                code = model.getErrorCode() + " : " + model.getErrorMessage();
-                                Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
+                            } else if (code.equals("0031")){
+                                Dialog dialog = DefinedDialog.MessageDialog(NFCActivity.this, getString(R.string.remark),
+                                        model.getErrorMessage(),
+                                        (v, isLongClick) -> {dismissProgressDialog();});
 
-                                dismissProgressDialog();
-                                getFragmentManager().popBackStack();
-
+                                dialog.show();
                             } else {
                                 code = model.getErrorCode() + " : " + model.getErrorMessage();
                                 Toast.makeText(getBaseContext(), code, Toast.LENGTH_LONG).show();
@@ -421,7 +425,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.ORDER_ID, numberCard);
-            params.put(WebParams.TX_ID, "BIL15663768983V9LL");
+//            params.put(WebParams.TX_ID, "BIL15663768983V9LL");
             params.put(WebParams.CARD_BALANCE, saldo);
             params.put(WebParams.CARD_ATTRIBUTE, cardAttribute);
             params.put(WebParams.CARD_INFO, cardInfo);
@@ -513,7 +517,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.ORDER_ID, numberCard);
-            params.put(WebParams.TX_ID, "BIL15663768983V9LL");
+//            params.put(WebParams.TX_ID, "BIL15663768983V9LL");
             params.put(WebParams.CARD_BALANCE, saldo);
             params.put(WebParams.CARD_ATTRIBUTE, cardAttribute);
             params.put(WebParams.CARD_INFO, cardInfo);
@@ -537,7 +541,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                 try {
                                     byte[] lastBalanceResponse = isoDep.transceive(Converter.Companion.hexStringToByteArray(
                                             "00B500000A"));
-                                    cardBalanceResult.setText("RP. " + Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8)));
+                                    cardBalanceResult.setText("RP. " + CurrencyFormat.format(Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8))));
                                     Log.d("SALDO BARU : ", String.valueOf(Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8))));
                                 } catch (IOException e) {
                                     Timber.d("Kartu Geser....... CEK SALDO BARU" + e.getMessage());
