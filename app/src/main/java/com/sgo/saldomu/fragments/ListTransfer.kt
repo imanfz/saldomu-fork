@@ -43,11 +43,11 @@ class ListTransfer : BaseFragment() {
             switchActivity(i)
         }
         card_view2.setOnClickListener {
-//            if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
+            if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
                 val i = Intent(activity, CashoutActivity::class.java)
                 switchActivity(i)
-//            } else
-//                dialogCantCashout()
+            } else
+                dialogCantCashout()
         }
     }
 
