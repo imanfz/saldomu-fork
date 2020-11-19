@@ -70,7 +70,7 @@ import timber.log.Timber;
 
 public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
 
-    TextView commCodeTextview, commNameTextview, memberCodeTextview, productBankTextview, costTextview, feeTextview, totalTextview, storeNameTextView, storeAddressTextView;
+    TextView commCodeTextview, commNameTextview, memberCodeTextview, productBankTextview, costTextview, feeTextview, totalTextview, storeNameTextView, storeAddressTextView, totalDiscountTextview;
     Button submitBtn;
     DenomItemOrderListConfirmAdapter itemListAdapter;
     RecyclerView orderListrv;
@@ -81,7 +81,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
     ArrayList<DenomListModel> itemList;
     ArrayList<DenomOrderListModel> orderList;
     String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount, ccyID, bankGateway, bankName, txID, remark,
-            apiKey, memberIdSACDM, memberName = "", commID, item_name = "", storeName, storeAddress, cust_id, product_type, tx_favorite_type, notes, promoCode;
+            apiKey, memberIdSACDM, memberName = "", commID, item_name = "", storeName, storeAddress, cust_id, product_type, tx_favorite_type, notes, promoCode, totalDiscount;
     int attempt, failed;
     Boolean isPIN = false, isFav = false;
 
@@ -96,6 +96,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         productBankTextview = v.findViewById(R.id.frag_denom_confirm_product_bank_field);
         costTextview = v.findViewById(R.id.frag_denom_confirm_cost_field);
         feeTextview = v.findViewById(R.id.frag_denom_confirm_fee_field);
+        totalDiscountTextview = v.findViewById(R.id.frag_denom_confirm_discount_field);
         totalTextview = v.findViewById(R.id.frag_denom_confirm_total_field);
         submitBtn = v.findViewById(R.id.frag_denom_confirm_submit_btn);
         orderListrv = v.findViewById(R.id.frag_denom_confirm_item_list_field);
@@ -795,6 +796,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             }
             amount = CurrencyFormat.format(resp.getString("amount"));
             fee = CurrencyFormat.format(resp.getString("admin_fee"));
+            totalDiscount = CurrencyFormat.format(resp.getString("total_disc"));
             totalAmount = CurrencyFormat.format(resp.getString("total_amount"));
             ccyID = resp.getString("ccy_id");
             txID = resp.getString("tx_id");
@@ -814,6 +816,8 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
                 costTextview.setText(ccyID + " " + amount);
             if (fee != null)
                 feeTextview.setText(ccyID + " " + fee);
+            if (totalDiscount != null)
+                totalDiscountTextview.setText(ccyID + " " + totalDiscount);
             if (totalAmount != null)
                 totalTextview.setText(ccyID + " " + totalAmount);
 
