@@ -378,6 +378,8 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         }
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.buss_scheme_code)
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.buss_scheme_name)
+        args.putString(DefineValue.BILLER_TYPE, response.biller_type)
+        args.putString(DefineValue.PAYMENT_REMARK, response.payment_remark)
 
         dialog.arguments = args
         val ft = this.supportFragmentManager.beginTransaction()

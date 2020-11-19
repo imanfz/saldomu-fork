@@ -1146,6 +1146,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.getBuss_scheme_name());
+        args.putString(DefineValue.BILLER_TYPE, response.getBiller_type());
+        args.putString(DefineValue.PAYMENT_REMARK, response.getPayment_remark());
 
         dialog.setArguments(args);
         FragmentTransaction ft = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
