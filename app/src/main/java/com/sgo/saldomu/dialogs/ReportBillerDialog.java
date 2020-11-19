@@ -826,6 +826,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_bank_order_number = inflated.findViewById(R.id.dialog_denom_order_number);
 //                RecyclerView rv_denom_item_list = inflated.findViewById(R.id.dialog_denom_item_list_recyclerview);
                 TextView tv_amount = inflated.findViewById(R.id.dialog_denom_amount);
+                TextView tv_total_discount = inflated.findViewById(R.id.dialog_denom_discount);
                 TextView tv_fee = inflated.findViewById(R.id.dialog_denom_fee_value);
                 TextView tv_total_amount = inflated.findViewById(R.id.dialog_denom_totalamount_value);
                 TextView tv_store_name = inflated.findViewById(R.id.tv_report_store_name);
@@ -851,6 +852,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
                 tv_bank_order_number.setText(args.getString(DefineValue.ORDER_ID));
                 tv_amount.setText(args.getString(DefineValue.AMOUNT));
+                tv_total_discount.setText(args.getString(DefineValue.TOTAL_DISC));
                 tv_fee.setText(args.getString(DefineValue.FEE));
                 tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 tv_store_name.setText(args.getString(DefineValue.STORE_NAME));

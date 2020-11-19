@@ -294,6 +294,29 @@
 
     <TableRow>
         <TextView
+            android:text="@string/total_discount"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_denom_discount"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:gravity="end"
+            android:padding="3dip"
+            android:maxLines="1" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
             android:text="@string/total_amount"
             android:layout_span="2"
             android:layout_width="0dp"

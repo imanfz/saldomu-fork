@@ -710,7 +710,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         args.putString(DefineValue.USERID_PHONE, userId);
         args.putString(DefineValue.DENOM_DATA, itemName);
 //        args.putString(DefineValue.DENOM_DATA, response.optString(DefineValue.COMMUNITY_CODE));
-        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_amount));
+        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(model.getTotal_gross()));
         args.putString(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(txFee));
 
@@ -748,6 +748,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
         args.putString(DefineValue.STORE_CODE, store_code);
         args.putString(DefineValue.AGENT_NAME, agent_name);
         args.putString(DefineValue.AGENT_PHONE, agent_phone);
+        args.putString(DefineValue.TOTAL_DISC, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(model.getTotal_disc())));
 
         dialog.setArguments(args);
         FragmentTransaction ft = getFragManager().beginTransaction();
@@ -794,7 +795,7 @@ public class FragmentDenomConfirm extends BaseFragment implements ReportBillerDi
             if (productName.equalsIgnoreCase("MANDIRI SMS")) {
                 OTPlayout.setVisibility(View.VISIBLE);
             }
-            amount = CurrencyFormat.format(resp.getString("amount"));
+            amount = CurrencyFormat.format(resp.getString("total_gross"));
             fee = CurrencyFormat.format(resp.getString("admin_fee"));
             totalDiscount = CurrencyFormat.format(resp.getString("total_disc"));
             totalAmount = CurrencyFormat.format(resp.getString("total_amount"));

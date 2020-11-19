@@ -187,4 +187,12 @@ open class GetTrxStatusReportModel : GetTrxStatusModel() {
     @SerializedName("store_code")
     @Expose
     val store_code: String? = ""
+
+    @SerializedName("total_disc")
+    @Expose
+    val total_disc: String? = ""
+
+    @SerializedName("total_gross")
+    @Expose
+    val total_gross: String? = ""
 }

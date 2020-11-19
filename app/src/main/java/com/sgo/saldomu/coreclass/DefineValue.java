@@ -156,6 +156,7 @@ public class DefineValue {
     public static String AMOUNT_EACH = "amountEach";
     public static String AMOUNT = "amount";
     public static String TOTAL_AMOUNT = "totalAmount";
+    public static String TOTAL_DISC = "totalDisc";
     public static String MESSAGE = "message";
     public static String PAYMENT_NAME = "paymentName";
     public static String IS_SMS_BANKING = "isSMSBanking";
