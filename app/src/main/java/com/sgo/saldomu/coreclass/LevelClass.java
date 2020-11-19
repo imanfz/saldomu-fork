@@ -23,10 +23,8 @@ import org.json.JSONException;
 public class LevelClass {
 
     private FragmentActivity activity;
-    private String listAddress, listContactPhone;
     private SecurePreferences sp;
     private Boolean isAllowedLevel, isLevel1, isRegisteredLevel;
-//    private ProgressDialog progdialog;
 
 
     public LevelClass(FragmentActivity activity, SecurePreferences sp) {
@@ -93,20 +91,12 @@ public class LevelClass {
     }
 
     public void refreshData() {
-        String contactCenter = getSp().getString(DefineValue.LIST_CONTACT_CENTER, "");
         if (sp.contains(DefineValue.LEVEL_VALUE)) {
             String i = sp.getString(DefineValue.LEVEL_VALUE, "0");
             isLevel1 = Integer.parseInt(i) == 1;
         }
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
         isAllowedLevel = sp.getBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
-        try {
-            JSONArray arrayContact = new JSONArray(contactCenter);
-            listContactPhone = arrayContact.getJSONObject(0).getString(WebParams.CONTACT_PHONE);
-            listAddress = arrayContact.getJSONObject(0).getString(WebParams.ADDRESS);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private FragmentActivity getActivity() {
