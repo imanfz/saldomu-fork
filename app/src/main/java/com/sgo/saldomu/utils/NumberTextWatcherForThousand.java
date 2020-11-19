@@ -28,12 +28,12 @@ public class NumberTextWatcherForThousand implements TextWatcher {
             editText.removeTextChangedListener(this);
             String value = editText.getText().toString();
             if (!value.equals("")) {
-                if (value.startsWith("0") && !value.startsWith("0.")) {
+                if (value.startsWith("0") && !value.startsWith("0."))
                     editText.setText("");
+                else {
+                    String str = trimCommaOfString(value);
+                    editText.setText(getDecimalFormattedString(str));
                 }
-
-                String str = trimCommaOfString(value);
-                editText.setText(getDecimalFormattedString(str));
                 editText.setSelection(editText.getText().toString().length());
             }
             editText.addTextChangedListener(this);

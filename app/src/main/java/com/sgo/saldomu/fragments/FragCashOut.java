@@ -401,7 +401,7 @@ public class FragCashOut extends BaseFragment {
             etNominal.setError(getString(R.string.cashout_nominal_validation));
             return false;
         }
-        else if(Long.parseLong(etNominal.getText().toString()) < 1){
+        else if(Long.parseLong(NumberTextWatcherForThousand.trimCommaOfString(etNominal.getText().toString())) < 1){
             etNominal.requestFocus();
             etNominal.setError(getString(R.string.cashout_nominal_zero));
             return false;
