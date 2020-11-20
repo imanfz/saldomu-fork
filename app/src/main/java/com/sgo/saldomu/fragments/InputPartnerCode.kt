@@ -25,13 +25,11 @@ class InputPartnerCode : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (arguments!!.containsKey(DefineValue.CUST_ID))
-            et_partner_code.setText(arguments!!.getString(DefineValue.CUST_ID))
-        else
-            et_partner_code.setText(userPhoneID)
-
-        if (BuildConfig.FLAVOR.equals("development", ignoreCase = true))
-            et_partner_code.setText("toko 006")
+        when {
+            arguments!!.containsKey(DefineValue.CUST_ID) -> et_partner_code.setText(arguments!!.getString(DefineValue.CUST_ID))
+            BuildConfig.FLAVOR.equals("development", ignoreCase = true) -> et_partner_code.setText("toko 006")
+            else -> et_partner_code.setText(userPhoneID)
+        }
 
         et_partner_code.onRightDrawableClicked { it.text.clear() }
 
