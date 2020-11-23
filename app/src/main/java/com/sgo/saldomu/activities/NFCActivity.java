@@ -189,7 +189,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
             e.printStackTrace();
             Timber.d("Kartu Geser....... ON TAGDISCOVERED " + e.getMessage());
             dismissProgressDialog();
-            Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kembali !", Toast.LENGTH_SHORT).show();
             return;
         }
     }
@@ -359,7 +359,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                     e.printStackTrace();
                                     Timber.d("Kartu Geser......." + e.getMessage());
                                     dismissProgressDialog();
-                                    Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kembali !", Toast.LENGTH_SHORT).show();
                                     cardShifted = true;
 //                                    getReversalUpdateCard();
                                     return;
@@ -382,7 +382,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                         @Override
                         public void onError(Throwable throwable) {
                             getFragmentManager().popBackStack();
-                            Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kembali !", Toast.LENGTH_SHORT).show();
                             cardShifted = true;
                         }
 
@@ -428,7 +428,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                 e.printStackTrace();
                 Timber.d("Kartu Geser....... GET DATA MESSAGE NEW APPLET" + e.getMessage());
                 dismissProgressDialog();
-                Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kembali !", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -488,7 +488,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                         cardShifted = true;
                                         Timber.d("Kartu Geser....... WRITE TO NEW APPLET" + e.getMessage());
                                         dismissProgressDialog();
-                                        Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kembali !", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
                                 }
@@ -556,7 +556,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                     Log.d("SALDO BARU : ", String.valueOf(Converter.Companion.toLittleEndian(Converter.Companion.toHex(lastBalanceResponse).substring(0, 8))));
                                 } catch (IOException e) {
                                     Timber.d("Kartu Geser....... CEK SALDO BARU" + e.getMessage());
-                                    Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kembali !", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 code = model.getErrorCode() + " : " + model.getErrorMessage();
@@ -601,7 +601,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
             } catch (IOException e) {
                 Timber.d("Kartu Geser....... REVERSAL UPDATE" + e.getMessage());
                 dismissProgressDialog();
-                Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kembali !", Toast.LENGTH_SHORT).show();
                 cardShifted = true;
                 return;
             }
@@ -647,7 +647,7 @@ public class NFCActivity extends BaseActivity implements NfcAdapter.ReaderCallba
                                         e.printStackTrace();
                                         dismissProgressDialog();
                                         Timber.d("Kartu Geser....... MESSAGE REPONSE TRANSCEIVE" + e.getMessage());
-                                        Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kemabali !", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getBaseContext(), "Tempelkan Kartu Anda Kembali !", Toast.LENGTH_SHORT).show();
                                         cardShifted = true;
                                     }
                                 } else {
