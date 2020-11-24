@@ -719,9 +719,11 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 
                         String arrJson = toJson(commModel.getAgent_scheme_codes()).toString();
                         String billerCodes = toJson(commModel.getAgent_biller_codes()).toString();
+                        String ebdCodes = toJson(commModel.getAgent_ebd_codes()).toString();
                         String trxCodes = toJson(commModel.getAgent_trx_codes()).toString();
                         mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
                         mEditor.putString(DefineValue.AGENT_BILLER_CODES, billerCodes);
+                        mEditor.putString(DefineValue.AGENT_EBD_CODES, ebdCodes);
                         mEditor.putString(DefineValue.AGENT_TRX_CODES, trxCodes);
                         mEditor.putString(DefineValue.IS_AGENT_TRX_REQ, commModel.getIs_agent_trx_request());
                         mEditor.putString(DefineValue.IS_AGENT_TRX_ATC_MANDIRI_LP, commModel.getIs_agent_atc_mandirilkd());

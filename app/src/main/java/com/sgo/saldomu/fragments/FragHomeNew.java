@@ -123,7 +123,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Realm realm;
     private Switch swSettingOnline;
     private LinearLayout llAgentDetail;
-    String shopStatus, isMemberShopDGI, isDormant, agentSchemeCode, memberSchemeCode, agentBillerCode;
+    String shopStatus, isMemberShopDGI, isDormant, agentSchemeCode, memberSchemeCode, agentBillerCode, agentEBDCode;
     Boolean isAgent, isShowB2b = false;
     ProgressBar gridview_progbar;
     ProgressBar progBanner;
@@ -197,6 +197,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         agentSchemeCode = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
         agentBillerCode = sp.getString(DefineValue.AGENT_BILLER_CODES, "");
+        agentEBDCode = sp.getString(DefineValue.AGENT_EBD_CODES, "");
 
         getRealmBillerData();
         getRealmCustomMenuData();
@@ -376,6 +377,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
 
                 String menuItemName = ((TextView) view.findViewById(R.id.grid_text)).getText().toString();
+                Timber.d("menuItemName : %s", menuItemName);
                 String trxType = "";
                 int posIdx = -1;
 
@@ -508,6 +510,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     Intent intent = new Intent(getActivity(), B2BActivity.class);
                     startActivity(intent);
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_ebd) + " " + getString(R.string.menu_item_title_ebd_toko))) {
+//                    Intent intent = new Intent(getActivity(), B2BActivity.class);
+//                    startActivity(intent);
+                    Toast.makeText(getContext(), getString(R.string.menu_item_title_ebd_toko), Toast.LENGTH_SHORT).show();
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_ebd) + " " + getString(R.string.menu_item_title_ebd_canvasser))) {
+//                    Intent intent = new Intent(getActivity(), B2BActivity.class);
+//                    startActivity(intent);
+                    Toast.makeText(getContext(), getString(R.string.menu_item_title_ebd_canvasser), Toast.LENGTH_SHORT).show();
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_mandiri_lkd))) {
                     Intent intent = new Intent(getActivity(), MandiriLPActivity.class);
                     startActivity(intent);
@@ -841,7 +851,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                         populateBanner();
                                     }
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout", response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginMain(getActivity(), message);
@@ -1107,6 +1116,28 @@ public class FragHomeNew extends BaseFragmentMainPage {
         }
     }
 
+    void checkEBDCodeAgent() {
+        try {
+            JSONArray arr = new JSONArray(agentEBDCode);
+            String ebd = getResources().getString(R.string.menu_item_title_ebd);
+            String code = "";
+            for (int i = 0; i < arr.length(); i++) {
+                String obj = arr.getString(i);
+                switch (obj) {
+                    case "TOKO":
+                        code = getResources().getString(R.string.menu_item_title_ebd_toko);
+                        break;
+                    case "CANVASSER":
+                        code = getResources().getString(R.string.menu_item_title_ebd_canvasser);
+                        break;
+                }
+            }
+            menuStrings.add(ebd + " " + code);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     void checkSchemeCodeAgent() {
         try {
             JSONArray arr = new JSONArray(agentSchemeCode);
@@ -1154,6 +1185,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
                             isShowB2b = true;
                         }
+                        break;
+                    case "EBD":
+                        checkEBDCodeAgent();
                         break;
                 }
             }
@@ -1563,7 +1597,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             return R.drawable.ic_pdam;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_biller)))
             return R.drawable.ic_biller;
-        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_scadm)))
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_scadm)) || titleMenu.contains(getResources().getString(R.string.menu_item_title_ebd)))
             return R.drawable.ic_menu_b2b;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_in)))
             return R.drawable.ic_tarik_tunai;
