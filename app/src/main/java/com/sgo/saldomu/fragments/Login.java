@@ -274,7 +274,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
     private void sentDatas() {
         ToggleKeyboard toggleKeyboard = new ToggleKeyboard();
-        toggleKeyboard.hide_keyboard(getActivity());
+        ToggleKeyboard.hide_keyboard(getActivity());
         try {
             String comm_id = MyApiClient.COMM_ID;
             String password = passLoginValue.getText().toString();
@@ -585,10 +585,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             mEditor.putString(DefineValue.LINK_APP, model.getSocialSignature());
             mEditor.putString(DefineValue.IS_DORMANT, model.getIs_dormant());
 
-            if (Integer.valueOf(model.getIsRegistered()) == 0)
-                mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
-            else
-                mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, true);
+            mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, Integer.valueOf(model.getIsRegistered()) != 0);
 
             if (!model.getCommunity().isEmpty()) {
                 mEditor.putInt(DefineValue.COMMUNITY_LENGTH, model.getCommunity().size());
@@ -610,11 +607,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         mEditor.remove(DefineValue.SENDER_ID);
 
                         mEditor.putInt(DefineValue.LEVEL_VALUE, Integer.valueOf(commModel.getMemberLevel()));
-                        if (commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES)) {
-
-                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, true);
-                        } else
-                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
+                        mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL, commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES));
 
                         mEditor.putString(DefineValue.IS_NEW_BULK, commModel.getIsNewBulk());
 
@@ -622,9 +615,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
                         String arrJson = toJson(commModel.getAgent_scheme_codes()).toString();
                         String billerCodes = toJson(commModel.getAgent_biller_codes()).toString();
+                        String ebdCodes = toJson(commModel.getAgent_ebd_codes()).toString();
                         String trxCodes = toJson(commModel.getAgent_trx_codes()).toString();
                         mEditor.putString(DefineValue.AGENT_SCHEME_CODES, arrJson);
                         mEditor.putString(DefineValue.AGENT_BILLER_CODES, billerCodes);
+                        mEditor.putString(DefineValue.AGENT_EBD_CODES, ebdCodes);
                         mEditor.putString(DefineValue.AGENT_TRX_CODES, trxCodes);
                         mEditor.putString(DefineValue.IS_AGENT_TRX_REQ, commModel.getIs_agent_trx_request());
                         mEditor.putString(DefineValue.IS_AGENT_TRX_ATC_MANDIRI_LP, commModel.getIs_agent_atc_mandirilkd());

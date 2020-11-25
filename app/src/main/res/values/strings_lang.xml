@@ -191,6 +191,9 @@
     <string name="menu_item_title_pulsa_agent">Mobile Credit</string>
     <string name="menu_item_title_report">Report</string>
     <string name="menu_item_title_scadm">B2B</string>
+    <string name="menu_item_title_ebd">B2B Espay Catalog</string>
+    <string name="menu_item_title_ebd_toko">(Store)</string>
+    <string name="menu_item_title_ebd_canvasser">(Canvasser)</string>
     <string name="menu_group_title_account">Account</string>
     <string name="menu_item_title_my_profile">My Profile</string>
     <string name="menu_item_title_my_friends">My Friend</string>

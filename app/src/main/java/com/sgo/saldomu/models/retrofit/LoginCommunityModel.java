@@ -86,6 +86,10 @@ public class LoginCommunityModel {
     @Expose
     private List<String> agent_biller_codes;
 
+    @SerializedName("agent_ebd_codes")
+    @Expose
+    private List<String> agent_ebd_codes;
+
     @SerializedName("agent_trx_codes")
     @Expose
     private List<String> agent_trx_codes;
@@ -349,6 +353,10 @@ public class LoginCommunityModel {
 
     public List<String> getAgent_biller_codes() {
         return agent_biller_codes;
+    }
+
+    public List<String> getAgent_ebd_codes() {
+        return agent_ebd_codes;
     }
 
     public List<String> getAgent_trx_codes() {
