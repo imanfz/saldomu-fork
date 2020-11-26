@@ -42,6 +42,7 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.B2BActivity;
+import com.sgo.saldomu.activities.B2BCanvasserActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
@@ -515,8 +516,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //                    startActivity(intent);
                     Toast.makeText(getContext(), getString(R.string.menu_item_title_ebd_toko), Toast.LENGTH_SHORT).show();
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_ebd) + " " + getString(R.string.menu_item_title_ebd_canvasser))) {
-//                    Intent intent = new Intent(getActivity(), B2BActivity.class);
-//                    startActivity(intent);
+                    Intent intent = new Intent(getActivity(), B2BCanvasserActivity.class);
+                    startActivity(intent);
                     Toast.makeText(getContext(), getString(R.string.menu_item_title_ebd_canvasser), Toast.LENGTH_SHORT).show();
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_mandiri_lkd))) {
                     Intent intent = new Intent(getActivity(), MandiriLPActivity.class);

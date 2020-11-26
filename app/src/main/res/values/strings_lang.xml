@@ -1685,4 +1685,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="invalid_promo_code">Promo Code not Complete</string>
     <string name="no_bpjs">BPJS Number</string>
     <string name="destination_no">Destination Number</string>
+    <string name="invoice_title">Invoice</string>
+    <string name="good_receipt_title">Good Receipt</string>
+    <string name="store_phone">Store Phone No.  :</string>
+    <string name="store_phone_vaidation">Store Phone Number required!</string>
 </resources>
