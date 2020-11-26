@@ -1688,5 +1688,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="store_registration">Store Registration</string>
     <string name="create_po">Create PO</string>
     <string name="list_po">List PO</string>
-    <string name="id_no">ID No</string>
+    <string name="id_no">ID Number</string>
 </resources>

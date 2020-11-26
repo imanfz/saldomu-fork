@@ -1679,5 +1679,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="store_registration">Registrasi Toko</string>
     <string name="create_po">Tambah PO</string>
     <string name="list_po">List PO</string>
-    <string name="id_no">No KTP</string>
+    <string name="id_no">Nomor KTP</string>
 </resources>
