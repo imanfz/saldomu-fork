@@ -626,7 +626,6 @@ public class WebParams {
     public final static String MITRA_CODE = "mitra_code";
     public final static String REVERSE_CARD_KEY = "reverse_card_key";
 
-
     public static String SIGN = "sign";
     public static String STORE_NAME = "store_name";
     public static String STORE_ADDRESS = "store_address";
@@ -637,4 +636,6 @@ public class WebParams {
     public static String REVIEW_URL = "review_url";
     public static String GROUP_CODE = "group_code";
     public static String COMPANY_CODE = "company_code";
+
+    public static String CUST_ID_ESPAY = "cust_id_espay";
 }

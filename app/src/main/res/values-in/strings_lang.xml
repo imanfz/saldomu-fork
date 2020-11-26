@@ -815,7 +815,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="sim_puk_required">Dibutuhkan PUK untuk mengakses SIM!</string>
     <string name="success_saved_gallery">Tersimpan di galeri</string>
     <string name="failed_save_gallery">Gagal simpan gambar di galeri</string>
-    <string name="saving_gallery">Menyimpan di galeri...</string>
+    <string name="saving_gallery">Menyimpan di galeri…</string>
     <string name="community">Komunitas</string>
     <string name="community_default">Pilih Komunitas</string>
     <string name="member_code">Kode Member</string>
@@ -1322,7 +1322,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="scadm_topup">Tambah Saldo</string>
     <string name="scadm_denom">Beli Denom</string>
     <string name="bank_product">Produk Bank</string>
-    <string name="comm_code">Kode Komunitas</string>
     <string name="denom_item">Item Denom</string>
     <string name="order_number">Nomor Order</string>
     <string name="lkd_benef_name">Nama Penyetor</string>
@@ -1543,6 +1542,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="keep_your_pin_confidential">Jaga kerahasiaan PIN anda</string>
 
     <string name="community_code">Kode Komunitas</string>
+    <string name="community_name">Nama Komunitas</string>
     <string name="customer_code">Kode Member</string>
     <string name="send_money">Kirim Saldo</string>
     <string name="source_account_no">No. Sumber</string>
@@ -1615,7 +1615,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="put_a_signature">Bubuhkan Tanda Tangan</string>
 
     <string name="estimated_time_arrived">Tiba dalam %1$s </string>
-    <string name="community_name">Komunitas</string>
     <string name="item_list">Daftar Barang</string>
     <string name="customer_name">Nama Pelanggan</string>
     <string name="customer_phone">No. HP Pelanggan</string>
@@ -1676,4 +1675,9 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="invalid_promo_code">Kode Promo tidak lengkap</string>
     <string name="no_bpjs">Nomor BPJS</string>
     <string name="destination_no">Nomor Tujuan</string>
+
+    <string name="store_registration">Registrasi Toko</string>
+    <string name="create_po">Tambah PO</string>
+    <string name="list_po">List PO</string>
+    <string name="id_no">No KTP</string>
 </resources>

@@ -1333,7 +1333,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="scadm_topup">Top Up</string>
     <string name="scadm_denom">Buy Denom</string>
     <string name="bank_product">Bank Products</string>
-    <string name="comm_code">Community Code</string>
     <string name="denom_item">Denom Item</string>
     <string name="order_number">Order Number</string>
     <string name="lkd_benef_name">Benef Name</string>
@@ -1685,4 +1684,9 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="invalid_promo_code">Promo Code not Complete</string>
     <string name="no_bpjs">BPJS Number</string>
     <string name="destination_no">Destination Number</string>
+
+    <string name="store_registration">Store Registration</string>
+    <string name="create_po">Create PO</string>
+    <string name="list_po">List PO</string>
+    <string name="id_no">ID No</string>
 </resources>

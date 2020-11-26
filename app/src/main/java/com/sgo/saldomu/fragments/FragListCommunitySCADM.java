@@ -56,7 +56,7 @@ public class FragListCommunitySCADM extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.frag_list_community_scadm, container, false);
+        v = inflater.inflate(R.layout.frag_list_community, container, false);
         return v;
     }
 

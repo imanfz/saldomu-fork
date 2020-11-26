@@ -14,15 +14,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:layout_weight="1"
-            android:text="Kode Komunitas"
+            android:text="@string/community_code"
             android:padding="10dp" />
         <TextView
             android:id="@+id/community_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:layout_weight="5"
             android:padding="10dp" />
     </LinearLayout>
@@ -34,15 +34,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:layout_weight="1"
-            android:text="Nama Komunitas"
+            android:text="@string/community_name"
             android:padding="10dp" />
         <TextView
             android:id="@+id/community_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:layout_weight="5"
             android:padding="10dp" />
     </LinearLayout>
