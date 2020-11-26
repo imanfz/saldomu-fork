@@ -24,7 +24,7 @@ class FragGoodReceipt : BaseFragment() {
         btn_submit.setOnClickListener {
             if(inputValidation())
             {
-                
+
             }
         }
     }
