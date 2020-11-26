@@ -53,4 +53,4 @@
         android:background="@drawable/rounded_background_blue"
         android:textColor="@color/white"
         android:text="@string/submit" />
-</LinearLayout>t>
+</LinearLayout>
