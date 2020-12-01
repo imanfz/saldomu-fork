@@ -302,6 +302,7 @@ public class MyApiClient {
     public static String LINK_INQUIRY_LENDING_DATA;
     public static String LINK_SALDO_CASH_COLLECTOR;
     public static String LINK_GET_LIST_COMMUNITY_EBD;
+    public static String LINK_INQUIRY_MEMBER_CANVASSER;
 
 
 
@@ -553,6 +554,9 @@ public class MyApiClient {
         LINK_HISTORY_COLLECTOR_LIMIT = headaddressfinal + "HistoryCashCollector/Retrieve";
 
         LINK_GET_LIST_COMMUNITY_EBD = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";
+
+        //Canvasser
+        LINK_INQUIRY_MEMBER_CANVASSER = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
