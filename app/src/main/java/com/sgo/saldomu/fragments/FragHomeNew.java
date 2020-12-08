@@ -55,7 +55,6 @@ import com.sgo.saldomu.activities.MandiriLPActivity;
 import com.sgo.saldomu.activities.ReportActivity;
 import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
 import com.sgo.saldomu.activities.TagihActivity;
-import com.sgo.saldomu.activities.TokoEBDActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.adapter.GridMenu;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
@@ -464,7 +463,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         LevelClass levelClass = new LevelClass(getActivity());
                         levelClass.showDialogLevel();
                     } else {
-                        Intent intent = new Intent(getActivity(), GridBillerActivity.class);
+                        Intent intent = new Intent(getActivity(), BillerActivity.class);
                         intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_EMONEY);
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_emoney));
                         startActivity(intent);
@@ -513,8 +512,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent intent = new Intent(getActivity(), B2BActivity.class);
                     startActivity(intent);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_ebd) + " " + getString(R.string.menu_item_title_ebd_toko))) {
-                    Intent intent = new Intent(getActivity(), TokoEBDActivity.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(getActivity(), TokoEBDActivity.class);
+//                    startActivity(intent);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_ebd) + " " + getString(R.string.menu_item_title_ebd_canvasser))) {
                     Intent intent = new Intent(getActivity(), B2BCanvasserActivity.class);
                     startActivity(intent);

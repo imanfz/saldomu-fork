@@ -10,6 +10,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.sgo.saldomu.Beans.Biller_Data_Model
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.BillerActivity
 import com.sgo.saldomu.activities.GridBillerActivity
 import com.sgo.saldomu.adapter.GridMenu
 import com.sgo.saldomu.coreclass.DefineValue
@@ -31,7 +32,7 @@ class FragGridEmoney : BaseFragment() {
     private var adapter: GridMenu? = null
 
     private var billerTypeCode: String? = null
-    private var gridBillerActivity: GridBillerActivity? = null
+    private var BillerActivity: BillerActivity? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -41,8 +42,8 @@ class FragGridEmoney : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        gridBillerActivity = activity as GridBillerActivity
-        gridBillerActivity!!.setToolbarTitle(getString(R.string.newhome_emoney))
+        BillerActivity = activity as BillerActivity
+        BillerActivity!!.setToolbarTitle(getString(R.string.newhome_emoney))
         realm = Realm.getInstance(RealmManager.BillerConfiguration)
         billerTypeCode = arguments!!.getString(DefineValue.BILLER_TYPE)
         initializeData()
@@ -106,6 +107,6 @@ class FragGridEmoney : BaseFragment() {
 
         val fragment = BillerInputEmoney()
         fragment.arguments = bundle
-        gridBillerActivity!!.switchContent(fragment, commName, TAG)
+        BillerActivity!!.switchContent1(fragment, commName, TAG)
     }
 }

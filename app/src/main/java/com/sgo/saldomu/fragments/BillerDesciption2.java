@@ -854,7 +854,7 @@ public class BillerDesciption2 extends BaseFragment {
         mArgs.putString(DefineValue.TX_ID, tx_id);
         mArgs.putString(DefineValue.CCY_ID, ccy_id);
         Double amount = Double.parseDouble(sentPaymentBillerModel.getAmount())-Double.parseDouble(sentPaymentBillerModel.getFee());
-        mArgs.putString(DefineValue.AMOUNT, amount.toString());
+        mArgs.putString(DefineValue.AMOUNT, sentPaymentBillerModel.getAmount());
         mArgs.putString(DefineValue.ITEM_NAME, item_name);
         mArgs.putString(DefineValue.BILLER_COMM_ID, biller_comm_id);
         mArgs.putString(DefineValue.BILLER_NAME, biller_name);
