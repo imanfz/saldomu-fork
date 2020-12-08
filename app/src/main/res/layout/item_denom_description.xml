@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_background_white"
+    android:orientation="vertical"
+    android:layout_marginBottom="16dp"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/denom_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Data TSEL A"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/denom_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:lineSpacingExtra="8sp"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dictum, purus nec convallis blandit."
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/denom_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="12sp"
+        android:text="Rp 10.000"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+</LinearLayout>
