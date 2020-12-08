@@ -303,6 +303,7 @@ public class MyApiClient {
     public static String LINK_SALDO_CASH_COLLECTOR;
     public static String LINK_REGISTER_EBD;
     public static String LINK_GET_LIST_COMMUNITY_EBD;
+    public static String LINK_GET_LIST_CATALOG_EBD;
 
 
 
@@ -555,6 +556,7 @@ public class MyApiClient {
 
         LINK_REGISTER_EBD = headaddressfinal + "espaycatalog/RegMember/Invoke";
         LINK_GET_LIST_COMMUNITY_EBD = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";
+        LINK_GET_LIST_CATALOG_EBD = headaddressfinal + "espaycatalog/InquiryCatalog/Retrieve";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
