@@ -31,6 +31,7 @@ import com.sgo.saldomu.fragments.BillerInputData;
 import com.sgo.saldomu.fragments.BillerInputEmoney;
 import com.sgo.saldomu.fragments.BillerInputPLN;
 import com.sgo.saldomu.fragments.BillerInputPulsa;
+import com.sgo.saldomu.fragments.FragGridEmoney;
 import com.sgo.saldomu.fragments.ListBillerMerchant;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.BillerDenomResponse;
@@ -287,11 +288,14 @@ public class BillerActivity extends BaseActivity {
                     mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
                 }
                 tag = BillerInput.TAG;
+            } else if (_biller_type_code.equalsIgnoreCase("EMON")) {
+                mLBM = new FragGridEmoney();
+                if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
+                    mArgs.putString(DefineValue.CUST_ID, intent.getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+                }
+                tag = BillerInput.TAG;
             } else {
                 if (intent.hasExtra(DefineValue.FAVORITE_CUSTOMER_ID)) {
-                    if (_biller_type_code.equalsIgnoreCase("EMON"))
-                        mLBM = new BillerInputEmoney();
-                    else
                         mLBM = new BillerInput();
                     mArgs.putString(DefineValue.COMMUNITY_ID, intent.getStringExtra(DefineValue.COMMUNITY_ID));
                     mArgs.putString(DefineValue.COMMUNITY_NAME, intent.getStringExtra(DefineValue.COMMUNITY_NAME));
@@ -359,6 +363,15 @@ public class BillerActivity extends BaseActivity {
         }
         if (next_frag_title != null) setActionBarTitle(next_frag_title);
         ToggleKeyboard.hide_keyboard(this);
+    }
+
+    public void switchContent1(Fragment mFragment, String fragName, String tag) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.biller_content, mFragment)
+                .addToBackStack(tag)
+                .commitAllowingStateLoss();
+        setToolbarTitle(fragName);
     }
 
     public void switchActivity(Intent mIntent, int j) {
@@ -441,6 +454,15 @@ public class BillerActivity extends BaseActivity {
         if (getFragmentManager().getBackStackEntryCount() > 0)
             getFragmentManager().popBackStack();
         else super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

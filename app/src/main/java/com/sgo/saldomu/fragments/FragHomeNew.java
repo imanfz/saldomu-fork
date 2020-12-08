@@ -42,6 +42,7 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.AskForMoneyActivity;
 import com.sgo.saldomu.activities.B2BActivity;
+import com.sgo.saldomu.activities.B2BCanvasserActivity;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
@@ -54,7 +55,6 @@ import com.sgo.saldomu.activities.MandiriLPActivity;
 import com.sgo.saldomu.activities.ReportActivity;
 import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
 import com.sgo.saldomu.activities.TagihActivity;
-import com.sgo.saldomu.activities.TokoEBDActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.adapter.GridMenu;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
@@ -463,7 +463,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         LevelClass levelClass = new LevelClass(getActivity());
                         levelClass.showDialogLevel();
                     } else {
-                        Intent intent = new Intent(getActivity(), GridBillerActivity.class);
+                        Intent intent = new Intent(getActivity(), BillerActivity.class);
                         intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_EMONEY);
                         intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_emoney));
                         startActivity(intent);
@@ -512,11 +512,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent intent = new Intent(getActivity(), B2BActivity.class);
                     startActivity(intent);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_ebd) + " " + getString(R.string.menu_item_title_ebd_toko))) {
-                    Intent intent = new Intent(getActivity(), TokoEBDActivity.class);
-                    startActivity(intent);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_ebd) + " " + getString(R.string.menu_item_title_ebd_canvasser))) {
-//                    Intent intent = new Intent(getActivity(), B2BActivity.class);
+//                    Intent intent = new Intent(getActivity(), TokoEBDActivity.class);
 //                    startActivity(intent);
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_ebd) + " " + getString(R.string.menu_item_title_ebd_canvasser))) {
+                    Intent intent = new Intent(getActivity(), B2BCanvasserActivity.class);
+                    startActivity(intent);
                     Toast.makeText(getContext(), getString(R.string.menu_item_title_ebd_canvasser), Toast.LENGTH_SHORT).show();
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_mandiri_lkd))) {
                     Intent intent = new Intent(getActivity(), MandiriLPActivity.class);
@@ -1597,7 +1597,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             return R.drawable.ic_pdam;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_biller)))
             return R.drawable.ic_biller;
-        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_scadm)) || titleMenu.contains(getResources().getString(R.string.menu_item_title_ebd)))
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_scadm)) || titleMenu.contains(getResources().getString(R.string.menu_item_title_ebd))
+                || titleMenu.contains(getResources().getString(R.string.menu_item_title_ebd_canvasser)))
             return R.drawable.ic_menu_b2b;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_in)))
             return R.drawable.ic_tarik_tunai;

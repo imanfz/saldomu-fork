@@ -1676,7 +1676,11 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="invalid_promo_code">Kode Promo tidak lengkap</string>
     <string name="no_bpjs">Nomor BPJS</string>
     <string name="destination_no">Nomor Tujuan</string>
-
+    <string name="invoice_title">Tagihan</string>
+    <string name="good_receipt_title">Struk Pembayaran</string>
+    <string name="store_phone">No. HP Toko  :</string>
+    <string name="store_phone_vaidation">No. HP Toko dibutuhkan!</string>
+    <string name="store_registration">Registrasi Toko</string>
     <string name="create_po">Tambah PO</string>
     <string name="list_po">List PO</string>
     <string name="id_no">Nomor KTP</string>
