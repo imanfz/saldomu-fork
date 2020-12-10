@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.fragments.OTPVerification;
+import com.sgo.saldomu.interfaces.OnBackPressed;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
@@ -72,5 +73,11 @@ public class OTPVerificationActivity extends BaseActivity {
         return true;
     }
 
-
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.otpVerificationContent);
+        if (!(fragment instanceof OnBackPressed) || !((OnBackPressed) fragment).onBackPressed()) {
+            super.onBackPressed();
+        }
+    }
 }
