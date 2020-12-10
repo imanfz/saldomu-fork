@@ -202,25 +202,18 @@ class DetailMemberToVerifyActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            CameraActivity.REQUEST_CODE ->
-                if (data != null) {
 
+            CameraActivity.REQUEST_CODE -> {
+                if (data != null) {
                     if (CameraActivity.getResult(data) != null) {
                         val path = CameraActivity.getResult(data)
                         if (set_result_photo == RESULT_CAMERA_KTP)
                             processImage(KTP_TYPE, path)
                     }
-//                    if (CameraActivity.getResult(data) != null) {
-//                        val path = CameraActivity.getResult(data)
-//                        ImageCompressionAsyncTask(KTP_TYPE).execute(path)
-//                    }
-                    else {
-                        camera_ktp_paspor_via_agent.setImageDrawable(getResources().getDrawable(R.drawable.camera_retry));
-                        Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show()
-                    }
                 }
+            }
             RESULT_CAMERA_KTP -> {
-                if (pickAndCameraUtil!!.captureImageUri != null && resultCode == Activity.RESULT_OK)
+                if (resultCode == Activity.RESULT_OK)
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
                         processImage(KTP_TYPE, pickAndCameraUtil!!.getRealPathFromURI(data!!.getStringExtra("imagePath")))
                     else
