@@ -1,15 +1,14 @@
 package com.sgo.saldomu.activities
 
-import android.R
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.sgo.saldomu.fragments.FragB2B
+import com.sgo.saldomu.coreclass.ToggleKeyboard
 import com.sgo.saldomu.fragments.FragB2BCanvasserMenu
 import com.sgo.saldomu.widgets.BaseActivity
-import kotlinx.android.synthetic.main.activity_lending.*
+import timber.log.Timber
 
 class B2BCanvasserActivity : BaseActivity() {
     override fun getLayoutResource(): Int {
@@ -39,12 +38,36 @@ class B2BCanvasserActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun switchContent(mFragment: Fragment?, fragName: String?, tag: String?) {
-        supportFragmentManager
-                .beginTransaction()
-                .replace(com.sgo.saldomu.R.id.b2b_activity_content, mFragment!!)
-                .addToBackStack(tag)
-                .commitAllowingStateLoss()
-        actionBarTitle = fragName
+    fun switchContent(mFragment: Fragment, fragName: String, isBackstack: Boolean, tag: String) {
+        ToggleKeyboard.hide_keyboard(this)
+        if (isBackstack) {
+            Timber.d("backstack")
+            supportFragmentManager
+                    .beginTransaction()
+                    .replace(com.sgo.saldomu.R.id.b2b_activity_content, mFragment, tag)
+                    .addToBackStack(tag)
+                    .commitAllowingStateLoss()
+        } else {
+            Timber.d("bukan backstack")
+            supportFragmentManager
+                    .beginTransaction()
+                    .replace(com.sgo.saldomu.R.id.b2b_activity_content, mFragment, tag)
+                    .commitAllowingStateLoss()
+        }
+        initializeToolbar(fragName)
+    }
+
+    fun initializeToolbar(title: String) {
+        setActionBarIcon(com.sgo.saldomu.R.drawable.ic_arrow_left)
+        actionBarTitle = title
+    }
+
+    fun switchActivity(mIntent: Intent?, j: Int) {
+        ToggleKeyboard.hide_keyboard(this)
+        when (j) {
+            MainPage.ACTIVITY_RESULT -> startActivityForResult(mIntent, MainPage.REQUEST_FINISH)
+            2 -> {
+            }
+        }
     }
 }

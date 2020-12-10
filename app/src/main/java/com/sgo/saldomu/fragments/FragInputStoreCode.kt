@@ -22,10 +22,10 @@ import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 
-class FragGoodReceipt : BaseFragment() {
+class FragInputStoreCode : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.frag_good_receipt, container, false)
+        v = inflater.inflate(R.layout.frag_input_store_code, container, false)
         return v
     }
 
@@ -33,7 +33,7 @@ class FragGoodReceipt : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
 
-        iv_clear.setOnClickListener(View.OnClickListener { v: View? -> et_store_phone.setText("") })
+        iv_clear.setOnClickListener(View.OnClickListener { v: View? -> et_store_code.setText("") })
 
         btn_submit.setOnClickListener {
             if(inputValidation())
@@ -44,9 +44,9 @@ class FragGoodReceipt : BaseFragment() {
     }
 
     fun inputValidation():Boolean{
-        if (et_store_phone == null || et_store_phone.getText().toString().isEmpty()) {
-            et_store_phone.requestFocus()
-            et_store_phone.setError(getString(R.string.store_phone_vaidation))
+        if (et_store_code == null || et_store_code.getText().toString().isEmpty()) {
+            et_store_code.requestFocus()
+            et_store_code.setError(getString(R.string.store_phone_vaidation))
             return false
         }
         return true
@@ -60,7 +60,7 @@ class FragGoodReceipt : BaseFragment() {
             params[WebParams.COMM_ID] = commIDLogin
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.MEMBER_ID] = memberIDLogin
-            params[WebParams.CUST_ID_ESPAY] = et_store_phone!!.text.toString()
+            params[WebParams.CUST_ID_ESPAY] = et_store_code!!.text.toString()
             Timber.d("params inquiry member canvasser:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_INQUIRY_MEMBER_CANVASSER, params,
                     object : ObjListeners {

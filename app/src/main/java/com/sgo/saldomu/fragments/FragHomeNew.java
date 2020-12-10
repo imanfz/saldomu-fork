@@ -518,7 +518,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_ebd) + " " + getString(R.string.menu_item_title_ebd_canvasser))) {
                     Intent intent = new Intent(getActivity(), B2BCanvasserActivity.class);
                     startActivity(intent);
-                    Toast.makeText(getContext(), getString(R.string.menu_item_title_ebd_canvasser), Toast.LENGTH_SHORT).show();
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_mandiri_lkd))) {
                     Intent intent = new Intent(getActivity(), MandiriLPActivity.class);
                     startActivity(intent);
