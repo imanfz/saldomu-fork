@@ -1689,7 +1689,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="invoice_title">Invoice</string>
     <string name="good_receipt_title">Good Receipt</string>
     <string name="store_phone">Store Phone No.  :</string>
-    <string name="store_phone_vaidation">Store Phone Number required!</string>
+    <string name="store_code_validation">Store Code required!</string>
     <string name="new_store_registration">New Store Registration</string>
     <string name="create_po">Create PO</string>
     <string name="list_po">List PO</string>
