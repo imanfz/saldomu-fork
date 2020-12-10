@@ -467,10 +467,10 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                                                 val str = NumberTextWatcherForThousand.trimCommaOfString(value)
                                                 dialog.billerinput_et_add_fee.setText(NumberTextWatcherForThousand.getDecimalFormattedString(str))
                                             }
+                                            additional_fee = NumberTextWatcherForThousand.trimCommaOfString(dialog.billerinput_et_add_fee.text.toString()).toDouble()
                                             dialog.billerinput_et_add_fee.setSelection(dialog.billerinput_et_add_fee.text.toString().length)
-                                        }
-                                        additional_fee = NumberTextWatcherForThousand.trimCommaOfString(dialog.billerinput_et_add_fee.text.toString()).toDouble()
-//                                        additional_fee = value.toDouble()
+                                        } else
+                                            additional_fee = 0.0
                                         countTotal()
                                         dialog.total.text = getString(R.string.rp_) + " " + CurrencyFormat.format(totalAmount)
                                         dialog.billerinput_et_add_fee.addTextChangedListener(this)
