@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.sgo.saldomu.fragments.FragB2BCanvasserMenu
-import com.sgo.saldomu.fragments.FragGoodReceipt
+import com.sgo.saldomu.fragments.FragInputStoreCode
 import com.sgo.saldomu.widgets.BaseActivity
 
 class CanvasserGoodReceiptActivity : BaseActivity() {
@@ -21,7 +20,7 @@ class CanvasserGoodReceiptActivity : BaseActivity() {
         setActionBarIcon(com.sgo.saldomu.R.drawable.ic_arrow_left)
         actionBarTitle = getString(com.sgo.saldomu.R.string.good_receipt_title)
         val newFragment: Fragment
-        newFragment = FragGoodReceipt()
+        newFragment = FragInputStoreCode()
         fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager!!.beginTransaction()
         fragmentTransaction.add(com.sgo.saldomu.R.id.b2b_activity_content, newFragment, "b2b")

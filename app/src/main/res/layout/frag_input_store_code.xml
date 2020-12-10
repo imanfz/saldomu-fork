@@ -18,7 +18,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1.5"
             android:gravity="start"
-            android:text="@string/store_phone"
+            android:text="@string/store_code"
             android:textSize="18sp" />
 
         <RelativeLayout
@@ -27,7 +27,7 @@
             android:layout_weight="1">
 
             <EditText
-                android:id="@+id/et_store_phone"
+                android:id="@+id/et_store_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
