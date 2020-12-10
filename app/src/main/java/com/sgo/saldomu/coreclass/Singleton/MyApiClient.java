@@ -305,6 +305,7 @@ public class MyApiClient {
     public static String LINK_GET_LIST_COMMUNITY_EBD;
     public static String LINK_GET_LIST_CATALOG_EBD;
     public static String LINK_INQUIRY_MEMBER_CANVASSER;
+    public static String LINK_GET_LOCATION_DATA;
 
 
 
@@ -554,6 +555,8 @@ public class MyApiClient {
 
         LINK_INQUIRY_LENDING_DATA = headaddressfinal + "LendingProvider/Retrieve";
         LINK_HISTORY_COLLECTOR_LIMIT = headaddressfinal + "HistoryCashCollector/Retrieve";
+
+        LINK_GET_LOCATION_DATA = headaddressfinal + "GetLocationData/Invoke";
 
         LINK_REGISTER_EBD = headaddressfinal + "espaycatalog/RegMember/Invoke";
         LINK_GET_LIST_COMMUNITY_EBD = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";

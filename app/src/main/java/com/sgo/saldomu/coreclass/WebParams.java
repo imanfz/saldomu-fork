@@ -365,7 +365,6 @@ public class WebParams {
     public static String SENDER_ID = "sender_id";
 
     public static String IS_NEW_USER = "is_new_user";
-    public static String ITEM_DATA = "item_data";
     public static String ITEM = "item";
     public static String IS_DETAIL = "is_detail";
     public static String COMM_ID_REMARK = "comm_id_remark";
@@ -639,7 +638,18 @@ public class WebParams {
 
     public static String CUST_ID_ESPAY = "cust_id_espay";
     public static String COMM_CODE_ESPAY = "comm_code_espay";
+    public static String MEMBER_CODE_ESPAY = "member_code_espay";
     public static String VERIFICATION_ID = "verification_id";
     public static String MEMBER_DETAILS = "member_details";
     public static String MOBILE_PHONE_NO = "mobile_phone_no";
+    public static String ITEMS = "items";
+    public static String ITEM_CODE = "item_code";
+    public static String ITEM_NAME = "item_name";
+    public static String PRICE = "price";
+    public static String UNIT = "unit";
+    public static String MIN_QTY = "min_qty";
+    public static String MAX_QTY = "max_qty";
+    public static String PROVINSI_ID = "provinsi_id";
+    public static String KABUPATEN_ID = "kabupaten_id";
+    public static String KECAMATAN_ID = "kecamatan_id";
 }

@@ -33,8 +33,7 @@ import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.fragment_denom_input_item_list.*
-import org.json.JSONArray
+import kotlinx.android.synthetic.main.fragment_input_item_list.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -51,7 +50,7 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
 
     var obj: SCADMCommunityModel? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_denom_input_item_list, container, false)
+        return inflater.inflate(R.layout.fragment_input_item_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,10 +63,10 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
         itemListString = ArrayList()
         itemListAdapter = DenomItemListAdapter(activity, itemList, this, false)
 
-        frag_denom_input_item_list_field.adapter = itemListAdapter
-        frag_denom_input_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        frag_input_item_list_field.adapter = itemListAdapter
+        frag_input_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         val snapHelper: SnapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(frag_denom_input_item_list_field)
+        snapHelper.attachToRecyclerView(frag_input_item_list_field)
 
         obj = DataManager.getInstance().sacdmCommMod
         memberIdSACDM = obj!!.member_id_scadm
@@ -82,9 +81,9 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
                 itemListAdapter!!.filter.filter(editable.toString())
             }
         })
-        frag_denom_input_item_submit_btn.setOnClickListener {
+        frag_input_item_submit_btn.setOnClickListener {
             if (checkInput()) {
-                frag_denom_input_item_list_field.scrollTo(0, 0)
+                frag_input_item_list_field.scrollTo(0, 0)
 //                val frag: Fragment = FragmentDenomConfirm()
                 val frag: Fragment = FragmentDenomInputPromoCode()
 
@@ -222,10 +221,6 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
         return false
     }
 
-    override fun onClick(pos: Int) {
-
-    }
-
     override fun onChangeQty(itemId: String, qty: String?) {
         val orderList = ArrayList<DenomOrderListModel>()
         orderList.add(DenomOrderListModel(memberCode, qty))
@@ -238,9 +233,5 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
                         itemList!![i].orderList.removeAt(0)
             }
         }
-    }
-
-    override fun onDelete(pos: Int) {
-
     }
 }

@@ -1187,9 +1187,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             isShowB2b = true;
                         }
                         break;
-//                    case "EBD":
-//                        checkEBDCodeAgent();
-//                        break;
+                    case "EBD":
+                        checkEBDCodeAgent();
+                        break;
                 }
             }
         } catch (JSONException e) {

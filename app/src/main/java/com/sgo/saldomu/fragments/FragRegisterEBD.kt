@@ -27,6 +27,9 @@ import timber.log.Timber
 
 class FragRegisterEBD : BaseFragment() {
 
+    var provinsiID = ""
+    var kabupatenID = ""
+    var kecamatanID = ""
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_register_ebd, container, false)
         return v
@@ -37,23 +40,57 @@ class FragRegisterEBD : BaseFragment() {
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
         val tokoEBDActivity = activity as TokoEBDActivity
         tokoEBDActivity.initializeToolbar(getString(R.string.shop_registration))
-        et_store_code.onRightDrawableRegisterEBDClicked { it.text.clear() }
-        et_community_code.onRightDrawableRegisterEBDClicked { it.text.clear() }
+        et_store_name.onRightDrawableRegisterEBDClicked { it.text.clear() }
+        et_store_owner_name.onRightDrawableRegisterEBDClicked { it.text.clear() }
         et_id_no.onRightDrawableRegisterEBDClicked { it.text.clear() }
+        et_delivery_address.onRightDrawableRegisterEBDClicked { it.text.clear() }
+        et_province.onRightDrawableRegisterEBDClicked { it.text.clear() }
+        et_district.onRightDrawableRegisterEBDClicked { it.text.clear() }
+        et_sub_district.onRightDrawableRegisterEBDClicked { it.text.clear() }
+        et_urban_village.onRightDrawableRegisterEBDClicked { it.text.clear() }
+        et_postal_code.onRightDrawableRegisterEBDClicked { it.text.clear() }
         btn_submit.setOnClickListener { submitRegisterEBD() }
+        getLocationData()
+    }
+
+    private fun getLocationData() {
+        showProgressDialog()
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LOCATION_DATA, "")
+        params[WebParams.USER_ID] = userPhoneID
+        params[WebParams.COMM_ID] = MyApiClient.COMM_ID
+        if (provinsiID != "")
+            params[WebParams.PROVINSI_ID] = MyApiClient.COMM_ID
+        if (kabupatenID != "")
+            params[WebParams.KABUPATEN_ID] = MyApiClient.COMM_ID
+        if (kecamatanID != "")
+            params[WebParams.KECAMATAN_ID] = MyApiClient.COMM_ID
+
+        Timber.d("isi params get loc data :%s", params.toString())
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LOCATION_DATA, params, object : ObjListeners {
+            override fun onResponses(response: JSONObject?) {
+
+            }
+
+            override fun onError(throwable: Throwable?) {
+                dismissProgressDialog()
+            }
+
+            override fun onComplete() {
+                dismissProgressDialog()
+            }
+
+        })
     }
 
     private fun submitRegisterEBD() {
         showProgressDialog()
-        val memberCode = et_store_code.text.toString()
-        val commCodeEspay = et_community_code.text.toString()
         val verificationId = et_id_no.text.toString()
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REGISTER_EBD, memberCode + commCodeEspay)
-        params[WebParams.MEMBER_CODE] = memberCode
-        params[WebParams.COMM_CODE_ESPAY] = commCodeEspay
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REGISTER_EBD, "")
         params[WebParams.VERIFICATION_ID] = verificationId
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.CUST_ID_ESPAY] = userPhoneID
+        params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
+        params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
 
         Timber.d("isi params register edb:%s", params.toString())
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_EBD, params, object : ObjListeners {
@@ -62,7 +99,7 @@ class FragRegisterEBD : BaseFragment() {
                 val message = response.getString(WebParams.ERROR_MESSAGE)
                 when (code) {
                     WebParams.SUCCESS_CODE -> {
-                        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                        Toast.makeText(activity, getString(R.string.shop_registration_success), Toast.LENGTH_LONG).show()
                         fragmentManager!!.popBackStack()
                     }
                     WebParams.LOGOUT_CODE -> {
