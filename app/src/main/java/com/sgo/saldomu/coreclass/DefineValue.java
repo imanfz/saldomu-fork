@@ -699,5 +699,8 @@ public class DefineValue {
     public static String AJD = "AJD";
     public static String IS_SHOW = "isShow";
     public static String PAYMENT_REMARK = "paymentRemark";
+    public static String PO = "PO";
+    public static String GR = "GR";
+    public static String IN = "IN";
 }
 

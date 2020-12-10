@@ -17,7 +17,7 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.bbs_cash_in_cash_out.*
-import kotlinx.android.synthetic.main.frag_good_receipt.*
+import kotlinx.android.synthetic.main.frag_input_store_code.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -38,7 +38,7 @@ class FragInputStoreCode : BaseFragment() {
         btn_submit.setOnClickListener {
             if(inputValidation())
             {
-                inquiryMember()
+                inquiryDocList()
             }
         }
     }
@@ -46,29 +46,32 @@ class FragInputStoreCode : BaseFragment() {
     fun inputValidation():Boolean{
         if (et_store_code == null || et_store_code.getText().toString().isEmpty()) {
             et_store_code.requestFocus()
-            et_store_code.setError(getString(R.string.store_phone_vaidation))
+            et_store_code.setError(getString(R.string.store_code_validation))
             return false
         }
         return true
     }
 
-    fun inquiryMember()
+    fun inquiryDocList()
     {
         try {
             showProgressDialog()
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_MEMBER_CANVASSER, "")
+            extraSignature = et_store_code!!.text.toString()
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_DOC_LIST, extraSignature)
             params[WebParams.COMM_ID] = commIDLogin
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.MEMBER_ID] = memberIDLogin
-            params[WebParams.CUST_ID_ESPAY] = et_store_code!!.text.toString()
-            Timber.d("params inquiry member canvasser:$params")
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_INQUIRY_MEMBER_CANVASSER, params,
+            params[WebParams.CUST_ID_ESPAY] = userPhoneID
+            params[WebParams.MEMBER_CODE_ESPAY] = et_store_code!!.text.toString()
+            params[WebParams.TYPE_ID] = DefineValue.PO
+            Timber.d("params inquiry doc list:$params")
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_LIST, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
                             try {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
                                 val code = response.getString(WebParams.ERROR_CODE)
-                                Timber.d("isi response inquiry member canvasser:$response")
+                                Timber.d("isi response inquiry doc list:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
 
@@ -91,7 +94,7 @@ class FragInputStoreCode : BaseFragment() {
                                         alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                                     }
                                     else -> {
-                                        Timber.d("isi error inquiry member canvasser:$response")
+                                        Timber.d("isi error inquiry doc list:$response")
                                         val code_msg = response.getString(WebParams.ERROR_MESSAGE)
                                         Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
                                     }
