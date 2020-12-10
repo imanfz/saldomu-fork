@@ -16,8 +16,7 @@ import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.bbs_cash_in_cash_out.*
-import kotlinx.android.synthetic.main.frag_good_receipt.*
+import kotlinx.android.synthetic.main.frag_input_store_code.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -103,7 +102,7 @@ class FragInputStoreCode : BaseFragment() {
 
                         override fun onError(throwable: Throwable) {}
                         override fun onComplete() {
-                            proses_btn.isEnabled = true
+                            btn_submit.isEnabled = true
                             showProgressDialog()
                         }
                     })

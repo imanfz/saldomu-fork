@@ -113,7 +113,7 @@ class FragRegisterEBD : BaseFragment() {
 
     private fun submitRegisterEBD() {
         showProgressDialog()
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REGISTER_EBD, "")
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REGISTER_NEW_EBD, "")
         params[WebParams.VERIFICATION_ID] = et_id_no.text.toString()
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.CUST_ID_ESPAY] = userPhoneID
@@ -126,8 +126,8 @@ class FragRegisterEBD : BaseFragment() {
         params[WebParams.VILLAGE] = kelurahanID
         params[WebParams.ZIP_CODE] = et_postal_code.text.toString()
 
-        Timber.d("isi params register edb:%s", params.toString())
-        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_EBD, params, object : ObjListeners {
+        Timber.d("isi params register store:%s", params.toString())
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_NEW_EBD, params, object : ObjListeners {
             override fun onResponses(response: JSONObject) {
                 val code = response.getString(WebParams.ERROR_CODE)
                 val message = response.getString(WebParams.ERROR_MESSAGE)
