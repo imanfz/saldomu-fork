@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -69,12 +70,14 @@ class FragInputStoreCode : BaseFragment() {
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
                             try {
+                                val gson = Gson()
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
                                 val code = response.getString(WebParams.ERROR_CODE)
+                                val code_msg = response.getString(WebParams.ERROR_MESSAGE)
                                 Timber.d("isi response inquiry doc list:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
-
+                                        Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
@@ -95,7 +98,6 @@ class FragInputStoreCode : BaseFragment() {
                                     }
                                     else -> {
                                         Timber.d("isi error inquiry doc list:$response")
-                                        val code_msg = response.getString(WebParams.ERROR_MESSAGE)
                                         Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
                                     }
                                 }
@@ -106,8 +108,7 @@ class FragInputStoreCode : BaseFragment() {
 
                         override fun onError(throwable: Throwable) {}
                         override fun onComplete() {
-                            proses_btn.isEnabled = true
-                            showProgressDialog()
+                            dismissProgressDialog()
                         }
                     })
         } catch (e: java.lang.Exception) {
