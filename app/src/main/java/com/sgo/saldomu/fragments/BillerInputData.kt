@@ -17,11 +17,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.sgo.saldomu.Beans.listBankModel
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.*
+import com.sgo.saldomu.adapter.AdapterDenomList
 import com.sgo.saldomu.coreclass.*
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -37,16 +39,19 @@ import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.securities.RSA
 import com.sgo.saldomu.utils.CustomStringUtil
+import com.sgo.saldomu.utils.NumberTextWatcherForThousand
 import com.sgo.saldomu.widgets.BaseFragment
 import io.realm.Realm
 import io.realm.RealmResults
+import kotlinx.android.synthetic.main.dialog_biller_confirm.*
 import kotlinx.android.synthetic.main.dialog_notification.*
-import kotlinx.android.synthetic.main.frag_biller_input_new.*
+import kotlinx.android.synthetic.main.frag_biller_input_with_description.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
@@ -74,6 +79,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     private var value_pin: String? = null
     private var _amount: String? = null
     private val amount_desire: String? = null
+    private var notes: String = ""
     private var attempt = 0
     private var failed = 0
     private var is_input_amount: Boolean? = null
@@ -81,6 +87,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     private var isAgent: Boolean? = null
     private var isShowDescription: Boolean? = false
     private var isPIN: Boolean? = false
+    private var saveToFavorite: Boolean = false
     private var fee = 0.0
     private var additional_fee = 0.0
     private var buy_type = 0
@@ -90,10 +97,9 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     private var realm: Realm? = null
     private var mBillerData: BillerItem? = null
 
-
     // new
     private var mDenomData: BillerItem? = null
-    private var mListDenomData: List<DenomDataItem>? = null
+    private var mListDenomData: List<DenomDataItem> = ArrayList()
 
     private val _data = ArrayList<String>()
     private var denomData: ArrayList<String>? = null
@@ -108,10 +114,11 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     private var billerItemList = ArrayList<BillerItem>()
     private val contactList = java.util.ArrayList<ContactList>()
     private var selectedContact: ContactList? = null
+    private var adapterDenomList: AdapterDenomList? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewLayout = inflater.inflate(R.layout.frag_biller_input_new, container, false)
+        viewLayout = inflater.inflate(R.layout.frag_biller_input_with_description, container, false)
         return viewLayout
     }
 
@@ -126,32 +133,18 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
         realm = Realm.getInstance(RealmManager.realmConfiguration)
 
-        btn_submit_billerinput.setOnClickListener { submitInputListener() }
-
         initLayout()
         initEditTextListener()
-//        initRealm()
-//        if (_data.isEmpty()) {
         getBillerDenom()
-//        } else {
         if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
-            billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
-//                checkOperator()
-//                showChoosePayment()
-        }
-//        }
-
-        favorite_switch.setOnCheckedChangeListener { _, isChecked ->
-            notes_edit_text.visibility = if (isChecked) View.VISIBLE else View.GONE
-            notes_edit_text.isEnabled = isChecked
+            billerinput_et_id.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
         }
 
         ib_contact_list.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-                    && ContextCompat.checkSelfPermission(activity!!, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 showListContact()
             } else {
-                ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS),
+                ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.READ_CONTACTS),
                         RC_READ_CONTACTS)
             }
         }
@@ -167,25 +160,6 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         val intent = Intent(activity, ActivitySearch::class.java)
         intent.putExtra(DefineValue.BUNDLE_FRAG, bundle)
         startActivityForResult(intent, RC_READ_CONTACTS)
-    }
-
-    private val spinnerDenomListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(adapterView: AdapterView<*>, view: View, position: Int, l: Long) {
-            if (position != 0) {
-                item_id = mListDenomData?.get(position - 1)?.itemId
-                item_name = mListDenomData?.get(position - 1)?.itemName
-                if (cust_id!!.length >= 10) {
-                    sentInquryBiller()
-                }
-            } else {
-                item_id = null
-                item_name = null
-            }
-        }
-
-        override fun onNothingSelected(adapterView: AdapterView<*>) {
-
-        }
     }
 
     private val spinnerPaymentListener = object : AdapterView.OnItemSelectedListener {
@@ -254,49 +228,19 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private fun initLayout() {
         buy_type = BillerActivity.PURCHASE_TYPE
-        billerinput_text_denom.text = getString(R.string.billerinput_text_spinner_data)
-//        billerinput_et_id_remark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(13))
-        billerinput_et_id_remark.inputType = InputType.TYPE_CLASS_NUMBER
-        billerinput_et_add_fee.inputType = InputType.TYPE_CLASS_NUMBER
-        billerinput_detail_layout_add_fee.visibility = View.GONE
-        billerinput_layout_denom.visibility = View.VISIBLE
-        billerinput_layout_add_fee.visibility = View.GONE
-        billerinput_layout_detail.visibility = View.GONE
+//        billerinput_et_id.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(13))
+        billerinput_et_id.inputType = InputType.TYPE_CLASS_NUMBER
     }
 
     private fun initEditTextListener() {
-        billerinput_et_id_remark.addTextChangedListener(object : TextWatcher {
+        billerinput_et_id.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
                 val string = editable.toString()
                 if (string.length > 3) {
                     cust_id = string
                     checkOperator()
                 } else
-                    cust_id = NoHPFormat.formatTo62(billerinput_et_id_remark.text.toString())
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-        })
-
-        billerinput_et_add_fee.addTextChangedListener(object : TextWatcher {
-            @SuppressLint("SetTextI18n")
-            override fun afterTextChanged(s: Editable?) {
-                val string = s.toString()
-                if (string == "0" || string == "") {
-                    billerinput_et_add_fee.text.clear()
-                    additional_fee = 0.0
-                } else {
-                    additional_fee = string.toDouble()
-                }
-                billerinput_detail_admin_add_fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(additional_fee)
-                countTotal()
+                    cust_id = NoHPFormat.formatTo62(billerinput_et_id.text.toString())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -314,36 +258,17 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         mDenomData = BillerItem()
         mDenomData = billerItemList[indexBiller]
         mListDenomData = billerItemList[indexBiller].denomData
-
-        if (mListDenomData!!.isNotEmpty()) {
-            denomData = ArrayList()
-            adapterDenom = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, denomData!!)
-            adapterDenom?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            billerinput_spinner_denom.adapter = adapterDenom
-            billerinput_spinner_denom.onItemSelectedListener = spinnerDenomListener
-            billerinput_spinner_denom.visibility = View.GONE
-
-            val deproses = object : Thread() {
-                override fun run() {
-                    denomData?.clear()
-                    denomData?.add(getString(R.string.billerinput_text_spinner_default_data))
-                    for (i in mListDenomData!!.indices) {
-                        denomData?.add(mListDenomData?.get(i)?.itemName!!)
-                    }
-
-                    activity!!.runOnUiThread {
-                        billerinput_spinner_denom.visibility = View.VISIBLE
-                        adapterDenom!!.notifyDataSetChanged()
-                    }
+        adapterDenomList = AdapterDenomList(context!!, mListDenomData, object : AdapterDenomList.OnClick {
+            override fun onClick(pos: Int) {
+                if (inputValidation()) {
+                    item_id = mListDenomData[pos].itemId
+                    sentInquryBiller()
                 }
             }
-            deproses.run()
-        } else {
-            item_id = mDenomData?.itemId
-        }
-        val spinAdapter = ArrayAdapter.createFromResource(activity!!, R.array.privacy_list, android.R.layout.simple_spinner_item)
-        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
+        })
+        billerinput_list_denom.adapter = adapterDenomList
+        billerinput_list_denom.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        adapterDenomList!!.notifyDataSetChanged()
 
         mBillerData = BillerItem()
         mBillerData = billerItemList[indexBiller]
@@ -408,7 +333,6 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     private fun submitInputListener() {
         if (InetHandler.isNetworkAvailable(activity)) {
             if (inputValidation()) {
-                btn_submit_billerinput.isEnabled = false
                 sentPaymentBiller()
             }
         } else {
@@ -417,22 +341,10 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     }
 
     private fun inputValidation(): Boolean {
-        if (billerinput_et_id_remark.text.length < 10 ||
-                billerinput_et_id_remark.text.length > 15) {
-            billerinput_et_id_remark.requestFocus()
-            billerinput_et_id_remark.error = getString(R.string.regist1_validation_nohp)
-            //leo
-//            initializeSpinnerDenom()
-            return false
-        }
-        if (item_name == null) {
-            billerinput_spinner_denom.requestFocus()
-            Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_data), Toast.LENGTH_LONG).show()
-            return false
-        }
-        if (favorite_switch.isChecked && notes_edit_text.text.toString().isEmpty()) {
-            notes_edit_text.requestFocus()
-            notes_edit_text.error = getString(R.string.payfriends_notes_zero)
+        if (billerinput_et_id.text!!.length < 10 ||
+                billerinput_et_id.text!!.length > 15) {
+            billerinput_et_id.requestFocus()
+            billerinput_et_id.error = getString(R.string.regist1_validation_length_nohp)
             return false
         }
         return true
@@ -488,10 +400,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun countTotal() {
         totalAmount = amount + additional_fee + fee
-        billerinput_detail_total.text = getString(R.string.rp_) + " " + CurrencyFormat.format(totalAmount)
     }
 
     private fun sentInquryBiller() {
@@ -499,7 +409,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
             showProgressDialog()
             ToggleKeyboard.hide_keyboard(activity!!)
 
-            cust_id = NoHPFormat.formatTo62(billerinput_et_id_remark.text.toString())
+            cust_id = NoHPFormat.formatTo62(billerinput_et_id.text.toString())
 
             extraSignature = biller_comm_id + item_id + cust_id
 
@@ -530,19 +440,98 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                                 description = getGson().toJson(model.description)
                                 fee = model.admin_fee.toDouble()
                                 enabledAdditionalFee = model.enabled_additional_fee
-
-                                if (isAgent!! && enabledAdditionalFee.equals(DefineValue.Y)) {
-                                    billerinput_layout_add_fee.visibility = View.VISIBLE
-                                    billerinput_detail_layout_add_fee.visibility = View.VISIBLE
-                                }
-
-                                billerinput_layout_detail.visibility = View.VISIBLE
-
+                                countTotal()
                                 if (is_display_amount)
                                     isShowDescription = true
-                                billerinput_detail_text_name.text = item_name
-                                billerinput_detail_price.text = getString(R.string.rp_) + " " + CurrencyFormat.format(amount)
-                                billerinput_detail_admin_fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(fee)
+
+                                val dialog = Dialog(activity!!)
+                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                                dialog.setCanceledOnTouchOutside(false)
+                                dialog.setContentView(R.layout.dialog_biller_confirm)
+
+                                if (isAgent!! && enabledAdditionalFee.equals(DefineValue.Y))
+                                    dialog.billerinput_layout_add_fee.visibility = View.VISIBLE
+                                else
+                                    dialog.billerinput_layout_add_fee.visibility = View.GONE
+
+                                if (additional_fee > 0)
+                                    dialog.billerinput_et_add_fee.setText(NumberTextWatcherForThousand.getDecimalFormattedString(additional_fee.toInt().toString()))
+
+                                dialog.billerinput_et_add_fee.addTextChangedListener(object : TextWatcher {
+                                    @SuppressLint("SetTextI18n")
+                                    override fun afterTextChanged(s: Editable?) {
+                                        dialog.billerinput_et_add_fee.removeTextChangedListener(this)
+                                        val value = s.toString()
+                                        if (value != "") {
+                                            if (value.startsWith("0") && !value.startsWith("0.")) dialog.billerinput_et_add_fee.setText("") else {
+                                                val str = NumberTextWatcherForThousand.trimCommaOfString(value)
+                                                dialog.billerinput_et_add_fee.setText(NumberTextWatcherForThousand.getDecimalFormattedString(str))
+                                            }
+                                            additional_fee = NumberTextWatcherForThousand.trimCommaOfString(dialog.billerinput_et_add_fee.text.toString()).toDouble()
+                                            dialog.billerinput_et_add_fee.setSelection(dialog.billerinput_et_add_fee.text.toString().length)
+                                        } else
+                                            additional_fee = 0.0
+                                        countTotal()
+                                        dialog.total.text = getString(R.string.rp_) + " " + CurrencyFormat.format(totalAmount)
+                                        dialog.billerinput_et_add_fee.addTextChangedListener(this)
+                                    }
+
+                                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                                    }
+
+                                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                                    }
+
+                                })
+
+                                dialog.denom.text = item_name
+                                dialog.price.text = getString(R.string.rp_) + " " + CurrencyFormat.format(amount)
+                                dialog.fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(fee)
+
+                                dialog.total.text = getString(R.string.rp_) + " " + CurrencyFormat.format(totalAmount)
+
+                                dialog.layout_notes.visibility = View.GONE
+                                dialog.checkBox.setOnCheckedChangeListener { _, isChecked ->
+                                    run {
+                                        saveToFavorite = isChecked
+                                        if (isChecked)
+                                            dialog.layout_notes.visibility = View.VISIBLE
+                                        else
+                                            dialog.layout_notes.visibility = View.GONE
+                                    }
+                                }
+
+                                dialog.notes.addTextChangedListener(object : TextWatcher {
+                                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                                    }
+
+                                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                                    }
+
+                                    override fun afterTextChanged(p0: Editable?) {
+                                        notes = p0.toString()
+                                    }
+
+                                })
+                                dialog.btnCancel.setOnClickListener {
+                                    dialog.dismiss()
+                                }
+
+                                dialog.btnSubmit.setOnClickListener {
+                                    if (saveToFavorite && notes == "") {
+                                        dialog.notes.requestFocus()
+                                        dialog.notes.error = getString(R.string.payfriends_notes_zero)
+                                    } else {
+                                        dialog.dismiss()
+                                        submitInputListener()
+                                    }
+                                }
+                                dialog.show()
+                                countTotal()
                             } else if (code == WebParams.LOGOUT_CODE) {
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
@@ -562,7 +551,6 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                                     Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
                                     fragManager.popBackStack()
                                 }
-                                billerinput_layout_detail.visibility = View.GONE
                             }
                         }
 
@@ -686,7 +674,6 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
         if (isPIN!!) {
             callPINinput(attempt)
-            btn_submit_billerinput.isEnabled = true
         }
 
     }
@@ -717,47 +704,54 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                             val model = getGson().fromJson(response, jsonModel::class.java)
                             val code = model.error_code
                             val message = model.error_message
-                            if (code == WebParams.SUCCESS_CODE) {
-                                when {
-                                    mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_SMS -> showDialog()
-                                    merchant_type == DefineValue.AUTH_TYPE_OTP -> showDialog()
-                                    else -> submitBiller(attempt)
-                                }
-                            } else if (code == WebParams.LOGOUT_CODE) {
-                                val alertDialog = AlertDialogLogout.getInstance()
-                                alertDialog.showDialoginActivity(activity, message)
-                            } else if (code == ErrorDefinition.WRONG_PIN_BILLER) {
-                                showDialogError(message)
-                            } else if (code == DefineValue.ERROR_9333) run {
-                                Timber.d("isi response app data:%s", model.app_data)
-                                val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            } else if (code == DefineValue.ERROR_0066) run {
-                                Timber.d("isi response maintenance:%s", response.toString())
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
-                            } else {
-                                when (code) {
-                                    "0059" -> showDialogSMS(mTempBank?.bank_name)
-                                    ErrorDefinition.ERROR_CODE_LESS_BALANCE -> {
-                                        val messageDialog = "\"" + message + "\"\n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname))
-
-                                        val dialogFrag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance), messageDialog, getString(R.string.ok), getString(R.string.cancel), false)
-                                        dialogFrag.okListener = DialogInterface.OnClickListener { dialog, which ->
-                                            val mI = Intent(activity, TopUpActivity::class.java)
-                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true)
-                                            startActivityForResult(mI, REQUEST_BillerInqReq)
-                                        }
-                                        dialogFrag.cancelListener = DialogInterface.OnClickListener { dialog, which ->
-                                            sentInquryBiller()
-                                        }
-                                        dialogFrag.setTargetFragment(this@BillerInputData, 0)
-                                        dialogFrag.show(activity!!.supportFragmentManager, AlertDialogFrag.TAG)
+                            when (code) {
+                                WebParams.SUCCESS_CODE -> {
+                                    when {
+                                        mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_SMS -> showDialog()
+                                        merchant_type == DefineValue.AUTH_TYPE_OTP -> showDialog()
+                                        else -> submitBiller(attempt)
                                     }
-                                    else -> {
-                                        Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
-                                        fragManager.popBackStack()
+                                }
+                                WebParams.LOGOUT_CODE -> {
+                                    val alertDialog = AlertDialogLogout.getInstance()
+                                    alertDialog.showDialoginActivity(activity, message)
+                                }
+                                ErrorDefinition.WRONG_PIN_BILLER -> {
+                                    showDialogError(message)
+                                }
+                                DefineValue.ERROR_9333 -> run {
+                                    Timber.d("isi response app data:%s", model.app_data)
+                                    val appModel = model.app_data
+                                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                    alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                }
+                                DefineValue.ERROR_0066 -> run {
+                                    Timber.d("isi response maintenance:%s", response.toString())
+                                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                }
+                                else -> {
+                                    when (code) {
+                                        "0059" -> showDialogSMS(mTempBank?.bank_name)
+                                        ErrorDefinition.ERROR_CODE_LESS_BALANCE -> {
+                                            val messageDialog = "\"" + message + "\"\n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname))
+
+                                            val dialogFrag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance), messageDialog, getString(R.string.ok), getString(R.string.cancel), false)
+                                            dialogFrag.okListener = DialogInterface.OnClickListener { dialog, which ->
+                                                val mI = Intent(activity, TopUpActivity::class.java)
+                                                mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true)
+                                                startActivityForResult(mI, REQUEST_BillerInqReq)
+                                            }
+                                            dialogFrag.cancelListener = DialogInterface.OnClickListener { dialog, which ->
+                                                sentInquryBiller()
+                                            }
+                                            dialogFrag.setTargetFragment(this@BillerInputData, 0)
+                                            dialogFrag.show(activity!!.supportFragmentManager, AlertDialogFrag.TAG)
+                                        }
+                                        else -> {
+                                            Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
+                                            fragManager.popBackStack()
+                                        }
                                     }
                                 }
                             }
@@ -769,7 +763,6 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                         }
 
                         override fun onComplete() {
-                            btn_submit_billerinput.isEnabled = true
                         }
 
                     })
@@ -822,7 +815,6 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
 
-        dialog.title_dialog.text = getString(R.string.smsBanking_dialog_validation_title)
         dialog.title_dialog.text = resources.getString(R.string.regist1_notif_title_verification)
         dialog.message_dialog.visibility = View.VISIBLE
         dialog.message_dialog.text = getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
@@ -841,12 +833,12 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         if (requestCode == MainPage.REQUEST_FINISH) {
             if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 value_pin = data?.getStringExtra(DefineValue.PIN_VALUE)
-                if (is_input_amount!!)
-                    _amount = amount_desire
+                _amount = if (is_input_amount!!)
+                    amount_desire
                 else
-                    _amount = amount.toString()
+                    amount.toString()
 
-                if (favorite_switch.isChecked) {
+                if (saveToFavorite) {
                     onSaveToFavorite()
                 } else {
                     sentInsertTransTopup(value_pin)
@@ -858,8 +850,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 selectedContact = data.getParcelableExtra(DefineValue.ITEM_SELECTED)
                 //trim 0878 - 0872 - 0888 -> ommit "-"
-                val finalPhoneNo = CustomStringUtil.filterPhoneNo(selectedContact!!.getPhoneNo())
-                billerinput_et_id_remark.setText(finalPhoneNo)
+                val finalPhoneNo = CustomStringUtil.filterPhoneNo(selectedContact!!.phoneNo)
+                billerinput_et_id.setText(finalPhoneNo)
             }
         }
 
@@ -894,7 +886,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
                     realm?.commitTransaction()
 
                     if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
-                        billerinput_et_id_remark.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
+                        billerinput_et_id.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
                         checkOperator()
                         showChoosePayment()
                     }
@@ -926,7 +918,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         params[WebParams.CUSTOMER_ID] = cust_id
         params[WebParams.TX_FAVORITE_TYPE] = "BIL"
         params[WebParams.COMM_ID] = biller_comm_id
-        params[WebParams.NOTES] = notes_edit_text.text.toString()
+        params[WebParams.NOTES] = notes
         params[WebParams.DENOM_ITEM_ID] = item_id
 
         Timber.tag("params ").e(params.toString())
@@ -1031,7 +1023,6 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
                         override fun onComplete() {
                             dismissProgressDialog()
-                            btn_submit_billerinput.isEnabled = true
                         }
                     })
         } catch (e: Exception) {
@@ -1103,7 +1094,6 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
                         override fun onComplete() {
                             dismissProgressDialog()
-                            btn_submit_billerinput.isEnabled = true
                         }
                     })
         } catch (e: Exception) {
@@ -1136,6 +1126,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private fun showReportBillerDialog(name: String?, userId: String?, txId: String?, itemName: String?, txStatus: String,
                                        model: GetTrxStatusModel) {
+        showProgressDialog()
         val args = Bundle()
         val dialog = ReportBillerDialog.newInstance(this)
         args.putString(DefineValue.USER_NAME, name)
@@ -1172,16 +1163,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         if (!txStat) args.putString(DefineValue.TRX_REMARK, model.tx_remark)
         args.putString(DefineValue.TRX_STATUS_REMARK, model.tx_status_remark)
 
-        var _isi_amount_desired = ""
-        if (is_input_amount!!)
-            _isi_amount_desired = amount_desire!!
-
         args.putString(DefineValue.DETAILS_BILLER, model.product_name)
-
-        if (_isi_amount_desired.isEmpty())
-            args.putString(DefineValue.AMOUNT_DESIRED, _isi_amount_desired)
-        else
-            args.putString(DefineValue.AMOUNT_DESIRED, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_isi_amount_desired))
 
         if (model.product_name == null) {
             args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_PLN)
@@ -1202,6 +1184,7 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     }
 
     override fun onOkButton() {
+        dismissProgressDialog()
         fragmentManager != null
         fragmentManager!!.popBackStackImmediate(BillerActivity.FRAG_BIL_INPUT, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }

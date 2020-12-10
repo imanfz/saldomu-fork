@@ -33,6 +33,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.OnBackPressed;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.OTPModel;
@@ -47,12 +48,13 @@ import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OTPVerificationConfirm extends BaseFragment {
+public class OTPVerificationConfirm extends BaseFragment implements OnBackPressed {
 
     TextView tvHpValue, tvReffIdValue;
     PinView pinView;
     TextView tvCountDown, tv_version;
     Button btSend, btResend;
+    Boolean allowBackPress = false;
 
     private ProgressDialog progdialog;
     private String is_new;
@@ -133,12 +135,14 @@ public class OTPVerificationConfirm extends BaseFragment {
                         + (TimeUnit.MILLISECONDS.toSeconds(l)
                         - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l)));
                 Timber.d("sisa ontick timer " + sisa);
+                allowBackPress = false;
                 btResend.setEnabled(false);
             }
 
             @Override
             public void onFinish() {
                 Timber.d("sisa onfinish timer " + sisa);
+                allowBackPress = true;
                 btResend.setEnabled(true);
                 btResend.setBackground(getActivity().getResources().getDrawable(R.drawable.rounded_background_blue));
             }
@@ -342,5 +346,10 @@ public class OTPVerificationConfirm extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return !allowBackPress;
     }
 }

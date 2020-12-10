@@ -1027,6 +1027,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="no_source_list_message">Tidak ada rekening member yang terdaftar</string>
     <string name="registrasi_account">Registrasi Account</string>
     <string name="shop_registration">Registrasi Toko</string>
+    <string name="shop_registration_success">Registrasi Toko Sukses</string>
     <string name="rekening_sumber">Rekening Sumber</string>
     <string name="bank_emoney_sumber">Bank / E-Money Sumber</string>
     <string name="contoh_no_hp">Contoh (0888-xxxxxxx)</string>
@@ -1682,5 +1683,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="store_registration">Registrasi Toko</string>
     <string name="create_po">Tambah PO</string>
     <string name="list_po">List PO</string>
-    <string name="id_no">No KTP</string>
+    <string name="id_no">Nomor KTP</string>
+    <string name="choose_catalog">Pilih Katalog</string>
+    <string name="purchase_order">Pesan Pembelian</string>
 </resources>

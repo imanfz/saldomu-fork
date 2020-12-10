@@ -31,7 +31,7 @@ class InputPartnerCode : BaseFragment() {
             else -> et_partner_code.setText(userPhoneID)
         }
 
-        et_partner_code.onRightDrawableClicked { it.text.clear() }
+        et_partner_code.onRightDrawableInputPartnerCodeClicked { it.text.clear() }
 
         favorite_switch.setOnCheckedChangeListener { buttonView: CompoundButton?, isChecked: Boolean ->
             notes_edit_text.visibility = if (isChecked) View.VISIBLE else View.GONE
@@ -76,7 +76,7 @@ class InputPartnerCode : BaseFragment() {
 
 
 @SuppressLint("ClickableViewAccessibility")
-fun EditText.onRightDrawableClicked(onClicked: (view: EditText) -> Unit) {
+fun EditText.onRightDrawableInputPartnerCodeClicked(onClicked: (view: EditText) -> Unit) {
     this.setOnTouchListener { v, event ->
         var hasConsumed = false
         if (v is EditText) {

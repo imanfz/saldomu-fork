@@ -1038,6 +1038,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="no_source_list_message">There are no registered member accounts</string>
     <string name="registrasi_account">Account Registration</string>
     <string name="shop_registration">Store Registration</string>
+    <string name="shop_registration_success">Store Registration Success</string>
     <string name="rekening_sumber">Source Account</string>
     <string name="bank_emoney_sumber">Bank / E-Money Source</string>
     <string name="contoh_no_hp">Example (0888-xxxxxxx)</string>
@@ -1691,5 +1692,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="store_registration">Store Registration</string>
     <string name="create_po">Create PO</string>
     <string name="list_po">List PO</string>
-    <string name="id_no">ID No</string>
+    <string name="id_no">ID Number</string>
+    <string name="choose_catalog">Choose Catalog</string>
+    <string name="purchase_order">Purchase Order</string>
 </resources>

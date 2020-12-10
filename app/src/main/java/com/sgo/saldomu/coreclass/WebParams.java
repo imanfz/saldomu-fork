@@ -638,4 +638,8 @@ public class WebParams {
     public static String COMPANY_CODE = "company_code";
 
     public static String CUST_ID_ESPAY = "cust_id_espay";
+    public static String COMM_CODE_ESPAY = "comm_code_espay";
+    public static String VERIFICATION_ID = "verification_id";
+    public static String MEMBER_DETAILS = "member_details";
+    public static String MOBILE_PHONE_NO = "mobile_phone_no";
 }
