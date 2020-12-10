@@ -30,6 +30,7 @@ class FragListCommunityToko : BaseFragment() {
 
     private val ebdCommunityModelArrayList = ArrayList<EBDCommunityModel>()
     private var adapterEBDCommunityList: AdapterEBDCommunityList? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_list_community, container, false)
         return v
@@ -39,13 +40,23 @@ class FragListCommunityToko : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         ebdCommunityModelArrayList.clear()
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
+
         val tokoEBDActivity = activity as TokoEBDActivity
         tokoEBDActivity.initializeToolbar(getString(R.string.menu_item_title_ebd))
-        btn_register.visibility = View.VISIBLE
-        btn_register.setOnClickListener { tokoEBDActivity.switchContent(FragRegisterEBD(), getString(R.string.shop_registration), true, "FragRegisterEBD") }
+
+        btn_register.setOnClickListener {
+            Toast.makeText(context, "SOONNN sabarr", Toast.LENGTH_SHORT).show()
+//            tokoEBDActivity.switchContent(FragRegisterEBD(), getString(R.string.shop_registration), true, "FragRegisterEBD")
+        }
         adapterEBDCommunityList = AdapterEBDCommunityList(context!!, ebdCommunityModelArrayList, object : AdapterEBDCommunityList.OnClick {
             override fun onClick(pos: Int) {
-                Toast.makeText(context, ebdCommunityModelArrayList[pos].member_code, Toast.LENGTH_SHORT).show()
+                val fragment = FragListItemToko()
+                val bundle = Bundle()
+                bundle.putString(DefineValue.MEMBER_CODE, ebdCommunityModelArrayList[pos].member_code)
+                bundle.putString(DefineValue.COMMUNITY_CODE, ebdCommunityModelArrayList[pos].comm_code)
+                fragment.arguments = bundle
+                tokoEBDActivity.switchContent(fragment, getString(R.string.choose_catalog), true, "FragmentListItemToko")
+
             }
         })
         recyclerView.adapter = adapterEBDCommunityList
@@ -78,12 +89,12 @@ class FragListCommunityToko : BaseFragment() {
                             val status = jsonObject.getString(WebParams.STATUS)
                             val mobilePhoneNo = jsonObject.getString(WebParams.MOBILE_PHONE_NO)
                             val email = jsonObject.getString(WebParams.EMAIL)
-                            ebdCommunityModelArrayList.add(i, EBDCommunityModel(memberCode, custID, custName, commCode, commName, status, mobilePhoneNo, email))
+                            ebdCommunityModelArrayList.add(EBDCommunityModel(memberCode, custID, custName, commCode, commName, status, mobilePhoneNo, email))
                         }
                         adapterEBDCommunityList!!.notifyDataSetChanged()
                     }
                     WebParams.LOGOUT_CODE -> {
-                        AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
+                        AlertDialogLogout.getInstance().showDialoginMain(activity, message)
                     }
                     DefineValue.ERROR_9333 -> {
                         val model = gson.fromJson(response.toString(), jsonModel::class.java)

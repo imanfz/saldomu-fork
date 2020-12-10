@@ -14,7 +14,6 @@ import timber.log.Timber
 
 class TokoEBDActivity : BaseActivity() {
     var fragmentManager: FragmentManager? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializeToolbar(getString(R.string.menu_item_title_ebd))
@@ -44,6 +43,7 @@ class TokoEBDActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
+                ToggleKeyboard.hide_keyboard(this)
                 onBackPressed()
                 return true
             }

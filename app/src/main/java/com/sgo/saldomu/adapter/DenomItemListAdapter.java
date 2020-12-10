@@ -31,10 +31,6 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
     boolean isFragConfirm;
 
     public interface listener {
-        void onClick(int pos);
-
-        void onDelete(int pos);
-
         void onChangeQty(String itemId, String qty);
     }
 
@@ -109,11 +105,11 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
         public holder(View itemView) {
             super(itemView);
             border = itemView.findViewById(R.id.border);
-            itemName = itemView.findViewById(R.id.adapter_denom_item_name_field);
-            itemID = itemView.findViewById(R.id.adapter_denom_item_id_field);
-            itemQty = itemView.findViewById(R.id.adapter_denom_item_et_qty);
-            itemPrice = itemView.findViewById(R.id.adapter_denom_item_price_field);
-            inputDenom = itemView.findViewById(R.id.adapter_denom_item_layout);
+            itemName = itemView.findViewById(R.id.adapter_item_name_field);
+            itemID = itemView.findViewById(R.id.adapter_item_id_field);
+            itemQty = itemView.findViewById(R.id.adapter_item_et_qty);
+            itemPrice = itemView.findViewById(R.id.adapter_item_price_field);
+            inputDenom = itemView.findViewById(R.id.adapter_item_layout);
         }
     }
 
