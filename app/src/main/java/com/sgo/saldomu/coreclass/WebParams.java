@@ -374,6 +374,7 @@ public class WebParams {
     public static String RC_DATETIME    = "rc_datetime";
     public static String FLAG_APPROVE   = "flag_approve";
     public static String SHOP_ID        = "shop_id";
+    public static String VILLAGE       = "village";
     public static String DISTRICT       = "district";
     public static String PROVINCE       = "province";
     public static String LATITUDE       = "latitude";

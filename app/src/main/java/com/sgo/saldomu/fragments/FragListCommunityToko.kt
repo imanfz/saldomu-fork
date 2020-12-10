@@ -45,8 +45,7 @@ class FragListCommunityToko : BaseFragment() {
         tokoEBDActivity.initializeToolbar(getString(R.string.menu_item_title_ebd))
 
         btn_register.setOnClickListener {
-            Toast.makeText(context, "SOONNN sabarr", Toast.LENGTH_SHORT).show()
-//            tokoEBDActivity.switchContent(FragRegisterEBD(), getString(R.string.shop_registration), true, "FragRegisterEBD")
+            tokoEBDActivity.switchContent(FragJoinCommunityToko(), getString(R.string.join_community), true, "FragJoinCommunityToko")
         }
         adapterEBDCommunityList = AdapterEBDCommunityList(context!!, ebdCommunityModelArrayList, object : AdapterEBDCommunityList.OnClick {
             override fun onClick(pos: Int) {

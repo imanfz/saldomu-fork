@@ -245,8 +245,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:maxLength="5"
-                    android:drawableEnd="@drawable/ic_x" />
+                    android:drawableEnd="@drawable/ic_x"
+                    android:inputType="number"
+                    android:maxLength="5"/>
             </com.google.android.material.textfield.TextInputLayout>
         </TableRow>
 

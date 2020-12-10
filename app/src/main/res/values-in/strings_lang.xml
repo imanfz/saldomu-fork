@@ -1622,6 +1622,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="quantity">Jumlah</string>
     <string name="store_name">Nama Toko</string>
+    <string name="store_name_required">Nama Toko dibutuhkan</string>
     <string name="store_address">Alamat Toko</string>
     <string name="partner_code">Kode Mitra</string>
     <string name="partner_code_required">Kode Mitra dibutuhkan!</string>
@@ -1684,10 +1685,13 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="create_po">Tambah PO</string>
     <string name="list_po">List PO</string>
     <string name="owner_id_no">Nomor KTP Pemilik</string>
+    <string name="owner_id_no_required">Nomor KTP Pemilik dibutuhkan</string>
     <string name="choose_catalog">Pilih Katalog</string>
     <string name="purchase_order">Pesan Pembelian</string>
     <string name="join_community">Gabung Komunitas</string>
     <string name="store_owner_name">Nama Pemilik Toko</string>
+    <string name="store_owner_name_required">Nama Pemilik Toko dibutuhkan</string>
     <string name="delivery_address">Alamat Pengiriman</string>
     <string name="postal_code">Kode Pos</string>
+    <string name="postal_code_required">Kode Pos dibutuhkan</string>
 </resources>

@@ -1652,6 +1652,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="quantity">Qty</string>
     <string name="store_name">Store Name</string>
+    <string name="store_name_required">Store Name Required</string>
     <string name="store_address">Store Address</string>
     <string name="partner_code">Partner Code</string>
     <string name="partner_code_required">Partner Code Required!</string>
@@ -1693,10 +1694,14 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="create_po">Create PO</string>
     <string name="list_po">List PO</string>
     <string name="owner_id_no">Owner ID Number</string>
+    <string name="owner_id_no_required">Owner ID Number Required</string>
     <string name="choose_catalog">Choose Catalog</string>
     <string name="purchase_order">Purchase Order</string>
     <string name="join_community">Join Community</string>
     <string name="store_owner_name">Store Owner Name</string>
+    <string name="store_owner_name_required">Store Owner Name Required</string>
     <string name="delivery_address">Delivery Address</string>
+    <string name="delivery_address_required">Delivery Address Required</string>
     <string name="postal_code">Postal Code</string>
+    <string name="postal_code_required">Postal Code Required</string>
 </resources>
