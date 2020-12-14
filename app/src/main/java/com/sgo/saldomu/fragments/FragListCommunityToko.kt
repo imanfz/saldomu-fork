@@ -49,7 +49,7 @@ class FragListCommunityToko : BaseFragment() {
         }
         adapterEBDCommunityList = AdapterEBDCommunityList(context!!, ebdCommunityModelArrayList, object : AdapterEBDCommunityList.OnClick {
             override fun onClick(pos: Int) {
-                val fragment = FragListPurchaseOrderToko()
+                val fragment = FragListPurchaseOrder()
                 val bundle = Bundle()
                 bundle.putString(DefineValue.MEMBER_CODE, ebdCommunityModelArrayList[pos].member_code)
                 bundle.putString(DefineValue.COMMUNITY_CODE, ebdCommunityModelArrayList[pos].comm_code)
