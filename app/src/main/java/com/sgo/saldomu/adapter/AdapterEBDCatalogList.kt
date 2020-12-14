@@ -48,14 +48,15 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
 
             }
 
-            override fun afterTextChanged(p0: Editable?) {
-                val qty: Int = p0.toString().toInt()
+            override fun afterTextChanged(p0: Editable) {
+                val qty: Int = if (!p0.equals("")) p0.toString().toInt() else 0
                 if (qty <= maxQty)
                     listener.onChangeQty(itemCode, itemName, qty, price)
                 else {
                     listener.onChangeQty(itemCode, itemName, maxQty, price)
                     holder.itemQty.setText(maxQty)
                 }
+
             }
 
         })

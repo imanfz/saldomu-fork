@@ -80,7 +80,7 @@ class FragInputStoreCode : BaseFragment() {
                                         val bundle = Bundle()
                                         bundle.putString(DefineValue.DOC_LIST, response.optString(WebParams.DOC_LIST))
                                         val frag: Fragment = FragListPOfromGR()
-                                        frag.setArguments(bundle)
+                                        frag.arguments = bundle
 
                                         switchFragment(frag,"","",true, "")
                                     }

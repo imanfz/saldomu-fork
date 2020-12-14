@@ -1693,6 +1693,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="new_store_registration">New Store Registration</string>
     <string name="create_po">Create PO</string>
     <string name="list_po">List PO</string>
+    <string name="search_po">Search PO</string>
     <string name="owner_id_no">Owner ID Number</string>
     <string name="owner_id_no_required">Owner ID Number Required</string>
     <string name="choose_catalog">Choose Catalog</string>
