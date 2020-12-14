@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -35,24 +36,22 @@ class FragInputStoreCode : BaseFragment() {
         iv_clear.setOnClickListener(View.OnClickListener { v: View? -> et_store_code.setText("") })
 
         btn_submit.setOnClickListener {
-            if(inputValidation())
-            {
+            if (inputValidation()) {
                 inquiryDocList()
             }
         }
     }
 
-    fun inputValidation():Boolean{
+    fun inputValidation(): Boolean {
         if (et_store_code == null || et_store_code.getText().toString().isEmpty()) {
             et_store_code.requestFocus()
-            et_store_code.setError(getString(R.string.store_code_validation))
+            et_store_code.error = getString(R.string.store_code_validation)
             return false
         }
         return true
     }
 
-    fun inquiryDocList()
-    {
+    fun inquiryDocList() {
         try {
             showProgressDialog()
             extraSignature = et_store_code!!.text.toString()
@@ -68,12 +67,14 @@ class FragInputStoreCode : BaseFragment() {
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
                             try {
+                                val gson = Gson()
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
                                 val code = response.getString(WebParams.ERROR_CODE)
+                                val code_msg = response.getString(WebParams.ERROR_MESSAGE)
                                 Timber.d("isi response inquiry doc list:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
-
+                                        Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
@@ -94,7 +95,6 @@ class FragInputStoreCode : BaseFragment() {
                                     }
                                     else -> {
                                         Timber.d("isi error inquiry doc list:$response")
-                                        val code_msg = response.getString(WebParams.ERROR_MESSAGE)
                                         Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
                                     }
                                 }
@@ -105,8 +105,7 @@ class FragInputStoreCode : BaseFragment() {
 
                         override fun onError(throwable: Throwable) {}
                         override fun onComplete() {
-                            btn_submit.isEnabled = true
-                            showProgressDialog()
+                            dismissProgressDialog()
                         }
                     })
         } catch (e: java.lang.Exception) {

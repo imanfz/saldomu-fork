@@ -1706,4 +1706,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="postal_code_required">Postal Code Required</string>
     <string name="your_store_code">Your Store Code</string>
     <string name="your_community_code">Your Community Code</string>
+    <string name="doc_no">Document No.</string>
+    <string name="doc_status">Document Status</string>
+    <string name="date">Date</string>
 </resources>

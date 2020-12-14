@@ -1697,4 +1697,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="postal_code_required">Kode Pos dibutuhkan</string>
     <string name="your_store_code">Kode Toko Anda</string>
     <string name="your_community_code">Kode Komunitas Anda</string>
+    <string name="doc_no">No. Dokumen</string>
+    <string name="doc_status">Status Dokumen</string>
 </resources>
