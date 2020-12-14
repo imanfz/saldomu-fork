@@ -702,5 +702,8 @@ public class DefineValue {
     public static String PO = "PO";
     public static String GR = "GR";
     public static String IN = "IN";
+    public static String DOC_NO = "doc_no";
+    public static String DOC_STATUS = "doc_status";
+    public static String DOC_LIST = "doc_list";
 }
 

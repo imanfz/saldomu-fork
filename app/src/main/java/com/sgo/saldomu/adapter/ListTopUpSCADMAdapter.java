@@ -54,23 +54,6 @@ public class ListTopUpSCADMAdapter extends RecyclerView.Adapter<ListTopUpSCADMAd
 
                 listener.onClick(scadmCommunityModelArrayList.get(position));
 
-//                Bundle bundle = new Bundle();
-//                bundle.putString(DefineValue.COMMUNITY_NAME,scadmCommunityModelArrayList.get(position).getComm_name());
-//                bundle.putString(DefineValue.COMM_ID_SCADM,scadmCommunityModelArrayList.get(position).getComm_id());
-//                bundle.putString(DefineValue.COMMUNITY_CODE,scadmCommunityModelArrayList.get(position).getComm_code());
-//                bundle.putString(DefineValue.MEMBER_CODE,scadmCommunityModelArrayList.get(position).getMember_code());
-//                bundle.putString(DefineValue.API_KEY,scadmCommunityModelArrayList.get(position).getApi_key());
-//                bundle.putString(DefineValue.MEMBER_ID_SCADM,scadmCommunityModelArrayList.get(position).getMember_id_scadm());
-//                TopUpSCADMActivity ftf = (TopUpSCADMActivity) mContext;
-//
-//                mFrag = new FragTopUpSCADM();
-//                ftf.switchContent(mFrag, ListTopUpSCADMAdapter.this.toString(), true);
-//
-//                mFrag.setArguments(bundle);
-//
-//                if (mContext == null) {
-//                    return;
-//                }
             }
         });
     }
@@ -96,7 +79,6 @@ public class ListTopUpSCADMAdapter extends RecyclerView.Adapter<ListTopUpSCADMAd
             communityCode = itemView.findViewById(R.id.community_code);
             view = itemView.findViewById(R.id.view_list_scadm);
             layout = itemView.findViewById(R.id.layout1);
-
         }
     }
 }

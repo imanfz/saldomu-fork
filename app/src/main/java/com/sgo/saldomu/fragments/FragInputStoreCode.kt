@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.BillerActivity
+import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -17,7 +20,6 @@ import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.bbs_cash_in_cash_out.*
 import kotlinx.android.synthetic.main.frag_input_store_code.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -77,7 +79,12 @@ class FragInputStoreCode : BaseFragment() {
                                 Timber.d("isi response inquiry doc list:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
-                                        Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
+                                        val bundle = Bundle()
+                                        bundle.putString(DefineValue.DOC_LIST, response.optString(WebParams.DOC_LIST))
+                                        val frag: Fragment = FragListPOfromGR()
+                                        frag.setArguments(bundle)
+
+                                        switchFragment(frag,"","",true, "")
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
@@ -114,6 +121,12 @@ class FragInputStoreCode : BaseFragment() {
         } catch (e: java.lang.Exception) {
             Timber.d("httpclient:%s", e.message)
         }
+    }
+
+    private fun switchFragment(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {
+        if (activity == null) return
+        val fca = activity as CanvasserGoodReceiptActivity?
+        fca!!.switchContent(i, name, next_name, isBackstack, tag)
     }
 }
 

@@ -125,7 +125,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tv_date"
+                android:id="@+id/tv_due_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="end"

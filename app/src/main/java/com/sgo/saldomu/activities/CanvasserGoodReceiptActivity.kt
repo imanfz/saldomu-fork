@@ -4,10 +4,16 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.sgo.saldomu.R
+import com.sgo.saldomu.coreclass.ToggleKeyboard
 import com.sgo.saldomu.fragments.FragInputStoreCode
 import com.sgo.saldomu.widgets.BaseActivity
+import timber.log.Timber
 
 class CanvasserGoodReceiptActivity : BaseActivity() {
+
+    private var ListPO: String = "list_po"
+
     override fun getLayoutResource(): Int {
         return com.sgo.saldomu.R.layout.activity_b2b;
     }
@@ -36,12 +42,22 @@ class CanvasserGoodReceiptActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun switchContent(mFragment: Fragment?, fragName: String?, tag: String?) {
-        supportFragmentManager
-                .beginTransaction()
-                .replace(com.sgo.saldomu.R.id.b2b_activity_content, mFragment!!)
-                .addToBackStack(tag)
-                .commitAllowingStateLoss()
-        actionBarTitle = fragName
+    fun switchContent(mFragment: Fragment?, fragName: String?, next_frag_title: String?, isBackstack: Boolean, tag: String?) {
+        if (isBackstack) {
+            Timber.d("backstack:" + "masuk")
+            supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.b2b_activity_content, mFragment!!, tag)
+                    .addToBackStack(fragName)
+                    .commitAllowingStateLoss()
+        } else {
+            Timber.d("bukan backstack:" + "masuk")
+            supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.b2b_activity_content, mFragment!!, tag)
+                    .commitAllowingStateLoss()
+        }
+        if (next_frag_title != null) actionBarTitle = next_frag_title
+        ToggleKeyboard.hide_keyboard(this)
     }
 }

@@ -653,4 +653,6 @@ public class WebParams {
     public static String KABUPATEN_ID = "kabupaten_id";
     public static String KECAMATAN_ID = "kecamatan_id";
     public static String TYPE_ID = "type_id";
+    public static String DOC_STATUS = "doc_status";
+    public static String DOC_LIST = "doc_list";
 }
