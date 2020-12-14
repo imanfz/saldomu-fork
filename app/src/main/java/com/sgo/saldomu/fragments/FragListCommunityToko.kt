@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.TokoEBDActivity
+import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.AdapterEBDCommunityList
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -41,22 +41,20 @@ class FragListCommunityToko : BaseFragment() {
         ebdCommunityModelArrayList.clear()
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
-        val tokoEBDActivity = activity as TokoEBDActivity
-        tokoEBDActivity.initializeToolbar(getString(R.string.menu_item_title_ebd))
+        val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
+        tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.purchase_order))
 
         btn_register.setOnClickListener {
-            Toast.makeText(context, "SOONNN sabarr", Toast.LENGTH_SHORT).show()
-//            tokoEBDActivity.switchContent(FragRegisterEBD(), getString(R.string.shop_registration), true, "FragRegisterEBD")
+            tokoPurchaseOrderActivity.switchContent(FragJoinCommunityToko(), getString(R.string.join_community), true, "FragJoinCommunityToko")
         }
         adapterEBDCommunityList = AdapterEBDCommunityList(context!!, ebdCommunityModelArrayList, object : AdapterEBDCommunityList.OnClick {
             override fun onClick(pos: Int) {
-                val fragment = FragListItemToko()
+                val fragment = FragListPurchaseOrder()
                 val bundle = Bundle()
                 bundle.putString(DefineValue.MEMBER_CODE, ebdCommunityModelArrayList[pos].member_code)
                 bundle.putString(DefineValue.COMMUNITY_CODE, ebdCommunityModelArrayList[pos].comm_code)
                 fragment.arguments = bundle
-                tokoEBDActivity.switchContent(fragment, getString(R.string.choose_catalog), true, "FragmentListItemToko")
-
+                tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.list_po), true, "FragListPurchaseOrderToko")
             }
         })
         recyclerView.adapter = adapterEBDCommunityList
@@ -68,7 +66,8 @@ class FragListCommunityToko : BaseFragment() {
         showProgressDialog()
         val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_COMMUNITY_EBD)
         params[WebParams.USER_ID] = userPhoneID
-        params[WebParams.CUST_ID_ESPAY] = userPhoneID
+        params[WebParams.MEMBER_PHONE] = userPhoneID
+        params[WebParams.MEMBER_CODE] = ""
 
         Timber.d("isi params get list community edb:%s", params.toString())
 

@@ -1426,18 +1426,18 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="bank_transfer">Rekening Bank</string>
     <string name="ktp_warn">NIK dibutuhkan.</string>
     <string name="ktp_warn1">NIK harus 16 karakter</string>
-    <string name="rt_validation">RT dibutuhkan!</string>
-    <string name="rw_validation">RW dibutuhkan!</string>
-    <string name="urban_village_validation">Kelurahan dibutuhkan!</string>
-    <string name="sub_district_validation">Kecamatan dibutuhkan!</string>
-    <string name="district_validation">Kabupaten dibutuhkan!</string>
-    <string name="province_validation">Provinsi dibutuhkan!</string>
+    <string name="rt_validation">RT dibutuhkan</string>
+    <string name="rw_validation">RW dibutuhkan</string>
+    <string name="urban_village_validation">Kelurahan dibutuhkan</string>
+    <string name="sub_district_validation">Kecamatan dibutuhkan</string>
+    <string name="district_validation">Kabupaten dibutuhkan</string>
+    <string name="province_validation">Provinsi dibutuhkan</string>
     <string name="urban_village_not_found_message">Kelurahan name not found</string>
     <string name="sub_district_not_found_message">Kecamatan name not found</string>
     <string name="district_not_found_message">Kabupaten name not found</string>
     <string name="province_not_found_message">Provinsi name not found</string>
-    <string name="religion_validation">Agama dibutuhkan!</string>
-    <string name="job_validation">Pekerjaan dibutuhkan!</string>
+    <string name="religion_validation">Agama dibutuhkan</string>
+    <string name="job_validation">Pekerjaan dibutuhkan</string>
     <string name="KTP_title">1. Foto KTP</string>
     <string name="KTP_and_cust_title">2. Foto dengan KTP</string>
     <string name="sign_title">3. Foto Tanda Tangan</string>
@@ -1449,7 +1449,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="pln_title">Voucher Token Listrik</string>
     <string name="token_listrik">Prabayar</string>
     <string name="tagihan_listrik">Pascabayar</string>
-    <string name="please_wait">Harap Menunggu...</string>
+    <string name="please_wait">Harap Menunggu…</string>
     <string name="gender_validation">Jenis Kelamin dibutuhkan!</string>
     <string name="empty_notification">Notifikasi Kosong</string>
     <string name="empty_notification_message">Sepertinya kamu masih belum mendapatkan pesan atau melakukan transaksi.</string>
@@ -1622,6 +1622,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="quantity">Jumlah</string>
     <string name="store_name">Nama Toko</string>
+    <string name="store_name_required">Nama Toko dibutuhkan</string>
     <string name="store_address">Alamat Toko</string>
     <string name="partner_code">Kode Mitra</string>
     <string name="partner_code_required">Kode Mitra dibutuhkan!</string>
@@ -1684,13 +1685,18 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="create_po">Tambah PO</string>
     <string name="list_po">List PO</string>
     <string name="owner_id_no">Nomor KTP Pemilik</string>
+    <string name="owner_id_no_required">Nomor KTP Pemilik dibutuhkan</string>
     <string name="choose_catalog">Pilih Katalog</string>
     <string name="purchase_order">Pesan Pembelian</string>
     <string name="join_community">Gabung Komunitas</string>
     <string name="store_owner_name">Nama Pemilik Toko</string>
+    <string name="store_owner_name_required">Nama Pemilik Toko dibutuhkan</string>
     <string name="delivery_address">Alamat Pengiriman</string>
+    <string name="delivery_address_required">Alamat Pengiriman dibutuhkan</string>
     <string name="postal_code">Kode Pos</string>
+    <string name="postal_code_required">Kode Pos dibutuhkan</string>
+    <string name="your_store_code">Kode Toko Anda</string>
+    <string name="your_community_code">Kode Komunitas Anda</string>
     <string name="doc_no">No. Dokumen</string>
     <string name="doc_status">Status Dokumen</string>
-    <string name="date">Tanggal</string>
 </resources>

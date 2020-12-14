@@ -52,7 +52,8 @@
         android:theme="@style/Theme.MyTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:label,allowBackup,appComponentFactory,theme">
-        <activity android:name=".activities.TokoEBDActivity"></activity>
+        <activity android:name=".activities.TokoPurchaseOrderActivity"></activity>
+        <activity android:name=".activities.TokoEBDActivity" />
         <activity
             android:name=".activities.OTPActivity"
             android:screenOrientation="portrait" />

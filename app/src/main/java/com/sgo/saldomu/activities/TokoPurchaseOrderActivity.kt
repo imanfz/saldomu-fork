@@ -7,34 +7,34 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.ToggleKeyboard
-import com.sgo.saldomu.fragments.FragTokoEBD
+import com.sgo.saldomu.fragments.FragListCommunityToko
 import com.sgo.saldomu.widgets.BaseActivity
 import timber.log.Timber
 
-class TokoEBDActivity : BaseActivity() {
+class TokoPurchaseOrderActivity : BaseActivity() {
     var fragmentManager: FragmentManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initializeToolbar(getString(R.string.menu_item_title_ebd))
-        if (findViewById<View?>(R.id.toko_ebd_content) != null) {
+        initializeToolbar(getString(R.string.purchase_order))
+        if (findViewById<View?>(R.id.toko_po_content) != null) {
             if (savedInstanceState != null) {
                 return
             }
             val newFragment: Fragment
-            newFragment = FragTokoEBD()
+            newFragment = FragListCommunityToko()
             fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager!!.beginTransaction()
-            fragmentTransaction.add(R.id.toko_ebd_content, newFragment, "FragTokoEBD")
+            fragmentTransaction.add(R.id.toko_po_content, newFragment, "FragListCommunityToko")
             fragmentTransaction.commit()
             setResult(MainPage.RESULT_NORMAL)
         }
     }
 
     override fun getLayoutResource(): Int {
-        return R.layout.activity_toko_ebd
+        return R.layout.activity_toko_purchase_order
     }
 
-    fun initializeToolbar(title : String) {
+    fun initializeToolbar(title: String) {
         setActionBarIcon(R.drawable.ic_arrow_left)
         actionBarTitle = title
     }
@@ -56,14 +56,14 @@ class TokoEBDActivity : BaseActivity() {
             Timber.d("backstack")
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.toko_ebd_content, mFragment, tag)
+                    .replace(R.id.toko_po_content, mFragment, tag)
                     .addToBackStack(tag)
                     .commitAllowingStateLoss()
         } else {
             Timber.d("bukan backstack")
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.toko_ebd_content, mFragment, tag)
+                    .replace(R.id.toko_po_content, mFragment, tag)
                     .commitAllowingStateLoss()
         }
         initializeToolbar(fragName)

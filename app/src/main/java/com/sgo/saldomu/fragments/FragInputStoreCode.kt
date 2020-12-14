@@ -39,24 +39,22 @@ class FragInputStoreCode : BaseFragment() {
         iv_clear.setOnClickListener(View.OnClickListener { v: View? -> et_store_code.setText("") })
 
         btn_submit.setOnClickListener {
-            if(inputValidation())
-            {
+            if (inputValidation()) {
                 inquiryDocList()
             }
         }
     }
 
-    fun inputValidation():Boolean{
+    fun inputValidation(): Boolean {
         if (et_store_code == null || et_store_code.getText().toString().isEmpty()) {
             et_store_code.requestFocus()
-            et_store_code.setError(getString(R.string.store_code_validation))
+            et_store_code.error = getString(R.string.store_code_validation)
             return false
         }
         return true
     }
 
-    fun inquiryDocList()
-    {
+    fun inquiryDocList() {
         try {
             showProgressDialog()
             extraSignature = et_store_code!!.text.toString()

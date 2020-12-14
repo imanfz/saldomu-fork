@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:gravity="start"
+                android:inputType="textCapCharacters"
                 android:textSize="18sp" />
 
             <ImageView

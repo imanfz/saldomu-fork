@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.AdapterView
 import androidx.core.content.res.ResourcesCompat
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoEBDActivity
+import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.GridMenu
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.widgets.BaseFragment
@@ -45,7 +47,7 @@ class FragTokoEBD : BaseFragment() {
             if (menuStrings[i] == getString(R.string.new_store_registration))
                 tokoEBDActivity!!.switchContent(FragRegisterEBD(), getString(R.string.shop_registration), true, "FragRegisterEBD")
             else if (menuStrings[i] == getString(R.string.purchase_order))
-                tokoEBDActivity!!.switchContent(FragListCommunityToko(), getString(R.string.menu_item_title_ebd), true, "FragListCommunityToko")
+                tokoEBDActivity!!.startActivity(Intent(activity, TokoPurchaseOrderActivity::class.java))
         }
 
     }
