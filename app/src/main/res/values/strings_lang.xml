@@ -1436,18 +1436,18 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="bank_transfer">Bank Account</string>
     <string name="ktp_warn">NIK is required.</string>
     <string name="ktp_warn1">NIK must be 16 characters</string>
-    <string name="rt_validation">RT is required!</string>
-    <string name="rw_validation">RW is required!</string>
-    <string name="urban_village_validation">Urban Village required!</string>
-    <string name="sub_district_validation">Sub-district required!</string>
-    <string name="district_validation">District required!</string>
-    <string name="province_validation">Province required!</string>
+    <string name="rt_validation">RT is required</string>
+    <string name="rw_validation">RW is required</string>
+    <string name="urban_village_validation">Urban Village required</string>
+    <string name="sub_district_validation">Sub-district required</string>
+    <string name="district_validation">District required</string>
+    <string name="province_validation">Province required</string>
     <string name="urban_village_not_found_message">Urban Village name not found</string>
     <string name="sub_district_not_found_message">Sub-district name not found</string>
     <string name="district_not_found_message">District name not found</string>
     <string name="province_not_found_message">Province name not found</string>
-    <string name="religion_validation">Religion required!</string>
-    <string name="job_validation">Job required!</string>
+    <string name="religion_validation">Religion required</string>
+    <string name="job_validation">Job required</string>
     <string name="KTP_title">1. KTP Photo</string>
     <string name="KTP_and_cust_title">2. Take a Picture with KTP</string>
     <string name="sign_title">3.  Signature Photo</string>
@@ -1704,4 +1704,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="delivery_address_required">Delivery Address Required</string>
     <string name="postal_code">Postal Code</string>
     <string name="postal_code_required">Postal Code Required</string>
+    <string name="your_store_code">Your Store Code</string>
+    <string name="your_community_code">Your Community Code</string>
 </resources>

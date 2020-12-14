@@ -654,4 +654,13 @@ public class WebParams {
     public static String KABUPATEN_ID = "kabupaten_id";
     public static String KECAMATAN_ID = "kecamatan_id";
     public static String TYPE_ID = "type_id";
+
+    public static String KODE_PROVINSI = "KODE_PROVINSI";
+    public static String NAMA_PROVINSI = "NAMA_PROVINSI";
+    public static String KODE_KOT_KAB = "KODE_KOT_KAB";
+    public static String NAMA_KOT_KAB = "NAMA_KOT_KAB";
+    public static String KODE_KECAMATAN = "KODE_KECAMATAN";
+    public static String NAMA_KECAMATAN = "NAMA_KECAMATAN";
+    public static String KODE_LUR_DES = "KODE_LUR_DES";
+    public static String NAMA_LUR_DES = "NAMA_LUR_DES";
 }

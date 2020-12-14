@@ -16,7 +16,7 @@ class TokoPurchaseOrderActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializeToolbar(getString(R.string.purchase_order))
-        if (findViewById<View?>(R.id.toko_ebd_content) != null) {
+        if (findViewById<View?>(R.id.toko_po_content) != null) {
             if (savedInstanceState != null) {
                 return
             }

@@ -9,22 +9,33 @@ import android.view.ViewGroup
 import android.view.Window
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
+import com.sgo.saldomu.adapter.AdapterEBDCatalogList
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.models.EBDCatalogModel
+import com.sgo.saldomu.models.EBDOrderModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.dialog_notification.*
 import kotlinx.android.synthetic.main.frag_input_store_code.*
 import org.json.JSONObject
 import timber.log.Timber
+import java.util.ArrayList
 
-class FragJoinCommunityToko : BaseFragment() {
+class FragListPurchaseOrderToko : BaseFragment() {
+
+    var memberCode: String? = null
+    var commCode: String? = null
+
+    var itemList = ArrayList<EBDCatalogModel>()
+    var orderList = ArrayList<EBDOrderModel>()
+    var itemListAdapter: AdapterEBDCatalogList? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.frag_input_store_code, container, false)
+        v = inflater.inflate(R.layout.fragment_input_item_list, container, false)
         return v
     }
 
@@ -34,7 +45,7 @@ class FragJoinCommunityToko : BaseFragment() {
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
         val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
-        tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.join_community))
+        tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.list_po))
 
         iv_clear.setOnClickListener { et_store_code.setText("") }
         btn_submit.setOnClickListener {
