@@ -1690,4 +1690,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="store_owner_name">Nama Pemilik Toko</string>
     <string name="delivery_address">Alamat Pengiriman</string>
     <string name="postal_code">Kode Pos</string>
+    <string name="doc_no">No. Dokumen</string>
+    <string name="doc_status">Status Dokumen</string>
+    <string name="date">Tanggal</string>
 </resources>

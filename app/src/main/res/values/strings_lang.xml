@@ -1699,4 +1699,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="store_owner_name">Store Owner Name</string>
     <string name="delivery_address">Delivery Address</string>
     <string name="postal_code">Postal Code</string>
+    <string name="doc_no">Document No.</string>
+    <string name="doc_status">Document Status</string>
+    <string name="date">Date</string>
 </resources>
