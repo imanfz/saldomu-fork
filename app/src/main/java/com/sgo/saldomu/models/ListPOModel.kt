@@ -19,4 +19,16 @@ class ListPOModel {
     @SerializedName("due_date")
     @Expose
     var due_date: String? = null
+
+    @SerializedName("cust_id")
+    @Expose
+    var cust_id: String? = null
+
+    @SerializedName("member_code")
+    @Expose
+    var member_code: String? = null
+
+    @SerializedName("comm_code")
+    @Expose
+    var comm_code: String? = null
 }

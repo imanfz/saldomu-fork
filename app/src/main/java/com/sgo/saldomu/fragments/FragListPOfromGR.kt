@@ -12,7 +12,7 @@ import com.sgo.saldomu.adapter.ListTopUpSCADMAdapter
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.models.ListPOModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_list.*
+import kotlinx.android.synthetic.main.frag_list_po.*
 import org.json.JSONArray
 import java.util.*
 
@@ -23,7 +23,7 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
     private var listPOAdapter: ListPOAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.frag_list, container, false)
+        v = inflater.inflate(R.layout.frag_list_po, container, false)
         return v
     }
 
@@ -52,11 +52,17 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
             val doc_status = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_STATUS)
             val total_amount = mArrayDoc.getJSONObject(i).getString(WebParams.TOTAL_AMOUNT)
             val due_date = mArrayDoc.getJSONObject(i).getString(WebParams.DUE_DATE)
+            val cust_id = mArrayDoc.getJSONObject(i).getString(WebParams.CUST_ID)
+            val member_code = mArrayDoc.getJSONObject(i).getString(WebParams.MEMBER_CODE)
+            val comm_code = mArrayDoc.getJSONObject(i).getString(WebParams.COMM_CODE)
             val listPOModel = ListPOModel()
             listPOModel.doc_no = doc_no
             listPOModel.doc_status = doc_status
             listPOModel.total_amount = total_amount
             listPOModel.due_date = due_date
+            listPOModel.cust_id = cust_id
+            listPOModel.comm_code = comm_code
+            listPOModel.member_code = member_code
             docListArrayList.add(listPOModel)
         }
 
@@ -64,7 +70,6 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
     }
 
     override fun onClick(item: ListPOModel?) {
-        TODO("Not yet implemented")
 
     }
 

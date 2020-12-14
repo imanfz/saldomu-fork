@@ -10,6 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.models.ListPOModel;
 
 import java.util.ArrayList;
@@ -41,7 +44,7 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ListPOAdapter.ViewHolder holder, int position) {
         holder.docNo.setText(docListArrayList.get(position).getDoc_no());
         holder.docStatus.setText(docListArrayList.get(position).getDoc_status());
-        holder.totalAmount.setText(docListArrayList.get(position).getTotal_amount());
+        holder.totalAmount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(docListArrayList.get(position).getTotal_amount()));
         holder.dueDate.setText(docListArrayList.get(position).getDue_date());
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
