@@ -66,7 +66,7 @@ class FragListPurchaseOrder : BaseFragment() {
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
         }
 
-        itemListAdapter = ListPOAdapter(itemList, activity) { docDetail()}
+        itemListAdapter = ListPOAdapter(itemList, activity) { docDetail() }
         recyclerViewList.adapter = itemListAdapter
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         val snapHelper: SnapHelper = LinearSnapHelper()
@@ -107,11 +107,17 @@ class FragListPurchaseOrder : BaseFragment() {
                                     val docStatus = jsonObject.getString(WebParams.DOC_STATUS)
                                     val totalAmount = jsonObject.getString(WebParams.TOTAL_AMOUNT)
                                     val dueDate = jsonObject.getString(WebParams.DUE_DATE)
+                                    val custID = jsonObject.getString(WebParams.CUST_ID)
+                                    val memberCode = jsonObject.getString(WebParams.MEMBER_CODE)
+                                    val commCode = jsonObject.getString(WebParams.COMM_CODE)
                                     val listPOModel = ListPOModel()
                                     listPOModel.doc_no = docNo
                                     listPOModel.doc_status = docStatus
                                     listPOModel.total_amount = totalAmount
                                     listPOModel.due_date = dueDate
+                                    listPOModel.cust_id = custID
+                                    listPOModel.member_code = memberCode
+                                    listPOModel.comm_code = commCode
                                     itemList.add(listPOModel)
                                 }
                                 itemListAdapter!!.notifyDataSetChanged()
