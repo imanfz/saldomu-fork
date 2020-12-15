@@ -29,7 +29,7 @@ class FragInputQtyGoodReceipt : BaseFragment() {
     var commCodeEspay : String = ""
     var custIdEspay : String = ""
     var docNo : String = ""
-
+;
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_list, container, false)
         return v
@@ -57,6 +57,7 @@ class FragInputQtyGoodReceipt : BaseFragment() {
             params[WebParams.COMM_CODE_ESPAY] = commCodeEspay
             params[WebParams.MEMBER_CODE_ESPAY] = memberCodeEspay
             params[WebParams.CUST_ID_ESPAY] = custIdEspay
+            params[WebParams.USER_ID] = userPhoneID
             Timber.d("params inquiry doc detail:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_DETAIL, params,
                     object : ObjListeners {

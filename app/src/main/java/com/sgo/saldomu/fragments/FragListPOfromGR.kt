@@ -72,8 +72,8 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
             listPOModel.total_amount = totalAmount
             listPOModel.due_date = dueDate
             listPOModel.cust_id = custID
-            listPOModel.comm_code = memberCode
-            listPOModel.member_code = commCode
+            listPOModel.comm_code = commCode
+            listPOModel.member_code = memberCode
             docListArrayList.add(listPOModel)
         }
 
