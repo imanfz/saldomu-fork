@@ -40,7 +40,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         holder.itemName.text = itemName
         holder.itemPrice.text = context.getString(R.string.currency) + " " + CurrencyFormat.format(price) + " / " + unit
 
-        holder.itemQty.addTextChangedListener(object : TextWatcher {
+        holder.itemQty1.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -55,7 +55,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
                     listener.onChangeQty(itemCode, itemName, qty, price)
                 else {
                     listener.onChangeQty(itemCode, itemName, maxQty, price)
-                    holder.itemQty.setText(maxQty)
+                    holder.itemQty1.setText(maxQty)
                 }
 
             }
@@ -77,7 +77,9 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         var itemCode: TextView = itemView.findViewById(R.id.adapter_item_id_field)
         var itemName: TextView = itemView.findViewById(R.id.adapter_item_name_field)
         var itemPrice: TextView = itemView.findViewById(R.id.adapter_item_price_field)
-        var itemQty: EditText = itemView.findViewById(R.id.adapter_item_et_qty)
+        var itemQty1: EditText = itemView.findViewById(R.id.adapter_item_et_qty_1)
+        var itemQty2: EditText = itemView.findViewById(R.id.adapter_item_et_qty_2)
+        var itemQty3: EditText = itemView.findViewById(R.id.adapter_item_et_qty_3)
     }
 
     override fun getFilter(): Filter {
