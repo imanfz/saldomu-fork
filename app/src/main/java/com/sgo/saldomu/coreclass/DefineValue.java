@@ -84,6 +84,7 @@ public class DefineValue {
     public static String MIN_PASS = "minPass";
     public static String MAX_PASS = "maxPass";
     public static String CUST_ID = "custID";
+    public static String CUST_ID_ESPAY = "custIDEspay";
     public static String CUST_NAME = "custNAME";
     public static String CUST_PHONE = "custPhone";
     public static String CUST_EMAIL = "custEmail";
@@ -94,9 +95,11 @@ public class DefineValue {
     public static String DENOM_DETAIL = "denomDetail";
     public static String COMMUNITY_ID = "communityID";
     public static String COMMUNITY_CODE = "communityCode";
+    public static String COMMUNITY_CODE_ESPAY = "communityCodeEspay";
     public static String COMMUNITY_NAME = "communityName";
     public static String COMMUNITY_API_KEY = "communityAPIKey";
     public static String MEMBER_CODE = "memberCode";
+    public static String MEMBER_CODE_ESPAY= "memberCodeEspay";
     public static String MEMBER_ID = "memberID";
     public static String MEMBER_NAME = "memberName";
     public static String MEMBER_SHOP_PHONE = "memberShopPhone";

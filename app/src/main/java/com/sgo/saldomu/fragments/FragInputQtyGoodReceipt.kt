@@ -13,4 +13,15 @@ class FragInputQtyGoodReceipt : BaseFragment() {
         v = inflater.inflate(R.layout.frag_list, container, false)
         return v
     }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        getDetail()
+    }
+
+    private fun getDetail()
+    {
+
+    }
 }

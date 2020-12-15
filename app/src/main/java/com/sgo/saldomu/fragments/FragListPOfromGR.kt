@@ -83,8 +83,9 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
     override fun onClick(item: ListPOModel?) {
         val bundle = Bundle()
         bundle.putString(DefineValue.DOC_NO, item!!.doc_no)
-        bundle.putString(DefineValue.MEMBER_CODE, item.member_code)
-        bundle.putString(DefineValue.COMMUNITY_CODE, item.comm_code)
+        bundle.putString(DefineValue.MEMBER_CODE_ESPAY, item.member_code)
+        bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, item.comm_code)
+        bundle.putString(DefineValue.CUST_ID_ESPAY, item.cust_id)
         val frag: Fragment = FragInputQtyGoodReceipt()
         frag.arguments = bundle
         switchFragment(frag,"","",true, "")
