@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.DenomSCADMActivity
-import com.sgo.saldomu.activities.TokoEBDActivity
+import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.AdapterEBDCatalogList
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -50,8 +50,8 @@ class FragListItemToko : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val tokoEBDActivity = activity as TokoEBDActivity
-        tokoEBDActivity.initializeToolbar(getString(R.string.choose_catalog))
+        val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
+        tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.choose_catalog))
         if (arguments != null) {
             memberCode = arguments!!.getString(DefineValue.MEMBER_CODE, "")
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
@@ -98,7 +98,7 @@ class FragListItemToko : BaseFragment() {
                 bundle.putString(DefineValue.COMMUNITY_CODE, commCode)
 
                 frag.arguments = bundle
-                tokoEBDActivity.switchContent(frag, getString(R.string.purchase_order), true, "FragOrderConfirmToko")
+                tokoPurchaseOrderActivity.switchContent(frag, getString(R.string.purchase_order), true, "FragOrderConfirmToko")
                 addFragment(frag, DenomSCADMActivity.DENOM_PAYMENT)
             }
         }

@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -16,8 +19,9 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.models.ListPOModel;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder>  {
+public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder> implements Filterable {
     private final Activity mContext;
     private ArrayList<ListPOModel> docListArrayList;
     static ListPOAdapter.listener listener;
@@ -29,7 +33,7 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
         listener = _listener;
     }
 
-    public interface listener{
+    public interface listener {
         void onClick(ListPOModel item);
     }
 
@@ -78,5 +82,33 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
             dueDate = itemView.findViewById(R.id.tv_due_date);
             layout = itemView.findViewById(R.id.layout1);
         }
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString().toLowerCase(Locale.ROOT);
+                ArrayList<ListPOModel> temp = new ArrayList<>();
+                if (charString.isEmpty())
+                    temp.addAll(docListArrayList);
+                else
+                    for (int i = 0; i < docListArrayList.size(); i++) {
+                        String docNo = docListArrayList.get(i).getDoc_no();
+                        if (docNo != null && docNo.toLowerCase(Locale.ROOT).contains(charString))
+                            temp.add(docListArrayList.get(i));
+                    }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = temp;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+
+            }
+        };
     }
 }

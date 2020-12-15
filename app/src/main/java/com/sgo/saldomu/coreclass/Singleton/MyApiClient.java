@@ -308,6 +308,7 @@ public class MyApiClient {
     public static String LINK_INQUIRY_MEMBER_CANVASSER;
     public static String LINK_GET_LOCATION_DATA;
     public static String LINK_DOC_LIST;
+    public static String LINK_DOC_DETAIL;
 
 
 
@@ -566,6 +567,7 @@ public class MyApiClient {
         LINK_GET_LIST_CATALOG_EBD = headaddressfinal + "espaycatalog/InquiryCatalog/Retrieve";
 
         LINK_DOC_LIST = headaddressfinal + "espaycatalog/InquiryDocList/Retrieve";
+        LINK_DOC_DETAIL = headaddressfinal + "espaycatalog/InquiryDocDetail/Retrieve";
 
         //Canvasser
         LINK_INQUIRY_MEMBER_CANVASSER = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";

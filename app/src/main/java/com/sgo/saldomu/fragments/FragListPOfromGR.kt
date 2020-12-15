@@ -1,14 +1,14 @@
 package com.sgo.saldomu.fragments
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.sgo.saldomu.Beans.SCADMCommunityModel
 import com.sgo.saldomu.R
 import com.sgo.saldomu.adapter.ListPOAdapter
-import com.sgo.saldomu.adapter.ListTopUpSCADMAdapter
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.models.ListPOModel
 import com.sgo.saldomu.widgets.BaseFragment
@@ -40,29 +40,37 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
     {
 
         listPOAdapter = ListPOAdapter(docListArrayList, activity, this)
-        recyclerViewList.setAdapter(listPOAdapter)
-        recyclerViewList.setLayoutManager(LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false))
+        recyclerViewList.adapter = listPOAdapter
+        recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
+        search.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+
+            override fun afterTextChanged(editable: Editable) {
+                listPOAdapter!!.filter.filter(editable.toString())
+            }
+        })
         val bundle = arguments
 
         val mArrayDoc = JSONArray(bundle!!.getString(WebParams.DOC_LIST))
 
         for (i in 0 until mArrayDoc.length()) {
-            val doc_no = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_NO)
-            val doc_status = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_STATUS)
-            val total_amount = mArrayDoc.getJSONObject(i).getString(WebParams.TOTAL_AMOUNT)
-            val due_date = mArrayDoc.getJSONObject(i).getString(WebParams.DUE_DATE)
-            val cust_id = mArrayDoc.getJSONObject(i).getString(WebParams.CUST_ID)
-            val member_code = mArrayDoc.getJSONObject(i).getString(WebParams.MEMBER_CODE)
-            val comm_code = mArrayDoc.getJSONObject(i).getString(WebParams.COMM_CODE)
+            val docNo = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_NO)
+            val docStatus = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_STATUS)
+            val totalAmount = mArrayDoc.getJSONObject(i).getString(WebParams.TOTAL_AMOUNT)
+            val dueDate = mArrayDoc.getJSONObject(i).getString(WebParams.DUE_DATE)
+            val custID = mArrayDoc.getJSONObject(i).getString(WebParams.CUST_ID)
+            val memberCode = mArrayDoc.getJSONObject(i).getString(WebParams.MEMBER_CODE)
+            val commCode = mArrayDoc.getJSONObject(i).getString(WebParams.COMM_CODE)
             val listPOModel = ListPOModel()
-            listPOModel.doc_no = doc_no
-            listPOModel.doc_status = doc_status
-            listPOModel.total_amount = total_amount
-            listPOModel.due_date = due_date
-            listPOModel.cust_id = cust_id
-            listPOModel.comm_code = comm_code
-            listPOModel.member_code = member_code
+            listPOModel.doc_no = docNo
+            listPOModel.doc_status = docStatus
+            listPOModel.total_amount = totalAmount
+            listPOModel.due_date = dueDate
+            listPOModel.cust_id = custID
+            listPOModel.comm_code = memberCode
+            listPOModel.member_code = commCode
             docListArrayList.add(listPOModel)
         }
 
