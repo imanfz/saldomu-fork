@@ -53,19 +53,48 @@
 
         </LinearLayout>
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="@string/quantity"
-            android:textColor="@color/black" />
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/adapter_item_et_qty"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:background="@color/default_button_background_disabled"
-            android:inputType="number" />
+            <EditText
+                android:id="@+id/adapter_item_et_qty_1"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_outline"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="/"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/adapter_item_et_qty_2"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_outline"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="/"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/adapter_item_et_qty_3"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_outline"
+                android:inputType="number" />
+        </LinearLayout>
 
     </LinearLayout>
 

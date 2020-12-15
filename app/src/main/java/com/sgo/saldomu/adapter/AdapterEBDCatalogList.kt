@@ -26,7 +26,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutInflater.from(context).inflate(R.layout.adapter_denom_item_list, parent, false))
+        return Holder(LayoutInflater.from(context).inflate(R.layout.item_catalog_ebd, parent, false))
     }
 
     @SuppressLint("SetTextI18n")
@@ -77,8 +77,11 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         var itemCode: TextView = itemView.findViewById(R.id.adapter_item_id_field)
         var itemName: TextView = itemView.findViewById(R.id.adapter_item_name_field)
         var itemPrice: TextView = itemView.findViewById(R.id.adapter_item_price_field)
+        //BAL
         var itemQty1: EditText = itemView.findViewById(R.id.adapter_item_et_qty_1)
+        //SLOF
         var itemQty2: EditText = itemView.findViewById(R.id.adapter_item_et_qty_2)
+        //PACK
         var itemQty3: EditText = itemView.findViewById(R.id.adapter_item_et_qty_3)
     }
 
