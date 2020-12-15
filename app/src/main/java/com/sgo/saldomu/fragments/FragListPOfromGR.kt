@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.sgo.saldomu.Beans.SCADMCommunityModel
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
 import com.sgo.saldomu.adapter.ListPOAdapter
-import com.sgo.saldomu.adapter.ListTopUpSCADMAdapter
+import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.models.ListPOModel
 import com.sgo.saldomu.widgets.BaseFragment
@@ -70,7 +71,19 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
     }
 
     override fun onClick(item: ListPOModel?) {
+        val bundle = Bundle()
+        bundle.putString(DefineValue.DOC_NO, item!!.doc_no)
+        bundle.putString(DefineValue.MEMBER_CODE, item.member_code)
+        bundle.putString(DefineValue.COMMUNITY_CODE, item.comm_code)
+        val frag: Fragment = FragInputQtyGoodReceipt()
+        frag.arguments = bundle
+        switchFragment(frag,"","",true, "")
+    }
 
+    private fun switchFragment(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {
+        if (activity == null) return
+        val fca = activity as CanvasserGoodReceiptActivity?
+        fca!!.switchContent(i, name, next_name, isBackstack, tag)
     }
 
 
