@@ -34,10 +34,11 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         val itemCode = itemList[position].itemCode
         val itemName = itemList[position].itemName
         val price = itemList[position].price.toInt()
+        val unit = itemList[position].unit
         val maxQty = itemList[position].maxQty.toInt()
         holder.itemCode.text = itemCode
         holder.itemName.text = itemName
-        holder.itemPrice.text = context.getString(R.string.currency) + " " + CurrencyFormat.format(price)
+        holder.itemPrice.text = context.getString(R.string.currency) + " " + CurrencyFormat.format(price) + " / " + unit
 
         holder.itemQty.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
