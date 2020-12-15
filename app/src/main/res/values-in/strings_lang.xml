@@ -1684,6 +1684,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="new_store_registration">Registrasi Toko Baru</string>
     <string name="create_po">Tambah PO</string>
     <string name="list_po">List PO</string>
+    <string name="search_po">Cari PO</string>
     <string name="owner_id_no">Nomor KTP Pemilik</string>
     <string name="owner_id_no_required">Nomor KTP Pemilik dibutuhkan</string>
     <string name="choose_catalog">Pilih Katalog</string>

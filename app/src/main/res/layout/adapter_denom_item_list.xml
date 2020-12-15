@@ -34,7 +34,6 @@
                 android:layout_height="wrap_content"
                 android:text="item ID"
                 android:textColor="@color/black"
-                android:textSize="@dimen/abc_text_size_medium_material"
                 android:textStyle="bold" />
 
             <TextView
@@ -43,7 +42,6 @@
                 android:layout_height="wrap_content"
                 android:text="Item Name"
                 android:textColor="@color/black"
-                android:textSize="@dimen/abc_text_size_medium_material"
                 android:textStyle="bold" />
 
             <TextView
@@ -51,8 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Item Price"
-                android:textColor="@color/black"
-                android:textSize="@dimen/abc_text_size_medium_material" />
+                android:textColor="@color/black" />
 
         </LinearLayout>
 
@@ -61,18 +58,41 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <EditText
+                android:id="@+id/adapter_item_et_qty_1"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_outline"
+                android:inputType="number" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/quantity"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="/"
                 android:textColor="@color/black" />
 
             <EditText
-                android:id="@+id/adapter_item_et_qty"
-                android:layout_width="50dp"
+                android:id="@+id/adapter_item_et_qty_2"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:background="@color/default_button_background_disabled"
+                android:background="@drawable/background_outline"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="/"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/adapter_item_et_qty_3"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_outline"
                 android:inputType="number" />
         </LinearLayout>
 
