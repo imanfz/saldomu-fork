@@ -708,5 +708,8 @@ public class DefineValue {
     public static String DOC_NO = "doc_no";
     public static String DOC_STATUS = "doc_status";
     public static String DOC_LIST = "doc_list";
+    public static String BAL = "BAL";
+    public static String SLOP = "SLOP";
+    public static String PACK = "PACK";
 }
 
