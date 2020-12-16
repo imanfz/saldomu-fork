@@ -1703,4 +1703,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="pay_now">Bayar Sekarang</string>
     <string name="pay_later">Bayar Nanti</string>
+    <string name="paid_status">Status Pembayaran</string>
 </resources>
