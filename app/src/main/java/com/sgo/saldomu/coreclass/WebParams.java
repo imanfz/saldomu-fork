@@ -664,4 +664,10 @@ public class WebParams {
     public static String NAMA_KECAMATAN = "NAMA_KECAMATAN";
     public static String KODE_LUR_DES = "KODE_LUR_DES";
     public static String NAMA_LUR_DES = "NAMA_LUR_DES";
+    public static String FORMAT_QTY = "format_qty";
+    public static String MAPPING_UNIT = "mapping_unit";
+    public static String MAPPING_QTY = "mapping_qty";
+    public static String DOC_DETAIL = "doc_detail";
+    public static String CUST_TYPE = "cust_type";
+
 }
