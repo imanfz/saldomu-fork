@@ -236,7 +236,7 @@
             app:mrl_rippleOverlay="true">
 
             <Button
-                android:id="@+id/frag_denom_confirm_submit_btn"
+                android:id="@+id/frag_gr_confirm_submit_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
