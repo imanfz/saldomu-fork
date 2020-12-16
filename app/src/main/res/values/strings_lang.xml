@@ -1710,4 +1710,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="doc_no">Document No.</string>
     <string name="doc_status">Document Status</string>
     <string name="date">Date</string>
+
+    <string name="pay_now">Pay Now</string>
+    <string name="pay_later">Pay Later</string>
 </resources>

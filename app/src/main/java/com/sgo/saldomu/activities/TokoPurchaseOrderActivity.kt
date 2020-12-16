@@ -13,6 +13,7 @@ import timber.log.Timber
 
 class TokoPurchaseOrderActivity : BaseActivity() {
     var fragmentManager: FragmentManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializeToolbar(getString(R.string.purchase_order))
