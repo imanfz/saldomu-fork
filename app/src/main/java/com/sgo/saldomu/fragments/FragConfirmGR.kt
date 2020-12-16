@@ -57,7 +57,6 @@ class FragConfirmGR : BaseFragment() {
             showProgressDialog()
             extraSignature = memberCodeEspay + commCodeEspay
             val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_DOC_DETAIL, extraSignature)
-            params[WebParams.DOC_NO] = docNo
             params[WebParams.COMM_CODE_ESPAY] = commCodeEspay
             params[WebParams.MEMBER_CODE_ESPAY] = memberCodeEspay
             params[WebParams.CUST_ID_ESPAY] = custIdEspay

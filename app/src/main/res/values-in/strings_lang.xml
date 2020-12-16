@@ -1700,4 +1700,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="your_community_code">Kode Komunitas Anda</string>
     <string name="doc_no">No. Dokumen</string>
     <string name="doc_status">Status Dokumen</string>
+
+    <string name="pay_now">Bayar Sekarang</string>
+    <string name="pay_later">Bayar Nanti</string>
 </resources>
