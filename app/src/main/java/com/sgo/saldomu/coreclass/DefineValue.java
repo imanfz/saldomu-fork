@@ -714,5 +714,7 @@ public class DefineValue {
     public static final String TOKO = "TOKO";
     public static final String CANVASSER = "CANVASSER";
     public static String DOC_DETAILS = "DOC_DETAILS";
+    public static String EBD_CONFIRM_DATA = "ebd_confirm_data";
+    public static String PAYMENT_OPTION = "payment_option";
 }
 

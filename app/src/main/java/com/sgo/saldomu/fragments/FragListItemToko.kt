@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.DenomSCADMActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.AdapterEBDCatalogList
 import com.sgo.saldomu.coreclass.DefineValue
@@ -27,8 +26,8 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.models.DocDetailsItem
 import com.sgo.saldomu.models.EBDCatalogModel
-import com.sgo.saldomu.models.EBDOrderModel
 import com.sgo.saldomu.models.FormatQtyItem
 import com.sgo.saldomu.models.MappingItemsItem
 import com.sgo.saldomu.models.retrofit.jsonModel
@@ -46,12 +45,11 @@ class FragListItemToko : BaseFragment() {
     var paymentOption = ""
 
     val itemList = ArrayList<EBDCatalogModel>()
-    private val order = EBDOrderModel()
+    private val order = DocDetailsItem()
     private val mappingItemList = ArrayList<MappingItemsItem>()
     private val paymentListOption = ArrayList<String>()
     var itemListAdapter: AdapterEBDCatalogList? = null
 
-    val bundle = Bundle()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_input_item_list, container, false)
     }
@@ -91,6 +89,11 @@ class FragListItemToko : BaseFragment() {
             }
         })
 
+        frag_input_item_list_field.adapter = itemListAdapter
+        frag_input_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val snapHelper: SnapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(frag_input_item_list_field)
+
         layout_payment_method.visibility = View.VISIBLE
         paymentListOption.add(getString(R.string.pay_now))
         paymentListOption.add(getString(R.string.pay_later))
@@ -108,11 +111,6 @@ class FragListItemToko : BaseFragment() {
 
         }
 
-        frag_input_item_list_field.adapter = itemListAdapter
-        frag_input_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        val snapHelper: SnapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(frag_input_item_list_field)
-
         getCatalogList()
 
         search.addTextChangedListener(object : TextWatcher {
@@ -124,17 +122,7 @@ class FragListItemToko : BaseFragment() {
             }
         })
         frag_input_item_submit_btn.setOnClickListener {
-            if (confirmationDoc()) {
-                frag_input_item_list_field.scrollTo(0, 0)
-                val frag = FragOrderConfirmToko()
-
-                bundle.putString(DefineValue.MEMBER_CODE, memberCode)
-                bundle.putString(DefineValue.COMMUNITY_CODE, commCode)
-
-                frag.arguments = bundle
-                tokoPurchaseOrderActivity.switchContent(frag, getString(R.string.purchase_order), true, "FragOrderConfirmToko")
-                addFragment(frag, DenomSCADMActivity.DENOM_PAYMENT)
-            }
+            confirmationDoc()
         }
     }
 
@@ -248,7 +236,7 @@ class FragListItemToko : BaseFragment() {
         dialog.show()
     }
 
-    private fun confirmationDoc(): Boolean {
+    private fun confirmationDoc() {
         showProgressDialog()
         val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRMATION_DOC, memberCode + userPhoneID)
         params[WebParams.USER_ID] = userPhoneID
@@ -270,7 +258,17 @@ class FragListItemToko : BaseFragment() {
                         val message = response.getString(WebParams.ERROR_MESSAGE)
                         when (code) {
                             WebParams.SUCCESS_CODE -> {
+                                frag_input_item_list_field.scrollTo(0, 0)
+                                val frag = FragOrderConfirmToko()
 
+                                val bundle = Bundle()
+                                bundle.putString(DefineValue.MEMBER_CODE, memberCode)
+                                bundle.putString(DefineValue.COMMUNITY_CODE, commCode)
+                                bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
+                                bundle.putString(DefineValue.EBD_CONFIRM_DATA, response.toString())
+
+                                frag.arguments = bundle
+                                (activity as TokoPurchaseOrderActivity).switchContent(frag, getString(R.string.purchase_order_confirmation), true, "FragOrderConfirmToko")
                             }
                             WebParams.LOGOUT_CODE -> {
                                 AlertDialogLogout.getInstance().showDialoginMain(activity, message)
@@ -298,7 +296,6 @@ class FragListItemToko : BaseFragment() {
                     }
 
                 })
-        return false
     }
 
     private fun createJSONDocDetail(): String {

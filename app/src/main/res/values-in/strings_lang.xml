@@ -1689,7 +1689,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="owner_id_no">Nomor KTP Pemilik</string>
     <string name="owner_id_no_required">Nomor KTP Pemilik dibutuhkan</string>
     <string name="choose_catalog">Pilih Katalog</string>
-    <string name="purchase_order">Pesan Pembelian</string>
+    <string name="purchase_order">Purchase Order</string>
+    <string name="purchase_order_confirmation">Konfirmasi Purchase Order </string>
     <string name="join_community">Gabung Komunitas</string>
     <string name="store_owner_name">Nama Pemilik Toko</string>
     <string name="store_owner_name_required">Nama Pemilik Toko dibutuhkan</string>

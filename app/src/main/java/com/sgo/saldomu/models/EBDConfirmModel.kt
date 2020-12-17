@@ -1,22 +1,16 @@
 package com.sgo.saldomu.models
 
 data class EBDConfirmModel(
-        val errorMessage: String = "",
-        val paymentMethods: PaymentMethods = PaymentMethods(),
-        val amount: Int = 0,
-        val ref: String = "",
-        val totalAmount: Int = 0,
-        val discountAmount: Int = 0,
-        val docDetails: List<DocDetailsItem>,
-        val errorCode: String = ""
+        var payment_methods: List<PaymentMethods> = ArrayList(),
+        var amount: Int = 0,
+        var ref: String = "",
+        var total_amount: Int = 0,
+        var discount_amount: Int = 0,
+        var doc_details: List<DocDetailsItem> = ArrayList()
 )
 
 data class PaymentMethods(
-        val saldomu: String = "saldomu"
-)
-
-data class DocDetailsItem(
-        val reffNo: String = "",
-        val mappingItems: List<MappingItemsItem> = ArrayList()
+        val payment_name: String = "",
+        val payment_code: String = ""
 )
 

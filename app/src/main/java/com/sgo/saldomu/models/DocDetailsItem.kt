@@ -1,6 +1,6 @@
 package com.sgo.saldomu.models
 
-data class EBDOrderModel(
+data class DocDetailsItem(
         var reff_no: String = "",
         var mapping_items: List<MappingItemsItem> = ArrayList()
 )
@@ -11,7 +11,7 @@ data class MappingItemsItem(
         var price: Int = 0,
         var item_name: String = "",
         var format_qty: List<FormatQtyItem> = ArrayList(),
-        val subtotalAmount: Int = 0
+        val subtotal_amount: Int = 0
 )
 
 data class FormatQtyItem(
