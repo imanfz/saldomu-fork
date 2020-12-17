@@ -677,8 +677,8 @@ public class WebParams {
     public static String DISCOUNT_AMOUNT = "discount_amount";
     public static String REFF_NO = "reff_no";
     public static String MAPPING_ITEMS = "mapping_items";
-    public static String FORMAT_QTY = "format_qty";
-    public static String MAPPING_UNIT = "mapping_unit";
-    public static String MAPPING_QTY = "mapping_qty";
     public static String PAID_STATUS = "paid_status";
+    public static String SUBTOTAL_AMOUNT = "subtotal_amount";
+    public static String PROMO = "promo";
+    public static String ACTION_CODE = "action_code";
 }

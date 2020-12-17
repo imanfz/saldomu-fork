@@ -23,6 +23,10 @@ class ItemModel() : Parcelable {
     @Expose
     var price: String? = null
 
+    @SerializedName("subtotal_amount")
+    @Expose
+    var subtotal_amount: String? = null
+
     @SerializedName("format_qty")
     @Expose
     var format_qty: List<FormatQty>? = null

@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
@@ -24,7 +23,6 @@ import com.sgo.saldomu.securities.RSA
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.dialog_notification.*
 import kotlinx.android.synthetic.main.frag_confirm_gr.*
-import kotlinx.android.synthetic.main.frag_input_store_code.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -41,9 +39,11 @@ class FragConfirmCreateGR : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         val bundle = arguments
-        txId = bundle!!.getString(DefineValue.TX_ID,"")
+        txId = bundle!!.getString(DefineValue.TX_ID, "")
 
-        frag_gr_confirm_submit_btn.setOnClickListener { confirmOTP() }
+        frag_gr_confirm_submit_btn.setOnClickListener {
+            if(inputValidation())
+            confirmOTP() }
     }
 
     fun inputValidation(): Boolean {
@@ -59,18 +59,21 @@ class FragConfirmCreateGR : BaseFragment() {
     {
         try {
             showProgressDialog()
-
+            val link = MyApiClient.LINK_CONFIRM_OTP_DOC
+            val subStringLink = link.substring(link.indexOf("saldomu/"))
+            val tokenId = et_otp_confirm_gr.text.toString()
+            extraSignature = txId + tokenId
+            val params = RetrofitService.getInstance().getSignature(link, extraSignature)
             val uuid: String = params[WebParams.RC_UUID].toString()
             val dateTime: String = params[WebParams.RC_DTIME].toString()
-            val link = MyApiClient.LINK_CREATE_GR
-            val subStringLink = link.substring(link.indexOf("saldomu/"))
-            extraSignature = txId + et_otp_confirm_gr.text.toString()
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CREATE_GR, extraSignature)
+            val encryptedOtp = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenId, subStringLink)
+            Timber.d("encrypted otp : " +encryptedOtp)
+            Timber.d("plain otp : " +tokenId)
             params[WebParams.TX_ID] = txId
             params[WebParams.USER_ID] = userPhoneID
-            params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, et_otp_confirm_gr.text.toString(), subStringLink)
+            params[WebParams.TOKEN_ID] = encryptedOtp
             Timber.d("params GR confirm OTP:$params")
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CREATE_GR, params,
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_OTP_DOC, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
                             try {

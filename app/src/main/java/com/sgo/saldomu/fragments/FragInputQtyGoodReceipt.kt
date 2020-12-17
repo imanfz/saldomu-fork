@@ -247,6 +247,7 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
             params[WebParams.DOC_DETAIL] = tempGson
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
+            params[WebParams.INVOICE_NOTE] =""
             Timber.d("params confirm doc:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_CONFIRM, params,
                     object : ObjListeners {
@@ -267,6 +268,7 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
                                         bundle.putString(DefineValue.AMOUNT,response.optString(WebParams.AMOUNT))
                                         bundle.putString(DefineValue.TOTAL_AMOUNT,response.optString(WebParams.TOTAL_AMOUNT))
                                         bundle.putString(DefineValue.TOTAL_DISC,response.optString(WebParams.DISCOUNT_AMOUNT))
+                                        bundle.putString(DefineValue.DOC_NO,docNo)
                                         val frag: Fragment = FragCreateGR()
                                         frag.arguments = bundle
                                         switchFragment(frag,"","",true, "")
