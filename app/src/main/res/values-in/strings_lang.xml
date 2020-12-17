@@ -1684,6 +1684,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="store_code_validation">Kode Toko dibutuhkan!</string>
     <string name="new_store_registration">Registrasi Toko Baru</string>
     <string name="create_po">Tambah PO</string>
+    <string name="create_gr">Buat Faktur Perimaan</string>
     <string name="list_po">List PO</string>
     <string name="search_po">Cari PO</string>
     <string name="owner_id_no">Nomor KTP Pemilik</string>

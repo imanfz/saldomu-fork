@@ -679,4 +679,7 @@ public class WebParams {
     public static String MAPPING_ITEMS = "mapping_items";
     public static String PAID_STATUS = "paid_status";
     public static String PAYMENT_METHODS = "payment_methods";
+    public static String SUBTOTAL_AMOUNT = "subtotal_amount";
+    public static String PROMO = "promo";
+    public static String ACTION_CODE = "action_code";
 }
