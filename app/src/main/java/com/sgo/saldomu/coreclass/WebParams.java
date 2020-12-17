@@ -17,6 +17,7 @@ public class WebParams {
     public static String COMM_ID_SCADM= "comm_id_scadm";
     public static String CUST_NAME = "cust_name";
     public static String CUST_ID = "cust_id";
+    public static String CUST_TYPE = "cust_type";
     public static String COMM_CODE = "comm_code";
     public static String USER_COMM_CODE = "user_comm_code";
     public static String USER_ID = "user_id";
@@ -656,6 +657,7 @@ public class WebParams {
     public static String TYPE_ID = "type_id";
     public static String DOC_STATUS = "doc_status";
     public static String DOC_LIST = "doc_list";
+    public static String DOC_DETAIL = "doc_detail";
     public static String KODE_PROVINSI = "KODE_PROVINSI";
     public static String NAMA_PROVINSI = "NAMA_PROVINSI";
     public static String KODE_KOT_KAB = "KODE_KOT_KAB";
@@ -666,6 +668,7 @@ public class WebParams {
     public static String NAMA_LUR_DES = "NAMA_LUR_DES";
 
     public static String REFF_NO = "reff_no";
+    public static String REFF_ID = "reff_id";
     public static String MAPPING_ITEMS = "mapping_items";
     public static String FORMAT_QTY = "format_qty";
     public static String MAPPING_UNIT = "mapping_unit";

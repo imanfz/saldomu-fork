@@ -711,5 +711,7 @@ public class DefineValue {
     public static String BAL = "BAL";
     public static String SLOP = "SLOP";
     public static String PACK = "PACK";
+    public static final String TOKO = "TOKO";
+    public static final String CANVASSER = "CANVASSER";
 }
 

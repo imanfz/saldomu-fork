@@ -1124,10 +1124,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
             for (int i = 0; i < arr.length(); i++) {
                 String obj = arr.getString(i);
                 switch (obj) {
-                    case "TOKO":
+                    case DefineValue.TOKO:
                         code = getResources().getString(R.string.menu_item_title_ebd_toko);
                         break;
-                    case "CANVASSER":
+                    case DefineValue.CANVASSER:
                         code = getResources().getString(R.string.menu_item_title_ebd_canvasser);
                         break;
                 }

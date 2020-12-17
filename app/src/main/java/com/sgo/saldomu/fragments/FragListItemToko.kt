@@ -34,7 +34,6 @@ import com.sgo.saldomu.models.MappingItemsItem
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.fragment_input_item_list.*
-import kotlinx.android.synthetic.main.item_search_contact.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -52,6 +51,7 @@ class FragListItemToko : BaseFragment() {
     private val paymentListOption = ArrayList<String>()
     var itemListAdapter: AdapterEBDCatalogList? = null
 
+    val bundle = Bundle()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_input_item_list, container, false)
     }
@@ -65,7 +65,6 @@ class FragListItemToko : BaseFragment() {
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
         }
 
-        layout_payment_method.visibility = View.VISIBLE
         itemListAdapter = AdapterEBDCatalogList(context!!, itemList, object : AdapterEBDCatalogList.Listener {
             override fun onChangeQty(itemCode: String, itemName: String, qty: Int, price: Int, unit: String, qtyType: String) {
                 if (mappingItemList.size == 0)
@@ -92,6 +91,7 @@ class FragListItemToko : BaseFragment() {
             }
         })
 
+        layout_payment_method.visibility = View.VISIBLE
         paymentListOption.add(getString(R.string.pay_now))
         paymentListOption.add(getString(R.string.pay_later))
         val paymentOptionsAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentListOption)
@@ -124,11 +124,10 @@ class FragListItemToko : BaseFragment() {
             }
         })
         frag_input_item_submit_btn.setOnClickListener {
-            if (checkInput()) {
+            if (confirmationDoc()) {
                 frag_input_item_list_field.scrollTo(0, 0)
                 val frag = FragOrderConfirmToko()
 
-                val bundle = Bundle()
                 bundle.putString(DefineValue.MEMBER_CODE, memberCode)
                 bundle.putString(DefineValue.COMMUNITY_CODE, commCode)
 
@@ -249,7 +248,60 @@ class FragListItemToko : BaseFragment() {
         dialog.show()
     }
 
-    private fun checkInput(): Boolean {
+    private fun confirmationDoc(): Boolean {
+        showProgressDialog()
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRMATION_DOC, memberCode + userPhoneID)
+        params[WebParams.USER_ID] = userPhoneID
+        params[WebParams.MEMBER_CODE_ESPAY] = memberCode
+        params[WebParams.COMM_CODE_ESPAY] = commCode
+        params[WebParams.CUST_ID_ESPAY] = userPhoneID
+        params[WebParams.CUST_ID] = userPhoneID
+        params[WebParams.REFF_ID] = order.reff_no
+        params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
+        params[WebParams.DOC_DETAIL] = createJSONDocDetail()
+        params[WebParams.TYPE_ID] = DefineValue.PO
+        params[WebParams.CUST_TYPE] = DefineValue.TOKO
+
+        Timber.d("isi params confirm doc :$params")
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,
+                object : ObjListeners {
+                    override fun onResponses(response: JSONObject) {
+                        val code = response.getString(WebParams.ERROR_CODE)
+                        val message = response.getString(WebParams.ERROR_MESSAGE)
+                        when (code) {
+                            WebParams.SUCCESS_CODE -> {
+
+                            }
+                            WebParams.LOGOUT_CODE -> {
+                                AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                            }
+                            DefineValue.ERROR_9333 -> {
+                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                val appModel = model.app_data
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            }
+                            DefineValue.ERROR_0066 -> {
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                            }
+                            else -> {
+                                showDialog(message)
+                            }
+                        }
+                    }
+
+                    override fun onError(throwable: Throwable?) {
+                        dismissProgressDialog()
+                    }
+
+                    override fun onComplete() {
+                        dismissProgressDialog()
+                    }
+
+                })
+        return false
+    }
+
+    private fun createJSONDocDetail(): String {
         val parentArr = JSONArray()
         val mappingItemArray = JSONArray()
         val parentObj = JSONObject()
@@ -277,7 +329,7 @@ class FragListItemToko : BaseFragment() {
 
         parentObj.put(WebParams.MAPPING_ITEMS, mappingItemArray)
         parentArr.put(parentObj)
-        Timber.e(parentArr.toString())
-        return false
+        return parentArr.toString()
+        Timber.e("doc_detail : $parentArr")
     }
 }

@@ -306,6 +306,7 @@ public class MyApiClient {
     public static String LINK_GET_LIST_COMMUNITY_EBD;
     public static String LINK_GET_LIST_CATALOG_EBD;
     public static String LINK_LIST_PO;
+    public static String LINK_CONFIRMATION_DOC;
     public static String LINK_INQUIRY_MEMBER_CANVASSER;
     public static String LINK_GET_LOCATION_DATA;
     public static String LINK_DOC_LIST;
@@ -567,6 +568,7 @@ public class MyApiClient {
         LINK_GET_LIST_COMMUNITY_EBD = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";
         LINK_GET_LIST_CATALOG_EBD = headaddressfinal + "espaycatalog/InquiryCatalog/Retrieve";
         LINK_LIST_PO = headaddressfinal + "espaycatalog/ListPo/Retrieve";
+        LINK_CONFIRMATION_DOC = headaddressfinal + "espaycatalog/ConfirmationDocument/Invoke";
 
         LINK_DOC_LIST = headaddressfinal + "espaycatalog/InquiryDocList/Retrieve";
         LINK_DOC_DETAIL = headaddressfinal + "espaycatalog/InquiryDocDetail/Retrieve";

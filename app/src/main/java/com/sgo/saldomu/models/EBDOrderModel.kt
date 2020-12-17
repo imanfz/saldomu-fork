@@ -10,7 +10,8 @@ data class MappingItemsItem(
         var unit: String = "",
         var price: Int = 0,
         var item_name: String = "",
-        var format_qty: List<FormatQtyItem> = ArrayList()
+        var format_qty: List<FormatQtyItem> = ArrayList(),
+        val subtotalAmount: Int = 0
 )
 
 data class FormatQtyItem(
