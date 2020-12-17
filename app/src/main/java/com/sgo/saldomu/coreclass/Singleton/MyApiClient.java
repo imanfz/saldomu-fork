@@ -311,6 +311,9 @@ public class MyApiClient {
     public static String LINK_GET_LOCATION_DATA;
     public static String LINK_DOC_LIST;
     public static String LINK_DOC_DETAIL;
+    public static String LINK_DOC_CONFIRM;
+    public static String LINK_CONFIRM_OTP_DOC;
+    public static String LINK_CREATE_GR;
 
 
 
@@ -572,7 +575,9 @@ public class MyApiClient {
 
         LINK_DOC_LIST = headaddressfinal + "espaycatalog/InquiryDocList/Retrieve";
         LINK_DOC_DETAIL = headaddressfinal + "espaycatalog/InquiryDocDetail/Retrieve";
-
+        LINK_DOC_CONFIRM = headaddressfinal + "espaycatalog/ConfirmationDocument/Invoke";
+        LINK_CREATE_GR = headaddressfinal + "espaycatalog/CreateGr/Invoke";
+        LINK_CONFIRM_OTP_DOC = headaddressfinal + "espaycatalog/ConfirmOTPDoc/Invoke";
         //Canvasser
         LINK_INQUIRY_MEMBER_CANVASSER = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);

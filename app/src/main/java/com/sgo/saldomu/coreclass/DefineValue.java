@@ -713,5 +713,6 @@ public class DefineValue {
     public static String PACK = "PACK";
     public static final String TOKO = "TOKO";
     public static final String CANVASSER = "CANVASSER";
+    public static String DOC_DETAILS = "DOC_DETAILS";
 }
 

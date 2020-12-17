@@ -1559,6 +1559,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="no_notif">Notifikasi kamu kosong.</string>
     <string name="confirmation_code">Kode Konfirmasi</string>
     <string name="hint_confirmation_code">Masukkan kode konfirmasi</string>
+    <string name="validation_confirmation_code">Kode konfirmasi dibutuhkan!</string>
     <string name="resend_confirmation_code">Kirim ulang kode konfirmasi</string>
     <string name="ktp_photo">Foto KTP tidak boleh kosong!</string>
     <string name="selfie_ktp_photo">Foto Selfie dengan KTP tidak boleh kosong!</string>

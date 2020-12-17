@@ -1577,6 +1577,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="no_notif">You have no notification yet.</string>
     <string name="confirmation_code">Confirmation Code</string>
     <string name="hint_confirmation_code">Input confirmation code</string>
+    <string name="validation_confirmation_code">Confirmation Code Required!</string>
     <string name="resend_confirmation_code">Resend confirmation code</string>
     <string name="ktp_photo">KTP Photo is required!</string>
     <string name="selfie_ktp_photo">Selfie with KTP Photo is required!</string>
