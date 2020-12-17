@@ -310,6 +310,8 @@ public class MyApiClient {
     public static String LINK_DOC_LIST;
     public static String LINK_DOC_DETAIL;
 
+    public static String LINK_CONFIRM_DOCS;
+
 
 
     public void InitializeAddress(){
@@ -571,6 +573,9 @@ public class MyApiClient {
 
         //Canvasser
         LINK_INQUIRY_MEMBER_CANVASSER = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";
+        LINK_CONFIRM_DOCS = headaddressfinal + "espaycatalog/ConfirmationDocument/Invoke";
+
+
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
 //            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
@@ -648,6 +653,7 @@ public class MyApiClient {
     public static String LINK_TRX_ONPROGRESS_BY_AGENT = headaodaddressfinal + "Report/Onprogressagent";
     public static String LINK_UPDATE_FEEDBACK = headaodaddressfinal + "Transaction/Updatefeedback";
     public static String LINK_CANCEL_SEARCH_AGENT = headaodaddressfinal + "Transaction/Cancelsearchagent";
+
 
     private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";

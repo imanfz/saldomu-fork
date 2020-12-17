@@ -320,6 +320,7 @@ public class WebParams {
     public static String IS_EMAIL = "is_email";
 
     public static String CUST_ID_TYPE = "cust_id_type";
+    public static String CUST_TYPE = "cust_type";
     public static String CUST_ID_NUMBER = "cust_id_number";
     public static String CUST_ADDRESS = "cust_address";
     public static String CUST_COUNTRY = "cust_country";
@@ -578,6 +579,9 @@ public class WebParams {
 
     public static String FCM_ID = "fcm_id";
     public static String REFERENCE_ID = "reference_id";
+    public static String REFF_ID = "reff_id";
+    public static String REFF_NO = "reff_no";
+
     public static String CLIENT_APP = "client_app";
 
     public static String STARTER_KITS = "starter_kits";
@@ -664,4 +668,7 @@ public class WebParams {
     public static String NAMA_KECAMATAN = "NAMA_KECAMATAN";
     public static String KODE_LUR_DES = "KODE_LUR_DES";
     public static String NAMA_LUR_DES = "NAMA_LUR_DES";
+
+    public static String DOC_DETAIL = "doc_detail";
+
 }
