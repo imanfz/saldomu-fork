@@ -1714,4 +1714,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="pay_now">Pay Now</string>
     <string name="pay_later">Pay Later</string>
+    <string name="paid_status">Paid Status</string>
 </resources>

@@ -50,12 +50,11 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
         holder.docStatus.setText(docListArrayList.get(position).getDoc_status());
         holder.totalAmount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(docListArrayList.get(position).getTotal_amount()));
         holder.dueDate.setText(docListArrayList.get(position).getDue_date());
+        holder.paidStatus.setText(docListArrayList.get(position).getPaid_status());
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 listener.onClick(docListArrayList.get(position));
-
             }
         });
     }
@@ -71,7 +70,7 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView docNo, docStatus, totalAmount, dueDate;
+        TextView docNo, docStatus, totalAmount, dueDate, paidStatus;
         LinearLayout layout;
 
         public ViewHolder(View itemView) {
@@ -80,6 +79,7 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
             docStatus = itemView.findViewById(R.id.tv_docStatus);
             totalAmount = itemView.findViewById(R.id.tv_totalAmount);
             dueDate = itemView.findViewById(R.id.tv_due_date);
+            paidStatus = itemView.findViewById(R.id.tv_paid_status);
             layout = itemView.findViewById(R.id.layout1);
         }
     }

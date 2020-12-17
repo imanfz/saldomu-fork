@@ -34,6 +34,7 @@ import com.sgo.saldomu.models.MappingItemsItem
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.fragment_input_item_list.*
+import kotlinx.android.synthetic.main.item_search_contact.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -47,11 +48,7 @@ class FragListItemToko : BaseFragment() {
 
     val itemList = ArrayList<EBDCatalogModel>()
     private val order = EBDOrderModel()
-    private val orderList = ArrayList<EBDOrderModel>()
-    private val mappingItem = MappingItemsItem()
     private val mappingItemList = ArrayList<MappingItemsItem>()
-    private val formatQtyItem = FormatQtyItem()
-    private val formatQtyItemList = ArrayList<FormatQtyItem>()
     private val paymentListOption = ArrayList<String>()
     var itemListAdapter: AdapterEBDCatalogList? = null
 
@@ -69,9 +66,6 @@ class FragListItemToko : BaseFragment() {
         }
 
         layout_payment_method.visibility = View.VISIBLE
-        formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, 0))
-        formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, 0))
-        formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, 0))
         itemListAdapter = AdapterEBDCatalogList(context!!, itemList, object : AdapterEBDCatalogList.Listener {
             override fun onChangeQty(itemCode: String, itemName: String, qty: Int, price: Int, unit: String, qtyType: String) {
                 if (mappingItemList.size == 0)
@@ -147,10 +141,15 @@ class FragListItemToko : BaseFragment() {
 
     private fun addOrder(itemCode: String, itemName: String, price: Int, qty: Int, unit: String, qtyType: String) {
         if (qty != 0) {
+            val mappingItem = MappingItemsItem()
             mappingItem.item_code = itemCode
             mappingItem.item_name = itemName
             mappingItem.price = price
             mappingItem.unit = unit
+            val formatQtyItemList = ArrayList<FormatQtyItem>()
+            formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, 0))
+            formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, 0))
+            formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, 0))
             when (qtyType) {
                 DefineValue.BAL -> formatQtyItemList[0].mapping_qty = qty
                 DefineValue.SLOP -> formatQtyItemList[1].mapping_qty = qty
@@ -252,7 +251,32 @@ class FragListItemToko : BaseFragment() {
 
     private fun checkInput(): Boolean {
         val parentArr = JSONArray()
-        parentArr.put(order)
+        val mappingItemArray = JSONArray()
+        val parentObj = JSONObject()
+
+        parentObj.put(WebParams.REFF_NO, order.reff_no)
+        for (i in mappingItemList.indices) {
+            val mappingItemObj = JSONObject()
+            val formatQtyArray = JSONArray()
+
+            val orderMappingItemsFormatQty = mappingItemList[i].format_qty
+            for (j in orderMappingItemsFormatQty.indices) {
+                val formatQtyObj = JSONObject()
+                formatQtyObj.put(WebParams.MAPPING_UNIT, orderMappingItemsFormatQty[j].mapping_unit)
+                formatQtyObj.put(WebParams.MAPPING_QTY, orderMappingItemsFormatQty[j].mapping_qty)
+                formatQtyArray.put(formatQtyObj)
+            }
+
+            mappingItemObj.put(WebParams.ITEM_NAME, mappingItemList[i].item_name)
+            mappingItemObj.put(WebParams.ITEM_CODE, mappingItemList[i].item_code)
+            mappingItemObj.put(WebParams.PRICE, mappingItemList[i].price)
+            mappingItemObj.put(WebParams.UNIT, mappingItemList[i].unit)
+            mappingItemObj.put(WebParams.FORMAT_QTY, formatQtyArray)
+            mappingItemArray.put(mappingItemObj)
+        }
+
+        parentObj.put(WebParams.MAPPING_ITEMS, mappingItemArray)
+        parentArr.put(parentObj)
         Timber.e(parentArr.toString())
         return false
     }
