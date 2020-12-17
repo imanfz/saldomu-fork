@@ -1,8 +1,8 @@
 package com.sgo.saldomu.adapter
 
 import android.app.Activity
-import android.os.Parcel
-import android.os.Parcelable
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +12,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
 import com.sgo.saldomu.adapter.UpdateProductGoodReceiptAdapter.Holder
-import com.sgo.saldomu.fragments.FragInputQtyGoodReceipt
-import com.sgo.saldomu.models.ListPOModel
 import com.sgo.saldomu.models.retrofit.ItemModel
 import java.util.*
 
@@ -22,7 +20,7 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
     private var itemArrayList: ArrayList<ItemModel>? = null
 
 
-    fun UpdateProductGoodReceiptAdapter(itemArrayList: ArrayList<ItemModel>, mContext: Activity?,) {
+    fun UpdateProductGoodReceiptAdapter(itemArrayList: ArrayList<ItemModel>, mContext: Activity?) {
         this.itemArrayList = itemArrayList
         this.mContext = mContext
         this.listener = listener
@@ -31,10 +29,13 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var border: View = itemView.findViewById(R.id.border)
         var itemName: TextView = itemView.findViewById(R.id.adapter_item_name_field)
+
         //BAL
         var itemQty1: EditText = itemView.findViewById(R.id.adapter_item_et_qty_1)
+
         //SLOP
         var itemQty2: EditText = itemView.findViewById(R.id.adapter_item_et_qty_2)
+
         //PACK
         var itemQty3: EditText = itemView.findViewById(R.id.adapter_item_et_qty_3)
     }
@@ -52,6 +53,56 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
         holder.itemQty1.setText(itemList[position].format_qty?.get(0)!!.mapping_qty.toString())
         holder.itemQty2.setText(itemList[position].format_qty?.get(1)!!.mapping_qty.toString())
         holder.itemQty3.setText(itemList[position].format_qty?.get(2)!!.mapping_qty.toString())
+
+        holder.itemQty1.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (s!!.length == 0) {
+                    itemList[position].format_qty?.get(0)!!.mapping_qty = 0
+                } else {
+                    itemList[position].format_qty?.get(0)!!.mapping_qty = Integer.parseInt(s.toString())
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int,
+                                           count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+            }
+        })
+
+        holder.itemQty2.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (s!!.length == 0) {
+                    itemList[position].format_qty?.get(1)!!.mapping_qty = 0
+                } else {
+                    itemList[position].format_qty?.get(1)!!.mapping_qty = Integer.parseInt(s.toString())
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int,
+                                           count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+            }
+        })
+
+        holder.itemQty3.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {if (s!!.length == 0) {
+                itemList[position].format_qty?.get(2)!!.mapping_qty = 0
+            } else {
+                itemList[position].format_qty?.get(2)!!.mapping_qty = Integer.parseInt(s.toString())
+            }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int,
+                                           count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+            }
+        })
     }
 
     override fun getItemCount(): Int {

@@ -668,6 +668,13 @@ public class WebParams {
     public static String MAPPING_UNIT = "mapping_unit";
     public static String MAPPING_QTY = "mapping_qty";
     public static String DOC_DETAIL = "doc_detail";
+    public static String DOC_DETAILS = "doc_details";
     public static String CUST_TYPE = "cust_type";
+    public static String INVOICE_NOTE = "invoice_note";
+    public static String NOTES_NO = "notes_no";
+    public static String NOTES_ID = "notes_id";
+    public static String REFF_ID = "reff_id";
+    public static String DISCOUNT_AMOUNT = "discount_amount";
+
 
 }

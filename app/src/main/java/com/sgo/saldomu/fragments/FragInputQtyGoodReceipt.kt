@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
 import com.sgo.saldomu.adapter.UpdateProductGoodReceiptAdapter
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -18,6 +20,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.models.DocDetailModel
 import com.sgo.saldomu.models.FormatQty
 import com.sgo.saldomu.models.retrofit.ItemModel
 import com.sgo.saldomu.models.retrofit.jsonModel
@@ -28,9 +31,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.UpdateProductGoodReceiptListener {
 
@@ -42,7 +42,6 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
     private val itemArrayList = ArrayList<ItemModel>()
 
     private var updateProductGoodReceiptAdapter: UpdateProductGoodReceiptAdapter? = null
-            ;
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_list, container, false)
@@ -165,46 +164,75 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
         updateProductGoodReceiptAdapter!!.updateData(itemArrayList)
     }
 
-    fun getDocDetail(temp: ArrayList<ItemModel>): JSONArray? {
-        val jsonArray = JSONArray()
+//    fun getDocDetail(temp: ArrayList<ItemModel>): JSONArray? {
+//        val jsonArray = JSONArray()
+//        try {
+//            for (obj in itemArrayList) {
+//                val jsonObject = JSONObject()
+//                jsonObject.put("item_name", obj.item_name)
+//                jsonObject.put("item_code", obj.item_code)
+//                jsonObject.put("price", obj.price!!.toInt())
+//                jsonObject.put("unit", obj.unit)
+//                val formatQtyArrayList = ArrayList<FormatQty>()
+//                for (formatQty in obj.format_qty!!) {
+//                    val formatQtyTemp = FormatQty()
+//                    formatQtyTemp.mapping_qty = formatQty.mapping_qty
+//                    formatQtyTemp.mapping_unit = formatQty.mapping_unit
+//                    formatQtyArrayList.add(formatQtyTemp)
+//                }
+//                jsonObject.put("format_qty", formatQtyArrayList)
+//
+//                jsonArray.put(jsonObject)
+//
+//                temp.add(obj)
+//            }
+//        } catch (e: JSONException) {
+//            e.printStackTrace()
+//        }
+//        return jsonArray
+//    }
+
+    fun setMappingItemsHashMap(): HashMap<String, Any> {
+        val finalMappingItemsHashMap = HashMap<String, Any>()
+        val mappingItemsArrayList = ArrayList<HashMap<String, Any>>()
         try {
-            for (obj in itemArrayList) {
-                val jsonObject = JSONObject()
-                jsonObject.put("item_name", obj.item_name)
-                jsonObject.put("item_code", obj.item_code)
-                jsonObject.put("price", obj.price)
-                jsonObject.put("unit", obj.unit)
+            for (obj in updateProductGoodReceiptAdapter!!.itemList) {
+                val mappingItemsHashMap = HashMap<String, Any>()
+                mappingItemsHashMap["item_name"] = obj.item_name!!
+                mappingItemsHashMap["item_code"] = obj.item_code!!
+                mappingItemsHashMap["price"] = obj.price!!
+                mappingItemsHashMap["unit"] = obj.unit!!
 
-                val formatQtyJsonArray = JSONArray()
-                for (objs in obj.format_qty!!) {
-                    Log.d("leot", objs.toString())
-                    var maps = HashMap<String, Object>()
-//                    maps.put(WebParams.MAPPING_UNIT, objs.mapping_unit)
-//                    maps.put(WebParams.MAPPING_QTY, objs.mapping_qty)
-//                    formatQtyJsonArray.put(formatQtyJsonObject)
-                    Log.d("leot", formatQtyJsonArray.toString())
+                val formatQtyArrayList = ArrayList<HashMap<String, Any>>()
+                for (formatQty in obj.format_qty!!) {
+                    val formatQtyHashMap = HashMap<String, Any>()
+                    formatQtyHashMap["mapping_qty"] = formatQty.mapping_qty
+                    formatQtyHashMap["mapping_unit"] = formatQty.mapping_unit
+                    formatQtyArrayList.add(formatQtyHashMap)
                 }
-
-                jsonObject.put("format_qty", formatQtyJsonArray)
-
-                jsonArray.put(jsonObject)
-
-                temp.add(obj)
+                mappingItemsHashMap["format_qty"] = formatQtyArrayList
+                mappingItemsArrayList.add(mappingItemsHashMap)
+                finalMappingItemsHashMap.put("mapping_items", mappingItemsArrayList)
+                finalMappingItemsHashMap.put("reff_no", docNo)
             }
         } catch (e: JSONException) {
-            Log.d("leot", e.localizedMessage)
             e.printStackTrace()
         }
-        return jsonArray
+        return finalMappingItemsHashMap
     }
 
     private fun confirmDocument() {
         try {
             showProgressDialog()
 
-            val temp: ArrayList<ItemModel> = ArrayList()
+//            val docArrayList: JSONArray? = getDocDetail(temp)
 
-            val docArrayList: JSONArray? = getDocDetail(temp)
+            val temp = ArrayList<HashMap<String, Any>>()
+
+            temp.add(setMappingItemsHashMap())
+
+            val gson = Gson()
+            val tempGson = gson.toJson(temp)
 
             extraSignature = memberCodeEspay + custIdEspay
             val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_DOC_CONFIRM, extraSignature)
@@ -212,9 +240,12 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
             params[WebParams.COMM_CODE_ESPAY] = commCodeEspay
             params[WebParams.MEMBER_CODE_ESPAY] = memberCodeEspay
             params[WebParams.CUST_ID_ESPAY] = custIdEspay
+            params[WebParams.CUST_ID] = userPhoneID
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.TYPE_ID] = DefineValue.GR
-            params[WebParams.DOC_DETAIL] = docArrayList
+//            params[WebParams.DOC_DETAIL] = docArrayList
+            params[WebParams.DOC_DETAIL] = tempGson
+            params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
             Timber.d("params confirm doc:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_CONFIRM, params,
@@ -228,6 +259,17 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
                                 Timber.d("isi response confirm doc:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
+                                        val bundle = Bundle()
+                                        bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY,commCodeEspay)
+                                        bundle.putString(DefineValue.MEMBER_CODE_ESPAY,memberCodeEspay)
+                                        bundle.putString(DefineValue.CUST_ID_ESPAY,custIdEspay)
+                                        bundle.putString(DefineValue.DOC_DETAILS,response.optString(WebParams.DOC_DETAILS))
+                                        bundle.putString(DefineValue.AMOUNT,response.optString(WebParams.AMOUNT))
+                                        bundle.putString(DefineValue.TOTAL_AMOUNT,response.optString(WebParams.TOTAL_AMOUNT))
+                                        bundle.putString(DefineValue.TOTAL_DISC,response.optString(WebParams.DISCOUNT_AMOUNT))
+                                        val frag: Fragment = FragCreateGR()
+                                        frag.arguments = bundle
+                                        switchFragment(frag,"","",true, "")
 
                                     }
                                     WebParams.LOGOUT_CODE -> {
@@ -269,5 +311,11 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
 
     override fun onClick(item: ItemModel?) {
         TODO("Not yet implemented")
+    }
+
+    private fun switchFragment(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {
+        if (activity == null) return
+        val fca = activity as CanvasserGoodReceiptActivity?
+        fca!!.switchContent(i, name, next_name, isBackstack, tag)
     }
 }

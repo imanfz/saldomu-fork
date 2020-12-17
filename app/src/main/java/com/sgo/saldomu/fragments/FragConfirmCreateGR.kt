@@ -1,13 +1,16 @@
 package com.sgo.saldomu.fragments
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.sgo.saldomu.R
-import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -17,19 +20,20 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.retrofit.jsonModel
+import com.sgo.saldomu.securities.RSA
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.confirm_create_gr.*
+import kotlinx.android.synthetic.main.dialog_notification.*
+import kotlinx.android.synthetic.main.frag_confirm_gr.*
+import kotlinx.android.synthetic.main.frag_input_store_code.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 
-class FragConfirmGR : BaseFragment() {
-    var memberCodeEspay : String =""
-    var commCodeEspay : String =""
-    var custIdEspay : String =""
+class FragConfirmCreateGR : BaseFragment() {
+    var txId : String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.confirm_create_gr, container, false)
+        v = inflater.inflate(R.layout.frag_confirm_gr, container, false)
         return v
     }
 
@@ -37,32 +41,36 @@ class FragConfirmGR : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         val bundle = arguments
+        txId = bundle!!.getString(DefineValue.TX_ID,"")
 
-        memberCodeEspay = bundle!!.getString(DefineValue.MEMBER_CODE_ESPAY,"")
-        commCodeEspay = bundle!!.getString(DefineValue.COMMUNITY_CODE_ESPAY,"")
-        custIdEspay= bundle!!.getString(DefineValue.CUST_ID_ESPAY,"")
-
-        frag_gr_confirm_store_code.setText(memberCodeEspay)
-        frag_gr_confirm_comm_code.setText(commCodeEspay)
-        frag_gr_confirm_amount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(bundle!!.getString(DefineValue.AMOUNT)))
-        frag_gr_confirm_discount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(bundle!!.getString(DefineValue.TOTAL_DISC)))
-        frag_gr_confirm_total_amount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(bundle!!.getString(DefineValue.TOTAL_AMOUNT)))
-
-        frag_gr_confirm_submit_btn.setOnClickListener { reqOTP() }
+        frag_gr_confirm_submit_btn.setOnClickListener { confirmOTP() }
     }
 
-    fun reqOTP()
+    fun inputValidation(): Boolean {
+        if (et_otp_confirm_gr == null || et_otp_confirm_gr.getText().toString().isEmpty()) {
+            et_otp_confirm_gr.requestFocus()
+            et_otp_confirm_gr.error = getString(R.string.validation_confirmation_code)
+            return false
+        }
+        return true
+    }
+
+    fun confirmOTP()
     {
         try {
             showProgressDialog()
-            extraSignature = memberCodeEspay + commCodeEspay
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_DOC_DETAIL, extraSignature)
-            params[WebParams.COMM_CODE_ESPAY] = commCodeEspay
-            params[WebParams.MEMBER_CODE_ESPAY] = memberCodeEspay
-            params[WebParams.CUST_ID_ESPAY] = custIdEspay
+
+            val uuid: String = params[WebParams.RC_UUID].toString()
+            val dateTime: String = params[WebParams.RC_DTIME].toString()
+            val link = MyApiClient.LINK_CREATE_GR
+            val subStringLink = link.substring(link.indexOf("saldomu/"))
+            extraSignature = txId + et_otp_confirm_gr.text.toString()
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CREATE_GR, extraSignature)
+            params[WebParams.TX_ID] = txId
             params[WebParams.USER_ID] = userPhoneID
-            Timber.d("params inquiry doc detail:$params")
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_DETAIL, params,
+            params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, et_otp_confirm_gr.text.toString(), subStringLink)
+            Timber.d("params GR confirm OTP:$params")
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CREATE_GR, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
                             try {
@@ -70,10 +78,10 @@ class FragConfirmGR : BaseFragment() {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
                                 val code = response.getString(WebParams.ERROR_CODE)
                                 val code_msg = response.getString(WebParams.ERROR_MESSAGE)
-                                Timber.d("isi response inquiry doc detail:$response")
+                                Timber.d("isi response GR confirm OTP:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
-
+                                        showDialog(response)
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
@@ -93,7 +101,7 @@ class FragConfirmGR : BaseFragment() {
                                         alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                                     }
                                     else -> {
-                                        Timber.d("isi error inquiry doc detail:$response")
+                                        Timber.d("isi error GR confirm OTP:$response")
                                         Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
                                     }
                                 }
@@ -112,4 +120,21 @@ class FragConfirmGR : BaseFragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun showDialog(response: JSONObject) {
+        val dialog = Dialog(activity!!)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setContentView(R.layout.dialog_notification)
+
+        dialog.title_dialog.text = resources.getString(R.string.success)
+        dialog.message_dialog.visibility = View.VISIBLE
+        dialog.message_dialog.text = response.getString(WebParams.ERROR_MESSAGE)
+
+        dialog.btn_dialog_notification_ok.setOnClickListener {
+            dialog.dismiss()
+            activity!!.finish()
+        }
+        dialog.show()
+    }
 }
