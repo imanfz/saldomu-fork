@@ -112,6 +112,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                     val custID = jsonObject.getString(WebParams.CUST_ID)
                                     val memberCode = jsonObject.getString(WebParams.MEMBER_CODE)
                                     val commCode = jsonObject.getString(WebParams.COMM_CODE)
+                                    val paidStatus = jsonObject.getString(WebParams.PAID_STATUS)
                                     val listPOModel = ListPOModel()
                                     listPOModel.doc_no = docNo
                                     listPOModel.doc_status = docStatus
@@ -120,6 +121,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                     listPOModel.cust_id = custID
                                     listPOModel.member_code = memberCode
                                     listPOModel.comm_code = commCode
+                                    listPOModel.paid_status = paidStatus
                                     itemList.add(listPOModel)
                                 }
                                 itemListAdapter!!.notifyDataSetChanged()

@@ -31,4 +31,8 @@ class ListPOModel {
     @SerializedName("comm_code")
     @Expose
     var comm_code: String? = null
+
+    @SerializedName("paid_status")
+    @Expose
+    var paid_status: String? = null
 }
