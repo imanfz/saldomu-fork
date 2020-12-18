@@ -54,7 +54,7 @@ class FragListCommunityToko : BaseFragment() {
                 bundle.putString(DefineValue.MEMBER_CODE, ebdCommunityModelArrayList[pos].member_code)
                 bundle.putString(DefineValue.COMMUNITY_CODE, ebdCommunityModelArrayList[pos].comm_code)
                 fragment.arguments = bundle
-                tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.list_po), true, "FragListPurchaseOrderToko")
+                tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.list_po), true, tokoPurchaseOrderActivity.FRAG_LIST_PO)
             }
         })
         recyclerView.adapter = adapterEBDCommunityList
@@ -93,7 +93,7 @@ class FragListCommunityToko : BaseFragment() {
                         adapterEBDCommunityList!!.notifyDataSetChanged()
                     }
                     WebParams.LOGOUT_CODE -> {
-                        AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                        AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                     }
                     DefineValue.ERROR_9333 -> {
                         val model = gson.fromJson(response.toString(), jsonModel::class.java)

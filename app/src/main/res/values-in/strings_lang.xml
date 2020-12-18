@@ -1684,12 +1684,15 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="store_code_validation">Kode Toko dibutuhkan!</string>
     <string name="new_store_registration">Registrasi Toko Baru</string>
     <string name="create_po">Tambah PO</string>
+    <string name="create_gr">Buat Faktur Perimaan</string>
     <string name="list_po">List PO</string>
     <string name="search_po">Cari PO</string>
     <string name="owner_id_no">Nomor KTP Pemilik</string>
     <string name="owner_id_no_required">Nomor KTP Pemilik dibutuhkan</string>
+    <string name="owner_id_no_length">Nomor KTP Pemilik harus 16 karakter</string>
     <string name="choose_catalog">Pilih Katalog</string>
-    <string name="purchase_order">Pesan Pembelian</string>
+    <string name="purchase_order">Purchase Order</string>
+    <string name="purchase_order_confirmation">Konfirmasi Purchase Order </string>
     <string name="join_community">Gabung Komunitas</string>
     <string name="store_owner_name">Nama Pemilik Toko</string>
     <string name="store_owner_name_required">Nama Pemilik Toko dibutuhkan</string>
@@ -1706,6 +1709,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="pay_later">Bayar Nanti</string>
     <string name="paid_status">Status Pembayaran</string>
 
+
     <string name="lbl_type_id">Tipe Id</string>
     <string name="lbl_reff_id">Id Reff</string>
     <string name="lbl_reff_no">No Reff </string>
@@ -1716,4 +1720,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="tv_please_wait">Minta pelanggan untuk mengecek notifikasi untuk melakukan pembayaran</string>
     <string name="lbl_choose">Pilih</string>
 
+    <string name="detail_document">Detil Dokumen</string>
+    <string name="item_name">Nama Barang</string>
+    <string name="price">Harga</string>
 </resources>

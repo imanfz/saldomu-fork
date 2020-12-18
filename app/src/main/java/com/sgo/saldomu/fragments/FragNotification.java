@@ -308,6 +308,30 @@ public class FragNotification extends BaseFragment {
                     s.putExtras(s);
                     startActivity(s);
                     break;
+                case NotificationActivity.OTP_CREATE_PO:
+                    sentReadNotif(mObj.getNotif_id(), position);
+                    getActivity().finish();
+                    break;
+                case NotificationActivity.OTP_CREATE_GR:
+                    sentReadNotif(mObj.getNotif_id(), position);
+                    getActivity().finish();
+                    break;
+                case NotificationActivity.CREATE_GR:
+                    sentReadNotif(mObj.getNotif_id(), position);
+                    getActivity().finish();
+                    break;
+                case NotificationActivity.INVOICE_PAID:
+                    sentReadNotif(mObj.getNotif_id(), position);
+                    getActivity().finish();
+                    break;
+                case NotificationActivity.NEW_INVOICE_TOKO:
+                    sentReadNotif(mObj.getNotif_id(), position);
+                    getActivity().finish();
+                    break;
+                case NotificationActivity.NEW_INVOICE_CANVASSER:
+                    sentReadNotif(mObj.getNotif_id(), position);
+                    getActivity().finish();
+                    break;
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -536,6 +560,36 @@ public class FragNotification extends BaseFragment {
                                                         title = notif_detail.getString(WebParams.SUBJECT);
                                                         detail = notif_detail.getString(WebParams.DESC);
                                                         break;
+                                                    case NotificationActivity.OTP_CREATE_GR:
+                                                        image = R.drawable.ic_logo_inbox;
+                                                        title = notif_detail.getString(WebParams.SUBJECT);
+                                                        detail = notif_detail.getString(WebParams.DESC);
+                                                        break;
+                                                    case NotificationActivity.OTP_CREATE_PO:
+                                                        image = R.drawable.ic_logo_inbox;
+                                                        title = notif_detail.getString(WebParams.SUBJECT);
+                                                        detail = notif_detail.getString(WebParams.DESC);
+                                                        break;
+                                                    case NotificationActivity.INVOICE_PAID:
+                                                        image = R.drawable.ic_logo_inbox;
+                                                        title = notif_detail.getString(WebParams.SUBJECT);
+                                                        detail = notif_detail.getString(WebParams.DESC);
+                                                        break;
+                                                    case NotificationActivity.NEW_INVOICE_CANVASSER:
+                                                        image = R.drawable.ic_logo_inbox;
+                                                        title = notif_detail.getString(WebParams.SUBJECT);
+                                                        detail = notif_detail.getString(WebParams.DESC);
+                                                        break;
+                                                    case NotificationActivity.NEW_INVOICE_TOKO:
+                                                        image = R.drawable.ic_logo_inbox;
+                                                        title = notif_detail.getString(WebParams.SUBJECT);
+                                                        detail = notif_detail.getString(WebParams.DESC);
+                                                        break;
+                                                    case NotificationActivity.CREATE_GR:
+                                                        image = R.drawable.ic_logo_inbox;
+                                                        title = notif_detail.getString(WebParams.SUBJECT);
+                                                        detail = notif_detail.getString(WebParams.DESC);
+                                                        break;
                                                 }
 
                                                 if (notif_type == NotificationActivity.TYPE_LIKE ||
@@ -547,7 +601,14 @@ public class FragNotification extends BaseFragment {
                                                         notif_type == NotificationActivity.CLAIM_NON_MEMBER ||
                                                         notif_type == NotificationActivity.REJECTED_KTP ||
                                                         notif_type == NotificationActivity.BLAST_INFO ||
-                                                        notif_type == NotificationActivity.SOURCE_OF_FUND
+                                                        notif_type == NotificationActivity.SOURCE_OF_FUND ||
+                                                        notif_type == NotificationActivity.OTP_CREATE_GR ||
+                                                        notif_type == NotificationActivity.OTP_CREATE_PO ||
+                                                        notif_type == NotificationActivity.CREATE_GR ||
+                                                        notif_type == NotificationActivity.INVOICE_PAID ||
+                                                        notif_type == NotificationActivity.NEW_INVOICE_CANVASSER ||
+                                                        notif_type == NotificationActivity.NEW_INVOICE_TOKO
+
                                                 ) {
                                                     mDataNotifDetail.add(notif_detail);
 
