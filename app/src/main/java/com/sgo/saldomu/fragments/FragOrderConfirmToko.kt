@@ -8,24 +8,38 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.TokoEBDActivity
+import com.sgo.saldomu.activities.DenomSCADMActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
+import com.sgo.saldomu.adapter.AdapterListItemConfirmPO
 import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.DefineValue
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService
+import com.sgo.saldomu.coreclass.WebParams
+import com.sgo.saldomu.dialogs.AlertDialogLogout
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
+import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.EBDConfirmModel
 import com.sgo.saldomu.models.MappingItemsItem
 import com.sgo.saldomu.models.PaymentMethods
+import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_order_confirm_toko.*
+import org.json.JSONObject
+import timber.log.Timber
 
 class FragOrderConfirmToko : BaseFragment() {
     var memberCode = ""
     var commCode = ""
-    var paymentOption = ""
+    private var paymentOption = ""
     var paymentMethodCode = ""
+    var docDetail = ""
 
-    var ebdConfirmModel = EBDConfirmModel()
+    private var ebdConfirmModel = EBDConfirmModel()
 
     private val mappingItemList = ArrayList<MappingItemsItem>()
     private val paymentMethodList = ArrayList<PaymentMethods>()
@@ -44,6 +58,7 @@ class FragOrderConfirmToko : BaseFragment() {
             memberCode = arguments!!.getString(DefineValue.MEMBER_CODE, "")
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
             paymentOption = arguments!!.getString(DefineValue.PAYMENT_OPTION, "")
+            docDetail = arguments!!.getString(DefineValue.DOC_DETAILS, "")
             ebdConfirmModel = getGson().fromJson(arguments!!.getString(DefineValue.EBD_CONFIRM_DATA, ""), EBDConfirmModel::class.java)
         }
 
@@ -54,31 +69,146 @@ class FragOrderConfirmToko : BaseFragment() {
         total_field.text = getString(R.string.currency) + " " + CurrencyFormat.format(ebdConfirmModel.total_amount)
         val docDetails = ebdConfirmModel.doc_details
         mappingItemList.addAll(docDetails[0].mapping_items)
+        val adapterListItemConfirmPO = AdapterListItemConfirmPO(context!!, mappingItemList)
+        item_list_field.adapter = adapterListItemConfirmPO
+        item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-
-        paymentMethodList.addAll(ebdConfirmModel.payment_methods)
-        val paymentMethodNameList = ArrayList<String>()
-        for (i in paymentMethodList.indices) {
-            paymentMethodNameList.add(paymentMethodList[i].payment_name)
-        }
-        val paymentMethodAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentMethodNameList)
-        spinner_payment_method.adapter = paymentMethodAdapter
-        if (paymentMethodList.size == 1)
-            spinner_payment_method.isEnabled = false
-        spinner_payment_method.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                paymentMethodCode = paymentMethodList[p2].payment_code
+        if (paymentOption == getString(R.string.pay_now)) {
+            paymentMethodList.addAll(ebdConfirmModel.payment_methods)
+            val paymentMethodNameList = ArrayList<String>()
+            for (i in paymentMethodList.indices) {
+                paymentMethodNameList.add(paymentMethodList[i].payment_name)
             }
+            val paymentMethodAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentMethodNameList)
+            spinner_payment_method.adapter = paymentMethodAdapter
+            if (paymentMethodList.size == 1)
+                spinner_payment_method.isEnabled = false
+            spinner_payment_method.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    paymentMethodCode = paymentMethodList[p2].payment_code
+                }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                }
 
             }
-
-        }
+        } else if (paymentOption == getString(R.string.pay_later))
+            layout_payment_method.visibility = View.GONE
         submit_btn.setOnClickListener { submitOrder() }
     }
 
     private fun submitOrder() {
-        Toast.makeText(context, "$memberCode $commCode", Toast.LENGTH_SHORT).show()
+        showProgressDialog()
+
+        val amount = ebdConfirmModel.amount
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CREATE_PO, memberCode + commCode + amount)
+        params[WebParams.USER_ID] = userPhoneID
+        params[WebParams.MEMBER_CODE_ESPAY] = memberCode
+        params[WebParams.COMM_CODE_ESPAY] = commCode
+        params[WebParams.CUST_ID_ESPAY] = userPhoneID
+        params[WebParams.CUST_ID] = userPhoneID
+        params[WebParams.AMOUNT] = amount
+        params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
+        params[WebParams.DOC_DETAIL] = docDetail
+        params[WebParams.CUST_TYPE] = DefineValue.TOKO
+        params[WebParams.ACTION_CODE] = "N"
+
+        Timber.d("isi params create PO:$params")
+
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CREATE_PO, params,
+                object : ObjListeners {
+                    override fun onResponses(response: JSONObject) {
+                        val code = response.getString(WebParams.ERROR_CODE)
+                        val message = response.getString(WebParams.ERROR_MESSAGE)
+                        when (code) {
+                            WebParams.SUCCESS_CODE -> {
+                                if (paymentOption == getString(R.string.pay_now)) {
+                                    val docNo = response.getString(WebParams.PO_NO)
+                                    val partnerCode = response.getString(WebParams.PARTNER_CODE_ESPAY)
+                                    requestPayment(docNo, partnerCode)
+                                } else if (paymentOption == getString(R.string.pay_later))
+                                    backToListPO()
+                            }
+                            WebParams.LOGOUT_CODE -> {
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
+                            }
+                            DefineValue.ERROR_9333 -> {
+                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                val appModel = model.app_data
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            }
+                            DefineValue.ERROR_0066 -> {
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                            }
+                            else -> {
+                                Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+
+                    override fun onError(throwable: Throwable?) {
+                        dismissProgressDialog()
+                    }
+
+                    override fun onComplete() {
+                        dismissProgressDialog()
+                    }
+
+                })
+    }
+
+    private fun requestPayment(docNo: String, partnerCode: String) {
+        showProgressDialog()
+
+        //Params : rc_uuid , rc_dtime , user_id, package_version, signature, client_app, member_code, comm_code, member_code_espay, comm_code_espay, partner_code_espay, cust_id_espay,
+        //		ccy_id, payment_type, doc_no, type_id, amount, shop_phone(**), latitude(**), longitude(**), payment_remark(**), reff_id (optional), reff_no (optional)
+        //	Extra signature : member_code_espay + comm_code_espay + doc_no
+
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQUEST_PAYMENT, memberCode + commCode + docNo)
+        params[WebParams.USER_ID] = userPhoneID
+        params[WebParams.MEMBER_CODE] = memberCode
+        params[WebParams.COMM_CODE] = commCode
+        params[WebParams.MEMBER_CODE_ESPAY] = memberCode
+        params[WebParams.COMM_CODE_ESPAY] = commCode
+        params[WebParams.CUST_ID_ESPAY] = userPhoneID
+        params[WebParams.CUST_ID] = userPhoneID
+        params[WebParams.AMOUNT] = ebdConfirmModel.amount
+        params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
+        params[WebParams.DOC_DETAIL] = docDetail
+        params[WebParams.PAYMENT_TYPE] = paymentMethodCode
+        params[WebParams.PARTNER_CODE_ESPAY] = partnerCode
+        params[WebParams.DOC_NO] = docNo
+        params[WebParams.TYPE_ID] = DefineValue.PO
+
+        Timber.d("isi params request payment:$params")
+
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQUEST_PAYMENT, params,
+                object : ObjListeners {
+                    override fun onResponses(response: JSONObject) {
+
+                    }
+
+                    override fun onError(throwable: Throwable?) {
+                        dismissProgressDialog()
+                    }
+
+                    override fun onComplete() {
+                        dismissProgressDialog()
+                    }
+
+                })
+    }
+
+    private fun backToListPO() {
+        val frags = fragmentManager!!.fragments
+        val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
+        for (f in frags) {
+            if (f.tag == tokoPurchaseOrderActivity.FRAG_LIST_PO) {
+                val fragmentTransaction = fragmentManager!!.beginTransaction()
+                fragmentTransaction.remove(f).commit()
+            }
+        }
+        fragManager.popBackStack(tokoPurchaseOrderActivity.FRAG_LIST_PO, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 }

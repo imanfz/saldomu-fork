@@ -12,8 +12,10 @@ import com.sgo.saldomu.widgets.BaseActivity
 import timber.log.Timber
 
 class TokoPurchaseOrderActivity : BaseActivity() {
+
     var fragmentManager: FragmentManager? = null
 
+    var FRAG_LIST_PO = "FragListPurchaseOrderToko"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializeToolbar(getString(R.string.purchase_order))

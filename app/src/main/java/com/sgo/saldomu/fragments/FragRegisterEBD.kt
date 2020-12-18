@@ -108,6 +108,11 @@ class FragRegisterEBD : BaseFragment() {
             et_id_no.error = getString(R.string.owner_id_no_required)
             return false
         }
+        if (et_id_no.text!!.length != 16) {
+            et_id_no.requestFocus()
+            et_id_no.error = getString(R.string.owner_id_no_length)
+            return false
+        }
         if (et_delivery_address.text!!.isEmpty()) {
             et_delivery_address.requestFocus()
             et_delivery_address.error = getString(R.string.delivery_address_required)
@@ -211,7 +216,7 @@ class FragRegisterEBD : BaseFragment() {
         params[WebParams.CUST_ID_ESPAY] = userPhoneID
         params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
         params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
-        params[WebParams.ADDRESS] = et_delivery_address.text.toString()
+        params[WebParams.ADDRESS] = et_delivery_address.text.toString().replace("\n", " ")
         params[WebParams.PROVINCE] = province_auto_text.text.toString()
         params[WebParams.CITY] = district_auto_text.text.toString()
         params[WebParams.DISTRICT] = sub_district_auto_text.text.toString()

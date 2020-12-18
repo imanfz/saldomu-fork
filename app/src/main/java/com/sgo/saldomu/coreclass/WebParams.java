@@ -682,4 +682,6 @@ public class WebParams {
     public static String SUBTOTAL_AMOUNT = "subtotal_amount";
     public static String PROMO = "promo";
     public static String ACTION_CODE = "action_code";
+    public static String PARTNER_CODE_ESPAY = "partner_code_espay";
+    public static String PO_NO = "po_no";
 }

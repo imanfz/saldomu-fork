@@ -95,6 +95,7 @@ class FragListItemToko : BaseFragment() {
         snapHelper.attachToRecyclerView(frag_input_item_list_field)
 
         layout_payment_method.visibility = View.VISIBLE
+        paymentListOption.clear()
         paymentListOption.add(getString(R.string.pay_now))
         paymentListOption.add(getString(R.string.pay_later))
         val paymentOptionsAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentListOption)
@@ -183,7 +184,7 @@ class FragListItemToko : BaseFragment() {
                                         itemListAdapter!!.notifyDataSetChanged()
                                     }
                                     WebParams.LOGOUT_CODE -> {
-                                        AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                                        AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                                     }
                                     DefineValue.ERROR_9333 -> {
                                         val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -238,6 +239,7 @@ class FragListItemToko : BaseFragment() {
 
     private fun confirmationDoc() {
         showProgressDialog()
+        val docDetail = createJSONDocDetail()
         val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRMATION_DOC, memberCode + userPhoneID)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_CODE_ESPAY] = memberCode
@@ -246,7 +248,7 @@ class FragListItemToko : BaseFragment() {
         params[WebParams.CUST_ID] = userPhoneID
         params[WebParams.REFF_ID] = order.reff_no
         params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
-        params[WebParams.DOC_DETAIL] = createJSONDocDetail()
+        params[WebParams.DOC_DETAIL] = docDetail
         params[WebParams.TYPE_ID] = DefineValue.PO
         params[WebParams.CUST_TYPE] = DefineValue.TOKO
 
@@ -265,13 +267,14 @@ class FragListItemToko : BaseFragment() {
                                 bundle.putString(DefineValue.MEMBER_CODE, memberCode)
                                 bundle.putString(DefineValue.COMMUNITY_CODE, commCode)
                                 bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
+                                bundle.putString(DefineValue.DOC_DETAILS, docDetail)
                                 bundle.putString(DefineValue.EBD_CONFIRM_DATA, response.toString())
 
                                 frag.arguments = bundle
                                 (activity as TokoPurchaseOrderActivity).switchContent(frag, getString(R.string.purchase_order_confirmation), true, "FragOrderConfirmToko")
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
