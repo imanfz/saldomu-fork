@@ -579,6 +579,7 @@ public class WebParams {
 
     public static String FCM_ID = "fcm_id";
     public static String REFERENCE_ID = "reference_id";
+
     public static String CLIENT_APP = "client_app";
 
     public static String STARTER_KITS = "starter_kits";
@@ -666,6 +667,7 @@ public class WebParams {
     public static String NAMA_KECAMATAN = "NAMA_KECAMATAN";
     public static String KODE_LUR_DES = "KODE_LUR_DES";
     public static String NAMA_LUR_DES = "NAMA_LUR_DES";
+
     public static String FORMAT_QTY = "format_qty";
     public static String MAPPING_UNIT = "mapping_unit";
     public static String MAPPING_QTY = "mapping_qty";
@@ -679,6 +681,10 @@ public class WebParams {
     public static String MAPPING_ITEMS = "mapping_items";
     public static String PAID_STATUS = "paid_status";
     public static String PAYMENT_METHODS = "payment_methods";
+    public static String CREATE_AT = "created_at";
+    public static String ISSUE_DATE = "issue_date";
+
+
     public static String SUBTOTAL_AMOUNT = "subtotal_amount";
     public static String PROMO = "promo";
     public static String ACTION_CODE = "action_code";

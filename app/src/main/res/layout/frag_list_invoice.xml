@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+<!--    -->
+<!--    <LinearLayout-->
+<!--        android:orientation="vertical"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+<!--        -->
+<!--         <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/item_list"-->
+<!--        android:layout_margin="@dimen/margin_10dp"-->
+<!--        android:textSize="14sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:id="@+id/tv_item_list"-->
+<!--        android:visibility="gone"/>-->
+
+
+<!--      -->
+<!--    </LinearLayout>-->
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_above="@id/lyt_btm"
+        android:layout_marginBottom="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginRight="48dp"
+        android:id="@+id/recyclerViewList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+
+    <LinearLayout
+        android:id="@+id/lyt_btm"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingBottom="24dp"
+        android:paddingRight="24dp"
+        android:paddingLeft="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_marginBottom="16dp"
+            android:background="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp">
+
+        </View>
+
+        <LinearLayout
+            android:padding="12dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/metode_pembayaran"
+                android:textColor="@color/black" />
+
+            <Spinner
+                android:id="@+id/spinner_bank_produk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_weight="1"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:padding="12dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/phone"
+                android:textColor="@color/black" />
+
+
+            <TextView
+                android:textSize="14sp"
+                android:id="@+id/tv_phone_no"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_weight="1"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:padding="12dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/total"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:textSize="14sp"
+                android:id="@+id/tv_total"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_weight="1"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+
+<!--        <TableLayout-->
+<!--            android:padding="8dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical"-->
+<!--            android:stretchColumns="2">-->
+
+<!--            <TableRow-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <TextView-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/metode_pembayaran"-->
+<!--                    android:textColor="@color/black" />-->
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:text=""-->
+<!--                    android:textColor="@color/black" />-->
+<!--                <Spinner-->
+<!--                    android:id="@+id/spinner_bank_produk"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:gravity="end"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:textColor="@color/black" />-->
+<!--            </TableRow>-->
+
+
+<!--            <TableRow-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <TextView-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/phone"-->
+<!--                    android:textColor="@color/black" />-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:text=""-->
+<!--                    android:textColor="@color/black" />-->
+
+<!--                <TextView-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:id="@+id/tv_phone_no"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:gravity="end"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:textColor="@color/black" />-->
+<!--            </TableRow>-->
+
+
+
+<!--            <TableRow-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <TextView-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/total"-->
+<!--                    android:textColor="@color/black" />-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:text=""-->
+<!--                    android:textColor="@color/black" />-->
+
+<!--                <TextView-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:id="@+id/tv_total"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:gravity="end"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:textColor="@color/black" />-->
+<!--            </TableRow>-->
+
+
+<!--        </TableLayout>-->
+
+        <Button
+
+            android:id="@+id/btn_proses_gr"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/rounded_background_blue"
+            android:text="@string/checkout"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/grey_1000w" />
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
+
