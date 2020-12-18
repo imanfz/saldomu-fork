@@ -1,14 +1,16 @@
 package com.sgo.saldomu.fragments
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.CanvasserInvoiceActivity
-import com.sgo.saldomu.activities.TokoEBDActivity
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -17,88 +19,58 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
-import com.sgo.saldomu.models.ListPOModel
 import com.sgo.saldomu.models.retrofit.jsonModel
+import com.sgo.saldomu.securities.RSA
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_order_confirm_toko.*
+import kotlinx.android.synthetic.main.dialog_notification.*
+import kotlinx.android.synthetic.main.frag_confirm_gr.*
+import kotlinx.android.synthetic.main.frag_input_store_code.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 
-class FragConInvoice : BaseFragment() {
-    var memberCode: String? = null
-    var commCode: String? = null
-
-    var memberCodeEspay : String = ""
-    var commCodeEspay : String = ""
-    var custIdEspay : String = ""
-    var docNo : String = ""
-    var doc_detail : String = ""
-    var type_id : String = ""
-
-    var cust_id : String = ""
-    var reff_id : String = ""
-    var ccy_id : String = ""
-    var cust_type : String = ""
-
-    var obj: ListPOModel? = null;
+class FragConfirmCreateGR : BaseFragment() {
+    var txId : String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.frag_order_confirm_toko, container, false)
+        v = inflater.inflate(R.layout.frag_confirm_gr, container, false)
         return v
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        val tokoEBDActivity = activity as CanvasserInvoiceActivity
-//        tokoEBDActivity.initializeToolbar(getString(R.string.purchase_order))
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
-        if (arguments != null) {
-            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE, "")
-            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
-            commCodeEspay = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
-            memberCodeEspay = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
-            obj = arguments!!.getParcelable(DefineValue.OBJ);
+        val bundle = arguments
+        txId = bundle!!.getString(DefineValue.TX_ID,"")
 
+        frag_gr_confirm_submit_btn.setOnClickListener { confirmOTP() }
+    }
+
+    fun inputValidation(): Boolean {
+        if (et_otp_confirm_gr == null || et_otp_confirm_gr.getText().toString().isEmpty()) {
+            et_otp_confirm_gr.requestFocus()
+            et_otp_confirm_gr.error = getString(R.string.validation_confirmation_code)
+            return false
         }
-
-        getDetail()
-        member_code_field.text = memberCode
-        comm_code_field.text = commCode
-        submit_btn.setOnClickListener { submitOrder() }
+        return true
     }
 
-
-    private fun submitOrder(){
-
-    }
-
-
-    private fun getDetail()
+    fun confirmOTP()
     {
-        Toast.makeText(context,"$memberCode $commCode",Toast.LENGTH_SHORT).show()
-
         try {
-
-
             showProgressDialog()
-            extraSignature = obj!!.comm_code + obj!!.cust_id
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_DOCS, extraSignature)
+
+            val uuid: String = params[WebParams.RC_UUID].toString()
+            val dateTime: String = params[WebParams.RC_DTIME].toString()
+            val link = MyApiClient.LINK_CREATE_GR
+            val subStringLink = link.substring(link.indexOf("saldomu/"))
+            extraSignature = txId + et_otp_confirm_gr.text.toString()
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CREATE_GR, extraSignature)
+            params[WebParams.TX_ID] = txId
             params[WebParams.USER_ID] = userPhoneID
-            params[WebParams.COMM_CODE_ESPAY] =  obj!!.comm_code
-            params[WebParams.MEMBER_CODE_ESPAY] =  obj!!.member_code
-            params[WebParams.CUST_ID_ESPAY] =  obj!!.cust_id
-            params[WebParams.CUST_ID] = userPhoneID
-            params[WebParams.REFF_ID] = obj!!.reff_id
-            params[WebParams.CCY_ID] =  MyApiClient.CCY_VALUE;
-            params[WebParams.TYPE_ID] = obj!!.type_id
-            params[WebParams.CUST_TYPE] = DefineValue.CANVASSER //
-            params[WebParams.DOC_NO] = obj!!.doc_no
-//            params[WebParams.DOC_DETAIL] = tempGson
-
-
-            Timber.d("params inquiry doc detail:$params")
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_DOCS, params,
+            params[WebParams.TOKEN_ID] = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, et_otp_confirm_gr.text.toString(), subStringLink)
+            Timber.d("params GR confirm OTP:$params")
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CREATE_GR, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
                             try {
@@ -106,10 +78,10 @@ class FragConInvoice : BaseFragment() {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
                                 val code = response.getString(WebParams.ERROR_CODE)
                                 val code_msg = response.getString(WebParams.ERROR_MESSAGE)
-                                Timber.d("isi response inquiry doc detail:$response")
+                                Timber.d("isi response GR confirm OTP:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
-
+                                        showDialog(response)
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
@@ -129,7 +101,7 @@ class FragConInvoice : BaseFragment() {
                                         alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                                     }
                                     else -> {
-                                        Timber.d("isi error inquiry doc detail:$response")
+                                        Timber.d("isi error GR confirm OTP:$response")
                                         Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
                                     }
                                 }
@@ -146,7 +118,23 @@ class FragConInvoice : BaseFragment() {
         } catch (e: java.lang.Exception) {
             Timber.d("httpclient:%s", e.message)
         }
-
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun showDialog(response: JSONObject) {
+        val dialog = Dialog(activity!!)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setContentView(R.layout.dialog_notification)
+
+        dialog.title_dialog.text = resources.getString(R.string.success)
+        dialog.message_dialog.visibility = View.VISIBLE
+        dialog.message_dialog.text = response.getString(WebParams.ERROR_MESSAGE)
+
+        dialog.btn_dialog_notification_ok.setOnClickListener {
+            dialog.dismiss()
+            activity!!.finish()
+        }
+        dialog.show()
+    }
 }

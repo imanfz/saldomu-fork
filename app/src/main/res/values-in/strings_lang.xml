@@ -1559,6 +1559,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="no_notif">Notifikasi kamu kosong.</string>
     <string name="confirmation_code">Kode Konfirmasi</string>
     <string name="hint_confirmation_code">Masukkan kode konfirmasi</string>
+    <string name="validation_confirmation_code">Kode konfirmasi dibutuhkan!</string>
     <string name="resend_confirmation_code">Kirim ulang kode konfirmasi</string>
     <string name="ktp_photo">Foto KTP tidak boleh kosong!</string>
     <string name="selfie_ktp_photo">Foto Selfie dengan KTP tidak boleh kosong!</string>
@@ -1700,4 +1701,19 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="your_community_code">Kode Komunitas Anda</string>
     <string name="doc_no">No. Dokumen</string>
     <string name="doc_status">Status Dokumen</string>
+
+    <string name="pay_now">Bayar Sekarang</string>
+    <string name="pay_later">Bayar Nanti</string>
+    <string name="paid_status">Status Pembayaran</string>
+
+    <string name="lbl_type_id">Tipe Id</string>
+    <string name="lbl_reff_id">Id Reff</string>
+    <string name="lbl_reff_no">No Reff </string>
+
+    <string name="lbl_issue_date">Issue Date </string>
+    <string name="lbl_due_date">Due Date</string>
+    <string name="lbl_created_at">Created At</string>
+    <string name="tv_please_wait">Minta pelanggan untuk mengecek notifikasi untuk melakukan pembayaran</string>
+    <string name="lbl_choose">Pilih</string>
+
 </resources>

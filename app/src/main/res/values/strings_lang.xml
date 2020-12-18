@@ -1577,6 +1577,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="no_notif">You have no notification yet.</string>
     <string name="confirmation_code">Confirmation Code</string>
     <string name="hint_confirmation_code">Input confirmation code</string>
+    <string name="validation_confirmation_code">Confirmation Code Required!</string>
     <string name="resend_confirmation_code">Resend confirmation code</string>
     <string name="ktp_photo">KTP Photo is required!</string>
     <string name="selfie_ktp_photo">Selfie with KTP Photo is required!</string>
@@ -1710,4 +1711,19 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="doc_no">Document No.</string>
     <string name="doc_status">Document Status</string>
     <string name="date">Date</string>
+
+    <string name="pay_now">Pay Now</string>
+    <string name="pay_later">Pay Later</string>
+    <string name="paid_status">Paid Status</string>
+
+    <string name="lbl_type_id">Id Type</string>
+    <string name="lbl_reff_id">Reff Id</string>
+    <string name="lbl_reff_no">Reff No</string>
+    <string name="lbl_issue_date">Issue Date </string>
+    <string name="lbl_due_date">Due Date</string>
+    <string name="lbl_created_at">Created At</string>
+
+    <string name="tv_please_wait">Please ask your customer to check on notification for payment</string>
+    <string name="lbl_choose">Choose</string>
+
 </resources>

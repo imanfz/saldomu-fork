@@ -49,6 +49,23 @@ class ListPOModel() : Parcelable {
     @Expose
     var reff_id: String? = ""
 
+
+
+    @SerializedName("paid_status")
+    @Expose
+    var paid_status: String? = null
+
+
+
+    @SerializedName("issue_date")
+    @Expose
+    var issue_date: String? = null
+
+
+    @SerializedName("created_at")
+    @Expose
+    var created_at: String? = null
+
     constructor(parcel: Parcel) : this() {
         doc_no = parcel.readString()
         doc_status = parcel.readString()
@@ -60,6 +77,9 @@ class ListPOModel() : Parcelable {
         type_id = parcel.readString()
         reff_no = parcel.readString()
         reff_id = parcel.readString()
+        paid_status = parcel.readString()
+        issue_date = parcel.readString()
+        created_at = parcel.readString()
     }
 
     override fun writeToParcel(p0: Parcel?, p1: Int) {
@@ -79,4 +99,5 @@ class ListPOModel() : Parcelable {
             return arrayOfNulls(size)
         }
     }
+
 }

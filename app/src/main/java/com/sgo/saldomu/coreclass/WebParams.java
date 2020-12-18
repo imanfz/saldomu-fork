@@ -320,7 +320,6 @@ public class WebParams {
     public static String IS_EMAIL = "is_email";
 
     public static String CUST_ID_TYPE = "cust_id_type";
-    public static String CUST_TYPE = "cust_type";
     public static String CUST_ID_NUMBER = "cust_id_number";
     public static String CUST_ADDRESS = "cust_address";
     public static String CUST_COUNTRY = "cust_country";
@@ -579,8 +578,6 @@ public class WebParams {
 
     public static String FCM_ID = "fcm_id";
     public static String REFERENCE_ID = "reference_id";
-    public static String REFF_ID = "reff_id";
-    public static String REFF_NO = "reff_no";
 
     public static String CLIENT_APP = "client_app";
 
@@ -670,5 +667,22 @@ public class WebParams {
     public static String NAMA_LUR_DES = "NAMA_LUR_DES";
 
     public static String DOC_DETAIL = "doc_detail";
+    public static String DOC_DETAILS = "doc_details";
+    public static String CUST_TYPE = "cust_type";
+    public static String INVOICE_NOTE = "invoice_note";
+    public static String NOTES_NO = "notes_no";
+    public static String NOTES_ID = "notes_id";
+    public static String REFF_ID = "reff_id";
+    public static String DISCOUNT_AMOUNT = "discount_amount";
+    public static String REFF_NO = "reff_no";
+    public static String MAPPING_ITEMS = "mapping_items";
+    public static String FORMAT_QTY = "format_qty";
+    public static String MAPPING_UNIT = "mapping_unit";
+    public static String MAPPING_QTY = "mapping_qty";
+    public static String PAID_STATUS = "paid_status";
+    public static String PAYMENT_METHODS = "payment_methods";
+    public static String CREATE_AT = "created_at";
+    public static String ISSUE_DATE = "issue_date";
+
 
 }

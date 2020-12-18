@@ -710,5 +710,10 @@ public class DefineValue {
     public static String DOC_LIST = "doc_list";
 
     public static String OBJ = "obj";
+    public static String CANVASSER = "CANVASSER";
+    public static String BAL = "BAL";
+    public static String SLOP = "SLOP";
+    public static String PACK = "PACK";
+    public static String DOC_DETAILS = "DOC_DETAILS";
 }
 

@@ -21,13 +21,13 @@ import com.sgo.saldomu.models.ListPOModel;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder> implements Filterable {
+public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.ViewHolder> {
     private final Activity mContext;
     private ArrayList<ListPOModel> docListArrayList;
-    static ListPOAdapter.listener listener;
+    static ListInvoiceAdapter.listener listener;
 
 
-    public ListPOAdapter(ArrayList<ListPOModel> docListArrayList, Activity mContext, ListPOAdapter.listener _listener) {
+    public ListInvoiceAdapter(ArrayList<ListPOModel> docListArrayList, Activity mContext, ListInvoiceAdapter.listener _listener) {
         this.docListArrayList = docListArrayList;
         this.mContext = mContext;
         listener = _listener;
@@ -41,16 +41,27 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ListPOAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_po, parent, false));
+        return new ListInvoiceAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_inv, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListPOAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ListInvoiceAdapter.ViewHolder holder, int position) {
         holder.docNo.setText(docListArrayList.get(position).getDoc_no());
         holder.docStatus.setText(docListArrayList.get(position).getDoc_status());
         holder.totalAmount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(docListArrayList.get(position).getTotal_amount()));
         holder.dueDate.setText(docListArrayList.get(position).getDue_date());
         holder.paidStatus.setText(docListArrayList.get(position).getPaid_status());
+
+
+        holder.tv_custId.setText(docListArrayList.get(position).getCust_id());
+        holder.tv_comm_code.setText(docListArrayList.get(position).getComm_code());
+        holder.tv_member_code.setText(docListArrayList.get(position).getMember_code());
+        holder.tv_type_id.setText(docListArrayList.get(position).getType_id());
+        holder.tv_reff_no.setText(docListArrayList.get(position).getReff_no());
+        holder.tv_reff_id.setText(docListArrayList.get(position).getReff_id());
+        holder.tv_issued_date.setText(docListArrayList.get(position).getIssue_date());
+        holder.tv_created_at.setText(docListArrayList.get(position).getCreated_at());
+
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,7 +81,12 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView docNo, docStatus, totalAmount, dueDate, paidStatus;
+        TextView docNo, docStatus, totalAmount, dueDate, paidStatus, tv_custId, tv_comm_code, tv_member_code, tv_type_id,
+                tv_reff_no,
+                tv_reff_id,
+                tv_issued_date,
+                tv_created_at;
+        ;
         LinearLayout layout;
 
         public ViewHolder(View itemView) {
@@ -81,36 +97,19 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
             dueDate = itemView.findViewById(R.id.tv_due_date);
             paidStatus = itemView.findViewById(R.id.tv_paid_status);
             layout = itemView.findViewById(R.id.layout1);
+
+            tv_custId = itemView.findViewById(R.id.tv_custId);
+            tv_comm_code = itemView.findViewById(R.id.tv_comm_code);
+            tv_member_code = itemView.findViewById(R.id.tv_member_code);
+            tv_type_id = itemView.findViewById(R.id.tv_type_id);
+            tv_reff_no = itemView.findViewById(R.id.tv_reff_no);
+            tv_reff_id = itemView.findViewById(R.id.tv_reff_id);
+            tv_issued_date = itemView.findViewById(R.id.tv_issued_date);
+            tv_created_at = itemView.findViewById(R.id.tv_created_at);
+
+
         }
     }
 
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                String charString = charSequence.toString().toLowerCase(Locale.ROOT);
-                ArrayList<ListPOModel> temp = new ArrayList<>();
-                if (charString.isEmpty())
-                    temp.addAll(docListArrayList);
-                else
-                    for (int i = 0; i < docListArrayList.size(); i++) {
-                        String docNo = docListArrayList.get(i).getDoc_no();
-                        if (docNo != null && docNo.toLowerCase(Locale.ROOT).contains(charString))
-                            temp.add(docListArrayList.get(i));
-                    }
 
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = temp;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-
-            }
-        };
-    }
-
-    
 }

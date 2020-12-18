@@ -87,13 +87,14 @@ class FragListPurchaseOrder : BaseFragment() {
     private fun getPOList() {
         showProgressDialog()
 
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_DOC_LIST, memberCode)
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_PO, memberCode + commCode)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_CODE_ESPAY] = memberCode
-        params[WebParams.TYPE_ID] = docTypeID
+        params[WebParams.COMM_CODE_ESPAY] = commCode
+        params[WebParams.CUST_ID_ESPAY] = userPhoneID
 
         Timber.d("isi params get $docTypeID list:$params")
-        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_LIST, params,
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_LIST_PO, params,
                 object : ObjListeners {
                     override fun onResponses(response: JSONObject) {
                         val code = response.getString(WebParams.ERROR_CODE)
@@ -101,6 +102,7 @@ class FragListPurchaseOrder : BaseFragment() {
                         when (code) {
                             WebParams.SUCCESS_CODE -> {
                                 val jsonArray = response.getJSONArray(WebParams.DOC_LIST)
+                                itemList.clear()
                                 for (i in 0 until jsonArray.length()) {
                                     val jsonObject = jsonArray.getJSONObject(i)
                                     val docNo = jsonObject.getString(WebParams.DOC_NO)
@@ -110,6 +112,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                     val custID = jsonObject.getString(WebParams.CUST_ID)
                                     val memberCode = jsonObject.getString(WebParams.MEMBER_CODE)
                                     val commCode = jsonObject.getString(WebParams.COMM_CODE)
+                                    val paidStatus = jsonObject.getString(WebParams.PAID_STATUS)
                                     val listPOModel = ListPOModel()
                                     listPOModel.doc_no = docNo
                                     listPOModel.doc_status = docStatus
@@ -118,6 +121,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                     listPOModel.cust_id = custID
                                     listPOModel.member_code = memberCode
                                     listPOModel.comm_code = commCode
+                                    listPOModel.paid_status = paidStatus
                                     itemList.add(listPOModel)
                                 }
                                 itemListAdapter!!.notifyDataSetChanged()
@@ -151,6 +155,6 @@ class FragListPurchaseOrder : BaseFragment() {
     }
 
     private fun docDetail() {
-        Toast.makeText(context,"Belummm",Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Belummm", Toast.LENGTH_SHORT).show()
     }
 }

@@ -1,14 +1,15 @@
-package com.sgo.saldomu.fragments
+   package com.sgo.saldomu.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.CanvasserInvoiceActivity
-import com.sgo.saldomu.activities.TokoEBDActivity
+import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
+import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -17,88 +18,63 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
-import com.sgo.saldomu.models.ListPOModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_order_confirm_toko.*
+import kotlinx.android.synthetic.main.frag_create_gr.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 
-class FragConInvoice : BaseFragment() {
-    var memberCode: String? = null
-    var commCode: String? = null
-
-    var memberCodeEspay : String = ""
-    var commCodeEspay : String = ""
-    var custIdEspay : String = ""
-    var docNo : String = ""
-    var doc_detail : String = ""
-    var type_id : String = ""
-
-    var cust_id : String = ""
-    var reff_id : String = ""
-    var ccy_id : String = ""
-    var cust_type : String = ""
-
-    var obj: ListPOModel? = null;
+class FragCreateGR : BaseFragment() {
+    var memberCodeEspay : String =""
+    var commCodeEspay : String =""
+    var custIdEspay : String =""
+    var docNo : String =""
+    var amount : String =""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.frag_order_confirm_toko, container, false)
+        v = inflater.inflate(R.layout.frag_create_gr, container, false)
         return v
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        val tokoEBDActivity = activity as CanvasserInvoiceActivity
-//        tokoEBDActivity.initializeToolbar(getString(R.string.purchase_order))
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
-        if (arguments != null) {
-            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE, "")
-            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
-            commCodeEspay = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
-            memberCodeEspay = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
-            obj = arguments!!.getParcelable(DefineValue.OBJ);
+        var bundle = arguments!!
+        memberCodeEspay = bundle!!.getString(DefineValue.MEMBER_CODE_ESPAY,"")
+        commCodeEspay = bundle!!.getString(DefineValue.COMMUNITY_CODE_ESPAY,"")
+        custIdEspay= bundle!!.getString(DefineValue.CUST_ID_ESPAY,"")
+        docNo = bundle!!.getString(DefineValue.DOC_NO, "")
+        amount = bundle!!.getString(DefineValue.AMOUNT, "")
 
-        }
+        frag_gr_confirm_store_code.setText(memberCodeEspay)
+        frag_gr_confirm_comm_code.setText(commCodeEspay)
+        frag_gr_confirm_amount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount))
+        frag_gr_confirm_discount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(bundle!!.getString(DefineValue.TOTAL_DISC)))
+        frag_gr_confirm_total_amount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(bundle!!.getString(DefineValue.TOTAL_AMOUNT)))
 
-        getDetail()
-        member_code_field.text = memberCode
-        comm_code_field.text = commCode
-        submit_btn.setOnClickListener { submitOrder() }
+        frag_gr_confirm_submit_btn.setOnClickListener { createGR() }
     }
 
-
-    private fun submitOrder(){
-
-    }
-
-
-    private fun getDetail()
+    fun createGR()
     {
-        Toast.makeText(context,"$memberCode $commCode",Toast.LENGTH_SHORT).show()
-
         try {
-
-
             showProgressDialog()
-            extraSignature = obj!!.comm_code + obj!!.cust_id
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_DOCS, extraSignature)
+            extraSignature = memberCodeEspay + commCodeEspay + amount
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CREATE_GR, extraSignature)
+            params[WebParams.COMM_CODE_ESPAY] = commCodeEspay
+            params[WebParams.MEMBER_CODE_ESPAY] = memberCodeEspay
+            params[WebParams.CUST_ID_ESPAY] = custIdEspay
             params[WebParams.USER_ID] = userPhoneID
-            params[WebParams.COMM_CODE_ESPAY] =  obj!!.comm_code
-            params[WebParams.MEMBER_CODE_ESPAY] =  obj!!.member_code
-            params[WebParams.CUST_ID_ESPAY] =  obj!!.cust_id
-            params[WebParams.CUST_ID] = userPhoneID
-            params[WebParams.REFF_ID] = obj!!.reff_id
-            params[WebParams.CCY_ID] =  MyApiClient.CCY_VALUE;
-            params[WebParams.TYPE_ID] = obj!!.type_id
-            params[WebParams.CUST_TYPE] = DefineValue.CANVASSER //
-            params[WebParams.DOC_NO] = obj!!.doc_no
-//            params[WebParams.DOC_DETAIL] = tempGson
-
-
-            Timber.d("params inquiry doc detail:$params")
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_DOCS, params,
+            params[WebParams.DOC_NO] = docNo
+            params[WebParams.INVOICE_NOTE] = ""
+            params[WebParams.NOTES_NO] = ""
+            params[WebParams.NOTES_ID] = ""
+            params[WebParams.TYPE_ID] = DefineValue.GR
+            params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
+            params[WebParams.DOC_DETAIL] = ""
+            Timber.d("params create GR:$params")
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CREATE_GR, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
                             try {
@@ -106,10 +82,14 @@ class FragConInvoice : BaseFragment() {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
                                 val code = response.getString(WebParams.ERROR_CODE)
                                 val code_msg = response.getString(WebParams.ERROR_MESSAGE)
-                                Timber.d("isi response inquiry doc detail:$response")
+                                Timber.d("isi response create GR:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
-
+                                        var bundle = arguments!!
+                                        bundle.putString(DefineValue.TX_ID, response.optString(DefineValue.TX_ID))
+                                        val frag: Fragment = FragConfirmCreateGR()
+                                        frag.arguments = bundle
+                                        switchFragment(frag,"","",true, "")
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
@@ -129,7 +109,7 @@ class FragConInvoice : BaseFragment() {
                                         alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                                     }
                                     else -> {
-                                        Timber.d("isi error inquiry doc detail:$response")
+                                        Timber.d("isi error create GR:$response")
                                         Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
                                     }
                                 }
@@ -146,7 +126,12 @@ class FragConInvoice : BaseFragment() {
         } catch (e: java.lang.Exception) {
             Timber.d("httpclient:%s", e.message)
         }
+    }
 
+    private fun switchFragment(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {
+        if (activity == null) return
+        val fca = activity as CanvasserGoodReceiptActivity?
+        fca!!.switchContent(i, name, next_name, isBackstack, tag)
     }
 
 }

@@ -30,26 +30,56 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <com.balysv.materialripple.MaterialRippleLayout
-        android:id="@+id/frag_input_item_submit_btn"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:mrl_rippleAlpha="0.2"
-        app:mrl_rippleColor="@color/white"
-        app:mrl_rippleDelayClick="false"
-        app:mrl_rippleHover="true"
-        app:mrl_rippleOverlay="true">
+        android:orientation="vertical"
+        android:layout_margin="8dp">
 
-        <Button
+        <LinearLayout
+            android:id="@+id/layout_payment_method"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/rounded_background_blue"
-            android:gravity="center"
-            android:text="@string/next"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@color/white" />
-    </com.balysv.materialripple.MaterialRippleLayout>
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/billerinput_text_payment_options"
+                android:textStyle="bold"/>
+
+            <Spinner
+                android:id="@+id/spinner_payment_options"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:spinnerMode="dropdown"
+                android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
+
+        </LinearLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/frag_input_item_submit_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleColor="@color/white"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            app:mrl_rippleOverlay="true">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/rounded_background_blue"
+                android:gravity="center"
+                android:text="@string/next"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/white" />
+        </com.balysv.materialripple.MaterialRippleLayout>
+    </LinearLayout>
 
 </LinearLayout>

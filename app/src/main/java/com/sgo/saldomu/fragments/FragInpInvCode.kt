@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +9,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.BillerActivity
+import com.sgo.saldomu.activities.BbsMemberLocationActivity
 import com.sgo.saldomu.activities.CanvasserInvoiceActivity
+import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -79,10 +81,11 @@ class FragInpInvCode : BaseFragment() {
                                     WebParams.SUCCESS_CODE -> {
                                         val bundle = Bundle()
                                         bundle.putString(DefineValue.DOC_LIST, response.optString(WebParams.DOC_LIST))
+                                        bundle.putString(DefineValue.PAYMENT_TYPE, response.optString(WebParams.PAYMENT_METHODS))
+
                                         val frag: Fragment = FragListInvfromIN()
                                         frag.arguments = bundle
-
-                                        switchFragment(frag,"","",true, "")
+                                        switchFragment(frag,getString(R.string.invoice_title),getString(R.string.invoice_title),true, "")
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
