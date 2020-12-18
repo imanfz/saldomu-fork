@@ -1689,8 +1689,10 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="search_po">Cari PO</string>
     <string name="owner_id_no">Nomor KTP Pemilik</string>
     <string name="owner_id_no_required">Nomor KTP Pemilik dibutuhkan</string>
+    <string name="owner_id_no_length">Nomor KTP Pemilik harus 16 karakter</string>
     <string name="choose_catalog">Pilih Katalog</string>
-    <string name="purchase_order">Pesan Pembelian</string>
+    <string name="purchase_order">Purchase Order</string>
+    <string name="purchase_order_confirmation">Konfirmasi Purchase Order </string>
     <string name="join_community">Gabung Komunitas</string>
     <string name="store_owner_name">Nama Pemilik Toko</string>
     <string name="store_owner_name_required">Nama Pemilik Toko dibutuhkan</string>
@@ -1706,4 +1708,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="pay_now">Bayar Sekarang</string>
     <string name="pay_later">Bayar Nanti</string>
     <string name="paid_status">Status Pembayaran</string>
+    <string name="detail_document">Detil Dokumen</string>
+    <string name="item_name">Nama Barang</string>
+    <string name="price">Harga</string>
 </resources>

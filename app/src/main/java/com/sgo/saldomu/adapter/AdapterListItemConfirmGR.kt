@@ -27,7 +27,7 @@ class AdapterListItemConfirmGR(var context: FragmentActivity?, var itemList: Lis
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutInflater.from(context).inflate(R.layout.adapter_list_item_confirm_gr, parent, false))
+        return Holder(LayoutInflater.from(context).inflate(R.layout.adapter_list_item_confirm, parent, false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {

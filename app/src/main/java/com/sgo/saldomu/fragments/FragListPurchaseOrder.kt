@@ -66,7 +66,15 @@ class FragListPurchaseOrder : BaseFragment() {
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
         }
 
-        itemListAdapter = ListPOAdapter(itemList, activity) { docDetail() }
+        itemListAdapter = ListPOAdapter(itemList, activity) {
+            val fragment = FragPurchaseOrderDetail()
+            val bundle = Bundle()
+            bundle.putString(DefineValue.MEMBER_CODE, memberCode)
+            bundle.putString(DefineValue.COMMUNITY_CODE, commCode)
+            bundle.putString(DefineValue.DOC_NO, it.doc_no)
+            fragment.arguments = bundle
+            tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.detail_document), true, "FragPurchaseOrderDetail")
+        }
         recyclerViewList.adapter = itemListAdapter
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         val snapHelper: SnapHelper = LinearSnapHelper()
@@ -127,7 +135,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                 itemListAdapter!!.notifyDataSetChanged()
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
