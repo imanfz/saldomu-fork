@@ -17,6 +17,7 @@ public class WebParams {
     public static String COMM_ID_SCADM= "comm_id_scadm";
     public static String CUST_NAME = "cust_name";
     public static String CUST_ID = "cust_id";
+    public static String CUST_TYPE = "cust_type";
     public static String COMM_CODE = "comm_code";
     public static String USER_COMM_CODE = "user_comm_code";
     public static String USER_ID = "user_id";
@@ -656,6 +657,7 @@ public class WebParams {
     public static String TYPE_ID = "type_id";
     public static String DOC_STATUS = "doc_status";
     public static String DOC_LIST = "doc_list";
+    public static String DOC_DETAIL = "doc_detail";
     public static String KODE_PROVINSI = "KODE_PROVINSI";
     public static String NAMA_PROVINSI = "NAMA_PROVINSI";
     public static String KODE_KOT_KAB = "KODE_KOT_KAB";
@@ -667,9 +669,7 @@ public class WebParams {
     public static String FORMAT_QTY = "format_qty";
     public static String MAPPING_UNIT = "mapping_unit";
     public static String MAPPING_QTY = "mapping_qty";
-    public static String DOC_DETAIL = "doc_detail";
     public static String DOC_DETAILS = "doc_details";
-    public static String CUST_TYPE = "cust_type";
     public static String INVOICE_NOTE = "invoice_note";
     public static String NOTES_NO = "notes_no";
     public static String NOTES_ID = "notes_id";
@@ -678,7 +678,10 @@ public class WebParams {
     public static String REFF_NO = "reff_no";
     public static String MAPPING_ITEMS = "mapping_items";
     public static String PAID_STATUS = "paid_status";
+    public static String PAYMENT_METHODS = "payment_methods";
     public static String SUBTOTAL_AMOUNT = "subtotal_amount";
     public static String PROMO = "promo";
     public static String ACTION_CODE = "action_code";
+    public static String PARTNER_CODE_ESPAY = "partner_code_espay";
+    public static String PO_NO = "po_no";
 }

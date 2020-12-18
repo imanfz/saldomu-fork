@@ -1697,8 +1697,10 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="search_po">Search PO</string>
     <string name="owner_id_no">Owner ID Number</string>
     <string name="owner_id_no_required">Owner ID Number Required</string>
+    <string name="owner_id_no_length">Owner ID Number must be 16 characters</string>
     <string name="choose_catalog">Choose Catalog</string>
     <string name="purchase_order">Purchase Order</string>
+    <string name="purchase_order_confirmation">Purchase Order Confirmation</string>
     <string name="join_community">Join Community</string>
     <string name="store_owner_name">Store Owner Name</string>
     <string name="store_owner_name_required">Store Owner Name Required</string>
@@ -1716,4 +1718,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="pay_later">Pay Later</string>
     <string name="paid_status">Paid Status</string>
     <string name="create_gr">Create Good Receipt</string>
+    <string name="detail_document">Detail Document</string>
+    <string name="item_name">Item Name</string>
+    <string name="price">Price</string>
 </resources>

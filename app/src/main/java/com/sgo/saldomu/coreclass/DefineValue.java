@@ -708,10 +708,13 @@ public class DefineValue {
     public static String DOC_NO = "doc_no";
     public static String DOC_STATUS = "doc_status";
     public static String DOC_LIST = "doc_list";
-    public static String CANVASSER = "CANVASSER";
     public static String BAL = "BAL";
     public static String SLOP = "SLOP";
     public static String PACK = "PACK";
+    public static final String TOKO = "TOKO";
+    public static final String CANVASSER = "CANVASSER";
     public static String DOC_DETAILS = "DOC_DETAILS";
+    public static String EBD_CONFIRM_DATA = "ebd_confirm_data";
+    public static String PAYMENT_OPTION = "payment_option";
 }
 
