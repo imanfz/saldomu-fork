@@ -11,7 +11,7 @@ import com.sgo.saldomu.fragments.FragInputStoreCode
 import com.sgo.saldomu.widgets.BaseActivity
 import timber.log.Timber
 
-class CanvasserGoodReceiptActivity : BaseActivity() {
+class CanvasserPOActivity : BaseActivity() {
 
     private var ListPO: String = "list_po"
 
@@ -24,10 +24,10 @@ class CanvasserGoodReceiptActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setActionBarIcon(com.sgo.saldomu.R.drawable.ic_arrow_left)
-        actionBarTitle = getString(com.sgo.saldomu.R.string.good_receipt_title)
+        setActionBarIcon(R.drawable.ic_arrow_left)
+        actionBarTitle = getString(R.string.purchase_order)
         var bundle = Bundle()
-        bundle.putString(DefineValue.TYPE, DefineValue.GR)
+        bundle.putString(DefineValue.TYPE, DefineValue.PO)
         val newFragment: Fragment
         newFragment = FragInputStoreCode()
         newFragment.arguments = bundle

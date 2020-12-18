@@ -67,11 +67,10 @@ class FragConfirmCreateGR : BaseFragment() {
             val uuid: String = params[WebParams.RC_UUID].toString()
             val dateTime: String = params[WebParams.RC_DTIME].toString()
             val encryptedOtp = RSA.opensslEncrypt(uuid, dateTime, userPhoneID, tokenId, subStringLink)
-            Timber.d("encrypted otp : " +encryptedOtp)
-            Timber.d("plain otp : " +tokenId)
             params[WebParams.TX_ID] = txId
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.TOKEN_ID] = encryptedOtp
+            params[WebParams.COMM_ID] = MyApiClient.COMM_ID
             Timber.d("params GR confirm OTP:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_OTP_DOC, params,
                     object : ObjListeners {
@@ -113,7 +112,9 @@ class FragConfirmCreateGR : BaseFragment() {
                             }
                         }
 
-                        override fun onError(throwable: Throwable) {}
+                        override fun onError(throwable: Throwable) {
+                            dismissProgressDialog()
+                        }
                         override fun onComplete() {
                             dismissProgressDialog()
                         }

@@ -10,6 +10,8 @@ import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.BillerActivity
 import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
+import com.sgo.saldomu.activities.CanvasserPOActivity
+import com.sgo.saldomu.activities.FragListPOCanvasser
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -78,11 +80,19 @@ class FragInputStoreCode : BaseFragment() {
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
                                         val bundle = Bundle()
+                                        var docType = bundle.getString(DefineValue.TYPE, "")
                                         bundle.putString(DefineValue.DOC_LIST, response.optString(WebParams.DOC_LIST))
-                                        val frag: Fragment = FragListPOfromGR()
-                                        frag.arguments = bundle
+                                        val frag : Fragment
 
-                                        switchFragment(frag,"","",true, "")
+                                        if (docType.equals(DefineValue.GR)) {
+                                            frag= FragListPOfromGR()
+                                            frag.arguments = bundle
+                                            switchFragmentGR(frag, "", "", true, "")
+                                        } else{
+                                            frag = FragListPOCanvasser()
+                                            frag.arguments = bundle
+                                            switchFragmentPO(frag, "", "", true, "")
+                                        }
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
@@ -121,9 +131,15 @@ class FragInputStoreCode : BaseFragment() {
         }
     }
 
-    private fun switchFragment(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {
+    private fun switchFragmentGR(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {
         if (activity == null) return
         val fca = activity as CanvasserGoodReceiptActivity?
+        fca!!.switchContent(i, name, next_name, isBackstack, tag)
+    }
+
+    private fun switchFragmentPO(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {
+        if (activity == null) return
+        val fca = activity as CanvasserPOActivity?
         fca!!.switchContent(i, name, next_name, isBackstack, tag)
     }
 }

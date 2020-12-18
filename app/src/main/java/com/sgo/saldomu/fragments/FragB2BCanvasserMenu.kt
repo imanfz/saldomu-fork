@@ -48,7 +48,8 @@ class FragB2BCanvasserMenu : BaseFragment() {
         grid.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             if (menuStrings[i] == getString(R.string.purchase_order))
             {
-
+                val i = Intent(activity, CanvasserPOActivity::class.java)
+                switchActivity(i)
             }
             else if (menuStrings[i] == getString(R.string.good_receipt_title)) {
                 val i = Intent(activity, CanvasserGoodReceiptActivity::class.java)

@@ -123,7 +123,7 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
             params[WebParams.CUST_ID_ESPAY] = custIdEspay
             params[WebParams.CUST_ID] = userPhoneID
             params[WebParams.USER_ID] = userPhoneID
-            params[WebParams.DOC_NO] = docNo
+            params[WebParams.DOC_NO] = ""
             params[WebParams.REFF_NO] = docNo
             params[WebParams.INVOICE_NOTE] = ""
             params[WebParams.NOTES_NO] = ""
