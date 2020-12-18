@@ -141,7 +141,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
             val listPOModel = ListPOModel()
             listPOModel.doc_no = docNo
-            listPOModel.doc_status = docStatus
+            listPOModel.doc_status = docStatus  
             listPOModel.total_amount = totalAmount
             listPOModel.due_date = dueDate
             listPOModel.cust_id = custID
