@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
+import com.sgo.saldomu.adapter.AdapterListBonusItem
 import com.sgo.saldomu.adapter.AdapterListItemConfirmGR
 import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.DefineValue
@@ -24,7 +25,9 @@ import com.sgo.saldomu.models.FormatQty
 import com.sgo.saldomu.models.retrofit.ItemModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
+import kotlinx.android.synthetic.main.frag_confirm_gr.*
 import kotlinx.android.synthetic.main.frag_create_gr.*
+import kotlinx.android.synthetic.main.frag_create_gr.frag_gr_confirm_submit_btn
 import kotlinx.android.synthetic.main.frag_list_po.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -38,10 +41,14 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
     var docNo: String = ""
     var amount: String = ""
     var docDetails: String = ""
+    var promoCode: String = ""
+    var isHaveBonusItem: Boolean = false
 
     private val itemArrayList = ArrayList<ItemModel>()
+    private val itemBonusArrayList = ArrayList<ItemModel>()
 
     private var adapterListItemConfirmGR: AdapterListItemConfirmGR? = null
+    private var adapterListBonusItem: AdapterListBonusItem? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_create_gr, container, false)
@@ -57,9 +64,14 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
         custIdEspay = bundle!!.getString(DefineValue.CUST_ID_ESPAY, "")
         docNo = bundle!!.getString(DefineValue.DOC_NO, "")
         amount = bundle!!.getString(DefineValue.AMOUNT, "")
+        promoCode = bundle!!.getString(DefineValue.PROMO_CODE, "")
         docDetails = bundle!!.getString(DefineValue.DOC_DETAILS, "")
 
         initalizeListItem()
+
+        if (isHaveBonusItem == true) {
+            initializeListBonusItem()
+        }
 
         frag_gr_confirm_store_code.setText(memberCodeEspay)
         frag_gr_confirm_comm_code.setText(commCodeEspay)
@@ -78,6 +90,10 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
 
         for (i in 0 until docDetailsJsonArray.length()) {
             val mappingItemJsonArray = docDetailsJsonArray.getJSONObject(i).getJSONArray(WebParams.MAPPING_ITEMS)
+            if (docDetailsJsonArray.getJSONObject(i).getJSONArray(WebParams.BONUS_ITEMS).length()!=0) {
+                layout_bonus_item.visibility = View.VISIBLE
+                isHaveBonusItem = true
+            }
             for (i in 0 until mappingItemJsonArray.length()) {
                 val itemName = mappingItemJsonArray.getJSONObject(i).getString(WebParams.ITEM_NAME)
                 val itemCode = mappingItemJsonArray.getJSONObject(i).getString(WebParams.ITEM_CODE)
@@ -109,6 +125,47 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
         adapterListItemConfirmGR!!.updateData(itemArrayList)
     }
 
+    fun initializeListBonusItem()
+    {
+
+        itemArrayList.clear()
+        adapterListBonusItem = AdapterListBonusItem(activity, itemBonusArrayList, this)
+        frag_gr_confirm_bonus_item_list_field.adapter = adapterListBonusItem
+        frag_gr_confirm_bonus_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val docDetailsJsonArray = JSONArray(docDetails)
+
+        for (i in 0 until docDetailsJsonArray.length()) {
+            val mappingBonusItemJsonArray = docDetailsJsonArray.getJSONObject(i).getJSONArray(WebParams.BONUS_ITEMS)
+            for (i in 0 until mappingBonusItemJsonArray.length()) {
+                val itemName = mappingBonusItemJsonArray.getJSONObject(i).getString(WebParams.ITEM_NAME)
+                val itemCode = mappingBonusItemJsonArray.getJSONObject(i).getString(WebParams.ITEM_CODE)
+                val price = mappingBonusItemJsonArray.getJSONObject(i).getString(WebParams.PRICE)
+                val unit = mappingBonusItemJsonArray.getJSONObject(i).getString(WebParams.UNIT)
+                val subtotal = mappingBonusItemJsonArray.getJSONObject(i).getString(WebParams.SUBTOTAL_AMOUNT)
+                val formatQtyJsonArray = mappingBonusItemJsonArray.getJSONObject(i).getJSONArray(WebParams.FORMAT_QTY)
+                var formatQtys = ArrayList<FormatQty>()
+                for (i in 0 until formatQtyJsonArray.length()) {
+                    var mappingUnit = formatQtyJsonArray.getJSONObject(i).getString(WebParams.MAPPING_UNIT)
+                    var mappingQty = formatQtyJsonArray.getJSONObject(i).getInt(WebParams.MAPPING_QTY)
+                    var formatQty = FormatQty()
+                    formatQty.mapping_unit = mappingUnit;
+                    formatQty.mapping_qty = mappingQty;
+                    formatQtys.add(formatQty)
+                }
+                val itemModel = ItemModel()
+                itemModel.item_name = itemName
+                itemModel.item_code = itemCode
+                itemModel.price = price
+                itemModel.unit = unit
+                itemModel.subtotal_amount = subtotal
+                itemModel.format_qty = formatQtys
+                itemBonusArrayList.add(itemModel)
+            }
+        }
+        adapterListBonusItem!!.updateData(itemBonusArrayList)
+    }
+
+
     override fun onClick(item: ItemModel?) {
         TODO("Not yet implemented")
     }
@@ -133,7 +190,7 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
             params[WebParams.DOC_DETAIL] = docDetails
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.AMOUNT] = amount
-            params[WebParams.PROMO] = ""
+            params[WebParams.PROMO] = promoCode
             params[WebParams.ACTION_CODE] = "N"
             Timber.d("params create GR:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CREATE_GR, params,
@@ -189,6 +246,7 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
             Timber.d("httpclient:%s", e.message)
         }
     }
+
 
     private fun switchFragment(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {
         if (activity == null) return

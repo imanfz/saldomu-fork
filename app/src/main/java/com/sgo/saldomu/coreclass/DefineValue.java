@@ -718,5 +718,6 @@ public class DefineValue {
     public static String DOC_DETAILS = "DOC_DETAILS";
     public static String EBD_CONFIRM_DATA = "ebd_confirm_data";
     public static String PAYMENT_OPTION = "payment_option";
+    public static String PROMO_CODE = "promoCode";
 }
 

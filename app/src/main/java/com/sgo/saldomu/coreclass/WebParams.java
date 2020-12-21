@@ -690,4 +690,7 @@ public class WebParams {
     public static String ACTION_CODE = "action_code";
     public static String PARTNER_CODE_ESPAY = "partner_code_espay";
     public static String PO_NO = "po_no";
+    public static String CODE = "code";
+    public static String QTY = "qty";
+    public static String BONUS_ITEMS = "bonus_items";
 }

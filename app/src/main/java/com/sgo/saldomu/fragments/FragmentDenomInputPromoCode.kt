@@ -32,7 +32,7 @@ class FragmentDenomInputPromoCode : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        promoCodeList!!.add(PromoCodeModel("", ""))
+        promoCodeList!!.add(PromoCodeModel("", "",""))
         promoCodeAdapter = PromoCodeAdapter(activity, promoCodeList, object : PromoCodeAdapter.Listener {
             override fun onChangePromoCode(position: Int, promoCode: String) {
                 promoCodeList!![position].code = promoCode
@@ -52,7 +52,7 @@ class FragmentDenomInputPromoCode : BaseFragment() {
         frag_denom_input_promo_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         btn_add_promo.setOnClickListener {
-            promoCodeList!!.add(PromoCodeModel("", ""))
+            promoCodeList!!.add(PromoCodeModel("", "",""))
             promoCodeAdapter!!.notifyDataSetChanged()
         }
 

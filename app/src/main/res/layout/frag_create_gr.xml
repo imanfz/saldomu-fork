@@ -96,6 +96,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:id="@+id/layout_bonus_item">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bonus_item"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/grey_500" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/frag_gr_confirm_bonus_item_list_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:orientation="vertical">
 
                 <TextView

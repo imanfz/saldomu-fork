@@ -1724,4 +1724,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="item_name">Nama Barang</string>
     <string name="price">Harga</string>
     <string name="validate_promo">Validasi Promo</string>
+    <string name="bonus_item">Produk Bonus</string>
 </resources>

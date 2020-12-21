@@ -39,6 +39,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
     var custIdEspay = ""
     var docDetails = ""
     var docNo = ""
+    var isHavePromoCode = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_denom_input_promo_code, container, false)
@@ -57,7 +58,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
             docDetails = bundle!!.getString(DefineValue.DOC_DETAILS, "")
         }
 
-        promoCodeList!!.add(PromoCodeModel("", ""))
+        promoCodeList!!.add(PromoCodeModel("", "", ""))
         promoCodeAdapter = PromoCodeAdapter(activity, promoCodeList, object : PromoCodeAdapter.Listener {
             override fun onChangePromoCode(position: Int, promoCode: String) {
                 promoCodeList!![position].code = promoCode
@@ -77,7 +78,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
         frag_denom_input_promo_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         btn_add_promo.setOnClickListener {
-            promoCodeList!!.add(PromoCodeModel("", ""))
+            promoCodeList!!.add(PromoCodeModel("", "", ""))
             promoCodeAdapter!!.notifyDataSetChanged()
         }
 
@@ -85,8 +86,15 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
             if (checkArrayPromo()) {
                 val listString = Gson().toJson(promoCodeList, object : TypeToken<ArrayList<PromoCodeModel?>?>() {}.type)
                 val jsonArray = JSONArray(listString)
+
+                for (i in promoCodeList!!.indices) {
+                    if (promoCodeList!![i].code == "" || promoCodeList!![i].qty == "" ) {
+                        isHavePromoCode = false
+                    } else
+                        isHavePromoCode = true
+                }
                 Timber.e(jsonArray.toString())
-                confirmDocument(jsonArray.toString())
+                confirmDocument(isHavePromoCode, jsonArray.toString())
             }
         }
     }
@@ -108,7 +116,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
         return true
     }
 
-    private fun confirmDocument(promoCode : String) {
+    private fun confirmDocument(isHavePromoCode: Boolean, promoCode: String) {
         try {
             showProgressDialog()
 
@@ -125,7 +133,8 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
             params[WebParams.INVOICE_NOTE] = ""
-            params[WebParams.PROMO_CODE] = promoCode
+            if (isHavePromoCode)
+                params[WebParams.PROMO_CODE] = promoCode
             Timber.d("params confirm doc:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_CONFIRM, params,
                     object : ObjListeners {
@@ -138,6 +147,10 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
                                 Timber.d("isi response confirm doc:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
+                                        if (!checkPromoCodeIsValid(response)) {
+                                            return
+                                        }
+
                                         val bundle = Bundle()
                                         bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCodeEspay)
                                         bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCodeEspay)
@@ -147,6 +160,8 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
                                         bundle.putString(DefineValue.TOTAL_AMOUNT, response.optString(WebParams.TOTAL_AMOUNT))
                                         bundle.putString(DefineValue.TOTAL_DISC, response.optString(WebParams.DISCOUNT_AMOUNT))
                                         bundle.putString(DefineValue.DOC_NO, docNo)
+                                        if (isHavePromoCode)
+                                            bundle.putString(DefineValue.PROMO_CODE, promoCode)
                                         val frag: Fragment = FragCreateGR()
                                         frag.arguments = bundle
                                         switchFragment(frag, "", "", true, "")
@@ -187,6 +202,27 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
         } catch (e: java.lang.Exception) {
             Timber.d("httpclient:%s", e.message)
         }
+    }
+
+    private fun checkPromoCodeIsValid(response: JSONObject): Boolean {
+        val promoCodesString = response.optString(WebParams.PROMO_CODE);
+        val promoCodeJSONArray = JSONArray(promoCodesString)
+        var isPromoCodeValid = true;
+
+        promoCodeList!!.clear()
+
+        for (i in 0 until promoCodeJSONArray.length()) {
+            val status = promoCodeJSONArray.getJSONObject(i).getString(WebParams.STATUS)
+            val code = promoCodeJSONArray.getJSONObject(i).getString(WebParams.CODE)
+            val qty = promoCodeJSONArray.getJSONObject(i).getString(WebParams.QTY)
+            if (status.equals("1")) {
+                isPromoCodeValid = false
+            }
+            promoCodeList!!.add(PromoCodeModel(code, qty, status))
+            promoCodeAdapter!!.updateAdapter(promoCodeList!!)
+        }
+
+        return isPromoCodeValid
     }
 
     private fun switchFragment(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {

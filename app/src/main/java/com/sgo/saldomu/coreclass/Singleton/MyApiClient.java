@@ -316,6 +316,7 @@ public class MyApiClient {
     public static String LINK_DOC_DETAIL;
     public static String LINK_DOC_CONFIRM;
     public static String LINK_CONFIRM_OTP_DOC;
+    public static String LINK_RESEND_OTP_DOC;
     public static String LINK_CREATE_GR;
 
     public static String LINK_CONFIRM_DOCS;
@@ -587,6 +588,7 @@ public class MyApiClient {
         LINK_DOC_CONFIRM = headaddressfinal + "espaycatalog/ConfirmationDocument/Invoke";
         LINK_CREATE_GR = headaddressfinal + "espaycatalog/CreateGr/Invoke";
         LINK_CONFIRM_OTP_DOC = headaddressfinal + "espaycatalog/ConfirmOTPDoc/Invoke";
+        LINK_RESEND_OTP_DOC = headaddressfinal + "espaycatalog/ResendOTPDOc/Invoke";
         //Canvasser
         LINK_INQUIRY_MEMBER_CANVASSER = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";
         LINK_CONFIRM_DOCS = headaddressfinal + "espaycatalog/ConfirmationDocument/Invoke";

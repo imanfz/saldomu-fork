@@ -1734,4 +1734,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="item_name">Item Name</string>
     <string name="price">Price</string>
     <string name="validate_promo">Validate Promo</string>
+    <string name="bonus_item">Bonus Item</string>
 </resources>

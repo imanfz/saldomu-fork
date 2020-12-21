@@ -24,11 +24,23 @@ class PromoCodeAdapter(var context: Context?, var promoList: List<PromoCodeModel
         fun onDelete(position: Int)
     }
 
+    fun updateAdapter(promoList: List<PromoCodeModel>) {
+        this.promoList = promoList
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater.from(context).inflate(R.layout.input_promo_code_item, parent, false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
+        if (promoList!!.get(position).status.equals("1")) {
+            holder.etPromoCodeQty.setError("Kode Tidak Valid")
+            holder.ivDelete.visibility = View.VISIBLE
+        } else {
+            holder.imgStatus.visibility = View.GONE
+        }
+
         holder.etPromoCodeName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -74,5 +86,6 @@ class PromoCodeAdapter(var context: Context?, var promoList: List<PromoCodeModel
         var etPromoCodeName: EditText = itemView.findViewById(R.id.et_promo_code_name)
         var etPromoCodeQty: EditText = itemView.findViewById(R.id.et_promo_code_qty)
         var ivDelete: ImageView = itemView.findViewById(R.id.iv_delete)
+        var imgStatus: ImageView = itemView.findViewById(R.id.img_status)
     }
 }

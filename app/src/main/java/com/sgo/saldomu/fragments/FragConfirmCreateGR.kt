@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
@@ -44,6 +45,12 @@ class FragConfirmCreateGR : BaseFragment() {
         frag_gr_confirm_submit_btn.setOnClickListener {
             if(inputValidation())
             confirmOTP() }
+
+
+        frag_gr_resend_otp.setOnClickListener {
+            et_otp_confirm_gr.setText("")
+            resendOTP()
+        }
     }
 
     fun inputValidation(): Boolean {
@@ -115,6 +122,68 @@ class FragConfirmCreateGR : BaseFragment() {
                         override fun onError(throwable: Throwable) {
                             dismissProgressDialog()
                         }
+                        override fun onComplete() {
+                            dismissProgressDialog()
+                        }
+                    })
+        } catch (e: java.lang.Exception) {
+            Timber.d("httpclient:%s", e.message)
+        }
+    }
+
+
+    private fun resendOTP()
+    {
+        try {
+            showProgressDialog()
+            extraSignature = txId + userPhoneID
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_RESEND_OTP_DOC, extraSignature)
+            params[WebParams.CUST_ID] = userPhoneID
+            params[WebParams.USER_ID] = userPhoneID
+            params[WebParams.TX_ID] = txId
+
+            Timber.d("params resend OTP:$params")
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_RESEND_OTP_DOC, params,
+                    object : ObjListeners {
+                        override fun onResponses(response: JSONObject) {
+                            try {
+                                val gson = Gson()
+                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                val code = response.getString(WebParams.ERROR_CODE)
+                                val code_msg = response.getString(WebParams.ERROR_MESSAGE)
+                                Timber.d("isi response resend OTP:$response")
+                                when (code) {
+                                    WebParams.SUCCESS_CODE -> {
+                                        et_otp_confirm_gr.setText("")
+                                    }
+                                    WebParams.LOGOUT_CODE -> {
+                                        Timber.d("isi response autologout:$response")
+                                        val message = response.getString(WebParams.ERROR_MESSAGE)
+                                        val test = AlertDialogLogout.getInstance()
+                                        test.showDialoginActivity(activity, message)
+                                    }
+                                    DefineValue.ERROR_9333 -> {
+                                        Timber.d("isi response app data:%s", model.app_data)
+                                        val appModel = model.app_data
+                                        val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                        alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                    }
+                                    DefineValue.ERROR_0066 -> {
+                                        Timber.d("isi response maintenance:$response")
+                                        val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                    }
+                                    else -> {
+                                        Timber.d("isi error resend OTP:$response")
+                                        Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            }
+                        }
+
+                        override fun onError(throwable: Throwable) {}
                         override fun onComplete() {
                             dismissProgressDialog()
                         }
