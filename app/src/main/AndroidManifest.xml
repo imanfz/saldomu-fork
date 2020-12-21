@@ -535,6 +535,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
+        <activity
+            android:name=".activities.CanvasserInvoiceActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />

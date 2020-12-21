@@ -1708,6 +1708,18 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="pay_now">Bayar Sekarang</string>
     <string name="pay_later">Bayar Nanti</string>
     <string name="paid_status">Status Pembayaran</string>
+
+
+    <string name="lbl_type_id">Tipe Id</string>
+    <string name="lbl_reff_id">Id Reff</string>
+    <string name="lbl_reff_no">No Reff </string>
+
+    <string name="lbl_issue_date">Issue Date </string>
+    <string name="lbl_due_date">Due Date</string>
+    <string name="lbl_created_at">Created At</string>
+    <string name="tv_please_wait">Minta pelanggan untuk mengecek notifikasi untuk melakukan pembayaran</string>
+    <string name="lbl_choose">Pilih</string>
+
     <string name="detail_document">Detil Dokumen</string>
     <string name="item_name">Nama Barang</string>
     <string name="price">Harga</string>
