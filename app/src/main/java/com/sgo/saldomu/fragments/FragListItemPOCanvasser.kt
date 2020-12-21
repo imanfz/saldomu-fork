@@ -31,6 +31,7 @@ import com.sgo.saldomu.models.FormatQtyItem
 import com.sgo.saldomu.models.MappingItemsItem
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
+import kotlinx.android.synthetic.main.dialog_biller_confirm.*
 import kotlinx.android.synthetic.main.fragment_input_item_list.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -64,28 +65,76 @@ class FragListItemPOCanvasser : BaseFragment() {
         getCatalogList()
 
         itemListAdapter = AdapterEBDCatalogList(context!!, itemList, object : AdapterEBDCatalogList.Listener {
-            override fun onChangeQty(itemCode: String, itemName: String, qty: Int, price: Int, unit: String, qtyType: String) {
-                if (mappingItemList.size == 0)
-                    addOrder(itemCode, itemName, price, qty, unit, qtyType)
-                else {
-                    for (i in mappingItemList.indices) {
-                        if (mappingItemList[i].item_code == itemCode) {
-                            val mappingItemFormatQty = mappingItemList[i].format_qty
-                            if (qty != 0) {
-                                when (qtyType) {
-                                    DefineValue.BAL -> mappingItemFormatQty[0].mapping_qty = qty
-                                    DefineValue.SLOP -> mappingItemFormatQty[1].mapping_qty = qty
-                                    DefineValue.PACK -> mappingItemFormatQty[2].mapping_qty = qty
-                                }
-                            } else
-                                mappingItemList.removeAt(i)
-                            break
+            override fun onChangeQty(itemCode: String, qty: Int, qtyType: String) {
+
+                for (i in itemList.indices) {
+                    if (itemCode == itemList[i].itemCode) {
+                        val mappingItemsItem = MappingItemsItem()
+                        mappingItemsItem.item_code = itemList[i].itemCode
+                        mappingItemsItem.item_name = itemList[i].itemName
+                        mappingItemsItem.price = itemList[i].price
+                        mappingItemsItem.unit = itemList[i].unit
+                        val formatQtyItemList = ArrayList<FormatQtyItem>()
+
+                        when {
+                            qtyType == DefineValue.BAL -> formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, qty))
+                            itemList[i].formatQtyItem.isNotEmpty() -> formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, itemList[i].formatQtyItem[0].mapping_qty))
+                            else -> formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, 0))
                         }
-                        if (i == mappingItemList.size - 1)
-                            addOrder(itemCode, itemName, price, qty, unit, qtyType)
+
+                        when {
+                            qtyType == DefineValue.SLOP -> formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, qty))
+                            itemList[i].formatQtyItem.isNotEmpty() -> formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, itemList[i].formatQtyItem[1].mapping_qty))
+                            else -> formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, 0))
+                        }
+
+                        when {
+                            qtyType == DefineValue.PACK -> formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, qty))
+                            itemList[i].formatQtyItem.isNotEmpty() -> formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, itemList[i].formatQtyItem[2].mapping_qty))
+                            else -> formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, 0))
+                        }
+
+                        val qtyBAL = formatQtyItemList[0].mapping_qty
+                        val qtySLOP = formatQtyItemList[1].mapping_qty
+                        val qtyPACK = formatQtyItemList[2].mapping_qty
+                        mappingItemsItem.format_qty = formatQtyItemList
+
+
+                        if (qtyBAL == 0 && qtySLOP == 0 && qtyPACK == 0) {
+                            itemList[i].formatQtyItem.clear()
+                        } else {
+                            mappingItemList.add(mappingItemsItem)
+                            itemList[i].formatQtyItem = formatQtyItemList
+                        }
+
+
+//                        for (j in mappingItemList.indices) {
+//                            if (mappingItemList[j].item_code == itemCode) {
+//                                val mappingItemFormatQty = mappingItemList[j].format_qty
+//                                val itemListFormatQty = itemList[i].formatQtyItem
+//                                if (qty != 0) {
+//                                    when (qtyType) {
+//                                        DefineValue.BAL -> {
+//                                            mappingItemFormatQty[0].mapping_qty = qty
+//                                            itemListFormatQty[0].mapping_qty = qty
+//                                        }
+//                                        DefineValue.SLOP -> {
+//                                            mappingItemFormatQty[1].mapping_qty = qty
+//                                            itemListFormatQty[1].mapping_qty = qty
+//                                        }
+//                                        DefineValue.PACK -> {
+//                                            mappingItemFormatQty[2].mapping_qty = qty
+//                                            itemListFormatQty[2].mapping_qty = qty
+//                                        }
+//                                    }
+//                                } else
+//                                    mappingItemList.removeAt(j)
+//                                break
+//                            }
+//
+//                        }
                     }
                 }
-                Timber.e(order.toString())
             }
         })
 
