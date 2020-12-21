@@ -55,22 +55,22 @@ class FragListPurchaseOrder : BaseFragment() {
         btn_create_po.setOnClickListener {
             val fragment = FragListItemToko()
             val bundle = Bundle()
-            bundle.putString(DefineValue.MEMBER_CODE, memberCode)
-            bundle.putString(DefineValue.COMMUNITY_CODE, commCode)
+            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
             fragment.arguments = bundle
-            tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.choose_catalog), true, "FragListItemToko")
+            tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.choose_catalog), true, (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
         }
 
         if (arguments != null) {
-            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE, "")
-            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
+            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
+            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
         }
 
         itemListAdapter = ListPOAdapter(itemList, activity) {
             val fragment = FragPurchaseOrderDetail()
             val bundle = Bundle()
-            bundle.putString(DefineValue.MEMBER_CODE, memberCode)
-            bundle.putString(DefineValue.COMMUNITY_CODE, commCode)
+            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
             bundle.putString(DefineValue.DOC_NO, it.doc_no)
             fragment.arguments = bundle
             tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.detail_document), true, "FragPurchaseOrderDetail")
@@ -135,7 +135,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                 itemListAdapter!!.notifyDataSetChanged()
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginMain(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)

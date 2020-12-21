@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.R
@@ -53,8 +52,8 @@ class FragPurchaseOrderDetail : BaseFragment() {
         tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.detail_document))
 
         if (arguments != null) {
-            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE, "")
-            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
+            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
+            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             docNo = arguments!!.getString(DefineValue.DOC_NO, "")
         }
 
