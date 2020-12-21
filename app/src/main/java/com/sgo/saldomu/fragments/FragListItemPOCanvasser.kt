@@ -33,6 +33,7 @@ import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.dialog_biller_confirm.*
 import kotlinx.android.synthetic.main.fragment_input_item_list.*
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -106,33 +107,6 @@ class FragListItemPOCanvasser : BaseFragment() {
                             mappingItemList.add(mappingItemsItem)
                             itemList[i].formatQtyItem = formatQtyItemList
                         }
-
-
-//                        for (j in mappingItemList.indices) {
-//                            if (mappingItemList[j].item_code == itemCode) {
-//                                val mappingItemFormatQty = mappingItemList[j].format_qty
-//                                val itemListFormatQty = itemList[i].formatQtyItem
-//                                if (qty != 0) {
-//                                    when (qtyType) {
-//                                        DefineValue.BAL -> {
-//                                            mappingItemFormatQty[0].mapping_qty = qty
-//                                            itemListFormatQty[0].mapping_qty = qty
-//                                        }
-//                                        DefineValue.SLOP -> {
-//                                            mappingItemFormatQty[1].mapping_qty = qty
-//                                            itemListFormatQty[1].mapping_qty = qty
-//                                        }
-//                                        DefineValue.PACK -> {
-//                                            mappingItemFormatQty[2].mapping_qty = qty
-//                                            itemListFormatQty[2].mapping_qty = qty
-//                                        }
-//                                    }
-//                                } else
-//                                    mappingItemList.removeAt(j)
-//                                break
-//                            }
-//
-//                        }
                     }
                 }
             }
@@ -152,7 +126,7 @@ class FragListItemPOCanvasser : BaseFragment() {
             }
         })
         frag_input_item_submit_btn.setOnClickListener {
-//            confirmationDoc()
+            confirmationDoc()
         }
 
     }
@@ -245,6 +219,101 @@ class FragListItemPOCanvasser : BaseFragment() {
             e.printStackTrace();
             Timber.d("httpclient:%s", e.message)
         }
+    }
+
+    private fun confirmationDoc() {
+        showProgressDialog()
+        val docDetail = createJSONDocDetail()
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRMATION_DOC, memberCodeEspay + custIdEspay)
+        params[WebParams.USER_ID] = userPhoneID
+        params[WebParams.MEMBER_CODE_ESPAY] = memberCodeEspay
+        params[WebParams.COMM_CODE_ESPAY] = commCodeEspay
+        params[WebParams.CUST_ID_ESPAY] = custIdEspay
+        params[WebParams.CUST_ID] = userPhoneID
+        params[WebParams.REFF_ID] = order.reff_no
+        params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
+        params[WebParams.DOC_DETAIL] = docDetail
+        params[WebParams.TYPE_ID] = DefineValue.PO
+        params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
+
+        Timber.d("isi params confirm doc :$params")
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,
+                object : ObjListeners {
+                    override fun onResponses(response: JSONObject) {
+                        val code = response.getString(WebParams.ERROR_CODE)
+                        val message = response.getString(WebParams.ERROR_MESSAGE)
+                        when (code) {
+                            WebParams.SUCCESS_CODE -> {
+                                frag_input_item_list_field.scrollTo(0, 0)
+                                val frag = FragOrderConfirmToko()
+
+                                val bundle = Bundle()
+                                bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCodeEspay)
+                                bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCodeEspay)
+                                bundle.putString(DefineValue.DOC_DETAILS, docDetail)
+                                bundle.putString(DefineValue.EBD_CONFIRM_DATA, response.toString())
+
+                                frag.arguments = bundle
+                                (activity as TokoPurchaseOrderActivity).addFragment(frag, getString(R.string.purchase_order_confirmation), (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
+                            }
+                            WebParams.LOGOUT_CODE -> {
+                                AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                            }
+                            DefineValue.ERROR_9333 -> {
+                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                val appModel = model.app_data
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            }
+                            DefineValue.ERROR_0066 -> {
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                            }
+                            else -> {
+                                showDialog(message)
+                            }
+                        }
+                    }
+
+                    override fun onError(throwable: Throwable?) {
+                        dismissProgressDialog()
+                    }
+
+                    override fun onComplete() {
+                        dismissProgressDialog()
+                    }
+
+                })
+    }
+
+    private fun createJSONDocDetail(): String {
+        val parentArr = JSONArray()
+        val mappingItemArray = JSONArray()
+        val parentObj = JSONObject()
+
+        parentObj.put(WebParams.REFF_NO, order.reff_no)
+        for (i in mappingItemList.indices) {
+            val mappingItemObj = JSONObject()
+            val formatQtyArray = JSONArray()
+
+            val orderMappingItemsFormatQty = mappingItemList[i].format_qty
+            for (j in orderMappingItemsFormatQty.indices) {
+                val formatQtyObj = JSONObject()
+                formatQtyObj.put(WebParams.MAPPING_UNIT, orderMappingItemsFormatQty[j].mapping_unit)
+                formatQtyObj.put(WebParams.MAPPING_QTY, orderMappingItemsFormatQty[j].mapping_qty)
+                formatQtyArray.put(formatQtyObj)
+            }
+
+            mappingItemObj.put(WebParams.ITEM_NAME, mappingItemList[i].item_name)
+            mappingItemObj.put(WebParams.ITEM_CODE, mappingItemList[i].item_code)
+            mappingItemObj.put(WebParams.PRICE, mappingItemList[i].price)
+            mappingItemObj.put(WebParams.UNIT, mappingItemList[i].unit)
+            mappingItemObj.put(WebParams.FORMAT_QTY, formatQtyArray)
+            mappingItemArray.put(mappingItemObj)
+        }
+
+        parentObj.put(WebParams.MAPPING_ITEMS, mappingItemArray)
+        parentArr.put(parentObj)
+        Timber.e("doc_detail : $parentArr")
+        return parentArr.toString()
     }
 
     private fun showDialog(msg: String) {
