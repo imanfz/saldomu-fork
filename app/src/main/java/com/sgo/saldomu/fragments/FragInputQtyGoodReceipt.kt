@@ -38,6 +38,7 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
     var commCodeEspay: String = ""
     var custIdEspay: String = ""
     var docNo: String = ""
+    var tempGson = ""
 
     private val itemArrayList = ArrayList<ItemModel>()
 
@@ -62,8 +63,26 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
 
         getDetail()
 
+
         btn_proses_gr.setOnClickListener {
-            confirmDocument()
+//            confirmDocument()
+            val bundle = Bundle()
+            val temp = ArrayList<HashMap<String, Any>>()
+
+            temp.add(setMappingItemsHashMap())
+
+            val gson = Gson()
+            tempGson = gson.toJson(temp)
+
+            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY,commCodeEspay)
+            bundle.putString(DefineValue.MEMBER_CODE_ESPAY,memberCodeEspay)
+            bundle.putString(DefineValue.CUST_ID_ESPAY,custIdEspay)
+            bundle.putString(DefineValue.DOC_DETAILS,tempGson)
+            bundle.putString(DefineValue.DOC_NO,docNo)
+            val frag: Fragment = FragInputPromoCodeGRCanvasser()
+            frag.arguments = bundle
+            switchFragment(frag,"","",true, "")
+
         }
     }
 
@@ -227,12 +246,6 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
 
 //            val docArrayList: JSONArray? = getDocDetail(temp)
 
-            val temp = ArrayList<HashMap<String, Any>>()
-
-            temp.add(setMappingItemsHashMap())
-
-            val gson = Gson()
-            val tempGson = gson.toJson(temp)
 
             extraSignature = memberCodeEspay + custIdEspay
             val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_DOC_CONFIRM, extraSignature)
