@@ -13,7 +13,11 @@ import com.sgo.saldomu.adapter.ListPOAdapter
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.fragments.FragInputQtyGoodReceipt
+import com.sgo.saldomu.fragments.FragListItemPOCanvasser
+import com.sgo.saldomu.fragments.FragListItemToko
+import com.sgo.saldomu.fragments.FragPurchaseOrderDetail
 import com.sgo.saldomu.models.ListPOModel
+import com.sgo.saldomu.models.retrofit.ItemModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_list_po.*
 import org.json.JSONArray
@@ -33,11 +37,33 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        docListArrayList.clear()
+
+        val canvasserPOActivity = activity as CanvasserPOActivity
+        canvasserPOActivity.initializeToolbar(getString(R.string.list_po))
 
         btn_create_po.visibility = View.VISIBLE
 
         initializeListPO()
+
+        search.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+
+            override fun afterTextChanged(editable: Editable) {
+                listPOAdapter!!.filter.filter(editable.toString())
+            }
+        })
+
+        btn_create_po.setOnClickListener {
+            val fragment = FragListItemPOCanvasser()
+            val bundle = Bundle()
+            var bundle1 = arguments
+            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, bundle1!!.getString(DefineValue.MEMBER_CODE_ESPAY))
+            bundle.putString(DefineValue.CUST_ID_ESPAY, bundle1!!.getString(DefineValue.CUST_ID_ESPAY))
+            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, bundle1!!.getString(DefineValue.COMMUNITY_CODE_ESPAY))
+            fragment.arguments = bundle
+            switchFragment(fragment,"","",true, "")
+        }
 
     }
 
@@ -48,15 +74,9 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
         recyclerViewList.adapter = listPOAdapter
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        search.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-
-            override fun afterTextChanged(editable: Editable) {
-                listPOAdapter!!.filter.filter(editable.toString())
-            }
-        })
         val bundle = arguments
+
+        docListArrayList.clear()
 
         val mArrayDoc = JSONArray(bundle!!.getString(WebParams.DOC_LIST))
 
@@ -68,6 +88,7 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
             val custID = mArrayDoc.getJSONObject(i).getString(WebParams.CUST_ID)
             val memberCode = mArrayDoc.getJSONObject(i).getString(WebParams.MEMBER_CODE)
             val commCode = mArrayDoc.getJSONObject(i).getString(WebParams.COMM_CODE)
+            val paidStatus = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS)
             val listPOModel = ListPOModel()
             listPOModel.doc_no = docNo
             listPOModel.doc_status = docStatus
@@ -76,6 +97,7 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
             listPOModel.cust_id = custID
             listPOModel.comm_code = commCode
             listPOModel.member_code = memberCode
+            listPOModel.paid_status = paidStatus
             docListArrayList.add(listPOModel)
         }
 
@@ -83,19 +105,20 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
     }
 
     override fun onClick(item: ListPOModel?) {
-//        val bundle = Bundle()
-//        bundle.putString(DefineValue.DOC_NO, item!!.doc_no)
-//        bundle.putString(DefineValue.MEMBER_CODE_ESPAY, item.member_code)
-//        bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, item.comm_code)
-//        bundle.putString(DefineValue.CUST_ID_ESPAY, item.cust_id)
-//        val frag: Fragment = FragInputQtyGoodReceipt()
-//        frag.arguments = bundle
-//        switchFragment(frag,"","",true, "")
+        val bundle = Bundle()
+        bundle.putString(DefineValue.DOC_NO, item!!.doc_no)
+        bundle.putString(DefineValue.MEMBER_CODE, item.member_code)
+        bundle.putString(DefineValue.COMMUNITY_CODE, item.comm_code)
+        bundle.putString(DefineValue.TYPE, DefineValue.CANVASSER)
+
+        val fragment = FragPurchaseOrderDetail()
+        fragment.arguments = bundle
+        switchFragment(fragment,"","",true, "")
     }
 
     private fun switchFragment(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {
         if (activity == null) return
-        val fca = activity as CanvasserGoodReceiptActivity?
+        val fca = activity as CanvasserPOActivity?
         fca!!.switchContent(i, name, next_name, isBackstack, tag)
     }
 }

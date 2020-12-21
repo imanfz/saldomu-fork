@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.CanvasserPOActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.AdapterListDetailPO
 import com.sgo.saldomu.coreclass.CurrencyFormat
@@ -36,6 +37,7 @@ class FragPurchaseOrderDetail : BaseFragment() {
     var memberCode: String = ""
     var commCode: String = ""
     var docNo: String = ""
+    var type: String = ""
 
     private var adapterDetailPO: AdapterListDetailPO? = null
     private val itemList = ArrayList<MappingItemsItem>()
@@ -49,13 +51,21 @@ class FragPurchaseOrderDetail : BaseFragment() {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
-        val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
-        tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.detail_document))
+
 
         if (arguments != null) {
             memberCode = arguments!!.getString(DefineValue.MEMBER_CODE, "")
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
             docNo = arguments!!.getString(DefineValue.DOC_NO, "")
+            type = arguments!!.getString(DefineValue.TYPE, "")
+        }
+
+        if (type.equals(DefineValue.CANVASSER)) {
+            val canvasserPOActivity = activity as CanvasserPOActivity
+            canvasserPOActivity.initializeToolbar(getString(R.string.detail_document))
+        } else {
+            val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
+            tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.detail_document))
         }
 
         adapterDetailPO = AdapterListDetailPO(context!!, itemList)

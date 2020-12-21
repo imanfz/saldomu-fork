@@ -29,6 +29,8 @@ import timber.log.Timber
 
 class FragInputStoreCode : BaseFragment() {
 
+    var docType = ""
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_input_store_code, container, false)
         return v
@@ -37,6 +39,9 @@ class FragInputStoreCode : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        var bundle : Bundle
+        bundle = arguments!!
+        docType = bundle.getString(DefineValue.TYPE, "")
 
         iv_clear.setOnClickListener(View.OnClickListener { v: View? -> et_store_code.setText("") })
 
@@ -80,7 +85,6 @@ class FragInputStoreCode : BaseFragment() {
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
                                         val bundle = Bundle()
-                                        var docType = bundle.getString(DefineValue.TYPE, "")
                                         bundle.putString(DefineValue.DOC_LIST, response.optString(WebParams.DOC_LIST))
                                         val frag : Fragment
 
@@ -89,6 +93,9 @@ class FragInputStoreCode : BaseFragment() {
                                             frag.arguments = bundle
                                             switchFragmentGR(frag, "", "", true, "")
                                         } else{
+                                            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, response.optString(WebParams.MEMBER_CODE_ESPAY))
+                                            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, response.optString(WebParams.COMM_CODE_ESPAY))
+                                            bundle.putString(DefineValue.CUST_ID_ESPAY, response.optString(WebParams.CUST_ID_ESPAY))
                                             frag = FragListPOCanvasser()
                                             frag.arguments = bundle
                                             switchFragmentPO(frag, "", "", true, "")
