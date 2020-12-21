@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.ToggleKeyboard
-import com.sgo.saldomu.fragments.FragListCommunityToko
+import com.sgo.saldomu.fragments.*
 import com.sgo.saldomu.widgets.BaseActivity
 import timber.log.Timber
 
@@ -15,7 +15,7 @@ class TokoPurchaseOrderActivity : BaseActivity() {
 
     var fragmentManager: FragmentManager? = null
 
-    var FRAG_LIST_PO = "FragListPurchaseOrderToko"
+    var FRAG_INPUT_ITEM_TAG = "FragInputItem"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializeToolbar(getString(R.string.purchase_order))
@@ -70,5 +70,19 @@ class TokoPurchaseOrderActivity : BaseActivity() {
                     .commitAllowingStateLoss()
         }
         initializeToolbar(fragName)
+    }
+
+    fun addFragment(mFragment: Fragment, fragName: String, tag: String){
+        ToggleKeyboard.hide_keyboard(this)
+        supportFragmentManager.beginTransaction().add(R.id.toko_po_content, mFragment, tag).commit()
+        initializeToolbar(fragName)
+    }
+
+    override fun onBackPressed() {
+        val fragment = fragmentManager!!.findFragmentById(R.id.toko_po_content)
+        if (fragment is FragOrderConfirmToko) {
+            val fragmentTransaction = fragmentManager!!.beginTransaction()
+            fragmentTransaction.remove(fragment).commit()
+        } else super.onBackPressed()
     }
 }

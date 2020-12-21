@@ -1022,7 +1022,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //                menuStrings.add(getResources().getString(R.string.title_search_agent));
 //                menuDrawables.add(getResources().getDrawable(R.drawable.ic_search_agent));
 
-
                     menuStrings.add(getResources().getString(R.string.title_cash_out_member));
 
                     menuStrings.add(getResources().getString(R.string.menu_item_title_biller));
@@ -1051,6 +1050,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     if (mBillerTypeDataPDAM != null)
                         menuStrings.add(getResources().getString(R.string.newhome_pam));
 
+                    menuStrings.add(getResources().getString(R.string.menu_item_title_ebd) + " " + getResources().getString(R.string.menu_item_title_ebd_toko));
                 }
                 menuStrings.add(getResources().getString(R.string.menu_item_title_ask_for_money));
 

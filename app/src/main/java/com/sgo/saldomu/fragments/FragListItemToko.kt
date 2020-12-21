@@ -13,8 +13,6 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.SnapHelper
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.AdapterEBDCatalogList
@@ -59,40 +57,86 @@ class FragListItemToko : BaseFragment() {
         val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
         tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.choose_catalog))
         if (arguments != null) {
-            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE, "")
-            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
+            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
+            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
         }
 
         itemListAdapter = AdapterEBDCatalogList(context!!, itemList, object : AdapterEBDCatalogList.Listener {
-            override fun onChangeQty(itemCode: String, itemName: String, qty: Int, price: Int, unit: String, qtyType: String) {
-                if (mappingItemList.size == 0)
-                    addOrder(itemCode, itemName, price, qty, unit, qtyType)
-                else {
-                    for (i in mappingItemList.indices) {
-                        if (mappingItemList[i].item_code == itemCode) {
-                            val mappingItemFormatQty = mappingItemList[i].format_qty
-                            if (qty != 0) {
-                                when (qtyType) {
-                                    DefineValue.BAL -> mappingItemFormatQty[0].mapping_qty = qty
-                                    DefineValue.SLOP -> mappingItemFormatQty[1].mapping_qty = qty
-                                    DefineValue.PACK -> mappingItemFormatQty[2].mapping_qty = qty
-                                }
-                            } else
-                                mappingItemList.removeAt(i)
-                            break
+            override fun onChangeQty(itemCode: String, qty: Int, qtyType: String) {
+
+                for (i in itemList.indices) {
+                    if (itemCode == itemList[i].itemCode) {
+                        val mappingItemsItem = MappingItemsItem()
+                        mappingItemsItem.item_code = itemList[i].itemCode
+                        mappingItemsItem.item_name = itemList[i].itemName
+                        mappingItemsItem.price = itemList[i].price
+                        mappingItemsItem.unit = itemList[i].unit
+                        val formatQtyItemList = ArrayList<FormatQtyItem>()
+
+                        when {
+                            qtyType == DefineValue.BAL -> formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, qty))
+                            itemList[i].formatQtyItem.isNotEmpty() -> formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, itemList[i].formatQtyItem[0].mapping_qty))
+                            else -> formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, 0))
                         }
-                        if (i == mappingItemList.size - 1)
-                            addOrder(itemCode, itemName, price, qty, unit, qtyType)
+
+                        when {
+                            qtyType == DefineValue.SLOP -> formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, qty))
+                            itemList[i].formatQtyItem.isNotEmpty() -> formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, itemList[i].formatQtyItem[1].mapping_qty))
+                            else -> formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, 0))
+                        }
+
+                        when {
+                            qtyType == DefineValue.PACK -> formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, qty))
+                            itemList[i].formatQtyItem.isNotEmpty() -> formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, itemList[i].formatQtyItem[2].mapping_qty))
+                            else -> formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, 0))
+                        }
+
+                        val qtyBAL = formatQtyItemList[0].mapping_qty
+                        val qtySLOP = formatQtyItemList[1].mapping_qty
+                        val qtyPACK = formatQtyItemList[2].mapping_qty
+                        mappingItemsItem.format_qty = formatQtyItemList
+
+
+                        if (qtyBAL == 0 && qtySLOP == 0 && qtyPACK == 0) {
+                            itemList[i].formatQtyItem.clear()
+                        } else {
+                            mappingItemList.add(mappingItemsItem)
+                            itemList[i].formatQtyItem = formatQtyItemList
+                        }
+
+
+//                        for (j in mappingItemList.indices) {
+//                            if (mappingItemList[j].item_code == itemCode) {
+//                                val mappingItemFormatQty = mappingItemList[j].format_qty
+//                                val itemListFormatQty = itemList[i].formatQtyItem
+//                                if (qty != 0) {
+//                                    when (qtyType) {
+//                                        DefineValue.BAL -> {
+//                                            mappingItemFormatQty[0].mapping_qty = qty
+//                                            itemListFormatQty[0].mapping_qty = qty
+//                                        }
+//                                        DefineValue.SLOP -> {
+//                                            mappingItemFormatQty[1].mapping_qty = qty
+//                                            itemListFormatQty[1].mapping_qty = qty
+//                                        }
+//                                        DefineValue.PACK -> {
+//                                            mappingItemFormatQty[2].mapping_qty = qty
+//                                            itemListFormatQty[2].mapping_qty = qty
+//                                        }
+//                                    }
+//                                } else
+//                                    mappingItemList.removeAt(j)
+//                                break
+//                            }
+//
+//                        }
                     }
                 }
-                Timber.e(order.toString())
             }
         })
 
         frag_input_item_list_field.adapter = itemListAdapter
         frag_input_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        val snapHelper: SnapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(frag_input_item_list_field)
 
         layout_payment_method.visibility = View.VISIBLE
         paymentListOption.clear()
@@ -101,54 +145,57 @@ class FragListItemToko : BaseFragment() {
         val paymentOptionsAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentListOption)
         paymentOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_payment_options.adapter = paymentOptionsAdapter
-        spinner_payment_options.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                paymentOption = paymentListOption[p2]
-            }
+        spinner_payment_options.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                        paymentOption = paymentListOption[p2]
+                    }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
+                    override fun onNothingSelected(p0: AdapterView<*>?) {
 
-            }
+                    }
 
-        }
+                }
 
         getCatalogList()
 
-        search.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+        search.addTextChangedListener(
+                object : TextWatcher {
+                    override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+                    override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
-            override fun afterTextChanged(editable: Editable) {
-                itemListAdapter!!.filter.filter(editable.toString())
-            }
-        })
+                    override fun afterTextChanged(editable: Editable) {
+                        itemListAdapter!!.filter.filter(editable.toString())
+                    }
+                })
         frag_input_item_submit_btn.setOnClickListener {
             confirmationDoc()
         }
     }
 
-    private fun addOrder(itemCode: String, itemName: String, price: Int, qty: Int, unit: String, qtyType: String) {
-        if (qty != 0) {
-            val mappingItem = MappingItemsItem()
-            mappingItem.item_code = itemCode
-            mappingItem.item_name = itemName
-            mappingItem.price = price
-            mappingItem.unit = unit
-            val formatQtyItemList = ArrayList<FormatQtyItem>()
-            formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, 0))
-            formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, 0))
-            formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, 0))
-            when (qtyType) {
-                DefineValue.BAL -> formatQtyItemList[0].mapping_qty = qty
-                DefineValue.SLOP -> formatQtyItemList[1].mapping_qty = qty
-                DefineValue.PACK -> formatQtyItemList[2].mapping_qty = qty
-            }
-            mappingItem.format_qty = formatQtyItemList
-            mappingItemList.add(mappingItem)
-            order.reff_no = ""
-            order.mapping_items = mappingItemList
-        }
-    }
+//    private fun addOrder(itemCode: String, itemName: String, price: Int, qty: Int, unit: String, qtyType: String, index: Int) {
+//        if (qty != 0) {
+//            val mappingItem = MappingItemsItem()
+//            mappingItem.item_code = itemCode
+//            mappingItem.item_name = itemName
+//            mappingItem.price = price
+//            mappingItem.unit = unit
+//            val formatQtyItemList = ArrayList<FormatQtyItem>()
+//            formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, 0))
+//            formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, 0))
+//            formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, 0))
+//            when (qtyType) {
+//                DefineValue.BAL -> formatQtyItemList[0].mapping_qty = qty
+//                DefineValue.SLOP -> formatQtyItemList[1].mapping_qty = qty
+//                DefineValue.PACK -> formatQtyItemList[2].mapping_qty = qty
+//            }
+//            itemList[index].formatQtyItem = formatQtyItemList
+//            mappingItem.format_qty = formatQtyItemList
+//            mappingItemList.add(mappingItem)
+//            order.reff_no = ""
+//            order.mapping_items = mappingItemList
+//        }
+//    }
 
     private fun getCatalogList() {
         try {
@@ -170,6 +217,7 @@ class FragListItemToko : BaseFragment() {
                                 val message = response.getString(WebParams.ERROR_MESSAGE)
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
+                                        itemList.clear()
                                         val jsonArray = response.getJSONArray(WebParams.ITEMS)
                                         for (i in 0 until jsonArray.length()) {
                                             val jsonObject = jsonArray.getJSONObject(i)
@@ -184,7 +232,7 @@ class FragListItemToko : BaseFragment() {
                                         itemListAdapter!!.notifyDataSetChanged()
                                     }
                                     WebParams.LOGOUT_CODE -> {
-                                        AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
+                                        AlertDialogLogout.getInstance().showDialoginMain(activity, message)
                                     }
                                     DefineValue.ERROR_9333 -> {
                                         val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -264,17 +312,17 @@ class FragListItemToko : BaseFragment() {
                                 val frag = FragOrderConfirmToko()
 
                                 val bundle = Bundle()
-                                bundle.putString(DefineValue.MEMBER_CODE, memberCode)
-                                bundle.putString(DefineValue.COMMUNITY_CODE, commCode)
+                                bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+                                bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
                                 bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
                                 bundle.putString(DefineValue.DOC_DETAILS, docDetail)
                                 bundle.putString(DefineValue.EBD_CONFIRM_DATA, response.toString())
 
                                 frag.arguments = bundle
-                                (activity as TokoPurchaseOrderActivity).switchContent(frag, getString(R.string.purchase_order_confirmation), true, "FragOrderConfirmToko")
+                                (activity as TokoPurchaseOrderActivity).addFragment(frag, getString(R.string.purchase_order_confirmation), (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginMain(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -329,7 +377,7 @@ class FragListItemToko : BaseFragment() {
 
         parentObj.put(WebParams.MAPPING_ITEMS, mappingItemArray)
         parentArr.put(parentObj)
-        return parentArr.toString()
         Timber.e("doc_detail : $parentArr")
+        return parentArr.toString()
     }
 }

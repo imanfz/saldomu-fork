@@ -309,6 +309,7 @@ public class MyApiClient {
     public static String LINK_CONFIRMATION_DOC;
     public static String LINK_CREATE_PO;
     public static String LINK_REQUEST_PAYMENT;
+    public static String LINK_PAYMENT_TOKO;
     public static String LINK_INQUIRY_MEMBER_CANVASSER;
     public static String LINK_GET_LOCATION_DATA;
     public static String LINK_DOC_LIST;
@@ -576,6 +577,7 @@ public class MyApiClient {
         LINK_CONFIRMATION_DOC = headaddressfinal + "espaycatalog/ConfirmationDocument/Invoke";
         LINK_CREATE_PO = headaddressfinal + "espaycatalog/CreatePo/Invoke";
         LINK_REQUEST_PAYMENT= headaddressfinal + "espaycatalog/RequestPayment/Invoke";
+        LINK_PAYMENT_TOKO= headaddressfinal + "espaycatalog/PaymentToko/Invoke";
 
         LINK_DOC_LIST = headaddressfinal + "espaycatalog/InquiryDocList/Retrieve";
         LINK_DOC_DETAIL = headaddressfinal + "espaycatalog/InquiryDocDetail/Retrieve";

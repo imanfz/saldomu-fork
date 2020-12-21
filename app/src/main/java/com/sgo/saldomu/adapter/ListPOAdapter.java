@@ -1,5 +1,6 @@
 package com.sgo.saldomu.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +25,13 @@ import java.util.Locale;
 public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder> implements Filterable {
     private final Activity mContext;
     private ArrayList<ListPOModel> docListArrayList;
+    private ArrayList<ListPOModel> originalList;
     static ListPOAdapter.listener listener;
 
 
     public ListPOAdapter(ArrayList<ListPOModel> docListArrayList, Activity mContext, ListPOAdapter.listener _listener) {
         this.docListArrayList = docListArrayList;
+        this.originalList = docListArrayList;
         this.mContext = mContext;
         listener = _listener;
     }
@@ -44,19 +47,15 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
         return new ListPOAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_po, parent, false));
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ListPOAdapter.ViewHolder holder, int position) {
         holder.docNo.setText(docListArrayList.get(position).getDoc_no());
         holder.docStatus.setText(docListArrayList.get(position).getDoc_status());
-        holder.totalAmount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(docListArrayList.get(position).getTotal_amount()));
+        holder.totalAmount.setText(mContext.getString(R.string.currency) + CurrencyFormat.format(docListArrayList.get(position).getTotal_amount()));
         holder.dueDate.setText(docListArrayList.get(position).getDue_date());
         holder.paidStatus.setText(docListArrayList.get(position).getPaid_status());
-        holder.layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onClick(docListArrayList.get(position));
-            }
-        });
+        holder.layout.setOnClickListener(view -> listener.onClick(docListArrayList.get(position)));
     }
 
     @Override
@@ -92,14 +91,12 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
                 String charString = charSequence.toString().toLowerCase(Locale.ROOT);
                 ArrayList<ListPOModel> temp = new ArrayList<>();
                 if (charString.isEmpty())
-                    temp.addAll(docListArrayList);
+                    temp.addAll(originalList);
                 else
-                    for (int i = 0; i < docListArrayList.size(); i++) {
-                        String docNo = docListArrayList.get(i).getDoc_no();
-                        if (docNo != null && docNo.toLowerCase(Locale.ROOT).contains(charString))
-                            temp.add(docListArrayList.get(i));
+                    for (ListPOModel model : originalList) {
+                        if (model.getDoc_no().toLowerCase(Locale.ROOT).contains(charString))
+                            temp.add(model);
                     }
-
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = temp;
                 return filterResults;
@@ -107,7 +104,8 @@ public class ListPOAdapter extends RecyclerView.Adapter<ListPOAdapter.ViewHolder
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-
+                docListArrayList = new ArrayList<>((ArrayList<ListPOModel>)filterResults.values);
+                notifyDataSetChanged();
             }
         };
     }

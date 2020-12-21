@@ -235,7 +235,7 @@ class FragRegisterEBD : BaseFragment() {
                         showDialog(response)
                     }
                     WebParams.LOGOUT_CODE -> {
-                        AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
+                        AlertDialogLogout.getInstance().showDialoginMain(activity, message)
                     }
                     DefineValue.ERROR_9333 -> {
                         val model = gson.fromJson(response.toString(), jsonModel::class.java)

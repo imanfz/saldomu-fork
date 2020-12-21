@@ -51,10 +51,10 @@ class FragListCommunityToko : BaseFragment() {
             override fun onClick(pos: Int) {
                 val fragment = FragListPurchaseOrder()
                 val bundle = Bundle()
-                bundle.putString(DefineValue.MEMBER_CODE, ebdCommunityModelArrayList[pos].member_code)
-                bundle.putString(DefineValue.COMMUNITY_CODE, ebdCommunityModelArrayList[pos].comm_code)
+                bundle.putString(DefineValue.MEMBER_CODE_ESPAY, ebdCommunityModelArrayList[pos].member_code)
+                bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, ebdCommunityModelArrayList[pos].comm_code)
                 fragment.arguments = bundle
-                tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.list_po), true, tokoPurchaseOrderActivity.FRAG_LIST_PO)
+                tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.list_po), true, tokoPurchaseOrderActivity.FRAG_INPUT_ITEM_TAG)
             }
         })
         recyclerView.adapter = adapterEBDCommunityList
@@ -93,7 +93,7 @@ class FragListCommunityToko : BaseFragment() {
                         adapterEBDCommunityList!!.notifyDataSetChanged()
                     }
                     WebParams.LOGOUT_CODE -> {
-                        AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
+                        AlertDialogLogout.getInstance().showDialoginMain(activity, message)
                     }
                     DefineValue.ERROR_9333 -> {
                         val model = gson.fromJson(response.toString(), jsonModel::class.java)

@@ -23,7 +23,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
     val originalList = itemList
 
     interface Listener {
-        fun onChangeQty(itemCode: String, itemName: String, qty: Int, price: Int, unit: String, qtyType: String)
+        fun onChangeQty(itemCode: String, qty: Int, qtyType: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -36,10 +36,33 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         val itemName = itemList[position].itemName
         val price = itemList[position].price
         val unit = itemList[position].unit
-        val maxQty = itemList[position].maxQty
+//        val maxQty = itemList[position].maxQty
         holder.itemCode.text = itemCode
         holder.itemName.text = itemName
         holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
+
+        if (itemList[position].formatQtyItem.isNotEmpty()) {
+            holder.itemQty1.setText(itemList[position].formatQtyItem[0].mapping_qty.toString())
+            holder.itemQty2.setText(itemList[position].formatQtyItem[1].mapping_qty.toString())
+            holder.itemQty3.setText(itemList[position].formatQtyItem[2].mapping_qty.toString())
+        } else {
+            holder.itemQty1.setText("")
+            holder.itemQty2.setText("")
+            holder.itemQty3.setText("")
+        }
+//        if (mappingItemList.isNotEmpty()) {
+//            for (i in mappingItemList.indices) {
+//                if (itemCode == mappingItemList[i].item_code) {
+//                    holder.itemQty1.setText(mappingItemList[i].format_qty[0].mapping_qty.toString())
+//                    holder.itemQty2.setText(mappingItemList[i].format_qty[1].mapping_qty.toString())
+//                    holder.itemQty3.setText(mappingItemList[i].format_qty[2].mapping_qty.toString())
+//                } else {
+//                    holder.itemQty1.setText("")
+//                    holder.itemQty2.setText("")
+//                    holder.itemQty3.setText("")
+//                }
+//            }
+//        }
 
         holder.itemQty1.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -67,7 +90,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
 //                    holder.itemQty1.setSelection(holder.itemQty1.length())
 //                }
 
-                listener.onChangeQty(itemCode, itemName, qty, price, unit, DefineValue.BAL)
+                listener.onChangeQty(itemCode, qty, DefineValue.BAL)
             }
 
         })
@@ -98,7 +121,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
 //                    holder.itemQty2.setSelection(holder.itemQty2.length())
 //                }
 
-                listener.onChangeQty(itemCode, itemName, qty, price, unit, DefineValue.SLOP)
+                listener.onChangeQty(itemCode, qty, DefineValue.SLOP)
             }
 
         })
@@ -129,7 +152,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
 //                    holder.itemQty3.setSelection(holder.itemQty3.length())
 //                }
 
-                listener.onChangeQty(itemCode, itemName, qty, price, unit, DefineValue.PACK)
+                listener.onChangeQty(itemCode, qty, DefineValue.PACK)
             }
 
         })
