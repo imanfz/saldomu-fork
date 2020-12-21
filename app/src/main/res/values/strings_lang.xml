@@ -1717,6 +1717,18 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="pay_now">Pay Now</string>
     <string name="pay_later">Pay Later</string>
     <string name="paid_status">Paid Status</string>
+
+    <string name="lbl_type_id">Id Type</string>
+    <string name="lbl_reff_id">Reff Id</string>
+    <string name="lbl_reff_no">Reff No</string>
+    <string name="lbl_issue_date">Issue Date </string>
+    <string name="lbl_due_date">Due Date</string>
+    <string name="lbl_created_at">Created At</string>
+
+    <string name="tv_please_wait">Please ask your customer to check on notification for payment</string>
+    <string name="lbl_choose">Choose</string>
+
+
     <string name="create_gr">Create Good Receipt</string>
     <string name="detail_document">Detail Document</string>
     <string name="item_name">Item Name</string>

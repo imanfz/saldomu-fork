@@ -1,0 +1,10 @@
+<TextView
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp"
+    android:layout_gravity="end"
+    android:textSize="14sp"
+    android:id="@+id/tv_pay_remark"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:textColor="@color/color_black"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

@@ -539,6 +539,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         params.put(WebParams.SOURCE_ACCT_NO, noId);
         params.put(WebParams.DUE_DATE, due_date);
 
+
         Timber.d("params list invoice DGI : " + params.toString());
 
         DataManager.getInstance().setListInvoice(temp);
