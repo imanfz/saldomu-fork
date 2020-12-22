@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/frag_denom_input_promo_code_submit_btn"
+        android:layout_above="@id/promo_code_submit_btn"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -47,13 +47,13 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/frag_denom_input_promo_list_field"
+            android:id="@+id/promo_list_field"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
 
     <com.balysv.materialripple.MaterialRippleLayout
-        android:id="@+id/frag_denom_input_promo_code_submit_btn"
+        android:id="@+id/promo_code_submit_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -69,7 +69,7 @@
             android:layout_gravity="center_horizontal"
             android:background="@drawable/rounded_background_blue"
             android:gravity="center"
-            android:text="@string/next"
+            android:text="@string/validate_promo"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
             android:textColor="@color/white" />
     </com.balysv.materialripple.MaterialRippleLayout>
