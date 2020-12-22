@@ -99,8 +99,20 @@ class FragListItemToko : BaseFragment() {
 
                         if (qtyBAL == 0 && qtySLOP == 0 && qtyPACK == 0) {
                             itemList[i].formatQtyItem.clear()
+                            for (j in mappingItemList.indices) {
+                                if (itemList[i].itemCode == mappingItemList[j].item_code)
+                                    mappingItemList.removeAt(j)
+                            }
                         } else {
-                            mappingItemList.add(mappingItemsItem)
+                            if (mappingItemList.size == 0)
+                                mappingItemList.add(mappingItemsItem)
+                            else
+                                for (j in mappingItemList.indices) {
+                                    if (itemList[i].itemCode == mappingItemList[j].item_code)
+                                        mappingItemList[j].format_qty = formatQtyItemList
+                                    else if (j == mappingItemList.size - 1)
+                                        mappingItemList.add(mappingItemsItem)
+                                }
                             itemList[i].formatQtyItem = formatQtyItemList
                         }
 
@@ -169,33 +181,20 @@ class FragListItemToko : BaseFragment() {
                     }
                 })
         frag_input_item_submit_btn.setOnClickListener {
-            confirmationDoc()
+            val docDetail = createJSONDocDetail()
+            val frag = if (paymentOption == getString(R.string.pay_now)) FragInputPromoCodeToko() else FragOrderConfirmToko()
+            val fragName = if (paymentOption == getString(R.string.pay_now)) getString(R.string.promo_code) else getString(R.string.purchase_order_confirmation)
+
+            val bundle = Bundle()
+            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
+            bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
+            bundle.putString(DefineValue.DOC_DETAILS, docDetail)
+
+            frag.arguments = bundle
+            tokoPurchaseOrderActivity.addFragment(frag, fragName, tokoPurchaseOrderActivity.FRAG_INPUT_ITEM_TAG)
         }
     }
-
-//    private fun addOrder(itemCode: String, itemName: String, price: Int, qty: Int, unit: String, qtyType: String, index: Int) {
-//        if (qty != 0) {
-//            val mappingItem = MappingItemsItem()
-//            mappingItem.item_code = itemCode
-//            mappingItem.item_name = itemName
-//            mappingItem.price = price
-//            mappingItem.unit = unit
-//            val formatQtyItemList = ArrayList<FormatQtyItem>()
-//            formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, 0))
-//            formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, 0))
-//            formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, 0))
-//            when (qtyType) {
-//                DefineValue.BAL -> formatQtyItemList[0].mapping_qty = qty
-//                DefineValue.SLOP -> formatQtyItemList[1].mapping_qty = qty
-//                DefineValue.PACK -> formatQtyItemList[2].mapping_qty = qty
-//            }
-//            itemList[index].formatQtyItem = formatQtyItemList
-//            mappingItem.format_qty = formatQtyItemList
-//            mappingItemList.add(mappingItem)
-//            order.reff_no = ""
-//            order.mapping_items = mappingItemList
-//        }
-//    }
 
     private fun getCatalogList() {
         try {

@@ -2,7 +2,8 @@ package com.sgo.saldomu.models
 
 data class DocDetailsItem(
         var reff_no: String = "",
-        var mapping_items: List<MappingItemsItem> = ArrayList()
+        var mapping_items: List<MappingItemsItem> = ArrayList(),
+        var bonus_items: List<MappingItemsItem> = ArrayList()
 )
 
 data class MappingItemsItem(
