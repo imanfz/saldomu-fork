@@ -53,8 +53,8 @@ class FragPurchaseOrderDetail : BaseFragment() {
 
 
         if (arguments != null) {
-            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
-            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
+            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE, "")
+            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
             docNo = arguments!!.getString(DefineValue.DOC_NO, "")
             type = arguments!!.getString(DefineValue.TYPE, "")
         }

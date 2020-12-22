@@ -25,10 +25,8 @@ import com.sgo.saldomu.models.FormatQty
 import com.sgo.saldomu.models.retrofit.ItemModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_confirm_gr.*
 import kotlinx.android.synthetic.main.frag_create_gr.*
 import kotlinx.android.synthetic.main.frag_create_gr.frag_gr_confirm_submit_btn
-import kotlinx.android.synthetic.main.frag_list_po.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -58,14 +56,14 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        var bundle = arguments!!
-        memberCodeEspay = bundle!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
-        commCodeEspay = bundle!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
-        custIdEspay = bundle!!.getString(DefineValue.CUST_ID_ESPAY, "")
-        docNo = bundle!!.getString(DefineValue.DOC_NO, "")
-        amount = bundle!!.getString(DefineValue.AMOUNT, "")
-        promoCode = bundle!!.getString(DefineValue.PROMO_CODE, "")
-        docDetails = bundle!!.getString(DefineValue.DOC_DETAILS, "")
+        val bundle = arguments!!
+        memberCodeEspay = bundle.getString(DefineValue.MEMBER_CODE_ESPAY, "")
+        commCodeEspay = bundle.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
+        custIdEspay = bundle.getString(DefineValue.CUST_ID_ESPAY, "")
+        docNo = bundle.getString(DefineValue.DOC_NO, "")
+        amount = bundle.getString(DefineValue.AMOUNT, "")
+        promoCode = bundle.getString(DefineValue.PROMO_CODE, "")
+        docDetails = bundle.getString(DefineValue.DOC_DETAILS, "")
 
         initalizeListItem()
 
@@ -105,19 +103,10 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
                 for (i in 0 until formatQtyJsonArray.length()) {
                     var mappingUnit = formatQtyJsonArray.getJSONObject(i).getString(WebParams.MAPPING_UNIT)
                     var mappingQty = formatQtyJsonArray.getJSONObject(i).getInt(WebParams.MAPPING_QTY)
-                    var formatQty = FormatQty()
-                    formatQty.mapping_unit = mappingUnit;
-                    formatQty.mapping_qty = mappingQty;
+                    var formatQty = FormatQty(mappingUnit, mappingQty)
                     formatQtys.add(formatQty)
                 }
-                val itemModel = ItemModel()
-                itemModel.item_name = itemName
-                itemModel.item_code = itemCode
-                itemModel.price = price
-                itemModel.unit = unit
-                itemModel.subtotal_amount = subtotal
-                itemModel.format_qty = formatQtys
-                itemArrayList.add(itemModel)
+                itemArrayList.add(ItemModel(itemName, itemCode, price, unit, subtotal, formatQtys))
             }
         }
 
@@ -139,7 +128,7 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
             for (i in 0 until mappingBonusItemJsonArray.length()) {
                 val itemName = mappingBonusItemJsonArray.getJSONObject(i).getString(WebParams.ITEM_NAME)
                 val itemCode = mappingBonusItemJsonArray.getJSONObject(i).getString(WebParams.ITEM_CODE)
-                val price = mappingBonusItemJsonArray.getJSONObject(i).getString(WebParams.PRICE)
+                val price = mappingBonusItemJsonArray.getJSONObject(i).optString(WebParams.PRICE)
                 val unit = mappingBonusItemJsonArray.getJSONObject(i).getString(WebParams.UNIT)
                 val subtotal = mappingBonusItemJsonArray.getJSONObject(i).getString(WebParams.SUBTOTAL_AMOUNT)
                 val formatQtyJsonArray = mappingBonusItemJsonArray.getJSONObject(i).getJSONArray(WebParams.FORMAT_QTY)
@@ -147,19 +136,10 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
                 for (i in 0 until formatQtyJsonArray.length()) {
                     var mappingUnit = formatQtyJsonArray.getJSONObject(i).getString(WebParams.MAPPING_UNIT)
                     var mappingQty = formatQtyJsonArray.getJSONObject(i).getInt(WebParams.MAPPING_QTY)
-                    var formatQty = FormatQty()
-                    formatQty.mapping_unit = mappingUnit;
-                    formatQty.mapping_qty = mappingQty;
+                    var formatQty = FormatQty(mappingUnit, mappingQty)
                     formatQtys.add(formatQty)
                 }
-                val itemModel = ItemModel()
-                itemModel.item_name = itemName
-                itemModel.item_code = itemCode
-                itemModel.price = price
-                itemModel.unit = unit
-                itemModel.subtotal_amount = subtotal
-                itemModel.format_qty = formatQtys
-                itemBonusArrayList.add(itemModel)
+                itemBonusArrayList.add(ItemModel(itemName, itemCode, price, unit, subtotal, formatQtys))
             }
         }
         adapterListBonusItem!!.updateData(itemBonusArrayList)

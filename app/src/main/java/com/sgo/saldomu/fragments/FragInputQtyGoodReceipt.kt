@@ -39,6 +39,7 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
     var custIdEspay: String = ""
     var docNo: String = ""
     var tempGson = ""
+    var gson =""
 
     private val itemArrayList = ArrayList<ItemModel>()
 
@@ -53,8 +54,6 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
         super.onActivityCreated(savedInstanceState)
         val bundle = arguments
 
-        tv_item_list.visibility = View.VISIBLE
-        btn_proses_gr.visibility = View.VISIBLE
 
         memberCodeEspay = bundle!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
         commCodeEspay = bundle!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
@@ -62,6 +61,24 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
         docNo = bundle!!.getString(DefineValue.DOC_NO, "")
 
         getDetail()
+
+        btn_add_item.setOnClickListener {
+            val temp = ArrayList<HashMap<String, Any>>()
+
+            temp.add(setMappingItemsHashMap())
+
+            val gson = Gson()
+            tempGson = gson.toJson(temp)
+
+            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCodeEspay)
+            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCodeEspay)
+            bundle.putString(DefineValue.CUST_ID_ESPAY, custIdEspay)
+            bundle.putString(DefineValue.DOC_DETAILS, tempGson)
+            bundle.putString(DefineValue.DOC_NO, docNo)
+            val frag: Fragment = FragListAddItemGRCanvasser()
+            frag.arguments = bundle
+            switchFragment(frag, "", "", true, "")
+        }
 
 
         btn_proses_gr.setOnClickListener {
@@ -74,14 +91,14 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
             val gson = Gson()
             tempGson = gson.toJson(temp)
 
-            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY,commCodeEspay)
-            bundle.putString(DefineValue.MEMBER_CODE_ESPAY,memberCodeEspay)
-            bundle.putString(DefineValue.CUST_ID_ESPAY,custIdEspay)
-            bundle.putString(DefineValue.DOC_DETAILS,tempGson)
-            bundle.putString(DefineValue.DOC_NO,docNo)
+            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCodeEspay)
+            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCodeEspay)
+            bundle.putString(DefineValue.CUST_ID_ESPAY, custIdEspay)
+            bundle.putString(DefineValue.DOC_DETAILS, tempGson)
+            bundle.putString(DefineValue.DOC_NO, docNo)
             val frag: Fragment = FragInputPromoCodeGRCanvasser()
             frag.arguments = bundle
-            switchFragment(frag,"","",true, "")
+            switchFragment(frag, "", "", true, "")
 
         }
     }
@@ -108,6 +125,9 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
                                 Timber.d("isi response inquiry doc detail:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
+                                        tv_item_list.visibility = View.VISIBLE
+                                        btn_proses_gr.visibility = View.VISIBLE
+                                        btn_add_item.visibility = View.VISIBLE
                                         val items = response.optString(WebParams.ITEMS)
                                         itemArrayList.clear()
                                         initializeListProduct(items)
@@ -166,18 +186,10 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
             for (i in 0 until formatQtyJsonArray.length()) {
                 var mappingUnit = formatQtyJsonArray.getJSONObject(i).getString(WebParams.MAPPING_UNIT)
                 var mappingQty = formatQtyJsonArray.getJSONObject(i).getInt(WebParams.MAPPING_QTY)
-                var formatQty = FormatQty()
-                formatQty.mapping_unit = mappingUnit;
-                formatQty.mapping_qty = mappingQty;
+                var formatQty = FormatQty(mappingUnit, mappingQty)
                 formatQtys.add(formatQty)
             }
-            val itemModel = ItemModel()
-            itemModel.item_name = itemName
-            itemModel.item_code = itemCode
-            itemModel.price = price
-            itemModel.unit = unit
-            itemModel.format_qty = formatQtys
-            itemArrayList.add(itemModel)
+            itemArrayList.add(ItemModel(itemName, itemCode, price, unit, "0", formatQtys))
         }
 
         updateProductGoodReceiptAdapter!!.updateData(itemArrayList)
@@ -217,13 +229,13 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
         try {
             for (obj in updateProductGoodReceiptAdapter!!.itemList) {
                 val mappingItemsHashMap = HashMap<String, Any>()
-                mappingItemsHashMap["item_name"] = obj.item_name!!
-                mappingItemsHashMap["item_code"] = obj.item_code!!
-                mappingItemsHashMap["price"] = obj.price!!
-                mappingItemsHashMap["unit"] = obj.unit!!
+                mappingItemsHashMap["item_name"] = obj.itemName
+                mappingItemsHashMap["item_code"] = obj.itemCode
+                mappingItemsHashMap["price"] = obj.price
+                mappingItemsHashMap["unit"] = obj.unit
 
                 val formatQtyArrayList = ArrayList<HashMap<String, Any>>()
-                for (formatQty in obj.format_qty!!) {
+                for (formatQty in obj.formatQty) {
                     val formatQtyHashMap = HashMap<String, Any>()
                     formatQtyHashMap["mapping_qty"] = formatQty.mapping_qty
                     formatQtyHashMap["mapping_unit"] = formatQty.mapping_unit
@@ -260,7 +272,7 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
             params[WebParams.DOC_DETAIL] = tempGson
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
-            params[WebParams.INVOICE_NOTE] =""
+            params[WebParams.INVOICE_NOTE] = ""
             Timber.d("params confirm doc:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_CONFIRM, params,
                     object : ObjListeners {
@@ -274,17 +286,17 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
                                         val bundle = Bundle()
-                                        bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY,commCodeEspay)
-                                        bundle.putString(DefineValue.MEMBER_CODE_ESPAY,memberCodeEspay)
-                                        bundle.putString(DefineValue.CUST_ID_ESPAY,custIdEspay)
-                                        bundle.putString(DefineValue.DOC_DETAILS,response.optString(WebParams.DOC_DETAILS))
-                                        bundle.putString(DefineValue.AMOUNT,response.optString(WebParams.AMOUNT))
-                                        bundle.putString(DefineValue.TOTAL_AMOUNT,response.optString(WebParams.TOTAL_AMOUNT))
-                                        bundle.putString(DefineValue.TOTAL_DISC,response.optString(WebParams.DISCOUNT_AMOUNT))
-                                        bundle.putString(DefineValue.DOC_NO,docNo)
+                                        bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCodeEspay)
+                                        bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCodeEspay)
+                                        bundle.putString(DefineValue.CUST_ID_ESPAY, custIdEspay)
+                                        bundle.putString(DefineValue.DOC_DETAILS, response.optString(WebParams.DOC_DETAILS))
+                                        bundle.putString(DefineValue.AMOUNT, response.optString(WebParams.AMOUNT))
+                                        bundle.putString(DefineValue.TOTAL_AMOUNT, response.optString(WebParams.TOTAL_AMOUNT))
+                                        bundle.putString(DefineValue.TOTAL_DISC, response.optString(WebParams.DISCOUNT_AMOUNT))
+                                        bundle.putString(DefineValue.DOC_NO, docNo)
                                         val frag: Fragment = FragCreateGR()
                                         frag.arguments = bundle
-                                        switchFragment(frag,"","",true, "")
+                                        switchFragment(frag, "", "", true, "")
 
                                     }
                                     WebParams.LOGOUT_CODE -> {
