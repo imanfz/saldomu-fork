@@ -209,7 +209,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             params[WebParams.REFF_NO] = obj!!.reff_no
 
             params[WebParams.CCY_ID] =  MyApiClient.CCY_VALUE;
-            params[WebParams.TYPE_ID] = obj!!.type_id
+            params[WebParams.TYPE_ID] = DefineValue.IN
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER //
             params[WebParams.DOC_NO] = obj!!.doc_no
             params[WebParams.PARTNER_CODE_ESPAY] = partner_code_espay
