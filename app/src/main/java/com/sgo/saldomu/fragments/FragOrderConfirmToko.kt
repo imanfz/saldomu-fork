@@ -26,16 +26,21 @@ import com.sgo.saldomu.models.MappingItemsItem
 import com.sgo.saldomu.models.PaymentMethods
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
+import kotlinx.android.synthetic.main.frag_create_gr.*
 import kotlinx.android.synthetic.main.frag_order_confirm_toko.*
+import kotlinx.android.synthetic.main.frag_order_confirm_toko.layout_bonus_item
+import kotlinx.android.synthetic.main.frag_order_confirm_toko.layout_payment_method
+import kotlinx.android.synthetic.main.fragment_input_item_list.*
 import org.json.JSONObject
 import timber.log.Timber
 
 class FragOrderConfirmToko : BaseFragment() {
     var memberCode = ""
     var commCode = ""
-    private var paymentOption = ""
+    var paymentOption = ""
     var paymentMethodCode = ""
     var docDetail = ""
+    var promoCode = ""
 
     private var ebdConfirmModel = EBDConfirmModel()
 
@@ -57,6 +62,7 @@ class FragOrderConfirmToko : BaseFragment() {
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             paymentOption = arguments!!.getString(DefineValue.PAYMENT_OPTION, "")
             docDetail = arguments!!.getString(DefineValue.DOC_DETAILS, "")
+            promoCode = arguments!!.getString(DefineValue.PROMO_CODE, "")
             ebdConfirmModel = getGson().fromJson(arguments!!.getString(DefineValue.EBD_CONFIRM_DATA, ""), EBDConfirmModel::class.java)
         }
 
@@ -71,6 +77,13 @@ class FragOrderConfirmToko : BaseFragment() {
         item_list_field.adapter = adapterListItemConfirmPO
         item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
+        val bonusItemsList = docDetails[0].bonus_items
+        if (bonusItemsList.isNotEmpty()){
+            layout_bonus_item.visibility = View.VISIBLE
+            val adapterBonusItemConfirm = AdapterListItemConfirmPO(context!!, bonusItemsList)
+            confirm_bonus_item_list_field.adapter = adapterBonusItemConfirm
+            confirm_bonus_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        }
         if (paymentOption == getString(R.string.pay_now)) {
             paymentMethodList.addAll(ebdConfirmModel.payment_methods)
             val paymentMethodNameList = ArrayList<String>()
@@ -93,10 +106,11 @@ class FragOrderConfirmToko : BaseFragment() {
             }
         } else if (paymentOption == getString(R.string.pay_later))
             layout_payment_method.visibility = View.GONE
-        submit_btn.setOnClickListener { submitOrder() }
+
+        submit_btn.setOnClickListener { createPO() }
     }
 
-    private fun submitOrder() {
+    private fun createPO() {
         showProgressDialog()
 
         val amount = ebdConfirmModel.amount
@@ -111,6 +125,7 @@ class FragOrderConfirmToko : BaseFragment() {
         params[WebParams.DOC_DETAIL] = docDetail
         params[WebParams.CUST_TYPE] = DefineValue.TOKO
         params[WebParams.ACTION_CODE] = "N"
+        params[WebParams.DISCOUNT_AMOUNT] = ebdConfirmModel.discount_amount
 
         Timber.d("isi params create PO:$params")
 
@@ -172,7 +187,7 @@ class FragOrderConfirmToko : BaseFragment() {
         params[WebParams.CUST_TYPE] = DefineValue.TOKO
         params[WebParams.SHOP_PHONE] = userPhoneID
 
-        Timber.d("isi params request payment:$params")
+        Timber.d("isi params payment toko:$params")
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_PAYMENT_TOKO, params,
                 object : ObjListeners {

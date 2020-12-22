@@ -161,8 +161,4 @@ class FragListPurchaseOrder : BaseFragment() {
 
                 })
     }
-
-    private fun docDetail() {
-        Toast.makeText(context, "Belummm", Toast.LENGTH_SHORT).show()
-    }
 }
