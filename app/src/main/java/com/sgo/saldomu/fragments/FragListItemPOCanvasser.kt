@@ -62,7 +62,6 @@ class FragListItemPOCanvasser : BaseFragment() {
             custIdEspay = arguments!!.getString(DefineValue.CUST_ID_ESPAY, "")
         }
 
-        getCatalogList()
 
         itemListAdapter = AdapterEBDCatalogList(context!!, itemList, object : AdapterEBDCatalogList.Listener {
             override fun onChangeQty(itemCode: String, qty: Int, qtyType: String) {
@@ -102,10 +101,49 @@ class FragListItemPOCanvasser : BaseFragment() {
 
                         if (qtyBAL == 0 && qtySLOP == 0 && qtyPACK == 0) {
                             itemList[i].formatQtyItem.clear()
+                            for (j in mappingItemList.indices) {
+                                if (itemList[i].itemCode == mappingItemList[j].item_code)
+                                    mappingItemList.removeAt(j)
+                            }
                         } else {
-                            mappingItemList.add(mappingItemsItem)
+                            if (mappingItemList.size == 0)
+                                mappingItemList.add(mappingItemsItem)
+                            else
+                                for (j in mappingItemList.indices) {
+                                    if (itemList[i].itemCode == mappingItemList[j].item_code)
+                                        mappingItemList[j].format_qty = formatQtyItemList
+                                    else if (j == mappingItemList.size - 1)
+                                        mappingItemList.add(mappingItemsItem)
+                                }
                             itemList[i].formatQtyItem = formatQtyItemList
                         }
+
+
+//                        for (j in mappingItemList.indices) {
+//                            if (mappingItemList[j].item_code == itemCode) {
+//                                val mappingItemFormatQty = mappingItemList[j].format_qty
+//                                val itemListFormatQty = itemList[i].formatQtyItem
+//                                if (qty != 0) {
+//                                    when (qtyType) {
+//                                        DefineValue.BAL -> {
+//                                            mappingItemFormatQty[0].mapping_qty = qty
+//                                            itemListFormatQty[0].mapping_qty = qty
+//                                        }
+//                                        DefineValue.SLOP -> {
+//                                            mappingItemFormatQty[1].mapping_qty = qty
+//                                            itemListFormatQty[1].mapping_qty = qty
+//                                        }
+//                                        DefineValue.PACK -> {
+//                                            mappingItemFormatQty[2].mapping_qty = qty
+//                                            itemListFormatQty[2].mapping_qty = qty
+//                                        }
+//                                    }
+//                                } else
+//                                    mappingItemList.removeAt(j)
+//                                break
+//                            }
+//
+//                        }
                     }
                 }
             }
@@ -115,6 +153,8 @@ class FragListItemPOCanvasser : BaseFragment() {
         frag_input_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         val snapHelper: SnapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(frag_input_item_list_field)
+
+        getCatalogList()
 
         search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}

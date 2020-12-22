@@ -56,6 +56,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     var docNo : String = ""
     var doc_detail : String = ""
     var type_id : String = ""
+    var partner_code_espay: String = ""
 
     var cust_id : String = ""
     var reff_id : String = ""
@@ -122,6 +123,8 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
         val bundle = arguments
 
+        partner_code_espay = bundle!!.getString(DefineValue.PARTNER_CODE_ESPAY,"")
+
         val mArrayDoc = JSONArray(bundle!!.getString(WebParams.DOC_LIST))
 
         for (i in 0 until mArrayDoc.length()) {
@@ -184,8 +187,6 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     fun requestPayment(obj: ListPOModel?) {
 
         try {
-
-
             showProgressDialog()
             extraSignature = obj!!.member_code + obj!!.comm_code + obj!!.doc_no
             val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_PAYMENT, extraSignature)
@@ -211,9 +212,10 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             params[WebParams.TYPE_ID] = obj!!.type_id
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER //
             params[WebParams.DOC_NO] = obj!!.doc_no
+            params[WebParams.PARTNER_CODE_ESPAY] = partner_code_espay
 
 
-            Timber.d("params inquiry doc detail:$params")
+            Timber.d("params request payment canvasser:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_PAYMENT, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
@@ -222,7 +224,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
                                 val code = response.getString(WebParams.ERROR_CODE)
                                 val code_msg = response.getString(WebParams.ERROR_MESSAGE)
-                                Timber.d("isi response inquiry doc detail:$response")
+                                Timber.d("isi response request payment canvasser:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
                                         showPopUp()
@@ -245,7 +247,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
                                         alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                                     }
                                     else -> {
-                                        Timber.d("isi error inquiry doc detail:$response")
+                                        Timber.d("isi error request payment canvasser:$response")
                                         Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
                                     }
                                 }
@@ -271,10 +273,6 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     }
 
     fun showPopUp(){
-//        this.finish();
-
-
-//            isQR = bundle.getBoolean(DefineValue., false);
         val bundle = Bundle();
         val dialogFragment: DialogFragment = PopUpDialog.newDialog(bundle, object : PopUpDialog.PopUpListener {
             override fun onClick(dialog: DialogFragment?) {
@@ -283,18 +281,11 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             }
         })
         dialogFragment.show(activity!!.supportFragmentManager, "Dialog Pop Up")
-
-
     }
     override fun onClick(item: ListPOModel?) {
-
         obj = item
         tv_phone_no.setText(obj!!.cust_id)
         tv_total.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(obj!!.total_amount))
 
     }
-
-
-
-
 }
