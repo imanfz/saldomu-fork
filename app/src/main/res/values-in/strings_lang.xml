@@ -1726,4 +1726,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="validate_promo">Validasi Promo</string>
     <string name="bonus_item">Produk Bonus</string>
     <string name="add_item">Tambah Produk</string>
+    <string name="invoice_already_paid">Tagihan sudah terbayar.</string>
 </resources>

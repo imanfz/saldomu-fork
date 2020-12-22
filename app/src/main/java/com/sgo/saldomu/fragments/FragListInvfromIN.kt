@@ -46,22 +46,21 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     private var listInvoiceAdapter: ListInvoiceAdapter? = null
 
 
-
     var memberCode: String? = null
     var commCode: String? = null
 
-    var memberCodeEspay : String = ""
-    var commCodeEspay : String = ""
-    var custIdEspay : String = ""
-    var docNo : String = ""
-    var doc_detail : String = ""
-    var type_id : String = ""
+    var memberCodeEspay: String = ""
+    var commCodeEspay: String = ""
+    var custIdEspay: String = ""
+    var docNo: String = ""
+    var doc_detail: String = ""
+    var type_id: String = ""
     var partner_code_espay: String = ""
 
-    var cust_id : String = ""
-    var reff_id : String = ""
-    var ccy_id : String = ""
-    var cust_type : String = ""
+    var cust_id: String = ""
+    var reff_id: String = ""
+    var ccy_id: String = ""
+    var cust_type: String = ""
 
     var obj: ListPOModel? = null;
 
@@ -84,19 +83,21 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
         initializeListInv()
 
-
-
         btn_proses_gr.setOnClickListener {
 
-            if(!paymentOption!!.equals(getString(R.string.lbl_choose)) && obj!=null){
-                requestPayment(obj!!)
-            }else{
+            if (!paymentOption!!.equals(getString(R.string.lbl_choose)) && obj != null) {
+                if (obj!!.paid_status.equals("Y")) {
+                    Toast.makeText(activity, getString(R.string.invoice_already_paid), Toast.LENGTH_LONG).show()
+                } else {
+                    requestPayment(obj!!)
+                }
+            } else {
                 Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_payment), Toast.LENGTH_LONG).show()
             }
         }
 
 
-        var paymentOptionsAdapter = ArrayAdapter(activity!!,R.layout.layout_spinner_list_cust, paymentListOption)
+        var paymentOptionsAdapter = ArrayAdapter(activity!!, R.layout.layout_spinner_list_cust, paymentListOption)
         paymentOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_bank_produk.adapter = paymentOptionsAdapter
         spinner_bank_produk.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -114,8 +115,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
     }
 
-    private fun initializeListInv()
-    {
+    private fun initializeListInv() {
 
         listInvoiceAdapter = ListInvoiceAdapter(docListArrayList, activity, this)
         recyclerViewList.adapter = listInvoiceAdapter
@@ -123,7 +123,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
         val bundle = arguments
 
-        partner_code_espay = bundle!!.getString(DefineValue.PARTNER_CODE_ESPAY,"")
+        partner_code_espay = bundle!!.getString(DefineValue.PARTNER_CODE_ESPAY, "")
 
         val mArrayDoc = JSONArray(bundle!!.getString(WebParams.DOC_LIST))
 
@@ -144,7 +144,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
             val listPOModel = ListPOModel()
             listPOModel.doc_no = docNo
-            listPOModel.doc_status = docStatus  
+            listPOModel.doc_status = docStatus
             listPOModel.total_amount = totalAmount
             listPOModel.due_date = dueDate
             listPOModel.cust_id = custID
@@ -153,7 +153,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             listPOModel.type_id = memberCode
             listPOModel.reff_id = reffId
             listPOModel.reff_no = reffNo
-            listPOModel.created_at =createAt
+            listPOModel.created_at = createAt
             listPOModel.issue_date = issueDate
             listPOModel.paid_status = paidstats
 
@@ -191,24 +191,24 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             extraSignature = obj!!.member_code + obj!!.comm_code + obj!!.doc_no
             val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_PAYMENT, extraSignature)
             params[WebParams.USER_ID] = userPhoneID
-            params[WebParams.COMM_CODE_ESPAY] =  obj!!.comm_code
-            params[WebParams.MEMBER_CODE_ESPAY] =  obj!!.member_code
-            params[WebParams.COMM_CODE] =  commCode
-            params[WebParams.MEMBER_CODE] =  memberCode
+            params[WebParams.COMM_CODE_ESPAY] = obj!!.comm_code
+            params[WebParams.MEMBER_CODE_ESPAY] = obj!!.member_code
+            params[WebParams.COMM_CODE] = commCode
+            params[WebParams.MEMBER_CODE] = memberCode
 
 
-            params[WebParams.PAYMENT_TYPE] =  paymentOption
+            params[WebParams.PAYMENT_TYPE] = paymentOption
             params[WebParams.AMOUNT] = obj!!.total_amount
-            params[WebParams.SHOP_PHONE] =  obj!!.cust_id
+            params[WebParams.SHOP_PHONE] = obj!!.cust_id
             params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
             params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
 
-            params[WebParams.CUST_ID_ESPAY] =  obj!!.cust_id
+            params[WebParams.CUST_ID_ESPAY] = obj!!.cust_id
             params[WebParams.CUST_ID] = userPhoneID
             params[WebParams.REFF_ID] = obj!!.reff_id
             params[WebParams.REFF_NO] = obj!!.reff_no
 
-            params[WebParams.CCY_ID] =  MyApiClient.CCY_VALUE;
+            params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE;
             params[WebParams.TYPE_ID] = DefineValue.IN
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER //
             params[WebParams.DOC_NO] = obj!!.doc_no
@@ -261,6 +261,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
                             showPopUp()
 
                         }
+
                         override fun onComplete() {
                             dismissProgressDialog()
                         }
@@ -272,7 +273,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
     }
 
-    fun showPopUp(){
+    fun showPopUp() {
         val bundle = Bundle();
         val dialogFragment: DialogFragment = PopUpDialog.newDialog(bundle, object : PopUpDialog.PopUpListener {
             override fun onClick(dialog: DialogFragment?) {
@@ -282,6 +283,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
         })
         dialogFragment.show(activity!!.supportFragmentManager, "Dialog Pop Up")
     }
+
     override fun onClick(item: ListPOModel?) {
         obj = item
         tv_phone_no.setText(obj!!.cust_id)
