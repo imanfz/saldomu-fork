@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -165,9 +166,18 @@ class FragListItemPOCanvasser : BaseFragment() {
             }
         })
         frag_input_item_submit_btn.setOnClickListener {
-            confirmationDoc()
+            if (inputValidation())
+                confirmationDoc()
         }
 
+    }
+
+    private fun inputValidation(): Boolean {
+        if (mappingItemList.isEmpty()) {
+            Toast.makeText(context, getString(R.string.input_order_validation), Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
     }
 
     private fun getCatalogList() {
@@ -272,7 +282,7 @@ class FragListItemPOCanvasser : BaseFragment() {
                                 bundle.putString(DefineValue.TOTAL_AMOUNT, response.optString(WebParams.TOTAL_AMOUNT))
                                 bundle.putString(DefineValue.TOTAL_DISC, response.optString(WebParams.DISCOUNT_AMOUNT))
                                 frag.arguments = bundle
-                                switchFragment(frag,"","",true,"")
+                                switchFragment(frag, "", "", true, "")
 
                             }
                             WebParams.LOGOUT_CODE -> {

@@ -161,7 +161,7 @@ class FragOrderConfirmToko : BaseFragment() {
                                     val partnerCode = response.getString(WebParams.PARTNER_CODE_ESPAY)
                                     payment(docNo, partnerCode)
                                 } else if (paymentOption == getString(R.string.pay_later))
-                                    backToListPO()
+                                    showDialog(message)
                             }
                             WebParams.LOGOUT_CODE -> {
                                 AlertDialogLogout.getInstance().showDialoginMain(activity, message)
@@ -232,6 +232,9 @@ class FragOrderConfirmToko : BaseFragment() {
                             }
                             DefineValue.ERROR_0066 -> {
                                 AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                            }
+                            DefineValue.ERROR_57 -> {
+                                showDialog(message)
                             }
                             else -> {
                                 Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
@@ -368,7 +371,7 @@ class FragOrderConfirmToko : BaseFragment() {
                         } else if (code == DefineValue.ERROR_0066) {
                             AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
                         } else {
-                            showDialog(message)
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -434,10 +437,11 @@ class FragOrderConfirmToko : BaseFragment() {
         val title = dialog.findViewById<TextView>(R.id.title_dialog)
         val message = dialog.findViewById<TextView>(R.id.message_dialog)
         message.visibility = View.VISIBLE
-        title.text = getString(R.string.error)
+        title.text = getString(R.string.remark)
         message.text = msg
         btnDialogOTP.setOnClickListener {
             dialog.dismiss()
+            backToListPO()
         }
         dialog.show()
     }
