@@ -465,7 +465,7 @@ public class FragPayFriends extends BaseFragment {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
-
+                                Timber.d("isi response sent req token p2p:" + object.toString());
                                 SentDataPayfriendModel model = getGson().fromJson(object, SentDataPayfriendModel.class);
 
                                 String code = model.getError_code();

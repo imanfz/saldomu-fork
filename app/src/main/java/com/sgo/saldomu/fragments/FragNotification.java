@@ -24,6 +24,7 @@ import com.sgo.saldomu.Beans.NotificationModelClass;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.NotificationActivity;
+import com.sgo.saldomu.activities.PaymentTokoActivity;
 import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.adapter.NotificationListAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -308,6 +309,15 @@ public class FragNotification extends BaseFragment {
                     s.putExtras(s);
                     startActivity(s);
                     break;
+                case NotificationActivity.TOKO_PAY_INVOICE:
+                    sentReadNotif(mObj.getNotif_id(), position);
+                    Intent intent = new Intent(getActivity(), PaymentTokoActivity.class);
+                    intent.putExtra(DefineValue.MEMBER_CODE_ESPAY, mObjDetail.getString(WebParams.MEMBER_CODE_ESPAY));
+                    intent.putExtra(DefineValue.COMMUNITY_CODE_ESPAY, mObjDetail.getString(WebParams.COMM_CODE_ESPAY));
+                    intent.putExtra(DefineValue.DOC_NO, mObjDetail.getString(WebParams.DOC_NO));
+                    intent.putExtras(intent);
+                    startActivity(intent);
+                    break;
                 case NotificationActivity.OTP_CREATE_PO:
                     sentReadNotif(mObj.getNotif_id(), position);
                     getActivity().finish();
@@ -590,6 +600,11 @@ public class FragNotification extends BaseFragment {
                                                         title = notif_detail.getString(WebParams.SUBJECT);
                                                         detail = notif_detail.getString(WebParams.DESC);
                                                         break;
+                                                    case NotificationActivity.TOKO_PAY_INVOICE:
+                                                        image = R.drawable.ic_logo_inbox;
+                                                        title = notif_detail.getString(WebParams.SUBJECT);
+                                                        detail = notif_detail.getString(WebParams.DESC);
+                                                        break;
                                                 }
 
                                                 if (notif_type == NotificationActivity.TYPE_LIKE ||
@@ -607,7 +622,8 @@ public class FragNotification extends BaseFragment {
                                                         notif_type == NotificationActivity.CREATE_GR ||
                                                         notif_type == NotificationActivity.INVOICE_PAID ||
                                                         notif_type == NotificationActivity.NEW_INVOICE_CANVASSER ||
-                                                        notif_type == NotificationActivity.NEW_INVOICE_TOKO
+                                                        notif_type == NotificationActivity.NEW_INVOICE_TOKO ||
+                                                        notif_type == NotificationActivity.TOKO_PAY_INVOICE
 
                                                 ) {
                                                     mDataNotifDetail.add(notif_detail);

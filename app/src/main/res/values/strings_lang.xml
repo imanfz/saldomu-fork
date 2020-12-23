@@ -1740,5 +1740,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="input_order_validation">Please Input Your Order</string>
     <string name="gr_closed">Good Receipt created.</string>
     <string name="list_invoice">List Invoice</string>
+    <string name="choose_invoice_validation">Choose Invoice</string>
+    <string name="pay_invoice">Payment Invoice</string>
 
 </resources>

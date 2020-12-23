@@ -82,22 +82,19 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
         super.onActivityCreated(savedInstanceState)
 
         val canvasserInvoiceActivity = activity as CanvasserInvoiceActivity
-        canvasserInvoiceActivity.initializeToolbar(getString(R.string.invoice))
+        canvasserInvoiceActivity.initializeToolbar(getString(R.string.invoice_title))
 
         docListArrayList.clear()
 
         initializeListInv()
 
         btn_proses_gr.setOnClickListener {
-
-            if (!paymentOption!!.equals(getString(R.string.lbl_choose)) && obj != null) {
+            if (inputValidation()) {
                 if (obj!!.paid_status.equals("Y")) {
                     Toast.makeText(activity, getString(R.string.invoice_already_paid), Toast.LENGTH_LONG).show()
                 } else {
                     requestPayment(obj!!)
                 }
-            } else {
-                Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_payment), Toast.LENGTH_LONG).show()
             }
         }
 
@@ -118,6 +115,16 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
         }
 
 
+    }
+
+    private fun inputValidation(): Boolean {
+        if (obj == null) {
+            Toast.makeText(activity, getString(R.string.choose_invoice_validation), Toast.LENGTH_LONG).show()
+        } else if (paymentOption!!.equals(getString(R.string.lbl_choose))) {
+            Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_payment), Toast.LENGTH_LONG).show()
+        }
+
+        return true
     }
 
     private fun initializeListInv() {
@@ -202,7 +209,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
         try {
 
-            var amount =  (obj!!.total_amount)!!.toDouble()- (obj.promo[0].total_disc).toDouble()
+            var amount = (obj!!.total_amount)!!.toDouble() - (obj.promo[0].total_disc).toDouble()
 
             showProgressDialog()
             extraSignature = obj!!.member_code + obj!!.comm_code + obj!!.doc_no

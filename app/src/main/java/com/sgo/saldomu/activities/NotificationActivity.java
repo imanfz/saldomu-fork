@@ -38,6 +38,8 @@ public class NotificationActivity extends BaseActivity {
     public final static int P2PSTAT_SUSPECT = 4;
     public final static int P2PSTAT_CANCELLED = 5;
 
+    // Info Toko untuk bayar invoice
+    public final static int TOKO_PAY_INVOICE = 18;
     // Info Kode Otp Create PO
     public final static int OTP_CREATE_PO = 19;
     //Info Kode Otp Create GR

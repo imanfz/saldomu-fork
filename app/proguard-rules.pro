@@ -147,3 +147,16 @@
 #-ignorewarnings -keep class * { public private *; }
 -keep class com.sgo.saldomu.models.Invoice { *; }
 -keep class com.sgo.saldomu.models.PromoCodeModel { *; }
+
+#-keep class for Espay Catalog
+-keep class com.sgo.saldomu.models.DocDetailsItem { *; }
+-keep class com.sgo.saldomu.models.DocDetailModel { *; }
+-keep class com.sgo.saldomu.models.FormatQtyItem { *; }
+-keep class com.sgo.saldomu.models.MappingItemsItem { *; }
+-keep class com.sgo.saldomu.models.EBDCatalogModel { *; }
+-keep class com.sgo.saldomu.models.FormatQty { *; }
+-keep class com.sgo.saldomu.models.PromoCanvasserModel { *; }
+-keep class com.sgo.saldomu.models.ListPOModel { *; }
+-keep class com.sgo.saldomu.models.EBDConfirmModel { *; }
+-keep class com.sgo.saldomu.models.PaymentMethods { *; }
+-keep class com.sgo.saldomu.models.retrofit.ItemModel { *; }

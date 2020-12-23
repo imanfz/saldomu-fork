@@ -1730,4 +1730,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="input_order_validation">Masukkan Pesanan</string>
     <string name="gr_closed">Faktur Penerimaan sudah dibuat.</string>
     <string name="list_invoice">Daftar Tagihan</string>
+    <string name="choose_invoice_validation">Silahkan Pilih Tagihan</string>
+    <string name="pay_invoice">Bayar Tagihan</string>
 </resources>

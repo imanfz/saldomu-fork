@@ -53,8 +53,8 @@ class FragPurchaseOrderDetail : BaseFragment() {
 
 
         if (arguments != null) {
-            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE, "")
-            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
+            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
+            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             docNo = arguments!!.getString(DefineValue.DOC_NO, "")
             type = arguments!!.getString(DefineValue.TYPE, "")
         }
@@ -72,6 +72,8 @@ class FragPurchaseOrderDetail : BaseFragment() {
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         getPODetail()
+
+        btn_payment.setOnClickListener { payInvoice() }
     }
 
     private fun getPODetail() {
@@ -148,4 +150,11 @@ class FragPurchaseOrderDetail : BaseFragment() {
 
                 })
     }
+
+    fun payInvoice()
+    {
+
+    }
+
+
 }

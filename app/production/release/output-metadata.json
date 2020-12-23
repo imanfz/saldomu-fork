@@ -1,19 +1,17 @@
 {
-  "version": 1,
+  "version": 2,
   "artifactType": {
     "type": "APK",
     "kind": "Directory"
   },
   "applicationId": "com.sgo.saldomu",
-  "variantName": "productionRelease",
+  "variantName": "processProductionReleaseResources",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
-      "properties": [],
-      "versionCode": 95,
+      "versionCode": 102,
       "versionName": "4.3",
-      "enabled": true,
       "outputFile": "Saldomu-4.3- release.apk"
     }
   ]

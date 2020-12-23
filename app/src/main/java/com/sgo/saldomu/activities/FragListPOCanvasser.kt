@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
 import com.sgo.saldomu.adapter.ListPOAdapter
 import com.sgo.saldomu.coreclass.DefineValue
@@ -55,6 +56,23 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
         }
 
         initializeListPO()
+
+//        recyclerViewList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+//
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//
+//                // 3 lines below are not needed.
+//                Log.d("TAG","Last visible item is: ${gridLayoutManager.findLastVisibleItemPosition()}")
+//                Log.d("TAG","Item count is: ${gridLayoutManager.itemCount}")
+//                Log.d("TAG","end? : ${gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.itemCount-1}")
+//
+//                if(gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.itemCount-1){
+//                    // We have reached the end of the recycler view.
+//                }
+//
+//                super.onScrolled(recyclerView, dx, dy)
+//            }
+//        })
 
         search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
@@ -115,8 +133,8 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
     override fun onClick(item: ListPOModel?) {
         val bundle = Bundle()
         bundle.putString(DefineValue.DOC_NO, item!!.doc_no)
-        bundle.putString(DefineValue.MEMBER_CODE, item!!.member_code)
-        bundle.putString(DefineValue.COMMUNITY_CODE, item!!.comm_code)
+        bundle.putString(DefineValue.MEMBER_CODE_ESPAY, item!!.member_code)
+        bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, item!!.comm_code)
         bundle.putString(DefineValue.TYPE, DefineValue.CANVASSER)
 
         val fragment = FragPurchaseOrderDetail()
