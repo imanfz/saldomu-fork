@@ -661,7 +661,7 @@ public class FragNotification extends BaseFragment {
 
                                         getActivity().setResult(MainPage.RESULT_NOTIF);
                                     } catch (Exception ex) {
-                                        Timber.d("isi exception Notification:" + ex.getMessage());
+                                        Timber.e("isi exception Notification:" + ex.getMessage());
                                     }
 
 
