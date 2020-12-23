@@ -107,7 +107,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
                 return false
             }
 
-            if (promoCodeList!!.size > 1 && promoCodeList!![i].code == "" && promoCodeList!![i].qty == "") {
+            if (promoCodeList!!.size > 0 && promoCodeList!![i].code == "" && promoCodeList!![i].qty == "") {
                 promoCodeList!!.removeAt(i)
                 promoCodeAdapter!!.notifyDataSetChanged()
                 return true

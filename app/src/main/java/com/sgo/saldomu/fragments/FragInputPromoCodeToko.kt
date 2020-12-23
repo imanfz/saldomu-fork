@@ -93,9 +93,12 @@ class FragInputPromoCodeToko : BaseFragment() {
 
         promo_code_submit_btn.setOnClickListener {
             if (checkArrayPromo()) {
-                val listString = Gson().toJson(promoCodeList, object : TypeToken<ArrayList<PromoCodeModel?>?>() {}.type)
-                val jsonArray = JSONArray(listString)
-                Timber.e(jsonArray.toString())
+                var jsonArray = ""
+                if (promoCodeList.isNotEmpty()) {
+                    val listString = Gson().toJson(promoCodeList, object : TypeToken<ArrayList<PromoCodeModel?>?>() {}.type)
+                    jsonArray = JSONArray(listString).toString()
+                    Timber.e(jsonArray)
+                }
 
                 showProgressDialog()
 
@@ -110,7 +113,7 @@ class FragInputPromoCodeToko : BaseFragment() {
                 params[WebParams.DOC_DETAIL] = docDetails
                 params[WebParams.TYPE_ID] = DefineValue.PO
                 params[WebParams.CUST_TYPE] = DefineValue.TOKO
-                params[WebParams.PROMO_CODE] = jsonArray.toString()
+                params[WebParams.PROMO_CODE] = jsonArray
 
                 Timber.d("isi params confirm doc :$params")
                 RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,
@@ -175,7 +178,7 @@ class FragInputPromoCodeToko : BaseFragment() {
                 return false
             }
 
-            if (promoCodeList.size > 1 && promoCodeList[i].code == "" && promoCodeList[i].qty == "") {
+            if (promoCodeList.size > 0 && promoCodeList[i].code == "" && promoCodeList[i].qty == "") {
                 promoCodeList.removeAt(i)
                 promoCodeAdapter!!.notifyDataSetChanged()
                 return true

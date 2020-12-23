@@ -8,10 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
@@ -115,33 +112,6 @@ class FragListItemToko : BaseFragment() {
                                 }
                             itemList[i].formatQtyItem = formatQtyItemList
                         }
-
-
-//                        for (j in mappingItemList.indices) {
-//                            if (mappingItemList[j].item_code == itemCode) {
-//                                val mappingItemFormatQty = mappingItemList[j].format_qty
-//                                val itemListFormatQty = itemList[i].formatQtyItem
-//                                if (qty != 0) {
-//                                    when (qtyType) {
-//                                        DefineValue.BAL -> {
-//                                            mappingItemFormatQty[0].mapping_qty = qty
-//                                            itemListFormatQty[0].mapping_qty = qty
-//                                        }
-//                                        DefineValue.SLOP -> {
-//                                            mappingItemFormatQty[1].mapping_qty = qty
-//                                            itemListFormatQty[1].mapping_qty = qty
-//                                        }
-//                                        DefineValue.PACK -> {
-//                                            mappingItemFormatQty[2].mapping_qty = qty
-//                                            itemListFormatQty[2].mapping_qty = qty
-//                                        }
-//                                    }
-//                                } else
-//                                    mappingItemList.removeAt(j)
-//                                break
-//                            }
-//
-//                        }
                     }
                 }
             }
@@ -181,19 +151,31 @@ class FragListItemToko : BaseFragment() {
                     }
                 })
         frag_input_item_submit_btn.setOnClickListener {
-            val docDetail = createJSONDocDetail()
-            val frag = if (paymentOption == getString(R.string.pay_now)) FragInputPromoCodeToko() else FragOrderConfirmToko()
-            val fragName = if (paymentOption == getString(R.string.pay_now)) getString(R.string.promo_code) else getString(R.string.purchase_order_confirmation)
+            if (inputValidation())
+                if (paymentOption == getString(R.string.pay_now)) {
+                    val docDetail = createJSONDocDetail()
+                    val frag = FragInputPromoCodeToko()
+                    val fragName = getString(R.string.promo_code)
 
-            val bundle = Bundle()
-            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
-            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
-            bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
-            bundle.putString(DefineValue.DOC_DETAILS, docDetail)
+                    val bundle = Bundle()
+                    bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+                    bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
+                    bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
+                    bundle.putString(DefineValue.DOC_DETAILS, docDetail)
 
-            frag.arguments = bundle
-            tokoPurchaseOrderActivity.addFragment(frag, fragName, tokoPurchaseOrderActivity.FRAG_INPUT_ITEM_TAG)
+                    frag.arguments = bundle
+                    tokoPurchaseOrderActivity.addFragment(frag, fragName, tokoPurchaseOrderActivity.FRAG_INPUT_ITEM_TAG)
+                } else
+                    confirmationDoc()
         }
+    }
+
+    private fun inputValidation(): Boolean {
+        if (mappingItemList.isEmpty()) {
+            Toast.makeText(context, getString(R.string.input_order_validation), Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
     }
 
     private fun getCatalogList() {

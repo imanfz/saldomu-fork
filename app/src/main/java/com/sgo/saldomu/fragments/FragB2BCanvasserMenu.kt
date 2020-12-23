@@ -40,23 +40,22 @@ class FragB2BCanvasserMenu : BaseFragment() {
         menuStrings.add(getString(R.string.good_receipt_title))
         menuStrings.add(getString(R.string.invoice_title))
         menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_biller, null)!!)
-        menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_biller, null)!!)
-        menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_biller, null)!!)
+        menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_good_receipt, null)!!)
+        menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_invoice, null)!!)
 
         adapter = GridMenu(context!!, menuStrings, menuDrawables)
         grid.adapter = adapter
         grid.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-            if (menuStrings[i] == getString(R.string.purchase_order))
-            {
-                val i = Intent(activity, CanvasserPOActivity::class.java)
-                switchActivity(i)
-            }
-            else if (menuStrings[i] == getString(R.string.good_receipt_title)) {
-                val i = Intent(activity, CanvasserGoodReceiptActivity::class.java)
-                switchActivity(i)
-            } else if (menuStrings[i] == getString(R.string.invoice_title)){
-                val i = Intent(activity, CanvasserInvoiceActivity::class.java)
-                switchActivity(i)
+            when {
+                menuStrings[i] == getString(R.string.purchase_order) -> {
+                    switchActivity(Intent(activity, CanvasserPOActivity::class.java))
+                }
+                menuStrings[i] == getString(R.string.good_receipt_title) -> {
+                    switchActivity(Intent(activity, CanvasserGoodReceiptActivity::class.java))
+                }
+                menuStrings[i] == getString(R.string.invoice_title) -> {
+                    switchActivity(Intent(activity, CanvasserGoodReceiptActivity::class.java))
+                }
             }
         }
 
