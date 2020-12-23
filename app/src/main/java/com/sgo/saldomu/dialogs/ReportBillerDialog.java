@@ -859,6 +859,50 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_store_address.setText(args.getString(DefineValue.STORE_ADDRESS));
                 tv_agent_name.setText(args.getString(DefineValue.AGENT_NAME));
                 tv_agent_phone.setText(args.getString(DefineValue.AGENT_PHONE));
+            } else if (buss_scheme_code.equals(DefineValue.EBD)) {
+                stub.setLayoutResource(R.layout.layout_dialog_report_ebd);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
+
+                TextView tv_report_type = inflated.findViewById(R.id.tv_report_transaction_type);
+                TextView tv_comm_code = inflated.findViewById(R.id.dialog_denom_comm_code);
+                TextView tv_store_code = inflated.findViewById(R.id.dialog_denom_store_code);
+                TextView tv_bank_product = inflated.findViewById(R.id.dialog_denom_bank_product);
+                TextView tv_bank_order_number = inflated.findViewById(R.id.dialog_denom_order_number);
+                TextView tv_amount = inflated.findViewById(R.id.dialog_denom_amount);
+                TextView tv_total_discount = inflated.findViewById(R.id.dialog_denom_discount);
+                TextView tv_fee = inflated.findViewById(R.id.dialog_denom_fee_value);
+                TextView tv_total_amount = inflated.findViewById(R.id.dialog_denom_totalamount_value);
+//                TextView tv_store_name = inflated.findViewById(R.id.tv_report_store_name);
+//                TextView tv_store_address = inflated.findViewById(R.id.tv_report_store_address);
+                TextView tv_agent_name = inflated.findViewById(R.id.dialog_denom_agent_name);
+                TextView tv_agent_phone = inflated.findViewById(R.id.dialog_denom_agent_phone);
+
+                TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
+                mTableLayout.setVisibility(View.VISIBLE);
+
+                createTableDenom(args.getString(DefineValue.DENOM_DETAIL, ""), mTableLayout);
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
+                if (!isSuccess) {
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
+
+                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
+                tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
+                tv_store_code.setText(args.getString(DefineValue.STORE_CODE));
+                tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
+                tv_bank_order_number.setText(args.getString(DefineValue.ORDER_ID));
+                tv_amount.setText(args.getString(DefineValue.AMOUNT));
+                tv_total_discount.setText(args.getString(DefineValue.TOTAL_DISC));
+                tv_fee.setText(args.getString(DefineValue.FEE));
+                tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
+//                tv_store_name.setText(args.getString(DefineValue.STORE_NAME));
+//                tv_store_address.setText(args.getString(DefineValue.STORE_ADDRESS));
+                tv_agent_name.setText(args.getString(DefineValue.AGENT_NAME));
+                tv_agent_phone.setText(args.getString(DefineValue.AGENT_PHONE));
             } else if (buss_scheme_code.equalsIgnoreCase(DefineValue.DGI)) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_dgi);
                 View inflated = stub.inflate();

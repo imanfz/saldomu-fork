@@ -274,7 +274,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             }
         } else if (_object.buss_scheme_code == DefineValue.EMO || _object.buss_scheme_code == DefineValue.TOPUP_B2B) {
             showReportEMODialog(response)
-        } else if (_object.buss_scheme_code == DefineValue.DENOM_B2B) {
+        } else if (_object.buss_scheme_code == DefineValue.DENOM_B2B || _object.buss_scheme_code == DefineValue.EBD) {
             showReportBDKDialog(response)
         } else if (_object.buss_scheme_code == DefineValue.DGI) {
             showReportCollectorDialog(response)
@@ -615,7 +615,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.USERID_PHONE, response.member_phone)
         args.putString(DefineValue.BANK_PRODUCT, response.product_name)
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.admin_fee))
-        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tx_amount))
+        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.total_gross))
 
         val dAmount = java.lang.Double.valueOf(response.tx_amount!!)
         val dFee = java.lang.Double.valueOf(response.admin_fee!!)
@@ -654,6 +654,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.STORE_ADDRESS, response.store_address)
         args.putString(DefineValue.AGENT_NAME, response.member_cust_name)
         args.putString(DefineValue.AGENT_PHONE, response.member_cust_id)
+        args.putString(DefineValue.TOTAL_DISC, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.total_disc))
 
         dialog.arguments = args
         dialog.show(this.supportFragmentManager, ReportBillerDialog.TAG)

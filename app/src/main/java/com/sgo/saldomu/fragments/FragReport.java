@@ -724,14 +724,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                     break;
             }
         } else if (report_type == REPORT_ESPAY) {
-            if (_object.getBuss_scheme_code().equals("BIL")) {
+            if (_object.getBuss_scheme_code().equals(DefineValue.BIL)) {
                 showReportEspayBillerDialog(sp.getString(DefineValue.USER_NAME, ""), response);
-            } else if (_object.getBuss_scheme_code().equals("CTA")) {
+            } else if (_object.getBuss_scheme_code().equals(DefineValue.CTA)) {
                 if (!sp.getString(DefineValue.USERID_PHONE, "").equals(response.getMember_phone())) {
                     isMemberCTA = true;
                 }
                 showReportCTADialog(response);
-            } else if (_object.getBuss_scheme_code().equals("ATC")) {
+            } else if (_object.getBuss_scheme_code().equals(DefineValue.ATC)) {
                 Timber.d("%suser_id", sp.getString(DefineValue.USERID_PHONE, ""));
                 if (sp.getString(DefineValue.USERID_PHONE, "").equals(response.getMember_phone())) {
                     showReportATCAgentDialog(response);
@@ -739,13 +739,13 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                     isReport = true;
                     showReportATCMemberDialog(response);
                 }
-            } else if (_object.getBuss_scheme_code().equals("EMO") || _object.getBuss_scheme_code().equalsIgnoreCase("TOP")) {
+            } else if (_object.getBuss_scheme_code().equals(DefineValue.EMO) || _object.getBuss_scheme_code().equalsIgnoreCase(DefineValue.TOPUP_B2B)) {
                 showReportEMODialog(response);
-            } else if (_object.getBuss_scheme_code().equals("BDK")) {
+            } else if (_object.getBuss_scheme_code().equals(DefineValue.DENOM_B2B) || _object.getBuss_scheme_code().equals(DefineValue.EBD)) {
                 showReportBDKDialog(response);
-            } else if (_object.getBuss_scheme_code().equals("DGI")) {
+            } else if (_object.getBuss_scheme_code().equals(DefineValue.DGI)) {
                 showReportCollectorDialog(response);
-            } else if (_object.getBuss_scheme_code().equals("SG3")) {
+            } else if (_object.getBuss_scheme_code().equals(DefineValue.SG3)) {
                 showReportSOFDialog(response);
             }
         }
@@ -913,7 +913,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.USERID_PHONE, response.getMember_phone());
         args.putString(DefineValue.BANK_PRODUCT, response.getProduct_name());
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
-        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
+        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_gross()));
 
         double dAmount = Double.parseDouble(Objects.requireNonNull(response.getTx_amount()));
         double dFee = Double.parseDouble(Objects.requireNonNull(response.getAdmin_fee()));
@@ -952,6 +952,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.STORE_ADDRESS, response.getStore_address());
         args.putString(DefineValue.AGENT_NAME, response.getMember_cust_name());
         args.putString(DefineValue.AGENT_PHONE, response.getMember_cust_id());
+        args.putString(DefineValue.TOTAL_DISC, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTotal_disc()));
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
