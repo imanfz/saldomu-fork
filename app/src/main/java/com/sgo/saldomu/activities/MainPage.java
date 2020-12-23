@@ -1260,6 +1260,7 @@ public class MainPage extends BaseActivity {
         mEditor.remove(DefineValue.USE_DEPOSIT_COL);
         mEditor.remove(DefineValue.IS_AGENT_DGI);
         mEditor.remove(DefineValue.IS_AGENT_CTR);
+        mEditor.remove(DefineValue.AGENT_EBD_CODES);
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();

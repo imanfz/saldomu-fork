@@ -22,7 +22,14 @@ class PaymentTokoActivity : BaseActivity (){
         super.onCreate(savedInstanceState)
         setActionBarIcon(R.drawable.ic_arrow_left)
         actionBarTitle = getString(R.string.purchase_order)
+
         var bundle = Bundle()
+        bundle.putString(DefineValue.MEMBER_CODE_ESPAY, intent.getStringExtra(DefineValue.MEMBER_CODE_ESPAY))
+        bundle.putString(DefineValue.COMMUNITY_CODE, intent.getStringExtra(DefineValue.COMMUNITY_CODE))
+        bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, intent.getStringExtra(DefineValue.COMMUNITY_CODE_ESPAY))
+        bundle.putString(DefineValue.DOC_NO, intent.getStringExtra(DefineValue.DOC_NO))
+        bundle.putString(DefineValue.TX_ID, intent.getStringExtra(DefineValue.TX_ID))
+        bundle.putString(DefineValue.COMMUNITY_ID, intent.getStringExtra(DefineValue.COMMUNITY_ID))
         val newFragment: Fragment
         newFragment = FragPaymentByToko()
         newFragment.arguments = bundle
