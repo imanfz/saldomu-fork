@@ -24,14 +24,14 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.PopUpDialog
 import com.sgo.saldomu.interfaces.ObjListeners
-import com.sgo.saldomu.models.ListPOModel
-import com.sgo.saldomu.models.ListPayMethodModel
+import com.sgo.saldomu.models.*
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_list.*
 import kotlinx.android.synthetic.main.frag_list.btn_proses_gr
 import kotlinx.android.synthetic.main.frag_list_invoice.*
 import kotlinx.android.synthetic.main.frag_list_po.recyclerViewList
+import kotlinx.android.synthetic.main.list_recycle_history_item.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -61,6 +61,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     var reff_id: String = ""
     var ccy_id: String = ""
     var cust_type: String = ""
+    var total_disc: String = ""
 
     var obj: ListPOModel? = null;
 
@@ -140,6 +141,14 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             val createAt = mArrayDoc.getJSONObject(i).getString(WebParams.CREATE_AT)
             val issueDate = mArrayDoc.getJSONObject(i).getString(WebParams.ISSUE_DATE)
             val paidstats = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS)
+            val promoListJsonArray = mArrayDoc.getJSONObject(i).getJSONArray(WebParams.PROMO)
+            var promoArrayList = ArrayList<PromoCanvasserModel>()
+            for (i in 0 until promoListJsonArray.length()) {
+                total_disc = promoListJsonArray.getJSONObject(i).getString(WebParams.TOTAL_DISC)
+                var promo = PromoCanvasserModel()
+                promo.total_disc = total_disc
+                promoArrayList.add(promo)
+            }
 
 
             val listPOModel = ListPOModel()
@@ -156,6 +165,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             listPOModel.created_at = createAt
             listPOModel.issue_date = issueDate
             listPOModel.paid_status = paidstats
+            listPOModel.promo = promoArrayList
 
             docListArrayList.add(listPOModel)
         }
@@ -187,6 +197,9 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     fun requestPayment(obj: ListPOModel?) {
 
         try {
+
+            var amount =  (obj!!.total_amount)!!.toDouble()- (obj.promo[0].total_disc).toDouble()
+
             showProgressDialog()
             extraSignature = obj!!.member_code + obj!!.comm_code + obj!!.doc_no
             val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_PAYMENT, extraSignature)
@@ -198,7 +211,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
 
             params[WebParams.PAYMENT_TYPE] = paymentOption
-            params[WebParams.AMOUNT] = obj!!.total_amount
+            params[WebParams.AMOUNT] = amount
             params[WebParams.SHOP_PHONE] = obj!!.cust_id
             params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
             params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
