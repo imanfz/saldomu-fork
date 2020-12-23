@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.BbsMemberLocationActivity
+import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
 import com.sgo.saldomu.activities.CanvasserInvoiceActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.coreclass.DefineValue
@@ -36,6 +37,9 @@ class FragInpInvCode : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        val canvasserInvoiceActivity = activity as CanvasserInvoiceActivity
+        canvasserInvoiceActivity.initializeToolbar(getString(R.string.invoice_title))
 
 
         iv_clear.setOnClickListener(View.OnClickListener { v: View? -> et_store_code.setText("") })

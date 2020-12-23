@@ -1728,4 +1728,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="invoice_already_paid">Tagihan sudah terbayar.</string>
     <string name="confirm_gr">Konfirmasi Penerimaan Pesanan</string>
     <string name="input_order_validation">Masukkan Pesanan</string>
+    <string name="gr_closed">Faktur Penerimaan sudah dibuat.</string>
+    <string name="list_invoice">Daftar Tagihan</string>
 </resources>

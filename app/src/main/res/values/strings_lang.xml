@@ -1738,4 +1738,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="add_item">Add Item</string>
     <string name="invoice_already_paid">Invoice already paid.</string>
     <string name="input_order_validation">Please Input Your Order</string>
+    <string name="gr_closed">Good Receipt created.</string>
+    <string name="list_invoice">List Invoice</string>
+
 </resources>

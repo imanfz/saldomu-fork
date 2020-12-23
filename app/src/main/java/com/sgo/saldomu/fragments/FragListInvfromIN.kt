@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.CanvasserInvoiceActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.ListInvoiceAdapter
 import com.sgo.saldomu.coreclass.CurrencyFormat
@@ -79,6 +80,9 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        val canvasserInvoiceActivity = activity as CanvasserInvoiceActivity
+        canvasserInvoiceActivity.initializeToolbar(getString(R.string.invoice))
 
         docListArrayList.clear()
 

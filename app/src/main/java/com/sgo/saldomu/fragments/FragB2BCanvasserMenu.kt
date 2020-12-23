@@ -54,7 +54,7 @@ class FragB2BCanvasserMenu : BaseFragment() {
                     switchActivity(Intent(activity, CanvasserGoodReceiptActivity::class.java))
                 }
                 menuStrings[i] == getString(R.string.invoice_title) -> {
-                    switchActivity(Intent(activity, CanvasserGoodReceiptActivity::class.java))
+                    switchActivity(Intent(activity, CanvasserInvoiceActivity::class.java))
                 }
             }
         }
