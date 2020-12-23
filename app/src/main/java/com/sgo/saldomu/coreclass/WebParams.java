@@ -693,4 +693,5 @@ public class WebParams {
     public static String CODE = "code";
     public static String QTY = "qty";
     public static String BONUS_ITEMS = "bonus_items";
+    public static String TOTAL_DISC = "total_disc";
 }

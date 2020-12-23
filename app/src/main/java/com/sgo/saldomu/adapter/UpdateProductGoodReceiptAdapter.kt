@@ -49,17 +49,17 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.itemName.text = itemList[position].item_name
-        holder.itemQty1.setText(itemList[position].format_qty?.get(0)!!.mapping_qty.toString())
-        holder.itemQty2.setText(itemList[position].format_qty?.get(1)!!.mapping_qty.toString())
-        holder.itemQty3.setText(itemList[position].format_qty?.get(2)!!.mapping_qty.toString())
+        holder.itemName.text = itemList[position].itemName
+        holder.itemQty1.setText(itemList[position].formatQty.get(0).mapping_qty.toString())
+        holder.itemQty2.setText(itemList[position].formatQty.get(1).mapping_qty.toString())
+        holder.itemQty3.setText(itemList[position].formatQty.get(2).mapping_qty.toString())
 
         holder.itemQty1.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (s!!.length == 0) {
-                    itemList[position].format_qty?.get(0)!!.mapping_qty = 0
+                    itemList[position].formatQty.get(0).mapping_qty = 0
                 } else {
-                    itemList[position].format_qty?.get(0)!!.mapping_qty = Integer.parseInt(s.toString())
+                    itemList[position].formatQty.get(0).mapping_qty = Integer.parseInt(s.toString())
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int,
@@ -74,9 +74,9 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
         holder.itemQty2.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (s!!.length == 0) {
-                    itemList[position].format_qty?.get(1)!!.mapping_qty = 0
+                    itemList[position].formatQty.get(1).mapping_qty = 0
                 } else {
-                    itemList[position].format_qty?.get(1)!!.mapping_qty = Integer.parseInt(s.toString())
+                    itemList[position].formatQty.get(1).mapping_qty = Integer.parseInt(s.toString())
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int,
@@ -90,9 +90,9 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
 
         holder.itemQty3.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {if (s!!.length == 0) {
-                itemList[position].format_qty?.get(2)!!.mapping_qty = 0
+                itemList[position].formatQty.get(2).mapping_qty = 0
             } else {
-                itemList[position].format_qty?.get(2)!!.mapping_qty = Integer.parseInt(s.toString())
+                itemList[position].formatQty.get(2).mapping_qty = Integer.parseInt(s.toString())
             }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int,

@@ -52,6 +52,7 @@ public class FCMManager {
     public final static int SOURCE_OF_FUND = 1010;
     public final static int VERIFY_ACC = 1011;
     public final static int CONFIRM_ATC = 1012;
+    public final static int PAID_BY_TOKO = 1020;
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;

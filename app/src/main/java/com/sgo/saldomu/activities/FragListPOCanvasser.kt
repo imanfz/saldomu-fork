@@ -24,6 +24,10 @@ import org.json.JSONArray
 import java.util.ArrayList
 
 class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
+    var memberCodeEspay = ""
+    var commCodeEspay = ""
+    var custIdEspay = ""
+    var bundle = Bundle()
 
     private val docListArrayList = ArrayList<ListPOModel>()
 
@@ -37,11 +41,18 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        bundle = arguments!!
 
         val canvasserPOActivity = activity as CanvasserPOActivity
         canvasserPOActivity.initializeToolbar(getString(R.string.list_po))
 
         btn_create_po.visibility = View.VISIBLE
+
+        if (bundle != null) {
+            memberCodeEspay = bundle.getString(DefineValue.MEMBER_CODE_ESPAY, "")
+            commCodeEspay = bundle.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
+            custIdEspay = bundle.getString(DefineValue.CUST_ID_ESPAY, "")
+        }
 
         initializeListPO()
 
@@ -56,19 +67,16 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
 
         btn_create_po.setOnClickListener {
             val fragment = FragListItemPOCanvasser()
-            val bundle = Bundle()
-            var bundle1 = arguments
-            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, bundle1!!.getString(DefineValue.MEMBER_CODE_ESPAY))
-            bundle.putString(DefineValue.CUST_ID_ESPAY, bundle1!!.getString(DefineValue.CUST_ID_ESPAY))
-            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, bundle1!!.getString(DefineValue.COMMUNITY_CODE_ESPAY))
+            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCodeEspay)
+            bundle.putString(DefineValue.CUST_ID_ESPAY, custIdEspay)
+            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCodeEspay)
             fragment.arguments = bundle
-            switchFragment(fragment,"","",true, "")
+            switchFragment(fragment, "", "", true, "")
         }
 
     }
 
-    private fun initializeListPO()
-    {
+    private fun initializeListPO() {
 
         listPOAdapter = ListPOAdapter(docListArrayList, activity, this)
         recyclerViewList.adapter = listPOAdapter
@@ -107,13 +115,13 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
     override fun onClick(item: ListPOModel?) {
         val bundle = Bundle()
         bundle.putString(DefineValue.DOC_NO, item!!.doc_no)
-        bundle.putString(DefineValue.MEMBER_CODE, item.member_code)
-        bundle.putString(DefineValue.COMMUNITY_CODE, item.comm_code)
+        bundle.putString(DefineValue.MEMBER_CODE, item!!.member_code)
+        bundle.putString(DefineValue.COMMUNITY_CODE, item!!.comm_code)
         bundle.putString(DefineValue.TYPE, DefineValue.CANVASSER)
 
         val fragment = FragPurchaseOrderDetail()
         fragment.arguments = bundle
-        switchFragment(fragment,"","",true, "")
+        switchFragment(fragment, "", "", true, "")
     }
 
     private fun switchFragment(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {

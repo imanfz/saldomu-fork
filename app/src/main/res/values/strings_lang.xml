@@ -1735,4 +1735,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="price">Price</string>
     <string name="validate_promo">Validate Promo</string>
     <string name="bonus_item">Bonus Item</string>
+    <string name="add_item">Add Item</string>
+    <string name="invoice_already_paid">Invoice already paid.</string>
 </resources>

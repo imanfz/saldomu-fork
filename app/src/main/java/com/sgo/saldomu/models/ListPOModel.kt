@@ -66,6 +66,8 @@ class ListPOModel() : Parcelable {
     @Expose
     var created_at: String? = null
 
+    var promo: ArrayList<PromoCanvasserModel> = ArrayList()
+
     constructor(parcel: Parcel) : this() {
         doc_no = parcel.readString()
         doc_status = parcel.readString()

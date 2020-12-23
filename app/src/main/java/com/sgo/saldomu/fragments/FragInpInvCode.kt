@@ -82,6 +82,7 @@ class FragInpInvCode : BaseFragment() {
                                         val bundle = Bundle()
                                         bundle.putString(DefineValue.DOC_LIST, response.optString(WebParams.DOC_LIST))
                                         bundle.putString(DefineValue.PAYMENT_TYPE, response.optString(WebParams.PAYMENT_METHODS))
+                                        bundle.putString(DefineValue.PARTNER_CODE_ESPAY, response.optString(WebParams.PARTNER_CODE_ESPAY))
 
                                         val frag: Fragment = FragListInvfromIN()
                                         frag.arguments = bundle

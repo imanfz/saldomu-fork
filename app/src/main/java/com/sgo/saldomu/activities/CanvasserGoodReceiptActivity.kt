@@ -64,4 +64,9 @@ class CanvasserGoodReceiptActivity : BaseActivity() {
         if (next_frag_title != null) actionBarTitle = next_frag_title
         ToggleKeyboard.hide_keyboard(this)
     }
+
+    fun initializeToolbar(title: String) {
+        setActionBarIcon(R.drawable.ic_arrow_left)
+        actionBarTitle = title
+    }
 }

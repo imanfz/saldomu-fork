@@ -10,12 +10,12 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CanvasserPOActivity
-import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.AdapterEBDCatalogList
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -31,7 +31,6 @@ import com.sgo.saldomu.models.FormatQtyItem
 import com.sgo.saldomu.models.MappingItemsItem
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.dialog_biller_confirm.*
 import kotlinx.android.synthetic.main.fragment_input_item_list.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -63,7 +62,6 @@ class FragListItemPOCanvasser : BaseFragment() {
             custIdEspay = arguments!!.getString(DefineValue.CUST_ID_ESPAY, "")
         }
 
-        getCatalogList()
 
         itemListAdapter = AdapterEBDCatalogList(context!!, itemList, object : AdapterEBDCatalogList.Listener {
             override fun onChangeQty(itemCode: String, qty: Int, qtyType: String) {
@@ -103,10 +101,49 @@ class FragListItemPOCanvasser : BaseFragment() {
 
                         if (qtyBAL == 0 && qtySLOP == 0 && qtyPACK == 0) {
                             itemList[i].formatQtyItem.clear()
+                            for (j in mappingItemList.indices) {
+                                if (itemList[i].itemCode == mappingItemList[j].item_code)
+                                    mappingItemList.removeAt(j)
+                            }
                         } else {
-                            mappingItemList.add(mappingItemsItem)
+                            if (mappingItemList.size == 0)
+                                mappingItemList.add(mappingItemsItem)
+                            else
+                                for (j in mappingItemList.indices) {
+                                    if (itemList[i].itemCode == mappingItemList[j].item_code)
+                                        mappingItemList[j].format_qty = formatQtyItemList
+                                    else if (j == mappingItemList.size - 1)
+                                        mappingItemList.add(mappingItemsItem)
+                                }
                             itemList[i].formatQtyItem = formatQtyItemList
                         }
+
+
+//                        for (j in mappingItemList.indices) {
+//                            if (mappingItemList[j].item_code == itemCode) {
+//                                val mappingItemFormatQty = mappingItemList[j].format_qty
+//                                val itemListFormatQty = itemList[i].formatQtyItem
+//                                if (qty != 0) {
+//                                    when (qtyType) {
+//                                        DefineValue.BAL -> {
+//                                            mappingItemFormatQty[0].mapping_qty = qty
+//                                            itemListFormatQty[0].mapping_qty = qty
+//                                        }
+//                                        DefineValue.SLOP -> {
+//                                            mappingItemFormatQty[1].mapping_qty = qty
+//                                            itemListFormatQty[1].mapping_qty = qty
+//                                        }
+//                                        DefineValue.PACK -> {
+//                                            mappingItemFormatQty[2].mapping_qty = qty
+//                                            itemListFormatQty[2].mapping_qty = qty
+//                                        }
+//                                    }
+//                                } else
+//                                    mappingItemList.removeAt(j)
+//                                break
+//                            }
+//
+//                        }
                     }
                 }
             }
@@ -116,6 +153,8 @@ class FragListItemPOCanvasser : BaseFragment() {
         frag_input_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         val snapHelper: SnapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(frag_input_item_list_field)
+
+        getCatalogList()
 
         search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
@@ -129,29 +168,6 @@ class FragListItemPOCanvasser : BaseFragment() {
             confirmationDoc()
         }
 
-    }
-
-    private fun addOrder(itemCode: String, itemName: String, price: Int, qty: Int, unit: String, qtyType: String) {
-        if (qty != 0) {
-            val mappingItem = MappingItemsItem()
-            mappingItem.item_code = itemCode
-            mappingItem.item_name = itemName
-            mappingItem.price = price
-            mappingItem.unit = unit
-            val formatQtyItemList = ArrayList<FormatQtyItem>()
-            formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, 0))
-            formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, 0))
-            formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, 0))
-            when (qtyType) {
-                DefineValue.BAL -> formatQtyItemList[0].mapping_qty = qty
-                DefineValue.SLOP -> formatQtyItemList[1].mapping_qty = qty
-                DefineValue.PACK -> formatQtyItemList[2].mapping_qty = qty
-            }
-            mappingItem.format_qty = formatQtyItemList
-            mappingItemList.add(mappingItem)
-            order.reff_no = ""
-            order.mapping_items = mappingItemList
-        }
     }
 
     private fun getCatalogList() {
@@ -245,16 +261,19 @@ class FragListItemPOCanvasser : BaseFragment() {
                         when (code) {
                             WebParams.SUCCESS_CODE -> {
                                 frag_input_item_list_field.scrollTo(0, 0)
-                                val frag = FragOrderConfirmToko()
+                                val frag = FragCreatePOCanvasser()
 
                                 val bundle = Bundle()
                                 bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCodeEspay)
                                 bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCodeEspay)
-                                bundle.putString(DefineValue.DOC_DETAILS, docDetail)
-                                bundle.putString(DefineValue.EBD_CONFIRM_DATA, response.toString())
-
+                                bundle.putString(DefineValue.DOC_DETAILS, response.optString(WebParams.DOC_DETAILS))
+                                bundle.putString(DefineValue.AMOUNT, response.optString(WebParams.AMOUNT))
+                                bundle.putString(DefineValue.CUST_ID_ESPAY, custIdEspay)
+                                bundle.putString(DefineValue.TOTAL_AMOUNT, response.optString(WebParams.TOTAL_AMOUNT))
+                                bundle.putString(DefineValue.TOTAL_DISC, response.optString(WebParams.DISCOUNT_AMOUNT))
                                 frag.arguments = bundle
-                                (activity as TokoPurchaseOrderActivity).addFragment(frag, getString(R.string.purchase_order_confirmation), (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
+                                switchFragment(frag,"","",true,"")
+
                             }
                             WebParams.LOGOUT_CODE -> {
                                 AlertDialogLogout.getInstance().showDialoginMain(activity, message)
@@ -306,6 +325,7 @@ class FragListItemPOCanvasser : BaseFragment() {
             mappingItemObj.put(WebParams.ITEM_CODE, mappingItemList[i].item_code)
             mappingItemObj.put(WebParams.PRICE, mappingItemList[i].price)
             mappingItemObj.put(WebParams.UNIT, mappingItemList[i].unit)
+            mappingItemObj.put(WebParams.SUBTOTAL_AMOUNT, mappingItemList[i].subtotal_amount)
             mappingItemObj.put(WebParams.FORMAT_QTY, formatQtyArray)
             mappingItemArray.put(mappingItemObj)
         }
@@ -333,5 +353,11 @@ class FragListItemPOCanvasser : BaseFragment() {
             fragmentManager!!.popBackStack()
         }
         dialog.show()
+    }
+
+    private fun switchFragment(i: Fragment, name: String, next_name: String, isBackstack: Boolean, tag: String) {
+        if (activity == null) return
+        val fca = activity as CanvasserPOActivity?
+        fca!!.switchContent(i, name, next_name, isBackstack, tag)
     }
 }

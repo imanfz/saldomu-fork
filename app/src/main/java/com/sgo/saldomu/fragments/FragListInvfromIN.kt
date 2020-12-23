@@ -24,14 +24,14 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.dialogs.PopUpDialog
 import com.sgo.saldomu.interfaces.ObjListeners
-import com.sgo.saldomu.models.ListPOModel
-import com.sgo.saldomu.models.ListPayMethodModel
+import com.sgo.saldomu.models.*
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_list.*
 import kotlinx.android.synthetic.main.frag_list.btn_proses_gr
 import kotlinx.android.synthetic.main.frag_list_invoice.*
 import kotlinx.android.synthetic.main.frag_list_po.recyclerViewList
+import kotlinx.android.synthetic.main.list_recycle_history_item.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -46,21 +46,22 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     private var listInvoiceAdapter: ListInvoiceAdapter? = null
 
 
-
     var memberCode: String? = null
     var commCode: String? = null
 
-    var memberCodeEspay : String = ""
-    var commCodeEspay : String = ""
-    var custIdEspay : String = ""
-    var docNo : String = ""
-    var doc_detail : String = ""
-    var type_id : String = ""
+    var memberCodeEspay: String = ""
+    var commCodeEspay: String = ""
+    var custIdEspay: String = ""
+    var docNo: String = ""
+    var doc_detail: String = ""
+    var type_id: String = ""
+    var partner_code_espay: String = ""
 
-    var cust_id : String = ""
-    var reff_id : String = ""
-    var ccy_id : String = ""
-    var cust_type : String = ""
+    var cust_id: String = ""
+    var reff_id: String = ""
+    var ccy_id: String = ""
+    var cust_type: String = ""
+    var total_disc: String = ""
 
     var obj: ListPOModel? = null;
 
@@ -83,19 +84,21 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
         initializeListInv()
 
-
-
         btn_proses_gr.setOnClickListener {
 
-            if(!paymentOption!!.equals(getString(R.string.lbl_choose)) && obj!=null){
-                requestPayment(obj!!)
-            }else{
+            if (!paymentOption!!.equals(getString(R.string.lbl_choose)) && obj != null) {
+                if (obj!!.paid_status.equals("Y")) {
+                    Toast.makeText(activity, getString(R.string.invoice_already_paid), Toast.LENGTH_LONG).show()
+                } else {
+                    requestPayment(obj!!)
+                }
+            } else {
                 Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_payment), Toast.LENGTH_LONG).show()
             }
         }
 
 
-        var paymentOptionsAdapter = ArrayAdapter(activity!!,R.layout.layout_spinner_list_cust, paymentListOption)
+        var paymentOptionsAdapter = ArrayAdapter(activity!!, R.layout.layout_spinner_list_cust, paymentListOption)
         paymentOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_bank_produk.adapter = paymentOptionsAdapter
         spinner_bank_produk.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -113,14 +116,15 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
     }
 
-    private fun initializeListInv()
-    {
+    private fun initializeListInv() {
 
         listInvoiceAdapter = ListInvoiceAdapter(docListArrayList, activity, this)
         recyclerViewList.adapter = listInvoiceAdapter
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         val bundle = arguments
+
+        partner_code_espay = bundle!!.getString(DefineValue.PARTNER_CODE_ESPAY, "")
 
         val mArrayDoc = JSONArray(bundle!!.getString(WebParams.DOC_LIST))
 
@@ -137,11 +141,19 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             val createAt = mArrayDoc.getJSONObject(i).getString(WebParams.CREATE_AT)
             val issueDate = mArrayDoc.getJSONObject(i).getString(WebParams.ISSUE_DATE)
             val paidstats = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS)
+            val promoListJsonArray = mArrayDoc.getJSONObject(i).getJSONArray(WebParams.PROMO)
+            var promoArrayList = ArrayList<PromoCanvasserModel>()
+            for (i in 0 until promoListJsonArray.length()) {
+                total_disc = promoListJsonArray.getJSONObject(i).getString(WebParams.TOTAL_DISC)
+                var promo = PromoCanvasserModel()
+                promo.total_disc = total_disc
+                promoArrayList.add(promo)
+            }
 
 
             val listPOModel = ListPOModel()
             listPOModel.doc_no = docNo
-            listPOModel.doc_status = docStatus  
+            listPOModel.doc_status = docStatus
             listPOModel.total_amount = totalAmount
             listPOModel.due_date = dueDate
             listPOModel.cust_id = custID
@@ -150,9 +162,10 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             listPOModel.type_id = memberCode
             listPOModel.reff_id = reffId
             listPOModel.reff_no = reffNo
-            listPOModel.created_at =createAt
+            listPOModel.created_at = createAt
             listPOModel.issue_date = issueDate
             listPOModel.paid_status = paidstats
+            listPOModel.promo = promoArrayList
 
             docListArrayList.add(listPOModel)
         }
@@ -185,35 +198,37 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
         try {
 
+            var amount =  (obj!!.total_amount)!!.toDouble()- (obj.promo[0].total_disc).toDouble()
 
             showProgressDialog()
             extraSignature = obj!!.member_code + obj!!.comm_code + obj!!.doc_no
             val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_PAYMENT, extraSignature)
             params[WebParams.USER_ID] = userPhoneID
-            params[WebParams.COMM_CODE_ESPAY] =  obj!!.comm_code
-            params[WebParams.MEMBER_CODE_ESPAY] =  obj!!.member_code
-            params[WebParams.COMM_CODE] =  commCode
-            params[WebParams.MEMBER_CODE] =  memberCode
+            params[WebParams.COMM_CODE_ESPAY] = obj!!.comm_code
+            params[WebParams.MEMBER_CODE_ESPAY] = obj!!.member_code
+            params[WebParams.COMM_CODE] = commCode
+            params[WebParams.MEMBER_CODE] = memberCode
 
 
-            params[WebParams.PAYMENT_TYPE] =  paymentOption
-            params[WebParams.AMOUNT] = obj!!.total_amount
-            params[WebParams.SHOP_PHONE] =  obj!!.cust_id
+            params[WebParams.PAYMENT_TYPE] = paymentOption
+            params[WebParams.AMOUNT] = amount
+            params[WebParams.SHOP_PHONE] = obj!!.cust_id
             params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
             params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
 
-            params[WebParams.CUST_ID_ESPAY] =  obj!!.cust_id
+            params[WebParams.CUST_ID_ESPAY] = obj!!.cust_id
             params[WebParams.CUST_ID] = userPhoneID
             params[WebParams.REFF_ID] = obj!!.reff_id
             params[WebParams.REFF_NO] = obj!!.reff_no
 
-            params[WebParams.CCY_ID] =  MyApiClient.CCY_VALUE;
-            params[WebParams.TYPE_ID] = obj!!.type_id
+            params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE;
+            params[WebParams.TYPE_ID] = DefineValue.IN
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER //
             params[WebParams.DOC_NO] = obj!!.doc_no
+            params[WebParams.PARTNER_CODE_ESPAY] = partner_code_espay
 
 
-            Timber.d("params inquiry doc detail:$params")
+            Timber.d("params request payment canvasser:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_PAYMENT, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
@@ -222,7 +237,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
                                 val code = response.getString(WebParams.ERROR_CODE)
                                 val code_msg = response.getString(WebParams.ERROR_MESSAGE)
-                                Timber.d("isi response inquiry doc detail:$response")
+                                Timber.d("isi response request payment canvasser:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
                                         showPopUp()
@@ -245,7 +260,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
                                         alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                                     }
                                     else -> {
-                                        Timber.d("isi error inquiry doc detail:$response")
+                                        Timber.d("isi error request payment canvasser:$response")
                                         Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
                                     }
                                 }
@@ -259,6 +274,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
                             showPopUp()
 
                         }
+
                         override fun onComplete() {
                             dismissProgressDialog()
                         }
@@ -270,11 +286,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
     }
 
-    fun showPopUp(){
-//        this.finish();
-
-
-//            isQR = bundle.getBoolean(DefineValue., false);
+    fun showPopUp() {
         val bundle = Bundle();
         val dialogFragment: DialogFragment = PopUpDialog.newDialog(bundle, object : PopUpDialog.PopUpListener {
             override fun onClick(dialog: DialogFragment?) {
@@ -283,18 +295,12 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             }
         })
         dialogFragment.show(activity!!.supportFragmentManager, "Dialog Pop Up")
-
-
     }
-    override fun onClick(item: ListPOModel?) {
 
+    override fun onClick(item: ListPOModel?) {
         obj = item
         tv_phone_no.setText(obj!!.cust_id)
         tv_total.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(obj!!.total_amount))
 
     }
-
-
-
-
 }
