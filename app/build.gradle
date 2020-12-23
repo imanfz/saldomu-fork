@@ -15,6 +15,7 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
+        exclude 'classes.dex'
     }
 
     lintOptions {
