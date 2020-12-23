@@ -1728,7 +1728,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="tv_please_wait">Please ask your customer to check on notification for payment</string>
     <string name="lbl_choose">Choose</string>
 
-
     <string name="create_gr">Create Good Receipt</string>
     <string name="confirm_gr">Good Receipt Confirmation</string>
     <string name="detail_document">Detail Document</string>
@@ -1738,4 +1737,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="bonus_item">Bonus Item</string>
     <string name="add_item">Add Item</string>
     <string name="invoice_already_paid">Invoice already paid.</string>
+    <string name="input_order_validation">Please Input Your Order</string>
 </resources>

@@ -77,8 +77,6 @@ class FragListPurchaseOrder : BaseFragment() {
         }
         recyclerViewList.adapter = itemListAdapter
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        val snapHelper: SnapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(recyclerViewList)
 
         getPOList()
 

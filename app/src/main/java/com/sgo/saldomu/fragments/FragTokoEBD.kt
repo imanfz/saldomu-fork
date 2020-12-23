@@ -38,7 +38,7 @@ class FragTokoEBD : BaseFragment() {
         menuDrawables.clear()
         menuStrings.add(getString(R.string.new_store_registration))
         menuStrings.add(getString(R.string.purchase_order))
-        menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_biller, null)!!)
+        menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_register_new_store, null)!!)
         menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_biller, null)!!)
 
         adapter = GridMenu(context!!, menuStrings, menuDrawables)
