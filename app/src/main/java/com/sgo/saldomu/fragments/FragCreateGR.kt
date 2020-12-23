@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
+import com.sgo.saldomu.activities.CanvasserPOActivity
 import com.sgo.saldomu.adapter.AdapterListBonusItem
 import com.sgo.saldomu.adapter.AdapterListItemConfirmGR
 import com.sgo.saldomu.coreclass.CurrencyFormat
@@ -64,6 +65,9 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
         amount = bundle.getString(DefineValue.AMOUNT, "")
         promoCode = bundle.getString(DefineValue.PROMO_CODE, "")
         docDetails = bundle.getString(DefineValue.DOC_DETAILS, "")
+
+        val canvasserGoodReceiptActivity = activity as CanvasserGoodReceiptActivity
+        canvasserGoodReceiptActivity.initializeToolbar(getString(R.string.confirm_gr))
 
         initalizeListItem()
 

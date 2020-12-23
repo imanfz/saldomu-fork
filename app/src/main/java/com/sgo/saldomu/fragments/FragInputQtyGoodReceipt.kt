@@ -54,6 +54,8 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
         super.onActivityCreated(savedInstanceState)
         val bundle = arguments
 
+        val canvasserGoodReceiptActivity = activity as CanvasserGoodReceiptActivity
+        canvasserGoodReceiptActivity.initializeToolbar(getString(R.string.detail_document))
 
         memberCodeEspay = bundle!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
         commCodeEspay = bundle!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")

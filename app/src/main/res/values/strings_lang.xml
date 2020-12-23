@@ -1730,6 +1730,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
 
     <string name="create_gr">Create Good Receipt</string>
+    <string name="confirm_gr">Good Receipt Confirmation</string>
     <string name="detail_document">Detail Document</string>
     <string name="item_name">Item Name</string>
     <string name="price">Price</string>

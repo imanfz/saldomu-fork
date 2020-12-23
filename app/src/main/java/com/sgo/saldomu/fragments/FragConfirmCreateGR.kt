@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -41,6 +42,9 @@ class FragConfirmCreateGR : BaseFragment() {
 
         val bundle = arguments
         txId = bundle!!.getString(DefineValue.TX_ID, "")
+
+        val canvasserGoodReceiptActivity = activity as CanvasserGoodReceiptActivity
+        canvasserGoodReceiptActivity.initializeToolbar(getString(R.string.confirm_gr))
 
         frag_gr_confirm_submit_btn.setOnClickListener {
             if(inputValidation())

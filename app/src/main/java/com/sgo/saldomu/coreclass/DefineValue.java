@@ -720,5 +720,6 @@ public class DefineValue {
     public static String PAYMENT_OPTION = "payment_option";
     public static String PROMO_CODE = "promoCode";
     public static String PARTNER_CODE_ESPAY = "partnerCodeEspay";
+    public static String TITLE = "title";
 }
 

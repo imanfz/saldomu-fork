@@ -28,6 +28,7 @@ class CanvasserGoodReceiptActivity : BaseActivity() {
         actionBarTitle = getString(com.sgo.saldomu.R.string.good_receipt_title)
         var bundle = Bundle()
         bundle.putString(DefineValue.TYPE, DefineValue.GR)
+        bundle.putString(DefineValue.TITLE, getString(R.string.good_receipt_title))
         val newFragment: Fragment
         newFragment = FragInputStoreCode()
         newFragment.arguments = bundle

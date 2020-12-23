@@ -10,6 +10,7 @@ import android.view.Window
 import android.widget.Toast
 import com.google.gson.Gson
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.CanvasserPOActivity
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -40,6 +41,9 @@ class FragConfirmCreatePOCanvasser : BaseFragment(){
 
         val bundle = arguments
         txId = bundle!!.getString(DefineValue.TX_ID, "")
+
+        val canvasserPOActivity = activity as CanvasserPOActivity
+        canvasserPOActivity.initializeToolbar(getString(R.string.purchase_order_confirmation))
 
         frag_gr_confirm_submit_btn.setOnClickListener {
             if(inputValidation())
@@ -77,7 +81,7 @@ class FragConfirmCreatePOCanvasser : BaseFragment(){
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.TOKEN_ID] = encryptedOtp
             params[WebParams.COMM_ID] = MyApiClient.COMM_ID
-            Timber.d("params GR confirm OTP:$params")
+            Timber.d("params PO confirm OTP:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_OTP_DOC, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
@@ -109,7 +113,7 @@ class FragConfirmCreatePOCanvasser : BaseFragment(){
                                         alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
                                     }
                                     else -> {
-                                        Timber.d("isi error GR confirm OTP:$response")
+                                        Timber.d("isi error PO confirm OTP:$response")
                                         Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
                                     }
                                 }

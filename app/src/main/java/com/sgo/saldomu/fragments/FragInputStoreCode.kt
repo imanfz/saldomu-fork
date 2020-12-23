@@ -30,6 +30,7 @@ import timber.log.Timber
 class FragInputStoreCode : BaseFragment() {
 
     var docType = ""
+    var title = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_input_store_code, container, false)
@@ -42,6 +43,15 @@ class FragInputStoreCode : BaseFragment() {
         var bundle : Bundle
         bundle = arguments!!
         docType = bundle.getString(DefineValue.TYPE, "")
+
+        if (docType.equals(DefineValue.GR))
+        {
+            val canvasserGoodReceiptActivity = activity as CanvasserGoodReceiptActivity
+            canvasserGoodReceiptActivity.initializeToolbar(getString(R.string.good_receipt_title))
+        }else{
+            val canvasserPOActivity = activity as CanvasserPOActivity
+            canvasserPOActivity.initializeToolbar(getString(R.string.purchase_order))
+        }
 
         iv_clear.setOnClickListener(View.OnClickListener { v: View? -> et_store_code.setText("") })
 

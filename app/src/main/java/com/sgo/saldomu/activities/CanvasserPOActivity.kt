@@ -28,6 +28,7 @@ class CanvasserPOActivity : BaseActivity() {
         actionBarTitle = getString(R.string.purchase_order)
         var bundle = Bundle()
         bundle.putString(DefineValue.TYPE, DefineValue.PO)
+        bundle.putString(DefineValue.TITLE, getString(R.string.purchase_order))
         val newFragment: Fragment
         newFragment = FragInputStoreCode()
         newFragment.arguments = bundle
