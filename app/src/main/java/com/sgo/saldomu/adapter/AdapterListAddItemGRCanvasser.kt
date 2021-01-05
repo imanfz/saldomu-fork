@@ -22,6 +22,7 @@ import java.util.*
 class AdapterListAddItemGRCanvasser(var context: Context, var listener: Listener) : RecyclerView.Adapter<AdapterListAddItemGRCanvasser.Holder>(), Filterable {
 
     var itemList = ArrayList<ItemModel>()
+    var originalList = ArrayList<ItemModel>()
 
     interface Listener {
         fun onChangeQty(itemCode: String, qty: Int, qtyType: String)
@@ -29,6 +30,7 @@ class AdapterListAddItemGRCanvasser(var context: Context, var listener: Listener
 
     fun updateAdapter(itemList: ArrayList<ItemModel>) {
         this.itemList = itemList
+        this.originalList = itemList
         notifyDataSetChanged()
     }
 
@@ -48,9 +50,9 @@ class AdapterListAddItemGRCanvasser(var context: Context, var listener: Listener
         holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
 
 //        if (itemList[position].formatQty.isNotEmpty()) {
-            holder.itemQty1.setText(itemList[position].formatQty[0].mapping_qty.toString())
-            holder.itemQty2.setText(itemList[position].formatQty[1].mapping_qty.toString())
-            holder.itemQty3.setText(itemList[position].formatQty[2].mapping_qty.toString())
+        holder.itemQty1.setText(itemList[position].formatQty[0].mapping_qty.toString())
+        holder.itemQty2.setText(itemList[position].formatQty[1].mapping_qty.toString())
+        holder.itemQty3.setText(itemList[position].formatQty[2].mapping_qty.toString())
 //        } else {
 //            holder.itemQty1.setText("")
 //            holder.itemQty2.setText("")
@@ -154,8 +156,8 @@ class AdapterListAddItemGRCanvasser(var context: Context, var listener: Listener
             override fun performFiltering(constraint: CharSequence): FilterResults {
                 val charString = constraint.toString().toLowerCase(Locale.ROOT)
                 val temp = ArrayList<ItemModel>()
-                if (charString.isEmpty()) temp.addAll(itemList) else for (model in itemList) {
-                    if (model.itemName!!.toLowerCase(Locale.ROOT).contains(charString)) temp.add(model)
+                if (charString.isEmpty()) temp.addAll(originalList) else for (model in originalList) {
+                    if (model.itemName.toLowerCase(Locale.ROOT).contains(charString)) temp.add(model)
                 }
                 val filterResults = FilterResults()
                 filterResults.values = temp
