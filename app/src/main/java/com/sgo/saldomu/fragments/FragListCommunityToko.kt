@@ -44,9 +44,6 @@ class FragListCommunityToko : BaseFragment() {
         val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
         tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.purchase_order))
 
-        btn_register.setOnClickListener {
-            tokoPurchaseOrderActivity.switchContent(FragJoinCommunityToko(), getString(R.string.join_community), true, "FragJoinCommunityToko")
-        }
         adapterEBDCommunityList = AdapterEBDCommunityList(context!!, ebdCommunityModelArrayList, object : AdapterEBDCommunityList.OnClick {
             override fun onClick(pos: Int) {
                 val fragment = FragListPurchaseOrder()

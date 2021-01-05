@@ -36,7 +36,7 @@ class FragTokoEBD : BaseFragment() {
 
         menuStrings.clear()
         menuDrawables.clear()
-        menuStrings.add(getString(R.string.new_store_registration))
+        menuStrings.add(getString(R.string.store_registration))
         menuStrings.add(getString(R.string.purchase_order))
         menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_register_new_store, null)!!)
         menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_biller, null)!!)
@@ -44,8 +44,8 @@ class FragTokoEBD : BaseFragment() {
         adapter = GridMenu(context!!, menuStrings, menuDrawables)
         grid.adapter = adapter
         grid.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-            if (menuStrings[i] == getString(R.string.new_store_registration))
-                tokoEBDActivity!!.switchContent(FragRegisterEBD(), getString(R.string.shop_registration), true, "FragRegisterEBD")
+            if (menuStrings[i] == getString(R.string.store_registration))
+                tokoEBDActivity!!.switchContent(FragRegisterEBD(), getString(R.string.store_registration), true, "FragRegisterEBD")
             else if (menuStrings[i] == getString(R.string.purchase_order))
                 tokoEBDActivity!!.startActivity(Intent(activity, TokoPurchaseOrderActivity::class.java))
         }

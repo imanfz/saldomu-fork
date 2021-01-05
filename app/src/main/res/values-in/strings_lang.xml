@@ -1682,7 +1682,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="good_receipt_title">Penerimaan Barang</string>
     <string name="store_phone">No. HP Toko  :</string>
     <string name="store_code_validation">Kode Toko dibutuhkan!</string>
-    <string name="new_store_registration">Registrasi Toko Baru</string>
+    <string name="store_registration">Registrasi Toko</string>
     <string name="create_po">Tambah PO</string>
     <string name="create_gr">Buat Faktur Penerimaan</string>
     <string name="list_po">List PO</string>
@@ -1732,4 +1732,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="list_invoice">Daftar Tagihan</string>
     <string name="choose_invoice_validation">Silahkan Pilih Tagihan</string>
     <string name="pay_invoice">Bayar Tagihan</string>
+    <string name="new_store">Toko Baru</string>
+    <string name="existing_store">Toko Lama</string>
 </resources>

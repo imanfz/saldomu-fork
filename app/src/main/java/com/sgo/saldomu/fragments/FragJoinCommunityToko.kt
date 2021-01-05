@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.TokoEBDActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -33,8 +34,8 @@ class FragJoinCommunityToko : BaseFragment() {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
-        val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
-        tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.join_community))
+        val tokoEBDActivity = activity as TokoEBDActivity
+        tokoEBDActivity.initializeToolbar(getString(R.string.join_community))
 
         iv_clear.setOnClickListener { et_store_code.setText("") }
         btn_submit.setOnClickListener {

@@ -1691,7 +1691,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="good_receipt_title">Good Receipt</string>
     <string name="store_phone">Store Phone No.  :</string>
     <string name="store_code_validation">Store Code required!</string>
-    <string name="new_store_registration">New Store Registration</string>
+    <string name="store_registration">Store Registration</string>
     <string name="create_po">Create PO</string>
     <string name="list_po">List PO</string>
     <string name="search_po">Search PO</string>
@@ -1742,5 +1742,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="list_invoice">List Invoice</string>
     <string name="choose_invoice_validation">Choose Invoice</string>
     <string name="pay_invoice">Payment Invoice</string>
-
+    <string name="new_store">New Store</string>
+    <string name="existing_store">Existing Store</string>
 </resources>
