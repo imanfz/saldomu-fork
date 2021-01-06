@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.NotificationModelClass;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.DocDetailActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.activities.PaymentTokoActivity;
@@ -297,6 +298,8 @@ public class FragNotification extends BaseFragment {
                     getActivity().finish();
                     break;
                 case NotificationActivity.BLAST_INFO:
+                case NotificationActivity.OTP_CREATE_GR:
+                case NotificationActivity.OTP_CREATE_PO:
                     sentReadNotif(mObj.getNotif_id(), position);
                     getActivity().finish();
                     break;
@@ -321,29 +324,19 @@ public class FragNotification extends BaseFragment {
                     intent.putExtras(intent);
                     startActivity(intent);
                     break;
-                case NotificationActivity.OTP_CREATE_PO:
-                    sentReadNotif(mObj.getNotif_id(), position);
-                    getActivity().finish();
-                    break;
-                case NotificationActivity.OTP_CREATE_GR:
-                    sentReadNotif(mObj.getNotif_id(), position);
-                    getActivity().finish();
-                    break;
                 case NotificationActivity.CREATE_GR:
-                    sentReadNotif(mObj.getNotif_id(), position);
-                    getActivity().finish();
-                    break;
                 case NotificationActivity.INVOICE_PAID:
-                    sentReadNotif(mObj.getNotif_id(), position);
-                    getActivity().finish();
-                    break;
                 case NotificationActivity.NEW_INVOICE_TOKO:
-                    sentReadNotif(mObj.getNotif_id(), position);
-                    getActivity().finish();
-                    break;
                 case NotificationActivity.NEW_INVOICE_CANVASSER:
                     sentReadNotif(mObj.getNotif_id(), position);
-                    getActivity().finish();
+                    intent = new Intent(getActivity(), DocDetailActivity.class);
+                    intent.putExtra(DefineValue.MEMBER_CODE_ESPAY, mObjDetail.getString(WebParams.MEMBER_CODE_ESPAY));
+                    intent.putExtra(DefineValue.COMMUNITY_CODE_ESPAY, mObjDetail.getString(WebParams.COMM_CODE_ESPAY));
+                    intent.putExtra(DefineValue.COMMUNITY_CODE, mObjDetail.getString(WebParams.COMM_CODE));
+                    intent.putExtra(DefineValue.COMMUNITY_ID, mObjDetail.getString(WebParams.COMM_ID));
+                    intent.putExtra(DefineValue.DOC_NO, mObjDetail.getString(WebParams.DOC_NO));
+                    intent.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
+                    intent.putExtras(intent);
                     break;
             }
         } catch (JSONException e) {

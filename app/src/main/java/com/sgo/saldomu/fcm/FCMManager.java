@@ -12,8 +12,10 @@ import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
+import com.sgo.saldomu.activities.DocDetailActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.NotificationActivity;
+import com.sgo.saldomu.activities.PaymentTokoActivity;
 import com.sgo.saldomu.activities.SourceOfFundActivity;
 import com.sgo.saldomu.activities.UpgradeAgentActivity;
 import com.sgo.saldomu.activities.UpgradeMemberViaOnline;
@@ -52,6 +54,20 @@ public class FCMManager {
     public final static int SOURCE_OF_FUND = 1010;
     public final static int VERIFY_ACC = 1011;
     public final static int CONFIRM_ATC = 1012;
+    // Info Toko untuk bayar invoice
+    public final static int TOKO_PAY_INVOICE = 1013;
+    // Info Kode Otp Create PO
+    public final static int OTP_CREATE_PO = 1014;
+    //Info Kode Otp Create GR
+    public final static int OTP_CREATE_GR = 1015;
+    //Info GR baru created  , klik notif panggil ws no. 8. InquiryDocDetail
+    public final static int CREATE_GR = 1016;
+    //Info Invoice Paid ,  klik notif panggil ws no. 8. InquiryDocDetail
+    public final static int INVOICE_PAID = 1017;
+    //Info New Invoice for Toko ,  klik notif panggil ws no. 8. InquiryDocDetail
+    public final static int NEW_INVOICE_TOKO = 1018;
+    //Info Canvasser ada New Invoice for Toko,  klik notif panggil ws no. 8. InquiryDocDetail
+    public final static int NEW_INVOICE_CANVASSER = 1019;
     public final static int PAID_BY_TOKO = 1020;
 
     final private static String AGENT_TOPIC = "agent";
@@ -414,6 +430,45 @@ public class FCMManager {
                                 i = new Intent(mContext, SourceOfFundActivity.class);
                                 i.putExtras(bundleNextLogin);
                             }
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
+                        }
+                    }
+                    break;
+                case FCMManager.TOKO_PAY_INVOICE:
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            bundleNextLogin.putString(DefineValue.MEMBER_CODE_ESPAY, jsonOptions.getJSONObject(0).getString(WebParams.MEMBER_CODE_ESPAY));
+                            bundleNextLogin.putString(DefineValue.COMMUNITY_CODE_ESPAY, jsonOptions.getJSONObject(0).getString(WebParams.COMM_CODE_ESPAY));
+                            bundleNextLogin.putString(DefineValue.COMMUNITY_CODE, jsonOptions.getJSONObject(0).getString(WebParams.COMM_CODE));
+                            bundleNextLogin.putString(DefineValue.COMMUNITY_ID, jsonOptions.getJSONObject(0).getString(WebParams.COMM_ID));
+                            bundleNextLogin.putString(DefineValue.DOC_NO, jsonOptions.getJSONObject(0).getString(WebParams.DOC_NO));
+                            bundleNextLogin.putString(DefineValue.TX_ID, jsonOptions.getJSONObject(0).getString(WebParams.TX_ID));
+
+                            i = new Intent(mContext, PaymentTokoActivity.class);
+                            i.putExtras(bundleNextLogin);
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: " + e.getMessage());
+                        }
+                    }
+                    break;
+                case FCMManager.CREATE_GR:
+                case FCMManager.INVOICE_PAID:
+                case FCMManager.NEW_INVOICE_TOKO:
+                case FCMManager.NEW_INVOICE_CANVASSER:
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            bundleNextLogin.putString(DefineValue.MEMBER_CODE_ESPAY, jsonOptions.getJSONObject(0).getString(WebParams.MEMBER_CODE_ESPAY));
+                            bundleNextLogin.putString(DefineValue.COMMUNITY_CODE_ESPAY, jsonOptions.getJSONObject(0).getString(WebParams.COMM_CODE_ESPAY));
+                            bundleNextLogin.putString(DefineValue.COMMUNITY_CODE, jsonOptions.getJSONObject(0).getString(WebParams.COMM_CODE));
+                            bundleNextLogin.putString(DefineValue.COMMUNITY_ID, jsonOptions.getJSONObject(0).getString(WebParams.COMM_ID));
+                            bundleNextLogin.putString(DefineValue.DOC_NO, jsonOptions.getJSONObject(0).getString(WebParams.DOC_NO));
+                            bundleNextLogin.putString(DefineValue.TX_ID, jsonOptions.getJSONObject(0).getString(WebParams.TX_ID));
+
+                            i = new Intent(mContext, DocDetailActivity.class);
+                            i.putExtras(bundleNextLogin);
                         } catch (JSONException e) {
                             Timber.d("JSONException: " + e.getMessage());
                         }

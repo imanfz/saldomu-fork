@@ -1,4 +1,4 @@
-package com.sgo.saldomu.activities
+package com.sgo.saldomu.fragments
 
 import android.os.Bundle
 import android.text.Editable
@@ -8,17 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.CanvasserPOActivity
 import com.sgo.saldomu.adapter.ListPOAdapter
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.WebParams
-import com.sgo.saldomu.fragments.FragInputQtyGoodReceipt
-import com.sgo.saldomu.fragments.FragListItemPOCanvasser
-import com.sgo.saldomu.fragments.FragListItemToko
-import com.sgo.saldomu.fragments.FragPurchaseOrderDetail
 import com.sgo.saldomu.models.ListPOModel
-import com.sgo.saldomu.models.retrofit.ItemModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_list_po.*
 import org.json.JSONArray
