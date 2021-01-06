@@ -49,10 +49,7 @@ class FragDocDetail : BaseFragment() {
         if (arguments != null) {
             memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
             commCodeEspay= arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
-            commCode= arguments!!.getString(DefineValue.COMMUNITY_CODE, "")
-            commId= arguments!!.getString(DefineValue.COMMUNITY_ID, "")
             docNo = arguments!!.getString(DefineValue.DOC_NO, "")
-            txId = arguments!!.getString(DefineValue.TX_ID, "")
         }
 
         val docDetailActivity = activity as DocDetailActivity

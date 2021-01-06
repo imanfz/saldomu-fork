@@ -329,14 +329,12 @@ public class FragNotification extends BaseFragment {
                 case NotificationActivity.NEW_INVOICE_TOKO:
                 case NotificationActivity.NEW_INVOICE_CANVASSER:
                     sentReadNotif(mObj.getNotif_id(), position);
-                    intent = new Intent(getActivity(), DocDetailActivity.class);
-                    intent.putExtra(DefineValue.MEMBER_CODE_ESPAY, mObjDetail.getString(WebParams.MEMBER_CODE_ESPAY));
-                    intent.putExtra(DefineValue.COMMUNITY_CODE_ESPAY, mObjDetail.getString(WebParams.COMM_CODE_ESPAY));
-                    intent.putExtra(DefineValue.COMMUNITY_CODE, mObjDetail.getString(WebParams.COMM_CODE));
-                    intent.putExtra(DefineValue.COMMUNITY_ID, mObjDetail.getString(WebParams.COMM_ID));
-                    intent.putExtra(DefineValue.DOC_NO, mObjDetail.getString(WebParams.DOC_NO));
-                    intent.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
-                    intent.putExtras(intent);
+                    Intent i = new Intent(getActivity(), DocDetailActivity.class);
+                    i.putExtra(DefineValue.MEMBER_CODE_ESPAY, mObjDetail.getString(WebParams.MEMBER_CODE_ESPAY));
+                    i.putExtra(DefineValue.COMMUNITY_CODE_ESPAY, mObjDetail.getString(WebParams.COMM_CODE_ESPAY));
+                    i.putExtra(DefineValue.DOC_NO, mObjDetail.getString(WebParams.DOC_NO));
+                    i.putExtras(i);
+                    startActivity(i);
                     break;
             }
         } catch (JSONException e) {

@@ -462,10 +462,7 @@ public class FCMManager {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
                             bundleNextLogin.putString(DefineValue.MEMBER_CODE_ESPAY, jsonOptions.getJSONObject(0).getString(WebParams.MEMBER_CODE_ESPAY));
                             bundleNextLogin.putString(DefineValue.COMMUNITY_CODE_ESPAY, jsonOptions.getJSONObject(0).getString(WebParams.COMM_CODE_ESPAY));
-                            bundleNextLogin.putString(DefineValue.COMMUNITY_CODE, jsonOptions.getJSONObject(0).getString(WebParams.COMM_CODE));
-                            bundleNextLogin.putString(DefineValue.COMMUNITY_ID, jsonOptions.getJSONObject(0).getString(WebParams.COMM_ID));
                             bundleNextLogin.putString(DefineValue.DOC_NO, jsonOptions.getJSONObject(0).getString(WebParams.DOC_NO));
-                            bundleNextLogin.putString(DefineValue.TX_ID, jsonOptions.getJSONObject(0).getString(WebParams.TX_ID));
 
                             i = new Intent(mContext, DocDetailActivity.class);
                             i.putExtras(bundleNextLogin);

@@ -735,10 +735,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
                             bundle.putString(DefineValue.MEMBER_CODE_ESPAY, jsonOptions.getJSONObject(0).getString(WebParams.MEMBER_CODE_ESPAY));
                             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, jsonOptions.getJSONObject(0).getString(WebParams.COMM_CODE_ESPAY));
-                            bundle.putString(DefineValue.COMMUNITY_CODE, jsonOptions.getJSONObject(0).getString(WebParams.COMM_CODE));
-                            bundle.putString(DefineValue.COMMUNITY_ID, jsonOptions.getJSONObject(0).getString(WebParams.COMM_ID));
                             bundle.putString(DefineValue.DOC_NO, jsonOptions.getJSONObject(0).getString(WebParams.DOC_NO));
-                            bundle.putString(DefineValue.TX_ID, jsonOptions.getJSONObject(0).getString(WebParams.TX_ID));
 
                             if (flagLogin.equals(DefineValue.STRING_YES)) {
                                 intent = new Intent(this, DocDetailActivity.class);
