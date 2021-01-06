@@ -1,4 +1,4 @@
-package com.sgo.saldomu.activities
+package com.sgo.saldomu.fragments
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -14,6 +14,9 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.BuildConfig
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.InsertPIN
+import com.sgo.saldomu.activities.MainPage
+import com.sgo.saldomu.activities.PaymentTokoActivity
 import com.sgo.saldomu.adapter.AdapterListDetailPO
 import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.DateTimeFormat

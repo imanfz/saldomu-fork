@@ -170,7 +170,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             listPOModel.cust_id = custID
             listPOModel.comm_code = commCode
             listPOModel.member_code = memberCode
-            listPOModel.type_id = memberCode
+            listPOModel.type_id = type_id
             listPOModel.reff_id = reffId
             listPOModel.reff_no = reffNo
             listPOModel.created_at = createAt

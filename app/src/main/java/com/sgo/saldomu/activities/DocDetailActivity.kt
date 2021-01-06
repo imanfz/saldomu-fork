@@ -7,31 +7,29 @@ import androidx.fragment.app.FragmentManager
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.ToggleKeyboard
-import com.sgo.saldomu.fragments.FragPaymentByToko
+import com.sgo.saldomu.fragments.FragDocDetail
 import com.sgo.saldomu.widgets.BaseActivity
 import timber.log.Timber
 
-class PaymentTokoActivity : BaseActivity (){
-    override fun getLayoutResource(): Int {
-        return com.sgo.saldomu.R.layout.activity_b2b;
-    }
+class DocDetailActivity : BaseActivity(){
 
     var fragmentManager: FragmentManager? = null
+
+    override fun getLayoutResource(): Int {
+        return R.layout.activity_b2b;
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setActionBarIcon(R.drawable.ic_arrow_left)
-        actionBarTitle = getString(R.string.purchase_order)
+        actionBarTitle = getString(R.string.detail_document)
 
         var bundle = Bundle()
         bundle.putString(DefineValue.MEMBER_CODE_ESPAY, intent.getStringExtra(DefineValue.MEMBER_CODE_ESPAY))
-        bundle.putString(DefineValue.COMMUNITY_CODE, intent.getStringExtra(DefineValue.COMMUNITY_CODE))
         bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, intent.getStringExtra(DefineValue.COMMUNITY_CODE_ESPAY))
         bundle.putString(DefineValue.DOC_NO, intent.getStringExtra(DefineValue.DOC_NO))
-        bundle.putString(DefineValue.TX_ID, intent.getStringExtra(DefineValue.TX_ID))
-        bundle.putString(DefineValue.COMMUNITY_ID, intent.getStringExtra(DefineValue.COMMUNITY_ID))
         val newFragment: Fragment
-        newFragment = FragPaymentByToko()
+        newFragment = FragDocDetail()
         newFragment.arguments = bundle
         fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager!!.beginTransaction()
@@ -71,4 +69,5 @@ class PaymentTokoActivity : BaseActivity (){
         setActionBarIcon(R.drawable.ic_arrow_left)
         actionBarTitle = title
     }
+
 }

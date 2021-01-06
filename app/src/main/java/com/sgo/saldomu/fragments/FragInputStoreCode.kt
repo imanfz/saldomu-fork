@@ -8,10 +8,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.BillerActivity
 import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
 import com.sgo.saldomu.activities.CanvasserPOActivity
-import com.sgo.saldomu.activities.FragListPOCanvasser
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -82,6 +80,7 @@ class FragInputStoreCode : BaseFragment() {
             params[WebParams.CUST_ID_ESPAY] = userPhoneID
             params[WebParams.MEMBER_CODE_ESPAY] = et_store_code!!.text.toString()
             params[WebParams.TYPE_ID] = DefineValue.PO
+            params[WebParams.DOC_STATUS] = DefineValue.OPEN
             Timber.d("params inquiry doc list:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_LIST, params,
                     object : ObjListeners {
