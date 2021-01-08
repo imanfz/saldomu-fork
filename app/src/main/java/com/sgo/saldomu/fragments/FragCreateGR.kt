@@ -41,6 +41,8 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
     var amount: String = ""
     var docDetails: String = ""
     var promoCode: String = ""
+    var totalDisc: String = ""
+    var totalAmount: String = ""
     var isHaveBonusItem: Boolean = false
 
     private val itemArrayList = ArrayList<ItemModel>()
@@ -65,6 +67,8 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
         amount = bundle.getString(DefineValue.AMOUNT, "")
         promoCode = bundle.getString(DefineValue.PROMO_CODE, "")
         docDetails = bundle.getString(DefineValue.DOC_DETAILS, "")
+        totalAmount = bundle.getString(DefineValue.TOTAL_AMOUNT, "")
+        totalDisc = bundle.getString(DefineValue.TOTAL_DISC, "")
 
         val canvasserGoodReceiptActivity = activity as CanvasserGoodReceiptActivity
         canvasserGoodReceiptActivity.initializeToolbar(getString(R.string.confirm_gr))
@@ -78,8 +82,8 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
         frag_gr_confirm_store_code.setText(memberCodeEspay)
         frag_gr_confirm_comm_code.setText(commCodeEspay)
         frag_gr_confirm_amount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount))
-        frag_gr_confirm_discount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(bundle!!.getString(DefineValue.TOTAL_DISC)))
-        frag_gr_confirm_total_amount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(bundle!!.getString(DefineValue.TOTAL_AMOUNT)))
+        frag_gr_confirm_discount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(totalDisc))
+        frag_gr_confirm_total_amount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(totalAmount))
 
         frag_gr_confirm_submit_btn.setOnClickListener { createGR() }
     }
@@ -175,6 +179,8 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.AMOUNT] = amount
             params[WebParams.PROMO] = promoCode
+            params[WebParams.TOTAL_DISC] = totalDisc
+            params[WebParams.TOTAL_AMOUNT] = totalAmount
             params[WebParams.ACTION_CODE] = "N"
             Timber.d("params create GR:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CREATE_GR, params,
