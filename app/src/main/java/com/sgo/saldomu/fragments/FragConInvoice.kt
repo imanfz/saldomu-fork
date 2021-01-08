@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.google.gson.Gson
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.CanvasserInvoiceActivity
-import com.sgo.saldomu.activities.TokoEBDActivity
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -83,7 +81,7 @@ class FragConInvoice : BaseFragment() {
 
             showProgressDialog()
             extraSignature = obj!!.comm_code + obj!!.cust_id
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_DOCS, extraSignature)
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRMATION_DOC, extraSignature)
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_CODE_ESPAY] =  obj!!.comm_code
             params[WebParams.MEMBER_CODE_ESPAY] =  obj!!.member_code
@@ -98,7 +96,7 @@ class FragConInvoice : BaseFragment() {
 
 
             Timber.d("params inquiry doc detail:$params")
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_DOCS, params,
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
                             try {

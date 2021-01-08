@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
+import com.sgo.saldomu.activities.TokoEBDActivity
 import com.sgo.saldomu.adapter.AdapterEBDCommunityList
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -26,10 +26,10 @@ import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
 
-class FragListCommunityToko : BaseFragment() {
+class FragListToko : BaseFragment() {
 
-    private val ebdCommunityModelArrayList = ArrayList<EBDCommunityModel>()
-    private var adapterEBDCommunityList: AdapterEBDCommunityList? = null
+    private val list = ArrayList<EBDCommunityModel>()
+    private var adapter: AdapterEBDCommunityList? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_list_item, container, false)
@@ -38,56 +38,54 @@ class FragListCommunityToko : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        ebdCommunityModelArrayList.clear()
+        list.clear()
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
-        val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
-        tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.purchase_order))
+        val tokoEBDActivity = activity as TokoEBDActivity
+        tokoEBDActivity.initializeToolbar(getString(R.string.store_list))
 
-        adapterEBDCommunityList = AdapterEBDCommunityList(context!!, ebdCommunityModelArrayList, object : AdapterEBDCommunityList.OnClick {
+        adapter = AdapterEBDCommunityList(requireContext(), list, object : AdapterEBDCommunityList.OnClick {
             override fun onClick(pos: Int) {
                 val fragment = FragListPurchaseOrder()
                 val bundle = Bundle()
-                bundle.putString(DefineValue.MEMBER_CODE_ESPAY, ebdCommunityModelArrayList[pos].member_code)
-                bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, ebdCommunityModelArrayList[pos].comm_code)
+                bundle.putString(DefineValue.MEMBER_CODE_ESPAY, list[pos].member_code)
+                bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, list[pos].comm_code)
                 fragment.arguments = bundle
-                tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.list_po), true, tokoPurchaseOrderActivity.FRAG_INPUT_ITEM_TAG)
+                tokoEBDActivity.switchContent(fragment, getString(R.string.list_po), true, "")
             }
         })
-        recyclerView.adapter = adapterEBDCommunityList
+        recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        getListCommunity()
+        getList()
     }
 
-    private fun getListCommunity() {
+    private fun getList() {
         showProgressDialog()
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_COMMUNITY_EBD)
-        params[WebParams.USER_ID] = userPhoneID
-        params[WebParams.MEMBER_PHONE] = userPhoneID
-        params[WebParams.MEMBER_CODE] = ""
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_TOKO)
+        params[WebParams.CUST_ID] = userPhoneID
 
-        Timber.d("isi params get list community edb:%s", params.toString())
+        Timber.d("isi params get list toko:%s", params.toString())
 
-        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_COMMUNITY_EBD, params, object : ObjListeners {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_TOKO, params, object : ObjListeners {
             override fun onResponses(response: JSONObject) {
                 val code = response.getString(WebParams.ERROR_CODE)
                 val message = response.getString(WebParams.ERROR_MESSAGE)
                 when (code) {
                     WebParams.SUCCESS_CODE -> {
-                        val jsonArray = response.getJSONArray(WebParams.MEMBER_DETAILS)
-                        for (i in 0 until jsonArray.length()) {
-                            val jsonObject = jsonArray.getJSONObject(i)
-                            val memberCode = jsonObject.getString(WebParams.MEMBER_CODE)
-                            val custID = jsonObject.getString(WebParams.CUST_ID)
-                            val custName = jsonObject.getString(WebParams.CUST_NAME)
-                            val commCode = jsonObject.getString(WebParams.COMM_CODE)
-                            val commName = jsonObject.getString(WebParams.COMM_NAME)
-                            val status = jsonObject.getString(WebParams.STATUS)
-                            val mobilePhoneNo = jsonObject.getString(WebParams.MOBILE_PHONE_NO)
-                            val email = jsonObject.getString(WebParams.EMAIL)
-                            ebdCommunityModelArrayList.add(EBDCommunityModel(memberCode, custID, custName, commCode, commName, status, mobilePhoneNo, email))
-                        }
-                        adapterEBDCommunityList!!.notifyDataSetChanged()
+//                        val jsonArray = response.getJSONArray(WebParams.MEMBER_DETAILS)
+//                        for (i in 0 until jsonArray.length()) {
+//                            val jsonObject = jsonArray.getJSONObject(i)
+//                            val memberCode = jsonObject.getString(WebParams.MEMBER_CODE)
+//                            val custID = jsonObject.getString(WebParams.CUST_ID)
+//                            val custName = jsonObject.getString(WebParams.CUST_NAME)
+//                            val commCode = jsonObject.getString(WebParams.COMM_CODE)
+//                            val commName = jsonObject.getString(WebParams.COMM_NAME)
+//                            val status = jsonObject.getString(WebParams.STATUS)
+//                            val mobilePhoneNo = jsonObject.getString(WebParams.MOBILE_PHONE_NO)
+//                            val email = jsonObject.getString(WebParams.EMAIL)
+//                            list.add(EBDCommunityModel(memberCode, custID, custName, commCode, commName, status, mobilePhoneNo, email))
+//                        }
+//                        adapter!!.notifyDataSetChanged()
                     }
                     WebParams.LOGOUT_CODE -> {
                         AlertDialogLogout.getInstance().showDialoginMain(activity, message)

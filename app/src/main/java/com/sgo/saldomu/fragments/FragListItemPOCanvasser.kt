@@ -209,7 +209,12 @@ class FragListItemPOCanvasser : BaseFragment() {
                                             val unit = jsonObject.getString(WebParams.UNIT)
                                             val minQty = jsonObject.getInt(WebParams.MIN_QTY)
                                             val maxQty = jsonObject.getInt(WebParams.MAX_QTY)
-                                            itemList.add(EBDCatalogModel(itemCode, itemName, price, unit, minQty, maxQty))
+                                            val remarkMappingUnit = jsonObject.getJSONArray(WebParams.REMARK_MAPPING_UNITS)
+                                            val listRemarkMappingUnit = ArrayList<String>()
+                                            for (j in 0 until remarkMappingUnit.length()){
+                                                listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
+                                            }
+                                            itemList.add(EBDCatalogModel(itemCode, itemName, price, unit, minQty, maxQty,listRemarkMappingUnit))
                                         }
                                         itemListAdapter!!.notifyDataSetChanged()
                                     }

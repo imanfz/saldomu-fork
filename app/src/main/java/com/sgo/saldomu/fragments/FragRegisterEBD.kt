@@ -38,16 +38,20 @@ class FragRegisterEBD : BaseFragment() {
         menuDrawables.clear()
         menuStrings.add(getString(R.string.new_store))
         menuStrings.add(getString(R.string.existing_store))
+        menuStrings.add(getString(R.string.store_list))
         menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_register_new_store, null)!!)
         menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_biller, null)!!)
+        menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_biller, null)!!)
 
-        adapter = GridMenu(context!!, menuStrings, menuDrawables)
+        adapter = GridMenu(requireContext(), menuStrings, menuDrawables)
         grid.adapter = adapter
         grid.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             if (menuStrings[i] == getString(R.string.new_store))
                 tokoEBDActivity!!.switchContent(FragRegisterNewMember(), getString(R.string.new_store), true, "FragRegisterNewMember")
             else if (menuStrings[i] == getString(R.string.existing_store))
                 tokoEBDActivity!!.switchContent(FragJoinCommunityToko(), getString(R.string.join_community), true, "FragJoinCommunityToko")
+            else if (menuStrings[i] == getString(R.string.store_list))
+                tokoEBDActivity!!.switchContent(FragListToko(), getString(R.string.store_list), true, "FragJoinCommunityToko")
         }
 
     }

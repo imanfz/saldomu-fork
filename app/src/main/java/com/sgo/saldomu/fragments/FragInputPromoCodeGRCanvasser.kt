@@ -121,7 +121,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
             showProgressDialog()
 
             extraSignature = memberCodeEspay + custIdEspay
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_DOC_CONFIRM, extraSignature)
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRMATION_DOC, extraSignature)
             params[WebParams.DOC_NO] = docNo
             params[WebParams.COMM_CODE_ESPAY] = commCodeEspay
             params[WebParams.MEMBER_CODE_ESPAY] = memberCodeEspay
@@ -136,7 +136,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
             if (isHavePromoCode)
                 params[WebParams.PROMO_CODE] = promoCode
             Timber.d("params confirm doc:$params")
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_CONFIRM, params,
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
                             try {

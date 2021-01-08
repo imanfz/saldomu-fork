@@ -2,6 +2,7 @@ package com.sgo.saldomu.fragments
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.MapsActivity
 import com.sgo.saldomu.activities.TokoEBDActivity
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -25,13 +27,15 @@ import kotlinx.android.synthetic.main.dialog_notification.*
 import kotlinx.android.synthetic.main.frag_register_ebd.*
 import org.json.JSONObject
 import timber.log.Timber
-import java.util.ArrayList
+import java.util.*
 
 class FragRegisterNewMember : BaseFragment() {
 
     var provinceID = ""
     var districtID = ""
     var subDistrictID = ""
+    var latitude = 0.0
+    var longitude = 0.0
 
     val provinceList: ArrayList<ProvinceModel> = arrayListOf()
     val provincesNameList: ArrayList<String> = arrayListOf()
@@ -50,6 +54,7 @@ class FragRegisterNewMember : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
+        val openMap = View.OnClickListener { v: View? -> startActivityForResult(Intent(activity, MapsActivity::class.java), 100) }
         val tokoEBDActivity = activity as TokoEBDActivity
         tokoEBDActivity.initializeToolbar(getString(R.string.shop_registration))
         et_store_name.onRightDrawableRegisterEBDClicked { it.text.clear() }
@@ -57,7 +62,10 @@ class FragRegisterNewMember : BaseFragment() {
         et_id_no.onRightDrawableRegisterEBDClicked { it.text.clear() }
         et_delivery_address.onRightDrawableRegisterEBDClicked { it.text.clear() }
         et_postal_code.onRightDrawableRegisterEBDClicked { it.text.clear() }
+        ll_setLocation.setOnClickListener(openMap)
+        change_location.setOnClickListener(openMap)
         btn_submit.setOnClickListener { if (inputValidation()) submitRegisterEBD() }
+
 
         province_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
             for (i in 0 until provinceList.size) {
@@ -143,6 +151,10 @@ class FragRegisterNewMember : BaseFragment() {
             et_postal_code.error = getString(R.string.postal_code_required)
             return false
         }
+        if (latitude == 0.0 && longitude == 0.0) {
+            Toast.makeText(context, getString(R.string.location_required), Toast.LENGTH_SHORT).show()
+            return false
+        }
         return true
     }
 
@@ -214,8 +226,8 @@ class FragRegisterNewMember : BaseFragment() {
         params[WebParams.VERIFICATION_ID] = et_id_no.text.toString()
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.CUST_ID_ESPAY] = userPhoneID
-        params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
-        params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
+        params[WebParams.LATITUDE] = latitude
+        params[WebParams.LONGITUDE] = longitude
         params[WebParams.ADDRESS] = et_delivery_address.text.toString().replace("\n", " ")
         params[WebParams.PROVINCE] = province_auto_text.text.toString()
         params[WebParams.CITY] = district_auto_text.text.toString()
@@ -279,6 +291,23 @@ class FragRegisterNewMember : BaseFragment() {
             fragmentManager!!.popBackStack()
         }
         dialog.show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            100 -> if (resultCode == 201) {
+                if (data != null && data.extras != null) {
+                    val address = data.getStringExtra("address")
+                    change_location.visibility = View.VISIBLE
+                    tv_address.visibility = View.VISIBLE
+                    tv_address.text = address
+                    ll_setLocation.visibility = View.GONE
+                    longitude = data.getDoubleExtra("longitude", 0.0)
+                    latitude = data.getDoubleExtra("latitude", 0.0)
+                }
+            }
+        }
     }
 }
 

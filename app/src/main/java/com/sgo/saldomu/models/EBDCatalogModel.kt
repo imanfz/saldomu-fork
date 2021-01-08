@@ -7,4 +7,5 @@ open class EBDCatalogModel(
         var unit: String,
         var minQty: Int,
         var maxQty: Int,
+        var remarkMappingUnit: ArrayList<String> = ArrayList(),
         var formatQtyItem: ArrayList<FormatQtyItem> = ArrayList())

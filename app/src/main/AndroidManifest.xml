@@ -53,6 +53,16 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label,allowBackup,appComponentFactory,theme">
         <activity
+            android:name=".activities.ReportEBDActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:parentActivityName=".activities.MainPage"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage" />
+        </activity>
+        <activity
             android:name=".activities.TokoPurchaseOrderActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:parentActivityName=".activities.MainPage"
@@ -539,7 +549,6 @@
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".activities.CanvasserInvoiceActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
@@ -555,6 +564,7 @@
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />

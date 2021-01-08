@@ -196,6 +196,7 @@
     <string name="menu_item_title_ebd">B2B Espay Catalog</string>
     <string name="menu_item_title_ebd_toko">(Toko)</string>
     <string name="menu_item_title_ebd_canvasser">(Canvasser)</string>
+    <string name="menu_item_title_report_ebd">Laporan Espay Catalog</string>
     <string name="menu_group_title_account">Akun</string>
     <string name="menu_item_title_my_profile">Profil Saya</string>
     <string name="menu_item_title_my_friends">Teman Saya</string>
@@ -1734,4 +1735,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="pay_invoice">Bayar Tagihan</string>
     <string name="new_store">Toko Baru</string>
     <string name="existing_store">Toko Lama</string>
+    <string name="store_list">Daftar Toko</string>
+    <string name="location_required">Lokasi dibutuhkan</string>
 </resources>

@@ -146,6 +146,10 @@ class FragOrderConfirmToko : BaseFragment() {
         params[WebParams.CUST_TYPE] = DefineValue.TOKO
         params[WebParams.ACTION_CODE] = "N"
         params[WebParams.DISCOUNT_AMOUNT] = ebdConfirmModel.discount_amount
+        if (paymentOption == getString(R.string.pay_now))
+            params[WebParams.IS_CHECK_BALANCE] = "Y"
+        else if (paymentOption == getString(R.string.pay_later))
+            params[WebParams.IS_CHECK_BALANCE] = "N"
 
         Timber.d("isi params create PO:$params")
 
