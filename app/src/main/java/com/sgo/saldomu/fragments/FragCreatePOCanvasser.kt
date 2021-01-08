@@ -121,6 +121,8 @@ class FragCreatePOCanvasser : BaseFragment() {
         params[WebParams.DOC_DETAIL] = docDetail
         params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
         params[WebParams.ACTION_CODE] = "N"
+        params[WebParams.TOTAL_AMOUNT] = totalAmount
+        params[WebParams.TOTAL_DISC] = totalDiscount
 
         Timber.d("isi params create PO:$params")
 
