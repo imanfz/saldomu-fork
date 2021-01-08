@@ -54,11 +54,11 @@ class FragListItemToko : BaseFragment() {
         val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
         tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.choose_catalog))
         if (arguments != null) {
-            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
-            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
+            memberCode = requireArguments().getString(DefineValue.MEMBER_CODE_ESPAY, "")
+            commCode = requireArguments().getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
         }
 
-        itemListAdapter = AdapterEBDCatalogList(context!!, itemList, object : AdapterEBDCatalogList.Listener {
+        itemListAdapter = AdapterEBDCatalogList(requireContext(), itemList, object : AdapterEBDCatalogList.Listener {
             override fun onChangeQty(itemCode: String, qty: Int, qtyType: String) {
 
                 for (i in itemList.indices) {
@@ -124,7 +124,7 @@ class FragListItemToko : BaseFragment() {
         paymentListOption.clear()
         paymentListOption.add(getString(R.string.pay_now))
         paymentListOption.add(getString(R.string.pay_later))
-        val paymentOptionsAdapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentListOption)
+        val paymentOptionsAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, paymentListOption)
         paymentOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_payment_options.adapter = paymentOptionsAdapter
         spinner_payment_options.onItemSelectedListener =
@@ -208,7 +208,12 @@ class FragListItemToko : BaseFragment() {
                                             val unit = jsonObject.getString(WebParams.UNIT)
                                             val minQty = jsonObject.getInt(WebParams.MIN_QTY)
                                             val maxQty = jsonObject.getInt(WebParams.MAX_QTY)
-                                            itemList.add(EBDCatalogModel(itemCode, itemName, price, unit, minQty, maxQty))
+                                            val remarkMappingUnit = jsonObject.getJSONArray(WebParams.REMARK_MAPPING_UNITS)
+                                            val listRemarkMappingUnit = ArrayList<String>()
+                                            for (j in 0 until remarkMappingUnit.length()){
+                                                listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
+                                            }
+                                            itemList.add(EBDCatalogModel(itemCode, itemName, price, unit, minQty, maxQty, listRemarkMappingUnit))
                                         }
                                         itemListAdapter!!.notifyDataSetChanged()
                                     }
@@ -241,14 +246,14 @@ class FragListItemToko : BaseFragment() {
                         }
                     })
         } catch (e: Exception) {
-            e.printStackTrace();
+            e.printStackTrace()
             Timber.d("httpclient:%s", e.message)
         }
 
     }
 
     private fun showDialog(msg: String) {
-        val dialog = Dialog(activity!!)
+        val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
@@ -261,7 +266,7 @@ class FragListItemToko : BaseFragment() {
         message.text = msg
         btnDialogOTP.setOnClickListener {
             dialog.dismiss()
-            fragmentManager!!.popBackStack()
+            requireFragmentManager().popBackStack()
         }
         dialog.show()
     }

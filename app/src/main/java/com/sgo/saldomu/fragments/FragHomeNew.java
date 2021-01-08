@@ -53,6 +53,7 @@ import com.sgo.saldomu.activities.HistoryActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MandiriLPActivity;
 import com.sgo.saldomu.activities.ReportActivity;
+import com.sgo.saldomu.activities.ReportEBDActivity;
 import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.activities.TokoEBDActivity;
@@ -417,6 +418,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     }
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_report))) {
                     Intent i = new Intent(getActivity(), ReportActivity.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_report_ebd))) {
+                    Intent i = new Intent(getActivity(), ReportEBDActivity.class);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     if (isDormant.equalsIgnoreCase("Y")) {
@@ -1056,6 +1060,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                 menuStrings.add(getResources().getString(R.string.menu_item_title_report));
 
+                menuStrings.add(getResources().getString(R.string.menu_item_title_report_ebd));
+
                 menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
 
 //                menuStrings.add(getResources().getString(R.string.menu_item_lending));
@@ -1610,6 +1616,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_ask_for_money)))
             return R.drawable.ic_minta_saldo;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_report)))
+            return R.drawable.ic_laporan;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_report_ebd)))
             return R.drawable.ic_laporan;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_history_detail)))
             return R.drawable.ic_history;

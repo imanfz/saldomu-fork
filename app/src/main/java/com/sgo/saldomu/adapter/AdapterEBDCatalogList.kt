@@ -7,10 +7,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.TextView
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.LinearInterpolator
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CurrencyFormat
@@ -36,10 +36,35 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         val itemName = itemList[position].itemName
         val price = itemList[position].price
         val unit = itemList[position].unit
+        val remarkList = itemList[position].remarkMappingUnit
 //        val maxQty = itemList[position].maxQty
         holder.itemCode.text = itemCode
         holder.itemName.text = itemName
         holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
+        holder.itemRemark.text = remarkList[0]+ " | " + remarkList[1]
+        holder.itemRemark.visibility = View.GONE
+
+        holder.arrowRemark.setOnClickListener {
+            val mRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_arrow)
+            mRotate.interpolator = LinearInterpolator()
+            mRotate.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation) {}
+                override fun onAnimationEnd(animation: Animation) {
+                    holder.arrowRemark.invalidate()
+                    if (holder.itemRemark.visibility == View.VISIBLE) {
+                        holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow_down)
+                        holder.itemRemark.visibility = View.GONE
+                    } else {
+                        holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow)
+                        holder.itemRemark.visibility = View.VISIBLE
+                    }
+                    holder.arrowRemark.invalidate()
+                }
+
+                override fun onAnimationRepeat(animation: Animation) {}
+            })
+            holder.arrowRemark.startAnimation(mRotate)
+        }
 
         if (itemList[position].formatQtyItem.isNotEmpty()) {
             holder.itemQty1.setText(itemList[position].formatQtyItem[0].mapping_qty.toString())
@@ -166,6 +191,9 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         var itemCode: TextView = itemView.findViewById(R.id.adapter_item_id_field)
         var itemName: TextView = itemView.findViewById(R.id.adapter_item_name_field)
         var itemPrice: TextView = itemView.findViewById(R.id.adapter_item_price_field)
+        var itemRemark: TextView = itemView.findViewById(R.id.adapter_item_remark_field)
+
+        var arrowRemark: ImageView = itemView.findViewById(R.id.arrow_desc)
 
         //BAL
         var itemQty1: EditText = itemView.findViewById(R.id.adapter_item_et_qty_1)

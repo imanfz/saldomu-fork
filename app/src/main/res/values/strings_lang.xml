@@ -194,6 +194,7 @@
     <string name="menu_item_title_ebd">B2B Espay Catalog</string>
     <string name="menu_item_title_ebd_toko">(Store)</string>
     <string name="menu_item_title_ebd_canvasser">(Canvasser)</string>
+    <string name="menu_item_title_report_ebd">Report Espay Catalog</string>
     <string name="menu_group_title_account">Account</string>
     <string name="menu_item_title_my_profile">My Profile</string>
     <string name="menu_item_title_my_friends">My Friend</string>
@@ -1691,7 +1692,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="good_receipt_title">Good Receipt</string>
     <string name="store_phone">Store Phone No.  :</string>
     <string name="store_code_validation">Store Code required!</string>
-    <string name="new_store_registration">New Store Registration</string>
+    <string name="store_registration">Store Registration</string>
     <string name="create_po">Create PO</string>
     <string name="list_po">List PO</string>
     <string name="search_po">Search PO</string>
@@ -1742,5 +1743,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="list_invoice">List Invoice</string>
     <string name="choose_invoice_validation">Choose Invoice</string>
     <string name="pay_invoice">Payment Invoice</string>
-
+    <string name="new_store">New Store</string>
+    <string name="existing_store">Existing Store</string>
+    <string name="store_list">Store List</string>
+    <string name="location_required">Location Required</string>
 </resources>
