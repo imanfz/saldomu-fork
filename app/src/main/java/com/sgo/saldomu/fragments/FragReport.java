@@ -85,6 +85,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     public static int REPORT_ESPAY = 0x0299393;
     public static int REPORT_FEE = 0x0299396;
     public static int REPORT_ADDITIONAL_FEE = 0x0299397;
+    public static int REPORT_EBD_PO = 0x0299398;
+    public static int REPORT_EBD_GR = 0x0299399;
+    public static int REPORT_EBD_INVOICE = 0x0299400;
     private final String DATEFROM = "tagFrom";
     private final String DATETO = "tagTo";
 
@@ -231,7 +234,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         if (report_type == REPORT_SCASH) {
             reportListAdapter = new ReportListAdapter(getActivity(), R.layout.list_transaction_report_item, reportData);
             lv_report.setAdapter(reportListAdapter);
-        } else if (report_type == REPORT_ESPAY) {
+        } else if (report_type == REPORT_ESPAY || report_type == REPORT_EBD_PO || report_type == REPORT_EBD_GR || report_type == REPORT_EBD_INVOICE) {
             reportListEspayAdapter = new ReportListEspayAdapter(getActivity(), R.layout.list_transaction_report_espay_item, reportData);
             lv_report.setAdapter(reportListEspayAdapter);
         } else if (report_type == REPORT_ASK) {

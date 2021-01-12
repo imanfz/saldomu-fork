@@ -7,6 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Adapter
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoEBDActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
@@ -16,13 +19,18 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.models.AnchorListItem
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.dialog_notification.*
 import kotlinx.android.synthetic.main.frag_input_store_code.*
+import kotlinx.android.synthetic.main.fragment_input_item_list.*
 import org.json.JSONObject
 import timber.log.Timber
 
 class FragJoinCommunityToko : BaseFragment() {
+
+    val anchorList = ArrayList<AnchorListItem>()
+    var anchorCodeEspay = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_input_store_code, container, false)
@@ -42,6 +50,7 @@ class FragJoinCommunityToko : BaseFragment() {
             if (inputValidation())
                 submitRegMember()
         }
+        getListAnchor()
     }
 
     private fun inputValidation(): Boolean {
@@ -53,6 +62,51 @@ class FragJoinCommunityToko : BaseFragment() {
         return true
     }
 
+    private fun getListAnchor() {
+        showProgressDialog()
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_ANCHOR)
+        params[WebParams.USER_ID] = userPhoneID
+        Timber.d("isi params list anchor:%s", params.toString())
+
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_ANCHOR, params, object : ObjListeners {
+            override fun onResponses(response: JSONObject) {
+                val jsonArray = response.getJSONArray(WebParams.ANCHOR_LIST)
+                for (i in 0 until jsonArray.length()) {
+                    val anchorListItem = getGson().fromJson(jsonArray.getJSONObject(i).toString(), AnchorListItem::class.java)
+                    anchorList.add(anchorListItem)
+                }
+                layout_anchor.visibility = View.VISIBLE
+                val anchorListOption = ArrayList<String>()
+                for (i in anchorList.indices) {
+                    anchorListOption.add(anchorList[i].anchorName)
+                }
+                val anchorOptionsAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, anchorListOption)
+                anchorOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinner_anchor.adapter = anchorOptionsAdapter
+                spinner_anchor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                        anchorCodeEspay = anchorList[p2].anchorCode
+                    }
+
+                    override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                    }
+
+                }
+
+            }
+
+            override fun onError(throwable: Throwable?) {
+                dismissProgressDialog()
+            }
+
+            override fun onComplete() {
+                dismissProgressDialog()
+            }
+
+        })
+    }
+
     private fun submitRegMember() {
         showProgressDialog()
         val memberCode = et_store_code.text.toString()
@@ -62,6 +116,7 @@ class FragJoinCommunityToko : BaseFragment() {
         params[WebParams.MEMBER_CODE] = memberCode
         params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
         params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
+        params[WebParams.ANCHOR_CODE_ESPAY] = anchorCodeEspay
         Timber.d("isi params register community:%s", params.toString())
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_EBD, params, object : ObjListeners {
@@ -82,7 +137,7 @@ class FragJoinCommunityToko : BaseFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun showDialog() {
-        val dialog = Dialog(activity!!)
+        val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
@@ -93,7 +148,7 @@ class FragJoinCommunityToko : BaseFragment() {
 
         dialog.btn_dialog_notification_ok.setOnClickListener {
             dialog.dismiss()
-            fragmentManager!!.popBackStack()
+            requireFragmentManager().popBackStack()
         }
         dialog.show()
     }

@@ -696,4 +696,8 @@ public class WebParams {
     public static String TOTAL_DISC = "total_disc";
     public static String REMARK_MAPPING_UNITS = "remark_mapping_units";
     public static String IS_CHECK_BALANCE = "is_check_balance";
+    public static String MEMBER_LIST = "member_list";
+    public static String REG_ID = "reg_id";
+    public static String ANCHOR_LIST = "anchor_list";
+    public static String ANCHOR_CODE_ESPAY = "anchor_code_espay";
 }

@@ -304,6 +304,8 @@ public class MyApiClient {
     public static String LINK_REGISTER_EBD;
     public static String LINK_REGISTER_NEW_EBD;
     public static String LINK_GET_LIST_TOKO;
+    public static String LINK_GET_DETAIL_TOKO;
+    public static String LINK_GET_LIST_ANCHOR;
     public static String LINK_GET_LIST_COMMUNITY_EBD;
     public static String LINK_GET_LIST_CATALOG_EBD;
     public static String LINK_LIST_PO;
@@ -574,6 +576,7 @@ public class MyApiClient {
         LINK_REGISTER_EBD = headaddressfinal + "espaycatalog/RegMember/Invoke";
         LINK_REGISTER_NEW_EBD = headaddressfinal + "espaycatalog/RegNewMember/Invoke";
         LINK_GET_LIST_TOKO = headaddressfinal + "espaycatalog/NewMember/ListRetrieve";
+        LINK_GET_DETAIL_TOKO = headaddressfinal + "espaycatalog/NewMember/DetailRetrieve";
         LINK_GET_LIST_COMMUNITY_EBD = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";
         LINK_GET_LIST_CATALOG_EBD = headaddressfinal + "espaycatalog/InquiryCatalog/Retrieve";
         LINK_LIST_PO = headaddressfinal + "espaycatalog/ListPo/Retrieve";
@@ -581,6 +584,7 @@ public class MyApiClient {
         LINK_CREATE_PO = headaddressfinal + "espaycatalog/CreatePo/Invoke";
         LINK_REQUEST_PAYMENT= headaddressfinal + "espaycatalog/RequestPayment/Invoke";
         LINK_PAYMENT_TOKO= headaddressfinal + "espaycatalog/PaymentToko/Invoke";
+        LINK_GET_LIST_ANCHOR= headaddressfinal + "espaycatalog/ListAnchor/Retrieve";
 
         LINK_DOC_LIST = headaddressfinal + "espaycatalog/InquiryDocList/Retrieve";
         LINK_DOC_DETAIL = headaddressfinal + "espaycatalog/InquiryDocDetail/Retrieve";

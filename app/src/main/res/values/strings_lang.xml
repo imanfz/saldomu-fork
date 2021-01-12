@@ -191,7 +191,7 @@
     <string name="menu_item_title_pulsa_agent">Mobile Credit</string>
     <string name="menu_item_title_report">Report</string>
     <string name="menu_item_title_scadm">B2B</string>
-    <string name="menu_item_title_ebd">B2B Espay Catalog</string>
+    <string name="menu_item_title_ebd">B2B BAT Catalog</string>
     <string name="menu_item_title_ebd_toko">(Store)</string>
     <string name="menu_item_title_ebd_canvasser">(Canvasser)</string>
     <string name="menu_item_title_report_ebd">Report Espay Catalog</string>
@@ -1747,4 +1747,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="existing_store">Existing Store</string>
     <string name="store_list">Store List</string>
     <string name="location_required">Location Required</string>
+    <string name="register_success_wait_for_verification">Store registration has been successfully processed, please wait for the verification process</string>
 </resources>
