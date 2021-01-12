@@ -724,5 +724,6 @@ public class DefineValue {
     public static String PARTNER_CODE_ESPAY = "partnerCodeEspay";
     public static String TITLE = "title";
     public static String OPEN = "O";
+    public static String BONUS_ITEMS = "bonusItems";
 }
 

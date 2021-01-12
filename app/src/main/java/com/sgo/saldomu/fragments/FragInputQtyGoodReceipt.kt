@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
+import com.sgo.saldomu.adapter.BonusItemGoodReceiptAdapter
 import com.sgo.saldomu.adapter.UpdateProductGoodReceiptAdapter
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -30,18 +32,21 @@ import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 
-class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.UpdateProductGoodReceiptListener {
+class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapter.UpdateProductGoodReceiptListener, BonusItemGoodReceiptAdapter.bonusItemGoodReceiptListener {
 
     var memberCodeEspay: String = ""
     var commCodeEspay: String = ""
     var custIdEspay: String = ""
     var docNo: String = ""
     var tempGson = ""
-    var gson =""
+    var gson = ""
+    var bonusItems = ""
 
     private val itemArrayList = ArrayList<ItemModel>()
+    private val bonusItemArrayList = ArrayList<ItemModel>()
 
     private var updateProductGoodReceiptAdapter: UpdateProductGoodReceiptAdapter? = null
+    private var bonusItemGoodReceiptAdapter: BonusItemGoodReceiptAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_list, container, false)
@@ -95,6 +100,7 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
             bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCodeEspay)
             bundle.putString(DefineValue.CUST_ID_ESPAY, custIdEspay)
             bundle.putString(DefineValue.DOC_DETAILS, tempGson)
+            bundle.putString(DefineValue.BONUS_ITEMS, bonusItems)
             bundle.putString(DefineValue.DOC_NO, docNo)
             val frag: Fragment = FragInputPromoCodeGRCanvasser()
             frag.arguments = bundle
@@ -129,8 +135,13 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
                                         btn_proses_gr.visibility = View.VISIBLE
                                         btn_add_item.visibility = View.VISIBLE
                                         val items = response.optString(WebParams.ITEMS)
+                                        bonusItems = response.optString(WebParams.BONUS_ITEMS)
                                         itemArrayList.clear()
                                         initializeListProduct(items)
+                                        if (!bonusItems.equals("") || bonusItems.length != 0 || bonusItems != null) {
+                                            layout_bonus_item.visibility = View.VISIBLE
+                                            initializeListProductBonus(bonusItems)
+                                        }
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
@@ -193,6 +204,32 @@ class FragInputQtyGoodReceipt : BaseFragment(), UpdateProductGoodReceiptAdapter.
         }
 
         updateProductGoodReceiptAdapter!!.updateData(itemArrayList)
+    }
+
+    fun initializeListProductBonus (bonusItem: String) {
+        bonusItemGoodReceiptAdapter = BonusItemGoodReceiptAdapter(activity, bonusItemArrayList, this)
+        recyclerViewListBonusItems.adapter = bonusItemGoodReceiptAdapter
+        recyclerViewListBonusItems.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
+        val mArrayItem = JSONArray(bonusItem)
+
+        for (i in 0 until mArrayItem.length()) {
+            val itemName = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_NAME)
+            val itemCode = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_CODE)
+            val price = mArrayItem.getJSONObject(i).getString(WebParams.PRICE)
+            val unit = mArrayItem.getJSONObject(i).getString(WebParams.UNIT)
+            val formatQtyJsonArray = mArrayItem.getJSONObject(i).getJSONArray(WebParams.FORMAT_QTY)
+            var formatQtys = ArrayList<FormatQty>()
+            for (i in 0 until formatQtyJsonArray.length()) {
+                var mappingUnit = formatQtyJsonArray.getJSONObject(i).getString(WebParams.MAPPING_UNIT)
+                var mappingQty = formatQtyJsonArray.getJSONObject(i).getInt(WebParams.MAPPING_QTY)
+                var formatQty = FormatQty(mappingUnit, mappingQty)
+                formatQtys.add(formatQty)
+            }
+            bonusItemArrayList.add(ItemModel(itemName, itemCode, price, unit, "0", formatQtys))
+        }
+
+        bonusItemGoodReceiptAdapter!!.updateData(bonusItemArrayList)
     }
 
 //    fun getDocDetail(temp: ArrayList<ItemModel>): JSONArray? {

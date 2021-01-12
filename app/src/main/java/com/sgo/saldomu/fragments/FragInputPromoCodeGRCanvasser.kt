@@ -39,6 +39,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
     var custIdEspay = ""
     var docDetails = ""
     var docNo = ""
+    var bonusItems = ""
     var isHavePromoCode = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,6 +57,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
             custIdEspay = bundle!!.getString(DefineValue.CUST_ID_ESPAY, "")
             docNo = bundle!!.getString(DefineValue.DOC_NO, "")
             docDetails = bundle!!.getString(DefineValue.DOC_DETAILS, "")
+            bonusItems = bundle!!.getString(DefineValue.BONUS_ITEMS, "")
         }
 
         promoCodeList!!.add(PromoCodeModel("", "", ""))
@@ -130,6 +132,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.TYPE_ID] = DefineValue.GR
             params[WebParams.DOC_DETAIL] = docDetails
+            params[WebParams.BONUS_ITEMS] = bonusItems
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
             params[WebParams.INVOICE_NOTE] = ""

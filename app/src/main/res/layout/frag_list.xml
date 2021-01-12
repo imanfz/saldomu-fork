@@ -4,21 +4,49 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/item_list"
-        android:layout_margin="@dimen/margin_10dp"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:id="@+id/tv_item_list"
-        android:visibility="gone"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewList"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_10dp"/>
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/item_list"
+            android:layout_margin="@dimen/margin_10dp"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:id="@+id/tv_item_list"
+            android:visibility="gone"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/layout_bonus_item"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/margin_10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bonus_item"
+            android:layout_margin="@dimen/margin_10dp"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:id="@+id/tv_bonusitem_list"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewListBonusItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_10dp"/>
+    </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"
