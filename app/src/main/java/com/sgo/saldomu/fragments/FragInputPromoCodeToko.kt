@@ -16,6 +16,7 @@ import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.ListPOAdapter
 import com.sgo.saldomu.adapter.PromoCodeAdapter
+import com.sgo.saldomu.adapter.PromoCodeTokoAdapter
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -46,7 +47,7 @@ class FragInputPromoCodeToko : BaseFragment() {
     var docDetails = ""
 
     var promoCodeList: ArrayList<PromoCodeModel> = ArrayList()
-    var promoCodeAdapter: PromoCodeAdapter? = null
+    var promoCodeAdapter: PromoCodeTokoAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.fragment_input_promo_code_toko, container, false)
@@ -62,19 +63,15 @@ class FragInputPromoCodeToko : BaseFragment() {
         tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.promo_code))
 
         if (arguments != null) {
-            memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
-            commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
-            docDetails = arguments!!.getString(DefineValue.DOC_DETAILS, "")
+            memberCode = requireArguments().getString(DefineValue.MEMBER_CODE_ESPAY, "")
+            commCode = requireArguments().getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
+            docDetails = requireArguments().getString(DefineValue.DOC_DETAILS, "")
         }
 
-        promoCodeList.add(PromoCodeModel("", "", ""))
-        promoCodeAdapter = PromoCodeAdapter(activity, promoCodeList, object : PromoCodeAdapter.Listener {
+        promoCodeList.add(PromoCodeModel("", "1", ""))
+        promoCodeAdapter = PromoCodeTokoAdapter(activity, promoCodeList, object : PromoCodeTokoAdapter.Listener {
             override fun onChangePromoCode(position: Int, promoCode: String) {
                 promoCodeList[position].code = promoCode
-            }
-
-            override fun onChangePromoQty(position: Int, promoQty: String) {
-                promoCodeList[position].qty = promoQty
             }
 
             override fun onDelete(position: Int) {
@@ -87,7 +84,7 @@ class FragInputPromoCodeToko : BaseFragment() {
         promo_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         btn_add_promo.setOnClickListener {
-            promoCodeList.add(PromoCodeModel("", "", ""))
+            promoCodeList.add(PromoCodeModel("", "1", ""))
             promoCodeAdapter!!.notifyDataSetChanged()
         }
 
@@ -134,7 +131,7 @@ class FragInputPromoCodeToko : BaseFragment() {
                                         bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, ""))
                                         bundle.putString(DefineValue.PAYMENT_OPTION, arguments!!.getString(DefineValue.PAYMENT_OPTION, ""))
                                         bundle.putString(DefineValue.DOC_DETAILS, response.getString(WebParams.DOC_DETAILS))
-                                        bundle.putString(DefineValue.PROMO_CODE, jsonArray.toString())
+                                        bundle.putString(DefineValue.PROMO_CODE, jsonArray)
                                         bundle.putString(DefineValue.EBD_CONFIRM_DATA, response.toString())
 
                                         frag.arguments = bundle
@@ -172,13 +169,7 @@ class FragInputPromoCodeToko : BaseFragment() {
 
     private fun checkArrayPromo(): Boolean {
         for (i in promoCodeList.indices) {
-            if (promoCodeList[i].code != "" && promoCodeList[i].qty == "" ||
-                    promoCodeList[i].code == "" && promoCodeList[i].qty != "") {
-                Toast.makeText(context, resources.getString(R.string.invalid_promo_code), Toast.LENGTH_SHORT).show()
-                return false
-            }
-
-            if (promoCodeList.size > 0 && promoCodeList[i].code == "" && promoCodeList[i].qty == "") {
+            if (promoCodeList.size > 0 && promoCodeList[i].code == "") {
                 promoCodeList.removeAt(i)
                 promoCodeAdapter!!.notifyDataSetChanged()
                 return true

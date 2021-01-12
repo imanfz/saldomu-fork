@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.fragment.app.ListFragment
 import com.sgo.saldomu.R
 import com.sgo.saldomu.adapter.ReportTabAdapter
 import com.sgo.saldomu.dialogs.InformationDialog
+import com.sgo.saldomu.fragments.FragReport
 import com.sgo.saldomu.widgets.BaseActivity
 import kotlinx.android.synthetic.main.activity_report.*
 import java.util.*
@@ -27,7 +27,10 @@ class ReportEBDActivity : BaseActivity() {
         val pageMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, resources.displayMetrics).toInt()
         informationDialog = InformationDialog.newInstance(10);
         val titles = this.resources.getStringArray(R.array.report_list_ebd)
-        val mList: List<ListFragment> = ArrayList()
+        val mList = ArrayList<ListFragment>()
+        mList.add(FragReport.newInstance(FragReport.REPORT_EBD_PO))
+        mList.add(FragReport.newInstance(FragReport.REPORT_EBD_GR))
+        mList.add(FragReport.newInstance(FragReport.REPORT_EBD_INVOICE))
         val adapter = ReportTabAdapter(supportFragmentManager, this, mList, titles)
         report_pager_activity.adapter = adapter
         report_pager_activity.pageMargin = pageMargin

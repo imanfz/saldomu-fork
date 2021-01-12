@@ -21,6 +21,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.models.AnchorListItem
 import com.sgo.saldomu.models.retrofit.*
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.dialog_notification.*
@@ -34,6 +35,7 @@ class FragRegisterNewMember : BaseFragment() {
     var provinceID = ""
     var districtID = ""
     var subDistrictID = ""
+    var anchorCodeEspay = ""
     var latitude = 0.0
     var longitude = 0.0
 
@@ -45,6 +47,7 @@ class FragRegisterNewMember : BaseFragment() {
     val subDistrictNameList: ArrayList<String> = arrayListOf()
     val urbanVillageList: ArrayList<UrbanVillageModel> = arrayListOf()
     val urbanVillageNameList: ArrayList<String> = arrayListOf()
+    val anchorList = ArrayList<AnchorListItem>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_register_ebd, container, false)
@@ -98,6 +101,7 @@ class FragRegisterNewMember : BaseFragment() {
             getLocationData()
         }
         getLocationData()
+        getListAnchor()
     }
 
     private fun inputValidation(): Boolean {
@@ -218,6 +222,50 @@ class FragRegisterNewMember : BaseFragment() {
         })
     }
 
+    private fun getListAnchor() {
+        showProgressDialog()
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_ANCHOR)
+        params[WebParams.USER_ID] = userPhoneID
+        Timber.d("isi params list anchor:%s", params.toString())
+
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_ANCHOR, params, object : ObjListeners {
+            override fun onResponses(response: JSONObject) {
+                val jsonArray = response.getJSONArray(WebParams.ANCHOR_LIST)
+                for (i in 0 until jsonArray.length()) {
+                    val anchorListItem = getGson().fromJson(jsonArray.getJSONObject(i).toString(), AnchorListItem::class.java)
+                    anchorList.add(anchorListItem)
+                }
+                val anchorListOption = ArrayList<String>()
+                for (i in anchorList.indices) {
+                    anchorListOption.add(anchorList[i].anchorName)
+                }
+                val anchorOptionsAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, anchorListOption)
+                anchorOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinner_anchor.adapter = anchorOptionsAdapter
+                spinner_anchor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                        anchorCodeEspay = anchorList[p2].anchorCode
+                    }
+
+                    override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                    }
+
+                }
+
+            }
+
+            override fun onError(throwable: Throwable?) {
+                dismissProgressDialog()
+            }
+
+            override fun onComplete() {
+                dismissProgressDialog()
+            }
+
+        })
+    }
+
     private fun submitRegisterEBD() {
         showProgressDialog()
         val custName = et_store_owner_name.text.toString()
@@ -236,6 +284,7 @@ class FragRegisterNewMember : BaseFragment() {
         params[WebParams.ZIP_CODE] = et_postal_code.text.toString()
         params[WebParams.CUST_NAME] = custName
         params[WebParams.SHOP_NAME] = shopName
+        params[WebParams.ANCHOR_CODE_ESPAY] = anchorCodeEspay
 
         Timber.d("isi params register store:%s", params.toString())
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_NEW_EBD, params, object : ObjListeners {
@@ -244,7 +293,7 @@ class FragRegisterNewMember : BaseFragment() {
                 val message = response.getString(WebParams.ERROR_MESSAGE)
                 when (code) {
                     WebParams.SUCCESS_CODE -> {
-                        showDialog(response)
+                        showDialog()
                     }
                     WebParams.LOGOUT_CODE -> {
                         AlertDialogLogout.getInstance().showDialoginMain(activity, message)
@@ -275,20 +324,19 @@ class FragRegisterNewMember : BaseFragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun showDialog(response: JSONObject) {
-        val dialog = Dialog(activity!!)
+    private fun showDialog() {
+        val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
 
         dialog.title_dialog.text = resources.getString(R.string.shop_registration_success)
         dialog.message_dialog.visibility = View.VISIBLE
-        dialog.message_dialog.text = getString(R.string.your_store_code) + " " + getString(R.string.titik_dua) + " " + response.getString(WebParams.MEMBER_CODE) + "\n" +
-                getString(R.string.your_community_code) + " " + getString(R.string.titik_dua) + " " + response.getString(WebParams.COMM_CODE)
+        dialog.message_dialog.text = getString(R.string.register_success_wait_for_verification)
 
         dialog.btn_dialog_notification_ok.setOnClickListener {
             dialog.dismiss()
-            fragmentManager!!.popBackStack()
+            requireFragmentManager().popBackStack()
         }
         dialog.show()
     }
