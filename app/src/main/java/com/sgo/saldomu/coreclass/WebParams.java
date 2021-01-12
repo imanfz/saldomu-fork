@@ -693,6 +693,7 @@ public class WebParams {
     public static String CODE = "code";
     public static String QTY = "qty";
     public static String BONUS_ITEMS = "bonus_items";
+    public static String PREV_BONUS_ITEMS = "prev_bonus_items";
     public static String TOTAL_DISC = "total_disc";
     public static String REMARK_MAPPING_UNITS = "remark_mapping_units";
     public static String IS_CHECK_BALANCE = "is_check_balance";

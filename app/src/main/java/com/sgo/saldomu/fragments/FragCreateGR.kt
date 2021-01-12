@@ -117,15 +117,13 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
                 itemArrayList.add(ItemModel(itemName, itemCode, price, unit, subtotal, formatQtys))
             }
         }
-
-
         adapterListItemConfirmGR!!.updateData(itemArrayList)
     }
 
     fun initializeListBonusItem()
     {
 
-        itemArrayList.clear()
+        itemBonusArrayList.clear()
         adapterListBonusItem = AdapterListBonusItem(activity, itemBonusArrayList, this)
         frag_gr_confirm_bonus_item_list_field.adapter = adapterListBonusItem
         frag_gr_confirm_bonus_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
