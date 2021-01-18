@@ -8,12 +8,10 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CanvasserInvoiceActivity
-import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.ListInvoiceAdapter
 import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.DefineValue
@@ -28,11 +26,9 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.*
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_list.*
 import kotlinx.android.synthetic.main.frag_list.btn_proses_gr
 import kotlinx.android.synthetic.main.frag_list_invoice.*
 import kotlinx.android.synthetic.main.frag_list_po.recyclerViewList
-import kotlinx.android.synthetic.main.list_recycle_history_item.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -213,7 +209,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
             showProgressDialog()
             extraSignature = obj!!.member_code + obj!!.comm_code + obj!!.doc_no
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_PAYMENT, extraSignature)
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQUEST_PAYMENT, extraSignature)
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.COMM_CODE_ESPAY] = obj!!.comm_code
             params[WebParams.MEMBER_CODE_ESPAY] = obj!!.member_code
@@ -240,7 +236,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
 
             Timber.d("params request payment canvasser:$params")
-            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_PAYMENT, params,
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQUEST_PAYMENT, params,
                     object : ObjListeners {
                         override fun onResponses(response: JSONObject) {
                             try {

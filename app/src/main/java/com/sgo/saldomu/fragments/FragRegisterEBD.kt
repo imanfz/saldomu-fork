@@ -40,8 +40,8 @@ class FragRegisterEBD : BaseFragment() {
         menuStrings.add(getString(R.string.existing_store))
         menuStrings.add(getString(R.string.store_list))
         menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_register_new_store, null)!!)
-        menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_biller, null)!!)
-        menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_biller, null)!!)
+        menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_register_existing_store, null)!!)
+        menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.ic_list_store, null)!!)
 
         adapter = GridMenu(requireContext(), menuStrings, menuDrawables)
         grid.adapter = adapter

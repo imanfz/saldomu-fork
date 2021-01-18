@@ -421,6 +421,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_report_ebd))) {
                     Intent i = new Intent(getActivity(), ReportEBDActivity.class);
+                    if (menuStrings.contains(getResources().getString(R.string.menu_item_title_ebd) + " " + getResources().getString(R.string.menu_item_title_ebd_toko)))
+                        i.putExtra(DefineValue.EBD, DefineValue.TOKO);
+                    else if (menuStrings.contains(getResources().getString(R.string.menu_item_title_ebd) + " " + getResources().getString(R.string.menu_item_title_ebd_canvasser)))
+                        i.putExtra(DefineValue.EBD, DefineValue.CANVASSER);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     if (isDormant.equalsIgnoreCase("Y")) {

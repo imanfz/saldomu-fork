@@ -46,6 +46,7 @@ import timber.log.Timber
 
 class FragOrderConfirmToko : BaseFragment() {
     var memberCode = ""
+    var shopName = ""
     var commID = ""
     var commCode = ""
     var paymentOption = ""
@@ -77,6 +78,7 @@ class FragOrderConfirmToko : BaseFragment() {
 
         if (arguments != null) {
             memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
+            shopName = arguments!!.getString(DefineValue.MEMBER_SHOP_NAME, "")
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             paymentOption = arguments!!.getString(DefineValue.PAYMENT_OPTION, "")
             docDetail = arguments!!.getString(DefineValue.DOC_DETAILS, "")
@@ -210,6 +212,7 @@ class FragOrderConfirmToko : BaseFragment() {
         params[WebParams.AMOUNT] = ebdConfirmModel.total_amount
         params[WebParams.CUST_TYPE] = DefineValue.TOKO
         params[WebParams.SHOP_PHONE] = userPhoneID
+        params[WebParams.SHOP_NAME] = shopName
 
         Timber.d("isi params payment toko:$params")
 

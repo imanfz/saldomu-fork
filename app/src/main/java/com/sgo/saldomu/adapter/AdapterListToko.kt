@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
-import com.sgo.saldomu.models.EBDCommunityModel
 import com.sgo.saldomu.models.MemberListItem
 
 class AdapterListToko(var context: Context, var itemList: List<MemberListItem>, var listener: OnClick) : RecyclerView.Adapter<AdapterListToko.Holder>() {

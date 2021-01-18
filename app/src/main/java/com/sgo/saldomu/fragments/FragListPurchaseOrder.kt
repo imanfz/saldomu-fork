@@ -35,6 +35,7 @@ class FragListPurchaseOrder : BaseFragment() {
     private val docTypeID = "PO"
     var memberCode: String? = null
     var commCode: String? = null
+    var shopName: String? = null
 
     var itemList = ArrayList<ListPOModel>()
     var itemListAdapter: ListPOAdapter? = null
@@ -57,6 +58,7 @@ class FragListPurchaseOrder : BaseFragment() {
             val bundle = Bundle()
             bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
+            bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
             fragment.arguments = bundle
             tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.choose_catalog), true, (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
         }
@@ -64,6 +66,7 @@ class FragListPurchaseOrder : BaseFragment() {
         if (arguments != null) {
             memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
+            shopName = arguments!!.getString(DefineValue.MEMBER_SHOP_NAME, "")
         }
 
         itemListAdapter = ListPOAdapter(itemList, activity) {

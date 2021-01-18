@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
+import com.sgo.saldomu.activities.ReportEBDActivity
+import com.sgo.saldomu.activities.ReportEBDListActivity
 import com.sgo.saldomu.adapter.AdapterEBDCommunityList
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -21,18 +23,22 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.EBDCommunityModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
+import kotlinx.android.synthetic.main.frag_input_store_code.*
 import kotlinx.android.synthetic.main.frag_list_item.*
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
 
-class FragListCommunityToko : BaseFragment() {
+class FragReportEBD : BaseFragment() {
 
     private val ebdCommunityModelArrayList = ArrayList<EBDCommunityModel>()
     private var adapterEBDCommunityList: AdapterEBDCommunityList? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.frag_list_item, container, false)
+        if (arguments!!.getString(DefineValue.EBD) == DefineValue.TOKO)
+            v = inflater.inflate(R.layout.frag_list_item, container, false)
+        if (arguments!!.getString(DefineValue.EBD) == DefineValue.CANVASSER)
+            v = inflater.inflate(R.layout.frag_input_store_code, container, false)
         return v
     }
 
@@ -41,23 +47,29 @@ class FragListCommunityToko : BaseFragment() {
         ebdCommunityModelArrayList.clear()
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
-        val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
-        tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.purchase_order))
-
-        adapterEBDCommunityList = AdapterEBDCommunityList(context!!, ebdCommunityModelArrayList, object : AdapterEBDCommunityList.OnClick {
-            override fun onClick(pos: Int) {
-                val fragment = FragListPurchaseOrder()
-                val bundle = Bundle()
-                bundle.putString(DefineValue.MEMBER_CODE_ESPAY, ebdCommunityModelArrayList[pos].member_code)
-                bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, ebdCommunityModelArrayList[pos].comm_code)
-                bundle.putString(DefineValue.MEMBER_SHOP_NAME, ebdCommunityModelArrayList[pos].shop_name)
-                fragment.arguments = bundle
-                tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.list_po), true, tokoPurchaseOrderActivity.FRAG_INPUT_ITEM_TAG)
+        val reportEBDActivity = activity as ReportEBDActivity
+        reportEBDActivity.initializeToolbar(getString(R.string.menu_item_title_report_ebd))
+        if (arguments!!.getString(DefineValue.EBD) == DefineValue.TOKO) {
+            adapterEBDCommunityList = AdapterEBDCommunityList(context!!, ebdCommunityModelArrayList, object : AdapterEBDCommunityList.OnClick {
+                override fun onClick(pos: Int) {
+                    val intent = Intent(activity, ReportEBDListActivity::class.java)
+                    intent.putExtra(DefineValue.MEMBER_CODE_ESPAY, ebdCommunityModelArrayList[pos].member_code)
+                    intent.putExtra(DefineValue.COMMUNITY_CODE_ESPAY, ebdCommunityModelArrayList[pos].comm_code)
+                    startActivity(intent)
+                }
+            })
+            recyclerView.adapter = adapterEBDCommunityList
+            recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            getListCommunity()
+        }
+        if (arguments!!.getString(DefineValue.EBD) == DefineValue.CANVASSER){
+            btn_submit.setOnClickListener {
+                val intent = Intent(activity, ReportEBDListActivity::class.java)
+                intent.putExtra(DefineValue.MEMBER_CODE_ESPAY, et_store_code.text.toString())
+                intent.putExtra(DefineValue.COMMUNITY_CODE_ESPAY, "")
+                startActivity(intent)
             }
-        })
-        recyclerView.adapter = adapterEBDCommunityList
-        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        getListCommunity()
+        }
     }
 
     private fun getListCommunity() {

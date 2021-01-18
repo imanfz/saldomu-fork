@@ -279,6 +279,10 @@
 
     <style name="keyboard_frame">
         <item name="android:layout_weight">1</item>
+
+    </style><style name="switch_text">
+        <item name="android:textSize">8sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <style name="keyboard_button">

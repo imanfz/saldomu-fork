@@ -128,6 +128,7 @@ class FragInputPromoCodeToko : BaseFragment() {
 
                                         val bundle = Bundle()
                                         bundle.putString(DefineValue.MEMBER_CODE_ESPAY, arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, ""))
+                                        bundle.putString(DefineValue.MEMBER_SHOP_NAME, arguments!!.getString(DefineValue.MEMBER_SHOP_NAME, ""))
                                         bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, ""))
                                         bundle.putString(DefineValue.PAYMENT_OPTION, arguments!!.getString(DefineValue.PAYMENT_OPTION, ""))
                                         bundle.putString(DefineValue.DOC_DETAILS, response.getString(WebParams.DOC_DETAILS))

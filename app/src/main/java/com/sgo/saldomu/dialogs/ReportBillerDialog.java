@@ -26,6 +26,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -33,11 +34,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BluetoothPrinter.zj.BluetoothService;
 import com.sgo.saldomu.BluetoothPrinter.zj.DevicesList;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.adapter.AdapterListItemReportEBD;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -45,6 +50,8 @@ import com.sgo.saldomu.coreclass.JsonSorting;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.ViewToBitmap;
+import com.sgo.saldomu.models.retrofit.EBDDocStrukReportModel;
+import com.sgo.saldomu.models.retrofit.ItemsItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -860,49 +867,94 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_agent_name.setText(args.getString(DefineValue.AGENT_NAME));
                 tv_agent_phone.setText(args.getString(DefineValue.AGENT_PHONE));
             } else if (buss_scheme_code.equals(DefineValue.EBD)) {
-                stub.setLayoutResource(R.layout.layout_dialog_report_ebd);
-                View inflated = stub.inflate();
-                inflated.setVisibility(View.VISIBLE);
+                if (args.containsKey(DefineValue.IS_REPORT)) {
+                    stub.setLayoutResource(R.layout.layout_dialog_report_ebd_2);
+                    View inflated = stub.inflate();
+                    inflated.setVisibility(View.VISIBLE);
 
-                TextView tv_report_type = inflated.findViewById(R.id.tv_report_transaction_type);
-                TextView tv_comm_code = inflated.findViewById(R.id.dialog_denom_comm_code);
-                TextView tv_store_code = inflated.findViewById(R.id.dialog_denom_store_code);
-                TextView tv_bank_product = inflated.findViewById(R.id.dialog_denom_bank_product);
-                TextView tv_bank_order_number = inflated.findViewById(R.id.dialog_denom_order_number);
-                TextView tv_amount = inflated.findViewById(R.id.dialog_denom_amount);
-                TextView tv_total_discount = inflated.findViewById(R.id.dialog_denom_discount);
-                TextView tv_fee = inflated.findViewById(R.id.dialog_denom_fee_value);
-                TextView tv_total_amount = inflated.findViewById(R.id.dialog_denom_totalamount_value);
+                    Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                    tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
+                    if (!isSuccess) {
+                        String transRemark = args.getString(DefineValue.TRX_REMARK);
+                        tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                        tv_trans_remark_sub.setText(transRemark);
+                    }
+
+                    TextView tv_comm_code = inflated.findViewById(R.id.dialog_denom_comm_code);
+                    TextView tv_store_code = inflated.findViewById(R.id.dialog_denom_store_code);
+                    TextView tv_partner_code = inflated.findViewById(R.id.dialog_denom_partner_code);
+                    TableRow tr_bonus_items = inflated.findViewById(R.id.row_bonus_item);
+                    TextView tv_paid_amount = inflated.findViewById(R.id.dialog_denom_paid_amount);
+                    TextView tv_amount = inflated.findViewById(R.id.dialog_denom_amount);
+                    TextView tv_total_discount = inflated.findViewById(R.id.dialog_denom_discount);
+                    TextView tv_total_amount = inflated.findViewById(R.id.dialog_denom_totalamount_value);
+                    TableLayout tableLayoutItem = inflated.findViewById(R.id.table_layout_item);
+
+                    tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
+                    tv_store_code.setText(args.getString(DefineValue.STORE_CODE));
+                    tv_partner_code.setText(args.getString(DefineValue.PARTNER_CODE_ESPAY));
+                    tv_paid_amount.setText(args.getString(DefineValue.PAID_AMOUNT));
+                    tv_amount.setText(args.getString(DefineValue.AMOUNT));
+                    tv_total_discount.setText(args.getString(DefineValue.TOTAL_DISC));
+                    tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
+
+                    Gson gson = new Gson();
+                    EBDDocStrukReportModel ebdDocStrukReportModel = gson.fromJson(args.getString(DefineValue.RESPONSE), EBDDocStrukReportModel.class);
+                    List<ItemsItem> items = ebdDocStrukReportModel.getItems();
+                    List<ItemsItem> bonusItems = ebdDocStrukReportModel.getBonusItems();
+                    if (bonusItems.isEmpty())
+                        tr_bonus_items.setVisibility(View.GONE);
+                    createTableItem(items, tableLayoutItem);
+//                    AdapterListItemReportEBD adapterListItem = new AdapterListItemReportEBD(getContext(), items);
+//                    AdapterListItemReportEBD adapterListBonusItem = new AdapterListItemReportEBD(getContext(), bonusItems);
+//                    rv_items.setAdapter(adapterListItem);
+//                    rv_bonus_items.setAdapter(adapterListBonusItem);
+
+                } else {
+                    stub.setLayoutResource(R.layout.layout_dialog_report_ebd);
+                    View inflated = stub.inflate();
+                    inflated.setVisibility(View.VISIBLE);
+
+                    TextView tv_report_type = inflated.findViewById(R.id.tv_report_transaction_type);
+                    TextView tv_comm_code = inflated.findViewById(R.id.dialog_denom_comm_code);
+                    TextView tv_store_code = inflated.findViewById(R.id.dialog_denom_store_code);
+                    TextView tv_bank_product = inflated.findViewById(R.id.dialog_denom_bank_product);
+                    TextView tv_bank_order_number = inflated.findViewById(R.id.dialog_denom_order_number);
+                    TextView tv_amount = inflated.findViewById(R.id.dialog_denom_amount);
+                    TextView tv_total_discount = inflated.findViewById(R.id.dialog_denom_discount);
+                    TextView tv_fee = inflated.findViewById(R.id.dialog_denom_fee_value);
+                    TextView tv_total_amount = inflated.findViewById(R.id.dialog_denom_totalamount_value);
 //                TextView tv_store_name = inflated.findViewById(R.id.tv_report_store_name);
 //                TextView tv_store_address = inflated.findViewById(R.id.tv_report_store_address);
-                TextView tv_agent_name = inflated.findViewById(R.id.dialog_denom_agent_name);
-                TextView tv_agent_phone = inflated.findViewById(R.id.dialog_denom_agent_phone);
+                    TextView tv_agent_name = inflated.findViewById(R.id.dialog_denom_agent_name);
+                    TextView tv_agent_phone = inflated.findViewById(R.id.dialog_denom_agent_phone);
 
-                TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
-                mTableLayout.setVisibility(View.VISIBLE);
+                    TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
+                    mTableLayout.setVisibility(View.VISIBLE);
 
-                createTableDenom(args.getString(DefineValue.DENOM_DETAIL, ""), mTableLayout);
-                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
-                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
-                if (!isSuccess) {
-                    String transRemark = args.getString(DefineValue.TRX_REMARK);
-                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
-                    tv_trans_remark_sub.setText(transRemark);
-                }
+                    createTableDenom(args.getString(DefineValue.DENOM_DETAIL, ""), mTableLayout);
+                    Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                    tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
+                    if (!isSuccess) {
+                        String transRemark = args.getString(DefineValue.TRX_REMARK);
+                        tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                        tv_trans_remark_sub.setText(transRemark);
+                    }
 
-                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
-                tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
-                tv_store_code.setText(args.getString(DefineValue.STORE_CODE));
-                tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
-                tv_bank_order_number.setText(args.getString(DefineValue.ORDER_ID));
-                tv_amount.setText(args.getString(DefineValue.AMOUNT));
-                tv_total_discount.setText(args.getString(DefineValue.TOTAL_DISC));
-                tv_fee.setText(args.getString(DefineValue.FEE));
-                tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
+                    tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
+                    tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
+                    tv_store_code.setText(args.getString(DefineValue.STORE_CODE));
+                    tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
+                    tv_bank_order_number.setText(args.getString(DefineValue.ORDER_ID));
+                    tv_amount.setText(args.getString(DefineValue.AMOUNT));
+                    tv_total_discount.setText(args.getString(DefineValue.TOTAL_DISC));
+                    tv_fee.setText(args.getString(DefineValue.FEE));
+                    tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
 //                tv_store_name.setText(args.getString(DefineValue.STORE_NAME));
 //                tv_store_address.setText(args.getString(DefineValue.STORE_ADDRESS));
-                tv_agent_name.setText(args.getString(DefineValue.AGENT_NAME));
-                tv_agent_phone.setText(args.getString(DefineValue.AGENT_PHONE));
+                    tv_agent_name.setText(args.getString(DefineValue.AGENT_NAME));
+                    tv_agent_phone.setText(args.getString(DefineValue.AGENT_PHONE));
+                }
             } else if (buss_scheme_code.equalsIgnoreCase(DefineValue.DGI)) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_dgi);
                 View inflated = stub.inflate();
@@ -1049,6 +1101,38 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         });
 
         return view;
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void createTableItem(List<ItemsItem> items, TableLayout tableLayoutItem) {
+        TextView detail_field;
+        TableRow layout_table_row;
+
+        TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
+                TableLayout.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                TableRow.LayoutParams.WRAP_CONTENT, 8.0f);
+        int margin = 8;
+        rowParams.setMargins(margin, margin, margin, margin);
+
+        for (int i = 0; i < items.size(); i++) {
+            ItemsItem item = items.get(i);
+            detail_field = new TextView(getActivity());
+            detail_field.setGravity(Gravity.LEFT);
+            detail_field.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            detail_field.setLayoutParams(rowParams);
+            detail_field.setTextColor(Color.parseColor("#757575"));
+            View line = new View(getActivity());
+            line.setLayoutParams(new LinearLayout.LayoutParams((ViewGroup.LayoutParams.MATCH_PARENT), 1));
+            line.setBackgroundColor(Color.parseColor("#e0e0e0"));
+            line.setPadding(8, 3, 3, 3);
+            layout_table_row = new TableRow(getActivity());
+            layout_table_row.setLayoutParams(tableParams);
+            layout_table_row.addView(detail_field);
+            detail_field.setText(item.getItemName() + " " + item.getFormattedQty() + " " + CurrencyFormat.format(item.getPrice()) + " " + CurrencyFormat.format(item.getSubtotal()));
+            tableLayoutItem.addView(layout_table_row);
+            tableLayoutItem.addView(line);
+        }
     }
 
     private void printStrukImage() {
