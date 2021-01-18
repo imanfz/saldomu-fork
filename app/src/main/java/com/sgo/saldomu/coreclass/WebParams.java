@@ -680,6 +680,7 @@ public class WebParams {
     public static String REFF_NO = "reff_no";
     public static String MAPPING_ITEMS = "mapping_items";
     public static String PAID_STATUS = "paid_status";
+    public static String PAID_STATUS_REMARK = "paid_status_remark";
     public static String PAYMENT_METHODS = "payment_methods";
     public static String CREATE_AT = "created_at";
     public static String ISSUE_DATE = "issue_date";
@@ -693,6 +694,7 @@ public class WebParams {
     public static String CODE = "code";
     public static String QTY = "qty";
     public static String BONUS_ITEMS = "bonus_items";
+    public static String PREV_BONUS_ITEMS = "prev_bonus_items";
     public static String TOTAL_DISC = "total_disc";
     public static String REMARK_MAPPING_UNITS = "remark_mapping_units";
     public static String IS_CHECK_BALANCE = "is_check_balance";

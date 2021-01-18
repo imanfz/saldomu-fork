@@ -139,6 +139,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
                                         itemArrayList.clear()
                                         initializeListProduct(items)
                                         if (!bonusItems.equals("") || bonusItems.length != 0 || bonusItems != null) {
+                                            bonusItemArrayList.clear()
                                             layout_bonus_item.visibility = View.VISIBLE
                                             initializeListProductBonus(bonusItems)
                                         }

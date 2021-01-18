@@ -132,7 +132,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.TYPE_ID] = DefineValue.GR
             params[WebParams.DOC_DETAIL] = docDetails
-            params[WebParams.BONUS_ITEMS] = bonusItems
+            params[WebParams.PREV_BONUS_ITEMS] = bonusItems
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
             params[WebParams.INVOICE_NOTE] = ""

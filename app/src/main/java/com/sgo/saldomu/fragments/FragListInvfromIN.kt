@@ -137,6 +137,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
         for (i in 0 until mArrayDoc.length()) {
             val docNo = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_NO)
+            val typeId = mArrayDoc.getJSONObject(i).getString(WebParams.TYPE_ID)
             val docStatus = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_STATUS)
             val totalAmount = mArrayDoc.getJSONObject(i).getString(WebParams.TOTAL_AMOUNT)
             val dueDate = mArrayDoc.getJSONObject(i).getString(WebParams.DUE_DATE)
@@ -148,6 +149,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             val createAt = mArrayDoc.getJSONObject(i).getString(WebParams.CREATE_AT)
             val issueDate = mArrayDoc.getJSONObject(i).getString(WebParams.ISSUE_DATE)
             val paidstats = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS)
+            val paidstatsRemark = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS_REMARK)
             val promoListJsonArray = mArrayDoc.getJSONObject(i).getJSONArray(WebParams.PROMO)
             var promoArrayList = ArrayList<PromoCanvasserModel>()
             for (i in 0 until promoListJsonArray.length()) {
@@ -166,12 +168,13 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             listPOModel.cust_id = custID
             listPOModel.comm_code = commCode
             listPOModel.member_code = memberCode
-            listPOModel.type_id = type_id
+            listPOModel.type_id = typeId
             listPOModel.reff_id = reffId
             listPOModel.reff_no = reffNo
             listPOModel.created_at = createAt
             listPOModel.issue_date = issueDate
             listPOModel.paid_status = paidstats
+            listPOModel.paid_status_remark = paidstatsRemark
             listPOModel.promo = promoArrayList
 
             docListArrayList.add(listPOModel)

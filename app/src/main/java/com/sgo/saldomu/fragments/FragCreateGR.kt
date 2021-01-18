@@ -117,15 +117,13 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
                 itemArrayList.add(ItemModel(itemName, itemCode, price, unit, subtotal, formatQtys))
             }
         }
-
-
         adapterListItemConfirmGR!!.updateData(itemArrayList)
     }
 
     fun initializeListBonusItem()
     {
 
-        itemArrayList.clear()
+        itemBonusArrayList.clear()
         adapterListBonusItem = AdapterListBonusItem(activity, itemBonusArrayList, this)
         frag_gr_confirm_bonus_item_list_field.adapter = adapterListBonusItem
         frag_gr_confirm_bonus_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -179,7 +177,7 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.AMOUNT] = amount
             params[WebParams.PROMO] = promoCode
-            params[WebParams.TOTAL_DISC] = totalDisc
+            params[WebParams.DISCOUNT_AMOUNT] = totalDisc
             params[WebParams.TOTAL_AMOUNT] = totalAmount
             params[WebParams.ACTION_CODE] = "N"
             Timber.d("params create GR:$params")

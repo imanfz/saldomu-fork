@@ -50,7 +50,7 @@ public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.
         holder.docStatus.setText(docListArrayList.get(position).getDoc_status());
         holder.totalAmount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(docListArrayList.get(position).getTotal_amount()));
         holder.dueDate.setText(docListArrayList.get(position).getDue_date());
-        holder.paidStatus.setText(docListArrayList.get(position).getPaid_status());
+        holder.paidStatus.setText(docListArrayList.get(position).getPaid_status_remark());
 
 
         holder.tv_custId.setText(docListArrayList.get(position).getCust_id());

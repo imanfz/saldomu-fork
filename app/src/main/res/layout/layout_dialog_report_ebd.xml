@@ -74,7 +74,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/agent_name"
+            android:text="@string/regist1_text_nama"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/agent_phone"
+            android:text="@string/phone"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
 
     <TableRow>
         <TextView
-                android:text="@string/bank_product"
+                android:text="@string/billerinput_text_payment_options"
                 android:layout_span="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
