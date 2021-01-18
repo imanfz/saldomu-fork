@@ -55,6 +55,9 @@ class ListPOModel() : Parcelable {
     @Expose
     var paid_status: String? = null
 
+    @SerializedName("paid_status_remark")
+    @Expose
+    var paid_status_remark: String? = null
 
 
     @SerializedName("issue_date")
@@ -80,6 +83,7 @@ class ListPOModel() : Parcelable {
         reff_no = parcel.readString()
         reff_id = parcel.readString()
         paid_status = parcel.readString()
+        paid_status_remark = parcel.readString()
         issue_date = parcel.readString()
         created_at = parcel.readString()
     }

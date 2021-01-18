@@ -122,7 +122,7 @@ class FragCreatePOCanvasser : BaseFragment() {
         params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
         params[WebParams.ACTION_CODE] = "N"
         params[WebParams.TOTAL_AMOUNT] = totalAmount
-        params[WebParams.TOTAL_DISC] = totalDiscount
+        params[WebParams.DISCOUNT_AMOUNT] = totalDiscount
 
         Timber.d("isi params create PO:$params")
 

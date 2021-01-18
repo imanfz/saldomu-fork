@@ -680,6 +680,7 @@ public class WebParams {
     public static String REFF_NO = "reff_no";
     public static String MAPPING_ITEMS = "mapping_items";
     public static String PAID_STATUS = "paid_status";
+    public static String PAID_STATUS_REMARK = "paid_status_remark";
     public static String PAYMENT_METHODS = "payment_methods";
     public static String CREATE_AT = "created_at";
     public static String ISSUE_DATE = "issue_date";
