@@ -889,6 +889,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_total_discount = inflated.findViewById(R.id.dialog_denom_discount);
                     TextView tv_total_amount = inflated.findViewById(R.id.dialog_denom_totalamount_value);
                     TableLayout tableLayoutItem = inflated.findViewById(R.id.table_layout_item);
+                    TableLayout tableLayoutItemBonus = inflated.findViewById(R.id.table_layout_item_bonus);
 
                     tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
                     tv_store_code.setText(args.getString(DefineValue.STORE_CODE));
@@ -905,6 +906,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     if (bonusItems.isEmpty())
                         tr_bonus_items.setVisibility(View.GONE);
                     createTableItem(items, tableLayoutItem);
+                    createTableItem(bonusItems, tableLayoutItemBonus);
 //                    AdapterListItemReportEBD adapterListItem = new AdapterListItemReportEBD(getContext(), items);
 //                    AdapterListItemReportEBD adapterListBonusItem = new AdapterListItemReportEBD(getContext(), bonusItems);
 //                    rv_items.setAdapter(adapterListItem);
