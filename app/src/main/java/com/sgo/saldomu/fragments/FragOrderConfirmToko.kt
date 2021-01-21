@@ -152,6 +152,7 @@ class FragOrderConfirmToko : BaseFragment() {
             params[WebParams.IS_CHECK_BALANCE] = "Y"
         else if (paymentOption == getString(R.string.pay_later))
             params[WebParams.IS_CHECK_BALANCE] = "N"
+        params[WebParams.PROMO_CODE] = promoCode
 
         Timber.d("isi params create PO:$params")
 

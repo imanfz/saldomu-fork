@@ -21,6 +21,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.models.DocDetailsItem
 import com.sgo.saldomu.models.FormatQtyItem
 import com.sgo.saldomu.models.MappingItemsItem
 import com.sgo.saldomu.models.retrofit.jsonModel
@@ -38,8 +39,10 @@ class FragPurchaseOrderDetail : BaseFragment() {
     var docNo: String = ""
     var type: String = ""
 
-    private var adapterDetailPO: AdapterListDetailPO? = null
+    private var adapterDetailPOItem: AdapterListDetailPO? = null
+    private var adapterDetailPOBonusItem: AdapterListDetailPO? = null
     private val itemList = ArrayList<MappingItemsItem>()
+    private val bonusItemList = ArrayList<MappingItemsItem>()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_detail_po, container, false)
         return v
@@ -59,7 +62,7 @@ class FragPurchaseOrderDetail : BaseFragment() {
             type = arguments!!.getString(DefineValue.TYPE, "")
         }
 
-        if (type.equals(DefineValue.CANVASSER)) {
+        if (type == DefineValue.CANVASSER) {
             val canvasserPOActivity = activity as CanvasserPOActivity
             canvasserPOActivity.initializeToolbar(getString(R.string.detail_document))
         } else {
@@ -67,9 +70,12 @@ class FragPurchaseOrderDetail : BaseFragment() {
             tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.detail_document))
         }
 
-        adapterDetailPO = AdapterListDetailPO(context!!, itemList)
-        recyclerViewList.adapter = adapterDetailPO
+        adapterDetailPOItem = AdapterListDetailPO(context!!, itemList)
+        adapterDetailPOBonusItem = AdapterListDetailPO(context!!, bonusItemList)
+        recyclerViewList.adapter = adapterDetailPOItem
+        recyclerViewListBonus.adapter = adapterDetailPOBonusItem
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerViewListBonus.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         getPODetail()
 
@@ -98,6 +104,7 @@ class FragPurchaseOrderDetail : BaseFragment() {
                                 tv_docNo.text = response.getString(WebParams.DOC_NO)
                                 tv_totalAmount.text = getString(R.string.currency) + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_AMOUNT))
                                 val mArrayItem = JSONArray(response.getString(WebParams.ITEMS))
+                                val bonusItem = response.getString(WebParams.BONUS_ITEMS)
                                 for (i in 0 until mArrayItem.length()) {
                                     val itemName = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_NAME)
                                     val itemCode = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_CODE)
@@ -121,7 +128,14 @@ class FragPurchaseOrderDetail : BaseFragment() {
                                     mappingItemsItem.format_qty = formatQtyItemList
                                     itemList.add(mappingItemsItem)
                                 }
-                                adapterDetailPO!!.notifyDataSetChanged()
+                                if (bonusItem != "") {
+                                    val model = getGson().fromJson(response.toString(), DocDetailsItem::class.java)
+                                    bonusItemList.addAll(model.bonus_items)
+                                } else
+                                    layout_bonus_item.visibility = View.GONE
+
+                                adapterDetailPOItem!!.notifyDataSetChanged()
+                                adapterDetailPOBonusItem!!.notifyDataSetChanged()
                             }
                             WebParams.LOGOUT_CODE -> {
                                 AlertDialogLogout.getInstance().showDialoginMain(activity, message)
@@ -151,8 +165,7 @@ class FragPurchaseOrderDetail : BaseFragment() {
                 })
     }
 
-    fun payInvoice()
-    {
+    fun payInvoice() {
 
     }
 
