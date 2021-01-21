@@ -37,6 +37,7 @@ class FragListItemToko : BaseFragment() {
 
     var memberCode = ""
     var commCode = ""
+    var shopName = ""
     var paymentOption = ""
 
     val itemList = ArrayList<EBDCatalogModel>()
@@ -56,6 +57,7 @@ class FragListItemToko : BaseFragment() {
         if (arguments != null) {
             memberCode = requireArguments().getString(DefineValue.MEMBER_CODE_ESPAY, "")
             commCode = requireArguments().getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
+            shopName = requireArguments().getString(DefineValue.MEMBER_SHOP_NAME, "")
         }
 
         itemListAdapter = AdapterEBDCatalogList(requireContext(), itemList, object : AdapterEBDCatalogList.Listener {
@@ -159,6 +161,7 @@ class FragListItemToko : BaseFragment() {
 
                     val bundle = Bundle()
                     bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+                    bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
                     bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
                     bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
                     bundle.putString(DefineValue.DOC_DETAILS, docDetail)
@@ -299,6 +302,7 @@ class FragListItemToko : BaseFragment() {
 
                                 val bundle = Bundle()
                                 bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+                                bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
                                 bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
                                 bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
                                 bundle.putString(DefineValue.DOC_DETAILS, docDetail)

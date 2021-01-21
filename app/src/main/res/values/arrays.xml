@@ -112,12 +112,6 @@
         <!--<item>Permintaan</item>-->
     </string-array>
 
-    <string-array name="report_list_ebd">
-        <item>@string/purchase_order</item>
-        <item>@string/good_receipt_title</item>
-        <item>@string/invoice_title</item>
-    </string-array>
-
     <string-array name="report_list_agen">
         <item>@string/transaction</item>
         <!--<item>Transfer</item>-->

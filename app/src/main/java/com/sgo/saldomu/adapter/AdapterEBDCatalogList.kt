@@ -41,29 +41,34 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         holder.itemCode.text = itemCode
         holder.itemName.text = itemName
         holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
-        holder.itemRemark.text = remarkList[0]+ " | " + remarkList[1]
-        holder.itemRemark.visibility = View.GONE
+        if (remarkList.isNotEmpty()) {
+            holder.itemRemark.text = remarkList[0] + " | " + remarkList[1]
+            holder.itemRemark.visibility = View.GONE
 
-        holder.arrowRemark.setOnClickListener {
-            val mRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_arrow)
-            mRotate.interpolator = LinearInterpolator()
-            mRotate.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation) {}
-                override fun onAnimationEnd(animation: Animation) {
-                    holder.arrowRemark.invalidate()
-                    if (holder.itemRemark.visibility == View.VISIBLE) {
-                        holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow_down)
-                        holder.itemRemark.visibility = View.GONE
-                    } else {
-                        holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow)
-                        holder.itemRemark.visibility = View.VISIBLE
+            holder.arrowRemark.setOnClickListener {
+                val mRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_arrow)
+                mRotate.interpolator = LinearInterpolator()
+                mRotate.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation) {}
+                    override fun onAnimationEnd(animation: Animation) {
+                        holder.arrowRemark.invalidate()
+                        if (holder.itemRemark.visibility == View.VISIBLE) {
+                            holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow_down)
+                            holder.itemRemark.visibility = View.GONE
+                        } else {
+                            holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow)
+                            holder.itemRemark.visibility = View.VISIBLE
+                        }
+                        holder.arrowRemark.invalidate()
                     }
-                    holder.arrowRemark.invalidate()
-                }
 
-                override fun onAnimationRepeat(animation: Animation) {}
-            })
-            holder.arrowRemark.startAnimation(mRotate)
+                    override fun onAnimationRepeat(animation: Animation) {}
+                })
+                holder.arrowRemark.startAnimation(mRotate)
+            }
+        } else {
+            holder.itemRemark.visibility = View.GONE
+            holder.layoutRemark.visibility = View.GONE
         }
 
         if (itemList[position].formatQtyItem.isNotEmpty()) {
@@ -194,6 +199,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         var itemRemark: TextView = itemView.findViewById(R.id.adapter_item_remark_field)
 
         var arrowRemark: ImageView = itemView.findViewById(R.id.arrow_desc)
+        var layoutRemark: RelativeLayout = itemView.findViewById(R.id.layout_remark_arrow)
 
         //BAL
         var itemQty1: EditText = itemView.findViewById(R.id.adapter_item_et_qty_1)

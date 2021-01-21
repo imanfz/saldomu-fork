@@ -53,6 +53,16 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label,allowBackup,appComponentFactory,theme">
         <activity
+            android:name=".activities.ReportEBDListActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:parentActivityName=".activities.MainPage"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage" />
+        </activity>
+        <activity
             android:name=".activities.ReportEBDActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:parentActivityName=".activities.MainPage"

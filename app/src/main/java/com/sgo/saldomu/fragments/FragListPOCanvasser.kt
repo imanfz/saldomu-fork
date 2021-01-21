@@ -109,7 +109,7 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
             val custID = mArrayDoc.getJSONObject(i).getString(WebParams.CUST_ID)
             val memberCode = mArrayDoc.getJSONObject(i).getString(WebParams.MEMBER_CODE)
             val commCode = mArrayDoc.getJSONObject(i).getString(WebParams.COMM_CODE)
-            val paidStatus = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS)
+            val paidStatus = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS_REMARK)
             val listPOModel = ListPOModel()
             listPOModel.doc_no = docNo
             listPOModel.doc_status = docStatus

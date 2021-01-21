@@ -10,6 +10,7 @@ import android.view.Window
 import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoEBDActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
@@ -18,8 +19,12 @@ import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
+import com.sgo.saldomu.dialogs.AlertDialogLogout
+import com.sgo.saldomu.dialogs.AlertDialogMaintenance
+import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.AnchorListItem
+import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.dialog_notification.*
 import kotlinx.android.synthetic.main.frag_input_store_code.*
@@ -121,7 +126,30 @@ class FragJoinCommunityToko : BaseFragment() {
 
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_EBD, params, object : ObjListeners {
             override fun onResponses(response: JSONObject) {
-                showDialog()
+                val code = response.getString(WebParams.ERROR_CODE)
+                val message = response.getString(WebParams.ERROR_MESSAGE)
+                when (code) {
+                    WebParams.SUCCESS_CODE -> {
+                        showDialog()
+                    }
+                    WebParams.LOGOUT_CODE -> {
+                        val alertDialogLogout = AlertDialogLogout.getInstance()
+                        alertDialogLogout.showDialoginMain(activity, message)
+                    }
+                    DefineValue.ERROR_9333 -> {
+                        val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                        val appModel = model.app_data
+                        val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                        alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                    }
+                    DefineValue.ERROR_0066 -> {
+                        val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                        alertDialogMaintenance.showDialogMaintenance(activity, message)
+                    }
+                    else -> {
+                        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                    }
+                }
             }
 
             override fun onError(throwable: Throwable?) {

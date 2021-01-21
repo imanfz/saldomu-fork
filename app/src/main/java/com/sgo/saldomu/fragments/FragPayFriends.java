@@ -395,7 +395,7 @@ public class FragPayFriends extends BaseFragment {
 
                         if (recipientValidation) {
                             final GsonBuilder gsonBuilder = new GsonBuilder();
-                            gsonBuilder.setPrettyPrinting();
+//                            gsonBuilder.setPrettyPrinting();
                             final Gson gson = gsonBuilder.create();
                             String testJson = gson.toJson(mTempObjectDataList);
                             String nameJson = gson.toJson(listName);

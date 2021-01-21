@@ -313,15 +313,13 @@ public class MyApiClient {
     public static String LINK_CREATE_PO;
     public static String LINK_REQUEST_PAYMENT;
     public static String LINK_PAYMENT_TOKO;
-    public static String LINK_INQUIRY_MEMBER_CANVASSER;
     public static String LINK_GET_LOCATION_DATA;
     public static String LINK_DOC_LIST;
     public static String LINK_DOC_DETAIL;
     public static String LINK_CONFIRM_OTP_DOC;
     public static String LINK_RESEND_OTP_DOC;
     public static String LINK_CREATE_GR;
-
-    public static String LINK_REQ_PAYMENT;
+    public static String LINK_DOC_STRUK;
 
 
     public void InitializeAddress(){
@@ -591,9 +589,7 @@ public class MyApiClient {
         LINK_CREATE_GR = headaddressfinal + "espaycatalog/CreateGr/Invoke";
         LINK_CONFIRM_OTP_DOC = headaddressfinal + "espaycatalog/ConfirmOTPDoc/Invoke";
         LINK_RESEND_OTP_DOC = headaddressfinal + "espaycatalog/ResendOTPDoc/Invoke";
-        //Canvasser
-        LINK_INQUIRY_MEMBER_CANVASSER = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";
-        LINK_REQ_PAYMENT = headaddressfinal + "espaycatalog/RequestPayment/Invoke";
+        LINK_DOC_STRUK = headaddressfinal + "espaycatalog/DocumentStruk/Retrieve";
 
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);

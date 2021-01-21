@@ -158,6 +158,7 @@ public class DefineValue {
     public static String RECIPIENTS = "recipients";
     public static String RECIPIENTS_ERROR = "recipientError";
     public static String AMOUNT_EACH = "amountEach";
+    public static String PAID_AMOUNT = "paid_amount";
     public static String AMOUNT = "amount";
     public static String TOTAL_AMOUNT = "totalAmount";
     public static String TOTAL_DISC = "totalDisc";
@@ -724,6 +725,8 @@ public class DefineValue {
     public static String PARTNER_CODE_ESPAY = "partnerCodeEspay";
     public static String TITLE = "title";
     public static String OPEN = "O";
+    public static String CLOSE = "C";
     public static String BONUS_ITEMS = "bonusItems";
+    public static String ITEMS = "Items";
 }
 

@@ -85,9 +85,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     public static int REPORT_ESPAY = 0x0299393;
     public static int REPORT_FEE = 0x0299396;
     public static int REPORT_ADDITIONAL_FEE = 0x0299397;
-    public static int REPORT_EBD_PO = 0x0299398;
-    public static int REPORT_EBD_GR = 0x0299399;
-    public static int REPORT_EBD_INVOICE = 0x0299400;
     private final String DATEFROM = "tagFrom";
     private final String DATETO = "tagTo";
 
@@ -234,7 +231,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         if (report_type == REPORT_SCASH) {
             reportListAdapter = new ReportListAdapter(getActivity(), R.layout.list_transaction_report_item, reportData);
             lv_report.setAdapter(reportListAdapter);
-        } else if (report_type == REPORT_ESPAY || report_type == REPORT_EBD_PO || report_type == REPORT_EBD_GR || report_type == REPORT_EBD_INVOICE) {
+        } else if (report_type == REPORT_ESPAY) {
             reportListEspayAdapter = new ReportListEspayAdapter(getActivity(), R.layout.list_transaction_report_espay_item, reportData);
             lv_report.setAdapter(reportListEspayAdapter);
         } else if (report_type == REPORT_ASK) {
@@ -248,8 +245,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             sumUnrelAmount = getV().findViewById(R.id.tv_amount_unreleased);
             sumUnrelTrx = getV().findViewById(R.id.tv_tx_unreleased);
             lv_report.setAdapter(reportCommFeeAdapter);
-        } else if (report_type == REPORT_ADDITIONAL_FEE)
-        {
+        } else if (report_type == REPORT_ADDITIONAL_FEE) {
             reportAdditionalFeeAdapter = new ReportAdditionalFeeAdapter(getActivity(), R.layout.list_report_comm_fee, reportData);
             sumTotalTrx = getV().findViewById(R.id.tv_total_transaction_additionalfee);
             sumTotalAmount = getV().findViewById(R.id.total_amount_additionalfee);
@@ -379,7 +375,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 spining_progress.setVisibility(View.VISIBLE);
                 spining_progress.startAnimation(frameAnimation);
             }
-
             String user_id = sp.getString(DefineValue.USERID_PHONE, "");
             String member_id = sp.getString(DefineValue.MEMBER_ID, "");
             String url = "", signature = "";
@@ -393,7 +388,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 url = MyApiClient.LINK_REPORT_MONEY_REQUEST;
             } else if (report_type == REPORT_FEE) {
                 url = MyApiClient.LINK_REPORT_COMM_FEE;
-            }else if (report_type == REPORT_ADDITIONAL_FEE) {
+            } else if (report_type == REPORT_ADDITIONAL_FEE) {
                 url = MyApiClient.LINK_REPORT_ADDITIONAL_FEE;
             }
 
@@ -410,7 +405,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
             } else if (report_type == REPORT_ESPAY) {
                 params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
-            } else if (report_type == REPORT_FEE || report_type==REPORT_ADDITIONAL_FEE) {
+            } else if (report_type == REPORT_FEE || report_type == REPORT_ADDITIONAL_FEE) {
                 params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
                 params.put(WebParams.OFFSET, sp.getString(DefineValue.OFFSET, ""));
             }
@@ -558,7 +553,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                             filter_btn.setOnClickListener(filterBtnListener);
                         }
                     });
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             Timber.d("httpclient:%s", e.getMessage());
         }
     }
@@ -602,7 +598,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             reportAskListAdapter.notifyDataSetChanged();
         } else if (report_type == REPORT_FEE) {
             reportCommFeeAdapter.notifyDataSetChanged();
-        }else if (report_type == REPORT_ADDITIONAL_FEE) {
+        } else if (report_type == REPORT_ADDITIONAL_FEE) {
             reportAdditionalFeeAdapter.notifyDataSetChanged();
         }
 

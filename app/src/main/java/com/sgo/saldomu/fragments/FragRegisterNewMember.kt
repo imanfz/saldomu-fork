@@ -256,6 +256,7 @@ class FragRegisterNewMember : BaseFragment() {
             }
 
             override fun onError(throwable: Throwable?) {
+                getListAnchor()
                 dismissProgressDialog()
             }
 

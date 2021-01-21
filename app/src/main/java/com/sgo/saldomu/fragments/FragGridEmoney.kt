@@ -11,7 +11,6 @@ import com.sgo.saldomu.Beans.Biller_Data_Model
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.BillerActivity
-import com.sgo.saldomu.activities.GridBillerActivity
 import com.sgo.saldomu.adapter.GridMenu
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.RealmManager

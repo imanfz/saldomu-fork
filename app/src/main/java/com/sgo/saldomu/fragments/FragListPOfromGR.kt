@@ -71,7 +71,7 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
             val custID = mArrayDoc.getJSONObject(i).getString(WebParams.CUST_ID)
             val memberCode = mArrayDoc.getJSONObject(i).getString(WebParams.MEMBER_CODE)
             val commCode = mArrayDoc.getJSONObject(i).getString(WebParams.COMM_CODE)
-            val paidStatus = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS)
+            val paidStatus = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS_REMARK)
             val listPOModel = ListPOModel()
             listPOModel.doc_no = docNo
             listPOModel.doc_status = docStatus
@@ -91,7 +91,7 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
         if (!item!!.doc_status.equals("Close"))
         {
             val bundle = Bundle()
-            bundle.putString(DefineValue.DOC_NO, item!!.doc_no)
+            bundle.putString(DefineValue.DOC_NO, item.doc_no)
             bundle.putString(DefineValue.MEMBER_CODE_ESPAY, item.member_code)
             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, item.comm_code)
             bundle.putString(DefineValue.CUST_ID_ESPAY, item.cust_id)
