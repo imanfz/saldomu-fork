@@ -42,6 +42,19 @@
                 android:text="Item Price"
                 android:textColor="@color/black" />
 
+            <TextView
+                android:id="@+id/adapter_item_discount_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Item Discount"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/adapter_item_nett_price_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Item Nett Price"
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout

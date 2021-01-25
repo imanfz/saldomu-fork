@@ -649,6 +649,7 @@ public class WebParams {
     public static String ITEM_CODE = "item_code";
     public static String ITEM_NAME = "item_name";
     public static String PRICE = "price";
+    public static String NETT_PRICE = "nett_price";
     public static String UNIT = "unit";
     public static String MIN_QTY = "min_qty";
     public static String MAX_QTY = "max_qty";
@@ -677,6 +678,7 @@ public class WebParams {
     public static String NOTES_ID = "notes_id";
     public static String REFF_ID = "reff_id";
     public static String DISCOUNT_AMOUNT = "discount_amount";
+    public static String DISC_AMOUNT = "disc_amount";
     public static String REFF_NO = "reff_no";
     public static String MAPPING_ITEMS = "mapping_items";
     public static String PAID_STATUS = "paid_status";

@@ -73,6 +73,8 @@ class FragListItemPOCanvasser : BaseFragment() {
                         mappingItemsItem.item_code = itemList[i].itemCode
                         mappingItemsItem.item_name = itemList[i].itemName
                         mappingItemsItem.price = itemList[i].price
+                        mappingItemsItem.discAmount = itemList[i].discAmount
+                        mappingItemsItem.nettPrice = itemList[i].nettPrice
                         mappingItemsItem.unit = itemList[i].unit
                         val formatQtyItemList = ArrayList<FormatQtyItem>()
 
@@ -103,8 +105,9 @@ class FragListItemPOCanvasser : BaseFragment() {
                         if (qtyBAL == 0 && qtySLOP == 0 && qtyPACK == 0) {
                             itemList[i].formatQtyItem.clear()
                             for (j in mappingItemList.indices) {
-                                if (itemList[i].itemCode == mappingItemList[j].item_code)
-                                    mappingItemList.removeAt(j)
+                                if (j < mappingItemList.size)
+                                    if (itemList[i].itemCode == mappingItemList[j].item_code)
+                                        mappingItemList.removeAt(j)
                             }
                         } else {
                             if (mappingItemList.size == 0)
@@ -206,15 +209,17 @@ class FragListItemPOCanvasser : BaseFragment() {
                                             val itemCode = jsonObject.getString(WebParams.ITEM_CODE)
                                             val itemName = jsonObject.getString(WebParams.ITEM_NAME)
                                             val price = jsonObject.getInt(WebParams.PRICE)
+                                            val discAmount = jsonObject.getInt(WebParams.DISC_AMOUNT)
+                                            val nettPrice = jsonObject.getInt(WebParams.NETT_PRICE)
                                             val unit = jsonObject.getString(WebParams.UNIT)
                                             val minQty = jsonObject.getInt(WebParams.MIN_QTY)
                                             val maxQty = jsonObject.getInt(WebParams.MAX_QTY)
                                             val remarkMappingUnit = jsonObject.getJSONArray(WebParams.REMARK_MAPPING_UNITS)
                                             val listRemarkMappingUnit = ArrayList<String>()
-                                            for (j in 0 until remarkMappingUnit.length()){
+                                            for (j in 0 until remarkMappingUnit.length()) {
                                                 listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
                                             }
-                                            itemList.add(EBDCatalogModel(itemCode, itemName, price, unit, minQty, maxQty,listRemarkMappingUnit))
+                                            itemList.add(EBDCatalogModel(itemCode, itemName, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit))
                                         }
                                         itemListAdapter!!.notifyDataSetChanged()
                                     }
@@ -339,6 +344,8 @@ class FragListItemPOCanvasser : BaseFragment() {
             mappingItemObj.put(WebParams.ITEM_NAME, mappingItemList[i].item_name)
             mappingItemObj.put(WebParams.ITEM_CODE, mappingItemList[i].item_code)
             mappingItemObj.put(WebParams.PRICE, mappingItemList[i].price)
+            mappingItemObj.put(WebParams.DISC_AMOUNT, mappingItemList[i].discAmount)
+            mappingItemObj.put(WebParams.NETT_PRICE, mappingItemList[i].nettPrice)
             mappingItemObj.put(WebParams.UNIT, mappingItemList[i].unit)
             mappingItemObj.put(WebParams.SUBTOTAL_AMOUNT, mappingItemList[i].subtotal_amount)
             mappingItemObj.put(WebParams.FORMAT_QTY, formatQtyArray)
