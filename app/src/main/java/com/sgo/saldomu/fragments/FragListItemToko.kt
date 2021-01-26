@@ -21,10 +21,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
-import com.sgo.saldomu.models.DocDetailsItem
-import com.sgo.saldomu.models.EBDCatalogModel
-import com.sgo.saldomu.models.FormatQtyItem
-import com.sgo.saldomu.models.MappingItemsItem
+import com.sgo.saldomu.models.*
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.fragment_input_item_list.*
@@ -46,6 +43,8 @@ class FragListItemToko : BaseFragment() {
     private val paymentListOption = ArrayList<String>()
     var itemListAdapter: AdapterEBDCatalogList? = null
     var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
+
+    val orderSettingList = ArrayList<OrderSetting>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_input_item_list, container, false)
@@ -160,6 +159,7 @@ class FragListItemToko : BaseFragment() {
             if (inputValidation())
                 if (paymentOption == getString(R.string.pay_now)) {
                     val docDetail = createJSONDocDetail()
+                    val orderSetting = createJSONOrderSetting()
                     val frag = FragInputPromoCodeToko()
                     val fragName = getString(R.string.promo_code)
 
@@ -169,6 +169,7 @@ class FragListItemToko : BaseFragment() {
                     bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
                     bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
                     bundle.putString(DefineValue.DOC_DETAILS, docDetail)
+                    bundle.putString(DefineValue.ORDER_SETTING, orderSetting)
 
                     frag.arguments = bundle
                     tokoPurchaseOrderActivity!!.addFragment(frag, fragName, tokoPurchaseOrderActivity!!.FRAG_INPUT_ITEM_TAG)
@@ -206,6 +207,9 @@ class FragListItemToko : BaseFragment() {
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
                                         itemList.clear()
+                                        val orderSettingArray = response.getJSONArray(WebParams.ORDER_SETTING)
+                                        val orderSetting = getGson().fromJson(orderSettingArray.getJSONObject(0).toString(), OrderSetting::class.java)
+                                        orderSettingList.add(orderSetting)
                                         val jsonArray = response.getJSONArray(WebParams.ITEMS)
                                         for (i in 0 until jsonArray.length()) {
                                             val jsonObject = jsonArray.getJSONObject(i)
@@ -283,6 +287,7 @@ class FragListItemToko : BaseFragment() {
     private fun confirmationDoc() {
         showProgressDialog()
         val docDetail = createJSONDocDetail()
+        val orderSetting = createJSONOrderSetting()
         val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRMATION_DOC, memberCode + userPhoneID)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_CODE_ESPAY] = memberCode
@@ -294,6 +299,7 @@ class FragListItemToko : BaseFragment() {
         params[WebParams.DOC_DETAIL] = docDetail
         params[WebParams.TYPE_ID] = DefineValue.PO
         params[WebParams.CUST_TYPE] = DefineValue.TOKO
+        params[WebParams.ORDER_SETTING] = orderSetting
 
         Timber.d("isi params confirm doc :$params")
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,
@@ -377,5 +383,23 @@ class FragListItemToko : BaseFragment() {
         parentArr.put(parentObj)
         Timber.e("doc_detail : $parentArr")
         return parentArr.toString()
+    }
+
+    private fun createJSONOrderSetting(): String {
+        val orderSettingArray = JSONArray()
+        for (i in orderSettingList.indices) {
+            val orderSettingObj = JSONObject()
+
+            orderSettingObj.put(WebParams.CHANNEL_GROUP_CODE, orderSettingList[i].channelGroupCode)
+            orderSettingObj.put(WebParams.DOC_TYPE, orderSettingList[i].docType)
+            orderSettingObj.put(WebParams.UNIT, orderSettingList[i].unit)
+            orderSettingObj.put(WebParams.MIN_COST, orderSettingList[i].minCost)
+            orderSettingObj.put(WebParams.MIN_ORDER_DELIVERY, orderSettingList[i].minOrderDelivery)
+            orderSettingObj.put(WebParams.MAX_ORDER_DELIVERY, orderSettingList[i].maxOrderDelivery)
+            orderSettingArray.put(orderSettingObj)
+        }
+
+        Timber.e("order_setting : $orderSettingArray")
+        return orderSettingArray.toString()
     }
 }

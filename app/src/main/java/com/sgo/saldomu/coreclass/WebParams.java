@@ -687,7 +687,6 @@ public class WebParams {
     public static String CREATE_AT = "created_at";
     public static String ISSUE_DATE = "issue_date";
 
-
     public static String SUBTOTAL_AMOUNT = "subtotal_amount";
     public static String PROMO = "promo";
     public static String ACTION_CODE = "action_code";
@@ -704,4 +703,10 @@ public class WebParams {
     public static String REG_ID = "reg_id";
     public static String ANCHOR_LIST = "anchor_list";
     public static String ANCHOR_CODE_ESPAY = "anchor_code_espay";
+    public static String ORDER_SETTING = "order_setting";
+    public static String CHANNEL_GROUP_CODE = "channel_group_code";
+    public static String DOC_TYPE = "doc_type";
+    public static String MIN_COST = "min_cost";
+    public static String MIN_ORDER_DELIVERY = "min_order_delivery";
+    public static String MAX_ORDER_DELIVERY = "max_order_delivery";
 }
