@@ -649,6 +649,7 @@ public class WebParams {
     public static String ITEM_CODE = "item_code";
     public static String ITEM_NAME = "item_name";
     public static String PRICE = "price";
+    public static String NETT_PRICE = "nett_price";
     public static String UNIT = "unit";
     public static String MIN_QTY = "min_qty";
     public static String MAX_QTY = "max_qty";
@@ -677,6 +678,7 @@ public class WebParams {
     public static String NOTES_ID = "notes_id";
     public static String REFF_ID = "reff_id";
     public static String DISCOUNT_AMOUNT = "discount_amount";
+    public static String DISC_AMOUNT = "disc_amount";
     public static String REFF_NO = "reff_no";
     public static String MAPPING_ITEMS = "mapping_items";
     public static String PAID_STATUS = "paid_status";
@@ -684,7 +686,6 @@ public class WebParams {
     public static String PAYMENT_METHODS = "payment_methods";
     public static String CREATE_AT = "created_at";
     public static String ISSUE_DATE = "issue_date";
-
 
     public static String SUBTOTAL_AMOUNT = "subtotal_amount";
     public static String PROMO = "promo";
@@ -702,4 +703,10 @@ public class WebParams {
     public static String REG_ID = "reg_id";
     public static String ANCHOR_LIST = "anchor_list";
     public static String ANCHOR_CODE_ESPAY = "anchor_code_espay";
+    public static String ORDER_SETTING = "order_setting";
+    public static String CHANNEL_GROUP_CODE = "channel_group_code";
+    public static String DOC_TYPE = "doc_type";
+    public static String MIN_COST = "min_cost";
+    public static String MIN_ORDER_DELIVERY = "min_order_delivery";
+    public static String MAX_ORDER_DELIVERY = "max_order_delivery";
 }

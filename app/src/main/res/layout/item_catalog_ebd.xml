@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:orientation="vertical"
     android:layout_margin="8dp"
-    android:background="@drawable/rounded_background_outline">
+    android:background="@drawable/rounded_background_outline"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,53 +42,112 @@
                 android:text="Item Price"
                 android:textColor="@color/black" />
 
+            <TextView
+                android:id="@+id/adapter_item_discount_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Item Discount"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/adapter_item_nett_price_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Item Nett Price"
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/adapter_item_et_qty_1"
-                android:layout_width="wrap_content"
-                android:minWidth="30dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_outline"
-                android:inputType="number" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="/"
-                android:textColor="@color/black" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="30dp"
+                    android:text="BAL" />
 
-            <EditText
-                android:id="@+id/adapter_item_et_qty_2"
-                android:layout_width="wrap_content"
-                android:minWidth="30dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_outline"
-                android:inputType="number" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="/"
+                    android:textColor="@color/black" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="/"
-                android:textColor="@color/black" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="30dp"
+                    android:text="SLOP" />
 
-            <EditText
-                android:id="@+id/adapter_item_et_qty_3"
-                android:layout_width="wrap_content"
-                android:minWidth="30dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="/"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="30dp"
+                    android:text="PACK" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_outline"
-                android:inputType="number" />
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/adapter_item_et_qty_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_outline"
+                    android:inputType="number"
+                    android:minWidth="30dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="/"
+                    android:textColor="@color/black" />
+
+                <EditText
+                    android:id="@+id/adapter_item_et_qty_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_outline"
+                    android:inputType="number"
+                    android:minWidth="30dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="/"
+                    android:textColor="@color/black" />
+
+                <EditText
+                    android:id="@+id/adapter_item_et_qty_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_outline"
+                    android:inputType="number"
+                    android:minWidth="30dp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
@@ -97,10 +156,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/description" />
+
         <ImageView
             android:id="@+id/arrow_desc"
             android:layout_width="wrap_content"
@@ -108,6 +169,7 @@
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_circle_arrow_down" />
     </RelativeLayout>
+
     <TextView
         android:id="@+id/adapter_item_remark_field"
         android:layout_width="wrap_content"

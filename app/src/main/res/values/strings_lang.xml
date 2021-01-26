@@ -1750,4 +1750,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="location_required">Location Required</string>
     <string name="register_success_wait_for_verification">Store registration has been successfully processed, please wait for the verification process</string>
     <string name="paid_amount">Paid Amount</string>
+    <string name="principal">Principal</string>
+    <string name="discount">Discount</string>
 </resources>

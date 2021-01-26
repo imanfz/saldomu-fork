@@ -40,6 +40,7 @@ class FragListPurchaseOrder : BaseFragment() {
     var itemList = ArrayList<ListPOModel>()
     var itemListAdapter: ListPOAdapter? = null
 
+    var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_list_po, container, false)
         return v
@@ -50,8 +51,8 @@ class FragListPurchaseOrder : BaseFragment() {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
-        val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
-        tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.list_po))
+        tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
+        tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.list_po))
         btn_create_po.visibility = View.VISIBLE
         btn_create_po.setOnClickListener {
             val fragment = FragListItemToko()
@@ -60,7 +61,7 @@ class FragListPurchaseOrder : BaseFragment() {
             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
             bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
             fragment.arguments = bundle
-            tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.choose_catalog), true, (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
+            tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.choose_catalog), true, (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
         }
 
         if (arguments != null) {
@@ -76,7 +77,7 @@ class FragListPurchaseOrder : BaseFragment() {
             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
             bundle.putString(DefineValue.DOC_NO, it.doc_no)
             fragment.arguments = bundle
-            tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.detail_document), true, "FragPurchaseOrderDetail")
+            tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.detail_document), true, "FragPurchaseOrderDetail")
         }
         recyclerViewList.adapter = itemListAdapter
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -136,7 +137,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                 itemListAdapter!!.notifyDataSetChanged()
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginMain(tokoPurchaseOrderActivity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)

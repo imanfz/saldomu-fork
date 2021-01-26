@@ -2,6 +2,7 @@ package com.sgo.saldomu.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Paint
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -35,12 +36,27 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         val itemCode = itemList[position].itemCode
         val itemName = itemList[position].itemName
         val price = itemList[position].price
+        val discAmount = itemList[position].discAmount
+        val itemNettPrice = itemList[position].nettPrice
         val unit = itemList[position].unit
         val remarkList = itemList[position].remarkMappingUnit
 //        val maxQty = itemList[position].maxQty
+
         holder.itemCode.text = itemCode
         holder.itemName.text = itemName
         holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
+        holder.itemDiscount.text = context.getString(R.string.discount) + " " + context.getString(R.string.currency) + CurrencyFormat.format(discAmount)
+        holder.itemNettPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(itemNettPrice) + " / " + unit
+        if (discAmount > 0) {
+            holder.itemPrice.paintFlags = holder.itemPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            holder.itemDiscount.visibility = View.VISIBLE
+            holder.itemNettPrice.visibility = View.VISIBLE
+        } else {
+            holder.itemPrice.paintFlags = holder.itemPrice.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            holder.itemDiscount.visibility = View.GONE
+            holder.itemNettPrice.visibility = View.GONE
+        }
+
         if (remarkList.isNotEmpty()) {
             holder.itemRemark.text = remarkList[0] + " | " + remarkList[1]
             holder.itemRemark.visibility = View.GONE
@@ -196,6 +212,8 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         var itemCode: TextView = itemView.findViewById(R.id.adapter_item_id_field)
         var itemName: TextView = itemView.findViewById(R.id.adapter_item_name_field)
         var itemPrice: TextView = itemView.findViewById(R.id.adapter_item_price_field)
+        var itemDiscount: TextView = itemView.findViewById(R.id.adapter_item_discount_field)
+        var itemNettPrice: TextView = itemView.findViewById(R.id.adapter_item_nett_price_field)
         var itemRemark: TextView = itemView.findViewById(R.id.adapter_item_remark_field)
 
         var arrowRemark: ImageView = itemView.findViewById(R.id.arrow_desc)

@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.DefineValue
-import com.sgo.saldomu.models.EBDCatalogModel
 import com.sgo.saldomu.models.retrofit.ItemModel
 import java.util.*
 

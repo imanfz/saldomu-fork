@@ -1740,4 +1740,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="location_required">Lokasi dibutuhkan</string>
     <string name="register_success_wait_for_verification">Registrasi toko berhasil diproses, mohon menunggu proses verifikasi</string>
     <string name="paid_amount">Jumlah Pembayaran</string>
+    <string name="principal">Principal</string>
+    <string name="discount">Diskon</string>
 </resources>

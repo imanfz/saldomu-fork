@@ -1,11 +1,15 @@
 package com.sgo.saldomu.fragments
 
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -45,6 +49,7 @@ class FragInputPromoCodeToko : BaseFragment() {
     var memberCode = ""
     var commCode = ""
     var docDetails = ""
+    var orderSetting = ""
 
     var promoCodeList: ArrayList<PromoCodeModel> = ArrayList()
     var promoCodeAdapter: PromoCodeTokoAdapter? = null
@@ -66,6 +71,7 @@ class FragInputPromoCodeToko : BaseFragment() {
             memberCode = requireArguments().getString(DefineValue.MEMBER_CODE_ESPAY, "")
             commCode = requireArguments().getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             docDetails = requireArguments().getString(DefineValue.DOC_DETAILS, "")
+            orderSetting = requireArguments().getString(DefineValue.ORDER_SETTING, "")
         }
 
         promoCodeList.add(PromoCodeModel("", "1", ""))
@@ -111,6 +117,7 @@ class FragInputPromoCodeToko : BaseFragment() {
                 params[WebParams.TYPE_ID] = DefineValue.PO
                 params[WebParams.CUST_TYPE] = DefineValue.TOKO
                 params[WebParams.PROMO_CODE] = jsonArray
+                params[WebParams.ORDER_SETTING] = orderSetting
 
                 Timber.d("isi params confirm doc :$params")
                 RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,
@@ -150,7 +157,7 @@ class FragInputPromoCodeToko : BaseFragment() {
                                         AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
                                     }
                                     else -> {
-                                        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                                        showDialog(message)
                                     }
                                 }
                             }
@@ -166,6 +173,25 @@ class FragInputPromoCodeToko : BaseFragment() {
                         })
             }
         }
+    }
+
+    private fun showDialog(msg: String) {
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setContentView(R.layout.dialog_notification)
+
+        val btnDialogOTP: Button = dialog.findViewById(R.id.btn_dialog_notification_ok)
+        val title: TextView = dialog.findViewById(R.id.title_dialog)
+        val message: TextView = dialog.findViewById(R.id.message_dialog)
+        message.visibility = View.VISIBLE
+        title.text = getString(R.string.error)
+        message.text = msg
+        btnDialogOTP.setOnClickListener {
+            dialog.dismiss()
+            requireFragmentManager().popBackStack()
+        }
+        dialog.show()
     }
 
     private fun checkArrayPromo(): Boolean {

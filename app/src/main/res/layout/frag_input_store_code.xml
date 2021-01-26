@@ -57,7 +57,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1.5"
             android:gravity="start"
-            android:text="@string/community"
+            android:text="@string/principal"
             android:textSize="18sp" />
 
         <Spinner

@@ -26,10 +26,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
-import com.sgo.saldomu.models.DocDetailsItem
-import com.sgo.saldomu.models.EBDCatalogModel
-import com.sgo.saldomu.models.FormatQtyItem
-import com.sgo.saldomu.models.MappingItemsItem
+import com.sgo.saldomu.models.*
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.fragment_input_item_list.*
@@ -46,6 +43,7 @@ class FragListItemPOCanvasser : BaseFragment() {
     val itemList = ArrayList<EBDCatalogModel>()
     private val order = DocDetailsItem()
     private val mappingItemList = ArrayList<MappingItemsItem>()
+    val orderSettingList = ArrayList<OrderSetting>()
     var itemListAdapter: AdapterEBDCatalogList? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -73,6 +71,8 @@ class FragListItemPOCanvasser : BaseFragment() {
                         mappingItemsItem.item_code = itemList[i].itemCode
                         mappingItemsItem.item_name = itemList[i].itemName
                         mappingItemsItem.price = itemList[i].price
+                        mappingItemsItem.discAmount = itemList[i].discAmount
+                        mappingItemsItem.nettPrice = itemList[i].nettPrice
                         mappingItemsItem.unit = itemList[i].unit
                         val formatQtyItemList = ArrayList<FormatQtyItem>()
 
@@ -103,8 +103,9 @@ class FragListItemPOCanvasser : BaseFragment() {
                         if (qtyBAL == 0 && qtySLOP == 0 && qtyPACK == 0) {
                             itemList[i].formatQtyItem.clear()
                             for (j in mappingItemList.indices) {
-                                if (itemList[i].itemCode == mappingItemList[j].item_code)
-                                    mappingItemList.removeAt(j)
+                                if (j < mappingItemList.size)
+                                    if (itemList[i].itemCode == mappingItemList[j].item_code)
+                                        mappingItemList.removeAt(j)
                             }
                         } else {
                             if (mappingItemList.size == 0)
@@ -200,21 +201,26 @@ class FragListItemPOCanvasser : BaseFragment() {
                                 val message = response.getString(WebParams.ERROR_MESSAGE)
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
+                                        val orderSettingArray = response.getJSONArray(WebParams.ORDER_SETTING)
+                                        val orderSetting = getGson().fromJson(orderSettingArray.getJSONObject(0).toString(), OrderSetting::class.java)
+                                        orderSettingList.add(orderSetting)
                                         val jsonArray = response.getJSONArray(WebParams.ITEMS)
                                         for (i in 0 until jsonArray.length()) {
                                             val jsonObject = jsonArray.getJSONObject(i)
                                             val itemCode = jsonObject.getString(WebParams.ITEM_CODE)
                                             val itemName = jsonObject.getString(WebParams.ITEM_NAME)
                                             val price = jsonObject.getInt(WebParams.PRICE)
+                                            val discAmount = jsonObject.getInt(WebParams.DISC_AMOUNT)
+                                            val nettPrice = jsonObject.getInt(WebParams.NETT_PRICE)
                                             val unit = jsonObject.getString(WebParams.UNIT)
                                             val minQty = jsonObject.getInt(WebParams.MIN_QTY)
                                             val maxQty = jsonObject.getInt(WebParams.MAX_QTY)
                                             val remarkMappingUnit = jsonObject.getJSONArray(WebParams.REMARK_MAPPING_UNITS)
                                             val listRemarkMappingUnit = ArrayList<String>()
-                                            for (j in 0 until remarkMappingUnit.length()){
+                                            for (j in 0 until remarkMappingUnit.length()) {
                                                 listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
                                             }
-                                            itemList.add(EBDCatalogModel(itemCode, itemName, price, unit, minQty, maxQty,listRemarkMappingUnit))
+                                            itemList.add(EBDCatalogModel(itemCode, itemName, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit))
                                         }
                                         itemListAdapter!!.notifyDataSetChanged()
                                     }
@@ -255,6 +261,7 @@ class FragListItemPOCanvasser : BaseFragment() {
     private fun confirmationDoc() {
         showProgressDialog()
         val docDetail = createJSONDocDetail()
+        val orderSetting = createJSONOrderSetting()
         val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRMATION_DOC, memberCodeEspay + custIdEspay)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_CODE_ESPAY] = memberCodeEspay
@@ -266,6 +273,7 @@ class FragListItemPOCanvasser : BaseFragment() {
         params[WebParams.DOC_DETAIL] = docDetail
         params[WebParams.TYPE_ID] = DefineValue.PO
         params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
+        params[WebParams.ORDER_SETTING] = orderSetting
 
         Timber.d("isi params confirm doc :$params")
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,
@@ -339,6 +347,8 @@ class FragListItemPOCanvasser : BaseFragment() {
             mappingItemObj.put(WebParams.ITEM_NAME, mappingItemList[i].item_name)
             mappingItemObj.put(WebParams.ITEM_CODE, mappingItemList[i].item_code)
             mappingItemObj.put(WebParams.PRICE, mappingItemList[i].price)
+            mappingItemObj.put(WebParams.DISC_AMOUNT, mappingItemList[i].discAmount)
+            mappingItemObj.put(WebParams.NETT_PRICE, mappingItemList[i].nettPrice)
             mappingItemObj.put(WebParams.UNIT, mappingItemList[i].unit)
             mappingItemObj.put(WebParams.SUBTOTAL_AMOUNT, mappingItemList[i].subtotal_amount)
             mappingItemObj.put(WebParams.FORMAT_QTY, formatQtyArray)
@@ -349,6 +359,24 @@ class FragListItemPOCanvasser : BaseFragment() {
         parentArr.put(parentObj)
         Timber.e("doc_detail : $parentArr")
         return parentArr.toString()
+    }
+
+    private fun createJSONOrderSetting(): String {
+        val orderSettingArray = JSONArray()
+        for (i in orderSettingList.indices) {
+            val orderSettingObj = JSONObject()
+
+            orderSettingObj.put(WebParams.CHANNEL_GROUP_CODE, orderSettingList[i].channelGroupCode)
+            orderSettingObj.put(WebParams.DOC_TYPE, orderSettingList[i].docType)
+            orderSettingObj.put(WebParams.UNIT, orderSettingList[i].unit)
+            orderSettingObj.put(WebParams.MIN_COST, orderSettingList[i].minCost)
+            orderSettingObj.put(WebParams.MIN_ORDER_DELIVERY, orderSettingList[i].minOrderDelivery)
+            orderSettingObj.put(WebParams.MAX_ORDER_DELIVERY, orderSettingList[i].maxOrderDelivery)
+            orderSettingArray.put(orderSettingObj)
+        }
+
+        Timber.e("order_setting : $orderSettingArray")
+        return orderSettingArray.toString()
     }
 
     private fun showDialog(msg: String) {
