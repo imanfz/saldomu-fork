@@ -300,7 +300,7 @@
     <string name="forgotpass_text_instruction">%1$s akan mengirimkan prosedur lupa kata sandi melalui SMS ke nomor anda.</string>
     <string name="forgotpass_text_instruction3">Isi dengan nomor handphone anda yang terhubung dengan akun anda dan kata sandi yang baru.</string>
     <!--<string name="forgotpass_text_message_success">Ganti password berhasil. Silahkan cek email atau sms anda sesuai pilihan tipe notifikasi yang anda pilih.</string>-->
-    <string name="forgotpass_text_message_success">Ganti Kata Sandi berhasil. Silahkan cek sms anda, sesuai pilihan tipe notifikasi yang anda pilih.</string>
+    <string name="forgotpass_text_message_success">Ganti Kata Sandi berhasil. Silahkan cek sms anda atau hubungi kami 082247476000</string>
     <string name="validation_minimal">Minimal</string>
     <string name="validation_character">karakter!</string>
 

@@ -334,7 +334,7 @@ public class ForgotPassword extends BaseFragment {
 
         Title.setText(getResources().getString(R.string.mainpage_dialog_changepass_title));
         Message.setText(message_error);
-        getHelpPin(progBar, Message);
+//        getHelpPin(progBar, Message);
 
         btnDialogOK.setOnClickListener(new View.OnClickListener() {
             @Override
