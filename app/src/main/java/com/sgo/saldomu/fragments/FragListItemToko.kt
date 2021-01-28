@@ -160,7 +160,7 @@ class FragListItemToko : BaseFragment() {
                 if (paymentOption == getString(R.string.pay_now)) {
                     val docDetail = createJSONDocDetail()
                     val orderSetting = createJSONOrderSetting()
-                    val frag = FragInputPromoCodeToko()
+                    val frag = FragListPromoCodeToko()
                     val fragName = getString(R.string.promo_code)
 
                     val bundle = Bundle()
@@ -208,8 +208,10 @@ class FragListItemToko : BaseFragment() {
                                     WebParams.SUCCESS_CODE -> {
                                         itemList.clear()
                                         val orderSettingArray = response.getJSONArray(WebParams.ORDER_SETTING)
-                                        val orderSetting = getGson().fromJson(orderSettingArray.getJSONObject(0).toString(), OrderSetting::class.java)
-                                        orderSettingList.add(orderSetting)
+                                        if (orderSettingArray.length() != 0) {
+                                            val orderSetting = getGson().fromJson(orderSettingArray.getJSONObject(0).toString(), OrderSetting::class.java)
+                                            orderSettingList.add(orderSetting)
+                                        }
                                         val jsonArray = response.getJSONArray(WebParams.ITEMS)
                                         for (i in 0 until jsonArray.length()) {
                                             val jsonObject = jsonArray.getJSONObject(i)

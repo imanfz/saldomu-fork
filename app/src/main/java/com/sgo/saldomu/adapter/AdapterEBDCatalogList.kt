@@ -42,18 +42,14 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         val remarkList = itemList[position].remarkMappingUnit
 //        val maxQty = itemList[position].maxQty
 
-        holder.itemCode.text = itemCode
         holder.itemName.text = itemName
         holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
-        holder.itemDiscount.text = context.getString(R.string.discount) + " " + context.getString(R.string.currency) + CurrencyFormat.format(discAmount)
         holder.itemNettPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(itemNettPrice) + " / " + unit
         if (discAmount > 0) {
             holder.itemPrice.paintFlags = holder.itemPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            holder.itemDiscount.visibility = View.VISIBLE
             holder.itemNettPrice.visibility = View.VISIBLE
         } else {
             holder.itemPrice.paintFlags = holder.itemPrice.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-            holder.itemDiscount.visibility = View.GONE
             holder.itemNettPrice.visibility = View.GONE
         }
 
@@ -208,11 +204,13 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         return itemList.size
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var itemCode: TextView = itemView.findViewById(R.id.adapter_item_id_field)
         var itemName: TextView = itemView.findViewById(R.id.adapter_item_name_field)
         var itemPrice: TextView = itemView.findViewById(R.id.adapter_item_price_field)
-        var itemDiscount: TextView = itemView.findViewById(R.id.adapter_item_discount_field)
         var itemNettPrice: TextView = itemView.findViewById(R.id.adapter_item_nett_price_field)
         var itemRemark: TextView = itemView.findViewById(R.id.adapter_item_remark_field)
 

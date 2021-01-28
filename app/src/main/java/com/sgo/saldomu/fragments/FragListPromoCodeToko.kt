@@ -2,24 +2,17 @@ package com.sgo.saldomu.fragments
 
 import android.app.Dialog
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.SnapHelper
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
-import com.sgo.saldomu.adapter.ListPOAdapter
-import com.sgo.saldomu.adapter.PromoCodeAdapter
 import com.sgo.saldomu.adapter.PromoCodeTokoAdapter
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
@@ -30,32 +23,30 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
-import com.sgo.saldomu.models.ListPOModel
+import com.sgo.saldomu.models.PromoCodeBATModel
 import com.sgo.saldomu.models.PromoCodeModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_list_po.*
-import kotlinx.android.synthetic.main.frag_list_po.recyclerViewList
-import kotlinx.android.synthetic.main.fragment_denom_input_promo_code.*
-import kotlinx.android.synthetic.main.fragment_input_promo_code_toko.*
-import kotlinx.android.synthetic.main.fragment_input_promo_code_toko.btn_add_promo
+import kotlinx.android.synthetic.main.fragment_list_promo_code_toko.*
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
 
-class FragInputPromoCodeToko : BaseFragment() {
+class FragListPromoCodeToko : BaseFragment() {
 
     var memberCode = ""
     var commCode = ""
     var docDetails = ""
     var orderSetting = ""
 
-    var promoCodeList: ArrayList<PromoCodeModel> = ArrayList()
+    var promoCodeList: ArrayList<PromoCodeBATModel> = ArrayList()
+    var desirePromoCodeList: ArrayList<PromoCodeModel> = ArrayList()
     var promoCodeAdapter: PromoCodeTokoAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.fragment_input_promo_code_toko, container, false)
+        v = inflater.inflate(R.layout.fragment_list_promo_code_toko, container, false)
         return v
     }
 
@@ -74,31 +65,33 @@ class FragInputPromoCodeToko : BaseFragment() {
             orderSetting = requireArguments().getString(DefineValue.ORDER_SETTING, "")
         }
 
-        promoCodeList.add(PromoCodeModel("", "1", ""))
         promoCodeAdapter = PromoCodeTokoAdapter(activity, promoCodeList, object : PromoCodeTokoAdapter.Listener {
-            override fun onChangePromoCode(position: Int, promoCode: String) {
-                promoCodeList[position].code = promoCode
-            }
-
-            override fun onDelete(position: Int) {
-                promoCodeList.removeAt(position)
+            override fun onCheck(position: Int) {
+                promoCodeList[position].checked = true
+                desirePromoCodeList.add(PromoCodeModel(promoCodeList[position].code, "1", ""))
                 promoCodeAdapter!!.notifyDataSetChanged()
             }
 
+            override fun onUncheck(position: Int) {
+                promoCodeList[position].checked = false
+                if (desirePromoCodeList.size == 1)
+                    desirePromoCodeList.removeAt(0)
+                else
+                    for (i in desirePromoCodeList.indices)
+                        if (desirePromoCodeList[i].code == promoCodeList[position].code)
+                            desirePromoCodeList.removeAt(i)
+                promoCodeAdapter!!.notifyDataSetChanged()
+            }
         })
+        getPromoList()
         promo_list_field.adapter = promoCodeAdapter
         promo_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-
-        btn_add_promo.setOnClickListener {
-            promoCodeList.add(PromoCodeModel("", "1", ""))
-            promoCodeAdapter!!.notifyDataSetChanged()
-        }
 
         promo_code_submit_btn.setOnClickListener {
             if (checkArrayPromo()) {
                 var jsonArray = ""
-                if (promoCodeList.isNotEmpty()) {
-                    val listString = Gson().toJson(promoCodeList, object : TypeToken<ArrayList<PromoCodeModel?>?>() {}.type)
+                if (desirePromoCodeList.isNotEmpty()) {
+                    val listString = Gson().toJson(desirePromoCodeList, object : TypeToken<ArrayList<PromoCodeModel?>?>() {}.type)
                     jsonArray = JSONArray(listString).toString()
                     Timber.e(jsonArray)
                 }
@@ -175,6 +168,69 @@ class FragInputPromoCodeToko : BaseFragment() {
         }
     }
 
+    private fun getPromoList() {
+        try {
+            showProgressDialog()
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_PROMO_EBD, memberCode + commCode)
+            params[WebParams.USER_ID] = userPhoneID
+            params[WebParams.MEMBER_CODE_ESPAY] = memberCode
+            params[WebParams.COMM_CODE_ESPAY] = commCode
+            params[WebParams.CUST_ID_ESPAY] = userPhoneID
+            params[WebParams.CUST_TYPE] = DefineValue.TOKO
+
+            Timber.d("isi params get promo list:$params")
+
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_PROMO_EBD, params,
+                    object : ObjListeners {
+                        override fun onResponses(response: JSONObject) {
+                            try {
+                                val code = response.getString(WebParams.ERROR_CODE)
+                                val message = response.getString(WebParams.ERROR_MESSAGE)
+                                when (code) {
+                                    WebParams.SUCCESS_CODE -> {
+                                        val promoArray = response.getJSONArray(WebParams.PROMO)
+                                        for (i in 0 until promoArray.length()) {
+                                            val promoObject = promoArray.getJSONObject(i)
+                                            val promoCode = promoObject.getString(WebParams.CODE)
+                                            val promoDesc = promoObject.getString(WebParams.DESC)
+                                            promoCodeList.add(PromoCodeBATModel(promoCode, promoDesc, false, ""))
+                                        }
+                                        promoCodeAdapter!!.notifyDataSetChanged()
+                                    }
+                                    WebParams.LOGOUT_CODE -> {
+                                        AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                                    }
+                                    DefineValue.ERROR_9333 -> {
+                                        val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                        val appModel = model.app_data
+                                        AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                    }
+                                    DefineValue.ERROR_0066 -> {
+                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                    }
+                                    else -> {
+                                        showDialog(message)
+                                    }
+                                }
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            }
+                        }
+
+                        override fun onError(throwable: Throwable) {
+                            dismissProgressDialog()
+                        }
+
+                        override fun onComplete() {
+                            dismissProgressDialog()
+                        }
+                    })
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Timber.d("httpclient:%s", e.message)
+        }
+    }
+
     private fun showDialog(msg: String) {
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -189,7 +245,7 @@ class FragInputPromoCodeToko : BaseFragment() {
         message.text = msg
         btnDialogOTP.setOnClickListener {
             dialog.dismiss()
-            requireFragmentManager().popBackStack()
+            requireActivity().onBackPressed()
         }
         dialog.show()
     }
@@ -210,17 +266,16 @@ class FragInputPromoCodeToko : BaseFragment() {
         val promoCodeJSONArray = JSONArray(promoCodesString)
         var isPromoCodeValid = true;
 
-        promoCodeList.clear()
-
         for (i in 0 until promoCodeJSONArray.length()) {
             val status = promoCodeJSONArray.getJSONObject(i).getString(WebParams.STATUS)
             val code = promoCodeJSONArray.getJSONObject(i).getString(WebParams.CODE)
-            val qty = promoCodeJSONArray.getJSONObject(i).getString(WebParams.QTY)
             if (status == "1") {
                 isPromoCodeValid = false
             }
-            promoCodeList.add(PromoCodeModel(code, qty, status))
-            promoCodeAdapter!!.updateAdapter(promoCodeList)
+            for (j in promoCodeList.indices)
+                if (promoCodeList[j].code == code)
+                    promoCodeList[j].status = status
+            promoCodeAdapter!!.notifyDataSetChanged()
         }
 
         return isPromoCodeValid

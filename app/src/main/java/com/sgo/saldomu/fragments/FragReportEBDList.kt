@@ -75,6 +75,7 @@ class FragReportEBDList(private val reportType: String, private val memberCodeEs
                 when (code) {
                     WebParams.SUCCESS_CODE -> {
                         val docList = response.getJSONArray(WebParams.DOC_LIST)
+                        docListItemArray.clear()
                         for (i in 0 until docList.length()) {
                             val docListItem = getGson().fromJson(docList.getJSONObject(i).toString(), DocListItem::class.java)
                             docListItemArray.add(docListItem)

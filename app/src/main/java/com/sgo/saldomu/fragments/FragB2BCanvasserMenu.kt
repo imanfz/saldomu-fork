@@ -32,7 +32,7 @@ class FragB2BCanvasserMenu : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
         B2BCanvasserActivity = activity as B2BCanvasserActivity
-        B2BCanvasserActivity!!.initializeToolbar(getString(R.string.menu_item_title_ebd))
+        B2BCanvasserActivity!!.initializeToolbar(getString(R.string.menu_item_title_b2b_eratel))
 
         menuStrings.clear()
         menuDrawables.clear()

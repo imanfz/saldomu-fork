@@ -192,7 +192,7 @@
     <string name="menu_item_title_pulsa_agent">Mobile Credit</string>
     <string name="menu_item_title_report">Report</string>
     <string name="menu_item_title_scadm">B2B</string>
-    <string name="menu_item_title_ebd">B2B BAT Catalog</string>
+    <string name="menu_item_title_b2b_eratel">B2B Eratel</string>
     <string name="menu_item_title_ebd_toko">(Store)</string>
     <string name="menu_item_title_ebd_canvasser">(Canvasser)</string>
     <string name="menu_item_title_report_ebd">Report BAT Catalog</string>
@@ -301,7 +301,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
 
     <string name="forgotpass_text_instruction3">Fill in your mobile number linked to your account and a new password.</string>
     <!--<string name="forgotpass_text_message_success">Ganti password berhasil. Silahkan cek email atau sms anda sesuai pilihan tipe notifikasi yang anda pilih.</string>-->
-    <string name="forgotpass_text_message_success">Success Change Password. Please check your SMS, according to the type of notification you choose.</string>
+    <string name="forgotpass_text_message_success">Success Change Password. Please check your SMS or contact us 082247476000</string>
     <string name="validation_minimal">Minimal</string>
     <string name="validation_character">Character!</string>
 
