@@ -208,6 +208,10 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         return itemList.size
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var itemCode: TextView = itemView.findViewById(R.id.adapter_item_id_field)
         var itemName: TextView = itemView.findViewById(R.id.adapter_item_name_field)
