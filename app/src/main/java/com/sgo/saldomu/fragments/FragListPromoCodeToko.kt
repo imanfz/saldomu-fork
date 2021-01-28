@@ -34,6 +34,7 @@ import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
 
+
 class FragListPromoCodeToko : BaseFragment() {
 
     var memberCode = ""
@@ -44,10 +45,16 @@ class FragListPromoCodeToko : BaseFragment() {
     var promoCodeList: ArrayList<PromoCodeBATModel> = ArrayList()
     var desirePromoCodeList: ArrayList<PromoCodeModel> = ArrayList()
     var promoCodeAdapter: PromoCodeTokoAdapter? = null
+    var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.fragment_list_promo_code_toko, container, false)
         return v
+    }
+
+    override fun onStop() {
+        super.onStop()
+        tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.choose_catalog))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -55,8 +62,8 @@ class FragListPromoCodeToko : BaseFragment() {
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
 
-        val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
-        tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.promo_code))
+        tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
+        tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.promo_code))
 
         if (arguments != null) {
             memberCode = requireArguments().getString(DefineValue.MEMBER_CODE_ESPAY, "")
@@ -68,19 +75,10 @@ class FragListPromoCodeToko : BaseFragment() {
         promoCodeAdapter = PromoCodeTokoAdapter(activity, promoCodeList, object : PromoCodeTokoAdapter.Listener {
             override fun onCheck(position: Int) {
                 promoCodeList[position].checked = true
-                desirePromoCodeList.add(PromoCodeModel(promoCodeList[position].code, "1", ""))
-                promoCodeAdapter!!.notifyDataSetChanged()
             }
 
             override fun onUncheck(position: Int) {
                 promoCodeList[position].checked = false
-                if (desirePromoCodeList.size == 1)
-                    desirePromoCodeList.removeAt(0)
-                else
-                    for (i in desirePromoCodeList.indices)
-                        if (desirePromoCodeList[i].code == promoCodeList[position].code)
-                            desirePromoCodeList.removeAt(i)
-                promoCodeAdapter!!.notifyDataSetChanged()
             }
         })
         getPromoList()
@@ -88,83 +86,85 @@ class FragListPromoCodeToko : BaseFragment() {
         promo_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         promo_code_submit_btn.setOnClickListener {
-            if (checkArrayPromo()) {
-                var jsonArray = ""
-                if (desirePromoCodeList.isNotEmpty()) {
-                    val listString = Gson().toJson(desirePromoCodeList, object : TypeToken<ArrayList<PromoCodeModel?>?>() {}.type)
-                    jsonArray = JSONArray(listString).toString()
-                    Timber.e(jsonArray)
-                }
+            var jsonArray = ""
+            for (i in promoCodeList.indices) {
+                if (promoCodeList[i].checked)
+                    desirePromoCodeList.add(PromoCodeModel(promoCodeList[i].code, "1", ""))
+            }
+            if (desirePromoCodeList.isNotEmpty()) {
+                val listString = Gson().toJson(desirePromoCodeList, object : TypeToken<ArrayList<PromoCodeModel?>?>() {}.type)
+                jsonArray = JSONArray(listString).toString()
+                Timber.e(jsonArray)
+            }
 
-                showProgressDialog()
+            showProgressDialog()
 
-                val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRMATION_DOC, memberCode + userPhoneID)
-                params[WebParams.USER_ID] = userPhoneID
-                params[WebParams.MEMBER_CODE_ESPAY] = memberCode
-                params[WebParams.COMM_CODE_ESPAY] = commCode
-                params[WebParams.CUST_ID_ESPAY] = userPhoneID
-                params[WebParams.CUST_ID] = userPhoneID
-                params[WebParams.REFF_ID] = ""
-                params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
-                params[WebParams.DOC_DETAIL] = docDetails
-                params[WebParams.TYPE_ID] = DefineValue.PO
-                params[WebParams.CUST_TYPE] = DefineValue.TOKO
-                params[WebParams.PROMO_CODE] = jsonArray
-                params[WebParams.ORDER_SETTING] = orderSetting
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRMATION_DOC, memberCode + userPhoneID)
+            params[WebParams.USER_ID] = userPhoneID
+            params[WebParams.MEMBER_CODE_ESPAY] = memberCode
+            params[WebParams.COMM_CODE_ESPAY] = commCode
+            params[WebParams.CUST_ID_ESPAY] = userPhoneID
+            params[WebParams.CUST_ID] = userPhoneID
+            params[WebParams.REFF_ID] = ""
+            params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
+            params[WebParams.DOC_DETAIL] = docDetails
+            params[WebParams.TYPE_ID] = DefineValue.PO
+            params[WebParams.CUST_TYPE] = DefineValue.TOKO
+            params[WebParams.PROMO_CODE] = jsonArray
+            params[WebParams.ORDER_SETTING] = orderSetting
 
-                Timber.d("isi params confirm doc :$params")
-                RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,
-                        object : ObjListeners {
-                            override fun onResponses(response: JSONObject) {
-                                val code = response.getString(WebParams.ERROR_CODE)
-                                val message = response.getString(WebParams.ERROR_MESSAGE)
-                                when (code) {
-                                    WebParams.SUCCESS_CODE -> {
-                                        if (!checkPromoCodeIsValid(response)) {
-                                            return
-                                        }
-
-                                        val frag = FragOrderConfirmToko()
-
-                                        val bundle = Bundle()
-                                        bundle.putString(DefineValue.MEMBER_CODE_ESPAY, arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, ""))
-                                        bundle.putString(DefineValue.MEMBER_SHOP_NAME, arguments!!.getString(DefineValue.MEMBER_SHOP_NAME, ""))
-                                        bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, ""))
-                                        bundle.putString(DefineValue.PAYMENT_OPTION, arguments!!.getString(DefineValue.PAYMENT_OPTION, ""))
-                                        bundle.putString(DefineValue.DOC_DETAILS, response.getString(WebParams.DOC_DETAILS))
-                                        bundle.putString(DefineValue.PROMO_CODE, jsonArray)
-                                        bundle.putString(DefineValue.EBD_CONFIRM_DATA, response.toString())
-
-                                        frag.arguments = bundle
-                                        tokoPurchaseOrderActivity.addFragment(frag, getString(R.string.purchase_order_confirmation), tokoPurchaseOrderActivity.FRAG_INPUT_ITEM_TAG)
+            Timber.d("isi params confirm doc :$params")
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,
+                    object : ObjListeners {
+                        override fun onResponses(response: JSONObject) {
+                            val code = response.getString(WebParams.ERROR_CODE)
+                            val message = response.getString(WebParams.ERROR_MESSAGE)
+                            when (code) {
+                                WebParams.SUCCESS_CODE -> {
+                                    if (!checkPromoCodeIsValid(response)) {
+                                        return
                                     }
-                                    WebParams.LOGOUT_CODE -> {
-                                        AlertDialogLogout.getInstance().showDialoginMain(activity, message)
-                                    }
-                                    DefineValue.ERROR_9333 -> {
-                                        val model = gson.fromJson(response.toString(), jsonModel::class.java)
-                                        val appModel = model.app_data
-                                        AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                                    }
-                                    DefineValue.ERROR_0066 -> {
-                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
-                                    }
-                                    else -> {
-                                        showDialog(message)
-                                    }
+
+                                    val frag = FragOrderConfirmToko()
+
+                                    val bundle = Bundle()
+                                    bundle.putString(DefineValue.MEMBER_CODE_ESPAY, arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, ""))
+                                    bundle.putString(DefineValue.MEMBER_SHOP_NAME, arguments!!.getString(DefineValue.MEMBER_SHOP_NAME, ""))
+                                    bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, ""))
+                                    bundle.putString(DefineValue.PAYMENT_OPTION, arguments!!.getString(DefineValue.PAYMENT_OPTION, ""))
+                                    bundle.putString(DefineValue.DOC_DETAILS, response.getString(WebParams.DOC_DETAILS))
+                                    bundle.putString(DefineValue.PROMO_CODE, jsonArray)
+                                    bundle.putString(DefineValue.EBD_CONFIRM_DATA, response.toString())
+
+                                    frag.arguments = bundle
+                                    tokoPurchaseOrderActivity!!.addFragment(frag, getString(R.string.purchase_order_confirmation), tokoPurchaseOrderActivity!!.FRAG_INPUT_ITEM_TAG)
+                                }
+                                WebParams.LOGOUT_CODE -> {
+                                    AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                                }
+                                DefineValue.ERROR_9333 -> {
+                                    val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                    val appModel = model.app_data
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                }
+                                DefineValue.ERROR_0066 -> {
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                }
+                                else -> {
+                                    showDialog(message)
                                 }
                             }
+                        }
 
-                            override fun onError(throwable: Throwable?) {
-                                dismissProgressDialog()
-                            }
+                        override fun onError(throwable: Throwable?) {
+                            dismissProgressDialog()
+                        }
 
-                            override fun onComplete() {
-                                dismissProgressDialog()
-                            }
+                        override fun onComplete() {
+                            dismissProgressDialog()
+                        }
 
-                        })
-            }
+                    })
         }
     }
 
@@ -248,17 +248,6 @@ class FragListPromoCodeToko : BaseFragment() {
             requireActivity().onBackPressed()
         }
         dialog.show()
-    }
-
-    private fun checkArrayPromo(): Boolean {
-        for (i in promoCodeList.indices) {
-            if (promoCodeList.size > 0 && promoCodeList[i].code == "") {
-                promoCodeList.removeAt(i)
-                promoCodeAdapter!!.notifyDataSetChanged()
-                return true
-            }
-        }
-        return true
     }
 
     private fun checkPromoCodeIsValid(response: JSONObject): Boolean {

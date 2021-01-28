@@ -14,6 +14,8 @@ import com.sgo.saldomu.models.PromoCodeBATModel
 
 class PromoCodeTokoAdapter(var context: Context?, var promoList: List<PromoCodeBATModel>, var listener: Listener) : RecyclerView.Adapter<PromoCodeTokoAdapter.Holder>() {
 
+    var checkedPosition = -1
+
     interface Listener {
         fun onCheck(position: Int)
         fun onUncheck(position: Int)
@@ -29,14 +31,20 @@ class PromoCodeTokoAdapter(var context: Context?, var promoList: List<PromoCodeB
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
+        if (position == checkedPosition)
+            onCheck(holder, position)
+        else
+            unCheck(holder, position)
+
         holder.layout.setOnClickListener {
-            if (promoList[position].checked) {
-                holder.layout.background = ResourcesCompat.getDrawable(context!!.resources, R.drawable.rounded_background_outline, null)
-                listener.onUncheck(position)
+            if (position == checkedPosition) {
+                unCheck(holder, position)
+                checkedPosition = -1
             } else {
-                holder.layout.background = ResourcesCompat.getDrawable(context!!.resources, R.drawable.rounded_background_outline_primary, null)
-                listener.onCheck(position)
+                onCheck(holder, position)
+                checkedPosition = position
             }
+            notifyDataSetChanged()
         }
         holder.tvDesc.text = promoList[position].desc
         holder.tvCode.text = promoList[position].code
@@ -54,8 +62,22 @@ class PromoCodeTokoAdapter(var context: Context?, var promoList: List<PromoCodeB
         }
     }
 
+    private fun onCheck(holder: Holder, position: Int) {
+        holder.layout.background = ResourcesCompat.getDrawable(context!!.resources, R.drawable.rounded_background_outline_primary, null)
+        listener.onCheck(position)
+    }
+
+    private fun unCheck(holder: Holder, position: Int) {
+        holder.layout.background = ResourcesCompat.getDrawable(context!!.resources, R.drawable.rounded_background_outline, null)
+        listener.onUncheck(position)
+    }
+
     override fun getItemCount(): Int {
         return promoList.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
