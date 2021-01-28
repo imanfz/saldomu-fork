@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         android:background="@drawable/rounded_background_outline"
         android:orientation="vertical"
-        android:stretchColumns="2">
+        android:stretchColumns="2"
+        android:layout_weight="1">
 
         <TableRow
             android:layout_width="match_parent"
@@ -78,11 +79,13 @@
             android:id="@+id/layout_bonus_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/bonus_item"
+                android:textStyle="bold"
                 android:textColor="@color/black" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -100,13 +103,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_margin="16dp"
-        android:layout_weight="0.5"
         android:background="@drawable/rounded_background_blue"
         android:gravity="center"
         android:text="@string/pay"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:textColor="@color/grey_1000w"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
 
 </LinearLayout>

@@ -31,6 +31,7 @@ import com.sgo.saldomu.dialogs.ReportBillerDialog
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.interfaces.OnLoadDataListener
 import com.sgo.saldomu.loader.UtilsLoader
+import com.sgo.saldomu.models.DocDetailsItem
 import com.sgo.saldomu.models.FormatQtyItem
 import com.sgo.saldomu.models.MappingItemsItem
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel
@@ -58,6 +59,8 @@ class FragPaymentByToko : BaseFragment() {
     var isPIN = false
     private var adapterDetailPO: AdapterListDetailPO? = null
     private val itemList = ArrayList<MappingItemsItem>()
+    private val bonusItemList = ArrayList<MappingItemsItem>()
+    private var adapterDetailPOBonusItem: AdapterListDetailPO? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_detail_po, container, false)
@@ -82,6 +85,11 @@ class FragPaymentByToko : BaseFragment() {
         adapterDetailPO = AdapterListDetailPO(context!!, itemList)
         recyclerViewList.adapter = adapterDetailPO
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
+
+        adapterDetailPOBonusItem = AdapterListDetailPO(context!!, bonusItemList)
+        recyclerViewListBonus.adapter = adapterDetailPOBonusItem
+        recyclerViewListBonus.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         getDocDetail()
 
@@ -110,6 +118,7 @@ class FragPaymentByToko : BaseFragment() {
                                 btn_payment.visibility = View.VISIBLE
                                 tv_docNo.text = response.getString(WebParams.DOC_NO)
                                 tv_totalAmount.text = getString(R.string.currency) + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_AMOUNT))
+                                val bonusItem = response.getString(WebParams.BONUS_ITEMS)
                                 val mArrayItem = JSONArray(response.getString(WebParams.ITEMS))
                                 for (i in 0 until mArrayItem.length()) {
                                     val itemName = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_NAME)
@@ -135,6 +144,15 @@ class FragPaymentByToko : BaseFragment() {
                                     itemList.add(mappingItemsItem)
                                 }
                                 adapterDetailPO!!.notifyDataSetChanged()
+
+                                if (bonusItem != "") {
+                                    val model = getGson().fromJson(response.toString(), DocDetailsItem::class.java)
+                                    bonusItemList.addAll(model.bonus_items)
+                                    layout_bonus_item.visibility = View.VISIBLE
+                                } else
+                                    layout_bonus_item.visibility = View.GONE
+
+                                adapterDetailPOBonusItem!!.notifyDataSetChanged()
                             }
                             WebParams.LOGOUT_CODE -> {
                                 AlertDialogLogout.getInstance().showDialoginMain(activity, message)
