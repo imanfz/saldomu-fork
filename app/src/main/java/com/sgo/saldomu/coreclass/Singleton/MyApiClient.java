@@ -308,6 +308,7 @@ public class MyApiClient {
     public static String LINK_GET_LIST_ANCHOR;
     public static String LINK_GET_LIST_COMMUNITY_EBD;
     public static String LINK_GET_LIST_CATALOG_EBD;
+    public static String LINK_GET_LIST_PROMO_EBD;
     public static String LINK_LIST_PO;
     public static String LINK_CONFIRMATION_DOC;
     public static String LINK_CREATE_PO;
@@ -577,6 +578,7 @@ public class MyApiClient {
         LINK_GET_DETAIL_TOKO = headaddressfinal + "espaycatalog/NewMember/DetailRetrieve";
         LINK_GET_LIST_COMMUNITY_EBD = headaddressfinal + "espaycatalog/InquiryMember/Retrieve";
         LINK_GET_LIST_CATALOG_EBD = headaddressfinal + "espaycatalog/InquiryCatalog/Retrieve";
+        LINK_GET_LIST_PROMO_EBD = headaddressfinal + "espaycatalog/InquiryPromoList/Retrieve";
         LINK_LIST_PO = headaddressfinal + "espaycatalog/ListPo/Retrieve";
         LINK_CONFIRMATION_DOC = headaddressfinal + "espaycatalog/ConfirmationDocument/Invoke";
         LINK_CREATE_PO = headaddressfinal + "espaycatalog/CreatePo/Invoke";

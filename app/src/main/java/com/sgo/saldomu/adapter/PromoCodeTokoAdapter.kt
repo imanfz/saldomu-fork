@@ -1,25 +1,25 @@
 package com.sgo.saldomu.adapter
 
 import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
-import com.sgo.saldomu.models.PromoCodeModel
+import com.sgo.saldomu.models.PromoCodeBATModel
 
-class PromoCodeTokoAdapter(var context: Context?, var promoList: List<PromoCodeModel>?, var listener: Listener) : RecyclerView.Adapter<PromoCodeTokoAdapter.Holder>() {
+class PromoCodeTokoAdapter(var context: Context?, var promoList: List<PromoCodeBATModel>, var listener: Listener) : RecyclerView.Adapter<PromoCodeTokoAdapter.Holder>() {
 
     interface Listener {
-        fun onChangePromoCode(position: Int, promoCode: String)
-        fun onDelete(position: Int)
+        fun onCheck(position: Int)
+        fun onUncheck(position: Int)
     }
 
-    fun updateAdapter(promoList: List<PromoCodeModel>) {
+    fun updateAdapter(promoList: List<PromoCodeBATModel>) {
         this.promoList = promoList
         notifyDataSetChanged()
     }
@@ -29,40 +29,39 @@ class PromoCodeTokoAdapter(var context: Context?, var promoList: List<PromoCodeM
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        if (promoList!![position].status == "1") {
-            holder.etPromoCodeName.error = "Kode Tidak Valid"
-            holder.ivDelete.visibility = View.VISIBLE
-        } else {
-            holder.imgStatus.visibility = View.GONE
+        holder.layout.setOnClickListener {
+            if (promoList[position].checked) {
+                holder.layout.background = ResourcesCompat.getDrawable(context!!.resources, R.drawable.rounded_background_outline, null)
+                listener.onUncheck(position)
+            } else {
+                holder.layout.background = ResourcesCompat.getDrawable(context!!.resources, R.drawable.rounded_background_outline_primary, null)
+                listener.onCheck(position)
+            }
         }
+        holder.tvDesc.text = promoList[position].desc
+        holder.tvCode.text = promoList[position].code
 
-        holder.etPromoCodeName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+        when (promoList[position].status) {
+            "0" -> {
+                holder.ivStatus.setImageDrawable(ResourcesCompat.getDrawable(context!!.resources, R.drawable.icon_check_green_round, null))
             }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+            "1" -> {
+                holder.ivStatus.setImageDrawable(ResourcesCompat.getDrawable(context!!.resources, R.drawable.icon_cancel, null))
             }
-
-            override fun afterTextChanged(p0: Editable?) {
-                listener.onChangePromoCode(position, p0.toString())
+            else -> {
+                holder.ivStatus.visibility = View.GONE
             }
-        })
-        if (promoList!!.size == 1) {
-            holder.ivDelete.visibility = View.INVISIBLE
-            holder.ivDelete.setOnClickListener(null)
-        } else
-            holder.ivDelete.setOnClickListener { listener.onDelete(position) }
+        }
     }
 
     override fun getItemCount(): Int {
-        return promoList!!.size
+        return promoList.size
     }
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var etPromoCodeName: EditText = itemView.findViewById(R.id.et_promo_code_name)
-        var ivDelete: ImageView = itemView.findViewById(R.id.iv_delete)
-        var imgStatus: ImageView = itemView.findViewById(R.id.img_status)
+        var layout: LinearLayout = itemView.findViewById(R.id.layout)
+        var tvDesc: TextView = itemView.findViewById(R.id.tv_promo_desc)
+        var tvCode: TextView = itemView.findViewById(R.id.tv_promo_code)
+        var ivStatus: ImageView = itemView.findViewById(R.id.iv_status)
     }
 }

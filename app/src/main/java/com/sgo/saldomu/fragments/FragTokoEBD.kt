@@ -32,7 +32,7 @@ class FragTokoEBD : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
         tokoEBDActivity = activity as TokoEBDActivity
-        tokoEBDActivity!!.initializeToolbar(getString(R.string.menu_item_title_ebd))
+        tokoEBDActivity!!.initializeToolbar(getString(R.string.menu_item_title_b2b_eratel))
 
         menuStrings.clear()
         menuDrawables.clear()

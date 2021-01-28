@@ -15,7 +15,7 @@ class TokoEBDActivity : BaseActivity() {
     var fragmentManager: FragmentManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initializeToolbar(getString(R.string.menu_item_title_ebd))
+        initializeToolbar(getString(R.string.menu_item_title_b2b_eratel))
         if (findViewById<View?>(R.id.toko_ebd_content) != null) {
             if (savedInstanceState != null) {
                 return

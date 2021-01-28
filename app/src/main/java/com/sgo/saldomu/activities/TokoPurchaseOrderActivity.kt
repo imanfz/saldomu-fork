@@ -80,7 +80,7 @@ class TokoPurchaseOrderActivity : BaseActivity() {
 
     override fun onBackPressed() {
         val fragment = fragmentManager!!.findFragmentById(R.id.toko_po_content)
-        if (fragment is FragInputPromoCodeToko || fragment is FragOrderConfirmToko) {
+        if (fragment is FragListPromoCodeToko || fragment is FragOrderConfirmToko) {
             val fragmentTransaction = fragmentManager!!.beginTransaction()
             fragmentTransaction.remove(fragment).commit()
         } else super.onBackPressed()

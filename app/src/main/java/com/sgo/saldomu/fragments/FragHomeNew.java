@@ -421,9 +421,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_report_ebd))) {
                     Intent i = new Intent(getActivity(), ReportEBDActivity.class);
-                    if (menuStrings.contains(getResources().getString(R.string.menu_item_title_ebd) + " " + getResources().getString(R.string.menu_item_title_ebd_toko)))
+                    if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_toko)))
                         i.putExtra(DefineValue.EBD, DefineValue.TOKO);
-                    else if (menuStrings.contains(getResources().getString(R.string.menu_item_title_ebd) + " " + getResources().getString(R.string.menu_item_title_ebd_canvasser)))
+                    else if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_canvasser)))
                         i.putExtra(DefineValue.EBD, DefineValue.CANVASSER);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
@@ -520,10 +520,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     Intent intent = new Intent(getActivity(), B2BActivity.class);
                     startActivity(intent);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_ebd) + " " + getString(R.string.menu_item_title_ebd_toko))) {
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_b2b_eratel) + " " + getString(R.string.menu_item_title_ebd_toko))) {
                     Intent intent = new Intent(getActivity(), TokoEBDActivity.class);
                     startActivity(intent);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_ebd) + " " + getString(R.string.menu_item_title_ebd_canvasser))) {
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_b2b_eratel) + " " + getString(R.string.menu_item_title_ebd_canvasser))) {
                     Intent intent = new Intent(getActivity(), B2BCanvasserActivity.class);
                     startActivity(intent);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_mandiri_lkd))) {
@@ -1058,7 +1058,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     if (mBillerTypeDataPDAM != null)
                         menuStrings.add(getResources().getString(R.string.newhome_pam));
 
-                    menuStrings.add(getResources().getString(R.string.menu_item_title_ebd) + " " + getResources().getString(R.string.menu_item_title_ebd_toko));
+                    menuStrings.add(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_toko));
                 }
                 menuStrings.add(getResources().getString(R.string.menu_item_title_ask_for_money));
 
@@ -1129,7 +1129,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     void checkEBDCodeAgent() {
         try {
             JSONArray arr = new JSONArray(agentEBDCode);
-            String ebd = getResources().getString(R.string.menu_item_title_ebd);
+            String ebd = getResources().getString(R.string.menu_item_title_b2b_eratel);
             String code = "";
             for (int i = 0; i < arr.length(); i++) {
                 String obj = arr.getString(i);
@@ -1609,8 +1609,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             return R.drawable.ic_biller;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_scadm)))
             return R.drawable.ic_menu_b2b;
-        else if (titleMenu.contains(getResources().getString(R.string.menu_item_title_ebd)))
-            return R.drawable.ic_b2b_bat_catalog;
+        else if (titleMenu.contains(getResources().getString(R.string.menu_item_title_b2b_eratel)))
+            return R.drawable.ic_b2b_eratel;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_in)))
             return R.drawable.ic_tarik_tunai;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_out)))

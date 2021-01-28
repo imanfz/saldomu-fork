@@ -13,33 +13,6 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <Button
-            android:id="@+id/btn_add_promo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:background="@drawable/rounded_background_blue"
-            android:text="@string/add_promo_code"
-            android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@color/grey_1000w" />
-
-        <LinearLayout
-            android:id="@+id/layout_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/promo_code" />
-
-            <TextView
-                android:layout_width="30dp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/promo_list_field"
             android:layout_width="match_parent"
