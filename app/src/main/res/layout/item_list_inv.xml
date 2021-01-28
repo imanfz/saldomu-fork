@@ -117,7 +117,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:textSize="11sp"
@@ -154,7 +155,7 @@
                 android:textSize="11sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/doc_no"
+                android:text="@string/invoice_no"
                 android:textColor="@color/black" />
 
             <TextView
@@ -180,7 +181,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:textSize="11sp"
@@ -242,7 +244,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:textSize="11sp"
@@ -273,7 +276,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:textSize="11sp"

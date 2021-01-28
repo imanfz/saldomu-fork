@@ -1722,7 +1722,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
 
     <string name="lbl_type_id">Id Type</string>
     <string name="lbl_reff_id">Reff Id</string>
-    <string name="lbl_reff_no">Reff No</string>
+    <string name="lbl_reff_no">Good Receipt No.</string>
     <string name="lbl_issue_date">Issue Date </string>
     <string name="lbl_due_date">Due Date</string>
     <string name="lbl_created_at">Created At</string>
@@ -1752,4 +1752,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="paid_amount">Paid Amount</string>
     <string name="principal">Principal</string>
     <string name="discount">Discount</string>
+    <string name="invoice_no">Invoice No.</string>
 </resources>

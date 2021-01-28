@@ -1713,7 +1713,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
 
     <string name="lbl_type_id">Tipe Id</string>
     <string name="lbl_reff_id">Id Reff</string>
-    <string name="lbl_reff_no">No Reff </string>
+    <string name="lbl_reff_no">No. Faktur Penerimaan </string>
 
     <string name="lbl_issue_date">Issue Date </string>
     <string name="lbl_due_date">Due Date</string>
@@ -1742,4 +1742,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="paid_amount">Jumlah Pembayaran</string>
     <string name="principal">Principal</string>
     <string name="discount">Diskon</string>
+    <string name="invoice_no">No. Invoice</string>
 </resources>
