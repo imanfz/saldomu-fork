@@ -65,16 +65,26 @@ class FragOrderConfirmToko : BaseFragment() {
 
     private val mappingItemList = ArrayList<MappingItemsItem>()
     private val paymentMethodList = ArrayList<PaymentMethods>()
+
+    var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_order_confirm_toko, container, false)
         return v
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (paymentOption == getString(R.string.pay_now))
+            tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.promo_code))
+        else
+            tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.choose_catalog))
+    }
+
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
-        tokoPurchaseOrderActivity.initializeToolbar(getString(R.string.purchase_order_confirmation))
+        tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
+        tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.purchase_order_confirmation))
 
         if (arguments != null) {
             memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
