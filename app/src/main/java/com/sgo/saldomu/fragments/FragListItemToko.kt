@@ -277,7 +277,7 @@ class FragListItemToko : BaseFragment() {
         val title: TextView = dialog.findViewById(R.id.title_dialog)
         val message: TextView = dialog.findViewById(R.id.message_dialog)
         message.visibility = View.VISIBLE
-        title.text = getString(R.string.error)
+        title.text = ""
         message.text = msg
         btnDialogOTP.setOnClickListener {
             dialog.dismiss()
