@@ -196,13 +196,13 @@ class FragmentDenomInputItemList : BaseFragment(), DenomItemListAdapter.listener
         dialog.setContentView(R.layout.dialog_notification)
 
         // set values for custom dialog components - text, image and button
-        val btnDialogOTP: Button = dialog.findViewById(R.id.btn_dialog_notification_ok)
+        val btnDialog: Button = dialog.findViewById(R.id.btn_dialog_notification_ok)
         val Title: TextView = dialog.findViewById(R.id.title_dialog)
         val Message: TextView = dialog.findViewById(R.id.message_dialog)
         Message.visibility = View.VISIBLE
-        Title.text = getString(R.string.error)
+        Title.text = getString(R.string.remark)
         Message.text = msg
-        btnDialogOTP.setOnClickListener {
+        btnDialog.setOnClickListener {
             dialog.dismiss()
             activity!!.onBackPressed()
         }

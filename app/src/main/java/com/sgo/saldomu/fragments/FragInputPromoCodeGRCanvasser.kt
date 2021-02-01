@@ -1,9 +1,13 @@
 package com.sgo.saldomu.fragments
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,7 +15,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
-import com.sgo.saldomu.adapter.PromoCodeAdapter
+import com.sgo.saldomu.adapter.PromoCodeCanvasserAdapter
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -20,10 +24,11 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.models.PromoCodeBATModel
 import com.sgo.saldomu.models.PromoCodeModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.fragment_denom_input_promo_code.*
+import kotlinx.android.synthetic.main.fragment_list_promo_code_eratel.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -31,8 +36,9 @@ import timber.log.Timber
 
 class FragInputPromoCodeGRCanvasser : BaseFragment() {
 
-    var promoCodeList: ArrayList<PromoCodeModel>? = ArrayList()
-    var promoCodeAdapter: PromoCodeAdapter? = null
+    var promoCodeList: ArrayList<PromoCodeBATModel> = ArrayList()
+    var desirePromoCodeList: ArrayList<PromoCodeModel> = ArrayList()
+    var promoCodeAdapter: PromoCodeCanvasserAdapter? = null
     var bundle = Bundle()
     var memberCodeEspay = ""
     var commCodeEspay = ""
@@ -43,79 +49,53 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
     var isHavePromoCode = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_denom_input_promo_code, container, false)
+        return inflater.inflate(R.layout.fragment_list_promo_code_eratel, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val canvasserGoodReceiptActivity = activity as CanvasserGoodReceiptActivity
+        canvasserGoodReceiptActivity.initializeToolbar(getString(R.string.promo_code))
+
         bundle = arguments!!
 
-        if (bundle != null) {
-            memberCodeEspay = bundle!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
-            commCodeEspay = bundle!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
-            custIdEspay = bundle!!.getString(DefineValue.CUST_ID_ESPAY, "")
-            docNo = bundle!!.getString(DefineValue.DOC_NO, "")
-            docDetails = bundle!!.getString(DefineValue.DOC_DETAILS, "")
-            bonusItems = bundle!!.getString(DefineValue.BONUS_ITEMS, "")
-        }
+        memberCodeEspay = bundle.getString(DefineValue.MEMBER_CODE_ESPAY, "")
+        commCodeEspay = bundle.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
+        custIdEspay = bundle.getString(DefineValue.CUST_ID_ESPAY, "")
+        docNo = bundle.getString(DefineValue.DOC_NO, "")
+        docDetails = bundle.getString(DefineValue.DOC_DETAILS, "")
+        bonusItems = bundle.getString(DefineValue.BONUS_ITEMS, "")
 
-        promoCodeList!!.add(PromoCodeModel("", "", ""))
-        promoCodeAdapter = PromoCodeAdapter(activity, promoCodeList, object : PromoCodeAdapter.Listener {
-            override fun onChangePromoCode(position: Int, promoCode: String) {
-                promoCodeList!![position].code = promoCode
-            }
-
-            override fun onChangePromoQty(position: Int, promoQty: String) {
-                promoCodeList!![position].qty = promoQty
-            }
-
-            override fun onDelete(position: Int) {
-                promoCodeList!!.removeAt(position)
+        promoCodeAdapter = PromoCodeCanvasserAdapter(activity, promoCodeList, object : PromoCodeCanvasserAdapter.Listener {
+            override fun onCheck(position: Int) {
+                promoCodeList[position].checked = true
                 promoCodeAdapter!!.notifyDataSetChanged()
             }
 
+            override fun onUncheck(position: Int) {
+                promoCodeList[position].checked = false
+                promoCodeAdapter!!.notifyDataSetChanged()
+
+            }
         })
-        frag_denom_input_promo_list_field.adapter = promoCodeAdapter
-        frag_denom_input_promo_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-
-        btn_add_promo.setOnClickListener {
-            promoCodeList!!.add(PromoCodeModel("", "", ""))
-            promoCodeAdapter!!.notifyDataSetChanged()
-        }
-
-        frag_denom_input_promo_code_submit_btn.setOnClickListener {
-            if (checkArrayPromo()) {
-                val listString = Gson().toJson(promoCodeList, object : TypeToken<ArrayList<PromoCodeModel?>?>() {}.type)
-                val jsonArray = JSONArray(listString)
-
-                for (i in promoCodeList!!.indices) {
-                    if (promoCodeList!![i].code == "" || promoCodeList!![i].qty == "" ) {
-                        isHavePromoCode = false
-                    } else
-                        isHavePromoCode = true
-                }
-                Timber.e(jsonArray.toString())
-                confirmDocument(isHavePromoCode, jsonArray.toString())
-            }
-        }
-    }
-
-    private fun checkArrayPromo(): Boolean {
-        for (i in promoCodeList!!.indices) {
-            if (promoCodeList!![i].code != "" && promoCodeList!![i].qty == "" ||
-                    promoCodeList!![i].code == "" && promoCodeList!![i].qty != "") {
-                Toast.makeText(context, resources.getString(R.string.invalid_promo_code), Toast.LENGTH_SHORT).show()
-                return false
+        promo_list_field.adapter = promoCodeAdapter
+        promo_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        getPromoList()
+        promo_code_submit_btn.setOnClickListener {
+            for (i in promoCodeList.indices) {
+                if (promoCodeList[i].checked)
+                    desirePromoCodeList.add(PromoCodeModel(promoCodeList[i].code, "1", ""))
             }
 
-            if (promoCodeList!!.size > 0 && promoCodeList!![i].code == "" && promoCodeList!![i].qty == "") {
-                promoCodeList!!.removeAt(i)
-                promoCodeAdapter!!.notifyDataSetChanged()
-                return true
-            }
+            val listString = Gson().toJson(desirePromoCodeList, object : TypeToken<ArrayList<PromoCodeModel?>?>() {}.type)
+            val jsonArray = JSONArray(listString)
+
+            isHavePromoCode = desirePromoCodeList.isNotEmpty()
+
+            Timber.e(jsonArray.toString())
+            confirmDocument(isHavePromoCode, jsonArray.toString())
         }
-        return true
     }
 
     private fun confirmDocument(isHavePromoCode: Boolean, promoCode: String) {
@@ -212,17 +192,16 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
         val promoCodeJSONArray = JSONArray(promoCodesString)
         var isPromoCodeValid = true;
 
-        promoCodeList!!.clear()
-
         for (i in 0 until promoCodeJSONArray.length()) {
             val status = promoCodeJSONArray.getJSONObject(i).getString(WebParams.STATUS)
             val code = promoCodeJSONArray.getJSONObject(i).getString(WebParams.CODE)
-            val qty = promoCodeJSONArray.getJSONObject(i).getString(WebParams.QTY)
-            if (status.equals("1")) {
+            if (status == "1") {
                 isPromoCodeValid = false
             }
-            promoCodeList!!.add(PromoCodeModel(code, qty, status))
-            promoCodeAdapter!!.updateAdapter(promoCodeList!!)
+            for (j in promoCodeList.indices)
+                if (promoCodeList[j].code == code)
+                    promoCodeList[j].status = status
+            promoCodeAdapter!!.updateAdapter(promoCodeList)
         }
 
         return isPromoCodeValid
@@ -232,5 +211,88 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
         if (activity == null) return
         val fca = activity as CanvasserGoodReceiptActivity?
         fca!!.switchContent(i, name, next_name, isBackstack, tag)
+    }
+
+    private fun getPromoList() {
+        try {
+            showProgressDialog()
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_PROMO_EBD, memberCodeEspay + commCodeEspay)
+            params[WebParams.USER_ID] = userPhoneID
+            params[WebParams.COMM_CODE_ESPAY] = commCodeEspay
+            params[WebParams.MEMBER_CODE_ESPAY] = memberCodeEspay
+            params[WebParams.CUST_ID_ESPAY] = custIdEspay
+            params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
+
+            Timber.d("isi params get promo list:$params")
+
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_PROMO_EBD, params,
+                    object : ObjListeners {
+                        override fun onResponses(response: JSONObject) {
+                            try {
+                                val code = response.getString(WebParams.ERROR_CODE)
+                                val message = response.getString(WebParams.ERROR_MESSAGE)
+                                when (code) {
+                                    WebParams.SUCCESS_CODE -> {
+                                        promoCodeList.clear()
+                                        val promoArray = response.getJSONArray(WebParams.PROMO)
+                                        for (i in 0 until promoArray.length()) {
+                                            val promoObject = promoArray.getJSONObject(i)
+                                            val promoCode = promoObject.getString(WebParams.CODE)
+                                            val promoDesc = promoObject.getString(WebParams.DESC)
+                                            promoCodeList.add(PromoCodeBATModel(promoCode, promoDesc, false, ""))
+                                        }
+                                        promoCodeAdapter!!.notifyDataSetChanged()
+                                    }
+                                    WebParams.LOGOUT_CODE -> {
+                                        AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                                    }
+                                    DefineValue.ERROR_9333 -> {
+                                        val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                        val appModel = model.app_data
+                                        AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                    }
+                                    DefineValue.ERROR_0066 -> {
+                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                    }
+                                    else -> {
+                                        showDialog(message)
+                                    }
+                                }
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            }
+                        }
+
+                        override fun onError(throwable: Throwable) {
+                            dismissProgressDialog()
+                        }
+
+                        override fun onComplete() {
+                            dismissProgressDialog()
+                        }
+                    })
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Timber.d("httpclient:%s", e.message)
+        }
+    }
+
+    private fun showDialog(msg: String) {
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setContentView(R.layout.dialog_notification)
+
+        val btnDialog: Button = dialog.findViewById(R.id.btn_dialog_notification_ok)
+        val title: TextView = dialog.findViewById(R.id.title_dialog)
+        val message: TextView = dialog.findViewById(R.id.message_dialog)
+        message.visibility = View.VISIBLE
+        title.text = getString(R.string.remark)
+        message.text = msg
+        btnDialog.setOnClickListener {
+            dialog.dismiss()
+            requireActivity().onBackPressed()
+        }
+        dialog.show()
     }
 }
