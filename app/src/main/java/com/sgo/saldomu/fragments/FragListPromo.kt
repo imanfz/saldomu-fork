@@ -25,7 +25,7 @@ import com.sgo.saldomu.models.PromoCodeBATModel
 import com.sgo.saldomu.models.PromoCodeModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.fragment_list_promo_code_toko.*
+import kotlinx.android.synthetic.main.fragment_list_promo_code_eratel.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -41,7 +41,7 @@ class FragListPromo : BaseFragment()
     var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.fragment_list_promo_code_toko, container, false)
+        v = inflater.inflate(R.layout.fragment_list_promo_code_eratel, container, false)
         return v
     }
 
@@ -54,6 +54,7 @@ class FragListPromo : BaseFragment()
         super.onActivityCreated(savedInstanceState)
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
+        promo_code_submit_btn.visibility = View.GONE
 
         tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
         tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.promo_code))

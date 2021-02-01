@@ -84,7 +84,6 @@ class FragListPromoCodeToko : BaseFragment() {
         getPromoList()
         promo_list_field.adapter = promoCodeAdapter
         promo_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        promo_code_submit_btn.visibility = View.VISIBLE
 
         promo_code_submit_btn.setOnClickListener {
             var jsonArray = ""
