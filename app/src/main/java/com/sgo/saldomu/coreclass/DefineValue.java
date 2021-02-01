@@ -729,5 +729,6 @@ public class DefineValue {
     public static String CLOSE = "C";
     public static String BONUS_ITEMS = "bonusItems";
     public static String ITEMS = "Items";
+    public static String LOG_OUT = "log_out";
 }
 

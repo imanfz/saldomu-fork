@@ -385,13 +385,13 @@ class FragListItemPOCanvasser : BaseFragment() {
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
 
-        val btnDialogOTP: Button = dialog.findViewById(R.id.btn_dialog_notification_ok)
+        val btnDialog: Button = dialog.findViewById(R.id.btn_dialog_notification_ok)
         val title: TextView = dialog.findViewById(R.id.title_dialog)
         val message: TextView = dialog.findViewById(R.id.message_dialog)
         message.visibility = View.VISIBLE
-        title.text = getString(R.string.error)
+        title.text = getString(R.string.remark)
         message.text = msg
-        btnDialogOTP.setOnClickListener {
+        btnDialog.setOnClickListener {
             dialog.dismiss()
             fragmentManager!!.popBackStack()
         }

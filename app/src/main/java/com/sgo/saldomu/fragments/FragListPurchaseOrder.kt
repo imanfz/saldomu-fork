@@ -8,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.SnapHelper
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.ListPOAdapter
@@ -102,6 +100,7 @@ class FragListPurchaseOrder : BaseFragment() {
         params[WebParams.MEMBER_CODE_ESPAY] = memberCode
         params[WebParams.COMM_CODE_ESPAY] = commCode
         params[WebParams.CUST_ID_ESPAY] = userPhoneID
+        params[WebParams.DOC_STATUS] = DefineValue.OPEN
 
         Timber.d("isi params get $docTypeID list:$params")
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_LIST_PO, params,
