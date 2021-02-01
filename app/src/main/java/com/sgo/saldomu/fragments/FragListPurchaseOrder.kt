@@ -101,6 +101,7 @@ class FragListPurchaseOrder : BaseFragment() {
         params[WebParams.MEMBER_CODE_ESPAY] = memberCode
         params[WebParams.COMM_CODE_ESPAY] = commCode
         params[WebParams.CUST_ID_ESPAY] = userPhoneID
+        params[WebParams.DOC_STATUS] = DefineValue.OPEN
 
         Timber.d("isi params get $docTypeID list:$params")
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_LIST_PO, params,

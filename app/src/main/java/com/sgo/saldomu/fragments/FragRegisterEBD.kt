@@ -49,7 +49,7 @@ class FragRegisterEBD : BaseFragment() {
             when {
                 menuStrings[i] == getString(R.string.new_store) -> tokoEBDActivity!!.switchContent(FragRegisterNewMember(), getString(R.string.new_store), true, "FragRegisterNewMember")
                 menuStrings[i] == getString(R.string.existing_store) -> tokoEBDActivity!!.switchContent(FragJoinCommunityToko(), getString(R.string.join_community), true, "FragJoinCommunityToko")
-                menuStrings[i] == getString(R.string.store_list) -> tokoEBDActivity!!.switchContent(FragListToko(), getString(R.string.store_list), true, "FragJoinCommunityToko")
+                menuStrings[i] == getString(R.string.store_list) -> tokoEBDActivity!!.switchContent(FragListToko(), getString(R.string.store_list), true, "FragListToko")
             }
         }
 

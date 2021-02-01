@@ -27,7 +27,7 @@ import com.sgo.saldomu.models.PromoCodeBATModel
 import com.sgo.saldomu.models.PromoCodeModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.fragment_list_promo_code_toko.*
+import kotlinx.android.synthetic.main.fragment_list_promo_code_eratel.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -48,7 +48,7 @@ class FragListPromoCodeToko : BaseFragment() {
     var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        v = inflater.inflate(R.layout.fragment_list_promo_code_toko, container, false)
+        v = inflater.inflate(R.layout.fragment_list_promo_code_eratel, container, false)
         return v
     }
 
@@ -238,13 +238,13 @@ class FragListPromoCodeToko : BaseFragment() {
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
 
-        val btnDialogOTP: Button = dialog.findViewById(R.id.btn_dialog_notification_ok)
+        val btnDialog: Button = dialog.findViewById(R.id.btn_dialog_notification_ok)
         val title: TextView = dialog.findViewById(R.id.title_dialog)
         val message: TextView = dialog.findViewById(R.id.message_dialog)
         message.visibility = View.VISIBLE
-        title.text = ""
+        title.text = getString(R.string.remark)
         message.text = msg
-        btnDialogOTP.setOnClickListener {
+        btnDialog.setOnClickListener {
             dialog.dismiss()
             requireActivity().onBackPressed()
         }
