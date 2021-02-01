@@ -38,6 +38,7 @@
             android:gravity="center"
             android:text="@string/validate_promo"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:visibility="gone"/>
     </com.balysv.materialripple.MaterialRippleLayout>
 </RelativeLayout>

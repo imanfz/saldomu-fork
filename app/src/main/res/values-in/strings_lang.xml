@@ -1743,4 +1743,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="principal">Principal</string>
     <string name="discount">Diskon</string>
     <string name="invoice_no">No. Invoice</string>
+    <string name="list_promo">Daftar Promo</string>
 </resources>

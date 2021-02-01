@@ -41,6 +41,14 @@
             android:visible="false"
             />
         <item
+            android:id="@+id/promo"
+            android:orderInCategory="5"
+            android:title="@string/social_promo"
+            android:icon="@drawable/ic_menu_promo"
+            someNamespace:showAsAction="always"
+            android:visible="false"
+            />
+        <item
             android:id="@+id/right_drawer_menu"
             android:orderInCategory="99"
             android:title="@string/social_promo"

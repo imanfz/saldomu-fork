@@ -3,16 +3,16 @@ package com.sgo.saldomu.fragments
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import androidx.core.content.res.ResourcesCompat
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.FavoriteActivity
 import com.sgo.saldomu.activities.TokoEBDActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.GridMenu
 import com.sgo.saldomu.coreclass.CustomSecurePref
+import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_grid.*
 

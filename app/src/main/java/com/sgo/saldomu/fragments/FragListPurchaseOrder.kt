@@ -1,16 +1,14 @@
 package com.sgo.saldomu.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.SnapHelper
 import com.sgo.saldomu.R
+import com.sgo.saldomu.activities.FavoriteActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.ListPOAdapter
 import com.sgo.saldomu.coreclass.CustomSecurePref
@@ -42,6 +40,7 @@ class FragListPurchaseOrder : BaseFragment() {
 
     var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         v = inflater.inflate(R.layout.frag_list_po, container, false)
         return v
     }
@@ -163,4 +162,33 @@ class FragListPurchaseOrder : BaseFragment() {
 
                 })
     }
+
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.favorite).isVisible = false
+        menu.findItem(R.id.notifications).isVisible = false
+        menu.findItem(R.id.settings).isVisible = false
+        menu.findItem(R.id.search).isVisible = false
+        menu.findItem(R.id.cancel).isVisible = false
+        menu.findItem(R.id.promo).isVisible = true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.promo) {
+            val fragment = FragListPromo()
+            val bundle = Bundle()
+            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
+            fragment.arguments = bundle
+            tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.list_promo), true, "FragListPromo")
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        activity!!.menuInflater.inflate(R.menu.ab_notification, menu)
+    }
+
 }
