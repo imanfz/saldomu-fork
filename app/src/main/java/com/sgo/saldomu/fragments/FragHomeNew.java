@@ -861,7 +861,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity2(getActivity(), message);
+                                    test.showDialoginMain(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:" + model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
@@ -970,7 +970,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:%s", response.toString());
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity2(getActivity(), message);
+                                    test.showDialoginMain(getActivity(), message);
                                 } else {
                                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 }
