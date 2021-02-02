@@ -74,6 +74,8 @@ class FragReportEBDList(private val reportType: String, private val memberCodeEs
                 val message = response.getString(WebParams.ERROR_MESSAGE)
                 when (code) {
                     WebParams.SUCCESS_CODE -> {
+                        recyclerView.visibility = View.VISIBLE
+                        layout_no_data.visibility = View.GONE
                         val docList = response.getJSONArray(WebParams.DOC_LIST)
                         docListItemArray.clear()
                         for (i in 0 until docList.length()) {
