@@ -10,6 +10,7 @@ import android.content.Intent;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.Perkenalan;
+import com.sgo.saldomu.coreclass.DefineValue;
 
 import timber.log.Timber;
 
@@ -43,6 +44,27 @@ public class AlertDialogLogout {
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             mContext.startActivity(intent);
                         }
+                    });
+            if (getAdInstance() == null) {
+                setAdInstance(builder.create());
+                getAdInstance().show();
+            } else if (!getAdInstance().isShowing()) {
+                setAdInstance(builder.create());
+                getAdInstance().show();
+            }
+        }
+    }
+
+    public void showDialoginActivity2(final Activity mContext, String message){
+        if(mContext != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)
+                    .setCancelable(false)
+                    .setPositiveButton(mContext.getResources().getString(R.string.ok), (dialog, which) -> {
+                        Intent intent = new Intent(mContext, Perkenalan.class);
+                        intent.putExtra(DefineValue.LOG_OUT,true);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        mContext.startActivity(intent);
                     });
             if (getAdInstance() == null) {
                 setAdInstance(builder.create());

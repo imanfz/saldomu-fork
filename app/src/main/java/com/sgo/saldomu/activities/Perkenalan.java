@@ -33,7 +33,6 @@ import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance;
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -97,10 +96,14 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        Bundle m = getIntent().getExtras();
+        if (m != null && m.containsKey(DefineValue.LOG_OUT)) {
+            if (m.getBoolean(DefineValue.LOG_OUT))
+                sentLogout();
+        }
         if (InetHandler.isNetworkAvailable(this))
             new UtilsLoader(this).getAppVersion();
-        AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(task -> {
@@ -820,21 +823,15 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         return false;
     }
 
-    public void switchLogout() {
-        sentLogout();
-    }
-
     private void sentLogout() {
         try {
-            if (progdialog == null) {
-                progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.please_wait));
-                progdialog.show();
-            }
+            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.please_wait));
+            progdialog.show();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LOGOUT);
 //            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
+            params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGOUT, params
                     , new ResponseListener() {
@@ -844,7 +841,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 
                             if (model.getError_code().equals(WebParams.SUCCESS_CODE)) {
                                 //stopService(new Intent(MainPage.this, UpdateLocationService.class));
-                                Logout(FIRST_SCREEN_INTRO);
+                                Logout();
 
                             } else {
                                 Toast.makeText(Perkenalan.this, model.getError_message(), Toast.LENGTH_LONG).show();
@@ -869,7 +866,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         }
     }
 
-    private void Logout(int logoutTo) {
+    private void Logout() {
 
         String balance = sp.getString(DefineValue.BALANCE_AMOUNT, "");
         String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME, "");
@@ -911,7 +908,6 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
-        openFirstScreen(logoutTo);
     }
 
     private void openFirstScreen(int index) {

@@ -487,7 +487,7 @@ public class FragPayFriends extends BaseFragment {
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginMain(getActivity(), message);
+                                    test.showDialoginActivity2(getActivity(), message);
                                 } else if (code.equals(ErrorDefinition.WRONG_PIN_P2P)) {
                                     code = model.getError_message();
                                     showDialogError(code);

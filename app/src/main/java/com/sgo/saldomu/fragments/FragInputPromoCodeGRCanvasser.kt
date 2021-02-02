@@ -244,7 +244,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
                                         promoCodeAdapter!!.notifyDataSetChanged()
                                     }
                                     WebParams.LOGOUT_CODE -> {
-                                        AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                                        AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
                                     }
                                     DefineValue.ERROR_9333 -> {
                                         val model = gson.fromJson(response.toString(), jsonModel::class.java)

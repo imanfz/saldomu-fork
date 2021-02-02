@@ -137,7 +137,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                 itemListAdapter!!.notifyDataSetChanged()
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginMain(tokoPurchaseOrderActivity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)

@@ -495,7 +495,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                     } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                         String message = reportListModel.getError_message();
                                         AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                        test.showDialoginMain(getActivity(), message);
+                                        test.showDialoginActivity2(getActivity(), message);
                                     } else if (code.equals("0003")) {
                                         bak_date_from = (Calendar) date_from.clone();
                                         bak_date_to = (Calendar) date_to.clone();
@@ -671,7 +671,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginMain(getActivity(), message);
+                                    test.showDialoginActivity2(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();

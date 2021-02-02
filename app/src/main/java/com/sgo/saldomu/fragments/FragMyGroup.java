@@ -218,7 +218,7 @@ public class FragMyGroup extends ListFragment {
                                     Timber.d("isi response autologout:"+response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginMain(getActivity(),message);
+                                    test.showDialoginActivity2(getActivity(),message);
                                 }
                                 else {
                                     Timber.d("isi error group list:"+response.toString());

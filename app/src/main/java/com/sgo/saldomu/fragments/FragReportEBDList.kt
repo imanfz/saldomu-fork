@@ -90,7 +90,7 @@ class FragReportEBDList(private val reportType: String, private val memberCodeEs
                     }
                     WebParams.LOGOUT_CODE -> {
                         val alertDialogLogout = AlertDialogLogout.getInstance()
-                        alertDialogLogout.showDialoginMain(activity, message)
+                        alertDialogLogout.showDialoginActivity2(activity, message)
                     }
                     DefineValue.ERROR_9333 -> {
                         val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -142,7 +142,7 @@ class FragReportEBDList(private val reportType: String, private val memberCodeEs
                     }
                     WebParams.LOGOUT_CODE -> {
                         val alertDialogLogout = AlertDialogLogout.getInstance()
-                        alertDialogLogout.showDialoginMain(activity, message)
+                        alertDialogLogout.showDialoginActivity2(activity, message)
                     }
                     DefineValue.ERROR_9333 -> {
                         val model = gson.fromJson(response.toString(), jsonModel::class.java)

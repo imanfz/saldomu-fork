@@ -87,7 +87,7 @@ class FragGridLendingMenu : BaseFragment() {
                                     LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
                                         val test = AlertDialogLogout.getInstance()
-                                        test.showDialoginMain(activity, message)
+                                        test.showDialoginActivity2(activity, message)
                                     }
                                     DefineValue.ERROR_9333 -> {
                                         Timber.d("isi response app data:%s", model.app_data)
