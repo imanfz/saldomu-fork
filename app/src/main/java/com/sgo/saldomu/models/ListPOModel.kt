@@ -49,8 +49,6 @@ class ListPOModel() : Parcelable {
     @Expose
     var reff_id: String? = ""
 
-
-
     @SerializedName("paid_status")
     @Expose
     var paid_status: String? = null

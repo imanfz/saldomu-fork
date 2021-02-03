@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
@@ -28,6 +29,8 @@ import kotlinx.android.synthetic.main.dialog_notification.*
 import kotlinx.android.synthetic.main.frag_register_ebd.*
 import org.json.JSONObject
 import timber.log.Timber
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class FragRegisterNewMember : BaseFragment() {
@@ -36,6 +39,7 @@ class FragRegisterNewMember : BaseFragment() {
     var districtID = ""
     var subDistrictID = ""
     var anchorCodeEspay = ""
+    var memberDOB = ""
     var latitude = 0.0
     var longitude = 0.0
 
@@ -49,11 +53,15 @@ class FragRegisterNewMember : BaseFragment() {
     val urbanVillageNameList: ArrayList<String> = arrayListOf()
     val anchorList = ArrayList<AnchorListItem>()
 
+    @SuppressLint("SimpleDateFormat")
+    var fromFormat: DateFormat = SimpleDateFormat()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_register_ebd, container, false)
         return v
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
@@ -68,7 +76,6 @@ class FragRegisterNewMember : BaseFragment() {
         ll_setLocation.setOnClickListener(openMap)
         change_location.setOnClickListener(openMap)
         btn_submit.setOnClickListener { if (inputValidation()) submitRegisterEBD() }
-
 
         province_auto_text.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
             for (i in 0 until provinceList.size) {
@@ -102,6 +109,26 @@ class FragRegisterNewMember : BaseFragment() {
         }
         getLocationData()
         getListAnchor()
+
+        tv_dob.setOnClickListener {
+            val c = Calendar.getInstance()
+            val yearNow = c.get(Calendar.YEAR)
+            val monthNow = c.get(Calendar.MONTH)
+            val dayNow = c.get(Calendar.DAY_OF_MONTH)
+
+            val datePickerDialog = DatePickerDialog(context!!, { _, year, monthOfYear, dayOfMonth ->
+                        val calendar: Calendar = Calendar.getInstance()
+                        calendar.set(year, monthOfYear, dayOfMonth)
+
+                        val monthDisplay = monthOfYear + 1
+                        tv_dob.text = "$dayOfMonth - $monthDisplay - $year"
+
+                        fromFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ID", "INDONESIA"))
+                        memberDOB = fromFormat.format(calendar.time)
+                    }, yearNow, monthNow, dayNow)
+            datePickerDialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
+            datePickerDialog.show()
+        }
     }
 
     private fun inputValidation(): Boolean {
@@ -286,6 +313,7 @@ class FragRegisterNewMember : BaseFragment() {
         params[WebParams.CUST_NAME] = custName
         params[WebParams.SHOP_NAME] = shopName
         params[WebParams.ANCHOR_CODE_ESPAY] = anchorCodeEspay
+        params[WebParams.BIRTH_DATE] = memberDOB
 
         Timber.d("isi params register store:%s", params.toString())
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_NEW_EBD, params, object : ObjListeners {

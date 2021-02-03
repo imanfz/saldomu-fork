@@ -31,7 +31,6 @@
         android:layout_below="@id/layout_search"
         android:layout_above="@id/btn_create_po"/>
 
-
     <Button
         android:id="@+id/btn_create_po"
         android:layout_width="match_parent"
