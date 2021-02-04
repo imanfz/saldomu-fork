@@ -321,6 +321,7 @@ public class MyApiClient {
     public static String LINK_RESEND_OTP_DOC;
     public static String LINK_CREATE_GR;
     public static String LINK_DOC_STRUK;
+    public static String LINK_CANCEL_DOC;
 
 
     public void InitializeAddress(){
@@ -585,6 +586,7 @@ public class MyApiClient {
         LINK_REQUEST_PAYMENT= headaddressfinal + "espaycatalog/RequestPayment/Invoke";
         LINK_PAYMENT_TOKO= headaddressfinal + "espaycatalog/PaymentToko/Invoke";
         LINK_GET_LIST_ANCHOR= headaddressfinal + "espaycatalog/ListAnchor/Retrieve";
+        LINK_CANCEL_DOC = headaddressfinal + "espaycatalog/CancelDocument/Invoke";
 
         LINK_DOC_LIST = headaddressfinal + "espaycatalog/InquiryDocList/Retrieve";
         LINK_DOC_DETAIL = headaddressfinal + "espaycatalog/InquiryDocDetail/Retrieve";

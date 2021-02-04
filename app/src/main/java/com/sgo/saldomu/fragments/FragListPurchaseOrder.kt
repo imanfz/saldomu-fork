@@ -1,16 +1,17 @@
 package com.sgo.saldomu.fragments
 
-import android.content.Intent
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.R
-import com.sgo.saldomu.activities.FavoriteActivity
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
-import com.sgo.saldomu.adapter.ListPOAdapter
+import com.sgo.saldomu.adapter.ListPOTokoAdapter
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -36,7 +37,7 @@ class FragListPurchaseOrder : BaseFragment() {
     var shopName: String? = null
 
     var itemList = ArrayList<ListPOModel>()
-    var itemListAdapter: ListPOAdapter? = null
+    var itemListAdapter: ListPOTokoAdapter? = null
 
     var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -69,15 +70,22 @@ class FragListPurchaseOrder : BaseFragment() {
             shopName = arguments!!.getString(DefineValue.MEMBER_SHOP_NAME, "")
         }
 
-        itemListAdapter = ListPOAdapter(itemList, activity) {
-            val fragment = FragPurchaseOrderDetail()
-            val bundle = Bundle()
-            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
-            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
-            bundle.putString(DefineValue.DOC_NO, it.doc_no)
-            fragment.arguments = bundle
-            tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.detail_document), true, "FragPurchaseOrderDetail")
-        }
+        itemListAdapter = ListPOTokoAdapter(itemList,activity, object : ListPOTokoAdapter.listener{
+            override fun onClick(docNo: String) {
+                val fragment = FragPurchaseOrderDetail()
+                val bundle = Bundle()
+                bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+                bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
+                bundle.putString(DefineValue.DOC_NO, docNo)
+                fragment.arguments = bundle
+                tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.detail_document), true, "FragPurchaseOrderDetail")
+            }
+
+            override fun onCancel(docNo: String) {
+                cancelPO(docNo)
+            }
+
+        })
         recyclerViewList.adapter = itemListAdapter
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
@@ -122,7 +130,8 @@ class FragListPurchaseOrder : BaseFragment() {
                                     val custID = jsonObject.getString(WebParams.CUST_ID)
                                     val memberCode = jsonObject.getString(WebParams.MEMBER_CODE)
                                     val commCode = jsonObject.getString(WebParams.COMM_CODE)
-                                    val paidStatus = jsonObject.getString(WebParams.PAID_STATUS_REMARK)
+                                    val paidStatus = jsonObject.getString(WebParams.PAID_STATUS)
+                                    val paidStatusRemark = jsonObject.getString(WebParams.PAID_STATUS_REMARK)
                                     val listPOModel = ListPOModel()
                                     listPOModel.doc_no = docNo
                                     listPOModel.doc_status = docStatus
@@ -132,12 +141,13 @@ class FragListPurchaseOrder : BaseFragment() {
                                     listPOModel.member_code = memberCode
                                     listPOModel.comm_code = commCode
                                     listPOModel.paid_status = paidStatus
+                                    listPOModel.paid_status_remark = paidStatusRemark
                                     itemList.add(listPOModel)
                                 }
                                 itemListAdapter!!.notifyDataSetChanged()
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginMain(tokoPurchaseOrderActivity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -192,4 +202,74 @@ class FragListPurchaseOrder : BaseFragment() {
         activity!!.menuInflater.inflate(R.menu.ab_notification, menu)
     }
 
+    private fun cancelPO(docNo: String) {
+        showProgressDialog()
+
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CANCEL_DOC, memberCode + commCode + docNo)
+        params[WebParams.USER_ID] = userPhoneID
+        params[WebParams.MEMBER_CODE_ESPAY] = memberCode
+        params[WebParams.COMM_CODE_ESPAY] = commCode
+        params[WebParams.CUST_ID_ESPAY] = userPhoneID
+        params[WebParams.CUST_ID] = userPhoneID
+        params[WebParams.CUST_TYPE] = DefineValue.TOKO
+        params[WebParams.TYPE_ID] = docTypeID
+        params[WebParams.DOC_NO] = docNo
+        params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
+
+        Timber.d("isi params cancel $docTypeID :$params")
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CANCEL_DOC, params,
+                object : ObjListeners {
+                    override fun onResponses(response: JSONObject) {
+                        val code = response.getString(WebParams.ERROR_CODE)
+                        val message = response.getString(WebParams.ERROR_MESSAGE)
+                        when (code) {
+                            WebParams.SUCCESS_CODE -> {
+                                showDialog(getString(R.string.order_canceled))
+                            }
+                            WebParams.LOGOUT_CODE -> {
+                                AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
+                            }
+                            DefineValue.ERROR_9333 -> {
+                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                val appModel = model.app_data
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                            }
+                            DefineValue.ERROR_0066 -> {
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                            }
+                            else -> {
+                                Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+
+                    override fun onError(throwable: Throwable?) {
+                        dismissProgressDialog()
+                    }
+
+                    override fun onComplete() {
+                        dismissProgressDialog()
+                    }
+
+                })
+    }
+
+    private fun showDialog(msg: String) {
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setContentView(R.layout.dialog_notification)
+
+        val btnDialog: Button = dialog.findViewById(R.id.btn_dialog_notification_ok)
+        val title: TextView = dialog.findViewById(R.id.title_dialog)
+        val message: TextView = dialog.findViewById(R.id.message_dialog)
+        message.visibility = View.VISIBLE
+        title.text = getString(R.string.remark)
+        message.text = msg
+        btnDialog.setOnClickListener {
+            dialog.dismiss()
+            getPOList()
+        }
+        dialog.show()
+    }
 }

@@ -155,4 +155,13 @@
         </TableRow>
     </TableLayout>
 
+    <Button
+        android:id="@+id/btn_cancel_po"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/rounded_background_outline"
+        android:text="@string/cancel"
+        android:textColor="@color/black"
+        android:visibility="gone"/>
 </LinearLayout>

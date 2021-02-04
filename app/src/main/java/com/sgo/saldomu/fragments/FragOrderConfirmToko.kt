@@ -180,7 +180,7 @@ class FragOrderConfirmToko : BaseFragment() {
                                     showDialog(message)
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -240,7 +240,7 @@ class FragOrderConfirmToko : BaseFragment() {
                                 getFailedPin()
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -331,7 +331,7 @@ class FragOrderConfirmToko : BaseFragment() {
                         if (code == WebParams.SUCCESS_CODE) {
                             getTrxStatus()
                         } else if (code == WebParams.LOGOUT_CODE) {
-                            AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                            AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
                         } else {
                             Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
                             if (isPIN && message == "PIN tidak sesuai") {
@@ -380,7 +380,7 @@ class FragOrderConfirmToko : BaseFragment() {
                             val model = getGson().fromJson(response.toString(), GetTrxStatusReportModel::class.java)
                             showReportBillerDialog(model.tx_status!!, model)
                         } else if (code == WebParams.LOGOUT_CODE) {
-                            AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                            AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
                         } else if (code == DefineValue.ERROR_9333) {
                             val model = gson.fromJson(response.toString(), jsonModel::class.java)
                             val appModel = model.app_data

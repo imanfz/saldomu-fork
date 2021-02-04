@@ -233,7 +233,7 @@ class FragListItemToko : BaseFragment() {
                                         itemListAdapter!!.notifyDataSetChanged()
                                     }
                                     WebParams.LOGOUT_CODE -> {
-                                        AlertDialogLogout.getInstance().showDialoginMain(tokoPurchaseOrderActivity, message)
+                                        AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
                                     }
                                     DefineValue.ERROR_9333 -> {
                                         val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -273,13 +273,13 @@ class FragListItemToko : BaseFragment() {
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_notification)
 
-        val btnDialogOTP: Button = dialog.findViewById(R.id.btn_dialog_notification_ok)
+        val btnDialog: Button = dialog.findViewById(R.id.btn_dialog_notification_ok)
         val title: TextView = dialog.findViewById(R.id.title_dialog)
         val message: TextView = dialog.findViewById(R.id.message_dialog)
         message.visibility = View.VISIBLE
-        title.text = ""
+        title.text = getString(R.string.remark)
         message.text = msg
-        btnDialogOTP.setOnClickListener {
+        btnDialog.setOnClickListener {
             dialog.dismiss()
             requireFragmentManager().popBackStack()
         }
@@ -326,7 +326,7 @@ class FragListItemToko : BaseFragment() {
                                 (activity as TokoPurchaseOrderActivity).addFragment(frag, getString(R.string.purchase_order_confirmation), (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginMain(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)

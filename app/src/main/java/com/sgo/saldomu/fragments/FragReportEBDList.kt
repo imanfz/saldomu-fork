@@ -74,6 +74,8 @@ class FragReportEBDList(private val reportType: String, private val memberCodeEs
                 val message = response.getString(WebParams.ERROR_MESSAGE)
                 when (code) {
                     WebParams.SUCCESS_CODE -> {
+                        recyclerView.visibility = View.VISIBLE
+                        layout_no_data.visibility = View.GONE
                         val docList = response.getJSONArray(WebParams.DOC_LIST)
                         docListItemArray.clear()
                         for (i in 0 until docList.length()) {
@@ -88,7 +90,7 @@ class FragReportEBDList(private val reportType: String, private val memberCodeEs
                     }
                     WebParams.LOGOUT_CODE -> {
                         val alertDialogLogout = AlertDialogLogout.getInstance()
-                        alertDialogLogout.showDialoginMain(activity, message)
+                        alertDialogLogout.showDialoginActivity2(activity, message)
                     }
                     DefineValue.ERROR_9333 -> {
                         val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -140,7 +142,7 @@ class FragReportEBDList(private val reportType: String, private val memberCodeEs
                     }
                     WebParams.LOGOUT_CODE -> {
                         val alertDialogLogout = AlertDialogLogout.getInstance()
-                        alertDialogLogout.showDialoginMain(activity, message)
+                        alertDialogLogout.showDialoginActivity2(activity, message)
                     }
                     DefineValue.ERROR_9333 -> {
                         val model = gson.fromJson(response.toString(), jsonModel::class.java)
