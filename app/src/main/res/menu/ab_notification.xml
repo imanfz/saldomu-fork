@@ -37,14 +37,14 @@
             android:orderInCategory="4"
             android:icon="@drawable/ic_cancel"
             android:tooltipText="@string/cancel"
+            android:title="@string/cancel"
             someNamespace:showAsAction="always"
             android:visible="false"
             />
         <item
             android:id="@+id/promo"
             android:orderInCategory="5"
-            android:title="@string/social_promo"
-            android:icon="@drawable/ic_menu_promo"
+            android:title="@string/check_promo"
             someNamespace:showAsAction="always"
             android:visible="false"
             />

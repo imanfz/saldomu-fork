@@ -12,7 +12,7 @@ import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
-import com.sgo.saldomu.adapter.AdapterEBDCatalogList
+import com.sgo.saldomu.adapter.AdapterEBDCatalogListToko
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
@@ -41,7 +41,7 @@ class FragListItemToko : BaseFragment() {
     private val order = DocDetailsItem()
     private val mappingItemList = ArrayList<MappingItemsItem>()
     private val paymentListOption = ArrayList<String>()
-    var itemListAdapter: AdapterEBDCatalogList? = null
+    var itemListAdapter: AdapterEBDCatalogListToko? = null
     var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
 
     val orderSettingList = ArrayList<OrderSetting>()
@@ -60,7 +60,7 @@ class FragListItemToko : BaseFragment() {
             shopName = requireArguments().getString(DefineValue.MEMBER_SHOP_NAME, "")
         }
 
-        itemListAdapter = AdapterEBDCatalogList(requireContext(), itemList, object : AdapterEBDCatalogList.Listener {
+        itemListAdapter = AdapterEBDCatalogListToko(requireContext(), itemList, object : AdapterEBDCatalogListToko.Listener {
             override fun onChangeQty(itemCode: String, qty: Int, qtyType: String) {
 
                 for (i in itemList.indices) {
@@ -119,6 +119,64 @@ class FragListItemToko : BaseFragment() {
                         }
                     }
                 }
+            }
+
+            override fun onChangeFavorite(position: Int, isAddFavorite: Boolean) {
+                showProgressDialog()
+
+                val url = if (isAddFavorite) MyApiClient.LINK_ADD_FAVORITE else MyApiClient.LINK_DELETE_FAVORITE
+                val itemCode = itemList[position].itemCode
+                val itemName = itemList[position].itemName
+
+                val params = RetrofitService.getInstance().getSignature(url, commCode + memberCode + itemCode)
+                params[WebParams.USER_ID] = userPhoneID
+                params[WebParams.MEMBER_CODE_ESPAY] = memberCode
+                params[WebParams.COMM_CODE_ESPAY] = commCode
+                params[WebParams.CUST_ID_ESPAY] = userPhoneID
+                params[WebParams.ITEM_CODE] = itemCode
+                if (isAddFavorite)
+                    params[WebParams.ITEM_NAME] = itemName
+
+                Timber.d("isi params favorite:$params")
+
+                RetrofitService.getInstance().PostJsonObjRequest(url, params,
+                        object : ObjListeners {
+                            override fun onResponses(response: JSONObject) {
+                                try {
+                                    val code = response.getString(WebParams.ERROR_CODE)
+                                    val message = response.getString(WebParams.ERROR_MESSAGE)
+                                    when (code) {
+                                        WebParams.SUCCESS_CODE -> {
+                                            getCatalogList()
+                                        }
+                                        WebParams.LOGOUT_CODE -> {
+                                            AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
+                                        }
+                                        DefineValue.ERROR_9333 -> {
+                                            val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                            val appModel = model.app_data
+                                            AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                        }
+                                        DefineValue.ERROR_0066 -> {
+                                            AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                        }
+                                        else -> {
+                                            showDialog(message)
+                                        }
+                                    }
+                                } catch (e: JSONException) {
+                                    e.printStackTrace()
+                                }
+                            }
+
+                            override fun onError(throwable: Throwable) {
+                                dismissProgressDialog()
+                            }
+
+                            override fun onComplete() {
+                                dismissProgressDialog()
+                            }
+                        })
             }
         })
 
@@ -215,6 +273,7 @@ class FragListItemToko : BaseFragment() {
                                         val jsonArray = response.getJSONArray(WebParams.ITEMS)
                                         for (i in 0 until jsonArray.length()) {
                                             val jsonObject = jsonArray.getJSONObject(i)
+                                            val itemImage = jsonObject.getString(WebParams.IMAGE_URL)
                                             val itemCode = jsonObject.getString(WebParams.ITEM_CODE)
                                             val itemName = jsonObject.getString(WebParams.ITEM_NAME)
                                             val price = jsonObject.getInt(WebParams.PRICE)
@@ -228,7 +287,10 @@ class FragListItemToko : BaseFragment() {
                                             for (j in 0 until remarkMappingUnit.length()) {
                                                 listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
                                             }
-                                            itemList.add(EBDCatalogModel(itemCode, itemName, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit))
+                                            var isFavorite = false
+                                            if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.Y)
+                                                isFavorite = true
+                                            itemList.add(EBDCatalogModel(itemImage, itemCode, itemName, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite))
                                         }
                                         itemListAdapter!!.notifyDataSetChanged()
                                     }

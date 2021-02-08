@@ -1755,4 +1755,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="invoice_no">Invoice No.</string>
     <string name="list_promo">List Promo</string>
     <string name="order_canceled">Order canceled</string>
+    <string name="check_promo">Check Promo</string>
 </resources>

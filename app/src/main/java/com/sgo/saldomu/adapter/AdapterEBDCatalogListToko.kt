@@ -3,6 +3,7 @@ package com.sgo.saldomu.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.widget.*
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sgo.saldomu.R
@@ -20,12 +22,13 @@ import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.models.EBDCatalogModel
 import java.util.*
 
-class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogModel>, var listener: Listener) : RecyclerView.Adapter<AdapterEBDCatalogList.Holder>(), Filterable {
+class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCatalogModel>, var listener: Listener) : RecyclerView.Adapter<AdapterEBDCatalogListToko.Holder>(), Filterable {
 
     val originalList = itemList
 
     interface Listener {
         fun onChangeQty(itemCode: String, qty: Int, qtyType: String)
+        fun onChangeFavorite(position: Int, isAddFavorite: Boolean)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -42,6 +45,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         val itemNettPrice = itemList[position].nettPrice
         val unit = itemList[position].unit
         val remarkList = itemList[position].remarkMappingUnit
+        val isFavorite = itemList[position].isFavorite
 //        val maxQty = itemList[position].maxQty
 
         if (itemImage != "") {
@@ -52,8 +56,18 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         } else
             holder.itemImage.visibility = View.GONE
 
-        holder.favoriteIcon.visibility = View.GONE
+        if (isFavorite)
+            holder.favoriteIcon.background = getDrawableLoveRed()
+        else
+            holder.favoriteIcon.background = getDrawableLoveGrey()
 
+        holder.favoriteIcon.setOnCheckedChangeListener { compoundButton, isChecked ->
+            if (isChecked)
+                holder.favoriteIcon.background = getDrawableLoveRed()
+            else
+                holder.favoriteIcon.background = getDrawableLoveGrey()
+            listener.onChangeFavorite(position, isChecked)
+        }
         holder.itemName.text = itemName
         holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
         holder.itemNettPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(itemNettPrice) + " / " + unit
@@ -212,6 +226,14 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
             }
 
         })
+    }
+
+    private fun getDrawableLoveRed(): Drawable {
+        return ResourcesCompat.getDrawable(context.resources, R.drawable.ic_love_red, null)!!
+    }
+
+    private fun getDrawableLoveGrey(): Drawable {
+        return ResourcesCompat.getDrawable(context.resources, R.drawable.ic_love_grey, null)!!
     }
 
     override fun getItemCount(): Int {

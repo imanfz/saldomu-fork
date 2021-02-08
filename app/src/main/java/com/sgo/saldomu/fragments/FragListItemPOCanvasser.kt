@@ -202,11 +202,14 @@ class FragListItemPOCanvasser : BaseFragment() {
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
                                         val orderSettingArray = response.getJSONArray(WebParams.ORDER_SETTING)
-                                        val orderSetting = getGson().fromJson(orderSettingArray.getJSONObject(0).toString(), OrderSetting::class.java)
-                                        orderSettingList.add(orderSetting)
+                                        if (orderSettingArray.length() != 0) {
+                                            val orderSetting = getGson().fromJson(orderSettingArray.getJSONObject(0).toString(), OrderSetting::class.java)
+                                            orderSettingList.add(orderSetting)
+                                        }
                                         val jsonArray = response.getJSONArray(WebParams.ITEMS)
                                         for (i in 0 until jsonArray.length()) {
                                             val jsonObject = jsonArray.getJSONObject(i)
+                                            val itemImage = jsonObject.getString(WebParams.IMAGE_URL)
                                             val itemCode = jsonObject.getString(WebParams.ITEM_CODE)
                                             val itemName = jsonObject.getString(WebParams.ITEM_NAME)
                                             val price = jsonObject.getInt(WebParams.PRICE)
@@ -220,7 +223,10 @@ class FragListItemPOCanvasser : BaseFragment() {
                                             for (j in 0 until remarkMappingUnit.length()) {
                                                 listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
                                             }
-                                            itemList.add(EBDCatalogModel(itemCode, itemName, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit))
+                                            var isFavorite = false
+                                            if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.Y)
+                                                isFavorite = true
+                                            itemList.add(EBDCatalogModel(itemImage, itemCode, itemName, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite))
                                         }
                                         itemListAdapter!!.notifyDataSetChanged()
                                     }
