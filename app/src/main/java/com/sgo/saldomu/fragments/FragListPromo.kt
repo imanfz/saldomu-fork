@@ -45,11 +45,6 @@ class FragListPromo : BaseFragment()
         return v
     }
 
-    override fun onStop() {
-        super.onStop()
-        tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.choose_catalog))
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -57,7 +52,7 @@ class FragListPromo : BaseFragment()
         promo_code_submit_btn.visibility = View.GONE
 
         tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
-        tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.promo_code))
+        tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.list_promo))
 
         if (arguments != null) {
             memberCode = requireArguments().getString(DefineValue.MEMBER_CODE_ESPAY, "")
