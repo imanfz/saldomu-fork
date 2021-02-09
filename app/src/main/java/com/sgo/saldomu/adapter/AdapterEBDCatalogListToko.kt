@@ -9,9 +9,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import android.widget.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +24,8 @@ import java.util.*
 class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCatalogModel>, var listener: Listener) : RecyclerView.Adapter<AdapterEBDCatalogListToko.Holder>(), Filterable {
 
     val originalList = itemList
+    var startDegress = -90f
+    var endDegress = 0f
 
     interface Listener {
         fun onChangeQty(itemCode: String, qty: Int, qtyType: String)
@@ -69,8 +70,10 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
             listener.onChangeFavorite(position, isChecked)
         }
         holder.itemName.text = itemName
-        holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
-        holder.itemNettPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(itemNettPrice) + " / " + unit
+//        holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
+//        holder.itemNettPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(itemNettPrice) + " / " + unit
+        holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price)
+        holder.itemNettPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(itemNettPrice)
         if (discAmount > 0) {
             holder.itemPrice.paintFlags = holder.itemPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             holder.itemNettPrice.visibility = View.VISIBLE
@@ -85,26 +88,43 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
             holder.itemRemark.text = remarkList[0] + " | " + remarkList[1]
             holder.itemRemark.visibility = View.GONE
 
+//            holder.arrowRemark.setOnClickListener {
+//                val mRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_arrow)
+//                mRotate.interpolator = LinearInterpolator()
+//                mRotate.setAnimationListener(object : Animation.AnimationListener {
+//                    override fun onAnimationStart(animation: Animation) {}
+//                    override fun onAnimationEnd(animation: Animation) {
+//                        holder.arrowRemark.invalidate()
+//                        if (holder.itemRemark.visibility == View.VISIBLE) {
+//                            holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow_down)
+//                            holder.itemRemark.visibility = View.GONE
+//                        } else {
+//                            holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow)
+//                            holder.itemRemark.visibility = View.VISIBLE
+//                        }
+//                        holder.arrowRemark.invalidate()
+//                    }
+//
+//                    override fun onAnimationRepeat(animation: Animation) {}
+//                })
+//                holder.arrowRemark.startAnimation(mRotate)
+//            }
             holder.arrowRemark.setOnClickListener {
-                val mRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_arrow)
-                mRotate.interpolator = LinearInterpolator()
-                mRotate.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(animation: Animation) {}
-                    override fun onAnimationEnd(animation: Animation) {
-                        holder.arrowRemark.invalidate()
-                        if (holder.itemRemark.visibility == View.VISIBLE) {
-                            holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow_down)
-                            holder.itemRemark.visibility = View.GONE
-                        } else {
-                            holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow)
-                            holder.itemRemark.visibility = View.VISIBLE
-                        }
-                        holder.arrowRemark.invalidate()
-                    }
+                startDegress += 180
+                endDegress += 180
+                val anim = RotateAnimation(startDegress, endDegress, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f)
 
-                    override fun onAnimationRepeat(animation: Animation) {}
-                })
-                holder.arrowRemark.startAnimation(mRotate)
+                anim.interpolator = LinearInterpolator()
+                anim.repeatCount = 0
+                anim.fillAfter = true
+                anim.duration = 300
+
+                if (holder.itemRemark.visibility == View.VISIBLE)
+                    holder.itemRemark.visibility = View.GONE
+                else
+                    holder.itemRemark.visibility = View.VISIBLE
+
+                holder.arrowRemark.startAnimation(anim)
             }
         } else {
             holder.itemRemark.visibility = View.GONE
@@ -120,19 +140,6 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
             holder.itemQty2.setText("")
             holder.itemQty3.setText("")
         }
-//        if (mappingItemList.isNotEmpty()) {
-//            for (i in mappingItemList.indices) {
-//                if (itemCode == mappingItemList[i].item_code) {
-//                    holder.itemQty1.setText(mappingItemList[i].format_qty[0].mapping_qty.toString())
-//                    holder.itemQty2.setText(mappingItemList[i].format_qty[1].mapping_qty.toString())
-//                    holder.itemQty3.setText(mappingItemList[i].format_qty[2].mapping_qty.toString())
-//                } else {
-//                    holder.itemQty1.setText("")
-//                    holder.itemQty2.setText("")
-//                    holder.itemQty3.setText("")
-//                }
-//            }
-//        }
 
         holder.itemQty1.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
