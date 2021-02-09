@@ -710,4 +710,6 @@ public class WebParams {
     public static String MIN_ORDER_DELIVERY = "min_order_delivery";
     public static String MAX_ORDER_DELIVERY = "max_order_delivery";
     public static String BIRTH_DATE = "birth_date";
+    public static String IMAGE_URL = "image_url";
+    public static String IS_FAVORITE = "is_favorite";
 }

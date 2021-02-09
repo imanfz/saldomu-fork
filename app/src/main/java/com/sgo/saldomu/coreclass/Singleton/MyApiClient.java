@@ -322,6 +322,8 @@ public class MyApiClient {
     public static String LINK_CREATE_GR;
     public static String LINK_DOC_STRUK;
     public static String LINK_CANCEL_DOC;
+    public static String LINK_ADD_FAVORITE;
+    public static String LINK_DELETE_FAVORITE;
 
 
     public void InitializeAddress(){
@@ -594,6 +596,9 @@ public class MyApiClient {
         LINK_CONFIRM_OTP_DOC = headaddressfinal + "espaycatalog/ConfirmOTPDoc/Invoke";
         LINK_RESEND_OTP_DOC = headaddressfinal + "espaycatalog/ResendOTPDoc/Invoke";
         LINK_DOC_STRUK = headaddressfinal + "espaycatalog/DocumentStruk/Retrieve";
+
+        LINK_ADD_FAVORITE = headaddressfinal + "espaycatalog/ItemFavorite/New";
+        LINK_DELETE_FAVORITE = headaddressfinal + "espaycatalog/ItemFavorite/Delete";
 
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);

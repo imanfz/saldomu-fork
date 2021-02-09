@@ -1745,4 +1745,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="invoice_no">No. Invoice</string>
     <string name="list_promo">Daftar Promo</string>
     <string name="order_canceled">Pemesanan barang dibatalkan</string>
+    <string name="check_promo">Cek Promo</string>
 </resources>

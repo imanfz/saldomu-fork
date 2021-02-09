@@ -1,9 +1,12 @@
 package com.sgo.saldomu.fragments
 
 import android.app.Dialog
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.text.SpannableString
 import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
@@ -70,7 +73,7 @@ class FragListPurchaseOrder : BaseFragment() {
             shopName = arguments!!.getString(DefineValue.MEMBER_SHOP_NAME, "")
         }
 
-        itemListAdapter = ListPOTokoAdapter(itemList,activity, object : ListPOTokoAdapter.listener{
+        itemListAdapter = ListPOTokoAdapter(itemList, activity, object : ListPOTokoAdapter.listener {
             override fun onClick(docNo: String) {
                 val fragment = FragPurchaseOrderDetail()
                 val bundle = Bundle()
@@ -200,6 +203,12 @@ class FragListPurchaseOrder : BaseFragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         activity!!.menuInflater.inflate(R.menu.ab_notification, menu)
+        for (i in 0 until menu.size()) {
+            val item = menu.getItem(i)
+            val spanString = SpannableString(menu.getItem(i).title.toString())
+            spanString.setSpan(ForegroundColorSpan(Color.WHITE), 0, spanString.length, 0) //fix the color to white
+            item.title = spanString
+        }
     }
 
     private fun cancelPO(docNo: String) {
