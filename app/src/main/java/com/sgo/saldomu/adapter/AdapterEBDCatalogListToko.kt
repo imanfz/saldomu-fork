@@ -41,6 +41,7 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
         val itemImage = itemList[position].itemImage
         val itemCode = itemList[position].itemCode
         val itemName = itemList[position].itemName
+        val description = itemList[position].description
         val price = itemList[position].price
         val discAmount = itemList[position].discAmount
         val itemNettPrice = itemList[position].nettPrice
@@ -70,8 +71,7 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
             listener.onChangeFavorite(position, isChecked)
         }
         holder.itemName.text = itemName
-//        holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
-//        holder.itemNettPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(itemNettPrice) + " / " + unit
+        holder.description.text = description
         holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price)
         holder.itemNettPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(itemNettPrice)
         if (discAmount > 0) {
@@ -254,6 +254,7 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var itemImage: ImageView = itemView.findViewById(R.id.adapter_item_image)
         var itemName: TextView = itemView.findViewById(R.id.adapter_item_name_field)
+        var description: TextView = itemView.findViewById(R.id.adapter_description_field)
         var itemPrice: TextView = itemView.findViewById(R.id.adapter_item_price_field)
         var itemNettPrice: TextView = itemView.findViewById(R.id.adapter_item_nett_price_field)
         var itemRemark: TextView = itemView.findViewById(R.id.adapter_item_remark_field)

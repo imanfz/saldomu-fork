@@ -8,9 +8,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -23,6 +22,8 @@ import java.util.*
 class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogModel>, var listener: Listener) : RecyclerView.Adapter<AdapterEBDCatalogList.Holder>(), Filterable {
 
     val originalList = itemList
+    var startDegress = -90f
+    var endDegress = 0f
 
     interface Listener {
         fun onChangeQty(itemCode: String, qty: Int, qtyType: String)
@@ -37,6 +38,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         val itemImage = itemList[position].itemImage
         val itemCode = itemList[position].itemCode
         val itemName = itemList[position].itemName
+        val description = itemList[position].description
         val price = itemList[position].price
         val discAmount = itemList[position].discAmount
         val itemNettPrice = itemList[position].nettPrice
@@ -55,8 +57,9 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
         holder.favoriteIcon.visibility = View.GONE
 
         holder.itemName.text = itemName
-        holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
-        holder.itemNettPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(itemNettPrice) + " / " + unit
+        holder.description.text = description
+        holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price)
+        holder.itemNettPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(itemNettPrice)
         if (discAmount > 0) {
             holder.itemPrice.paintFlags = holder.itemPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             holder.itemNettPrice.visibility = View.VISIBLE
@@ -72,25 +75,21 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
             holder.itemRemark.visibility = View.GONE
 
             holder.arrowRemark.setOnClickListener {
-                val mRotate = AnimationUtils.loadAnimation(context, R.anim.rotate_arrow)
-                mRotate.interpolator = LinearInterpolator()
-                mRotate.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(animation: Animation) {}
-                    override fun onAnimationEnd(animation: Animation) {
-                        holder.arrowRemark.invalidate()
-                        if (holder.itemRemark.visibility == View.VISIBLE) {
-                            holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow_down)
-                            holder.itemRemark.visibility = View.GONE
-                        } else {
-                            holder.arrowRemark.setImageResource(R.drawable.ic_circle_arrow)
-                            holder.itemRemark.visibility = View.VISIBLE
-                        }
-                        holder.arrowRemark.invalidate()
-                    }
+                startDegress += 180
+                endDegress += 180
+                val anim = RotateAnimation(startDegress, endDegress, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f)
 
-                    override fun onAnimationRepeat(animation: Animation) {}
-                })
-                holder.arrowRemark.startAnimation(mRotate)
+                anim.interpolator = LinearInterpolator()
+                anim.repeatCount = 0
+                anim.fillAfter = true
+                anim.duration = 300
+
+                if (holder.itemRemark.visibility == View.VISIBLE)
+                    holder.itemRemark.visibility = View.GONE
+                else
+                    holder.itemRemark.visibility = View.VISIBLE
+
+                holder.arrowRemark.startAnimation(anim)
             }
         } else {
             holder.itemRemark.visibility = View.GONE
@@ -225,6 +224,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var itemImage: ImageView = itemView.findViewById(R.id.adapter_item_image)
         var itemName: TextView = itemView.findViewById(R.id.adapter_item_name_field)
+        var description: TextView = itemView.findViewById(R.id.adapter_description_field)
         var itemPrice: TextView = itemView.findViewById(R.id.adapter_item_price_field)
         var itemNettPrice: TextView = itemView.findViewById(R.id.adapter_item_nett_price_field)
         var itemRemark: TextView = itemView.findViewById(R.id.adapter_item_remark_field)

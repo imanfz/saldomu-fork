@@ -4,6 +4,7 @@ open class EBDCatalogModel(
         var itemImage: String,
         var itemCode: String,
         var itemName: String,
+        var description: String,
         var price: Int,
         var discAmount: Int,
         var nettPrice: Int,

@@ -212,6 +212,7 @@ class FragListItemPOCanvasser : BaseFragment() {
                                             val itemImage = jsonObject.getString(WebParams.IMAGE_URL)
                                             val itemCode = jsonObject.getString(WebParams.ITEM_CODE)
                                             val itemName = jsonObject.getString(WebParams.ITEM_NAME)
+                                            val description = jsonObject.getString(WebParams.DESCRIPTION)
                                             val price = jsonObject.getInt(WebParams.PRICE)
                                             val discAmount = jsonObject.getInt(WebParams.DISC_AMOUNT)
                                             val nettPrice = jsonObject.getInt(WebParams.NETT_PRICE)
@@ -226,7 +227,7 @@ class FragListItemPOCanvasser : BaseFragment() {
                                             var isFavorite = false
                                             if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.Y)
                                                 isFavorite = true
-                                            itemList.add(EBDCatalogModel(itemImage, itemCode, itemName, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite))
+                                            itemList.add(EBDCatalogModel(itemImage, itemCode, itemName, description, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite))
                                         }
                                         itemListAdapter!!.notifyDataSetChanged()
                                     }

@@ -1626,6 +1626,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="quantity">Jumlah</string>
     <string name="store_name">Nama Toko</string>
     <string name="store_name_required">Nama Toko dibutuhkan</string>
+    <string name="store_phone">Nomor HP Toko</string>
+    <string name="store_phone_required">Nomor HP Toko dibutuhkan</string>
     <string name="store_address">Alamat Toko</string>
     <string name="partner_code">Kode Mitra</string>
     <string name="partner_code_required">Kode Mitra dibutuhkan!</string>
@@ -1682,7 +1684,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="destination_no">Nomor Tujuan</string>
     <string name="invoice_title">Tagihan</string>
     <string name="good_receipt_title">Penerimaan Barang</string>
-    <string name="store_phone">No. HP Toko  :</string>
     <string name="store_code_validation">Kode Toko dibutuhkan!</string>
     <string name="store_registration">Registrasi Toko</string>
     <string name="create_po">Tambah PO</string>
