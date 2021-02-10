@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -69,6 +70,8 @@ class FragRegisterNewMember : BaseFragment() {
         val tokoEBDActivity = activity as TokoEBDActivity
         tokoEBDActivity.initializeToolbar(getString(R.string.shop_registration))
         et_store_name.onRightDrawableRegisterEBDClicked { it.text.clear() }
+        et_store_phone.onRightDrawableRegisterEBDClicked { it.text.clear() }
+        et_store_phone.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(13))
         et_store_owner_name.onRightDrawableRegisterEBDClicked { it.text.clear() }
         et_id_no.onRightDrawableRegisterEBDClicked { it.text.clear() }
         et_delivery_address.onRightDrawableRegisterEBDClicked { it.text.clear() }
@@ -117,15 +120,15 @@ class FragRegisterNewMember : BaseFragment() {
             val dayNow = c.get(Calendar.DAY_OF_MONTH)
 
             val datePickerDialog = DatePickerDialog(context!!, { _, year, monthOfYear, dayOfMonth ->
-                        val calendar: Calendar = Calendar.getInstance()
-                        calendar.set(year, monthOfYear, dayOfMonth)
+                val calendar: Calendar = Calendar.getInstance()
+                calendar.set(year, monthOfYear, dayOfMonth)
 
-                        val monthDisplay = monthOfYear + 1
-                        tv_dob.text = "$dayOfMonth - $monthDisplay - $year"
+                val monthDisplay = monthOfYear + 1
+                tv_dob.text = "$dayOfMonth - $monthDisplay - $year"
 
-                        fromFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ID", "INDONESIA"))
-                        memberDOB = fromFormat.format(calendar.time)
-                    }, yearNow, monthNow, dayNow)
+                fromFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ID", "INDONESIA"))
+                memberDOB = fromFormat.format(calendar.time)
+            }, yearNow, monthNow, dayNow)
             datePickerDialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
             datePickerDialog.show()
         }
@@ -135,6 +138,11 @@ class FragRegisterNewMember : BaseFragment() {
         if (et_store_name.text!!.isEmpty()) {
             et_store_name.requestFocus()
             et_store_name.error = getString(R.string.store_name_required)
+            return false
+        }
+        if (et_store_phone.text!!.isEmpty() || et_store_phone.text!!.length < 10) {
+            et_store_phone.requestFocus()
+            et_store_phone.error = getString(R.string.store_phone_required)
             return false
         }
         if (et_store_owner_name.text!!.isEmpty()) {
@@ -312,6 +320,7 @@ class FragRegisterNewMember : BaseFragment() {
         params[WebParams.ZIP_CODE] = et_postal_code.text.toString()
         params[WebParams.CUST_NAME] = custName
         params[WebParams.SHOP_NAME] = shopName
+        params[WebParams.CONTACT_NUMBER] = et_store_phone.text.toString()
         params[WebParams.ANCHOR_CODE_ESPAY] = anchorCodeEspay
         params[WebParams.BIRTH_DATE] = memberDOB
 
