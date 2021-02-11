@@ -689,13 +689,13 @@ class UpgradeMemberViaOnline : BaseActivity() {
         val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
         if (EasyPermissions.hasPermissions(this, *perms)) {
             set_result_photo?.let {
-                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
-
-//                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
-                    val i = Intent(this, CameraViewActivity::class.java)
-                    startActivityForResult(i, set_result_photo!!)
-                } else
-                    pickAndCameraUtil!!.runCamera(set_result_photo!!)
+//                if (set_result_photo == RESULT_CAMERA_KTP || set_result_photo == RESULT_CAMERA_TTD) {
+//
+////                                    CameraActivity.openCertificateCamera(MyProfileNewActivity.this, CameraActivity.TYPE_COMPANY_PORTRAIT);
+//                    val i = Intent(this, CameraViewActivity::class.java)
+//                    startActivityForResult(i, set_result_photo!!)
+//                } else
+                pickAndCameraUtil!!.runCamera(set_result_photo!!)
 //                pickAndCameraUtil!!.runCamera(it)
             }
         } else {
@@ -725,19 +725,26 @@ class UpgradeMemberViaOnline : BaseActivity() {
             }
             RESULT_CAMERA_KTP -> {
                 if (resultCode == Activity.RESULT_OK)
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-                        processImage(KTP_TYPE, pickAndCameraUtil!!.getRealPathFromURI(data!!.getStringExtra("imagePath")))
-                    else
-                        processImage(KTP_TYPE, data!!.getStringExtra("imagePath"))
-
+//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+//                        processImage(KTP_TYPE, pickAndCameraUtil!!.getRealPathFromURI(data!!.getStringExtra("imagePath")))
+//                    else
+//                        processImage(KTP_TYPE, data!!.getStringExtra("imagePath"))
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                    processImage(KTP_TYPE, pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.captureImageUri))
+                else
+                    processImage(KTP_TYPE, pickAndCameraUtil!!.currentPhotoPath)
 
             }
             RESULT_CAMERA_TTD -> {
                 if (resultCode == Activity.RESULT_OK)
+//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+//                        processImage(TTD_TYPE, pickAndCameraUtil!!.getRealPathFromURI(data!!.getStringExtra("imagePath")))
+//                    else
+//                        processImage(TTD_TYPE, data!!.getStringExtra("imagePath"))
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-                        processImage(TTD_TYPE, pickAndCameraUtil!!.getRealPathFromURI(data!!.getStringExtra("imagePath")))
+                        processImage(TTD_TYPE, pickAndCameraUtil!!.getRealPathFromURI(pickAndCameraUtil!!.captureImageUri))
                     else
-                        processImage(TTD_TYPE, data!!.getStringExtra("imagePath"))
+                        processImage(TTD_TYPE, pickAndCameraUtil!!.currentPhotoPath)
 
             }
             RESULT_SELFIE -> {

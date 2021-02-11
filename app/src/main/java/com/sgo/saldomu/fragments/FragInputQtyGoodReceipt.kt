@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.sgo.saldomu.R
@@ -21,8 +20,8 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
-import com.sgo.saldomu.models.FormatQty
-import com.sgo.saldomu.models.retrofit.ItemModel
+import com.sgo.saldomu.models.EBDCatalogModel
+import com.sgo.saldomu.models.FormatQtyItem
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_list.*
@@ -42,8 +41,8 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
     var gson = ""
     var bonusItems = ""
 
-    private val itemArrayList = ArrayList<ItemModel>()
-    private val bonusItemArrayList = ArrayList<ItemModel>()
+    private val itemArrayList = ArrayList<EBDCatalogModel>()
+    private val bonusItemArrayList = ArrayList<EBDCatalogModel>()
 
     private var updateProductGoodReceiptAdapter: UpdateProductGoodReceiptAdapter? = null
     private var bonusItemGoodReceiptAdapter: BonusItemGoodReceiptAdapter? = null
@@ -135,10 +134,10 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
                                         btn_proses_gr.visibility = View.VISIBLE
                                         btn_add_item.visibility = View.VISIBLE
                                         val items = response.optString(WebParams.ITEMS)
-                                        bonusItems = response.optString(WebParams.BONUS_ITEMS)
+                                        bonusItems = response.getString(WebParams.BONUS_ITEMS)
                                         itemArrayList.clear()
                                         initializeListProduct(items)
-                                        if (!bonusItems.equals("") || bonusItems.length != 0 || bonusItems != null) {
+                                        if (bonusItems != "") {
                                             bonusItemArrayList.clear()
                                             layout_bonus_item.visibility = View.VISIBLE
                                             initializeListProductBonus(bonusItems)
@@ -189,19 +188,32 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
         val mArrayItem = JSONArray(items)
 
         for (i in 0 until mArrayItem.length()) {
+            val itemImage = ""
             val itemName = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_NAME)
             val itemCode = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_CODE)
-            val price = mArrayItem.getJSONObject(i).getString(WebParams.PRICE)
+            val price = mArrayItem.getJSONObject(i).getInt(WebParams.PRICE)
+            val discAmount = mArrayItem.getJSONObject(i).getInt(WebParams.DISC_AMOUNT)
+            val nettPrice = mArrayItem.getJSONObject(i).getInt(WebParams.NETT_PRICE)
             val unit = mArrayItem.getJSONObject(i).getString(WebParams.UNIT)
+            val description = ""
+            val minQty = 0
+            val maxQty = 0
+            val remarkMappingUnit = mArrayItem.getJSONObject(i).getJSONArray(WebParams.REMARK_MAPPING_UNITS)
+            val listRemarkMappingUnit = ArrayList<String>()
+            for (j in 0 until remarkMappingUnit.length()) {
+                listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
+            }
             val formatQtyJsonArray = mArrayItem.getJSONObject(i).getJSONArray(WebParams.FORMAT_QTY)
-            var formatQtys = ArrayList<FormatQty>()
+            var formatQtys = ArrayList<FormatQtyItem>()
             for (i in 0 until formatQtyJsonArray.length()) {
                 var mappingUnit = formatQtyJsonArray.getJSONObject(i).getString(WebParams.MAPPING_UNIT)
                 var mappingQty = formatQtyJsonArray.getJSONObject(i).getInt(WebParams.MAPPING_QTY)
-                var formatQty = FormatQty(mappingUnit, mappingQty)
+                var formatQty = FormatQtyItem(mappingUnit, mappingQty)
                 formatQtys.add(formatQty)
             }
-            itemArrayList.add(ItemModel(itemName, itemCode, price, unit, "0", formatQtys))
+            var isFavorite = false
+
+            itemArrayList.add(EBDCatalogModel(itemImage, itemCode, itemName, description, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite, formatQtys))
         }
 
         updateProductGoodReceiptAdapter!!.updateData(itemArrayList)
@@ -215,19 +227,32 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
         val mArrayItem = JSONArray(bonusItem)
 
         for (i in 0 until mArrayItem.length()) {
+            val itemImage = ""
             val itemName = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_NAME)
             val itemCode = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_CODE)
-            val price = mArrayItem.getJSONObject(i).getString(WebParams.PRICE)
+            val price = mArrayItem.getJSONObject(i).getInt(WebParams.PRICE)
+            val discAmount = mArrayItem.getJSONObject(i).getInt(WebParams.DISC_AMOUNT)
+            val nettPrice = mArrayItem.getJSONObject(i).getInt(WebParams.NETT_PRICE)
             val unit = mArrayItem.getJSONObject(i).getString(WebParams.UNIT)
+            val description = ""
+            val minQty = 0
+            val maxQty = 0
+            val remarkMappingUnit = mArrayItem.getJSONObject(i).getJSONArray(WebParams.REMARK_MAPPING_UNITS)
+            val listRemarkMappingUnit = ArrayList<String>()
+            for (j in 0 until remarkMappingUnit.length()) {
+                listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
+            }
+
             val formatQtyJsonArray = mArrayItem.getJSONObject(i).getJSONArray(WebParams.FORMAT_QTY)
-            var formatQtys = ArrayList<FormatQty>()
+            var formatQtys = ArrayList<FormatQtyItem>()
             for (i in 0 until formatQtyJsonArray.length()) {
                 var mappingUnit = formatQtyJsonArray.getJSONObject(i).getString(WebParams.MAPPING_UNIT)
                 var mappingQty = formatQtyJsonArray.getJSONObject(i).getInt(WebParams.MAPPING_QTY)
-                var formatQty = FormatQty(mappingUnit, mappingQty)
+                var formatQty = FormatQtyItem(mappingUnit, mappingQty)
                 formatQtys.add(formatQty)
             }
-            bonusItemArrayList.add(ItemModel(itemName, itemCode, price, unit, "0", formatQtys))
+            var isFavorite = false
+            bonusItemArrayList.add(EBDCatalogModel(itemImage, itemCode, itemName, description, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite, formatQtys))
         }
 
         bonusItemGoodReceiptAdapter!!.updateData(bonusItemArrayList)
@@ -271,9 +296,15 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
                 mappingItemsHashMap["item_code"] = obj.itemCode
                 mappingItemsHashMap["price"] = obj.price
                 mappingItemsHashMap["unit"] = obj.unit
+                mappingItemsHashMap["disc_amount"] = obj.discAmount
+                mappingItemsHashMap["nett_price"] = obj.nettPrice
+                mappingItemsHashMap["img_url"] = obj.itemImage
+                mappingItemsHashMap["description"] = obj.description
+                mappingItemsHashMap["is_favorite"] = obj.isFavorite
+                mappingItemsHashMap["remark_mapping_units"] = obj.remarkMappingUnit
 
                 val formatQtyArrayList = ArrayList<HashMap<String, Any>>()
-                for (formatQty in obj.formatQty) {
+                for (formatQty in obj.formatQtyItem) {
                     val formatQtyHashMap = HashMap<String, Any>()
                     formatQtyHashMap["mapping_qty"] = formatQty.mapping_qty
                     formatQtyHashMap["mapping_unit"] = formatQty.mapping_unit
@@ -374,7 +405,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
         }
     }
 
-    override fun onClick(item: ItemModel?) {
+    override fun onClick(item: EBDCatalogModel?) {
         TODO("Not yet implemented")
     }
 

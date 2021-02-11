@@ -12,15 +12,16 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.sgo.saldomu.R
 import com.sgo.saldomu.adapter.UpdateProductGoodReceiptAdapter.Holder
+import com.sgo.saldomu.models.EBDCatalogModel
 import com.sgo.saldomu.models.retrofit.ItemModel
 import java.util.*
 
-class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemList: List<ItemModel>, var listener: UpdateProductGoodReceiptAdapter.UpdateProductGoodReceiptListener) : RecyclerView.Adapter<Holder>() {
+class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemList: List<EBDCatalogModel>, var listener: UpdateProductGoodReceiptAdapter.UpdateProductGoodReceiptListener) : RecyclerView.Adapter<Holder>() {
     private var mContext: Activity? = null
-    private var itemArrayList: ArrayList<ItemModel>? = null
+    private var itemArrayList: ArrayList<EBDCatalogModel>? = null
 
 
-    fun UpdateProductGoodReceiptAdapter(itemArrayList: ArrayList<ItemModel>, mContext: Activity?) {
+    fun UpdateProductGoodReceiptAdapter(itemArrayList: ArrayList<EBDCatalogModel>, mContext: Activity?) {
         this.itemArrayList = itemArrayList
         this.mContext = mContext
         this.listener = listener
@@ -41,7 +42,7 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
     }
 
     interface UpdateProductGoodReceiptListener {
-        fun onClick(item: ItemModel?)
+        fun onClick(item: EBDCatalogModel?)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -50,16 +51,16 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.itemName.text = itemList[position].itemName
-        holder.itemQty1.setText(itemList[position].formatQty.get(0).mapping_qty.toString())
-        holder.itemQty2.setText(itemList[position].formatQty.get(1).mapping_qty.toString())
-        holder.itemQty3.setText(itemList[position].formatQty.get(2).mapping_qty.toString())
+        holder.itemQty1.setText(itemList[position].formatQtyItem.get(0).mapping_qty.toString())
+        holder.itemQty2.setText(itemList[position].formatQtyItem.get(1).mapping_qty.toString())
+        holder.itemQty3.setText(itemList[position].formatQtyItem.get(2).mapping_qty.toString())
 
         holder.itemQty1.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (s!!.length == 0) {
-                    itemList[position].formatQty.get(0).mapping_qty = 0
+                    itemList[position].formatQtyItem.get(0).mapping_qty = 0
                 } else {
-                    itemList[position].formatQty.get(0).mapping_qty = Integer.parseInt(s.toString())
+                    itemList[position].formatQtyItem.get(0).mapping_qty = Integer.parseInt(s.toString())
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int,
@@ -74,9 +75,9 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
         holder.itemQty2.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (s!!.length == 0) {
-                    itemList[position].formatQty.get(1).mapping_qty = 0
+                    itemList[position].formatQtyItem.get(1).mapping_qty = 0
                 } else {
-                    itemList[position].formatQty.get(1).mapping_qty = Integer.parseInt(s.toString())
+                    itemList[position].formatQtyItem.get(1).mapping_qty = Integer.parseInt(s.toString())
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int,
@@ -90,9 +91,9 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
 
         holder.itemQty3.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {if (s!!.length == 0) {
-                itemList[position].formatQty.get(2).mapping_qty = 0
+                itemList[position].formatQtyItem.get(2).mapping_qty = 0
             } else {
-                itemList[position].formatQty.get(2).mapping_qty = Integer.parseInt(s.toString())
+                itemList[position].formatQtyItem.get(2).mapping_qty = Integer.parseInt(s.toString())
             }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int,
@@ -110,7 +111,7 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
 
     }
 
-    fun updateData(itemArrayList: ArrayList<ItemModel>) {
+    fun updateData(itemArrayList: ArrayList<EBDCatalogModel>) {
         this.itemArrayList = itemArrayList
         notifyDataSetChanged()
     }

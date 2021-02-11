@@ -2,32 +2,36 @@ package com.sgo.saldomu.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Paint
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.TextView
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sgo.saldomu.R
 import com.sgo.saldomu.coreclass.CurrencyFormat
 import com.sgo.saldomu.coreclass.DefineValue
+import com.sgo.saldomu.models.EBDCatalogModel
 import com.sgo.saldomu.models.retrofit.ItemModel
 import java.util.*
 
 class AdapterListAddItemGRCanvasser(var context: Context, var listener: Listener) : RecyclerView.Adapter<AdapterListAddItemGRCanvasser.Holder>(), Filterable {
 
-    var itemList = ArrayList<ItemModel>()
-    var originalList = ArrayList<ItemModel>()
+    var itemList = ArrayList<EBDCatalogModel>()
+    var originalList = ArrayList<EBDCatalogModel>()
+    var startDegress = -90f
+    var endDegress = 0f
 
     interface Listener {
         fun onChangeQty(itemCode: String, qty: Int, qtyType: String)
     }
 
-    fun updateAdapter(itemList: ArrayList<ItemModel>) {
+    fun updateAdapter(itemList: ArrayList<EBDCatalogModel>) {
         this.itemList = itemList
         this.originalList = itemList
         notifyDataSetChanged()
@@ -39,25 +43,72 @@ class AdapterListAddItemGRCanvasser(var context: Context, var listener: Listener
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: Holder, position: Int) {
+        val itemImage = itemList[position].itemImage
         val itemCode = itemList[position].itemCode
         val itemName = itemList[position].itemName
+        val description = itemList[position].description
         val price = itemList[position].price
+        val discAmount = itemList[position].discAmount
+        val itemNettPrice = itemList[position].nettPrice
         val unit = itemList[position].unit
-//        val maxQty = itemList[position].maxQty
-        holder.itemCode.text = itemCode
+        val remarkList = itemList[position].remarkMappingUnit
+        if (itemImage != "") {
+            holder.itemImage.visibility = View.VISIBLE
+            Glide.with(context)
+                    .load(itemImage)
+                    .into(holder.itemImage)
+        } else
+            holder.itemImage.visibility = View.GONE
+
+        holder.favoriteIcon.visibility = View.GONE
+
         holder.itemName.text = itemName
-        holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price) + " / " + unit
+        holder.description.text = description
+        holder.itemPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(price)
+        holder.itemNettPrice.text = context.getString(R.string.currency) + CurrencyFormat.format(itemNettPrice)
 
-//        if (itemList[position].formatQty.isNotEmpty()) {
-        holder.itemQty1.setText(itemList[position].formatQty[0].mapping_qty.toString())
-        holder.itemQty2.setText(itemList[position].formatQty[1].mapping_qty.toString())
-        holder.itemQty3.setText(itemList[position].formatQty[2].mapping_qty.toString())
-//        } else {
-//            holder.itemQty1.setText("")
-//            holder.itemQty2.setText("")
-//            holder.itemQty3.setText("")
-//        }
+        if (discAmount > 0) {
+            holder.itemPrice.paintFlags = holder.itemPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            holder.itemNettPrice.visibility = View.VISIBLE
+            holder.discountIcon.visibility = View.VISIBLE
+        } else {
+            holder.itemPrice.paintFlags = holder.itemPrice.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            holder.itemNettPrice.visibility = View.INVISIBLE
+            holder.discountIcon.visibility = View.GONE
+        }
 
+        if (remarkList.isNotEmpty()) {
+            holder.itemRemark.text = remarkList[0] + " | " + remarkList[1]
+            holder.itemRemark.visibility = View.GONE
+
+            holder.arrowRemark.setOnClickListener {
+                startDegress += 180
+                endDegress += 180
+                val anim = RotateAnimation(startDegress, endDegress, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f)
+
+                anim.interpolator = LinearInterpolator()
+                anim.repeatCount = 0
+                anim.fillAfter = true
+                anim.duration = 300
+
+                if (holder.itemRemark.visibility == View.VISIBLE)
+                    holder.itemRemark.visibility = View.GONE
+                else
+                    holder.itemRemark.visibility = View.VISIBLE
+
+                holder.arrowRemark.startAnimation(anim)
+            }
+        } else {
+            holder.itemRemark.visibility = View.GONE
+            holder.layoutRemark.visibility = View.GONE
+        }
+
+        if (itemList[position].formatQtyItem.size > 0) {
+            holder.itemQty1.setText(itemList[position].formatQtyItem[0].mapping_qty.toString())
+            holder.itemQty2.setText(itemList[position].formatQtyItem[1].mapping_qty.toString())
+            holder.itemQty3.setText(itemList[position].formatQtyItem[2].mapping_qty.toString())
+        }
+        holder.favoriteIcon.visibility = View.GONE
         holder.itemQty1.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 var qty = 0
@@ -135,10 +186,22 @@ class AdapterListAddItemGRCanvasser(var context: Context, var listener: Listener
         return itemList.size
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var itemCode: TextView = itemView.findViewById(R.id.adapter_item_id_field)
+        var itemImage: ImageView = itemView.findViewById(R.id.adapter_item_image)
         var itemName: TextView = itemView.findViewById(R.id.adapter_item_name_field)
+        var description: TextView = itemView.findViewById(R.id.adapter_description_field)
         var itemPrice: TextView = itemView.findViewById(R.id.adapter_item_price_field)
+        var itemNettPrice: TextView = itemView.findViewById(R.id.adapter_item_nett_price_field)
+        var itemRemark: TextView = itemView.findViewById(R.id.adapter_item_remark_field)
+        var discountIcon: ImageView = itemView.findViewById(R.id.adapter_discount_icon)
+        var favoriteIcon: ToggleButton = itemView.findViewById(R.id.adapter_favorite_icon)
+
+        var arrowRemark: ImageView = itemView.findViewById(R.id.arrow_desc)
+        var layoutRemark: RelativeLayout = itemView.findViewById(R.id.layout_remark_arrow)
 
         //BAL
         var itemQty1: EditText = itemView.findViewById(R.id.adapter_item_et_qty_1)
@@ -154,7 +217,7 @@ class AdapterListAddItemGRCanvasser(var context: Context, var listener: Listener
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence): FilterResults {
                 val charString = constraint.toString().toLowerCase(Locale.ROOT)
-                val temp = ArrayList<ItemModel>()
+                val temp = ArrayList<EBDCatalogModel>()
                 if (charString.isEmpty()) temp.addAll(originalList) else for (model in originalList) {
                     if (model.itemName.toLowerCase(Locale.ROOT).contains(charString)) temp.add(model)
                 }
@@ -164,7 +227,7 @@ class AdapterListAddItemGRCanvasser(var context: Context, var listener: Listener
             }
 
             override fun publishResults(constraint: CharSequence, results: FilterResults) {
-                itemList = ArrayList(results.values as ArrayList<ItemModel>)
+                itemList = ArrayList(results.values as ArrayList<EBDCatalogModel>)
                 notifyDataSetChanged()
             }
         }

@@ -43,7 +43,7 @@ class FragListAddItemGRCanvasser : BaseFragment() {
     var docNo = ""
     var docDetails = ""
 
-    val itemList = ArrayList<ItemModel>()
+    val itemList = ArrayList<EBDCatalogModel>()
     private val order = DocDetailsItem()
     private val mappingItemList = ArrayList<MappingItemsItem>()
     var itemListAdapter: AdapterListAddItemGRCanvasser? = null
@@ -71,41 +71,41 @@ class FragListAddItemGRCanvasser : BaseFragment() {
 
                 for (i in itemList.indices) {
                     if (itemCode == itemList[i].itemCode) {
-                        val itemModel = ItemModel()
-                        itemModel.itemCode = itemList[i].itemCode
-                        itemModel.itemName = itemList[i].itemName
+                        val itemModel = MappingItemsItem()
+                        itemModel.item_code = itemList[i].itemCode
+                        itemModel.item_name = itemList[i].itemName
                         itemModel.price = itemList[i].price
                         itemModel.unit = itemList[i].unit
-                        val formatQtys = ArrayList<FormatQty>()
+                        val formatQtys = ArrayList<FormatQtyItem>()
 
                         when {
-                            qtyType == DefineValue.BAL -> formatQtys.add(0, FormatQty(DefineValue.BAL, qty))
-                            itemList[i].formatQty.isNotEmpty() -> formatQtys.add(0, FormatQty(DefineValue.BAL, itemList[i].formatQty[0].mapping_qty))
-                            else -> formatQtys.add(0, FormatQty(DefineValue.BAL, 0))
+                            qtyType == DefineValue.BAL -> formatQtys.add(0, FormatQtyItem(DefineValue.BAL, qty))
+                            itemList[i].formatQtyItem.isNotEmpty() -> formatQtys.add(0, FormatQtyItem(DefineValue.BAL, itemList[i].formatQtyItem[0].mapping_qty))
+                            else -> formatQtys.add(0, FormatQtyItem(DefineValue.BAL, 0))
                         }
 
                         when {
-                            qtyType == DefineValue.SLOP -> formatQtys.add(1, FormatQty(DefineValue.SLOP, qty))
-                            itemList[i].formatQty.isNotEmpty() -> formatQtys.add(1, FormatQty(DefineValue.SLOP, itemList[i].formatQty[1].mapping_qty))
-                            else -> formatQtys.add(1, FormatQty(DefineValue.SLOP, 0))
+                            qtyType == DefineValue.SLOP -> formatQtys.add(1, FormatQtyItem(DefineValue.SLOP, qty))
+                            itemList[i].formatQtyItem.isNotEmpty() -> formatQtys.add(1, FormatQtyItem(DefineValue.SLOP, itemList[i].formatQtyItem[1].mapping_qty))
+                            else -> formatQtys.add(1, FormatQtyItem(DefineValue.SLOP, 0))
                         }
 
                         when {
-                            qtyType == DefineValue.PACK -> formatQtys.add(2, FormatQty(DefineValue.PACK, qty))
-                            itemList[i].formatQty.isNotEmpty() -> formatQtys.add(2, FormatQty(DefineValue.PACK, itemList[i].formatQty[2].mapping_qty))
-                            else -> formatQtys.add(2, FormatQty(DefineValue.PACK, 0))
+                            qtyType == DefineValue.PACK -> formatQtys.add(2, FormatQtyItem(DefineValue.PACK, qty))
+                            itemList[i].formatQtyItem.isNotEmpty() -> formatQtys.add(2, FormatQtyItem(DefineValue.PACK, itemList[i].formatQtyItem[2].mapping_qty))
+                            else -> formatQtys.add(2, FormatQtyItem(DefineValue.PACK, 0))
                         }
 
                         val qtyBAL = formatQtys[0].mapping_qty
                         val qtySLOP = formatQtys[1].mapping_qty
                         val qtyPACK = formatQtys[2].mapping_qty
-                        itemModel.formatQty = formatQtys
+                        itemModel.format_qty = formatQtys
 
 //                        if (qtyBAL == 0 && qtySLOP == 0 && qtyPACK == 0) {
 //                            itemList[i].formatQty.clear()
 //                        } else {
 //                            mappingItemList.add(mappingItemsItem)
-                            itemList[i].formatQty = formatQtys
+                            itemList[i].formatQtyItem = formatQtys
 //                        }
                     }
                 }
@@ -175,20 +175,34 @@ class FragListAddItemGRCanvasser : BaseFragment() {
                                                 val jsonObject = jsonArray.getJSONObject(j)
                                                 val itemCode = jsonObject.getString(WebParams.ITEM_CODE)
                                                 val itemName = jsonObject.getString(WebParams.ITEM_NAME)
-                                                val price = jsonObject.getString(WebParams.PRICE)
+                                                val price = jsonObject.getInt(WebParams.PRICE)
                                                 val unit = jsonObject.getString(WebParams.UNIT)
+                                                val description = ""
+                                                val itemImage = ""
+                                                val discAmount = Integer.parseInt(jsonObject.getString(WebParams.DISC_AMOUNT))
+                                                val nettPrice = Integer.parseInt(jsonObject.getString(WebParams.NETT_PRICE))
                                                 val minQty = 0
                                                 val maxQty = 0
 
+                                                val remarkMappingUnit = jsonObject.getJSONArray(WebParams.REMARK_MAPPING_UNITS)
+                                                val listRemarkMappingUnit = ArrayList<String>()
+                                                for (j in 0 until remarkMappingUnit.length()) {
+                                                    listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
+                                                }
+                                                var isFavorite = false
+                                                if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.Y)
+                                                    isFavorite = true
+
                                                 val formatQtyJsonArray = jsonObject.getJSONArray(WebParams.FORMAT_QTY)
-                                                val formatQtys = ArrayList<FormatQty>()
-                                                for (k in 0 until formatQtyJsonArray.length()) {
-                                                    val mappingUnit = formatQtyJsonArray.getJSONObject(k).getString(WebParams.MAPPING_UNIT)
-                                                    val mappingQty = formatQtyJsonArray.getJSONObject(k).getInt(WebParams.MAPPING_QTY)
-                                                    val formatQty = FormatQty(mappingUnit, mappingQty)
+                                                var formatQtys = ArrayList<FormatQtyItem>()
+                                                for (i in 0 until formatQtyJsonArray.length()) {
+                                                    var mappingUnit = formatQtyJsonArray.getJSONObject(i).getString(WebParams.MAPPING_UNIT)
+                                                    var mappingQty = formatQtyJsonArray.getJSONObject(i).getInt(WebParams.MAPPING_QTY)
+                                                    var formatQty = FormatQtyItem(mappingUnit, mappingQty)
                                                     formatQtys.add(formatQty)
                                                 }
-                                                itemList.add(ItemModel(itemName, itemCode, price, unit, "0", formatQtys))
+
+                                                itemList.add(EBDCatalogModel(itemImage, itemCode, itemName, description, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite, formatQtys))
 
                                                 tempIdHashSet.add(itemCode)
                                             }
@@ -203,15 +217,22 @@ class FragListAddItemGRCanvasser : BaseFragment() {
                                             val unit = jsonObject.getString(WebParams.UNIT)
                                             val minQty = jsonObject.getInt(WebParams.MIN_QTY)
                                             val maxQty = jsonObject.getInt(WebParams.MAX_QTY)
-                                            val formatQtys = ArrayList<FormatQty>()
-                                            val formatQty1 = FormatQty("BAL", 0)
-                                            formatQtys.add(formatQty1)
-                                            val formatQty2 = FormatQty("SLOP", 0)
-                                            formatQtys.add(formatQty2)
-                                            val formatQty3 = FormatQty("PACK", 0)
-                                            formatQtys.add(formatQty3)
+                                            val description = jsonObject.getString(WebParams.DESCRIPTION)
+                                            val itemImage = jsonObject.getString(WebParams.IMAGE_URL)
+                                            val discAmount = Integer.parseInt(jsonObject.getString(WebParams.DISC_AMOUNT))
+                                            val nettPrice = Integer.parseInt(jsonObject.getString(WebParams.NETT_PRICE))
+
+                                            val remarkMappingUnit = jsonObject.getJSONArray(WebParams.REMARK_MAPPING_UNITS)
+                                            val listRemarkMappingUnit = ArrayList<String>()
+                                            for (j in 0 until remarkMappingUnit.length()) {
+                                                listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
+                                            }
+                                            var isFavorite = false
+                                            if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.Y)
+                                                isFavorite = true
+
                                             if (!tempIdHashSet.contains(itemCode)) {
-                                                itemList.add(ItemModel(itemName, itemCode, price.toString(), unit, "0", formatQtys))
+                                                itemList.add(EBDCatalogModel(itemImage, itemCode, itemName, description, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite))
                                             }
                                         }
                                         itemListAdapter!!.updateAdapter(itemList)
@@ -289,7 +310,7 @@ class FragListAddItemGRCanvasser : BaseFragment() {
                 mappingItemsHashMap["unit"] = obj.unit
 
                 val formatQtyArrayList = ArrayList<HashMap<String, Any>>()
-                for (formatQty in obj.formatQty) {
+                for (formatQty in obj.formatQtyItem) {
                     val formatQtyHashMap = HashMap<String, Any>()
                     formatQtyHashMap["mapping_qty"] = formatQty.mapping_qty
                     formatQtyHashMap["mapping_unit"] = formatQty.mapping_unit

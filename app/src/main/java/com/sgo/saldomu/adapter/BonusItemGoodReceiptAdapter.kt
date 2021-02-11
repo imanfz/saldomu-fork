@@ -11,11 +11,12 @@ import com.sgo.saldomu.R
 import com.sgo.saldomu.models.retrofit.ItemModel
 import com.sgo.saldomu.adapter.BonusItemGoodReceiptAdapter.Holder
 import com.sgo.saldomu.fragments.FragInputQtyGoodReceipt
+import com.sgo.saldomu.models.EBDCatalogModel
 import java.util.ArrayList
 
-open class BonusItemGoodReceiptAdapter(var context: FragmentActivity?, var itemList: List<ItemModel>, var listener: FragInputQtyGoodReceipt) : RecyclerView.Adapter<Holder>()  {
+open class BonusItemGoodReceiptAdapter(var context: FragmentActivity?, var itemList: List<EBDCatalogModel>, var listener: FragInputQtyGoodReceipt) : RecyclerView.Adapter<Holder>()  {
     private var mContext: Activity? = null
-    private var bonusItemArrayList: ArrayList<ItemModel>? = null
+    private var bonusItemArrayList: ArrayList<EBDCatalogModel>? = null
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView)  {
         var border: View = itemView.findViewById(R.id.border)
@@ -42,14 +43,14 @@ open class BonusItemGoodReceiptAdapter(var context: FragmentActivity?, var itemL
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.itemName.text = itemList[position].itemName
-        holder.itemQty1.setText(itemList[position].formatQty.get(0).mapping_qty.toString())
-        holder.itemQty2.setText(itemList[position].formatQty.get(1).mapping_qty.toString())
-        holder.itemQty3.setText(itemList[position].formatQty.get(2).mapping_qty.toString())
+        holder.itemQty1.setText(itemList[position].formatQtyItem.get(0).mapping_qty.toString())
+        holder.itemQty2.setText(itemList[position].formatQtyItem.get(1).mapping_qty.toString())
+        holder.itemQty3.setText(itemList[position].formatQtyItem.get(2).mapping_qty.toString())
     }
     interface bonusItemGoodReceiptListener {
-        fun onClick(item: ItemModel?)
+        fun onClick(item: EBDCatalogModel?)
     }
-    fun updateData(bonusItemArrayList: ArrayList<ItemModel>) {
+    fun updateData(bonusItemArrayList: ArrayList<EBDCatalogModel>) {
         this.bonusItemArrayList = bonusItemArrayList
         notifyDataSetChanged()
     }
