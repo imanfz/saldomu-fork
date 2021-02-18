@@ -1757,4 +1757,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="list_promo">List Promo</string>
     <string name="order_canceled">Order canceled</string>
     <string name="check_promo">Check Promo</string>
+    <string name="all_item">All Item</string>
 </resources>
