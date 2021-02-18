@@ -383,7 +383,7 @@
     <string name="payfriends_text_amount">Jumlah</string>
     <string name="payfriends_text_fee">Biaya Admin</string>
     <string name="payfriends_text_message">Pesan</string>
-    <string name="save_as_favorite_text_message">Simpan Sebagai Favorite</string>
+    <string name="save_as_favorite_text_message">Simpan Sebagai Favorit</string>
     <string name="payfriends_text_otp">Kode OTP</string>
     <string name="payfriends_hint_recipients">Masukkan penerima</string>
     <string name="payfriends_hint_amount">Masukkan jumlah</string>
@@ -1747,4 +1747,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="list_promo">Daftar Promo</string>
     <string name="order_canceled">Pemesanan barang dibatalkan</string>
     <string name="check_promo">Cek Promo</string>
+    <string name="all_item">Semua Barang</string>
 </resources>

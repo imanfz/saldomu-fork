@@ -24,7 +24,7 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.*
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.fragment_input_item_list.*
+import kotlinx.android.synthetic.main.fragment_input_item_list_favorite_filter.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -38,6 +38,7 @@ class FragListItemToko : BaseFragment() {
     var paymentOption = ""
 
     val itemList = ArrayList<EBDCatalogModel>()
+    val itemListFavorite = ArrayList<EBDCatalogModel>()
     private val order = DocDetailsItem()
     private val mappingItemList = ArrayList<MappingItemsItem>()
     private val paymentListOption = ArrayList<String>()
@@ -47,7 +48,7 @@ class FragListItemToko : BaseFragment() {
     val orderSettingList = ArrayList<OrderSetting>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_input_item_list, container, false)
+        return inflater.inflate(R.layout.fragment_input_item_list_favorite_filter, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -121,12 +122,10 @@ class FragListItemToko : BaseFragment() {
                 }
             }
 
-            override fun onChangeFavorite(position: Int, isAddFavorite: Boolean) {
+            override fun onChangeFavorite(itemCode: String, itemName: String, isAddFavorite: Boolean) {
                 showProgressDialog()
 
                 val url = if (isAddFavorite) MyApiClient.LINK_ADD_FAVORITE else MyApiClient.LINK_DELETE_FAVORITE
-                val itemCode = itemList[position].itemCode
-                val itemName = itemList[position].itemName
 
                 val params = RetrofitService.getInstance().getSignature(url, commCode + memberCode + itemCode)
                 params[WebParams.USER_ID] = userPhoneID
@@ -174,7 +173,6 @@ class FragListItemToko : BaseFragment() {
                             }
 
                             override fun onComplete() {
-                                dismissProgressDialog()
                             }
                         })
             }
@@ -213,6 +211,13 @@ class FragListItemToko : BaseFragment() {
                         itemListAdapter!!.filter.filter(editable.toString())
                     }
                 })
+        toggle.setOnCheckedChangeListener { p0, checkedId ->
+            when (checkedId) {
+                R.id.radio_all_item -> itemListAdapter!!.updateAdapter(itemList)
+                R.id.radio_favorite -> itemListAdapter!!.updateAdapter(itemListFavorite)
+            }
+        }
+
         frag_input_item_submit_btn.setOnClickListener {
             if (inputValidation())
                 if (paymentOption == getString(R.string.pay_now)) {
@@ -265,6 +270,7 @@ class FragListItemToko : BaseFragment() {
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
                                         itemList.clear()
+                                        itemListFavorite.clear()
                                         val orderSettingArray = response.getJSONArray(WebParams.ORDER_SETTING)
                                         if (orderSettingArray.length() != 0) {
                                             val orderSetting = getGson().fromJson(orderSettingArray.getJSONObject(0).toString(), OrderSetting::class.java)
@@ -289,8 +295,11 @@ class FragListItemToko : BaseFragment() {
                                                 listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
                                             }
                                             var isFavorite = false
-                                            if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.Y)
+                                            if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.Y) {
                                                 isFavorite = true
+                                                itemListFavorite.add(EBDCatalogModel(itemImage, itemCode, itemName, description, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite))
+                                            }
+
                                             itemList.add(EBDCatalogModel(itemImage, itemCode, itemName, description, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite))
                                         }
                                         itemListAdapter!!.notifyDataSetChanged()

@@ -29,11 +29,16 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
 
     interface Listener {
         fun onChangeQty(itemCode: String, qty: Int, qtyType: String)
-        fun onChangeFavorite(position: Int, isAddFavorite: Boolean)
+        fun onChangeFavorite(itemCode: String, itemName: String, isAddFavorite: Boolean)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater.from(context).inflate(R.layout.item_catalog_ebd, parent, false))
+    }
+
+    fun updateAdapter(itemList: List<EBDCatalogModel>) {
+        this.itemList = itemList
+        notifyDataSetChanged()
     }
 
     @SuppressLint("SetTextI18n")
@@ -58,9 +63,11 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
         } else
             holder.itemImage.visibility = View.GONE
 
-        if (isFavorite)
+        if (isFavorite) {
             holder.favoriteIcon.background = getDrawableLoveRed()
-        else
+            holder.favoriteIcon.setOnCheckedChangeListener(null)
+            holder.favoriteIcon.isChecked = true
+        } else
             holder.favoriteIcon.background = getDrawableLoveGrey()
 
         holder.favoriteIcon.setOnCheckedChangeListener { compoundButton, isChecked ->
@@ -68,7 +75,7 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
                 holder.favoriteIcon.background = getDrawableLoveRed()
             else
                 holder.favoriteIcon.background = getDrawableLoveGrey()
-            listener.onChangeFavorite(position, isChecked)
+            listener.onChangeFavorite(itemCode,itemName, isChecked)
         }
         holder.itemName.text = itemName
         holder.description.text = description
