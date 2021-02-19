@@ -112,9 +112,10 @@ class FragListItemPOCanvasser : BaseFragment() {
                                 mappingItemList.add(mappingItemsItem)
                             else
                                 for (j in mappingItemList.indices) {
-                                    if (itemList[i].itemCode == mappingItemList[j].item_code)
+                                    if (itemList[i].itemCode == mappingItemList[j].item_code) {
                                         mappingItemList[j].format_qty = formatQtyItemList
-                                    else if (j == mappingItemList.size - 1)
+                                        break
+                                    } else if (j == mappingItemList.size - 1)
                                         mappingItemList.add(mappingItemsItem)
                                 }
                             itemList[i].formatQtyItem = formatQtyItemList
