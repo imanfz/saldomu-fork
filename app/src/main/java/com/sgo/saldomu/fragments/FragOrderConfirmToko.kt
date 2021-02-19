@@ -63,7 +63,6 @@ class FragOrderConfirmToko : BaseFragment() {
 
     private var ebdConfirmModel = EBDConfirmModel()
 
-    private val mappingItemList = ArrayList<MappingItemsItem>()
     private val paymentMethodList = ArrayList<PaymentMethods>()
 
     var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
@@ -102,7 +101,7 @@ class FragOrderConfirmToko : BaseFragment() {
         discount_field.text = getString(R.string.currency) + " " + CurrencyFormat.format(ebdConfirmModel.discount_amount)
         total_field.text = getString(R.string.currency) + " " + CurrencyFormat.format(ebdConfirmModel.total_amount)
         val docDetails = ebdConfirmModel.doc_details
-        mappingItemList.addAll(docDetails[0].mapping_items)
+        val mappingItemList = docDetails[0].mapping_items
         val adapterListItemConfirmPO = AdapterListItemConfirmPO(context!!, mappingItemList)
         item_list_field.adapter = adapterListItemConfirmPO
         item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
