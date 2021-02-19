@@ -30,7 +30,8 @@
             android:layout_margin="8dp"
             android:background="@drawable/toggle_background_outline_primary"
             android:checkedButton="@+id/radio_all_item"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <RadioButton
                 android:id="@+id/radio_all_item"
