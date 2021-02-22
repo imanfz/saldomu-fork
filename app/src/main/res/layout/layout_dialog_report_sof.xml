@@ -44,7 +44,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:padding="3dip"
-                android:text="@string/merchant_name" />
+                android:text="@string/bbs_shop" />
 
             <TextView
                 android:id="@+id/dialog_report_merchant_name_value"

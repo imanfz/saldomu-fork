@@ -701,6 +701,7 @@ public class DefineValue {
     public static String ORP = "ORP";
     public static String IR = "IR";
     public static String OC = "OC";
+    public static String QRS = "QRS";
     public static String AJC = "AJC";
     public static String AJD = "AJD";
     public static String IS_SHOW = "isShow";
