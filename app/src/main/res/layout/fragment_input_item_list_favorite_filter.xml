@@ -30,8 +30,7 @@
             android:layout_margin="8dp"
             android:background="@drawable/toggle_background_outline_primary"
             android:checkedButton="@+id/radio_all_item"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/radio_all_item"
@@ -63,13 +62,25 @@
         </RadioGroup>
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/frag_input_item_list_field"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@id/layout_submit"
-        android:layout_below="@id/layout_search"
-        android:background="@color/windowBackgroundColor" />
+        android:layout_below="@id/layout_search">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/frag_input_item_list_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/windowBackgroundColor" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/frag_input_item_list_favorite_field"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:background="@color/windowBackgroundColor" />
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/layout_submit"

@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments
 
 import android.app.Dialog
+import android.opengl.Visibility
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -39,11 +40,14 @@ class FragListItemToko : BaseFragment() {
 
     val itemList = ArrayList<EBDCatalogModel>()
     val itemListFavorite = ArrayList<EBDCatalogModel>()
-    private val order = DocDetailsItem()
     private val mappingItemList = ArrayList<MappingItemsItem>()
+    private val mappingItemFavoriteList = ArrayList<MappingItemsItem>()
+    private val order = DocDetailsItem()
     private val paymentListOption = ArrayList<String>()
     var itemListAdapter: AdapterEBDCatalogListToko? = null
+    var itemListFavoriteAdapter: AdapterEBDCatalogListToko? = null
     var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
+    var isOnAllItemTab = true;
 
     val orderSettingList = ArrayList<OrderSetting>()
 
@@ -97,7 +101,6 @@ class FragListItemToko : BaseFragment() {
                         val qtySLOP = formatQtyItemList[1].mapping_qty
                         val qtyPACK = formatQtyItemList[2].mapping_qty
                         mappingItemsItem.format_qty = formatQtyItemList
-
 
                         if (qtyBAL == 0 && qtySLOP == 0 && qtyPACK == 0) {
                             itemList[i].formatQtyItem.clear()
@@ -179,8 +182,128 @@ class FragListItemToko : BaseFragment() {
             }
         })
 
+        itemListFavoriteAdapter = AdapterEBDCatalogListToko(requireContext(), itemListFavorite, object : AdapterEBDCatalogListToko.Listener {
+            override fun onChangeQty(itemCode: String, qty: Int, qtyType: String) {
+
+                for (i in itemListFavorite.indices) {
+                    if (itemCode == itemListFavorite[i].itemCode) {
+                        val mappingItemsItem = MappingItemsItem()
+                        mappingItemsItem.item_code = itemListFavorite[i].itemCode
+                        mappingItemsItem.item_name = itemListFavorite[i].itemName
+                        mappingItemsItem.price = itemListFavorite[i].price
+                        mappingItemsItem.discAmount = itemListFavorite[i].discAmount
+                        mappingItemsItem.nettPrice = itemListFavorite[i].nettPrice
+                        mappingItemsItem.unit = itemListFavorite[i].unit
+                        val formatQtyItemList = ArrayList<FormatQtyItem>()
+
+                        when {
+                            qtyType == DefineValue.BAL -> formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, qty))
+                            itemListFavorite[i].formatQtyItem.isNotEmpty() -> formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, itemListFavorite[i].formatQtyItem[0].mapping_qty))
+                            else -> formatQtyItemList.add(0, FormatQtyItem(DefineValue.BAL, 0))
+                        }
+
+                        when {
+                            qtyType == DefineValue.SLOP -> formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, qty))
+                            itemListFavorite[i].formatQtyItem.isNotEmpty() -> formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, itemListFavorite[i].formatQtyItem[1].mapping_qty))
+                            else -> formatQtyItemList.add(1, FormatQtyItem(DefineValue.SLOP, 0))
+                        }
+
+                        when {
+                            qtyType == DefineValue.PACK -> formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, qty))
+                            itemListFavorite[i].formatQtyItem.isNotEmpty() -> formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, itemListFavorite[i].formatQtyItem[2].mapping_qty))
+                            else -> formatQtyItemList.add(2, FormatQtyItem(DefineValue.PACK, 0))
+                        }
+
+                        val qtyBAL = formatQtyItemList[0].mapping_qty
+                        val qtySLOP = formatQtyItemList[1].mapping_qty
+                        val qtyPACK = formatQtyItemList[2].mapping_qty
+                        mappingItemsItem.format_qty = formatQtyItemList
+
+                        if (qtyBAL == 0 && qtySLOP == 0 && qtyPACK == 0) {
+                            itemListFavorite[i].formatQtyItem.clear()
+                            for (j in mappingItemFavoriteList.indices) {
+                                if (j < mappingItemFavoriteList.size)
+                                    if (itemList[i].itemCode == mappingItemFavoriteList[j].item_code)
+                                        mappingItemFavoriteList.removeAt(j)
+                            }
+                        } else {
+                            if (mappingItemFavoriteList.size == 0)
+                                mappingItemFavoriteList.add(mappingItemsItem)
+                            else
+                                for (j in mappingItemFavoriteList.indices) {
+                                    if (itemList[i].itemCode == mappingItemFavoriteList[j].item_code) {
+                                        mappingItemFavoriteList[j].format_qty = formatQtyItemList
+                                        break
+                                    } else if (j == mappingItemFavoriteList.size - 1)
+                                        mappingItemFavoriteList.add(mappingItemsItem)
+                                }
+                            itemListFavorite[i].formatQtyItem = formatQtyItemList
+                        }
+                    }
+                }
+            }
+
+            override fun onChangeFavorite(itemCode: String, itemName: String, isAddFavorite: Boolean) {
+                showProgressDialog()
+
+                val url = if (isAddFavorite) MyApiClient.LINK_ADD_FAVORITE else MyApiClient.LINK_DELETE_FAVORITE
+
+                val params = RetrofitService.getInstance().getSignature(url, commCode + memberCode + itemCode)
+                params[WebParams.USER_ID] = userPhoneID
+                params[WebParams.MEMBER_CODE_ESPAY] = memberCode
+                params[WebParams.COMM_CODE_ESPAY] = commCode
+                params[WebParams.CUST_ID_ESPAY] = userPhoneID
+                params[WebParams.ITEM_CODE] = itemCode
+                if (isAddFavorite)
+                    params[WebParams.ITEM_NAME] = itemName
+
+                Timber.d("isi params favorite:$params")
+
+                RetrofitService.getInstance().PostJsonObjRequest(url, params,
+                        object : ObjListeners {
+                            override fun onResponses(response: JSONObject) {
+                                try {
+                                    val code = response.getString(WebParams.ERROR_CODE)
+                                    val message = response.getString(WebParams.ERROR_MESSAGE)
+                                    when (code) {
+                                        WebParams.SUCCESS_CODE -> {
+                                            getCatalogList()
+                                        }
+                                        WebParams.LOGOUT_CODE -> {
+                                            AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
+                                        }
+                                        DefineValue.ERROR_9333 -> {
+                                            val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                            val appModel = model.app_data
+                                            AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                        }
+                                        DefineValue.ERROR_0066 -> {
+                                            AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                        }
+                                        else -> {
+                                            showDialog(message)
+                                        }
+                                    }
+                                } catch (e: JSONException) {
+                                    e.printStackTrace()
+                                }
+                            }
+
+                            override fun onError(throwable: Throwable) {
+                                dismissProgressDialog()
+                            }
+
+                            override fun onComplete() {
+                            }
+                        })
+            }
+        })
+
         frag_input_item_list_field.adapter = itemListAdapter
         frag_input_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
+        frag_input_item_list_favorite_field.adapter = itemListFavoriteAdapter
+        frag_input_item_list_favorite_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         layout_payment_method.visibility = View.VISIBLE
         paymentListOption.clear()
@@ -213,9 +336,20 @@ class FragListItemToko : BaseFragment() {
                     }
                 })
         toggle.setOnCheckedChangeListener { p0, checkedId ->
-            when (checkedId) {
-                R.id.radio_all_item -> itemListAdapter!!.updateAdapter(itemList)
-                R.id.radio_favorite -> itemListAdapter!!.updateAdapter(itemListFavorite)
+//            when (checkedId) {
+//                R.id.radio_all_item -> itemListAdapter!!.updateAdapter(itemList)
+//                R.id.radio_favorite -> itemListAdapter!!.updateAdapter(itemListFavorite)
+//            }
+            if (checkedId == R.id.radio_all_item) {
+//                itemListAdapter!!.updateAdapter(itemList)
+                isOnAllItemTab = true
+                frag_input_item_list_field.visibility = View.VISIBLE
+                frag_input_item_list_favorite_field.visibility = View.GONE
+            } else {
+//                itemListAdapter!!.updateAdapter(itemListFavorite)
+                isOnAllItemTab = false
+                frag_input_item_list_field.visibility = View.GONE
+                frag_input_item_list_favorite_field.visibility = View.VISIBLE
             }
         }
 
@@ -243,7 +377,7 @@ class FragListItemToko : BaseFragment() {
     }
 
     private fun inputValidation(): Boolean {
-        if (mappingItemList.isEmpty()) {
+        if (mappingItemList.isEmpty() && mappingItemFavoriteList.isEmpty()) {
             Toast.makeText(context, getString(R.string.input_order_validation), Toast.LENGTH_SHORT).show()
             return false
         }
@@ -304,6 +438,7 @@ class FragListItemToko : BaseFragment() {
                                             itemList.add(EBDCatalogModel(itemImage, itemCode, itemName, description, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite))
                                         }
                                         itemListAdapter!!.notifyDataSetChanged()
+                                        itemListFavoriteAdapter!!.notifyDataSetChanged()
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
@@ -432,27 +567,52 @@ class FragListItemToko : BaseFragment() {
         val parentObj = JSONObject()
 
         parentObj.put(WebParams.REFF_NO, order.reff_no)
-        for (i in mappingItemList.indices) {
-            val mappingItemObj = JSONObject()
-            val formatQtyArray = JSONArray()
+        if (isOnAllItemTab) {
+            for (i in mappingItemList.indices) {
+                val mappingItemObj = JSONObject()
+                val formatQtyArray = JSONArray()
 
-            val orderMappingItemsFormatQty = mappingItemList[i].format_qty
-            for (j in orderMappingItemsFormatQty.indices) {
-                val formatQtyObj = JSONObject()
-                formatQtyObj.put(WebParams.MAPPING_UNIT, orderMappingItemsFormatQty[j].mapping_unit)
-                formatQtyObj.put(WebParams.MAPPING_QTY, orderMappingItemsFormatQty[j].mapping_qty)
-                formatQtyArray.put(formatQtyObj)
+                val orderMappingItemsFormatQty = mappingItemList[i].format_qty
+                for (j in orderMappingItemsFormatQty.indices) {
+                    val formatQtyObj = JSONObject()
+                    formatQtyObj.put(WebParams.MAPPING_UNIT, orderMappingItemsFormatQty[j].mapping_unit)
+                    formatQtyObj.put(WebParams.MAPPING_QTY, orderMappingItemsFormatQty[j].mapping_qty)
+                    formatQtyArray.put(formatQtyObj)
+                }
+
+                mappingItemObj.put(WebParams.ITEM_NAME, mappingItemList[i].item_name)
+                mappingItemObj.put(WebParams.ITEM_CODE, mappingItemList[i].item_code)
+                mappingItemObj.put(WebParams.PRICE, mappingItemList[i].price)
+                mappingItemObj.put(WebParams.DISC_AMOUNT, mappingItemList[i].discAmount)
+                mappingItemObj.put(WebParams.NETT_PRICE, mappingItemList[i].nettPrice)
+                mappingItemObj.put(WebParams.UNIT, mappingItemList[i].unit)
+                mappingItemObj.put(WebParams.FORMAT_QTY, formatQtyArray)
+                mappingItemArray.put(mappingItemObj)
             }
+        } else {
+            for (i in mappingItemFavoriteList.indices) {
+                val mappingItemObj = JSONObject()
+                val formatQtyArray = JSONArray()
 
-            mappingItemObj.put(WebParams.ITEM_NAME, mappingItemList[i].item_name)
-            mappingItemObj.put(WebParams.ITEM_CODE, mappingItemList[i].item_code)
-            mappingItemObj.put(WebParams.PRICE, mappingItemList[i].price)
-            mappingItemObj.put(WebParams.DISC_AMOUNT, mappingItemList[i].discAmount)
-            mappingItemObj.put(WebParams.NETT_PRICE, mappingItemList[i].nettPrice)
-            mappingItemObj.put(WebParams.UNIT, mappingItemList[i].unit)
-            mappingItemObj.put(WebParams.FORMAT_QTY, formatQtyArray)
-            mappingItemArray.put(mappingItemObj)
+                val orderMappingItemsFormatQty = mappingItemFavoriteList[i].format_qty
+                for (j in orderMappingItemsFormatQty.indices) {
+                    val formatQtyObj = JSONObject()
+                    formatQtyObj.put(WebParams.MAPPING_UNIT, orderMappingItemsFormatQty[j].mapping_unit)
+                    formatQtyObj.put(WebParams.MAPPING_QTY, orderMappingItemsFormatQty[j].mapping_qty)
+                    formatQtyArray.put(formatQtyObj)
+                }
+
+                mappingItemObj.put(WebParams.ITEM_NAME, mappingItemFavoriteList[i].item_name)
+                mappingItemObj.put(WebParams.ITEM_CODE, mappingItemFavoriteList[i].item_code)
+                mappingItemObj.put(WebParams.PRICE, mappingItemFavoriteList[i].price)
+                mappingItemObj.put(WebParams.DISC_AMOUNT, mappingItemFavoriteList[i].discAmount)
+                mappingItemObj.put(WebParams.NETT_PRICE, mappingItemFavoriteList[i].nettPrice)
+                mappingItemObj.put(WebParams.UNIT, mappingItemFavoriteList[i].unit)
+                mappingItemObj.put(WebParams.FORMAT_QTY, formatQtyArray)
+                mappingItemArray.put(mappingItemObj)
+            }
         }
+
 
         parentObj.put(WebParams.MAPPING_ITEMS, mappingItemArray)
         parentArr.put(parentObj)
