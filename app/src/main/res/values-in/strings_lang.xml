@@ -1405,7 +1405,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="terms_and_condition">Syarat dan Ketentuan</string>
     <string name="additional_fee">Biaya Layanan</string>
     <string name="payment_confirm">Konfirmasi Pembayaran</string>
-    <string name="merchant_name">Toko</string>
     <string name="transaction_id">ID Transaksi</string>
     <string name="payment_remark">Pesan</string>
     <string name="success_cancel_sof">Transaksi sudah dibatalkan!</string>
@@ -1590,7 +1589,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="cable_tv">TV Kabel</string>
     <string name="insurance">Asuransi</string>
     <string name="internet">Internet</string>
-    <string name="pbb">PBB</string>
+    <string name="pbb">Pembayaran PBB</string>
+    <string name="e_samsat">E-Samsat</string>
     <string name="pln_non_taglis">PLN Non-Taglis</string>
     <string name="tuition_fee">Uang Sekolah</string>
     <string name="residence">Perumahan</string>
@@ -1748,4 +1748,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="order_canceled">Pemesanan barang dibatalkan</string>
     <string name="check_promo">Cek Promo</string>
     <string name="all_item">Semua Barang</string>
+    <string name="merchant_name">Nama Merchant</string>
 </resources>

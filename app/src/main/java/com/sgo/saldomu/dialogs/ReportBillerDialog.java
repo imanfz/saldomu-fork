@@ -1020,6 +1020,35 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }
+            } else if (buss_scheme_code.equalsIgnoreCase(DefineValue.QRS)) {
+                stub.setLayoutResource(R.layout.layout_dialog_report_qrs);
+                View inflated = stub.inflate();
+
+                TextView tv_report_type = inflated.findViewById(R.id.dialog_report_transaction_type);
+                TextView tv_merchant_name = inflated.findViewById(R.id.dialog_report_merchant_name);
+                TextView tv_payment_option = inflated.findViewById(R.id.dialog_report_payment_options);
+                TextView tv_fee = inflated.findViewById(R.id.dialog_report_fee);
+                TextView tv_amount = inflated.findViewById(R.id.dialog_report_amount);
+                TextView tv_total_amount = inflated.findViewById(R.id.dialog_report_total_amount);
+                inflated.setVisibility(View.VISIBLE);
+
+                String amount = args.getString(DefineValue.AMOUNT);
+                String fee = args.getString(DefineValue.FEE);
+                String total_amount = args.getString(DefineValue.TOTAL_AMOUNT);
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
+                if (!isSuccess) {
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
+
+                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
+                tv_merchant_name.setText(args.getString(DefineValue.MERCHANT_NAME));
+                tv_fee.setText(fee);
+                tv_amount.setText(amount);
+                tv_total_amount.setText(total_amount);
             }
         }
 
