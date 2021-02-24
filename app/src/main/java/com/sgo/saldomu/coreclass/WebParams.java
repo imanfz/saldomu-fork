@@ -117,6 +117,7 @@ public class WebParams {
     public static String BILLER_INPUT_AMOUNT = "biller_input_amount";
     public static String BILLER_DISPLAY_AMOUNT = "biller_display_amount";
     public static String DESCRIPTION = "description";
+    public static String ITEM_DESCRIPTION = "item_description";
     public static String SHORT_DESCRIPTION = "short_description";
 
     public static String MEMBER_CUST = "member_cust";

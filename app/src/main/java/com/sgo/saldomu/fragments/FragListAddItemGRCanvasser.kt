@@ -105,7 +105,7 @@ class FragListAddItemGRCanvasser : BaseFragment() {
 //                            itemList[i].formatQty.clear()
 //                        } else {
 //                            mappingItemList.add(mappingItemsItem)
-                            itemList[i].formatQtyItem = formatQtys
+                        itemList[i].formatQtyItem = formatQtys
 //                        }
                     }
                 }
@@ -177,8 +177,8 @@ class FragListAddItemGRCanvasser : BaseFragment() {
                                                 val itemName = jsonObject.getString(WebParams.ITEM_NAME)
                                                 val price = jsonObject.getInt(WebParams.PRICE)
                                                 val unit = jsonObject.getString(WebParams.UNIT)
-                                                val description = ""
-                                                val itemImage = ""
+                                                val description = jsonObject.getString(WebParams.ITEM_DESCRIPTION)
+                                                val itemImage = jsonObject.getString(WebParams.IMAGE_URL)
                                                 val discAmount = Integer.parseInt(jsonObject.getString(WebParams.DISC_AMOUNT))
                                                 val nettPrice = Integer.parseInt(jsonObject.getString(WebParams.NETT_PRICE))
                                                 val minQty = 0
@@ -301,31 +301,33 @@ class FragListAddItemGRCanvasser : BaseFragment() {
         val mappingItemsArrayList = ArrayList<HashMap<String, Any>>()
         try {
             for (obj in itemList) {
-                var eligibleCount = 0
+                if (!obj.formatQtyItem.isEmpty()) {
+                    var eligibleCount = 0
 
-                val mappingItemsHashMap = HashMap<String, Any>()
-                mappingItemsHashMap["item_name"] = obj.itemName
-                mappingItemsHashMap["item_code"] = obj.itemCode
-                mappingItemsHashMap["price"] = obj.price
-                mappingItemsHashMap["unit"] = obj.unit
+                    val mappingItemsHashMap = HashMap<String, Any>()
+                    mappingItemsHashMap["item_name"] = obj.itemName
+                    mappingItemsHashMap["item_code"] = obj.itemCode
+                    mappingItemsHashMap["price"] = obj.price
+                    mappingItemsHashMap["unit"] = obj.unit
 
-                val formatQtyArrayList = ArrayList<HashMap<String, Any>>()
-                for (formatQty in obj.formatQtyItem) {
-                    val formatQtyHashMap = HashMap<String, Any>()
-                    formatQtyHashMap["mapping_qty"] = formatQty.mapping_qty
-                    formatQtyHashMap["mapping_unit"] = formatQty.mapping_unit
-                    formatQtyArrayList.add(formatQtyHashMap)
-                    if (formatQty.mapping_qty.equals(0)) {
-                        eligibleCount++
+                    val formatQtyArrayList = ArrayList<HashMap<String, Any>>()
+                    for (formatQty in obj.formatQtyItem) {
+                        val formatQtyHashMap = HashMap<String, Any>()
+                        formatQtyHashMap["mapping_qty"] = formatQty.mapping_qty
+                        formatQtyHashMap["mapping_unit"] = formatQty.mapping_unit
+                        formatQtyArrayList.add(formatQtyHashMap)
+                        if (formatQty.mapping_qty.equals(0)) {
+                            eligibleCount++
+                        }
+                    }
+                    if (eligibleCount < 3) {
+                        mappingItemsHashMap["format_qty"] = formatQtyArrayList
+                        mappingItemsArrayList.add(mappingItemsHashMap)
                     }
                 }
-                if (eligibleCount < 3) {
-                    mappingItemsHashMap["format_qty"] = formatQtyArrayList
-                    mappingItemsArrayList.add(mappingItemsHashMap)
-                    finalMappingItemsHashMap.put("mapping_items", mappingItemsArrayList)
-                    finalMappingItemsHashMap.put("reff_no", docNo)
-                }
             }
+            finalMappingItemsHashMap.put("mapping_items", mappingItemsArrayList)
+            finalMappingItemsHashMap.put("reff_no", docNo)
         } catch (e: JSONException) {
             e.printStackTrace()
         }

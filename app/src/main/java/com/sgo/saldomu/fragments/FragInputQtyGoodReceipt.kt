@@ -188,14 +188,14 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
         val mArrayItem = JSONArray(items)
 
         for (i in 0 until mArrayItem.length()) {
-            val itemImage = ""
+            val itemImage =mArrayItem.getJSONObject(i).getString(WebParams.IMAGE_URL)
             val itemName = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_NAME)
             val itemCode = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_CODE)
             val price = mArrayItem.getJSONObject(i).getInt(WebParams.PRICE)
             val discAmount = mArrayItem.getJSONObject(i).getInt(WebParams.DISC_AMOUNT)
             val nettPrice = mArrayItem.getJSONObject(i).getInt(WebParams.NETT_PRICE)
             val unit = mArrayItem.getJSONObject(i).getString(WebParams.UNIT)
-            val description = ""
+            val description = mArrayItem.getJSONObject(i).getString(WebParams.ITEM_DESCRIPTION)
             val minQty = 0
             val maxQty = 0
             val remarkMappingUnit = mArrayItem.getJSONObject(i).getJSONArray(WebParams.REMARK_MAPPING_UNITS)
@@ -298,8 +298,8 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
                 mappingItemsHashMap["unit"] = obj.unit
                 mappingItemsHashMap["disc_amount"] = obj.discAmount
                 mappingItemsHashMap["nett_price"] = obj.nettPrice
-                mappingItemsHashMap["img_url"] = obj.itemImage
-                mappingItemsHashMap["description"] = obj.description
+                mappingItemsHashMap["image_url"] = obj.itemImage
+                mappingItemsHashMap["item_description"] = obj.description
                 mappingItemsHashMap["is_favorite"] = obj.isFavorite
                 mappingItemsHashMap["remark_mapping_units"] = obj.remarkMappingUnit
 
