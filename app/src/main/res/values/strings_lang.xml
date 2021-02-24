@@ -1415,7 +1415,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="terms_and_condition">Terms and Conditions</string>
     <string name="additional_fee">Service Charge</string>
     <string name="payment_confirm">Payment Confirmation</string>
-    <string name="merchant_name">Merchant</string>
     <string name="transaction_id">Transaction ID</string>
     <string name="payment_remark">Message</string>
     <string name="success_cancel_sof">Transaction has been canceled!</string>
@@ -1608,7 +1607,8 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="cable_tv">Cable TV</string>
     <string name="insurance">Insurance</string>
     <string name="internet">Internet</string>
-    <string name="pbb">PBB</string>
+    <string name="pbb">PBB payment</string>
+    <string name="e_samsat">E-Samsat</string>
     <string name="pln_non_taglis">PLN Non-Taglis</string>
     <string name="tuition_fee">Tuition Fee</string>
     <string name="residence">Residence</string>
@@ -1758,4 +1758,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="order_canceled">Order canceled</string>
     <string name="check_promo">Check Promo</string>
     <string name="all_item">All Item</string>
+    <string name="merchant_name">Merchant Name</string>
 </resources>

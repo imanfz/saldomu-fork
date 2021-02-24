@@ -7,31 +7,44 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.BillerActivity
 import com.sgo.saldomu.adapter.GridMenu
 import com.sgo.saldomu.coreclass.DefineValue
-import com.sgo.saldomu.coreclass.RealmManager
-import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.widgets.BaseFragment
-import io.realm.Realm
-import io.realm.RealmResults
 import kotlinx.android.synthetic.main.frag_grid.*
 
 class FragGridBiller : BaseFragment() {
 
-    private var realm: Realm? = null
-    private var mBillerTypeData: RealmResults<Biller_Type_Data_Model>? = null
-    private var mBillerType: Biller_Type_Data_Model? = null
+    private val BILLER_TYPE_CODE_CC = "CC"
+    private val BILLER_TYPE_CODE_CCL = "CCL"
+    private val BILLER_TYPE_CODE_TLP = "TLP"
+    private val BILLER_TYPE_CODE_PST = "PST"
+    private val BILLER_TYPE_CODE_KA = "KA"
+    private val BILLER_TYPE_CODE_ASU = "ASU"
+    private val BILLER_TYPE_CODE_INT = "INT"
+    private val BILLER_TYPE_CODE_TV = "TV"
+    private val BILLER_TYPE_CODE_PBB = "PBB"
+    private val BILLER_TYPE_CODE_SMST = "SMST"
+
+    private val billerTypeList = arrayOf(
+            BILLER_TYPE_CODE_CC,
+            BILLER_TYPE_CODE_CCL,
+            BILLER_TYPE_CODE_TLP,
+            BILLER_TYPE_CODE_PST,
+            BILLER_TYPE_CODE_KA,
+            BILLER_TYPE_CODE_ASU,
+            BILLER_TYPE_CODE_INT,
+            BILLER_TYPE_CODE_TV,
+            BILLER_TYPE_CODE_PBB,
+            BILLER_TYPE_CODE_SMST
+    )
     private val menuStrings = ArrayList<String>()
     private val menuDrawables = ArrayList<Drawable>()
-    private var billerTypeName = ArrayList<String>()
+    private val billerTypeDataList = ArrayList<Biller_Type_Data_Model>()
     private var adapter: GridMenu? = null
-
-    var billerType: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -41,84 +54,93 @@ class FragGridBiller : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        realm = Realm.getInstance(RealmManager.BillerConfiguration)
-        billerType = arguments!!.getString(DefineValue.BILLER_TYPE)
-        initializeData()
-        setTitleandIcon()
-    }
-
-    private fun initializeData() {
-        mBillerTypeData = realm!!.where(Biller_Type_Data_Model::class.java).equalTo(WebParams.BILLER_TYPE, billerType).findAll()
-        if (mBillerTypeData!!.size > 0) {
-            for (i in mBillerTypeData!!.indices) {
-                billerTypeName.add(mBillerTypeData!![i]!!.biller_type_name)
-            }
-        }
 
         adapter = GridMenu(context!!, menuStrings, menuDrawables)
         grid.adapter = adapter
-        grid.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
-            val menuItemName = hardCodeMenuItemName((view!!.findViewById<View>(R.id.grid_text) as TextView).text.toString())
-            mBillerType = realm!!.where(Biller_Type_Data_Model::class.java).equalTo(WebParams.BILLER_TYPE_NAME, menuItemName).findFirst()
+        grid.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val i = Intent(activity, BillerActivity::class.java)
-            i.putExtra(DefineValue.BILLER_TYPE, mBillerType!!.biller_type_code)
-            i.putExtra(DefineValue.BILLER_NAME, mBillerType!!.biller_type_name)
+            i.putExtra(DefineValue.BILLER_TYPE, billerTypeDataList[position].biller_type_code)
+            i.putExtra(DefineValue.BILLER_NAME, billerTypeDataList[position].biller_type_name)
             startActivity(i)
         }
+        initializeData()
+        setTitleAndIcon()
     }
 
-    private fun hardCodeMenuItemName(string: String): String {
-        when (string) {
-            getString(R.string.credit_card) -> return "Kartu Kredit"
-            getString(R.string.installment) -> return "Cicilan"
-            getString(R.string.flight_ticket) -> return "Tiket Pesawat Terbang"
-            getString(R.string.train_ticket) -> return "Tiket Kereta Api"
-            getString(R.string.insurance) -> return "Asuransi"
-            getString(R.string.cable_tv) -> return "TV Cable"
+    private fun initializeData() {
+        for (i in billerTypeList.indices) {
+            val billerTypeData = Biller_Type_Data_Model()
+            when (billerTypeList[i]) {
+                BILLER_TYPE_CODE_CC -> {
+                    billerTypeData.biller_type_code = BILLER_TYPE_CODE_CC
+                    billerTypeData.biller_type_name = getString(R.string.credit_card)
+                }
+                BILLER_TYPE_CODE_CCL -> {
+                    billerTypeData.biller_type_code = BILLER_TYPE_CODE_CCL
+                    billerTypeData.biller_type_name = getString(R.string.installment)
+                }
+                BILLER_TYPE_CODE_TLP -> {
+                    billerTypeData.biller_type_code = BILLER_TYPE_CODE_TLP
+                    billerTypeData.biller_type_name = getString(R.string.telkom)
+                }
+                BILLER_TYPE_CODE_PST -> {
+                    billerTypeData.biller_type_code = BILLER_TYPE_CODE_PST
+                    billerTypeData.biller_type_name = getString(R.string.flight_ticket)
+                }
+                BILLER_TYPE_CODE_KA -> {
+                    billerTypeData.biller_type_code = BILLER_TYPE_CODE_KA
+                    billerTypeData.biller_type_name = getString(R.string.train_ticket)
+                }
+                BILLER_TYPE_CODE_ASU -> {
+                    billerTypeData.biller_type_code = BILLER_TYPE_CODE_ASU
+                    billerTypeData.biller_type_name = getString(R.string.insurance)
+                }
+                BILLER_TYPE_CODE_INT -> {
+                    billerTypeData.biller_type_code = BILLER_TYPE_CODE_INT
+                    billerTypeData.biller_type_name = getString(R.string.internet)
+                }
+                BILLER_TYPE_CODE_TV -> {
+                    billerTypeData.biller_type_code = BILLER_TYPE_CODE_TV
+                    billerTypeData.biller_type_name = getString(R.string.cable_tv)
+                }
+                BILLER_TYPE_CODE_PBB -> {
+                    billerTypeData.biller_type_code = BILLER_TYPE_CODE_PBB
+                    billerTypeData.biller_type_name = getString(R.string.pbb)
+                }
+                BILLER_TYPE_CODE_SMST -> {
+                    billerTypeData.biller_type_code = BILLER_TYPE_CODE_SMST
+                    billerTypeData.biller_type_name = getString(R.string.e_samsat)
+                }
+            }
+            billerTypeDataList.add(billerTypeData)
         }
-        return string
     }
 
-    private fun setTitleandIcon() {
-
-        if (billerTypeName.contains(getString(R.string.credit_card)) || billerTypeName.contains("Kartu Kredit")) {
-            menuStrings.add(resources.getString(R.string.credit_card))
-            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_kartu_kredit, null)!!)
+    private fun setTitleAndIcon() {
+        menuStrings.clear()
+        menuDrawables.clear()
+        for (i in billerTypeDataList.indices) {
+            menuStrings.add(billerTypeDataList[i].biller_type_name)
         }
-
-        if (billerTypeName.contains(getString(R.string.installment)) || billerTypeName.contains("Cicilan")) {
-            menuStrings.add(resources.getString(R.string.installment))
-            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_tagihan_kartu_kredit, null)!!)
+        for (i in menuStrings.indices) {
+            menuDrawables.add(ResourcesCompat.getDrawable(resources, getImageMenu(menuStrings[i]), null)!!)
         }
+        adapter!!.notifyDataSetChanged()
+    }
 
-        if (billerTypeName.contains(getString(R.string.telkom))) {
-            menuStrings.add(resources.getString(R.string.telkom))
-            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_telkom, null)!!)
-        }
-
-        if (billerTypeName.contains(getString(R.string.flight_ticket)) || billerTypeName.contains("Tiket Pesawat Terbang")) {
-            menuStrings.add(resources.getString(R.string.flight_ticket))
-            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_pesawat, null)!!)
-        }
-
-        if (billerTypeName.contains(getString(R.string.train_ticket)) || billerTypeName.contains("Tiket Kereta Api")) {
-            menuStrings.add(resources.getString(R.string.train_ticket))
-            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_kereta, null)!!)
-        }
-
-        if (billerTypeName.contains(getString(R.string.insurance)) || billerTypeName.contains("Asuransi")) {
-            menuStrings.add(resources.getString(R.string.insurance))
-            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_asuransi, null)!!)
-        }
-
-        if (billerTypeName.contains(getString(R.string.internet))) {
-            menuStrings.add(resources.getString(R.string.internet))
-            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_internet, null)!!)
-        }
-
-        if (billerTypeName.contains(getString(R.string.cable_tv)) || billerTypeName.contains("TV Cable")) {
-            menuStrings.add(resources.getString(R.string.cable_tv))
-            menuDrawables.add(ResourcesCompat.getDrawable(resources, R.drawable.icon_biller_tv, null)!!)
+    private fun getImageMenu(titleMenu: String): Int {
+        return when (titleMenu) {
+            getString(R.string.credit_card) -> R.drawable.icon_biller_kartu_kredit
+            getString(R.string.installment) -> R.drawable.icon_biller_tagihan_kartu_kredit
+            getString(R.string.telkom) -> R.drawable.icon_biller_telkom
+            getString(R.string.flight_ticket) -> R.drawable.icon_biller_pesawat
+            getString(R.string.train_ticket) -> R.drawable.icon_biller_kereta
+            getString(R.string.insurance) -> R.drawable.icon_biller_asuransi
+            getString(R.string.internet) -> R.drawable.icon_biller_internet
+            getString(R.string.cable_tv) -> R.drawable.icon_biller_tv
+            getString(R.string.pbb) -> R.drawable.ic_mandiri
+            getString(R.string.e_samsat) -> R.drawable.ic_mandiri
+            else -> R.drawable.ic_mandiri
         }
     }
 }
