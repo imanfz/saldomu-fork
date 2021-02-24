@@ -1045,6 +1045,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 }
 
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
+                tv_merchant_name.setText(args.getString(DefineValue.MERCHANT_NAME));
                 tv_fee.setText(fee);
                 tv_amount.setText(amount);
                 tv_total_amount.setText(total_amount);

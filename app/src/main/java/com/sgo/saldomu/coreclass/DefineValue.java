@@ -731,5 +731,6 @@ public class DefineValue {
     public static String BONUS_ITEMS = "bonusItems";
     public static String ITEMS = "Items";
     public static String LOG_OUT = "log_out";
+    public static String MERCHANT_NAME = "merchant_name";
 }
 

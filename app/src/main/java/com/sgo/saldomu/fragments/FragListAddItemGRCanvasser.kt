@@ -116,8 +116,6 @@ class FragListAddItemGRCanvasser : BaseFragment() {
 
         frag_input_item_list_field.adapter = itemListAdapter
         frag_input_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        val snapHelper: SnapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(frag_input_item_list_field)
 
         search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}

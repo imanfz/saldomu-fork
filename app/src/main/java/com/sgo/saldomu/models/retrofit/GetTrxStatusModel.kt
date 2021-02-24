@@ -19,6 +19,9 @@ open class GetTrxStatusModel : jsonModel() {
     @SerializedName("merchant_type")
     @Expose
     val merchant_type: String? = ""
+    @SerializedName("merchant_name")
+    @Expose
+    val merchant_name: String? = ""
     @SerializedName("buss_scheme_code")
     @Expose
     val buss_scheme_code: String? = ""

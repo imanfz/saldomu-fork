@@ -747,7 +747,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             } else if (_object.getBuss_scheme_code().equals(DefineValue.SG3)) {
                 showReportSOFDialog(response);
             } else if (_object.getBuss_scheme_code().equals(DefineValue.QRS)) {
-                showReportSOFDialog(response);
+                showReportQRSDialog(response);
             }
         }
     }
@@ -1304,12 +1304,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private void showReportQRSDialog(GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
-        args.putString(DefineValue.USER_NAME, response.getMember_name());
         args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(Objects.requireNonNull(response.getCreated())));
         args.putString(DefineValue.TX_ID, response.getTx_id());
-        args.putString(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
-        args.putString(DefineValue.USERID_PHONE, response.getMember_phone());
-        args.putString(DefineValue.BANK_PRODUCT, response.getProduct_name());
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getAdmin_fee()));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.getTx_amount()));
 
@@ -1332,13 +1328,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.getBuss_scheme_name());
-        args.putString(DefineValue.COMMUNITY_CODE, response.getComm_code());
-        args.putString(DefineValue.MEMBER_CODE, response.getMember_code());
-        args.putString(DefineValue.MEMBER_ID_CUST, response.getMember_cust_id());
-        args.putString(DefineValue.MEMBER_CUST_NAME, response.getMember_cust_name());
-        args.putString(DefineValue.STORE_NAME, response.getStore_name());
-        args.putString(DefineValue.STORE_ADDRESS, response.getStore_address());
-        args.putString(DefineValue.STORE_CODE, response.getStore_code());
+        args.putString(DefineValue.MERCHANT_NAME, response.getMerchant_name());
 
         dialog.setArguments(args);
         dialog.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), ReportBillerDialog.TAG);
