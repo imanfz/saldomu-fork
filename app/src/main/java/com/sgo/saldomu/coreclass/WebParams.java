@@ -613,7 +613,7 @@ public class WebParams {
     public static String SHOP_TYPE = "shop_type";
     public static String LANG = "lang";
 
-    public final static String LANGUAGE_ID = "id";
+    public final static String LANGUAGE_ID = "in";
     public final static String LANGUAGE_EN = "en";
     public static String USER_EMAIL = "user_email";
     public static String SUMMARY = "summary";
