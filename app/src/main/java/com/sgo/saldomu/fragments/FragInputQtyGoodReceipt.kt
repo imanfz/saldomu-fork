@@ -79,6 +79,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
             bundle.putString(DefineValue.CUST_ID_ESPAY, custIdEspay)
             bundle.putString(DefineValue.DOC_DETAILS, tempGson)
             bundle.putString(DefineValue.DOC_NO, docNo)
+            bundle.putString(DefineValue.BONUS_ITEMS, bonusItems)
             val frag: Fragment = FragListAddItemGRCanvasser()
             frag.arguments = bundle
             switchFragment(frag, "", "", true, "")
@@ -132,7 +133,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
                                     WebParams.SUCCESS_CODE -> {
                                         tv_item_list.visibility = View.VISIBLE
                                         btn_proses_gr.visibility = View.VISIBLE
-                                        btn_add_item.visibility = View.VISIBLE
+//                                        btn_add_item.visibility = View.VISIBLE
                                         val items = response.optString(WebParams.ITEMS)
                                         bonusItems = response.getString(WebParams.BONUS_ITEMS)
                                         itemArrayList.clear()

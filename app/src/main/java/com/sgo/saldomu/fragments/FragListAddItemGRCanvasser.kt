@@ -42,6 +42,7 @@ class FragListAddItemGRCanvasser : BaseFragment() {
     var custIdEspay = ""
     var docNo = ""
     var docDetails = ""
+    var bonusItems = ""
 
     val itemList = ArrayList<EBDCatalogModel>()
     private val order = DocDetailsItem()
@@ -64,6 +65,7 @@ class FragListAddItemGRCanvasser : BaseFragment() {
             custIdEspay = arguments!!.getString(DefineValue.CUST_ID_ESPAY, "")
             docDetails = arguments!!.getString(DefineValue.DOC_DETAILS, "")
             docNo = arguments!!.getString(DefineValue.DOC_NO, "")
+            bonusItems = arguments!!.getString(DefineValue.BONUS_ITEMS, "")
         }
 
         itemListAdapter = AdapterListAddItemGRCanvasser(context!!, object : AdapterListAddItemGRCanvasser.Listener {
@@ -139,6 +141,7 @@ class FragListAddItemGRCanvasser : BaseFragment() {
             bundle.putString(DefineValue.CUST_ID_ESPAY, custIdEspay)
             bundle.putString(DefineValue.DOC_DETAILS, tempGson)
             bundle.putString(DefineValue.DOC_NO, docNo)
+            bundle.putString(DefineValue.BONUS_ITEMS, bonusItems)
             val frag: Fragment = FragInputPromoCodeGRCanvasser()
             frag.arguments = bundle
             switchFragment(frag, "", "", true, "")
@@ -307,6 +310,8 @@ class FragListAddItemGRCanvasser : BaseFragment() {
                     mappingItemsHashMap["item_code"] = obj.itemCode
                     mappingItemsHashMap["price"] = obj.price
                     mappingItemsHashMap["unit"] = obj.unit
+                    mappingItemsHashMap["disc_amount"] = obj.discAmount
+                    mappingItemsHashMap["nett_price"] = obj.nettPrice
 
                     val formatQtyArrayList = ArrayList<HashMap<String, Any>>()
                     for (formatQty in obj.formatQtyItem) {
