@@ -1749,4 +1749,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="check_promo">Cek Promo</string>
     <string name="all_item">Semua Barang</string>
     <string name="merchant_name">Nama Merchant</string>
+    <string name="vehicle_owner_id">Nomor KTP Pemilik Kendaraan</string>
 </resources>

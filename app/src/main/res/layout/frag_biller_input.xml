@@ -161,7 +161,36 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/layout_input_samsat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="10dp"
+            android:clipToPadding="false"
+            android:visibility="gone">
 
+            <TextView
+                android:id="@+id/layout_input_samsat_billerinput_text_payment_remark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/vehicle_owner_id"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                />
+
+            <EditText
+                android:id="@+id/layout_input_samsat_payment_remark_billerinput_value"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_input_samsat_billerinput_text_payment_remark"
+                android:enabled="true"
+                android:maxLength="16" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/billerinput_layout_month"

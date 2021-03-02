@@ -1759,4 +1759,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="check_promo">Check Promo</string>
     <string name="all_item">All Item</string>
     <string name="merchant_name">Merchant Name</string>
+    <string name="vehicle_owner_id">Vehicle Owner ID</string>
 </resources>
