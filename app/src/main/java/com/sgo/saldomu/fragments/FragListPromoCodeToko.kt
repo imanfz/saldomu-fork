@@ -87,6 +87,7 @@ class FragListPromoCodeToko : BaseFragment() {
 
         promo_code_submit_btn.setOnClickListener {
             var jsonArray = ""
+            desirePromoCodeList.clear()
             for (i in promoCodeList.indices) {
                 if (promoCodeList[i].checked)
                     desirePromoCodeList.add(PromoCodeModel(promoCodeList[i].code, "1", ""))
@@ -169,6 +170,7 @@ class FragListPromoCodeToko : BaseFragment() {
     }
 
     private fun getPromoList() {
+        promoCodeList.clear()
         try {
             showProgressDialog()
             val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_PROMO_EBD, memberCode + commCode)

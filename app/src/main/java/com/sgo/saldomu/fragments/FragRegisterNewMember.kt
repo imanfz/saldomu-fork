@@ -331,7 +331,7 @@ class FragRegisterNewMember : BaseFragment() {
                 val message = response.getString(WebParams.ERROR_MESSAGE)
                 when (code) {
                     WebParams.SUCCESS_CODE -> {
-                        showDialog()
+                        showDialog(message)
                     }
                     WebParams.LOGOUT_CODE -> {
                         AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
@@ -362,7 +362,7 @@ class FragRegisterNewMember : BaseFragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun showDialog() {
+    private fun showDialog(message:String) {
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCanceledOnTouchOutside(false)
@@ -370,7 +370,8 @@ class FragRegisterNewMember : BaseFragment() {
 
         dialog.title_dialog.text = resources.getString(R.string.shop_registration_success)
         dialog.message_dialog.visibility = View.VISIBLE
-        dialog.message_dialog.text = getString(R.string.register_success_wait_for_verification)
+//        dialog.message_dialog.text = getString(R.string.register_success_wait_for_verification)
+        dialog.message_dialog.text = message
 
         dialog.btn_dialog_notification_ok.setOnClickListener {
             dialog.dismiss()

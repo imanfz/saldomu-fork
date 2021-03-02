@@ -117,6 +117,7 @@ public class WebParams {
     public static String BILLER_INPUT_AMOUNT = "biller_input_amount";
     public static String BILLER_DISPLAY_AMOUNT = "biller_display_amount";
     public static String DESCRIPTION = "description";
+    public static String ITEM_DESCRIPTION = "item_description";
     public static String SHORT_DESCRIPTION = "short_description";
 
     public static String MEMBER_CUST = "member_cust";
@@ -612,7 +613,7 @@ public class WebParams {
     public static String SHOP_TYPE = "shop_type";
     public static String LANG = "lang";
 
-    public final static String LANGUAGE_ID = "id";
+    public final static String LANGUAGE_ID = "in";
     public final static String LANGUAGE_EN = "en";
     public static String USER_EMAIL = "user_email";
     public static String SUMMARY = "summary";

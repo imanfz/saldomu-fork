@@ -83,6 +83,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
         promo_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         getPromoList()
         promo_code_submit_btn.setOnClickListener {
+            desirePromoCodeList.clear()
             for (i in promoCodeList.indices) {
                 if (promoCodeList[i].checked)
                     desirePromoCodeList.add(PromoCodeModel(promoCodeList[i].code, "1", ""))
@@ -214,6 +215,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
     }
 
     private fun getPromoList() {
+        promoCodeList.clear()
         try {
             showProgressDialog()
             val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_PROMO_EBD, memberCodeEspay + commCodeEspay)

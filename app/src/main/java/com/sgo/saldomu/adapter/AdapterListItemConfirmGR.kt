@@ -31,12 +31,14 @@ class AdapterListItemConfirmGR(var context: FragmentActivity?, var itemList: Lis
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
 
-        val qtyBAL = itemList[position].formatQty.get(0).mapping_qty.toString()
-        val qtySLOP = itemList[position].formatQty.get(1).mapping_qty.toString()
-        val qtyPACK = itemList[position].formatQty.get(2).mapping_qty.toString()
+        if (!itemList[position].formatQty.isEmpty()) {
+            val qtyBAL = itemList[position].formatQty.get(0).mapping_qty.toString()
+            val qtySLOP = itemList[position].formatQty.get(1).mapping_qty.toString()
+            val qtyPACK = itemList[position].formatQty.get(2).mapping_qty.toString()
+            holder.itemQty.setText(qtyBAL + " / " + qtySLOP + " / " + qtyPACK)
+        }
         val unit = itemList[position].unit
         holder.itemName.text = itemList[position].itemName
-        holder.itemQty.setText(qtyBAL + " / " + qtySLOP + " / " + qtyPACK)
         holder.price.setText((MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(itemList[position].price)) + " / " +unit)
         holder.subTotal.setText((MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(itemList[position].subTotalAmount)))
     }
