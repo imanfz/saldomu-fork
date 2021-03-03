@@ -107,6 +107,7 @@ public class BillerDesciption2 extends BaseFragment {
     private String payment_name;
     private String shareType;
     private String biller_type_code;
+    private String identity_remark;
     private TextView tv_biller_name_value, tvbillerid;
     private TextView tv_item_name_value;
     private TextView tv_amount_value, tv_total_value;
@@ -197,6 +198,7 @@ public class BillerDesciption2 extends BaseFragment {
         cust_id = args.getString(DefineValue.CUST_ID, "");
         buy_type = args.getInt(DefineValue.BUY_TYPE, 0);
         biller_type_code = args.getString(DefineValue.BILLER_TYPE);
+        identity_remark = args.getString(DefineValue.IDENTITY_REMARK,"");
 
         biller_comm_code = mBillerData.getCommCode();
         biller_api_key = mBillerData.getApiKey();
@@ -486,6 +488,8 @@ public class BillerDesciption2 extends BaseFragment {
             params.put(WebParams.COMM_ID, biller_comm_id);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
+            if (!identity_remark.equals(""))
+                params.put(WebParams.IDENTITY_REMARK, identity_remark);
 
             Timber.d("isi params sent inquiry biller:" + params.toString());
 

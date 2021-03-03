@@ -1751,6 +1751,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="check_promo">Cek Promo</string>
     <string name="all_item">Semua Barang</string>
     <string name="merchant_name">Nama Merchant</string>
-
     <string name="used_store_phone">Nomor HP Toko \nyang dapat \ndihubungi</string>
+    <string name="vehicle_owner_id">Nomor KTP Pemilik Kendaraan</string>
+>>>>>>> c26b3f95ad02c50ee95145a3be9dc77d7b512e5c
 </resources>

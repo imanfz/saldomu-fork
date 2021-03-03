@@ -715,4 +715,5 @@ public class WebParams {
     public static String IMAGE_URL = "image_url";
     public static String IS_FAVORITE = "is_favorite";
     public static String CONTACT_NUMBER = "contact_number";
+    public static String IDENTITY_REMARK = "identity_remark";
 }

@@ -733,5 +733,6 @@ public class DefineValue {
     public static String LOG_OUT = "log_out";
     public static String MERCHANT_NAME = "merchant_name";
     public static String PARTNER = "partner";
+    public static String IDENTITY_REMARK = "identityRemark";
 }
 
