@@ -67,6 +67,10 @@ class ListPOModel() : Parcelable {
     @Expose
     var created_at: String? = null
 
+    @SerializedName("partner")
+    @Expose
+    var partner: String? = null
+
     var promo: ArrayList<PromoCanvasserModel> = ArrayList()
 
     constructor(parcel: Parcel) : this() {
@@ -84,6 +88,7 @@ class ListPOModel() : Parcelable {
         paid_status_remark = parcel.readString()
         issue_date = parcel.readString()
         created_at = parcel.readString()
+        partner = parcel.readString()
     }
 
     override fun writeToParcel(p0: Parcel?, p1: Int) {

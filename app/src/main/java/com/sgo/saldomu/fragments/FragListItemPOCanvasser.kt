@@ -39,6 +39,7 @@ class FragListItemPOCanvasser : BaseFragment() {
     var memberCodeEspay = ""
     var commCodeEspay = ""
     var custIdEspay = ""
+    var partner = ""
 
     val itemList = ArrayList<EBDCatalogModel>()
     private val order = DocDetailsItem()
@@ -59,6 +60,7 @@ class FragListItemPOCanvasser : BaseFragment() {
             memberCodeEspay = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
             commCodeEspay = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             custIdEspay = arguments!!.getString(DefineValue.CUST_ID_ESPAY, "")
+            partner = arguments!!.getString(DefineValue.PARTNER, "")
         }
 
 
@@ -282,6 +284,7 @@ class FragListItemPOCanvasser : BaseFragment() {
         params[WebParams.TYPE_ID] = DefineValue.PO
         params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
         params[WebParams.ORDER_SETTING] = orderSetting
+        params[WebParams.PARTNER_CODE_ESPAY] = partner
 
         Timber.d("isi params confirm doc :$params")
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,

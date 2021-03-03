@@ -187,6 +187,7 @@ class FragReportEBDList(private val reportType: String, private val memberCodeEs
         args.putString(DefineValue.PARTNER_CODE_ESPAY, ebdDocStrukReportModel.partnerCodeEspay)
         args.putString(DefineValue.ITEMS, response.getString(WebParams.ITEMS))
         args.putString(DefineValue.BONUS_ITEMS, response.getString(WebParams.BONUS_ITEMS))
+        args.putString(DefineValue.PARTNER, response.getString(WebParams.PARTNER))
         args.putString(DefineValue.RESPONSE, response.toString())
         args.putString(DefineValue.PAID_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(ebdDocStrukReportModel.paidAmount))
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(ebdDocStrukReportModel.amount))

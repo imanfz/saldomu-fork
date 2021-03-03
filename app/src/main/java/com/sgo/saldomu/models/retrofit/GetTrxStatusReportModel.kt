@@ -195,4 +195,9 @@ open class GetTrxStatusReportModel : GetTrxStatusModel() {
     @SerializedName("total_gross")
     @Expose
     val total_gross: String? = ""
+
+
+    @SerializedName("partner")
+    @Expose
+    val partner: String? = ""
 }

@@ -52,7 +52,7 @@
 
     <TableRow>
         <TextView
-                android:text="@string/community_code"
+                android:text="@string/partner"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/adapter_item_image"
-            android:layout_width="144dp"
-            android:layout_height="144dp"
+            android:layout_width="72dp"
+            android:layout_height="108dp"
             android:src="@drawable/qrexample" />
 
         <LinearLayout
@@ -51,6 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:text="Lorem ipsum dolor sit amet, consectetur adipiscig elit..." />
 
             <LinearLayout
@@ -69,6 +70,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp.10.000,00"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="5dp"
                         android:textColor="@color/black"/>
 
                     <TextView
@@ -76,6 +79,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rp.100.000,00"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="5dp"
                         android:textColor="@color/black"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -88,76 +93,78 @@
                     android:gravity="end"
                     android:src="@drawable/ic_discount" />
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="8dp"
+                    android:minWidth="40dp"
+                    android:text="BAL" />
+
+                <EditText
+                    android:id="@+id/adapter_item_et_qty_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_outline"
+                    android:inputType="number"
+                    android:minWidth="32dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:minWidth="40dp"
+                    android:text="SLOP" />
+
+                <EditText
+                    android:id="@+id/adapter_item_et_qty_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_outline"
+                    android:inputType="number"
+                    android:minWidth="32dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:minWidth="40dp"
+                    android:text="PACK" />
+
+                <EditText
+                    android:id="@+id/adapter_item_et_qty_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_outline"
+                    android:inputType="number"
+                    android:minWidth="32dp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:orientation="vertical">-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                android:minWidth="40dp"
-                android:text="BAL" />
-
-            <EditText
-                android:id="@+id/adapter_item_et_qty_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_outline"
-                android:inputType="number"
-                android:minWidth="32dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                android:minWidth="40dp"
-                android:text="SLOP" />
-
-            <EditText
-                android:id="@+id/adapter_item_et_qty_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_outline"
-                android:inputType="number"
-                android:minWidth="32dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                android:minWidth="40dp"
-                android:text="PACK" />
-
-            <EditText
-                android:id="@+id/adapter_item_et_qty_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_outline"
-                android:inputType="number"
-                android:minWidth="32dp" />
-        </LinearLayout>
-    </LinearLayout>
+<!--        -->
+<!--    </LinearLayout>-->
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/grey_400" />
 
     <LinearLayout

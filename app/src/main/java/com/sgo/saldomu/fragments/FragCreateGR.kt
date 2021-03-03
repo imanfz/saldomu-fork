@@ -43,6 +43,7 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
     var promoCode: String = ""
     var totalDisc: String = ""
     var totalAmount: String = ""
+    var partner: String = ""
     var isHaveBonusItem: Boolean = false
 
     private val itemArrayList = ArrayList<ItemModel>()
@@ -69,6 +70,7 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
         docDetails = bundle.getString(DefineValue.DOC_DETAILS, "")
         totalAmount = bundle.getString(DefineValue.TOTAL_AMOUNT, "")
         totalDisc = bundle.getString(DefineValue.TOTAL_DISC, "")
+        partner = bundle.getString(DefineValue.PARTNER, "")
 
         val canvasserGoodReceiptActivity = activity as CanvasserGoodReceiptActivity
         canvasserGoodReceiptActivity.initializeToolbar(getString(R.string.confirm_gr))
@@ -81,6 +83,7 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
 
         frag_gr_confirm_store_code.setText(memberCodeEspay)
         frag_gr_confirm_comm_code.setText(commCodeEspay)
+        frag_gr_confirm_partner.setText(partner)
         frag_gr_confirm_amount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount))
         frag_gr_confirm_discount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(totalDisc))
         frag_gr_confirm_total_amount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(totalAmount))

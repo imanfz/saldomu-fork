@@ -77,7 +77,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/used_store_phone"
                 android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:singleLine="false"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

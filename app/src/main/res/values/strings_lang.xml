@@ -1660,6 +1660,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="store_phone_required">Store Phone Required</string>
     <string name="store_address">Store Address</string>
     <string name="partner_code">Partner Code</string>
+    <string name="partner">Partner</string>
     <string name="partner_code_required">Partner Code Required!</string>
     <string name="choose_reason">Choose Reason</string>
     <string name="invoice">INVOICE</string>

@@ -654,6 +654,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.STORE_ADDRESS, response.store_address)
         args.putString(DefineValue.AGENT_NAME, response.member_cust_name)
         args.putString(DefineValue.AGENT_PHONE, response.member_cust_id)
+        args.putString(DefineValue.PARTNER_CODE_ESPAY, response.partner)
         args.putString(DefineValue.TOTAL_DISC, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.total_disc))
 
         dialog.arguments = args

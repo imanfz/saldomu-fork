@@ -38,6 +38,7 @@ class FragListPurchaseOrder : BaseFragment() {
     var memberCode: String? = null
     var commCode: String? = null
     var shopName: String? = null
+    var partner: String? = ""
 
     var itemList = ArrayList<ListPOModel>()
     var itemListAdapter: ListPOTokoAdapter? = null
@@ -63,6 +64,7 @@ class FragListPurchaseOrder : BaseFragment() {
             bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
             bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
+            bundle.putString(DefineValue.PARTNER, partner)
             fragment.arguments = bundle
             tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.choose_catalog), true, (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
         }
@@ -80,6 +82,7 @@ class FragListPurchaseOrder : BaseFragment() {
                 bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
                 bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
                 bundle.putString(DefineValue.DOC_NO, docNo)
+                bundle.putString(DefineValue.PARTNER, partner)
                 fragment.arguments = bundle
                 tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.detail_document), true, "FragPurchaseOrderDetail")
             }
@@ -122,6 +125,7 @@ class FragListPurchaseOrder : BaseFragment() {
                         val message = response.getString(WebParams.ERROR_MESSAGE)
                         when (code) {
                             WebParams.SUCCESS_CODE -> {
+                                partner = response.getString(WebParams.PARTNER)
                                 val jsonArray = response.getJSONArray(WebParams.DOC_LIST)
                                 itemList.clear()
                                 for (i in 0 until jsonArray.length()) {
@@ -145,6 +149,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                     listPOModel.comm_code = commCode
                                     listPOModel.paid_status = paidStatus
                                     listPOModel.paid_status_remark = paidStatusRemark
+                                    listPOModel.partner = partner
                                     itemList.add(listPOModel)
                                 }
                                 itemListAdapter!!.notifyDataSetChanged()

@@ -59,6 +59,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     var ccy_id: String = ""
     var cust_type: String = ""
     var total_disc: String = ""
+    var partner: String = ""
 
     var obj: ListPOModel? = null;
 
@@ -132,6 +133,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
         val bundle = arguments
 
         partner_code_espay = bundle!!.getString(DefineValue.PARTNER_CODE_ESPAY, "")
+        partner = bundle!!.getString(DefineValue.PARTNER, "")
 
         val mArrayDoc = JSONArray(bundle!!.getString(WebParams.DOC_LIST))
 
@@ -176,6 +178,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             listPOModel.paid_status = paidstats
             listPOModel.paid_status_remark = paidstatsRemark
             listPOModel.promo = promoArrayList
+            listPOModel.partner = partner
 
             docListArrayList.add(listPOModel)
         }

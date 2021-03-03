@@ -55,6 +55,7 @@ public class ListPOTokoAdapter extends RecyclerView.Adapter<ListPOTokoAdapter.Vi
         holder.totalAmount.setText(mContext.getString(R.string.currency) + CurrencyFormat.format(docListArrayList.get(position).getTotal_amount()));
         holder.dueDate.setText(docListArrayList.get(position).getDue_date());
         holder.paidStatus.setText(docListArrayList.get(position).getPaid_status_remark());
+        holder.partner.setText(docListArrayList.get(position).getPartner());
         holder.layout.setOnClickListener(view -> listener.onClick(docListArrayList.get(position).getDoc_no()));
         holder.cancel.setOnClickListener(view -> listener.onCancel(docListArrayList.get(position).getDoc_no()));
 
@@ -75,7 +76,7 @@ public class ListPOTokoAdapter extends RecyclerView.Adapter<ListPOTokoAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView docNo, docStatus, totalAmount, dueDate, paidStatus;
+        TextView docNo, docStatus, totalAmount, dueDate, paidStatus, partner;
         Button cancel;
         LinearLayout layout;
 
@@ -87,6 +88,7 @@ public class ListPOTokoAdapter extends RecyclerView.Adapter<ListPOTokoAdapter.Vi
             dueDate = itemView.findViewById(R.id.tv_due_date);
             paidStatus = itemView.findViewById(R.id.tv_paid_status);
             cancel = itemView.findViewById(R.id.btn_cancel_po);
+            partner = itemView.findViewById(R.id.tv_partner);
             layout = itemView.findViewById(R.id.layout1);
         }
     }

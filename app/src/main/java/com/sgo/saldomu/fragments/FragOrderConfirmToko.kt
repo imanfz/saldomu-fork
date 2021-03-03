@@ -436,6 +436,7 @@ class FragOrderConfirmToko : BaseFragment() {
         args.putString(DefineValue.STORE_CODE, model.store_code)
         args.putString(DefineValue.AGENT_NAME, model.member_cust_name)
         args.putString(DefineValue.AGENT_PHONE, model.member_cust_id)
+        args.putString(DefineValue.PARTNER_CODE_ESPAY, model.partner)
         args.putString(DefineValue.TOTAL_DISC, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(model.total_disc))
         dialog.arguments = args
         val ft = fragManager.beginTransaction()

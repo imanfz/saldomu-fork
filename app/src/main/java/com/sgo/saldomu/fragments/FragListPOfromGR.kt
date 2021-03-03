@@ -24,8 +24,10 @@ import java.util.*
 class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
 
     private val docListArrayList = ArrayList<ListPOModel>()
-
     private var listPOAdapter: ListPOAdapter? = null
+    var bundle = Bundle()
+    private var partner =""
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_list_po, container, false)
@@ -35,6 +37,10 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        bundle = arguments!!
+        if (bundle != null) {
+            partner = bundle.getString(DefineValue.PARTNER, "")
+        }
         docListArrayList.clear()
 
         val canvasserGoodReceiptActivity = activity as CanvasserGoodReceiptActivity
@@ -81,6 +87,7 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
             listPOModel.comm_code = commCode
             listPOModel.member_code = memberCode
             listPOModel.paid_status = paidStatus
+            listPOModel.partner = partner
             docListArrayList.add(listPOModel)
         }
 
@@ -95,6 +102,7 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
             bundle.putString(DefineValue.MEMBER_CODE_ESPAY, item.member_code)
             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, item.comm_code)
             bundle.putString(DefineValue.CUST_ID_ESPAY, item.cust_id)
+            bundle.putString(DefineValue.PARTNER, item.partner)
             val frag: Fragment = FragInputQtyGoodReceipt()
             frag.arguments = bundle
             switchFragment(frag,"","",true, "")

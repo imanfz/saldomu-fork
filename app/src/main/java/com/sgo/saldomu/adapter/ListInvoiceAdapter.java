@@ -61,6 +61,7 @@ public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.
         holder.tv_reff_id.setText(docListArrayList.get(position).getReff_id());
         holder.tv_issued_date.setText(docListArrayList.get(position).getIssue_date());
         holder.tv_created_at.setText(docListArrayList.get(position).getCreated_at());
+        holder.tv_partner.setText(docListArrayList.get(position).getPartner());
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +86,8 @@ public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.
                 tv_reff_no,
                 tv_reff_id,
                 tv_issued_date,
-                tv_created_at;
+                tv_created_at,
+                tv_partner;
         ;
         LinearLayout layout;
 
@@ -106,6 +108,7 @@ public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.
             tv_reff_id = itemView.findViewById(R.id.tv_reff_id);
             tv_issued_date = itemView.findViewById(R.id.tv_issued_date);
             tv_created_at = itemView.findViewById(R.id.tv_created_at);
+            tv_partner = itemView.findViewById(R.id.tv_partner);
 
 
         }

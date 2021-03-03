@@ -9,10 +9,10 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:background="@drawable/rounded_background_outline"
         android:orientation="vertical"
-        android:stretchColumns="2"
-        android:layout_weight="1">
+        android:stretchColumns="2">
 
         <TableRow
             android:layout_width="match_parent"
@@ -78,23 +78,25 @@
         <LinearLayout
             android:id="@+id/layout_bonus_item"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/bonus_item"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewListBonus"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp" />
         </LinearLayout>
+
     </TableLayout>
 
     <Button
@@ -108,8 +110,7 @@
         android:text="@string/pay"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:textColor="@color/grey_1000w"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 
 </LinearLayout>

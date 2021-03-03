@@ -63,6 +63,12 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
         } else
             holder.itemImage.visibility = View.GONE
 
+//        holder.itemImage.setOnClickListener {
+//            val pAttacher: PhotoViewAttacher
+//            pAttacher = PhotoViewAttacher(holder.itemImage)
+//            pAttacher.update()
+//        }
+
         if (isFavorite) {
             holder.favoriteIcon.background = getDrawableLoveRed()
             holder.favoriteIcon.setOnCheckedChangeListener(null)
@@ -75,7 +81,7 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
                 holder.favoriteIcon.background = getDrawableLoveRed()
             else
                 holder.favoriteIcon.background = getDrawableLoveGrey()
-            listener.onChangeFavorite(itemCode,itemName, isChecked)
+            listener.onChangeFavorite(itemCode, itemName, isChecked)
         }
         holder.itemName.text = itemName
         holder.description.text = description

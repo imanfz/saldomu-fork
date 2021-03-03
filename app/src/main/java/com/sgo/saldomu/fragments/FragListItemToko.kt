@@ -37,6 +37,7 @@ class FragListItemToko : BaseFragment() {
     var commCode = ""
     var shopName = ""
     var paymentOption = ""
+    var partner = ""
 
     val itemList = ArrayList<EBDCatalogModel>()
     val itemListFavorite = ArrayList<EBDCatalogModel>()
@@ -63,6 +64,7 @@ class FragListItemToko : BaseFragment() {
             memberCode = requireArguments().getString(DefineValue.MEMBER_CODE_ESPAY, "")
             commCode = requireArguments().getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             shopName = requireArguments().getString(DefineValue.MEMBER_SHOP_NAME, "")
+            partner = requireArguments().getString(DefineValue.PARTNER, "")
         }
 
         itemListAdapter = AdapterEBDCatalogListToko(requireContext(), itemList, object : AdapterEBDCatalogListToko.Listener {
@@ -368,6 +370,7 @@ class FragListItemToko : BaseFragment() {
                     bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
                     bundle.putString(DefineValue.DOC_DETAILS, docDetail)
                     bundle.putString(DefineValue.ORDER_SETTING, orderSetting)
+                    bundle.putString(DefineValue.PARTNER, partner)
 
                     frag.arguments = bundle
                     tokoPurchaseOrderActivity!!.addFragment(frag, fragName, tokoPurchaseOrderActivity!!.FRAG_INPUT_ITEM_TAG)
@@ -510,6 +513,7 @@ class FragListItemToko : BaseFragment() {
         params[WebParams.TYPE_ID] = DefineValue.PO
         params[WebParams.CUST_TYPE] = DefineValue.TOKO
         params[WebParams.ORDER_SETTING] = orderSetting
+        params[WebParams.PARTNER_CODE_ESPAY] = partner
 
         Timber.d("isi params confirm doc :$params")
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,

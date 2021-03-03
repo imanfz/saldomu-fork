@@ -1630,6 +1630,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="store_phone_required">Nomor HP Toko dibutuhkan</string>
     <string name="store_address">Alamat Toko</string>
     <string name="partner_code">Kode Mitra</string>
+    <string name="partner">Mitra</string>
     <string name="partner_code_required">Kode Mitra dibutuhkan!</string>
     <string name="choose_reason">Pilih Alasan</string>
     <string name="invoice">INVOICE</string>
@@ -1722,6 +1723,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="tv_please_wait">Minta pelanggan untuk mengecek notifikasi untuk melakukan pembayaran</string>
     <string name="lbl_choose">Pilih</string>
 
+    <string name="date">Tanggal</string>
     <string name="detail_document">Detil Dokumen</string>
     <string name="item_name">Nama Barang</string>
     <string name="price">Harga</string>
@@ -1750,5 +1752,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="all_item">Semua Barang</string>
     <string name="merchant_name">Nama Merchant</string>
 
-    <string name="used_store_phone">Nomor HP Toko yang dapat dihubungi</string>
+    <string name="used_store_phone">Nomor HP Toko \nyang dapat \ndihubungi</string>
 </resources>

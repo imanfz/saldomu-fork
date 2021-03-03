@@ -61,7 +61,7 @@
             android:layout_span="2"
             android:layout_weight="1"
             android:padding="3dip"
-            android:text="@string/partner_code" />
+            android:text="@string/partner" />
 
         <TextView
             android:id="@+id/dialog_denom_partner_code"

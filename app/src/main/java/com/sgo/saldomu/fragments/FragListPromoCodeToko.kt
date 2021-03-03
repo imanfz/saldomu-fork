@@ -41,6 +41,7 @@ class FragListPromoCodeToko : BaseFragment() {
     var commCode = ""
     var docDetails = ""
     var orderSetting = ""
+    var partner = ""
 
     var promoCodeList: ArrayList<PromoCodeBATModel> = ArrayList()
     var desirePromoCodeList: ArrayList<PromoCodeModel> = ArrayList()
@@ -70,6 +71,7 @@ class FragListPromoCodeToko : BaseFragment() {
             commCode = requireArguments().getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             docDetails = requireArguments().getString(DefineValue.DOC_DETAILS, "")
             orderSetting = requireArguments().getString(DefineValue.ORDER_SETTING, "")
+            partner = requireArguments().getString(DefineValue.PARTNER, "")
         }
 
         promoCodeAdapter = PromoCodeTokoAdapter(activity, promoCodeList, object : PromoCodeTokoAdapter.Listener {
@@ -113,6 +115,7 @@ class FragListPromoCodeToko : BaseFragment() {
             params[WebParams.CUST_TYPE] = DefineValue.TOKO
             params[WebParams.PROMO_CODE] = jsonArray
             params[WebParams.ORDER_SETTING] = orderSetting
+            params[WebParams.PARTNER_CODE_ESPAY] = partner
 
             Timber.d("isi params confirm doc :$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,

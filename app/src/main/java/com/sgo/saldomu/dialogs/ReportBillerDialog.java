@@ -893,7 +893,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                     tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
                     tv_store_code.setText(args.getString(DefineValue.STORE_CODE));
-                    tv_partner_code.setText(args.getString(DefineValue.PARTNER_CODE_ESPAY));
+                    tv_partner_code.setText(args.getString(DefineValue.PARTNER));
                     tv_paid_amount.setText(args.getString(DefineValue.PAID_AMOUNT));
                     tv_amount.setText(args.getString(DefineValue.AMOUNT));
                     tv_total_discount.setText(args.getString(DefineValue.TOTAL_DISC));
@@ -944,7 +944,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     }
 
                     tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
-                    tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
+                    tv_comm_code.setText(args.getString(DefineValue.PARTNER_CODE_ESPAY));
                     tv_store_code.setText(args.getString(DefineValue.STORE_CODE));
                     tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
                     tv_bank_order_number.setText(args.getString(DefineValue.ORDER_ID));

@@ -40,6 +40,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
     var tempGson = ""
     var gson = ""
     var bonusItems = ""
+    var partner = ""
 
     private val itemArrayList = ArrayList<EBDCatalogModel>()
     private val bonusItemArrayList = ArrayList<EBDCatalogModel>()
@@ -63,6 +64,8 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
         commCodeEspay = bundle!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
         custIdEspay = bundle!!.getString(DefineValue.CUST_ID_ESPAY, "")
         docNo = bundle!!.getString(DefineValue.DOC_NO, "")
+        partner = bundle!!.getString(DefineValue.PARTNER, "")
+
 
         getDetail()
 
@@ -80,6 +83,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
             bundle.putString(DefineValue.DOC_DETAILS, tempGson)
             bundle.putString(DefineValue.DOC_NO, docNo)
             bundle.putString(DefineValue.BONUS_ITEMS, bonusItems)
+            bundle.putString(DefineValue.PARTNER, partner)
             val frag: Fragment = FragListAddItemGRCanvasser()
             frag.arguments = bundle
             switchFragment(frag, "", "", true, "")
@@ -102,6 +106,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
             bundle.putString(DefineValue.DOC_DETAILS, tempGson)
             bundle.putString(DefineValue.BONUS_ITEMS, bonusItems)
             bundle.putString(DefineValue.DOC_NO, docNo)
+            bundle.putString(DefineValue.PARTNER, partner)
             val frag: Fragment = FragInputPromoCodeGRCanvasser()
             frag.arguments = bundle
             switchFragment(frag, "", "", true, "")
