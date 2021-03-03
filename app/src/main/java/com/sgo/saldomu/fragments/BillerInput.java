@@ -86,8 +86,8 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
             "GAPP", // Game 18
             "EMON", // Emoney 19
             "VCHR",// voucher 20
-            "DATA" // data 21
-
+            "DATA", // data 21
+            "SMST" // E-Samsat 22
     };
     private View v;
     private View layout_denom;
@@ -98,12 +98,13 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
     private TextView tv_ovo;
     private TextView tv_notes;
     private EditText et_payment_remark;
+    private EditText et_layout_input_samsat_payment_remark;
     private Spinner spin_denom;
     private Spinner spin_month;
     private Button btn_submit, btn_cekSaldo;
     private ImageView spinWheelDenom;
     private ImageView spinWheelMonth;
-    private RelativeLayout lyt_cekSaldo;
+    private RelativeLayout lyt_cekSaldo, layout_input_samsat;
     private ProgressDialog progdialog;
     private Animation frameAnimation;
     private RadioGroup radioGroup;
@@ -184,6 +185,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         tv_denom = v.findViewById(R.id.billerinput_text_denom);
         tv_payment_remark = v.findViewById(R.id.billerinput_text_payment_remark);
         et_payment_remark = v.findViewById(R.id.payment_remark_billerinput_value);
+        et_layout_input_samsat_payment_remark = v.findViewById(R.id.layout_input_samsat_payment_remark_billerinput_value);
         spinWheelDenom = v.findViewById(R.id.spinning_wheel_billerinput_denom);
         btn_submit = v.findViewById(R.id.btn_submit_billerinput);
         btn_cekSaldo = v.findViewById(R.id.btn_cekSaldo);
@@ -197,7 +199,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         layout_month = v.findViewById(R.id.billerinput_layout_month);
         layout_warn_pln = v.findViewById(R.id.layout_warn_pln);
         tv_notes = v.findViewById(R.id.biller_notes);
-
+        layout_input_samsat = v.findViewById(R.id.layout_input_samsat);
         et_payment_remark.setText(args.getString(DefineValue.CUST_ID, ""));
         if (args.containsKey(DefineValue.BILLER_ID_NUMBER)) {
             et_payment_remark.setText(args.getString(DefineValue.BILLER_ID_NUMBER));
@@ -303,6 +305,13 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
             et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
+        } else if (biller_type_code.equals(billerType[22])) {
+            buy_type = _buy_type[0];
+            buy_code = BillerActivity.PAYMENT_TYPE;
+            tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PST));
+            et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
+            layout_input_samsat.setVisibility(View.VISIBLE);
+            et_layout_input_samsat_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         } else {
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
@@ -468,6 +477,8 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
         mArgs.putString(DefineValue.COMMUNITY_ID, biller_comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, biller_comm_name);
+        if(biller_type_code.equalsIgnoreCase(billerType[22]) && et_layout_input_samsat_payment_remark.getText().toString().length() == 16)
+            mArgs.putString(DefineValue.IDENTITY_REMARK, et_layout_input_samsat_payment_remark.getText().toString());
 //        if(biller_type_code.equalsIgnoreCase(billerType[17]))
 //            mArgs.putString(DefineValue.VALUE_ITEM_DATA, "1");
 
@@ -485,6 +496,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         BillerActivity fca = (BillerActivity) getActivity();
         fca.switchContent(i, name, next_name, isBackstack, tag);
         et_payment_remark.setText("");
+        et_layout_input_samsat_payment_remark.setText("");
         spin_denom.setSelection(0);
         spin_month.setSelection(0);
     }
@@ -498,6 +510,11 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
                     et_payment_remark.setError(this.getString(R.string.regist1_validation_nohp));
                 else
                     et_payment_remark.setError(this.getString(R.string.billerinput_validation_payment_remark));
+                return false;
+            }
+            if (et_layout_input_samsat_payment_remark.getText().toString().length() > 0 && et_layout_input_samsat_payment_remark.getText().toString().length() < 16) {
+                et_layout_input_samsat_payment_remark.requestFocus();
+                et_layout_input_samsat_payment_remark.setError(this.getString(R.string.billerinput_validation_payment_remark));
                 return false;
             }
         }
