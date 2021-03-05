@@ -39,6 +39,7 @@ class FragListPurchaseOrder : BaseFragment() {
     var commCode: String? = null
     var shopName: String? = null
     var partner: String? = ""
+    var anchorCompany: String? = ""
 
     var itemList = ArrayList<ListPOModel>()
     var itemListAdapter: ListPOTokoAdapter? = null
@@ -65,6 +66,7 @@ class FragListPurchaseOrder : BaseFragment() {
             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
             bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
             bundle.putString(DefineValue.PARTNER, partner)
+            bundle.putString(DefineValue.ANCHOR_COMPANY, anchorCompany)
             fragment.arguments = bundle
             tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.choose_catalog), true, (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
         }
@@ -73,6 +75,7 @@ class FragListPurchaseOrder : BaseFragment() {
             memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             shopName = arguments!!.getString(DefineValue.MEMBER_SHOP_NAME, "")
+            anchorCompany = arguments!!.getString(DefineValue.ANCHOR_COMPANY, "")
         }
 
         itemListAdapter = ListPOTokoAdapter(itemList, activity, object : ListPOTokoAdapter.listener {

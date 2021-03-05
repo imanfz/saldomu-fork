@@ -47,6 +47,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
     var docNo = ""
     var bonusItems = ""
     var partner = ""
+    var partnerCodeEspay = ""
     var isHavePromoCode = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -68,6 +69,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
         docDetails = bundle.getString(DefineValue.DOC_DETAILS, "")
         bonusItems = bundle.getString(DefineValue.BONUS_ITEMS, "")
         partner = bundle.getString(DefineValue.PARTNER, "")
+        partnerCodeEspay = bundle.getString(DefineValue.PARTNER_CODE_ESPAY, "")
 
         promoCodeAdapter = PromoCodeCanvasserAdapter(activity, promoCodeList, object : PromoCodeCanvasserAdapter.Listener {
             override fun onCheck(position: Int) {
@@ -119,7 +121,7 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
             params[WebParams.INVOICE_NOTE] = ""
-            params[WebParams.PARTNER_CODE_ESPAY] = partner
+            params[WebParams.PARTNER_CODE_ESPAY] = partnerCodeEspay
             if (isHavePromoCode)
                 params[WebParams.PROMO_CODE] = promoCode
             Timber.d("params confirm doc:$params")

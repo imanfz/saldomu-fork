@@ -41,6 +41,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
     var gson = ""
     var bonusItems = ""
     var partner = ""
+    var partnerCodeEspay = ""
 
     private val itemArrayList = ArrayList<EBDCatalogModel>()
     private val bonusItemArrayList = ArrayList<EBDCatalogModel>()
@@ -65,6 +66,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
         custIdEspay = bundle!!.getString(DefineValue.CUST_ID_ESPAY, "")
         docNo = bundle!!.getString(DefineValue.DOC_NO, "")
         partner = bundle!!.getString(DefineValue.PARTNER, "")
+        partnerCodeEspay = bundle!!.getString(DefineValue.PARTNER_CODE_ESPAY, "")
 
 
         getDetail()
@@ -84,6 +86,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
             bundle.putString(DefineValue.DOC_NO, docNo)
             bundle.putString(DefineValue.BONUS_ITEMS, bonusItems)
             bundle.putString(DefineValue.PARTNER, partner)
+            bundle.putString(DefineValue.PARTNER_CODE_ESPAY, partnerCodeEspay)
             val frag: Fragment = FragListAddItemGRCanvasser()
             frag.arguments = bundle
             switchFragment(frag, "", "", true, "")
@@ -107,6 +110,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
             bundle.putString(DefineValue.BONUS_ITEMS, bonusItems)
             bundle.putString(DefineValue.DOC_NO, docNo)
             bundle.putString(DefineValue.PARTNER, partner)
+            bundle.putString(DefineValue.PARTNER_CODE_ESPAY, partnerCodeEspay)
             val frag: Fragment = FragInputPromoCodeGRCanvasser()
             frag.arguments = bundle
             switchFragment(frag, "", "", true, "")
@@ -348,6 +352,7 @@ class FragInputQtyGoodReceipt() : BaseFragment(), UpdateProductGoodReceiptAdapte
             params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
             params[WebParams.INVOICE_NOTE] = ""
+            params[WebParams.PARTNER_CODE_ESPAY] = partnerCodeEspay
             Timber.d("params confirm doc:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRMATION_DOC, params,
                     object : ObjListeners {

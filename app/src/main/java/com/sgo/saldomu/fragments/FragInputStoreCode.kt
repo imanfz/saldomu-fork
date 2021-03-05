@@ -100,6 +100,7 @@ class FragInputStoreCode : BaseFragment() {
                                         if (docType.equals(DefineValue.GR)) {
                                             frag= FragListPOfromGR()
                                             bundle.putString(DefineValue.PARTNER, response.optString(WebParams.PARTNER))
+                                            bundle.putString(DefineValue.PARTNER_CODE_ESPAY, response.optString(WebParams.PARTNER_CODE_ESPAY))
                                             frag.arguments = bundle
                                             switchFragmentGR(frag, "", "", true, "")
                                         } else{
@@ -107,6 +108,7 @@ class FragInputStoreCode : BaseFragment() {
                                             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, response.optString(WebParams.COMM_CODE_ESPAY))
                                             bundle.putString(DefineValue.CUST_ID_ESPAY, response.optString(WebParams.CUST_ID_ESPAY))
                                             bundle.putString(DefineValue.PARTNER, response.optString(WebParams.PARTNER))
+                                            bundle.putString(DefineValue.PARTNER_CODE_ESPAY, response.optString(WebParams.PARTNER_CODE_ESPAY))
                                             frag = FragListPOCanvasser()
                                             frag.arguments = bundle
                                             switchFragmentPO(frag, "", "", true, "")

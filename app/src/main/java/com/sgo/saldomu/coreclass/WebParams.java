@@ -716,4 +716,6 @@ public class WebParams {
     public static String IS_FAVORITE = "is_favorite";
     public static String CONTACT_NUMBER = "contact_number";
     public static String IDENTITY_REMARK = "identity_remark";
+    public static String ANCHOR_COMPANY = "anchor_company";
+    public static String CANVASSER_CUSTID = "canvasser_custid";
 }

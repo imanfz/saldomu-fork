@@ -27,6 +27,7 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
     private var listPOAdapter: ListPOAdapter? = null
     var bundle = Bundle()
     private var partner =""
+    private var partnerCodeEspay =""
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,6 +41,7 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
         bundle = arguments!!
         if (bundle != null) {
             partner = bundle.getString(DefineValue.PARTNER, "")
+            partnerCodeEspay = bundle.getString(DefineValue.PARTNER_CODE_ESPAY, "")
         }
         docListArrayList.clear()
 
@@ -103,6 +105,7 @@ class FragListPOfromGR : BaseFragment(), ListPOAdapter.listener {
             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, item.comm_code)
             bundle.putString(DefineValue.CUST_ID_ESPAY, item.cust_id)
             bundle.putString(DefineValue.PARTNER, item.partner)
+            bundle.putString(DefineValue.PARTNER_CODE_ESPAY, partnerCodeEspay)
             val frag: Fragment = FragInputQtyGoodReceipt()
             frag.arguments = bundle
             switchFragment(frag,"","",true, "")

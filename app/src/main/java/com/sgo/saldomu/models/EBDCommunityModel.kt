@@ -9,4 +9,5 @@ open class EBDCommunityModel (
         var status: String,
         var mobile_phone_no: String,
         var shop_name: String,
+        var anchor_company: String,
         var email: String)

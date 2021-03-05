@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -32,10 +33,12 @@ class PromoCodeCanvasserAdapter(var context: Context?, var promoList: List<Promo
         holder.layout.setOnClickListener {
             if (promoList[position].checked) {
                 holder.layout.background = ResourcesCompat.getDrawable(context!!.resources, R.drawable.rounded_background_outline, null)
+                holder.etQty.visibility=View.VISIBLE
                 listener.onUncheck(position)
             } else {
                 holder.layout.background = ResourcesCompat.getDrawable(context!!.resources, R.drawable.rounded_background_outline_primary, null)
                 listener.onCheck(position)
+                holder.etQty.visibility=View.GONE
             }
         }
         holder.tvDesc.text = promoList[position].desc
@@ -77,5 +80,6 @@ class PromoCodeCanvasserAdapter(var context: Context?, var promoList: List<Promo
         var tvDesc: TextView = itemView.findViewById(R.id.tv_promo_desc)
         var tvCode: TextView = itemView.findViewById(R.id.tv_promo_code)
         var ivStatus: ImageView = itemView.findViewById(R.id.iv_status)
+        var etQty: EditText = itemView.findViewById(R.id.et_qty_promo)
     }
 }

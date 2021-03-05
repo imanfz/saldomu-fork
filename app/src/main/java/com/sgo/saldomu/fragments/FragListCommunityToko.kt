@@ -51,6 +51,7 @@ class FragListCommunityToko : BaseFragment() {
                 bundle.putString(DefineValue.MEMBER_CODE_ESPAY, ebdCommunityModelArrayList[pos].member_code)
                 bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, ebdCommunityModelArrayList[pos].comm_code)
                 bundle.putString(DefineValue.MEMBER_SHOP_NAME, ebdCommunityModelArrayList[pos].shop_name)
+                bundle.putString(DefineValue.ANCHOR_COMPANY, ebdCommunityModelArrayList[pos].anchor_company)
                 fragment.arguments = bundle
                 tokoPurchaseOrderActivity.switchContent(fragment, getString(R.string.list_po), true, tokoPurchaseOrderActivity.FRAG_INPUT_ITEM_TAG)
             }
@@ -87,7 +88,8 @@ class FragListCommunityToko : BaseFragment() {
                             val status = jsonObject.getString(WebParams.STATUS)
                             val mobilePhoneNo = jsonObject.getString(WebParams.MOBILE_PHONE_NO)
                             val email = jsonObject.getString(WebParams.EMAIL)
-                            ebdCommunityModelArrayList.add(EBDCommunityModel(memberCode, custID, custName, commCode, commName, status, mobilePhoneNo, shopName, email))
+                            val anchor_company = jsonObject.getString(WebParams.ANCHOR_COMPANY)
+                            ebdCommunityModelArrayList.add(EBDCommunityModel(memberCode, custID, custName, commCode, commName, status, mobilePhoneNo, shopName, anchor_company, email))
                         }
                         adapterEBDCommunityList!!.notifyDataSetChanged()
                     }

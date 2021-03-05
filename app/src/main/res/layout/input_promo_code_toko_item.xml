@@ -44,4 +44,11 @@
             android:layout_height="24dp"
             android:src="@drawable/icon_check_green_round" />
     </LinearLayout>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_10dp"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/et_qty_promo"
+        android:visibility="gone"/>
 </LinearLayout>

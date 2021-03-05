@@ -24,6 +24,7 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
     var commCodeEspay = ""
     var custIdEspay = ""
     var partner = ""
+    var partnerCodeEspay = ""
     var bundle = Bundle()
 
     private val docListArrayList = ArrayList<ListPOModel>()
@@ -50,6 +51,7 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
             commCodeEspay = bundle.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             custIdEspay = bundle.getString(DefineValue.CUST_ID_ESPAY, "")
             partner = bundle.getString(DefineValue.PARTNER, "")
+            partnerCodeEspay = bundle.getString(DefineValue.PARTNER_CODE_ESPAY, "")
         }
 
         initializeListPO()
@@ -86,6 +88,7 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
             bundle.putString(DefineValue.CUST_ID_ESPAY, custIdEspay)
             bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCodeEspay)
             bundle.putString(DefineValue.PARTNER, partner)
+            bundle.putString(DefineValue.PARTNER_CODE_ESPAY, partnerCodeEspay)
             fragment.arguments = bundle
             switchFragment(fragment, "", "", true, "")
         }
@@ -135,6 +138,7 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
         bundle.putString(DefineValue.MEMBER_CODE_ESPAY, item!!.member_code)
         bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, item!!.comm_code)
         bundle.putString(DefineValue.TYPE, DefineValue.CANVASSER)
+        bundle.putString(DefineValue.PARTNER_CODE_ESPAY, partnerCodeEspay)
 
         val fragment = FragPurchaseOrderDetail()
         fragment.arguments = bundle

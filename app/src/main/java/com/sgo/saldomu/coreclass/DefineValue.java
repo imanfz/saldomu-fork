@@ -734,5 +734,6 @@ public class DefineValue {
     public static String MERCHANT_NAME = "merchant_name";
     public static String PARTNER = "partner";
     public static String IDENTITY_REMARK = "identityRemark";
+    public static String ANCHOR_COMPANY = "anchorCompany";
 }
 
