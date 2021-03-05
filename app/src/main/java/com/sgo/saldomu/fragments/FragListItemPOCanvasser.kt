@@ -158,8 +158,6 @@ class FragListItemPOCanvasser : BaseFragment() {
 
         frag_input_item_list_field.adapter = itemListAdapter
         frag_input_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        val snapHelper: SnapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(frag_input_item_list_field)
 
         getCatalogList()
 
