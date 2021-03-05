@@ -44,10 +44,21 @@
             android:layout_height="24dp"
             android:src="@drawable/icon_check_green_round" />
     </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Qty"
+        android:visibility="gone"
+        android:id="@+id/tv_qty"
+        android:layout_margin="@dimen/margin_10dp"
+        android:layout_gravity="center_vertical"/>
     <EditText
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_10dp"
+        android:background="@drawable/background_outline"
+        android:inputType="number"
+        android:minWidth="32dp"
         android:layout_gravity="center_vertical"
         android:id="@+id/et_qty_promo"
         android:visibility="gone"/>
