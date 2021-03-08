@@ -26,10 +26,11 @@ import kotlinx.android.synthetic.main.frag_report_ebd_list.*
 import org.json.JSONObject
 import timber.log.Timber
 
-class FragReportEBDList(private val reportType: String, private val memberCodeEspay: String, private var commCodeEspay: String) : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
+class FragReportEBDList(private val reportType: String, private var memberCodeEspay: String, private var commCodeEspay: String) : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private var adapterReportEBDList: AdapterReportEBDList? = null
     private val docListItemArray = ArrayList<DocListItem>()
+    var memberCode = ""
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_report_ebd_list, container, false)
         return v
@@ -41,7 +42,8 @@ class FragReportEBDList(private val reportType: String, private val memberCodeEs
         adapterReportEBDList = AdapterReportEBDList(context!!, docListItemArray, object : AdapterReportEBDList.OnClick {
             override fun onClick(pos: Int) {
                 commCodeEspay = docListItemArray[pos].commCode
-                reportDetail(docListItemArray[pos].docNo)
+                memberCode = docListItemArray[pos].memberCode
+                reportDetail(docListItemArray[pos].docNo, memberCode)
             }
         })
         recyclerView.adapter = adapterReportEBDList
@@ -120,8 +122,10 @@ class FragReportEBDList(private val reportType: String, private val memberCodeEs
         })
     }
 
-    private fun reportDetail(docNo: String) {
+    private fun reportDetail(docNo: String, memberCode : String) {
         showProgressDialog()
+        if (sp.getBoolean(DefineValue.IS_AGENT, false) == true)
+            memberCodeEspay = memberCode
         val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_DOC_STRUK, memberCodeEspay + commCodeEspay + docNo)
         params[WebParams.USER_ID] = sp.getString(DefineValue.USERID_PHONE, "")
         params[WebParams.CUST_ID_ESPAY] = sp.getString(DefineValue.USERID_PHONE, "")
