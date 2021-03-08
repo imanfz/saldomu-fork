@@ -1,6 +1,8 @@
 package com.sgo.saldomu.adapter
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,7 @@ class PromoCodeCanvasserAdapter(var context: Context?, var promoList: List<Promo
     interface Listener {
         fun onCheck(position: Int)
         fun onUncheck(position: Int)
+        fun onChangeQty(promoCode: String, qty: String)
     }
 
     fun updateAdapter(promoList: List<PromoCodeBATModel>) {
@@ -26,19 +29,21 @@ class PromoCodeCanvasserAdapter(var context: Context?, var promoList: List<Promo
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutInflater.from(context).inflate(R.layout.input_promo_code_toko_item, parent, false))
+        return Holder(LayoutInflater.from(context).inflate(R.layout.input_promo_code_canvasser_item, parent, false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
+        if (promoList[position].checked)
+            holder.layoutQtyPromo.visibility = View.VISIBLE
+        else
+            holder.layoutQtyPromo.visibility = View.GONE
         holder.layout.setOnClickListener {
             if (promoList[position].checked) {
-                holder.layout.background = ResourcesCompat.getDrawable(context!!.resources, R.drawable.rounded_background_outline, null)
-                holder.etQty.visibility=View.VISIBLE
-                listener.onUncheck(position)
+                unCheck(holder, position)
+                holder.layoutQtyPromo.visibility = View.GONE
             } else {
-                holder.layout.background = ResourcesCompat.getDrawable(context!!.resources, R.drawable.rounded_background_outline_primary, null)
-                listener.onCheck(position)
-                holder.etQty.visibility=View.GONE
+                onCheck(holder, position)
+                holder.layoutQtyPromo.visibility = View.VISIBLE
             }
         }
         holder.tvDesc.text = promoList[position].desc
@@ -55,6 +60,25 @@ class PromoCodeCanvasserAdapter(var context: Context?, var promoList: List<Promo
                 holder.ivStatus.visibility = View.GONE
             }
         }
+
+        holder.etQty.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                val string = p0.toString()
+                if (string == "")
+                    listener.onChangeQty(promoList[position].code, "0")
+                else
+                    listener.onChangeQty(promoList[position].code, string)
+            }
+
+        })
     }
 
     private fun onCheck(holder: Holder, position: Int) {
@@ -77,6 +101,7 @@ class PromoCodeCanvasserAdapter(var context: Context?, var promoList: List<Promo
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var layout: LinearLayout = itemView.findViewById(R.id.layout)
+        var layoutQtyPromo: LinearLayout = itemView.findViewById(R.id.layout_qty_promo)
         var tvDesc: TextView = itemView.findViewById(R.id.tv_promo_desc)
         var tvCode: TextView = itemView.findViewById(R.id.tv_promo_code)
         var ivStatus: ImageView = itemView.findViewById(R.id.iv_status)

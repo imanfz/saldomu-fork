@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/rounded_background_outline"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_promo_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Promo Code"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_promo_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Promo Desc" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0.1"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_status"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/icon_check_green_round" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_qty_promo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_10dp">
+
+        <TextView
+            android:id="@+id/tv_qty_promo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Qty"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/et_qty_promo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_10dp"
+            android:background="@drawable/background_outline"
+            android:inputType="number"
+            android:minWidth="32dp"
+            android:visibility="visible" />
+    </LinearLayout>
+
+</LinearLayout>
