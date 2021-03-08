@@ -33,11 +33,14 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
+import java.util.*
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 class FragInputPromoCodeGRCanvasser : BaseFragment() {
 
     var promoCodeList: ArrayList<PromoCodeBATModel> = ArrayList()
-    var desirePromoCodeList: ArrayList<PromoCodeModel> = ArrayList()
+    var desirePromoCodeList: MutableList<PromoCodeModel> = ArrayList()
     var promoCodeAdapter: PromoCodeCanvasserAdapter? = null
     var bundle = Bundle()
     var memberCodeEspay = ""
@@ -70,7 +73,8 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
         bonusItems = bundle.getString(DefineValue.BONUS_ITEMS, "")
         partner = bundle.getString(DefineValue.PARTNER, "")
         partnerCodeEspay = bundle.getString(DefineValue.PARTNER_CODE_ESPAY, "")
-
+        desirePromoCodeList.clear()
+        val comparator = Comparator<PromoCodeModel> { p0, p1 -> p0.code.compareTo(p1.code) }
         promoCodeAdapter = PromoCodeCanvasserAdapter(activity, promoCodeList, object : PromoCodeCanvasserAdapter.Listener {
             override fun onCheck(position: Int) {
                 promoCodeList[position].checked = true
@@ -80,19 +84,32 @@ class FragInputPromoCodeGRCanvasser : BaseFragment() {
             override fun onUncheck(position: Int) {
                 promoCodeList[position].checked = false
                 promoCodeAdapter!!.notifyDataSetChanged()
+                for (i in desirePromoCodeList.indices) {
+                    if (promoCodeList[position].code == desirePromoCodeList[i].code)
+                        desirePromoCodeList.removeAt(i)
+                }
+            }
 
+            override fun onChangeQty(promoCode: String, qty: String) {
+                for (i in promoCodeList.indices) {
+                    if (promoCodeList[i].checked && promoCodeList[i].code == promoCode) {
+                        if (qty != "0") {
+                            val promoCodeModel = PromoCodeModel(promoCodeList[i].code, qty, "")
+                            val position = Collections.binarySearch(desirePromoCodeList, promoCodeModel, comparator)
+                            if (position >= 0)
+                                desirePromoCodeList[position] = promoCodeModel
+                            else
+                                desirePromoCodeList.add(promoCodeModel)
+                        } else
+                            desirePromoCodeList.removeAt(i)
+                    }
+                }
             }
         })
         promo_list_field.adapter = promoCodeAdapter
         promo_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         getPromoList()
         promo_code_submit_btn.setOnClickListener {
-            desirePromoCodeList.clear()
-            for (i in promoCodeList.indices) {
-                if (promoCodeList[i].checked)
-                    desirePromoCodeList.add(PromoCodeModel(promoCodeList[i].code, "1", ""))
-            }
-
             val listString = Gson().toJson(desirePromoCodeList, object : TypeToken<ArrayList<PromoCodeModel?>?>() {}.type)
             val jsonArray = JSONArray(listString)
 
