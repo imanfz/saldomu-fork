@@ -59,7 +59,8 @@ class FragReportEBDList(private val reportType: String, private val memberCodeEs
         params[WebParams.COMM_ID] = sp.getString(DefineValue.COMMUNITY_ID, "")
         params[WebParams.USER_ID] = sp.getString(DefineValue.USERID_PHONE, "")
         params[WebParams.CUST_ID_ESPAY] = sp.getString(DefineValue.USERID_PHONE, "")
-        params[WebParams.CANVASSER_CUSTID] = sp.getString(DefineValue.USERID_PHONE, "")
+        if (sp.getBoolean(DefineValue.IS_AGENT, false) == true)
+            params[WebParams.CANVASSER_CUSTID] = sp.getString(DefineValue.USERID_PHONE, "")
         params[WebParams.MEMBER_ID] = sp.getString(DefineValue.MEMBER_ID, "")
         params[WebParams.MEMBER_CODE_ESPAY] = memberCodeEspay
         params[WebParams.TYPE_ID] = reportType

@@ -54,6 +54,7 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MandiriLPActivity;
 import com.sgo.saldomu.activities.ReportActivity;
 import com.sgo.saldomu.activities.ReportEBDActivity;
+import com.sgo.saldomu.activities.ReportEBDListActivity;
 import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.activities.TokoEBDActivity;
@@ -420,11 +421,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent i = new Intent(getActivity(), ReportActivity.class);
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_report_ebd))) {
-                    Intent i = new Intent(getActivity(), ReportEBDActivity.class);
-                    if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_toko)))
+                    Intent i = new Intent();
+                    if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_toko))){
+                        i = new Intent(getActivity(), ReportEBDActivity.class);
                         i.putExtra(DefineValue.EBD, DefineValue.TOKO);
-                    else if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_canvasser)))
+                    }
+                    else if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_canvasser))){
+                        i = new Intent(getActivity(), ReportEBDListActivity.class);
                         i.putExtra(DefineValue.EBD, DefineValue.CANVASSER);
+                    }
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
                 } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     if (isDormant.equalsIgnoreCase("Y")) {

@@ -6,6 +6,7 @@ import android.view.MenuItem
 import com.sgo.saldomu.R
 import com.sgo.saldomu.adapter.NotificationTabAdapter
 import com.sgo.saldomu.coreclass.DefineValue
+import com.sgo.saldomu.coreclass.LevelClass
 import com.sgo.saldomu.coreclass.ToggleKeyboard
 import com.sgo.saldomu.dialogs.InformationDialog
 import com.sgo.saldomu.fragments.FragReportEBDList
@@ -13,6 +14,8 @@ import com.sgo.saldomu.widgets.BaseActivity
 import kotlinx.android.synthetic.main.activity_notification.*
 
 class ReportEBDListActivity : BaseActivity() {
+    var memberCodeEspay = ""
+    var commCodeEspay = ""
 
     override fun getLayoutResource(): Int {
         return R.layout.activity_notification
@@ -21,10 +24,19 @@ class ReportEBDListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializeToolbar()
+        if (intent.hasExtra(DefineValue.EBD)) {
+            if (intent.getStringExtra(DefineValue.EBD).equals(DefineValue.CANVASSER)) {
+                memberCodeEspay = ""
+                commCodeEspay = ""
+            }
+        } else {
+            memberCodeEspay = intent.getStringExtra(DefineValue.MEMBER_CODE_ESPAY)
+            commCodeEspay = intent.getStringExtra(DefineValue.COMMUNITY_CODE_ESPAY)
+        }
         val adapter = NotificationTabAdapter(supportFragmentManager)
-        adapter.addFragment(FragReportEBDList(DefineValue.PO, intent.getStringExtra(DefineValue.MEMBER_CODE_ESPAY)!!, intent.getStringExtra(DefineValue.COMMUNITY_CODE_ESPAY)!!), getString(R.string.purchase_order))
-        adapter.addFragment(FragReportEBDList(DefineValue.GR, intent.getStringExtra(DefineValue.MEMBER_CODE_ESPAY)!!, intent.getStringExtra(DefineValue.COMMUNITY_CODE_ESPAY)!!), getString(R.string.good_receipt_title))
-        adapter.addFragment(FragReportEBDList(DefineValue.IN, intent.getStringExtra(DefineValue.MEMBER_CODE_ESPAY)!!, intent.getStringExtra(DefineValue.COMMUNITY_CODE_ESPAY)!!), getString(R.string.invoice_title))
+        adapter.addFragment(FragReportEBDList(DefineValue.PO, memberCodeEspay, commCodeEspay), getString(R.string.purchase_order))
+        adapter.addFragment(FragReportEBDList(DefineValue.GR, memberCodeEspay, commCodeEspay), getString(R.string.good_receipt_title))
+        adapter.addFragment(FragReportEBDList(DefineValue.IN, memberCodeEspay, commCodeEspay), getString(R.string.invoice_title))
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
     }
