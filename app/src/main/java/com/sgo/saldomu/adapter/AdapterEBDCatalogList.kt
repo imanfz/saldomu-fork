@@ -27,6 +27,7 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
 
     interface Listener {
         fun onChangeQty(itemCode: String, qty: Int, qtyType: String)
+        fun showImage(itemImage: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -211,6 +212,9 @@ class AdapterEBDCatalogList(var context: Context, var itemList: List<EBDCatalogM
             }
 
         })
+        holder.itemImage.setOnClickListener {
+            listener.showImage(itemImage)
+        }
     }
 
     override fun getItemCount(): Int {
