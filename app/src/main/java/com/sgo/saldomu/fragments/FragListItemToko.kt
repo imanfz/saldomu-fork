@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.AdapterEBDCatalogListToko
@@ -184,6 +185,10 @@ class FragListItemToko : BaseFragment() {
                             }
                         })
             }
+
+            override fun showImage(itemImage: String) {
+                showDialogImage(itemImage)
+            }
         })
 
         itemListFavoriteAdapter = AdapterEBDCatalogListToko(requireContext(), itemListFavorite, object : AdapterEBDCatalogListToko.Listener {
@@ -300,6 +305,10 @@ class FragListItemToko : BaseFragment() {
                             override fun onComplete() {
                             }
                         })
+            }
+
+            override fun showImage(itemImage: String) {
+                showDialogImage(itemImage)
             }
         })
 
@@ -479,6 +488,22 @@ class FragListItemToko : BaseFragment() {
             Timber.d("httpclient:%s", e.message)
         }
 
+    }
+
+    private fun showDialogImage(image: String) {
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_image)
+
+        val btnDialog: Button = dialog.findViewById(R.id.btn_dialog_ok)
+        val imageView: ImageView = dialog.findViewById(R.id.iv_dialog)
+        Glide.with(requireContext())
+                .load(image)
+                .into(imageView)
+        btnDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     private fun showDialog(msg: String) {

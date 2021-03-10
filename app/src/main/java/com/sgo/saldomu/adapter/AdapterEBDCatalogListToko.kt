@@ -30,6 +30,7 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
     interface Listener {
         fun onChangeQty(itemCode: String, qty: Int, qtyType: String)
         fun onChangeFavorite(itemCode: String, itemName: String, isAddFavorite: Boolean)
+        fun showImage(itemImage: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -248,7 +249,7 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
         })
 
         holder.itemImage.setOnClickListener {
-
+            listener.showImage(itemImage)
         }
     }
 
