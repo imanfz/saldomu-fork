@@ -168,7 +168,8 @@ class FragListToko : BaseFragment() {
                     getString(R.string.your_community_code) + " " + getString(R.string.titik_dua) + " " + commCode
         else
 //            dialog.message_dialog.text = getString(R.string.register_success_wait_for_verification)
-            dialog.message_dialog.text = response.getString(WebParams.ERROR_MESSAGE)
+
+            dialog.message_dialog.text = response.getString(WebParams.REMARK)
         dialog.btn_dialog_notification_ok.setOnClickListener {
             dialog.dismiss()
         }

@@ -246,6 +246,10 @@ class AdapterEBDCatalogListToko(var context: Context, var itemList: List<EBDCata
             }
 
         })
+
+        holder.itemImage.setOnClickListener {
+
+        }
     }
 
     private fun getDrawableLoveRed(): Drawable {
