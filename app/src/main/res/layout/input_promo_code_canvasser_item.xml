@@ -56,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Qty"
+            android:text="Rp"
             android:visibility="visible" />
 
         <EditText
@@ -67,7 +67,7 @@
             android:layout_marginLeft="@dimen/margin_10dp"
             android:background="@drawable/background_outline"
             android:inputType="number"
-            android:minWidth="32dp"
+            android:minWidth="100dp"
             android:visibility="visible" />
     </LinearLayout>
 
