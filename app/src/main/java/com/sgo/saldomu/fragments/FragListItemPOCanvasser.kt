@@ -13,8 +13,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.SnapHelper
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CanvasserPOActivity
 import com.sgo.saldomu.adapter.AdapterEBDCatalogList
