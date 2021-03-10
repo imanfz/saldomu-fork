@@ -477,7 +477,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
         mArgs.putString(DefineValue.COMMUNITY_ID, biller_comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME, biller_comm_name);
-        if(biller_type_code.equalsIgnoreCase(billerType[22]) && et_layout_input_samsat_payment_remark.getText().toString().length() == 16)
+        if (biller_type_code.equalsIgnoreCase(billerType[22]) && et_layout_input_samsat_payment_remark.getText().toString().length() == 16)
             mArgs.putString(DefineValue.IDENTITY_REMARK, et_layout_input_samsat_payment_remark.getText().toString());
 //        if(biller_type_code.equalsIgnoreCase(billerType[17]))
 //            mArgs.putString(DefineValue.VALUE_ITEM_DATA, "1");
@@ -502,8 +502,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
     }
 
     private boolean inputValidation() {
-
-        if (!biller_type_code.equals(billerType[18])) {
+        if (!biller_type_code.equals(billerType[18]))
             if (et_payment_remark.getText().toString().length() == 0 || et_payment_remark.getText().toString().equals("0") || et_payment_remark.length() == 1) {
                 et_payment_remark.requestFocus();
                 if (biller_type_code.equals(billerType[0]))
@@ -512,13 +511,12 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
                     et_payment_remark.setError(this.getString(R.string.billerinput_validation_payment_remark));
                 return false;
             }
-            if (et_layout_input_samsat_payment_remark.getText().toString().length() > 0 && et_layout_input_samsat_payment_remark.getText().toString().length() < 16) {
+        if (biller_type_code.equals(billerType[22]))
+            if (et_layout_input_samsat_payment_remark.getText().toString().length() < 16) {
                 et_layout_input_samsat_payment_remark.requestFocus();
                 et_layout_input_samsat_payment_remark.setError(this.getString(R.string.billerinput_validation_payment_remark));
                 return false;
             }
-        }
-
         return true;
     }
 

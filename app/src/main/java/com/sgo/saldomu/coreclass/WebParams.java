@@ -718,4 +718,6 @@ public class WebParams {
     public static String IDENTITY_REMARK = "identity_remark";
     public static String ANCHOR_COMPANY = "anchor_company";
     public static String CANVASSER_CUSTID = "canvasser_custid";
+    public static String ISSUE_DATE_FROM = "issue_date_from";
+    public static String ISSUE_DATE_TO = "issue_date_to";
 }
