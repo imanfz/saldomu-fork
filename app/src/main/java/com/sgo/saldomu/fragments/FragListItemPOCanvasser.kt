@@ -9,10 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CanvasserPOActivity
 import com.sgo.saldomu.adapter.AdapterEBDCatalogList
@@ -151,6 +153,10 @@ class FragListItemPOCanvasser : BaseFragment() {
 //                        }
                     }
                 }
+            }
+
+            override fun showImage(itemImage: String) {
+                showDialogImage(itemImage)
             }
         })
 
@@ -403,6 +409,22 @@ class FragListItemPOCanvasser : BaseFragment() {
         btnDialog.setOnClickListener {
             dialog.dismiss()
             fragmentManager!!.popBackStack()
+        }
+        dialog.show()
+    }
+
+    private fun showDialogImage(image: String) {
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_image)
+
+        val btnDialog: Button = dialog.findViewById(R.id.btn_dialog_ok)
+        val imageView: ImageView = dialog.findViewById(R.id.iv_dialog)
+        Glide.with(requireContext())
+                .load(image)
+                .into(imageView)
+        btnDialog.setOnClickListener {
+            dialog.dismiss()
         }
         dialog.show()
     }
