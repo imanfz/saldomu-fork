@@ -65,10 +65,10 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
     public NotificationHolder onCreateViewHolder(ViewGroup viewGroup, int viewtype) {
         View row;
         switch (viewtype) {
-            case VIEW_TYPE_UNREAD:
+            case VIEW_TYPE_READED:
                 row = mInflater.inflate(R.layout.list_notification_item, viewGroup, false);
                 break;
-            case VIEW_TYPE_READED:
+            case VIEW_TYPE_UNREAD:
                 row = mInflater.inflate(R.layout.list_notification_item_readed, viewGroup, false);
                 break;
             default:
