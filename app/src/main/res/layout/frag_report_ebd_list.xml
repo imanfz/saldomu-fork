@@ -66,27 +66,38 @@
         </com.balysv.materialripple.MaterialRippleLayout>
 
         <ToggleButton
+            android:id="@+id/filter_toggle_btn"
             android:layout_width="0dp"
-            android:minWidth="200dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
             android:layout_weight="2"
-            android:layout_gravity="right|center_vertical"
-            android:textOn="@string/report_filter_button_on"
+            android:minWidth="200dp"
             android:textOff="@string/report_filter_button_off"
-            android:id="@+id/filter_toggle_btn"/>
+            android:textOn="@string/report_filter_button_on" />
     </LinearLayout>
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switch_status"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:checked="true"
-        android:text="@string/doc_status"
-        android:textOff="@string/close"
-        android:textOn="@string/open"
-        app:showText="true"
-        app:switchTextAppearance="@style/switch_text" />
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/doc_status" />
+
+        <Spinner
+            android:id="@+id/spinner_doc_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:spinnerMode="dropdown"
+            android:spinnerStyle="@android:style/Widget.Spinner.DropDown" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

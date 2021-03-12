@@ -728,6 +728,8 @@ public class DefineValue {
     public static String TITLE = "title";
     public static String OPEN = "O";
     public static String CLOSE = "C";
+    public static String PROCESS = "AP";
+    public static String REJECTED = "L";
     public static String BONUS_ITEMS = "bonusItems";
     public static String ITEMS = "Items";
     public static String LOG_OUT = "log_out";
