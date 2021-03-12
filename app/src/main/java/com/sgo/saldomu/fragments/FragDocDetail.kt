@@ -19,6 +19,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.models.DocDetailsItem
 import com.sgo.saldomu.models.FormatQtyItem
 import com.sgo.saldomu.models.MappingItemsItem
 import com.sgo.saldomu.models.retrofit.jsonModel
@@ -37,7 +38,9 @@ class FragDocDetail : BaseFragment() {
     var productCode = ""
     var commId = ""
     private var adapterDetailPO: AdapterListDetailPO? = null
+    private var adapterDetailPOBonusItem: AdapterListDetailPO? = null
     private val itemList = ArrayList<MappingItemsItem>()
+    private val bonusItemList = ArrayList<MappingItemsItem>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_detail_po, container, false)
@@ -56,8 +59,11 @@ class FragDocDetail : BaseFragment() {
         docDetailActivity.initializeToolbar(getString(R.string.detail_document))
 
         adapterDetailPO = AdapterListDetailPO(context!!, itemList)
+        adapterDetailPOBonusItem = AdapterListDetailPO(context!!, bonusItemList)
         recyclerViewList.adapter = adapterDetailPO
+        recyclerViewListBonus.adapter = adapterDetailPOBonusItem
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerViewListBonus.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
         getDocDetail()
 
@@ -87,6 +93,7 @@ class FragDocDetail : BaseFragment() {
                             WebParams.SUCCESS_CODE -> {
                                 btn_payment.visibility = View.VISIBLE
                                 tv_docNo.text = response.getString(WebParams.DOC_NO)
+                                val bonusItem = response.getString(WebParams.BONUS_ITEMS)
                                 tv_totalAmount.text = getString(R.string.currency) + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_AMOUNT))
                                 val mArrayItem = JSONArray(response.getString(WebParams.ITEMS))
                                 for (i in 0 until mArrayItem.length()) {
@@ -112,7 +119,14 @@ class FragDocDetail : BaseFragment() {
                                     mappingItemsItem.format_qty = formatQtyItemList
                                     itemList.add(mappingItemsItem)
                                 }
+                                if (bonusItem != "") {
+                                    val model = getGson().fromJson(response.toString(), DocDetailsItem::class.java)
+                                    bonusItemList.addAll(model.bonus_items)
+                                } else
+                                    layout_bonus_item.visibility = View.GONE
+
                                 adapterDetailPO!!.notifyDataSetChanged()
+                                adapterDetailPOBonusItem!!.notifyDataSetChanged()
                             }
                             WebParams.LOGOUT_CODE -> {
                                 AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
