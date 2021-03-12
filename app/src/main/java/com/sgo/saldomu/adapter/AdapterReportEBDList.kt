@@ -27,7 +27,7 @@ class AdapterReportEBDList(var context: Context, var itemList: List<DocListItem>
         holder.docNo.text = itemList[position].docNo
         holder.name.text = itemList[position].commCode
         holder.desc.text = itemList[position].memberCode
-        holder.amount.text = CurrencyFormat.format(itemList[position].totalAmount)
+        holder.amount.text = CurrencyFormat.format(itemList[position].nett_amount)
         holder.status.text = itemList[position].paidStatusRemark
     }
 

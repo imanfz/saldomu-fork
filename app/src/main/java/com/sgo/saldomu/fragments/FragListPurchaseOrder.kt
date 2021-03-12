@@ -135,7 +135,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                     val jsonObject = jsonArray.getJSONObject(i)
                                     val docNo = jsonObject.getString(WebParams.DOC_NO)
                                     val docStatus = jsonObject.getString(WebParams.DOC_STATUS)
-                                    val totalAmount = jsonObject.getString(WebParams.TOTAL_AMOUNT)
+                                    val nettAmount = jsonObject.getString(WebParams.NETT_AMOUNT)
                                     val dueDate = jsonObject.getString(WebParams.DUE_DATE)
                                     val custID = jsonObject.getString(WebParams.CUST_ID)
                                     val memberCode = jsonObject.getString(WebParams.MEMBER_CODE)
@@ -145,7 +145,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                     val listPOModel = ListPOModel()
                                     listPOModel.doc_no = docNo
                                     listPOModel.doc_status = docStatus
-                                    listPOModel.total_amount = totalAmount
+                                    listPOModel.nett_amount = nettAmount
                                     listPOModel.due_date = dueDate
                                     listPOModel.cust_id = custID
                                     listPOModel.member_code = memberCode

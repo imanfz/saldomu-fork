@@ -61,7 +61,7 @@ class FragReportEBDList(private val reportType: String, private var memberCodeEs
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        oriFromDate = DateTimeFormat.getCurrentDateMinus(365)
+        oriFromDate = DateTimeFormat.getCurrentDateMinus(30)
         oriToDate = DateTimeFormat.getCurrentDate()
 
         dateFrom = stringToCal(oriFromDate)

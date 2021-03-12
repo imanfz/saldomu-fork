@@ -48,7 +48,7 @@ public class ListInvoiceAdapter extends RecyclerView.Adapter<ListInvoiceAdapter.
     public void onBindViewHolder(@NonNull ListInvoiceAdapter.ViewHolder holder, int position) {
         holder.docNo.setText(docListArrayList.get(position).getDoc_no());
         holder.docStatus.setText(docListArrayList.get(position).getDoc_status());
-        holder.totalAmount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(docListArrayList.get(position).getTotal_amount()));
+        holder.totalAmount.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(docListArrayList.get(position).getNett_amount()));
         holder.dueDate.setText(docListArrayList.get(position).getDue_date());
         holder.paidStatus.setText(docListArrayList.get(position).getPaid_status_remark());
 

@@ -18,6 +18,10 @@ class ListPOModel() : Parcelable {
     @Expose
     var total_amount: String? = ""
 
+    @SerializedName("nett_amount")
+    @Expose
+    var nett_amount: String? = ""
+
     @SerializedName("due_date")
     @Expose
     var due_date: String? = ""

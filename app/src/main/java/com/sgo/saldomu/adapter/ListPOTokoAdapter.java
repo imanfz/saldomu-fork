@@ -52,7 +52,7 @@ public class ListPOTokoAdapter extends RecyclerView.Adapter<ListPOTokoAdapter.Vi
     public void onBindViewHolder(@NonNull ListPOTokoAdapter.ViewHolder holder, int position) {
         holder.docNo.setText(docListArrayList.get(position).getDoc_no());
         holder.docStatus.setText(docListArrayList.get(position).getDoc_status());
-        holder.totalAmount.setText(mContext.getString(R.string.currency) + CurrencyFormat.format(docListArrayList.get(position).getTotal_amount()));
+        holder.totalAmount.setText(mContext.getString(R.string.currency) + CurrencyFormat.format(docListArrayList.get(position).getNett_amount()));
         holder.dueDate.setText(docListArrayList.get(position).getDue_date());
         holder.paidStatus.setText(docListArrayList.get(position).getPaid_status_remark());
         holder.partner.setText(docListArrayList.get(position).getPartner());
