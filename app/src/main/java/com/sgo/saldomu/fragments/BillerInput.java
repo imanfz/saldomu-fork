@@ -260,7 +260,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PAM));
-            et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
+            et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
         } else if (biller_type_code.equals(billerType[7]) || biller_type_code.equals(billerType[19])) {
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PURCHASE_TYPE;

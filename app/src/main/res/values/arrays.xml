@@ -367,4 +367,11 @@
         <item>WNA</item>
     </string-array>
 
+    <string-array name="list_doc_status_bat">
+        <item>@string/open</item>
+        <item>@string/proses</item>
+        <item>@string/rejected</item>
+        <item>@string/close</item>
+    </string-array>
+
 </resources>

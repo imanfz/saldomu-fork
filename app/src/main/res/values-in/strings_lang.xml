@@ -17,6 +17,7 @@
     <string name="edit">Ganti</string>
     <string name="open">Buka</string>
     <string name="close">Tutup</string>
+    <string name="rejected">Batal</string>
     <string name="currency" translatable="false">Rp.</string>
     <string name="text_copyright" translatable="false">Copyright &#169; 2019. All Rights Reserved.</string>
     <string name="text_copyright2" translatable="false">Copyright &#169; 2014 Square Gate One.All Rights Reserved.</string>
@@ -1753,5 +1754,4 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="merchant_name">Nama Merchant</string>
     <string name="used_store_phone">Nomor HP Toko \nyang dapat \ndihubungi</string>
     <string name="vehicle_owner_id">Nomor KTP Pemilik Kendaraan</string>
->>>>>>> c26b3f95ad02c50ee95145a3be9dc77d7b512e5c
 </resources>
