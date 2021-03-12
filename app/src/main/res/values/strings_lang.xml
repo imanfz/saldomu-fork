@@ -17,6 +17,7 @@
     <string name="edit">Edit</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="rejected">Rejected</string>
     <string name="currency" translatable="false">Rp.</string>
     <string name="text_copyright" translatable="false">Copyright &#169; 2019. All Rights Reserved.</string>
     <string name="text_copyright2" translatable="false">Copyright &#169; 2014 Square Gate One.All Rights Reserved.</string>
