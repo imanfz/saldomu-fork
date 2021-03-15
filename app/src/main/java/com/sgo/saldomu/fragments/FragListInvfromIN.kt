@@ -211,7 +211,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
         try {
 
-            var amount = (obj!!.total_amount)!!.toDouble() - (obj.promo[0].total_disc).toDouble()
+            val amount = (obj!!.nett_amount)!!.toDouble() - (obj.promo[0].total_disc).toDouble()
 
             showProgressDialog()
             extraSignature = obj.member_code + obj.comm_code + obj.doc_no
