@@ -721,4 +721,5 @@ public class WebParams {
     public static String CANVASSER_CUSTID = "canvasser_custid";
     public static String ISSUE_DATE_FROM = "issue_date_from";
     public static String ISSUE_DATE_TO = "issue_date_to";
+    public static String PAID_OPTION = "paid_option";
 }

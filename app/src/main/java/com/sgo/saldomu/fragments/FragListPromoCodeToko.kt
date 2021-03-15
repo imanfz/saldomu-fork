@@ -43,6 +43,7 @@ class FragListPromoCodeToko : BaseFragment() {
     var orderSetting = ""
     var partner = ""
     var anchorCompany = ""
+    var paymentOption = ""
 
     var promoCodeList: ArrayList<PromoCodeBATModel> = ArrayList()
     var desirePromoCodeList: ArrayList<PromoCodeModel> = ArrayList()
@@ -74,6 +75,7 @@ class FragListPromoCodeToko : BaseFragment() {
             orderSetting = requireArguments().getString(DefineValue.ORDER_SETTING, "")
             partner = requireArguments().getString(DefineValue.PARTNER, "")
             anchorCompany = requireArguments().getString(DefineValue.ANCHOR_COMPANY, "")
+            paymentOption = requireArguments().getString(DefineValue.PAYMENT_OPTION, "")
         }
 
         promoCodeAdapter = PromoCodeTokoAdapter(activity, promoCodeList, object : PromoCodeTokoAdapter.Listener {
@@ -184,6 +186,10 @@ class FragListPromoCodeToko : BaseFragment() {
             params[WebParams.COMM_CODE_ESPAY] = commCode
             params[WebParams.CUST_ID_ESPAY] = userPhoneID
             params[WebParams.CUST_TYPE] = DefineValue.TOKO
+            if (paymentOption == getString(R.string.pay_now))
+                params[WebParams.PAID_OPTION] = 1
+            else if (paymentOption == getString(R.string.pay_later))
+                params[WebParams.PAID_OPTION] = 2
 
             Timber.d("isi params get promo list:$params")
 

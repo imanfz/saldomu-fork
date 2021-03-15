@@ -367,27 +367,25 @@ class FragListItemToko : BaseFragment() {
         }
 
         frag_input_item_submit_btn.setOnClickListener {
-            if (inputValidation())
-                if (paymentOption == getString(R.string.pay_now)) {
-                    val docDetail = createJSONDocDetail()
-                    val orderSetting = createJSONOrderSetting()
-                    val frag = FragListPromoCodeToko()
-                    val fragName = getString(R.string.promo_code)
+            if (inputValidation()) {
+                val docDetail = createJSONDocDetail()
+                val orderSetting = createJSONOrderSetting()
+                val frag = FragListPromoCodeToko()
+                val fragName = getString(R.string.promo_code)
 
-                    val bundle = Bundle()
-                    bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
-                    bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
-                    bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
-                    bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
-                    bundle.putString(DefineValue.DOC_DETAILS, docDetail)
-                    bundle.putString(DefineValue.ORDER_SETTING, orderSetting)
-                    bundle.putString(DefineValue.PARTNER, partner)
-                    bundle.putString(DefineValue.ANCHOR_COMPANY, anchorCompany)
+                val bundle = Bundle()
+                bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+                bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
+                bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
+                bundle.putString(DefineValue.PAYMENT_OPTION, paymentOption)
+                bundle.putString(DefineValue.DOC_DETAILS, docDetail)
+                bundle.putString(DefineValue.ORDER_SETTING, orderSetting)
+                bundle.putString(DefineValue.PARTNER, partner)
+                bundle.putString(DefineValue.ANCHOR_COMPANY, anchorCompany)
 
-                    frag.arguments = bundle
-                    tokoPurchaseOrderActivity!!.addFragment(frag, fragName, tokoPurchaseOrderActivity!!.FRAG_INPUT_ITEM_TAG)
-                } else
-                    confirmationDoc()
+                frag.arguments = bundle
+                tokoPurchaseOrderActivity!!.addFragment(frag, fragName, tokoPurchaseOrderActivity!!.FRAG_INPUT_ITEM_TAG)
+            }
         }
     }
 
