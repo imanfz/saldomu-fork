@@ -61,7 +61,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     var total_disc: String = ""
     var partner: String = ""
 
-    var obj: ListPOModel? = null;
+    var obj: ListPOModel? = null
 
     var paymentOption = ""
 
@@ -117,7 +117,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     private fun inputValidation(): Boolean {
         if (obj == null) {
             Toast.makeText(activity, getString(R.string.choose_invoice_validation), Toast.LENGTH_LONG).show()
-        } else if (paymentOption!!.equals(getString(R.string.lbl_choose))) {
+        } else if (paymentOption.equals(getString(R.string.lbl_choose))) {
             Toast.makeText(activity, getString(R.string.billerinput_validation_spinner_default_payment), Toast.LENGTH_LONG).show()
         }
 
@@ -133,9 +133,9 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
         val bundle = arguments
 
         partner_code_espay = bundle!!.getString(DefineValue.PARTNER_CODE_ESPAY, "")
-        partner = bundle!!.getString(DefineValue.PARTNER, "")
+        partner = bundle.getString(DefineValue.PARTNER, "")
 
-        val mArrayDoc = JSONArray(bundle!!.getString(WebParams.DOC_LIST))
+        val mArrayDoc = JSONArray(bundle.getString(WebParams.DOC_LIST))
 
         for (i in 0 until mArrayDoc.length()) {
             val docNo = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_NO)
@@ -185,7 +185,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
         listInvoiceAdapter!!.updateData(docListArrayList)
 
-        val mArrayPayMethod = JSONArray(bundle!!.getString(WebParams.PAYMENT_TYPE))
+        val mArrayPayMethod = JSONArray(bundle.getString(WebParams.PAYMENT_TYPE))
 
         paymentListOption.add(getString(R.string.lbl_choose))
 
@@ -214,30 +214,30 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             var amount = (obj!!.total_amount)!!.toDouble() - (obj.promo[0].total_disc).toDouble()
 
             showProgressDialog()
-            extraSignature = obj!!.member_code + obj!!.comm_code + obj!!.doc_no
+            extraSignature = obj.member_code + obj.comm_code + obj.doc_no
             val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQUEST_PAYMENT, extraSignature)
             params[WebParams.USER_ID] = userPhoneID
-            params[WebParams.COMM_CODE_ESPAY] = obj!!.comm_code
-            params[WebParams.MEMBER_CODE_ESPAY] = obj!!.member_code
+            params[WebParams.COMM_CODE_ESPAY] = obj.comm_code
+            params[WebParams.MEMBER_CODE_ESPAY] = obj.member_code
             params[WebParams.COMM_CODE] = commCode
             params[WebParams.MEMBER_CODE] = memberCode
 
 
             params[WebParams.PAYMENT_TYPE] = paymentOption
             params[WebParams.AMOUNT] = amount
-            params[WebParams.SHOP_PHONE] = obj!!.cust_id
+            params[WebParams.SHOP_PHONE] = obj.cust_id
             params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
             params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
 
-            params[WebParams.CUST_ID_ESPAY] = obj!!.cust_id
+            params[WebParams.CUST_ID_ESPAY] = obj.cust_id
             params[WebParams.CUST_ID] = userPhoneID
-            params[WebParams.REFF_ID] = obj!!.reff_id
-            params[WebParams.REFF_NO] = obj!!.reff_no
+            params[WebParams.REFF_ID] = obj.reff_id
+            params[WebParams.REFF_NO] = obj.reff_no
 
-            params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE;
+            params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
             params[WebParams.TYPE_ID] = DefineValue.IN
             params[WebParams.CUST_TYPE] = DefineValue.CANVASSER //
-            params[WebParams.DOC_NO] = obj!!.doc_no
+            params[WebParams.DOC_NO] = obj.doc_no
             params[WebParams.PARTNER_CODE_ESPAY] = partner_code_espay
 
 
@@ -300,11 +300,11 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     }
 
     fun showPopUp() {
-        val bundle = Bundle();
+        val bundle = Bundle()
         val dialogFragment: DialogFragment = PopUpDialog.newDialog(bundle, object : PopUpDialog.PopUpListener {
             override fun onClick(dialog: DialogFragment?) {
-                dialog!!.dismiss();
-                activity!!.finish();
+                dialog!!.dismiss()
+                activity!!.finish()
             }
         })
         dialogFragment.show(activity!!.supportFragmentManager, "Dialog Pop Up")
@@ -312,8 +312,8 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
     override fun onClick(item: ListPOModel?) {
         obj = item
-        tv_phone_no.setText(obj!!.cust_id)
-        tv_total.setText(MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(obj!!.total_amount))
+        tv_phone_no.text = obj!!.cust_id
+        tv_total.text = MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(obj!!.nett_amount)
 
     }
 }
