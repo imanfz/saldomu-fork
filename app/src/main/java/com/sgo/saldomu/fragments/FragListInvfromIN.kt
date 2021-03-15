@@ -95,7 +95,6 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
             }
         }
 
-
         var paymentOptionsAdapter = ArrayAdapter(activity!!, R.layout.layout_spinner_list_cust, paymentListOption)
         paymentOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_bank_produk.adapter = paymentOptionsAdapter
@@ -207,11 +206,9 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
     }
 
 
-    fun requestPayment(obj: ListPOModel?) {
+    fun requestPayment(obj: ListPOModel) {
 
         try {
-
-            val amount = (obj!!.nett_amount)!!.toDouble() - (obj.promo[0].total_disc).toDouble()
 
             showProgressDialog()
             extraSignature = obj.member_code + obj.comm_code + obj.doc_no
@@ -224,7 +221,7 @@ class FragListInvfromIN : BaseFragment(), ListInvoiceAdapter.listener {
 
 
             params[WebParams.PAYMENT_TYPE] = paymentOption
-            params[WebParams.AMOUNT] = amount
+            params[WebParams.AMOUNT] = obj.nett_amount
             params[WebParams.SHOP_PHONE] = obj.cust_id
             params[WebParams.LATITUDE] = sp.getDouble(DefineValue.LATITUDE_UPDATED, 0.0)
             params[WebParams.LONGITUDE] = sp.getDouble(DefineValue.LONGITUDE_UPDATED, 0.0)
