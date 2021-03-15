@@ -458,7 +458,7 @@ class FragPaymentByToko : BaseFragment() {
         args.putString(DefineValue.TRX_STATUS_REMARK, model.tx_status_remark)
         if (!txStat) args.putString(DefineValue.TRX_REMARK, model.tx_remark)
 
-        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(model.nett_amount))
+        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(model.total_amount))
         args.putString(DefineValue.DENOM_DETAIL, getGson().toJson(model.denom_detail))
         args.putString(DefineValue.BUSS_SCHEME_CODE, model.buss_scheme_code)
         args.putString(DefineValue.BUSS_SCHEME_NAME, model.buss_scheme_name)
