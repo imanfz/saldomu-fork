@@ -373,5 +373,8 @@
         <item>@string/rejected</item>
         <item>@string/close</item>
     </string-array>
-
+    <string-array name="list_doc_status_po_bat">
+        <item>@string/open</item>
+        <item>@string/proses</item>
+    </string-array>
 </resources>

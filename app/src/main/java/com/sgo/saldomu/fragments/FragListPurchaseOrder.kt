@@ -8,9 +8,7 @@ import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.view.*
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
@@ -28,6 +26,8 @@ import com.sgo.saldomu.models.ListPOModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_list_po.*
+import kotlinx.android.synthetic.main.frag_list_po.spinner_doc_status
+import kotlinx.android.synthetic.main.frag_report_ebd_list.*
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
@@ -59,6 +59,7 @@ class FragListPurchaseOrder : BaseFragment() {
         tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
         tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.list_po))
         btn_create_po.visibility = View.VISIBLE
+        layout_spinner.visibility = View.VISIBLE
         btn_create_po.setOnClickListener {
             val fragment = FragListItemToko()
             val bundle = Bundle()
@@ -98,6 +99,20 @@ class FragListPurchaseOrder : BaseFragment() {
         recyclerViewList.adapter = itemListAdapter
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
+        val docStatusAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, resources.getStringArray(R.array.list_doc_status_po_bat))
+        docStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner_doc_status.adapter = docStatusAdapter
+        spinner_doc_status.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                getPOList()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+        }
+
         getPOList()
 
         search.addTextChangedListener(object : TextWatcher {
@@ -112,14 +127,16 @@ class FragListPurchaseOrder : BaseFragment() {
 
     private fun getPOList() {
         showProgressDialog()
-
+        val docStatus = spinner_doc_status.selectedItem.toString()
         val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_PO, memberCode + commCode)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_CODE_ESPAY] = memberCode
         params[WebParams.COMM_CODE_ESPAY] = commCode
         params[WebParams.CUST_ID_ESPAY] = userPhoneID
-        params[WebParams.DOC_STATUS] = DefineValue.OPEN
-
+        when (docStatus) {
+            getString(R.string.open) -> params[WebParams.DOC_STATUS] = DefineValue.OPEN
+            getString(R.string.proses) -> params[WebParams.DOC_STATUS] = DefineValue.PROCESS
+        }
         Timber.d("isi params get $docTypeID list:$params")
         RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_LIST_PO, params,
                 object : ObjListeners {

@@ -80,7 +80,7 @@ class FragInputStoreCode : BaseFragment() {
             params[WebParams.CUST_ID_ESPAY] = userPhoneID
             params[WebParams.MEMBER_CODE_ESPAY] = et_store_code!!.text.toString()
             params[WebParams.TYPE_ID] = DefineValue.PO
-            params[WebParams.DOC_STATUS] = DefineValue.OPEN
+            params[WebParams.DOC_STATUS] = DefineValue.PROCESS
             Timber.d("params inquiry doc list:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_LIST, params,
                     object : ObjListeners {
