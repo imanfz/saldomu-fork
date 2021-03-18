@@ -4,21 +4,19 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.sgo.saldomu.R
-import com.sgo.saldomu.adapter.NotificationTabAdapter
+import com.sgo.saldomu.adapter.PageTabAdapter
 import com.sgo.saldomu.coreclass.DefineValue
-import com.sgo.saldomu.coreclass.LevelClass
 import com.sgo.saldomu.coreclass.ToggleKeyboard
-import com.sgo.saldomu.dialogs.InformationDialog
 import com.sgo.saldomu.fragments.FragReportEBDList
 import com.sgo.saldomu.widgets.BaseActivity
-import kotlinx.android.synthetic.main.activity_notification.*
+import kotlinx.android.synthetic.main.activity_tab.*
 
 class ReportEBDListActivity : BaseActivity() {
     var memberCodeEspay = ""
     var commCodeEspay = ""
 
     override fun getLayoutResource(): Int {
-        return R.layout.activity_notification
+        return R.layout.activity_tab
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +31,7 @@ class ReportEBDListActivity : BaseActivity() {
             memberCodeEspay = intent.getStringExtra(DefineValue.MEMBER_CODE_ESPAY)
             commCodeEspay = intent.getStringExtra(DefineValue.COMMUNITY_CODE_ESPAY)
         }
-        val adapter = NotificationTabAdapter(supportFragmentManager)
+        val adapter = PageTabAdapter(supportFragmentManager)
         adapter.addFragment(FragReportEBDList(DefineValue.PO, memberCodeEspay, commCodeEspay), getString(R.string.purchase_order))
         adapter.addFragment(FragReportEBDList(DefineValue.GR, memberCodeEspay, commCodeEspay), getString(R.string.good_receipt_title))
         adapter.addFragment(FragReportEBDList(DefineValue.IN, memberCodeEspay, commCodeEspay), getString(R.string.invoice_title))

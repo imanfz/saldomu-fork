@@ -3,14 +3,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/promo_code_submit_btn"
         android:orientation="vertical">
+
+        <RadioGroup
+            android:id="@+id/toggle"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/toggle_background_outline_primary"
+            android:checkedButton="@+id/radio_promo_pay_now"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <RadioButton
+                android:id="@+id/radio_promo_pay_now"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_widget_background"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/pay_now"
+                android:textColor="@drawable/toggle_widget_text" />
+
+            <RadioButton
+                android:id="@+id/radio_promo_pay_later"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginBottom="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_widget_background"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/pay_later"
+                android:textColor="@drawable/toggle_widget_text" />
+        </RadioGroup>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/promo_list_field"
@@ -38,6 +77,6 @@
             android:gravity="center"
             android:text="@string/validate_promo"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
     </com.balysv.materialripple.MaterialRippleLayout>
 </RelativeLayout>

@@ -26,8 +26,6 @@ import com.sgo.saldomu.models.ListPOModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_list_po.*
-import kotlinx.android.synthetic.main.frag_list_po.spinner_doc_status
-import kotlinx.android.synthetic.main.frag_report_ebd_list.*
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
@@ -58,6 +56,7 @@ class FragListPurchaseOrder : BaseFragment() {
 
         tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
         tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.list_po))
+
         btn_create_po.visibility = View.VISIBLE
         layout_spinner.visibility = View.VISIBLE
         btn_create_po.setOnClickListener {
@@ -102,7 +101,7 @@ class FragListPurchaseOrder : BaseFragment() {
         val docStatusAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, resources.getStringArray(R.array.list_doc_status_po_bat))
         docStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_doc_status.adapter = docStatusAdapter
-        spinner_doc_status.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        spinner_doc_status.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 getPOList()
             }
@@ -127,13 +126,12 @@ class FragListPurchaseOrder : BaseFragment() {
 
     private fun getPOList() {
         showProgressDialog()
-        val docStatus = spinner_doc_status.selectedItem.toString()
         val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_PO, memberCode + commCode)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.MEMBER_CODE_ESPAY] = memberCode
         params[WebParams.COMM_CODE_ESPAY] = commCode
         params[WebParams.CUST_ID_ESPAY] = userPhoneID
-        when (docStatus) {
+        when (spinner_doc_status.selectedItem.toString()) {
             getString(R.string.open) -> params[WebParams.DOC_STATUS] = DefineValue.OPEN
             getString(R.string.proses) -> params[WebParams.DOC_STATUS] = DefineValue.PROCESS
         }
@@ -143,11 +141,11 @@ class FragListPurchaseOrder : BaseFragment() {
                     override fun onResponses(response: JSONObject) {
                         val code = response.getString(WebParams.ERROR_CODE)
                         val message = response.getString(WebParams.ERROR_MESSAGE)
+                        itemList.clear()
                         when (code) {
                             WebParams.SUCCESS_CODE -> {
                                 partner = response.getString(WebParams.PARTNER)
                                 val jsonArray = response.getJSONArray(WebParams.DOC_LIST)
-                                itemList.clear()
                                 for (i in 0 until jsonArray.length()) {
                                     val jsonObject = jsonArray.getJSONObject(i)
                                     val docNo = jsonObject.getString(WebParams.DOC_NO)
@@ -172,7 +170,6 @@ class FragListPurchaseOrder : BaseFragment() {
                                     listPOModel.partner = partner
                                     itemList.add(listPOModel)
                                 }
-                                itemListAdapter!!.notifyDataSetChanged()
                             }
                             WebParams.LOGOUT_CODE -> {
                                 AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
@@ -189,6 +186,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                 Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
                             }
                         }
+                        itemListAdapter!!.notifyDataSetChanged()
                     }
 
                     override fun onError(throwable: Throwable?) {
