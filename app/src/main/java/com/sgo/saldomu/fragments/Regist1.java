@@ -503,7 +503,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
     public void changeActivity(Boolean login) {
         if (login) {
             getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            SaveIMEIICCID();
+//            SaveIMEIICCID();
             Fragment test = new Login();
             Bundle mBun = new Bundle();
             mBun.putString(DefineValue.IS_POS, "N");

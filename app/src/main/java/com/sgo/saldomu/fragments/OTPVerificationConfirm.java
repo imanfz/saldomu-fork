@@ -83,8 +83,8 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
 
         SMSclass test = new SMSclass(getActivity());
         imeiDevice = test.getDeviceIMEI();
-        ICCIDDevice = test.getDeviceICCID();
-        Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
+//        ICCIDDevice = test.getDeviceICCID();
+//        Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
 
         initiateData();
         initiateCountDownTimerForResendOTP();

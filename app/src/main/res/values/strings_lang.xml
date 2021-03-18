@@ -1763,4 +1763,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="merchant_name">Merchant Name</string>
     <string name="vehicle_owner_id">Vehicle Owner ID</string>
     <string name="used_store_phone">Active Store Phone</string>
+    <string name="scan_menu">Pay</string>
+    <string name="label_scan_qr_description">Place whole QR until fitted in your screen to start scanning.</string>
+
 </resources>

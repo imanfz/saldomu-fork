@@ -1754,4 +1754,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="merchant_name">Nama Merchant</string>
     <string name="used_store_phone">Nomor HP Toko \nyang dapat \ndihubungi</string>
     <string name="vehicle_owner_id">Nomor KTP Pemilik Kendaraan</string>
+    <string name="scan_menu">Bayar</string>
+    <string name="label_scan_qr_description">Arahkan kameramu sampai memuat seluruh kode QR untuk memulai scan.</string>
+
 </resources>

@@ -53,7 +53,6 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     public static final String ALLOW_KEY = "ALLOWED";
     public static final String CAMERA_PREF = "camera_pref";
     public static final String Name = "nameKey";
-    public static final String valCode = "MSIGNCODE";
     private String bundleType, bundleSource, scanResult;
     SharedPreferences sharedpreferences;
     public static final String mypreference = "mypref";

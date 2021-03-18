@@ -9,6 +9,10 @@
         android:title="@string/transfer"
         android:icon="@drawable/ic_transaction" />
     <item
+        android:id="@+id/menu_scan"
+        android:title="@string/scan_menu"
+        android:icon="@drawable/barcode"/>
+    <item
         android:id="@+id/menu_help"
         android:title="@string/menu_group_title_supports"
         android:icon="@drawable/headphone"/>
