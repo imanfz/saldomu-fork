@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -25,21 +25,21 @@
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
+        android:id="@+id/layout_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/layout_search"
         android:gravity="center"
-        android:id="@+id/layout_spinner"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="right"
-            android:text="@string/doc_status"
-            android:layout_gravity="right"/>
+            android:gravity="end"
+            android:text="@string/doc_status" />
 
         <Spinner
             android:id="@+id/spinner_doc_status"
@@ -55,23 +55,21 @@
         android:id="@+id/recyclerViewList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_below="@id/layout_spinner"
-        android:layout_above="@id/btn_create_po"/>
+        android:layout_above="@id/btn_create_po"
+        android:layout_below="@id/layout_spinner" />
 
     <Button
         android:id="@+id/btn_create_po"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:visibility="visible"
+        android:layout_margin="8dp"
         android:background="@drawable/rounded_background_blue"
         android:text="@string/create_po"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
-        android:textColor="@color/grey_1000w" />
+        android:textColor="@color/grey_1000w"
+        android:visibility="gone" />
 
-
-</LinearLayout>
+</RelativeLayout>
