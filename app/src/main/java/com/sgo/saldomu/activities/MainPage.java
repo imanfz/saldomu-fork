@@ -249,14 +249,11 @@ public class MainPage extends BaseActivity {
                 BaseFragment fragmentProfile = new FragmentProfileQr();
                 switchContent(fragmentProfile, getString(R.string.myprofilelist_ab_title));
                 return true;
-            case R.id.menu_scan:
-                currentTab = getString(R.string.scan_menu);
-//                i = new Intent(MainPage.this, ActivityProfileQr.class);
-//                startActivity(i);
-
-                BaseFragment fragmentScan = new FragmentScan();
-                switchContent(fragmentScan, getString(R.string.scan_menu));
-                return true;
+//            case R.id.menu_scan:
+//                currentTab = getString(R.string.scan_menu);
+//                BaseFragment fragmentScan = new FragmentScan();
+//                switchContent(fragmentScan, getString(R.string.scan_menu));
+//                return true;
         }
         return false;
     };

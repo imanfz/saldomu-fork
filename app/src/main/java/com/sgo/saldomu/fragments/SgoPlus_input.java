@@ -950,9 +950,10 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
         boolean temp_is_sent = getSP().getBoolean(DefineValue.TEMP_IS_SENT, false);
 
         if(!temp_iccid.equals("") && !temp_imei.equals("")){
-            String diccid = smsclass.getDeviceICCID();
+//            String diccid = smsclass.getDeviceICCID();
             String dimei = smsclass.getDeviceIMEI();
-            boolean biccid = diccid.equalsIgnoreCase(temp_iccid);
+//            boolean biccid = diccid.equalsIgnoreCase(temp_iccid);
+            boolean biccid = false;
             boolean bimei = dimei.equalsIgnoreCase(temp_imei);
 
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("ID","INDONESIA"));
