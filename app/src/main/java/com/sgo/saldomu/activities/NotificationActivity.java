@@ -9,7 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.adapter.NotificationTabAdapter;
+import com.sgo.saldomu.adapter.PageTabAdapter;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.fragments.FragMessage;
 import com.sgo.saldomu.fragments.FragNotification;
@@ -62,7 +62,7 @@ public class NotificationActivity extends BaseActivity {
 
         ViewPager viewPager = findViewById(R.id.viewPager);
         TabLayout tabLayout = findViewById(R.id.tabLayout);
-        NotificationTabAdapter adapter = new NotificationTabAdapter(getSupportFragmentManager());
+        PageTabAdapter adapter = new PageTabAdapter(getSupportFragmentManager());
         adapter.addFragment(new FragNotification(), getString(R.string.notifications));
         adapter.addFragment(new FragMessage(), getString(R.string.payfriends_text_message));
         viewPager.setAdapter(adapter);
@@ -100,6 +100,6 @@ public class NotificationActivity extends BaseActivity {
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.activity_notification;
+        return R.layout.activity_tab;
     }
 }

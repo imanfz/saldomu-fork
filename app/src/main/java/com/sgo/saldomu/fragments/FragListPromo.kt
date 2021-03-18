@@ -22,21 +22,20 @@ import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.PromoCodeBATModel
-import com.sgo.saldomu.models.PromoCodeModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.fragment_list_promo_code_eratel.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
-import java.util.ArrayList
+import java.util.*
 
-class FragListPromo : BaseFragment()
-{
+class FragListPromo : BaseFragment() {
     var memberCode = ""
     var commCode = ""
 
-    var promoCodeList: ArrayList<PromoCodeBATModel> = ArrayList()
+    var promoCodeListPayNow: ArrayList<PromoCodeBATModel> = ArrayList()
+    var promoCodeListPayLater: ArrayList<PromoCodeBATModel> = ArrayList()
     var promoCodeAdapter: PromoCodeTokoAdapter? = null
     var tokoPurchaseOrderActivity: TokoPurchaseOrderActivity? = null
 
@@ -50,6 +49,7 @@ class FragListPromo : BaseFragment()
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs()
         promo_code_submit_btn.visibility = View.GONE
+        toggle.visibility = View.VISIBLE
 
         tokoPurchaseOrderActivity = activity as TokoPurchaseOrderActivity
         tokoPurchaseOrderActivity!!.initializeToolbar(getString(R.string.list_promo))
@@ -59,18 +59,25 @@ class FragListPromo : BaseFragment()
             commCode = requireArguments().getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
         }
 
-        promoCodeAdapter = PromoCodeTokoAdapter(activity, promoCodeList, object : PromoCodeTokoAdapter.Listener {
+        promoCodeAdapter = PromoCodeTokoAdapter(activity, promoCodeListPayNow, object : PromoCodeTokoAdapter.Listener {
             override fun onCheck(position: Int) {
-                promoCodeList[position].checked = true
+
             }
 
             override fun onUncheck(position: Int) {
-                promoCodeList[position].checked = false
+
             }
         })
         getPromoList()
         promo_list_field.adapter = promoCodeAdapter
         promo_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
+        toggle.setOnCheckedChangeListener { radioGroup, checkedId ->
+            if (checkedId == R.id.radio_promo_pay_now)
+                promoCodeAdapter!!.updateAdapter(promoCodeListPayNow)
+            else if (checkedId == R.id.radio_promo_pay_later)
+                promoCodeAdapter!!.updateAdapter(promoCodeListPayLater)
+        }
     }
 
     private fun getPromoList() {
@@ -98,7 +105,10 @@ class FragListPromo : BaseFragment()
                                             val promoObject = promoArray.getJSONObject(i)
                                             val promoCode = promoObject.getString(WebParams.CODE)
                                             val promoDesc = promoObject.getString(WebParams.DESC)
-                                            promoCodeList.add(PromoCodeBATModel(promoCode, promoDesc, false, ""))
+                                            if (promoObject.getInt(WebParams.PAID_OPTION) == 1)
+                                                promoCodeListPayNow.add(PromoCodeBATModel(promoCode, promoDesc, false, ""))
+                                            else if (promoObject.getInt(WebParams.PAID_OPTION) == 2)
+                                                promoCodeListPayLater.add(PromoCodeBATModel(promoCode, promoDesc, false, ""))
                                         }
                                         promoCodeAdapter!!.notifyDataSetChanged()
                                     }
