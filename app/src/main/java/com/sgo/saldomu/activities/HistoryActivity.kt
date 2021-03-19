@@ -74,9 +74,9 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         showProgressDialog()
 
         extraSignature = memberIDLogin
-        val url = if (intent.getBooleanExtra(DefineValue.IS_AGENT_DGI, false)==true && sp.getString(DefineValue.USE_DEPOSIT_COL, "").equals("LIMIT")) {
-                MyApiClient.LINK_HISTORY_COLLECTOR
-        } else if (intent.getBooleanExtra(DefineValue.IS_AGENT_CTR, false)==true && sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equals("LIMIT")) {
+        val url = if (intent.getBooleanExtra(DefineValue.IS_AGENT_DGI, false) == true && sp.getString(DefineValue.USE_DEPOSIT_COL, "").equals("LIMIT")) {
+            MyApiClient.LINK_HISTORY_COLLECTOR
+        } else if (intent.getBooleanExtra(DefineValue.IS_AGENT_CTR, false) == true && sp.getString(DefineValue.USE_DEPOSIT_CCOL, "").equals("LIMIT")) {
             MyApiClient.LINK_HISTORY_COLLECTOR_LIMIT
         } else {
             MyApiClient.LINK_HISTORY
@@ -282,7 +282,39 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
             showReportSOFDialog(response)
         } else if (_object.buss_scheme_code == DefineValue.OR || _object.buss_scheme_code == DefineValue.ORP || _object.buss_scheme_code == DefineValue.IR || _object.buss_scheme_code == DefineValue.OC || _object.buss_scheme_code == DefineValue.AJC || _object.buss_scheme_code == DefineValue.AJD) run {
             showReportBillerDialog(response)
+        } else if (_object.buss_scheme_code == DefineValue.QRS) {
+            showReportQRSDialog(response)
         }
+    }
+
+    private fun showReportQRSDialog(response: GetTrxStatusReportModel) {
+        val args = Bundle()
+        val dialog = ReportBillerDialog.newInstance(this)
+        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(Objects.requireNonNull(response.created)))
+        args.putString(DefineValue.TX_ID, response.tx_id)
+        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.admin_fee))
+        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tx_amount))
+        val dAmount = Objects.requireNonNull(response.tx_amount)!!.toDouble()
+        val dFee = Objects.requireNonNull(response.admin_fee)!!.toDouble()
+        val total_amount = dAmount + dFee
+        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount))
+        var txStat = false
+        val txStatus = response.tx_status
+        if (txStatus == SUCCESS) {
+            txStat = true
+        } else if (txStatus == DefineValue.ONRECONCILED) {
+            txStat = true
+        }
+        args.putBoolean(DefineValue.TRX_STATUS, txStat)
+        args.putString(DefineValue.TRX_STATUS_REMARK, response.tx_status_remark)
+        if (!txStat) args.putString(DefineValue.TRX_REMARK, response.tx_remark)
+        args.putString(DefineValue.BUSS_SCHEME_CODE, response.buss_scheme_code)
+        args.putString(DefineValue.BUSS_SCHEME_NAME, response.buss_scheme_name)
+        args.putString(DefineValue.MERCHANT_NAME, response.merchant_name)
+        dialog.arguments = args
+        val ft = this.supportFragmentManager.beginTransaction()
+        ft.add(dialog, ReportBillerDialog.TAG)
+        ft.commitAllowingStateLoss()
     }
 
     private fun showReportBillerDialog(response: GetTrxStatusReportModel) {
