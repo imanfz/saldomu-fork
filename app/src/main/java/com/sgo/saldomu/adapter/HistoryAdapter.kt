@@ -61,7 +61,10 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
             holder.amountText.setTextColor(ContextCompat.getColor(context, R.color.red))
         }
 
-        holder.detailTypeText.text = model.history_detail_type
+        if (model.history_detail_type.equals("Payment QRIS"))
+            holder.detailTypeText.text = model.merchant_name + " - " +model.history_detail_type
+        else
+            holder.detailTypeText.text = model.history_detail_type
         holder.dateText.text = DateTimeFormat.changeFormatDate(model.history_datetime)
         holder.txEmoText.text = model.tx_id_emo
 
@@ -74,8 +77,8 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
         }
 
         if (model.end_balance == "" || model.end_balance == null) {
-            if (sp.getBoolean(DefineValue.IS_AGENT_DGI, true)==true || sp.getBoolean(DefineValue.IS_AGENT_CTR,false)==true) {
-                holder.endBalanceText.visibility=View.GONE
+            if (sp.getBoolean(DefineValue.IS_AGENT_DGI, true) == true || sp.getBoolean(DefineValue.IS_AGENT_CTR, false) == true) {
+                holder.endBalanceText.visibility = View.GONE
             } else
                 holder.endBalanceText.text = "Rp. " + CurrencyFormat.format1(0.00)
         } else

@@ -96,9 +96,14 @@ public class ReportDataModel  {
     @Expose
     private
     String tx_status;
+    @SerializedName("merchant_name")
+    @Expose
+    private
+    String merchant_name;
 
 
-//    REPORT_ASK
+
+    //    REPORT_ASK
     @SerializedName("status")
     @Expose
     private
@@ -215,5 +220,9 @@ public class ReportDataModel  {
 
     public String getAdditional_fee() {
         return additional_fee;
+    }
+
+    public String getMerchant_name() {
+        return merchant_name;
     }
 }

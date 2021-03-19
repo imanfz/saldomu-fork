@@ -16,6 +16,7 @@ import com.sgo.saldomu.Beans.ReportListEspayModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.models.retrofit.ReportDataModel;
 
 import java.util.ArrayList;
@@ -87,7 +88,11 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportDataModel>{
             holder.tv_desc.setVisibility(View.VISIBLE);
             holder.tv_desc.setText(itemnya.getTx_description());
         }
-        else holder.tv_desc.setVisibility(View.GONE);
+        else if (itemnya.getBuss_scheme_code().equalsIgnoreCase(DefineValue.QRS)){
+            holder.tv_desc.setVisibility(View.VISIBLE);
+            holder.tv_desc.setText(itemnya.getMerchant_name());
+        }else
+            holder.tv_desc.setVisibility(View.GONE);
 //        if(!itemnya.getRemark().equals("")) holder.tv_remark.setText(itemnya.getRemark());
 //        else holder.tv_remark.setVisibility(View.GONE);
         holder.tv_tx_status.setText(itemnya.getTx_status());

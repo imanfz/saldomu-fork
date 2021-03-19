@@ -54,6 +54,12 @@ public class HistoryModel extends jsonModel{
     private
     String end_balance;
 
+    @SerializedName("merchant_name")
+    @Expose
+    private
+    String merchant_name;
+
+
     public String getAmount() {
         return amount;
     }
@@ -92,5 +98,9 @@ public class HistoryModel extends jsonModel{
 
     public String getEnd_balance() {
         return end_balance;
+    }
+
+    public String getMerchant_name() {
+        return merchant_name;
     }
 }
