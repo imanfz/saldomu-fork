@@ -546,10 +546,14 @@ public class RetrofitService {
                     public void onError(Throwable e) {
                         Context context = CoreApp.getAppContext();
                         if (context != null) {
-                            if (MyApiClient.PROD_FAILURE_FLAG)
-                                Toast.makeText(CoreApp.getAppContext(), CoreApp.getAppContext().getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+//                            if (MyApiClient.PROD_FAILURE_FLAG)
+//                                Toast.makeText(CoreApp.getAppContext(), CoreApp.getAppContext().getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                            else
+//                                Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(CoreApp.getAppContext(),
+                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast) + "( " +e.getMessage() + " )",
+                                    Toast.LENGTH_SHORT).show();
                         }
                         listener.onError(e);
                         listener.onComplete();
@@ -583,13 +587,16 @@ public class RetrofitService {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (BuildConfig.IS_PROD_DOMAIN) {
+//                        if (BuildConfig.IS_PROD_DOMAIN) {
+//                            Toast.makeText(CoreApp.getAppContext(),
+//                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast) + "( " +e.getMessage() + " )",
+//                                    Toast.LENGTH_SHORT).show();
+//                        } else {
+////                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
                             Toast.makeText(CoreApp.getAppContext(),
-                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
+                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast) + " (" +e.getMessage() + ")",
                                     Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                        }
+//                        }
                         listener.onError(e);
                     }
 

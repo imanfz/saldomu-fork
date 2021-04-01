@@ -295,20 +295,20 @@ public class SMSclass {
         String iccid = sp.getString(DefineValue.DEICCID, "");
 
         if (!imei.isEmpty()) {
-            if (!iccid.isEmpty()) {
-                String diccid = getDeviceICCID();
-                if (diccid != null) {
-                    if (diccid.equals(iccid) && getDeviceIMEI().equals(imei))
+//            if (!iccid.isEmpty()) {
+//                String diccid = getDeviceICCID();
+//                if (diccid != null) {
+                    if (getDeviceAndroidId().equals(imei))
                         return true;
                 }
-            }
-        }
+//            }
+//        }
 
         return false;
     }
 
     @SuppressLint("MissingPermission")
-    public String getDeviceIMEI() {
+    public String getDeviceAndroidId() {
         String imei = "";
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
@@ -391,26 +391,26 @@ public class SMSclass {
      *
      * @return iccid di simcard slot 1
      */
-    public String getDeviceICCID() {
-        String iccId = "";
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            SubscriptionManager sm = SubscriptionManager.from(mContext);
-            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
-                if (sis != null) {
-                    SubscriptionInfo si = sis.get(0);
-                    iccId = si.getIccId();
-                }
-            }
-        } else {
-            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED && telephonyManager.getSimSerialNumber() == null)
-                iccId = "00000";
-            else
-                iccId = telephonyManager.getSimSerialNumber();
-        }
-
-        return iccId;
-    }
+//    public String getDeviceICCID() {
+//        String iccId = "";
+//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+//            SubscriptionManager sm = SubscriptionManager.from(mContext);
+//            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+//                List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
+//                if (sis != null) {
+//                    SubscriptionInfo si = sis.get(0);
+//                    iccId = si.getIccId();
+//                }
+//            }
+//        } else {
+//            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED && telephonyManager.getSimSerialNumber() == null)
+//                iccId = "00000";
+//            else
+//                iccId = telephonyManager.getSimSerialNumber();
+//        }
+//
+//        return iccId;
+//    }
 
     public Context getmContext() {
         return mContext;

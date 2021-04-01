@@ -82,7 +82,7 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
         tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" +BuildConfig.VERSION_CODE +")");
 
         SMSclass test = new SMSclass(getActivity());
-        imeiDevice = test.getDeviceIMEI();
+        imeiDevice = test.getDeviceAndroidId();
 //        ICCIDDevice = test.getDeviceICCID();
 //        Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
 
