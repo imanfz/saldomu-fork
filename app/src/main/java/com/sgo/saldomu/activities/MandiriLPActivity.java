@@ -43,7 +43,7 @@ public class MandiriLPActivity extends BaseActivity {
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.activity_mandiri_lp;
+        return R.layout.activity_main_frame;
     }
 
     public void initializeToolbar(){
@@ -72,7 +72,7 @@ public class MandiriLPActivity extends BaseActivity {
             Timber.d("backstack");
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.b2b_activity_content, mFragment, tag)
+                    .replace(R.id.content, mFragment, tag)
                     .addToBackStack(tag)
                     .commitAllowingStateLoss();
         }
@@ -80,7 +80,7 @@ public class MandiriLPActivity extends BaseActivity {
             Timber.d("bukan backstack");
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.b2b_activity_content, mFragment, fragName)
+                    .replace(R.id.content, mFragment, fragName)
                     .commitAllowingStateLoss();
 
         }

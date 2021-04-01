@@ -25,7 +25,7 @@ import com.sgo.saldomu.interfaces.ResponseListener
 import com.sgo.saldomu.models.retrofit.FavoriteModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.fragment_favorite.*
+import kotlinx.android.synthetic.main.fragment_swipe_refresh_list.*
 import timber.log.Timber
 
 
@@ -62,7 +62,7 @@ class FavoriteFragment : BaseFragment(), FavoriteAdapter.FavoriteListener, Swipe
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_favorite, container, false)
+    ): View = inflater.inflate(R.layout.fragment_swipe_refresh_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

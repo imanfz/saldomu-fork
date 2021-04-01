@@ -16,12 +16,10 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -32,6 +30,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
@@ -59,6 +59,8 @@ import com.sgo.saldomu.activities.SearchMemberToVerifyActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.activities.TokoEBDActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
+import com.sgo.saldomu.activities.TransferActivity;
+import com.sgo.saldomu.adapter.AdapterHome;
 import com.sgo.saldomu.adapter.GridMenu;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -105,8 +107,8 @@ import timber.log.Timber;
  * Created by Lenovo Thinkpad on 5/10/2017.
  */
 public class FragHomeNew extends BaseFragmentMainPage {
-    GridView GridView;
-    Button btn_topup;
+    GridView gridView;
+    RecyclerView recyclerView;
     TextView tv_balance;
     TextView tv_saldo;
     EditText input;
@@ -126,19 +128,23 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private EditMenuModel editMenuModel;
     private Realm realm;
     private Switch swSettingOnline;
-    private LinearLayout llAgentDetail;
-    String shopStatus, isMemberShopDGI, isDormant, agentSchemeCode, memberSchemeCode, agentBillerCode, agentEBDCode;
+    private TextView tvSettingOnline;
+    String shopStatus, isMemberShopDGI, isDormant, agentSchemeCode, memberSchemeCode, agentBillerCode, agentEBDCode, agentTrxCode;
     Boolean isAgent, isShowB2b = false;
     ProgressBar gridview_progbar;
     ProgressBar progBanner;
     private CarouselView carouselView;
     private final ArrayList<PromoObject> listPromo = new ArrayList<>();
 
+    private final ArrayList<String> menuStringsMain = new ArrayList<>();
+    private final ArrayList<Drawable> menuDrawablesMain = new ArrayList<>();
     private final ArrayList<String> menuStrings = new ArrayList<>();
     private final ArrayList<Drawable> menuDrawables = new ArrayList<>();
 
     GridMenu gridMenuAdapter;
+    AdapterHome adapterHomeMain;
 
+    private JSONArray agentTrxCodeArray;
     private static final int RC_GPS_REQUEST = 1;
     private static final String BILLER_TYPE_CODE_PLS = "PLS";
     private static final String BILLER_TYPE_CODE_HP = "HP";
@@ -175,14 +181,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.frag_home_new, container, false);
 
-        GridView = v.findViewById(R.id.grid);
+        gridView = v.findViewById(R.id.grid);
+        recyclerView = v.findViewById(R.id.recycler_view);
         tv_balance = v.findViewById(R.id.tv_balance);
         tv_saldo = v.findViewById(R.id.tv_saldo);
-        swSettingOnline = v.findViewById(R.id.swSettingOnline);
-        llAgentDetail = v.findViewById(R.id.llAgentDetail);
+        swSettingOnline = v.findViewById(R.id.switch_set_agent_online);
+        tvSettingOnline = v.findViewById(R.id.tv_set_agent_online);
         gridview_progbar = v.findViewById(R.id.gridview_progbar);
         refreshBtn = v.findViewById(R.id.btn_refresh_balance);
-        btn_topup = v.findViewById(R.id.btn_topup);
         progBanner = v.findViewById(R.id.progressBarBanner);
         carouselView = v.findViewById(R.id.carouselView1);
 
@@ -202,6 +208,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
         agentSchemeCode = sp.getString(DefineValue.AGENT_SCHEME_CODES, "");
         agentBillerCode = sp.getString(DefineValue.AGENT_BILLER_CODES, "");
         agentEBDCode = sp.getString(DefineValue.AGENT_EBD_CODES, "");
+        agentTrxCode = sp.getString(DefineValue.AGENT_TRX_CODES, "");
+        try {
+            agentTrxCodeArray = new JSONArray(agentTrxCode);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         getRealmBillerData();
         getRealmCustomMenuData();
@@ -210,12 +222,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
         CheckNotification();
 
         if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
-            llAgentDetail.setVisibility(View.GONE);
+            goneStatusOnline();
         } else {
             if (sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES)) {
-                llAgentDetail.setVisibility(View.VISIBLE);
+                showStatusOnline();
             } else {
-                llAgentDetail.setVisibility(View.GONE);
+                goneStatusOnline();
             }
         }
 
@@ -295,19 +307,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         }
 
-        btn_topup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isDormant.equalsIgnoreCase("Y")) {
-                    dialogDormant();
-                } else {
-                    Intent i = new Intent(getActivity(), TopUpActivity.class);
-                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                }
-            }
-        });
-
 //        btn_beli.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -371,328 +370,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //            }
 //        });
 
-
-        GridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Timber.d("masuk gridhomeonitemclicklistener");
-                Fragment newFragment;
-
-                isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
 
                 String menuItemName = ((TextView) view.findViewById(R.id.grid_text)).getText().toString();
                 Timber.d("menuItemName : %s", menuItemName);
-                String trxType = "";
-                int posIdx = -1;
-
-                if (menuItemName.equals(getString(R.string.newhome_title_topup))) {
-                    Intent i = new Intent(getActivity(), TopUpActivity.class);
-                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_ask_for_money))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        if (getLvlClass().isLevel1QAC()) {
-                            dialogUnavailable();
-                        } else {
-                            Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
-                            switchActivity(i, MainPage.ACTIVITY_RESULT);
-                        }
-                    }
-                }
-                // upgrade Member AGENT
-                else if (menuItemName.equals(getString(R.string.menu_item_title_upgrade_member))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        Intent i = new Intent(getActivity(), SearchMemberToVerifyActivity.class);
-                        switchActivity(i, MainPage.ACTIVITY_RESULT);
-                    }
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_biller))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        Intent i = new Intent(getActivity(), GridBillerActivity.class);
-                        i.putExtra(DefineValue.BILLER_TYPE, DefineValue.BIL_TYPE_PAY);
-                        switchActivity(i, MainPage.ACTIVITY_RESULT);
-                    }
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_report))) {
-                    Intent i = new Intent(getActivity(), ReportActivity.class);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_report_ebd))) {
-                    Intent i = new Intent();
-                    if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_toko))){
-                        i = new Intent(getActivity(), ReportEBDActivity.class);
-                        i.putExtra(DefineValue.EBD, DefineValue.TOKO);
-                    }
-                    else if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_canvasser))){
-                        i = new Intent(getActivity(), ReportEBDListActivity.class);
-                        i.putExtra(DefineValue.EBD, DefineValue.CANVASSER);
-                    }
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else
-                        switchMenu(NavigationDrawMenu.MSCADM, null);
-                } else if (menuItemName.equals(getString(R.string.menu_item_search_agent))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        Bundle bundle = new Bundle();
-                        switchMenu(NavigationDrawMenu.MCATEGORYBBS, bundle);
-                    }
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_pulsa_agent))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_PLS);
-                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.prepaid_title));
-                        startActivity(intent);
-                    }
-                } else if (menuItemName.equals(getString(R.string.newhome_data))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_DATA);
-                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.data_title));
-                        startActivity(intent);
-                    }
-                } else if (menuItemName.equals(getString(R.string.newhome_listrik_pln))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_TKN);
-                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.pln_title));
-                        startActivity(intent);
-                    }
-                } else if (menuItemName.equals(getString(R.string.newhome_emoney))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else if (sp.getInt(DefineValue.LEVEL_VALUE, 1) == 1) {
-                        LevelClass levelClass = new LevelClass(getActivity());
-                        levelClass.showDialogLevel();
-                    } else {
-                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_EMONEY);
-                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_emoney));
-                        startActivity(intent);
-                    }
-                } else if (menuItemName.equals(getString(R.string.newhome_bpjs))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_BPJS);
-                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_bpjs));
-                        startActivity(intent);
-                    }
-                } else if (menuItemName.equals(getString(R.string.newhome_game))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_GAME);
-                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_game));
-                        startActivity(intent);
-                    }
-                } else if (menuItemName.equals(getString(R.string.newhome_voucher))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_VOUCHER);
-                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_voucher));
-                        startActivity(intent);
-                    }
-                } else if (menuItemName.equals(getString(R.string.newhome_pam))) {
-                    if (isDormant.equalsIgnoreCase("Y")) {
-                        dialogDormant();
-                    } else {
-                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-                        intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_PDAM);
-                        intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_pam));
-                        startActivity(intent);
-                    }
-                } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
-                    Intent intent = new Intent(getActivity(), HistoryActivity.class);
-                    intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_history_detail));
-                    startActivity(intent);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
-                    Intent intent = new Intent(getActivity(), B2BActivity.class);
-                    startActivity(intent);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_b2b_eratel) + " " + getString(R.string.menu_item_title_ebd_toko))) {
-                    Intent intent = new Intent(getActivity(), TokoEBDActivity.class);
-                    startActivity(intent);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_b2b_eratel) + " " + getString(R.string.menu_item_title_ebd_canvasser))) {
-                    Intent intent = new Intent(getActivity(), B2BCanvasserActivity.class);
-                    startActivity(intent);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_mandiri_lkd))) {
-                    Intent intent = new Intent(getActivity(), MandiriLPActivity.class);
-                    startActivity(intent);
-                } else if (menuItemName.equals(getString(R.string.menu_item_lending))) {
-                    Intent intent = new Intent(getActivity(), GridLendingActivity.class);
-                    startActivity(intent);
-                } else if (menuItemName.equals(getString(R.string.more))) {
-                    openCustomizeMenu();
-                }
-
-                if (isAgent) {
-                    if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            posIdx = BBSActivity.LISTACCBBS;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.transaction)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            posIdx = BBSActivity.TRANSACTION;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            posIdx = BBSActivity.CONFIRMCASHOUT;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_kelola)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            posIdx = BBSActivity.BBSKELOLA;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_trx_agent)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            posIdx = BBSActivity.BBSTRXAGENT;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_waktu_beroperasi)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            posIdx = BBSActivity.BBSWAKTUBEROPERASI;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_tutup_manual)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            posIdx = BBSActivity.BBSTUTUPMANUAL;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_in))) {
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else {
-                            posIdx = BBSActivity.TRANSACTION;
-                            trxType = DefineValue.BBS_CASHIN;
-                        }
-                    } else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_out))) {
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else {
-                            posIdx = BBSActivity.TRANSACTION;
-                            trxType = DefineValue.BBS_CASHOUT;
-                        }
-                    } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent))) {
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else {
-                            posIdx = BBSActivity.BBSONPROGRESSAGENT;
-                            trxType = DefineValue.INDEX;
-                        }
-                    } else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent))) {
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            startActivity(new Intent(getActivity(), TagihActivity.class));
-                    } else if (menuItemName.equals(getString(R.string.menu_title_cash_collection))) {
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            startActivity(new Intent(getActivity(), CashCollectionActivity.class));
-                    } else if (menuItemName.equals(getString(R.string.menu_item_title_collector_history))) {
-                        Intent intent = new Intent(getActivity(), HistoryActivity.class);
-                        intent.putExtra(DefineValue.IS_AGENT_DGI, true);
-                        sp.edit().putBoolean(DefineValue.IS_AGENT_DGI, true).commit();
-                        intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_collector_history));
-                        startActivity(intent);
-                    } else if (menuItemName.equals(getString(R.string.menu_item_title_cash_collector_history))) {
-                        Intent intent = new Intent(getActivity(), HistoryActivity.class);
-                        intent.putExtra(DefineValue.IS_AGENT_CTR, true);
-                        sp.edit().putBoolean(DefineValue.IS_AGENT_CTR, true).commit();
-                        intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_cash_collector_history));
-                        startActivity(intent);
-                    } else {
-                        posIdx = -1;
-                    }
-                } else {
-                    if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            posIdx = BBSActivity.CONFIRMCASHOUT;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_rating_by_member)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            posIdx = BBSActivity.BBSRATINGBYMEMBER;
-                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_my_orders)))
-                        if (isDormant.equalsIgnoreCase("Y")) {
-                            dialogDormant();
-                        } else
-                            posIdx = BBSActivity.BBSMYORDERS;
-//                    else if (menuItemName.equalsIgnoreCase(getString(R.string.title_search_agent)))
-//                        if (isDormant.equalsIgnoreCase("Y")) {
-//                            dialogDormant();
-//                        } else {
-//                            Intent intent = new Intent(getActivity(), SearchAgentUpgradeActivity.class);
-//                            intent.putExtra(DefineValue.TYPE, "ALL");
-//                            startActivity(intent);
-//                        }
-
-                    else {
-                        posIdx = -1;
-                        try {
-                            JSONArray jsonArray = new JSONArray(memberSchemeCode);
-                            for (int index = 0; index < jsonArray.length(); index++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(index);
-                                String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
-                                if (objs.equals("Tarik Tunai"))
-                                    objs = getString(R.string.cash_out);
-                                if (objs.equals("Setor Tunai"))
-                                    objs = getString(R.string.cash_in);
-                                String categoryNameModified = getString(R.string.menu_item_search_agent_bbs) + " " + objs;
-                                if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
-                                    if (isDormant.equalsIgnoreCase("Y")) {
-                                        dialogDormant();
-                                    } else {
-                                        Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
-                                        i.putExtra(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
-                                        sp.edit().putString(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
-//                                        i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
-                                        i.putExtra(DefineValue.CATEGORY_NAME, objs);
-                                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                                        i.putExtra(DefineValue.AMOUNT, "");
-                                        i.putExtra(DefineValue.BBS_SCHEME_CODE, jsonObject.optString(WebParams.SCHEME_CODE));
-                                        switchActivity(i, MainPage.ACTIVITY_RESULT);
-                                        break;
-                                    }
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                if (posIdx != -1) {
-                    Intent i = new Intent(getActivity(), BBSActivity.class);
-                    i.putExtra(DefineValue.INDEX, posIdx);
-
-                    if (!trxType.equals(""))
-                        i.putExtra(DefineValue.TYPE, trxType);
-
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                }
-
-
+                onClickMenuItem(menuItemName);
             }
 
         });
@@ -727,6 +412,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (isAgent)
             tv_balance.setText(getString(R.string.agent_balance));
         getHelpList();
+    }
+
+    private void showStatusOnline() {
+        swSettingOnline.setVisibility(View.VISIBLE);
+        tvSettingOnline.setVisibility(View.VISIBLE);
+    }
+
+    private void goneStatusOnline() {
+        swSettingOnline.setVisibility(View.GONE);
+        tvSettingOnline.setVisibility(View.GONE);
     }
 
     private void getRealmBillerData() {
@@ -1013,6 +708,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
     private void setupTitleMenu() {
         if (getActivity() != null && isAdded()) {
+            menuStringsMain.add(getResources().getString(R.string.toolbar_title_topup));
+            menuStringsMain.add(getResources().getString(R.string.menu_item_title_send));
+            menuStringsMain.add(getResources().getString(R.string.menu_item_title_ask_for_money));
+            menuStringsMain.add(getResources().getString(R.string.menu_item_title_biller));
             if (editMenuModel == null) {
                 if (isAgent) {
                     if (((sp.getString(DefineValue.IS_AGENT_TRX_CTA_MANDIRI_LP, "N").equalsIgnoreCase("Y"))
@@ -1065,13 +764,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                     menuStrings.add(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_toko));
                 }
-                menuStrings.add(getResources().getString(R.string.menu_item_title_ask_for_money));
 
                 menuStrings.add(getResources().getString(R.string.menu_item_title_report));
 
                 menuStrings.add(getResources().getString(R.string.menu_item_title_report_ebd));
-
-                menuStrings.add(getResources().getString(R.string.menu_item_history_detail));
 
 //                menuStrings.add(getResources().getString(R.string.menu_item_lending));
             } else
@@ -1318,13 +1014,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
             if (action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP)) {
 
                 if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
-                    llAgentDetail.setVisibility(View.GONE);
-
+                    goneStatusOnline();
                 } else {
                     if (sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES)) {
-                        llAgentDetail.setVisibility(View.VISIBLE);
+                        showStatusOnline();
                     } else {
-                        llAgentDetail.setVisibility(View.GONE);
+                        goneStatusOnline();
                     }
 
                 }
@@ -1547,8 +1242,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private void setMenuAdapter() {
-        gridMenuAdapter = new GridMenu(getContext(), menuStrings, menuDrawables);
-        GridView.setAdapter(gridMenuAdapter);
+        gridMenuAdapter = new GridMenu(getContext(), menuStringsMain, menuDrawablesMain);
+        adapterHomeMain = new AdapterHome(getContext(), menuStrings, menuDrawables, this::onClickMenuItem);
+        gridView.setAdapter(gridMenuAdapter);
+        recyclerView.setAdapter(adapterHomeMain);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
     }
 
     private void getTitleMenu() {
@@ -1565,14 +1263,25 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
     private void setupIconMenu() {
         menuDrawables.clear();
+        menuDrawablesMain.clear();
         for (int i = 0; i < menuStrings.size(); i++) {
             menuDrawables.add(ResourcesCompat.getDrawable(getResources(), getImageMenu(menuStrings.get(i)), null));
         }
+        for (int i = 0; i < menuStringsMain.size(); i++) {
+            menuDrawablesMain.add(ResourcesCompat.getDrawable(getResources(), getImageMenu(menuStringsMain.get(i)), null));
+        }
         gridMenuAdapter.notifyDataSetChanged();
+        adapterHomeMain.notifyDataSetChanged();
     }
 
-    public int getImageMenu(String titleMenu) {
-        if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_mandiri_lkd)))
+    private int getImageMenu(String titleMenu) {
+        if (titleMenu.equalsIgnoreCase(getString(R.string.toolbar_title_topup)))
+            return R.drawable.ic_top_up;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_send)))
+            return R.drawable.ic_transfer;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_ask_for_money)))
+            return R.drawable.ic_request;
+        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_mandiri_lkd)))
             return R.drawable.ic_mandiri;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_trx_agent)))
             return R.drawable.ic_permintaan_transaksi;
@@ -1622,19 +1331,339 @@ public class FragHomeNew extends BaseFragmentMainPage {
             return R.drawable.ic_setor_tunai;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
             return R.drawable.ic_permintaan_transaksi;
-        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_ask_for_money)))
-            return R.drawable.ic_minta_saldo;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_report)))
             return R.drawable.ic_laporan;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_report_ebd)))
             return R.drawable.ic_laporan;
-        else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_history_detail)))
-            return R.drawable.ic_history;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_lending)))
             return R.drawable.ic_lending;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.more)))
             return R.drawable.ic_more;
         else
             return R.drawable.ic_x;
+    }
+
+    private void onClickMenuItem(String menuItemName) {
+        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
+        String trxType = "";
+        int posIdx = -1;
+        if (menuItemName.equals(getString(R.string.toolbar_title_topup))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Intent i = new Intent(getActivity(), TopUpActivity.class);
+                i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
+            }
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_send))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Intent intent = new Intent(getActivity(), TransferActivity.class);
+                if (isAgent && agentTrxCodeArray.length() > 0)
+                    for (int i = 0; i < agentTrxCodeArray.length(); i++)
+                        try {
+                            if (agentTrxCodeArray.get(i).equals(DefineValue.P2P))
+                                switchActivity(intent, MainPage.ACTIVITY_RESULT);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                else if (!isAgent && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2)
+                    switchActivity(intent, MainPage.ACTIVITY_RESULT);
+                else
+                    dialogUnavailable();
+            }
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_ask_for_money))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                if (getLvlClass().isLevel1QAC()) {
+                    dialogUnavailable();
+                } else {
+                    Intent i = new Intent(getActivity(), AskForMoneyActivity.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                }
+            }
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_upgrade_member))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Intent i = new Intent(getActivity(), SearchMemberToVerifyActivity.class);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
+            }
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_biller))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Intent i = new Intent(getActivity(), GridBillerActivity.class);
+                i.putExtra(DefineValue.BILLER_TYPE, DefineValue.BIL_TYPE_PAY);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
+            }
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_report))) {
+            Intent i = new Intent(getActivity(), ReportActivity.class);
+            switchActivity(i, MainPage.ACTIVITY_RESULT);
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_report_ebd))) {
+            Intent i = new Intent();
+            if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_toko))) {
+                i = new Intent(getActivity(), ReportEBDActivity.class);
+                i.putExtra(DefineValue.EBD, DefineValue.TOKO);
+            } else if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_canvasser))) {
+                i = new Intent(getActivity(), ReportEBDListActivity.class);
+                i.putExtra(DefineValue.EBD, DefineValue.CANVASSER);
+            }
+            switchActivity(i, MainPage.ACTIVITY_RESULT);
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else
+                switchMenu(NavigationDrawMenu.MSCADM, null);
+        } else if (menuItemName.equals(getString(R.string.menu_item_search_agent))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Bundle bundle = new Bundle();
+                switchMenu(NavigationDrawMenu.MCATEGORYBBS, bundle);
+            }
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_pulsa_agent))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Intent intent = new Intent(getActivity(), BillerActivity.class);
+                intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_PLS);
+                intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.prepaid_title));
+                startActivity(intent);
+            }
+        } else if (menuItemName.equals(getString(R.string.newhome_data))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Intent intent = new Intent(getActivity(), BillerActivity.class);
+                intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_DATA);
+                intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.data_title));
+                startActivity(intent);
+            }
+        } else if (menuItemName.equals(getString(R.string.newhome_listrik_pln))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Intent intent = new Intent(getActivity(), BillerActivity.class);
+                intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_TKN);
+                intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.pln_title));
+                startActivity(intent);
+            }
+        } else if (menuItemName.equals(getString(R.string.newhome_emoney))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else if (sp.getInt(DefineValue.LEVEL_VALUE, 1) == 1) {
+                LevelClass levelClass = new LevelClass(getActivity());
+                levelClass.showDialogLevel();
+            } else {
+                Intent intent = new Intent(getActivity(), BillerActivity.class);
+                intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_EMONEY);
+                intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_emoney));
+                startActivity(intent);
+            }
+        } else if (menuItemName.equals(getString(R.string.newhome_bpjs))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Intent intent = new Intent(getActivity(), BillerActivity.class);
+                intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_BPJS);
+                intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_bpjs));
+                startActivity(intent);
+            }
+        } else if (menuItemName.equals(getString(R.string.newhome_game))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Intent intent = new Intent(getActivity(), BillerActivity.class);
+                intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_GAME);
+                intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_game));
+                startActivity(intent);
+            }
+        } else if (menuItemName.equals(getString(R.string.newhome_voucher))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Intent intent = new Intent(getActivity(), BillerActivity.class);
+                intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_VOUCHER);
+                intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_voucher));
+                startActivity(intent);
+            }
+        } else if (menuItemName.equals(getString(R.string.newhome_pam))) {
+            if (isDormant.equalsIgnoreCase("Y")) {
+                dialogDormant();
+            } else {
+                Intent intent = new Intent(getActivity(), BillerActivity.class);
+                intent.putExtra(DefineValue.BILLER_TYPE, BILLER_TYPE_CODE_PDAM);
+                intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_pam));
+                startActivity(intent);
+            }
+        } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
+            Intent intent = new Intent(getActivity(), HistoryActivity.class);
+            intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_history_detail));
+            startActivity(intent);
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
+            Intent intent = new Intent(getActivity(), B2BActivity.class);
+            startActivity(intent);
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_b2b_eratel) + " " + getString(R.string.menu_item_title_ebd_toko))) {
+            Intent intent = new Intent(getActivity(), TokoEBDActivity.class);
+            startActivity(intent);
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_b2b_eratel) + " " + getString(R.string.menu_item_title_ebd_canvasser))) {
+            Intent intent = new Intent(getActivity(), B2BCanvasserActivity.class);
+            startActivity(intent);
+        } else if (menuItemName.equals(getString(R.string.menu_item_title_mandiri_lkd))) {
+            Intent intent = new Intent(getActivity(), MandiriLPActivity.class);
+            startActivity(intent);
+        } else if (menuItemName.equals(getString(R.string.menu_item_lending))) {
+            Intent intent = new Intent(getActivity(), GridLendingActivity.class);
+            startActivity(intent);
+        } else if (menuItemName.equals(getString(R.string.more))) {
+            openCustomizeMenu();
+        }
+
+        if (isAgent) {
+            if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    posIdx = BBSActivity.LISTACCBBS;
+            else if (menuItemName.equalsIgnoreCase(getString(R.string.transaction)))
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    posIdx = BBSActivity.TRANSACTION;
+            else if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    posIdx = BBSActivity.CONFIRMCASHOUT;
+            else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_kelola)))
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    posIdx = BBSActivity.BBSKELOLA;
+            else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_trx_agent)))
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    posIdx = BBSActivity.BBSTRXAGENT;
+            else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_waktu_beroperasi)))
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    posIdx = BBSActivity.BBSWAKTUBEROPERASI;
+            else if (menuItemName.equalsIgnoreCase(getString(R.string.menu_item_title_tutup_manual)))
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    posIdx = BBSActivity.BBSTUTUPMANUAL;
+            else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_in))) {
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else {
+                    posIdx = BBSActivity.TRANSACTION;
+                    trxType = DefineValue.BBS_CASHIN;
+                }
+            } else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_out))) {
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else {
+                    posIdx = BBSActivity.TRANSACTION;
+                    trxType = DefineValue.BBS_CASHOUT;
+                }
+            } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent))) {
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else {
+                    posIdx = BBSActivity.BBSONPROGRESSAGENT;
+                    trxType = DefineValue.INDEX;
+                }
+            } else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent))) {
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    startActivity(new Intent(getActivity(), TagihActivity.class));
+            } else if (menuItemName.equals(getString(R.string.menu_title_cash_collection))) {
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    startActivity(new Intent(getActivity(), CashCollectionActivity.class));
+            } else if (menuItemName.equals(getString(R.string.menu_item_title_collector_history))) {
+                Intent intent = new Intent(getActivity(), HistoryActivity.class);
+                intent.putExtra(DefineValue.IS_AGENT_DGI, true);
+                sp.edit().putBoolean(DefineValue.IS_AGENT_DGI, true).commit();
+                intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_collector_history));
+                startActivity(intent);
+            } else if (menuItemName.equals(getString(R.string.menu_item_title_cash_collector_history))) {
+                Intent intent = new Intent(getActivity(), HistoryActivity.class);
+                intent.putExtra(DefineValue.IS_AGENT_CTR, true);
+                sp.edit().putBoolean(DefineValue.IS_AGENT_CTR, true).commit();
+                intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_title_cash_collector_history));
+                startActivity(intent);
+            } else {
+                posIdx = -1;
+            }
+        } else {
+            if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    posIdx = BBSActivity.CONFIRMCASHOUT;
+            else if (menuItemName.equalsIgnoreCase(getString(R.string.title_rating_by_member)))
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    posIdx = BBSActivity.BBSRATINGBYMEMBER;
+            else if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_my_orders)))
+                if (isDormant.equalsIgnoreCase("Y")) {
+                    dialogDormant();
+                } else
+                    posIdx = BBSActivity.BBSMYORDERS;
+
+            else {
+                posIdx = -1;
+                try {
+                    JSONArray jsonArray = new JSONArray(memberSchemeCode);
+                    for (int index = 0; index < jsonArray.length(); index++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(index);
+                        String objs = jsonObject.optString(WebParams.CATEGORY_NAME, "");
+                        if (objs.equals("Tarik Tunai"))
+                            objs = getString(R.string.cash_out);
+                        if (objs.equals("Setor Tunai"))
+                            objs = getString(R.string.cash_in);
+                        String categoryNameModified = getString(R.string.menu_item_search_agent_bbs) + " " + objs;
+                        if (menuItemName.equalsIgnoreCase(categoryNameModified)) {
+                            if (isDormant.equalsIgnoreCase("Y")) {
+                                dialogDormant();
+                            } else {
+                                Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
+                                i.putExtra(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
+                                sp.edit().putString(DefineValue.CATEGORY_ID, jsonObject.optString(WebParams.CATEGORY_ID));
+//                                        i.putExtra(DefineValue.CATEGORY_NAME, jsonObject.optString(WebParams.CATEGORY_NAME));
+                                i.putExtra(DefineValue.CATEGORY_NAME, objs);
+                                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                                i.putExtra(DefineValue.AMOUNT, "");
+                                i.putExtra(DefineValue.BBS_SCHEME_CODE, jsonObject.optString(WebParams.SCHEME_CODE));
+                                switchActivity(i, MainPage.ACTIVITY_RESULT);
+                                break;
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (posIdx != -1) {
+            Intent i = new Intent(getActivity(), BBSActivity.class);
+            i.putExtra(DefineValue.INDEX, posIdx);
+
+            if (!trxType.equals(""))
+                i.putExtra(DefineValue.TYPE, trxType);
+
+            switchActivity(i, MainPage.ACTIVITY_RESULT);
+        }
     }
 }
