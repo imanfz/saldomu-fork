@@ -237,8 +237,8 @@ public class SMSDialog extends DialogFragment {
         };
 
         SMSclass test = new SMSclass(getActivity());
-        imeiDevice = test.getDeviceIMEI();
-        ICCIDDevice = test.getDeviceICCID();
+        imeiDevice = test.getDeviceAndroidId();
+//        ICCIDDevice = test.getDeviceICCID();
         Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
 
         smsVerifyListener = new SMSclass.SMS_VERIFY_LISTENER() {

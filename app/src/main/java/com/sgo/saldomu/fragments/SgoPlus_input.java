@@ -951,7 +951,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
 
         if(!temp_iccid.equals("") && !temp_imei.equals("")){
 //            String diccid = smsclass.getDeviceICCID();
-            String dimei = smsclass.getDeviceIMEI();
+            String dimei = smsclass.getDeviceAndroidId();
 //            boolean biccid = diccid.equalsIgnoreCase(temp_iccid);
             boolean biccid = false;
             boolean bimei = dimei.equalsIgnoreCase(temp_imei);

@@ -124,7 +124,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
 
         SMSclass smSclass = new SMSclass(getActivity());
-        imeiIdDevice = smSclass.getDeviceIMEI();
+        imeiIdDevice = smSclass.getDeviceAndroidId();
 
         Bundle m = getArguments();
 

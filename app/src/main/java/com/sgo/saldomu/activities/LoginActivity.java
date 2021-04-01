@@ -129,7 +129,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.Conne
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         SecurePreferences.Editor edit = sp.edit();
         SMSclass smSclass = new SMSclass(this);
-        edit.putString(DefineValue.DEIMEI, smSclass.getDeviceIMEI());
+        edit.putString(DefineValue.DEIMEI, smSclass.getDeviceAndroidId());
 //        edit.putString(DefineValue.DEICCID, smSclass.getDeviceICCID());
         edit.apply();
     }

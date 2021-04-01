@@ -179,6 +179,7 @@ public class OTPVerification extends BaseFragment {
                     } );
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 

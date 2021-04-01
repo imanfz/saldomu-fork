@@ -157,7 +157,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         }
 
         SMSclass smsClass = new SMSclass(this);
-        imeiDevice = smsClass.getDeviceIMEI();
+        imeiDevice = smsClass.getDeviceAndroidId();
 
         smsDialog = SMSDialog.newDialog(timeDate, checkFailedVerify(), new SMSDialog.DialogButtonListener() {
             @Override
@@ -402,9 +402,9 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         boolean temp_is_sent = getSP().getBoolean(DefineValue.TEMP_IS_SENT, false);
 
         if (!temp_iccid.equals("") && !temp_imei.equals("")) {
-            String diccid = smsclass.getDeviceICCID();
-            String dimei = smsclass.getDeviceIMEI();
-            boolean biccid = diccid.equalsIgnoreCase(temp_iccid);
+//            String diccid = smsclass.getDeviceICCID();
+            String dimei = smsclass.getDeviceAndroidId();
+//            boolean biccid = diccid.equalsIgnoreCase(temp_iccid);
             boolean bimei = dimei.equalsIgnoreCase(temp_imei);
 
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("ID", "INDONESIA"));
@@ -431,7 +431,8 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
             }
 
 
-            return biccid && bimei && temp_is_sent && ddate;
+//            return biccid && bimei && temp_is_sent && ddate;
+            return bimei && temp_is_sent && ddate;
         } else return false;
     }
 
@@ -592,7 +593,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 
             @Override
             public void onError(Throwable throwable) {
-
+                Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast) + "( " +throwable.getMessage() + " )", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -608,16 +609,16 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
         sp.edit().putString(DefineValue.TIMESTAMP, timeStamp).apply();
         timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
-        imeiDevice = smSclass.getDeviceIMEI();
-        String ICCIDDevice = smSclass.getDeviceICCID();
-        Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
-        msg = (SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + timeDate + "_").toUpperCase();
-        String msg_hashed = Md5.hashMd5(msg).toUpperCase();
-        msgFinal = msg + msg_hashed;
-        Timber.wtf("content sms: " + msgFinal);
-
-        sp.edit().putString(DefineValue.SMS_CONTENT, msg).apply();
-        sp.edit().putString(DefineValue.SMS_CONTENT_ENCRYPTED, msg_hashed).apply();
+        imeiDevice = smSclass.getDeviceAndroidId();
+//        String ICCIDDevice = smSclass.getDeviceICCID();
+//        Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
+//        msg = (SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + timeDate + "_").toUpperCase();
+//        String msg_hashed = Md5.hashMd5(msg).toUpperCase();
+//        msgFinal = msg + msg_hashed;
+//        Timber.wtf("content sms: " + msgFinal);
+//
+//        sp.edit().putString(DefineValue.SMS_CONTENT, msg).apply();
+//        sp.edit().putString(DefineValue.SMS_CONTENT_ENCRYPTED, msg_hashed).apply();
     }
 
     protected Gson getGson() {
