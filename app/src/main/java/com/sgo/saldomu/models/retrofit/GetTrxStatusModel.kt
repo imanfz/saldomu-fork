@@ -42,4 +42,8 @@ open class GetTrxStatusModel : jsonModel() {
     @Expose
     val biller_type: String? = ""
 
+    @SerializedName("doc_type_remark")
+    @Expose
+    val doc_type_remark: String? = ""
+
 }

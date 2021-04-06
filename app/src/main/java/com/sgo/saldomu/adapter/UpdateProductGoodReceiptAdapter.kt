@@ -52,8 +52,11 @@ class UpdateProductGoodReceiptAdapter(var context: FragmentActivity?, var itemLi
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.itemName.text = itemList[position].itemName
         holder.itemQty1.setText(itemList[position].formatQtyItem.get(0).mapping_qty.toString())
+        holder.itemQty1.isEnabled=false
         holder.itemQty2.setText(itemList[position].formatQtyItem.get(1).mapping_qty.toString())
+        holder.itemQty2.isEnabled=false
         holder.itemQty3.setText(itemList[position].formatQtyItem.get(2).mapping_qty.toString())
+        holder.itemQty3.isEnabled=false
 
         holder.itemQty1.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {

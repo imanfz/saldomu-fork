@@ -709,6 +709,7 @@ public class WebParams {
     public static String ORDER_SETTING = "order_setting";
     public static String CHANNEL_GROUP_CODE = "channel_group_code";
     public static String DOC_TYPE = "doc_type";
+    public static String DOC_TYPE_REMARK = "doc_type_remark";
     public static String MIN_COST = "min_cost";
     public static String MIN_ORDER_DELIVERY = "min_order_delivery";
     public static String MAX_ORDER_DELIVERY = "max_order_delivery";
@@ -722,4 +723,5 @@ public class WebParams {
     public static String ISSUE_DATE_FROM = "issue_date_from";
     public static String ISSUE_DATE_TO = "issue_date_to";
     public static String PAID_OPTION = "paid_option";
+    public static String GR_UNPAID_NOTIF = "gr_unpaid_notif";
 }

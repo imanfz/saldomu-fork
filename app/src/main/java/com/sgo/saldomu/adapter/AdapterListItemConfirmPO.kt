@@ -20,11 +20,13 @@ class AdapterListItemConfirmPO(var context: Context, var itemList: List<MappingI
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val qtyBAL = itemList[position].format_qty[0].mapping_qty.toString()
-        val qtySLOP = itemList[position].format_qty[1].mapping_qty.toString()
-        val qtyPACK = itemList[position].format_qty[2].mapping_qty.toString()
+        if (!itemList[position].format_qty.isEmpty()) {
+            val qtyBAL = itemList[position].format_qty[0].mapping_qty.toString()
+            val qtySLOP = itemList[position].format_qty[1].mapping_qty.toString()
+            val qtyPACK = itemList[position].format_qty[2].mapping_qty.toString()
+            holder.itemQty.text = "$qtyBAL / $qtySLOP / $qtyPACK"
+        }
         holder.itemName.text = itemList[position].item_name
-        holder.itemQty.text = "$qtyBAL / $qtySLOP / $qtyPACK"
         holder.price.text = context.getString(R.string.currency) + " " + CurrencyFormat.format(itemList[position].price) + " / " + itemList[position].unit
         holder.subTotal.text = context.getString(R.string.currency) + " " + CurrencyFormat.format(itemList[position].subtotal_amount)
         holder.border.visibility = View.VISIBLE

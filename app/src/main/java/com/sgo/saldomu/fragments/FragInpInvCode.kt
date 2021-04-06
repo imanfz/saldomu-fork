@@ -69,6 +69,7 @@ class FragInpInvCode : BaseFragment() {
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.MEMBER_ID] = memberIDLogin
             params[WebParams.CUST_ID_ESPAY] = userPhoneID
+            params[WebParams.CANVASSER_CUSTID] = userPhoneID
             params[WebParams.MEMBER_CODE_ESPAY] = et_store_code!!.text.toString()
             params[WebParams.TYPE_ID] = DefineValue.IN
             params[WebParams.DOC_STATUS] = DefineValue.OPEN
