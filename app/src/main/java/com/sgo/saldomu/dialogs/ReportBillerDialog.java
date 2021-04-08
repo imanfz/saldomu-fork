@@ -212,6 +212,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         TextView tv_txid_value = view.findViewById(R.id.dialog_reportbiller_tx_id);
         TextView tv_trans_remark = view.findViewById(R.id.dialog_report_transaction_remark);
         TextView tv_trans_remark_sub = view.findViewById(R.id.dialog_report_transaction_remark_sub);
+        TextView tv_doc_type_remark = view.findViewById(R.id.dialog_report_doc_type_remark);
         TextView tv_trans_remark_topup = view.findViewById(R.id.dialog_report_transaction_remark_topup);
 
         if (buss_scheme_code.equals(DefineValue.P2P) || type.equals(DefineValue.PAYFRIENDS)) {
@@ -868,6 +869,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_agent_phone.setText(args.getString(DefineValue.AGENT_PHONE));
             } else if (buss_scheme_code.equals(DefineValue.EBD)) {
                 if (args.containsKey(DefineValue.IS_REPORT)) {
+                    tv_doc_type_remark.setVisibility(View.VISIBLE);
+                    tv_doc_type_remark.setText(args.getString(DefineValue.DOC_TYPE_REMARK));
                     stub.setLayoutResource(R.layout.layout_dialog_report_ebd_2);
                     View inflated = stub.inflate();
                     inflated.setVisibility(View.VISIBLE);

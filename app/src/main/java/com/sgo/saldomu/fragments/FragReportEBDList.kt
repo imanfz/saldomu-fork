@@ -115,25 +115,43 @@ ${dateTo?.get(Calendar.DAY_OF_MONTH)}-${dateTo?.get(Calendar.MONTH)?.plus(1)}-${
         recyclerView.adapter = adapterReportEBDList
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        val docStatusAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, resources.getStringArray(R.array.list_doc_status_bat))
-        docStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner_doc_status.adapter = docStatusAdapter
-        spinner_doc_status.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                getDataReportEBD()
+        if (reportType.equals(DefineValue.PO)) {
+            val docStatusAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, resources.getStringArray(R.array.list_doc_status_bat))
+            docStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner_doc_status.adapter = docStatusAdapter
+            spinner_doc_status.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    getDataReportEBD()
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                }
+
             }
+        } else if (reportType.equals(DefineValue.GR)) {
+            layout_docStatus.visibility = View.GONE
+        } else if (reportType.equals(DefineValue.IN)) {
+            val docStatusAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, resources.getStringArray(R.array.list_doc_status_bat_tagihan))
+            docStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner_doc_status.adapter = docStatusAdapter
+            spinner_doc_status.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    getDataReportEBD()
+                }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                }
 
             }
-
         }
         getDataReportEBD()
     }
 
     private fun getDataReportEBD() {
         showProgressDialog()
-        val docStatus = spinner_doc_status.selectedItem.toString()
+
         val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_DOC_LIST, memberCodeEspay)
         params[WebParams.COMM_ID] = sp.getString(DefineValue.COMMUNITY_ID, "")
         params[WebParams.USER_ID] = sp.getString(DefineValue.USERID_PHONE, "")
@@ -143,11 +161,16 @@ ${dateTo?.get(Calendar.DAY_OF_MONTH)}-${dateTo?.get(Calendar.MONTH)?.plus(1)}-${
         params[WebParams.MEMBER_ID] = sp.getString(DefineValue.MEMBER_ID, "")
         params[WebParams.MEMBER_CODE_ESPAY] = memberCodeEspay
         params[WebParams.TYPE_ID] = reportType
-        when (docStatus) {
-            getString(R.string.open) -> params[WebParams.DOC_STATUS] = DefineValue.OPEN
-            getString(R.string.close) -> params[WebParams.DOC_STATUS] = DefineValue.CLOSE
-            getString(R.string.proses) -> params[WebParams.DOC_STATUS] = DefineValue.PROCESS
-            getString(R.string.rejected) -> params[WebParams.DOC_STATUS] = DefineValue.REJECTED
+        if (reportType.equals(DefineValue.GR)) {
+            params[WebParams.DOC_STATUS] = DefineValue.CLOSE
+        } else {
+            val docStatus = spinner_doc_status.selectedItem.toString()
+            when (docStatus) {
+                getString(R.string.open) -> params[WebParams.DOC_STATUS] = DefineValue.OPEN
+                getString(R.string.close) -> params[WebParams.DOC_STATUS] = DefineValue.CLOSE
+                getString(R.string.proses) -> params[WebParams.DOC_STATUS] = DefineValue.PROCESS
+                getString(R.string.rejected) -> params[WebParams.DOC_STATUS] = DefineValue.REJECTED
+            }
         }
         params[WebParams.ISSUE_DATE_FROM] = calToString(dateFrom!!)
         params[WebParams.ISSUE_DATE_TO] = calToString(dateTo!!)
@@ -267,7 +290,7 @@ ${dateTo?.get(Calendar.DAY_OF_MONTH)}-${dateTo?.get(Calendar.MONTH)?.plus(1)}-${
         args.putBoolean(DefineValue.TRX_STATUS, false)
         args.putString(DefineValue.TRX_STATUS_REMARK, getString(R.string.transaction_success))
         args.putString(DefineValue.TRX_REMARK, ebdDocStrukReportModel.paidStatusRemark)
-        args.putString(DefineValue.DATE_TIME, ebdDocStrukReportModel.dueDate)
+        args.putString(DefineValue.DATE_TIME, ebdDocStrukReportModel.issue_date)
         args.putString(DefineValue.TX_ID, ebdDocStrukReportModel.docNo)
         args.putString(DefineValue.BUSS_SCHEME_CODE, DefineValue.EBD)
         args.putString(DefineValue.COMMUNITY_CODE, commCodeEspay)
@@ -277,6 +300,7 @@ ${dateTo?.get(Calendar.DAY_OF_MONTH)}-${dateTo?.get(Calendar.MONTH)?.plus(1)}-${
         args.putString(DefineValue.BONUS_ITEMS, response.getString(WebParams.BONUS_ITEMS))
         args.putString(DefineValue.PARTNER, response.getString(WebParams.PARTNER))
         args.putString(DefineValue.RESPONSE, response.toString())
+        args.putString(DefineValue.DOC_TYPE_REMARK, response.getString(WebParams.DOC_TYPE_REMARK))
         args.putString(DefineValue.PAID_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(ebdDocStrukReportModel.paidAmount))
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(ebdDocStrukReportModel.amount))
         args.putString(DefineValue.TOTAL_DISC, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(ebdDocStrukReportModel.discountAmount))

@@ -738,5 +738,6 @@ public class DefineValue {
     public static String PARTNER = "partner";
     public static String IDENTITY_REMARK = "identityRemark";
     public static String ANCHOR_COMPANY = "anchorCompany";
+    public static String DOC_TYPE_REMARK = "docTypeRemark";
 }
 

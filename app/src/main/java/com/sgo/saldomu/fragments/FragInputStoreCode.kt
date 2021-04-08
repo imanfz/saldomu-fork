@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
@@ -18,6 +20,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
 import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.models.AnchorListItem
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_input_store_code.*
@@ -29,6 +32,8 @@ class FragInputStoreCode : BaseFragment() {
 
     var docType = ""
     var title = ""
+    val anchorList = ArrayList<AnchorListItem>()
+    var anchorCodeEspay = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_input_store_code, container, false)
@@ -49,6 +54,8 @@ class FragInputStoreCode : BaseFragment() {
         }else{
             val canvasserPOActivity = activity as CanvasserPOActivity
             canvasserPOActivity.initializeToolbar(getString(R.string.purchase_order))
+
+            getListAnchor()
         }
 
         iv_clear.setOnClickListener(View.OnClickListener { v: View? -> et_store_code.setText("") })
@@ -58,6 +65,52 @@ class FragInputStoreCode : BaseFragment() {
                 inquiryDocList()
             }
         }
+    }
+
+    private fun getListAnchor() {
+        showProgressDialog()
+        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_ANCHOR)
+        params[WebParams.USER_ID] = userPhoneID
+        Timber.d("isi params list anchor:%s", params.toString())
+
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_ANCHOR, params, object : ObjListeners {
+            override fun onResponses(response: JSONObject) {
+                val jsonArray = response.getJSONArray(WebParams.ANCHOR_LIST)
+                for (i in 0 until jsonArray.length()) {
+                    val anchorListItem = getGson().fromJson(jsonArray.getJSONObject(i).toString(), AnchorListItem::class.java)
+                    anchorList.add(anchorListItem)
+                    anchorCodeEspay = anchorList[i].anchorCode
+                }
+//                layout_anchor.visibility = View.VISIBLE
+//                val anchorListOption = ArrayList<String>()
+//                for (i in anchorList.indices) {
+//                    anchorListOption.add(anchorList[i].anchorName)
+//                }
+//                val anchorOptionsAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, anchorListOption)
+//                anchorOptionsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//                spinner_anchor.adapter = anchorOptionsAdapter
+//                spinner_anchor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//                    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+//                        anchorCodeEspay = anchorList[p2].anchorCode
+//                    }
+//
+//                    override fun onNothingSelected(p0: AdapterView<*>?) {
+//
+//                    }
+//
+//                }
+//
+            }
+
+            override fun onError(throwable: Throwable?) {
+                dismissProgressDialog()
+            }
+
+            override fun onComplete() {
+                dismissProgressDialog()
+            }
+
+        })
     }
 
     fun inputValidation(): Boolean {
@@ -78,9 +131,11 @@ class FragInputStoreCode : BaseFragment() {
             params[WebParams.USER_ID] = userPhoneID
             params[WebParams.MEMBER_ID] = memberIDLogin
             params[WebParams.CUST_ID_ESPAY] = userPhoneID
+            params[WebParams.CANVASSER_CUSTID] = userPhoneID
             params[WebParams.MEMBER_CODE_ESPAY] = et_store_code!!.text.toString()
             params[WebParams.TYPE_ID] = DefineValue.PO
             params[WebParams.DOC_STATUS] = DefineValue.PROCESS
+            params[WebParams.ANCHOR_COMPANY] = anchorCodeEspay
             Timber.d("params inquiry doc list:$params")
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_DOC_LIST, params,
                     object : ObjListeners {
@@ -109,6 +164,7 @@ class FragInputStoreCode : BaseFragment() {
                                             bundle.putString(DefineValue.CUST_ID_ESPAY, response.optString(WebParams.CUST_ID_ESPAY))
                                             bundle.putString(DefineValue.PARTNER, response.optString(WebParams.PARTNER))
                                             bundle.putString(DefineValue.PARTNER_CODE_ESPAY, response.optString(WebParams.PARTNER_CODE_ESPAY))
+                                            bundle.putString(DefineValue.ANCHOR_COMPANY, anchorCodeEspay)
                                             frag = FragListPOCanvasser()
                                             frag.arguments = bundle
                                             switchFragmentPO(frag, "", "", true, "")

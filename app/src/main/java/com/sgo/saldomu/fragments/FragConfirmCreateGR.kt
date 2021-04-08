@@ -206,7 +206,7 @@ class FragConfirmCreateGR : BaseFragment() {
 
         dialog.title_dialog.text = resources.getString(R.string.success)
         dialog.message_dialog.visibility = View.VISIBLE
-        dialog.message_dialog.text = response.getString(WebParams.ERROR_MESSAGE)
+        dialog.message_dialog.text = response.getString(WebParams.ERROR_MESSAGE) + " " +response.getString(WebParams.GR_UNPAID_NOTIF)
 
         dialog.btn_dialog_notification_ok.setOnClickListener {
             dialog.dismiss()

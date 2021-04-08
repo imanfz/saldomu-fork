@@ -373,6 +373,10 @@
         <item>@string/rejected</item>
         <item>@string/close</item>
     </string-array>
+    <string-array name="list_doc_status_bat_tagihan">
+        <item>@string/open</item>
+        <item>@string/close</item>
+    </string-array>
     <string-array name="list_doc_status_po_bat">
         <item>@string/open</item>
         <item>@string/proses</item>

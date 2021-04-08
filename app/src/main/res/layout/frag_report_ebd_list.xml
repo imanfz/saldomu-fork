@@ -81,15 +81,14 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:id="@+id/layout_docStatus">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/doc_status" />
-
-        085717786672
 
         <Spinner
             android:id="@+id/spinner_doc_status"

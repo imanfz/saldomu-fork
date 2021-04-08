@@ -148,6 +148,16 @@
                       android:layout_gravity="center_horizontal"
                     />
 
+            <TextView android:id="@+id/dialog_report_doc_type_remark"
+                android:visibility="gone"
+                android:layout_marginLeft="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transaction_success"
+                android:textSize="@dimen/text_size_small_material"
+                android:layout_gravity="center_horizontal"
+                />
+
             <TextView android:id="@+id/dialog_report_transaction_remark_topup"
                 android:visibility="gone"
                 android:layout_marginLeft="8dp"
