@@ -1403,7 +1403,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="good_afternoon">Selamat Siang, </string>
     <string name="good_evening">Selamat Sore, </string>
     <string name="good_night">Selamat Malam, </string>
-    <string name="topup">TAMBAH SALDO</string>
+    <string name="top_up">TAMBAH SALDO</string>
     <string name="terms_and_condition">Syarat dan Ketentuan</string>
     <string name="additional_fee">Biaya Layanan</string>
     <string name="payment_confirm">Konfirmasi Pembayaran</string>
@@ -1411,7 +1411,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="payment_remark">Pesan</string>
     <string name="success_cancel_sof">Transaksi sudah dibatalkan!</string>
     <string name="transfer">Transfer</string>
-    <string name="profil">Profil</string>
+    <string name="profile">Profil</string>
     <string name="get_direction">Buka Petunjuk Arah</string>
     <string name="confirm_fingerprint">Konfirmasi sidik jari untuk melanjutkan</string>
     <string name="enable_fingerprint_permission_text">Tolong aktifkan akses sidik jari</string>
@@ -1761,4 +1761,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="payment_nominal">Nominal Pembayaran</string>
     <string name="payment_nominal_required">Masukkan Nominal Pembayaran</string>
     <string name="scan">Scan</string>
+    <string name="transaction_confirmation">Konfirmasi Transaksi</string>
+    <string name="insufficient_balance">Saldo kamu tidak cukup</string>
+    <string name="insufficient_balance_desc">Harap lakukan top up untuk melakukan transaksi</string>
+    <string name="remaining_balance">Sisa Saldo</string>
 </resources>

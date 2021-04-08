@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/title_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/insufficient_balance"
+            android:textColor="#ffffffff"
+            android:textSize="@dimen/abc_text_size_medium_material"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/insufficient_balance_desc"
+        android:textSize="@dimen/abc_text_size_small_material" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300" />
+
+        <TableRow android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/remaining_balance"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_remaining_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:gravity="end"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300" />
+
+        <TableRow android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/paid_amount"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_paid_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:gravity="end"
+                android:textStyle="bold" />
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/btn_dialog_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_background_outline"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/grey_500" />
+
+        <Button
+            android:id="@+id/btn_dialog_top_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_background_blue"
+            android:gravity="center"
+            android:text="@string/top_up"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>

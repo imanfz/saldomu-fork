@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_200"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main" />
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/rounded_background_white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/transfer_destination" />
+
+                <TextView
+                    android:id="@+id/tv_transfer_destination_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Ayam Gepuk Pak Jhon Doe"
+                    android:textColor="@color/grey_700"
+                    android:textSize="@dimen/text_size_large_material" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/rounded_background_white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/jumlah_transfer" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/rp."
+                        android:textColor="@color/grey_700"
+                        android:textSize="@dimen/text_size_large_material" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/edit_text_amount_transfer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/jumlah_transfer_hint"
+                        android:inputType="number"
+                        android:textSize="@dimen/abc_text_size_medium_material" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_200"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_background_outline"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/grey_500" />
+
+        <Button
+            android:id="@+id/proses_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_background_blue"
+            android:gravity="center"
+            android:text="@string/proses"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>
