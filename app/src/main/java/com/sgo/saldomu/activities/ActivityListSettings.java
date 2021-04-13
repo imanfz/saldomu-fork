@@ -112,11 +112,6 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
         setActionBarTitle(getString(R.string.menu_item_title_setting));
     }
 
-    private void switchLogout() {
-        setResult(MainPage.RESULT_LOGOUT);
-        finish();
-    }
-
     @Override
     public void onClicked(@NotNull String model) {
         Intent i;
@@ -161,7 +156,13 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
             AlertDialog.Builder alertbox = new AlertDialog.Builder(ActivityListSettings.this);
             alertbox.setTitle(getString(R.string.warning));
             alertbox.setMessage(getString(R.string.exit_message));
-            alertbox.setPositiveButton(getString(R.string.ok), (arg0, arg1) -> switchLogout());
+            alertbox.setPositiveButton(getString(R.string.ok), (arg0, arg1) -> {
+                getApplicationContext().getCacheDir().delete();
+                sp.edit().clear().commit();
+                Intent intent = new Intent(ActivityListSettings.this, Perkenalan.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            });
             alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
             });
             alertbox.show();
