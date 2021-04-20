@@ -315,6 +315,8 @@ public class MyApiClient {
     public static String LINK_REQUEST_PAYMENT;
     public static String LINK_PAYMENT_TOKO;
     public static String LINK_GET_LOCATION_DATA;
+    public static String LINK_QRIS_PARSING;
+    public static String LINK_QRIS_PAYMENT_REQUEST;
     public static String LINK_DOC_LIST;
     public static String LINK_DOC_DETAIL;
     public static String LINK_CONFIRM_OTP_DOC;
@@ -557,8 +559,6 @@ public class MyApiClient {
 
         LINK_CONFIRM_TOKEN_C2R = headaddressfinal + "ConfirmTokenCTR/Invoke";
         LINK_RESEND_TOKEN_C2R = headaddressfinal + "ResendTokenCTR/Invoke";
-        LINK_CONFIRM_TOKEN_C2R      = headaddressfinal + "ConfirmTokenCTR/Invoke";
-        LINK_RESEND_TOKEN_C2R       = headaddressfinal + "ResendTokenCTR/Invoke";
 
         //NFC
         CHEK_CARD_BALANCE = headaddressfinal + "CheckCardBalance/Invoke";
@@ -574,6 +574,8 @@ public class MyApiClient {
         LINK_HISTORY_COLLECTOR_LIMIT = headaddressfinal + "HistoryCashCollector/Retrieve";
 
         LINK_GET_LOCATION_DATA = headaddressfinal + "GetLocationData/Invoke";
+        LINK_QRIS_PARSING = headaddressfinal + "qris/Parsing/Invoke";
+        LINK_QRIS_PAYMENT_REQUEST = headaddressfinal + "qris/Payment/Request";
 
         LINK_REGISTER_EBD = headaddressfinal + "espaycatalog/RegMember/Invoke";
         LINK_REGISTER_NEW_EBD = headaddressfinal + "espaycatalog/RegNewMember/Invoke";

@@ -85,6 +85,14 @@ public class WebParams {
 
     public static String MERCHANT_CODE = "merchant_code";
     public static String MERCHANT_NAME = "merchant_name";
+    public static String MERCHANT_CITY = "merchant_city";
+    public static String MERCHANT_QRIS_TYPE = "merchant_qris_type";
+    public static String MERCHANT_TYPE = "merchant_type";
+    public static String MERCHANT_CRITERIA = "merchant_criteria";
+    public static String MERCHANT_ID = "merchant_id";
+    public static String MERCHANT_COUNTRY = "merchant_country";
+    public static String MERCHANT_PAN = "merchant_pan";
+    public static String MERCHANT_STORE_ID = "merchant_store_id";
 
     public static String DOB = "date_of_birth";
     public static String SOCIAL_ID = "social_id";
@@ -255,8 +263,6 @@ public class WebParams {
     public static String TARGET_URL = "target_url";
     public static String ATM_TOPUP_DATA = "atm_topup_data";
     public static String NO_VA = "no_va";
-
-    public static String MERCHANT_TYPE = "merchant_type";
 
 	public static String APP_DATA = "app_data";
     public static String PACKAGE_NAME = "package_name";
@@ -709,6 +715,7 @@ public class WebParams {
     public static String ORDER_SETTING = "order_setting";
     public static String CHANNEL_GROUP_CODE = "channel_group_code";
     public static String DOC_TYPE = "doc_type";
+    public static String DOC_TYPE_REMARK = "doc_type_remark";
     public static String MIN_COST = "min_cost";
     public static String MIN_ORDER_DELIVERY = "min_order_delivery";
     public static String MAX_ORDER_DELIVERY = "max_order_delivery";
@@ -722,4 +729,11 @@ public class WebParams {
     public static String ISSUE_DATE_FROM = "issue_date_from";
     public static String ISSUE_DATE_TO = "issue_date_to";
     public static String PAID_OPTION = "paid_option";
+    public static String QRIS_STRING = "qris_string";
+    public static String POSTAL_CODE = "postal_code";
+    public static String ADDITIONAL_FIELD = "additional_field";
+    public static String NMID = "nmid";
+    public static String TERMINAL_ID = "terminal_id";
+    public static String GR_UNPAID_NOTIF = "gr_unpaid_notif";
+    public static String INDICATOR_TYPE = "indicator_type";
 }

@@ -40,12 +40,12 @@ class ListTransfer : BaseFragment() {
 
         card_view1.setOnClickListener {
             val i = Intent(activity, PayFriendsActivity::class.java)
-            switchActivity(i)
+            startActivity(i)
         }
         card_view2.setOnClickListener {
             if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
                 val i = Intent(activity, CashoutActivity::class.java)
-                switchActivity(i)
+                startActivity(i)
             } else
                 dialogCantCashout()
         }
@@ -60,14 +60,6 @@ class ListTransfer : BaseFragment() {
         dialog.setCancelable(false)
         dialog.show()
 
-    }
-
-    private fun switchActivity(mIntent: Intent) {
-        if (activity == null)
-            return
-
-        val fca = activity as MainPage?
-        fca!!.switchActivity(mIntent, MainPage.ACTIVITY_RESULT)
     }
 
 }

@@ -133,7 +133,7 @@
     <string name="login_button_login">Masuk</string>
     <string name="login_text_forgetpin">Lupa PIN, silahkan menghubungi\ncall center di 0813–3335–5541</string>
     <string name="login_text_forgetpass">Lupa Kata Sandi</string>
-    <string name="login_toast_loginsukses">Masuk Berhasil</string>
+    <string name="login_toast_loginsukses">Berhasil Masuk</string>
     <string name="login_validation_userID">Nomor handphone dibutuhkan !</string>
     <string name="login_validation_pass">Kata Sandi dibutuhkan!</string>
     <string name="login_validation_comm">Maaf Anda belum terdaftar sebagai member.</string>
@@ -232,6 +232,7 @@
     <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
     <string name="menu_item_title_tutup_manual">Tutup Manual</string>
     <string name="menu_item_title_mandiri_lkd">Mandiri Laku Pandai</string>
+    <string name="menu_item_title_send">Kirim</string>
     <string name="topup_token_bank_name">Nama Bank</string>
     <string name="topup_token_bank_product">Produk Bank Tujuan</string>
     <string name="topup_token_bank_product_sumber">Produk Bank Sumber</string>
@@ -1402,7 +1403,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="good_afternoon">Selamat Siang, </string>
     <string name="good_evening">Selamat Sore, </string>
     <string name="good_night">Selamat Malam, </string>
-    <string name="topup">TAMBAH SALDO</string>
+    <string name="top_up">TAMBAH SALDO</string>
     <string name="terms_and_condition">Syarat dan Ketentuan</string>
     <string name="additional_fee">Biaya Layanan</string>
     <string name="payment_confirm">Konfirmasi Pembayaran</string>
@@ -1410,7 +1411,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="payment_remark">Pesan</string>
     <string name="success_cancel_sof">Transaksi sudah dibatalkan!</string>
     <string name="transfer">Transfer</string>
-    <string name="profil">Profil</string>
+    <string name="profile">Profil</string>
     <string name="get_direction">Buka Petunjuk Arah</string>
     <string name="confirm_fingerprint">Konfirmasi sidik jari untuk melanjutkan</string>
     <string name="enable_fingerprint_permission_text">Tolong aktifkan akses sidik jari</string>
@@ -1752,9 +1753,21 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="check_promo">Cek Promo</string>
     <string name="all_item">Semua Barang</string>
     <string name="merchant_name">Nama Merchant</string>
+    <string name="merchant_city">Kota Merchant</string>
+    <string name="merchant_pan">Merchant PAN</string>
     <string name="used_store_phone">Nomor HP Toko \nyang dapat \ndihubungi</string>
     <string name="vehicle_owner_id">Nomor KTP Pemilik Kendaraan</string>
     <string name="scan_menu">Bayar</string>
     <string name="label_scan_qr_description">Arahkan kameramu sampai memuat seluruh kode QR untuk memulai scan.</string>
-
+    <string name="payment_nominal">Nominal Pembayaran</string>
+    <string name="payment_destination">Tujuan Pembayaran</string>
+    <string name="payment_nominal_required">Masukkan Nominal Pembayaran</string>
+    <string name="scan">Scan</string>
+    <string name="transaction_confirmation">Konfirmasi Transaksi</string>
+    <string name="insufficient_balance">Saldo kamu tidak cukup</string>
+    <string name="insufficient_balance_desc">Harap lakukan top up untuk melakukan transaksi</string>
+    <string name="remaining_balance">Sisa Saldo</string>
+    <string name="no_reference">No. Referensi</string>
+    <string name="tip">Tip</string>
+    <string name="acquire_name">Nama Pengakuisisi</string>
 </resources>

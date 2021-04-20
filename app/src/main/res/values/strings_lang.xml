@@ -230,6 +230,7 @@
     <string name="menu_item_title_waktu_beroperasi">Operating Time</string>
     <string name="menu_item_title_tutup_manual"> Manual Close</string>
     <string name="menu_item_title_mandiri_lkd">Mandiri Laku Pandai</string>
+    <string name="menu_item_title_send">Send</string>
     <string name="topup_token_bank_name">Bank Name</string>
     <string name="topup_token_bank_product">Destination Bank Product</string>
     <string name="topup_token_bank_product_sumber">Bank Source Product</string>
@@ -1412,7 +1413,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="good_afternoon">Good Afternoon, </string>
     <string name="good_evening">Good Evening, </string>
     <string name="good_night">Good Night, </string>
-    <string name="topup">TOP UP</string>
+    <string name="top_up">TOP UP</string>
     <string name="terms_and_condition">Terms and Conditions</string>
     <string name="additional_fee">Service Charge</string>
     <string name="payment_confirm">Payment Confirmation</string>
@@ -1420,7 +1421,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="payment_remark">Message</string>
     <string name="success_cancel_sof">Transaction has been canceled!</string>
     <string name="transfer">Transfer</string>
-    <string name="profil">Profile</string>
+    <string name="profile">Profile</string>
     <string name="get_direction">Open Directions</string>
     <string name="confirm_fingerprint">Confirm fingerprint to continue</string>
     <string name="enable_fingerprint_permission_text">Please enable the fingerprint permission</string>
@@ -1608,7 +1609,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="cable_tv">Cable TV</string>
     <string name="insurance">Insurance</string>
     <string name="internet">Internet</string>
-    <string name="pbb">PBB payment</string>
+    <string name="pbb">PBB Payment</string>
     <string name="e_samsat">E-Samsat</string>
     <string name="pln_non_taglis">PLN Non-Taglis</string>
     <string name="tuition_fee">Tuition Fee</string>
@@ -1761,9 +1762,22 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="check_promo">Check Promo</string>
     <string name="all_item">All Item</string>
     <string name="merchant_name">Merchant Name</string>
+    <string name="merchant_city">Merchant City</string>
+    <string name="merchant_pan">Merchant PAN</string>
+    <string name="terminal_id">Terminal ID</string>
     <string name="vehicle_owner_id">Vehicle Owner ID</string>
     <string name="used_store_phone">Active Store Phone</string>
     <string name="scan_menu">Pay</string>
     <string name="label_scan_qr_description">Place whole QR until fitted in your screen to start scanning.</string>
-
+    <string name="payment_nominal">Payment Nominal</string>
+    <string name="payment_destination">Payment Destination</string>
+    <string name="payment_nominal_required">Payment Nominal Required</string>
+    <string name="scan">Scan</string>
+    <string name="transaction_confirmation">Transaction Confirmation</string>
+    <string name="insufficient_balance">Insufficient Balance</string>
+    <string name="insufficient_balance_desc">Please do a top up to make a transaction</string>
+    <string name="remaining_balance">Remaining Balance</string>
+    <string name="no_reference">Reference Number</string>
+    <string name="tip">Tip</string>
+    <string name="acquire_name">Name of the acquirer</string>
 </resources>

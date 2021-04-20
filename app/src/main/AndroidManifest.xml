@@ -53,6 +53,12 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label,allowBackup,appComponentFactory,theme">
         <activity
+            android:name=".activities.QrisActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ConfirmationQrisActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activities.ReportEBDListActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:parentActivityName=".activities.MainPage"
@@ -571,6 +577,11 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.DocDetailActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.TransferActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />

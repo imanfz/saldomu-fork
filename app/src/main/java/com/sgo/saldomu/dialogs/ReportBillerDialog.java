@@ -26,7 +26,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -34,15 +33,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BluetoothPrinter.zj.BluetoothService;
 import com.sgo.saldomu.BluetoothPrinter.zj.DevicesList;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.adapter.AdapterListItemReportEBD;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -212,6 +208,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         TextView tv_txid_value = view.findViewById(R.id.dialog_reportbiller_tx_id);
         TextView tv_trans_remark = view.findViewById(R.id.dialog_report_transaction_remark);
         TextView tv_trans_remark_sub = view.findViewById(R.id.dialog_report_transaction_remark_sub);
+        TextView tv_doc_type_remark = view.findViewById(R.id.dialog_report_doc_type_remark);
         TextView tv_trans_remark_topup = view.findViewById(R.id.dialog_report_transaction_remark_topup);
 
         if (buss_scheme_code.equals(DefineValue.P2P) || type.equals(DefineValue.PAYFRIENDS)) {
@@ -868,6 +865,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_agent_phone.setText(args.getString(DefineValue.AGENT_PHONE));
             } else if (buss_scheme_code.equals(DefineValue.EBD)) {
                 if (args.containsKey(DefineValue.IS_REPORT)) {
+                    tv_doc_type_remark.setVisibility(View.VISIBLE);
+                    tv_doc_type_remark.setText(args.getString(DefineValue.DOC_TYPE_REMARK));
                     stub.setLayoutResource(R.layout.layout_dialog_report_ebd_2);
                     View inflated = stub.inflate();
                     inflated.setVisibility(View.VISIBLE);
@@ -1021,11 +1020,15 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setText(transRemark);
                 }
             } else if (buss_scheme_code.equalsIgnoreCase(DefineValue.QRS)) {
-                stub.setLayoutResource(R.layout.layout_dialog_report_qrs);
+                stub.setLayoutResource(R.layout.layout_dialog_report_qris);
                 View inflated = stub.inflate();
 
                 TextView tv_report_type = inflated.findViewById(R.id.dialog_report_transaction_type);
                 TextView tv_merchant_name = inflated.findViewById(R.id.dialog_report_merchant_name);
+                TextView tv_merchant_city = inflated.findViewById(R.id.dialog_report_merchant_city);
+                TextView tv_merchant_pan = inflated.findViewById(R.id.dialog_report_merchant_pan);
+                TextView tv_trx_id_ref = inflated.findViewById(R.id.dialog_report_trx_id_ref);
+                TextView tv_terminal_id = inflated.findViewById(R.id.dialog_report_terminal_id);
                 TextView tv_payment_option = inflated.findViewById(R.id.dialog_report_payment_options);
                 TextView tv_fee = inflated.findViewById(R.id.dialog_report_fee);
                 TextView tv_amount = inflated.findViewById(R.id.dialog_report_amount);
@@ -1046,6 +1049,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                 tv_merchant_name.setText(args.getString(DefineValue.MERCHANT_NAME));
+                tv_merchant_city.setText(args.getString(DefineValue.MERCHANT_CITY));
+                tv_merchant_pan.setText(args.getString(DefineValue.MERCHANT_PAN));
+                tv_terminal_id.setText(args.getString(DefineValue.TERMINAL_ID));
+                tv_trx_id_ref.setText(args.getString(DefineValue.TRX_ID_REF));
                 tv_fee.setText(fee);
                 tv_amount.setText(amount);
                 tv_total_amount.setText(total_amount);

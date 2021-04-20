@@ -4,289 +4,150 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    android:orientation="vertical">
-
+    android:fillViewport="true"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rectangle_home"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="@drawable/rectangle_main"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="16dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical">
+            android:background="@drawable/background_home_with_logo"
+            android:minHeight="174dp"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <TextView
-                android:id="@+id/tv_balance"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/balance"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_set_agent_online"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/set_online"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:text="@string/balance"
-                android:textSize="12sp" />
+                android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/tvRP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/currency"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/tv_saldo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="2dp"
+                    android:layout_toEndOf="@id/tvRP"
+                    android:text="123.000"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="24sp" />
+
+                <ImageView
+                    android:id="@+id/btn_refresh_balance"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/tv_saldo"
+                    android:src="@drawable/ic_refresh_balance" />
+
+                <Switch
+                    android:id="@+id/switch_set_agent_online"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="0dp" />
+
+            </RelativeLayout>
+
+            <GridView
+                android:id="@+id/grid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:columnWidth="100dp"
+                android:horizontalSpacing="2dp"
+                android:numColumns="4"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="2dp" />
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:orientation="horizontal">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_home"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
-            <TextView
-                android:id="@+id/tvRP"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <ProgressBar
+                android:id="@+id/gridview_progbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
-                android:text="@string/currency"
-                android:textSize="14sp"/>
-
-            <TextView
-                android:id="@+id/tv_saldo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/tvRP"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="2dp"
-                android:text="123.000"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="14sp"/>
-
-            <ImageView
-                android:id="@+id/btn_refresh_balance"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_toRightOf="@id/tv_saldo"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_refresh_balance"/>
-
-            <Button
-                android:id="@+id/btn_topup"
-                android:layout_width="128dp"
-                android:minWidth="128dp"
-                android:maxWidth="200dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/rounded_background_blue"
-                android:text="@string/topup"
-                android:textColor="@color/white"
-                android:singleLine="true"
-                android:textSize="9sp"
-                />
-
+                android:layout_centerInParent="true"
+                android:visibility="invisible" />
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/llAgentDetail"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/grey_400"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="4dp">
+            android:layout_height="128dp"
+            android:layout_marginTop="8dp">
 
-            <TextView
+            <ProgressBar
+                android:id="@+id/progressBarBanner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:text="@string/set_online"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:layout_centerInParent="true" />
 
-            <Switch
-                android:id="@+id/swSettingOnline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:layout_weight="1"
-                android:textOff="@string/no"
-                android:textOn="@string/yes" />
-        </LinearLayout>
+            <!--            <com.sgo.saldomu.widgets.RoundedCornerLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content">-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:orientation="vertical">
-
-            <RelativeLayout
+            <com.synnapps.carouselview.CarouselView
+                android:id="@+id/carouselView1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2">
-
-                <GridView
-                    android:id="@+id/grid"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/white"
-                    android:columnWidth="100dp"
-                    android:gravity="center"
-                    android:horizontalSpacing="2dp"
-                    android:numColumns="4"
-                    android:stretchMode="columnWidth"
-                    android:verticalSpacing="2dp" />
-
-                <ProgressBar
-                    android:id="@+id/gridview_progbar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:visibility="invisible" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp">
-
-                <ProgressBar
-                    android:id="@+id/progressBarBanner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
-
-                <com.synnapps.carouselview.CarouselView
-                    android:id="@+id/carouselView1"
-                    android:layout_width="match_parent"
-                    android:layout_height="135dp"
-                    app:fillColor="#FFFFFFFF"
-                    app:pageColor="#00000000"
-                    app:radius="3dp"
-                    app:slideInterval="7000"
-                    app:strokeColor="#979797"
-                    app:strokeWidth="1dp" />
-
-            </RelativeLayout>
-        </LinearLayout>
-
-
-        <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="vertical"-->
-        <!--android:background="@color/colorSecondaryWhiteFixed">-->
-
-        <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@color/transparant"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:padding="8dp">-->
-
-        <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:orientation="vertical"-->
-        <!--android:id="@+id/PLS">-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/tv_pulsa"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="20dp"-->
-        <!--android:gravity="center"-->
-        <!--android:text="@string/menu_item_title_pulsa_agent"-->
-        <!--android:textSize="14sp" />-->
-
-        <!--<View-->
-        <!--android:id="@+id/view_pulsa"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="3dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--android:visibility="visible" />-->
-        <!--</LinearLayout>-->
-
-        <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:orientation="vertical"-->
-        <!--android:id="@+id/BPJS">-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/tv_bpjs"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_weight="1"-->
-        <!--android:gravity="center"-->
-        <!--android:text="@string/newhome_bpjs"-->
-        <!--android:textSize="14sp" />-->
-
-        <!--<View-->
-        <!--android:id="@+id/view_bpjs"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="3dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--android:visibility="invisible" />-->
-        <!--</LinearLayout>-->
-
-        <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:orientation="vertical"-->
-        <!--android:id="@+id/TKN">-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/tv_listrikPLN"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_weight="1"-->
-        <!--android:gravity="center"-->
-        <!--android:text="@string/newhome_listrik_pln"-->
-        <!--android:textSize="14sp" />-->
-
-        <!--<View-->
-        <!--android:id="@+id/view_listrikPLN"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="3dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--android:visibility="invisible" />-->
-        <!--</LinearLayout>-->
-        <!--</LinearLayout>-->
-
-        <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal"-->
-
-        <!--android:padding="8dp"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:background="@color/white">-->
-        <!--<EditText-->
-        <!--android:id="@+id/input"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:hint="@string/edittext_hint_id"-->
-        <!--android:layout_marginLeft="5dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:textSize="12sp"-->
-        <!--android:inputType="number"-->
-        <!--/>-->
-        <!--<Button-->
-        <!--android:id="@+id/btn_beli"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/menu_item_title_beli"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:background="@drawable/rounded_background_blue"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_margin="10dp"/>-->
-        <!--</LinearLayout>-->
-        <!--</LinearLayout>-->
+                android:layout_height="match_parent"
+                app:fillColor="#FFFFFFFF"
+                app:indicatorGravity="start|bottom"
+                app:pageColor="#00000000"
+                app:radius="3dp"
+                app:slideInterval="7000" />
+            <!--            </com.sgo.saldomu.widgets.RoundedCornerLayout>-->
+        </RelativeLayout>
 
     </LinearLayout>
-
-
 </LinearLayout>

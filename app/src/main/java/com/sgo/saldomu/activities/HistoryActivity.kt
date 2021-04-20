@@ -311,6 +311,10 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.buss_scheme_code)
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.buss_scheme_name)
         args.putString(DefineValue.MERCHANT_NAME, response.merchant_name)
+        args.putString(DefineValue.MERCHANT_CITY, response.merchant_city)
+        args.putString(DefineValue.MERCHANT_PAN, response.merchant_pan)
+        args.putString(DefineValue.TERMINAL_ID, response.terminal_id)
+        args.putString(DefineValue.TRX_ID_REF, response.trx_id_ref)
         dialog.arguments = args
         val ft = this.supportFragmentManager.beginTransaction()
         ft.add(dialog, ReportBillerDialog.TAG)

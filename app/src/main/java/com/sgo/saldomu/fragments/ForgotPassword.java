@@ -84,6 +84,9 @@ public class ForgotPassword extends BaseFragment {
         if (sp.contains(DefineValue.SENDER_ID)) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
             et_user_id.setText(userIDfinale);
+        }else if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"")!=null){
+            userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
+            et_user_id.setText(userIDfinale);
         }
 
         if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) { //untuk shorcut dari tombol di activity LoginActivity

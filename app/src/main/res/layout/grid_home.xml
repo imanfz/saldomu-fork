@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+    android:id="@+id/grid_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_weight="1"
-    android:padding="10dp"
-    android:horizontalSpacing="3px"
-    android:verticalSpacing="3px"
-    android:background="@color/white"
-    android:layout_marginTop="20dp"
     android:gravity="center"
-    >
+    android:horizontalSpacing="3dp"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:verticalSpacing="3dp">
+
     <ImageView
+        android:id="@+id/grid_image"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_weight="2"
-        android:id="@+id/grid_image"
-        android:src="@drawable/ic_setor_tunai"/>
+        android:src="@drawable/ic_setor_tunai" />
 
     <TextView
         android:id="@+id/grid_text"
         android:layout_width="match_parent"
-        android:layout_height="39dp"
-        android:layout_weight="1"
-        android:text="Menu"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_weight="1"
         android:gravity="center_horizontal"
-        android:textSize="11sp"/>
+        android:text="Menu"
+        android:textSize="11sp" />
 </LinearLayout>

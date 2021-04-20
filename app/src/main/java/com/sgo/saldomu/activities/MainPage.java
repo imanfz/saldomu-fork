@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Build;
@@ -21,18 +22,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
@@ -65,7 +68,6 @@ import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.FragTagihInput;
 import com.sgo.saldomu.fragments.FragmentProfileQr;
 import com.sgo.saldomu.fragments.FragmentScan;
-import com.sgo.saldomu.fragments.ListTransfer;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
@@ -83,9 +85,7 @@ import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
-import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -151,7 +151,6 @@ public class MainPage extends BaseActivity {
     private Bundle savedInstanceState;
     private SMSclass smSclass;
     private String isDormant, userNameLogin, fcm_id, fcmId_encrypted, agentTrxCode;
-    private BottomNavigationView bottomNavigationView;
     private MenuItem itemData;
     private NotificationActionView actionView;
 
@@ -161,7 +160,25 @@ public class MainPage extends BaseActivity {
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
     private String currentTab = "";
-    private JSONArray agentTrxCodeArray;
+
+
+    private LinearLayout homeLayoutTab;
+    private LinearLayout historyLayoutTab;
+    private LinearLayout scanLayoutTab;
+    private LinearLayout helpLayoutTab;
+    private LinearLayout accountLayoutTab;
+
+    private TextView homeTextViewTab;
+    private TextView historyTextViewTab;
+    private TextView helpTextViewTab;
+    private TextView accountTextViewTab;
+
+    private ImageView homeImageViewTab;
+    private ImageView historyImageViewTab;
+    private ImageView helpImageViewTab;
+    private ImageView accountImageViewTab;
+
+    ColorStateList oldColors;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -186,82 +203,120 @@ public class MainPage extends BaseActivity {
                 });
 
         this.savedInstanceState = savedInstanceState;
-        bottomNavigationView = findViewById(R.id.home_bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.menu_home);
-        bottomNavigationView.setOnNavigationItemSelectedListener(drawerListener);
-
 //        pickAndCameraUtil = new PickAndCameraUtil(this);
 
 
         isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
         userNameLogin = sp.getString(DefineValue.USER_NAME, "");
-        agentTrxCode = sp.getString(DefineValue.AGENT_TRX_CODES, "");
-        try {
-            agentTrxCodeArray = new JSONArray(agentTrxCode);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
         if (isHasAppPermission())
             InitializeApp();
+
+        homeLayoutTab = findViewById(R.id.layout_home);
+        historyLayoutTab = findViewById(R.id.layout_history);
+        scanLayoutTab = findViewById(R.id.layout_qr);
+        helpLayoutTab = findViewById(R.id.layout_help);
+        accountLayoutTab = findViewById(R.id.layout_account);
+
+        homeTextViewTab = findViewById(R.id.text_home);
+        historyTextViewTab = findViewById(R.id.text_history);
+        helpTextViewTab = findViewById(R.id.text_help);
+        accountTextViewTab = findViewById(R.id.text_account);
+        oldColors = homeTextViewTab.getTextColors();
+
+        homeImageViewTab = findViewById(R.id.iv_home);
+        historyImageViewTab = findViewById(R.id.iv_history);
+        helpImageViewTab = findViewById(R.id.iv_help);
+        accountImageViewTab = findViewById(R.id.iv_account);
+
+        homeLayoutTab.setOnClickListener(view -> {
+            showHomeFragment();
+        });
+
+        historyLayoutTab.setOnClickListener(view -> {
+            showHistoryFragment();
+        });
+
+        scanLayoutTab.setOnClickListener(view -> {
+            showScan();
+        });
+
+        helpLayoutTab.setOnClickListener(view -> {
+            showHelpFragment();
+        });
+
+        accountLayoutTab.setOnClickListener(view -> {
+            showAccountFragment();
+        });
+
+        enableHomeLayout();
     }
 
-    BottomNavigationView.OnNavigationItemSelectedListener drawerListener = item -> {
-        switch (item.getItemId()) {
-            case R.id.menu_home:
-                currentTab = userNameLogin;
-                Fragment fragmentHome = new FragMainPage();
-//                switchContent(newFragment, getString(R.string.appname).toUpperCase());
-//                switchContent(newFragment, setGreetings());
-                switchContent(fragmentHome, userNameLogin);
-                return true;
-            case R.id.menu_transfer:
-                if (isAgent && agentTrxCodeArray.length() > 0) {
-                    for (int i = 0; i < agentTrxCodeArray.length(); i++) {
-                        try {
-                            if (agentTrxCodeArray.get(i).equals(DefineValue.P2P)) {
-                                transferFragment();
-                                break;
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    return true;
-                } else if (!isAgent && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2) {
-                    transferFragment();
-                    return true;
-                } else {
-                    dialogUnavailable();
-                    return false;
-                }
-            case R.id.menu_help:
-//                i = new Intent(MainPage.this, ContactActivity.class);
-//                switchActivity(i, MainPage.ACTIVITY_RESULT);
-                currentTab = getString(R.string.help_center);
-                BaseFragment fragmentHelp = new FragHelp();
-                switchContent(fragmentHelp, getString(R.string.help_center));
-                return true;
-            case R.id.menu_profile:
-                currentTab = getString(R.string.myprofilelist_ab_title);
-//                i = new Intent(MainPage.this, ActivityProfileQr.class);
-//                startActivity(i);
+    private void showHomeFragment() {
+        resetTab();
+        getSupportActionBar().show();
+        Fragment fragmentHome = new FragMainPage();
+        switchContent(fragmentHome, userNameLogin);
+        enableHomeLayout();
+    }
 
-                BaseFragment fragmentProfile = new FragmentProfileQr();
-                switchContent(fragmentProfile, getString(R.string.myprofilelist_ab_title));
-                return true;
-//            case R.id.menu_scan:
-//                currentTab = getString(R.string.scan_menu);
-//                BaseFragment fragmentScan = new FragmentScan();
-//                switchContent(fragmentScan, getString(R.string.scan_menu));
-//                return true;
-        }
-        return false;
-    };
+    private void showHistoryFragment() {
+        resetTab();
+        getSupportActionBar().show();
+        Fragment fragmentHistory = new FragmentHistory();
+        switchContent(fragmentHistory, getString(R.string.menu_item_history_detail));
+        enableHistoryLayout();
+    }
 
-    private void transferFragment() {
-        currentTab = getString(R.string.transfer);
-        Fragment fragmentTransfer = new ListTransfer();
-        switchContent(fragmentTransfer, getString(R.string.transfer));
+    private void showScan() {
+        startActivity(new Intent(MainPage.this, QrisActivity.class));
+    }
+
+    private void showHelpFragment() {
+        resetTab();
+        getSupportActionBar().show();
+        Fragment fragmentHelp = new FragHelp();
+        switchContent(fragmentHelp, getString(R.string.help_center));
+        enableHelpLayout();
+    }
+
+    private void showAccountFragment() {
+        resetTab();
+        getSupportActionBar().show();
+        Fragment fragmentProfileQr = new FragmentProfileQr();
+        switchContent(fragmentProfileQr, getString(R.string.myprofilelist_ab_title));
+        enableAccountLayout();
+    }
+
+    private void enableHomeLayout() {
+        homeImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_home_on));
+        homeTextViewTab.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+    }
+
+    private void enableHistoryLayout() {
+        historyImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_history_on));
+        historyTextViewTab.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+    }
+
+    private void enableHelpLayout() {
+        helpImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_help_on));
+        helpTextViewTab.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+    }
+
+    private void enableAccountLayout() {
+        accountImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_account_on));
+        accountTextViewTab.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+    }
+
+    private void resetTab() {
+        homeImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_home_off));
+        historyImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_history_off));
+        helpImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_help_off));
+        accountImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_account_off));
+        homeTextViewTab.setTextColor(oldColors);
+        historyTextViewTab.setTextColor(oldColors);
+        helpTextViewTab.setTextColor(oldColors);
+        accountTextViewTab.setTextColor(oldColors);
     }
 
     private void dialogDormant() {
@@ -315,7 +370,7 @@ public class MainPage extends BaseActivity {
 //                    initializeDashboard();
                 }
             } else {
-            initializeDashboard();
+                initializeDashboard();
             }
         } else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
@@ -1314,6 +1369,7 @@ public class MainPage extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         Timber.d("isi request code:" + String.valueOf(requestCode));
         Timber.d("isi result Code:" + String.valueOf(resultCode));
         if (requestCode == REQUEST_FINISH) {
@@ -1553,10 +1609,6 @@ public class MainPage extends BaseActivity {
 
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
-        }
-
-        if (currentTab.equalsIgnoreCase(userNameLogin)) {
-            bottomNavigationView.setSelectedItemId(R.id.menu_home);
         }
 
         LocalBroadcastManager.getInstance(this).registerReceiver(btnReceiver, new IntentFilter(MainPage.RESULT_HOME_BALANCE));
