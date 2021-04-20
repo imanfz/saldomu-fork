@@ -2,11 +2,14 @@ package com.sgo.saldomu.fragments
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import com.google.zxing.Result
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.ConfirmationQrisActivity
@@ -36,7 +39,6 @@ class FragmentScan : BaseFragment(), ZXingScannerView.ResultHandler {
     }
 
     override fun onStart() {
-        resumeScanner()
         doRequestPermission()
         super.onStart()
     }
@@ -68,8 +70,12 @@ class FragmentScan : BaseFragment(), ZXingScannerView.ResultHandler {
     }
 
     private fun doRequestPermission() {
-        if (!EasyPermissions.hasPermissions(context!!, Manifest.permission.CAMERA)) {
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage), 123, Manifest.permission.CAMERA);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            if (!EasyPermissions.hasPermissions(context!!, Manifest.permission.CAMERA))
+                EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_and_storage), 100, Manifest.permission.CAMERA);
+        } else {
+            if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+                ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 100)
         }
     }
 
@@ -90,6 +96,9 @@ class FragmentScan : BaseFragment(), ZXingScannerView.ResultHandler {
     }
 
     override fun handleResult(rawResult: Result?) {
+//        val i = Intent(activity, PayFriendsActivity::class.java)
+//            startActivity(i)
+//        requireActivity().finish()
         parsingQR(rawResult?.text.toString())
     }
 

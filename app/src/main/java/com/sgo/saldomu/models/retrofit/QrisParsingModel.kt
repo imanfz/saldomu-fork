@@ -62,5 +62,17 @@ data class QrisParsingModel(
         val merchantId: String? = null,
 
         @field:SerializedName("merchant_store_id")
-        val merchantStoreId: String? = null
+        val merchantStoreId: String? = null,
+
+        @field:SerializedName("indicator_type")
+        val indicatorType: String? = null,
+
+        @field:SerializedName("fee_amount")
+        val feeAmount: String? = null,
+
+        @field:SerializedName("admin_fee")
+        val adminFee: String? = null,
+
+        @field:SerializedName("nns_member_name")
+        val nnsMemberName: String? = null
 )

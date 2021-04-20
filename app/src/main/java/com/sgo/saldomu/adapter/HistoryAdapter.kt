@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +19,6 @@ import com.sgo.saldomu.models.retrofit.HistoryModel
 class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     internal lateinit var context: Context
     internal var itemList: MutableList<HistoryModel> = arrayListOf()
-    private var agentCOL: Boolean = false
     lateinit var sp: SecurePreferences
 
     interface HistoryListener {
@@ -95,7 +94,7 @@ class HistoryAdapter(internal var listener: HistoryListener) : RecyclerView.Adap
         var dateText: TextView = itemView.findViewById(R.id.date_text)
         var detailTypeText: TextView = itemView.findViewById(R.id.detail_type_text)
         var txEmoText: TextView = itemView.findViewById(R.id.tx_emo_text)
-        var itemLinearLayout: RelativeLayout = itemView.findViewById(R.id.item_linear_layout)
+        var itemLinearLayout: LinearLayout = itemView.findViewById(R.id.item_linear_layout)
         var dividerView: View = itemView.findViewById(R.id.divider_view)
 
     }

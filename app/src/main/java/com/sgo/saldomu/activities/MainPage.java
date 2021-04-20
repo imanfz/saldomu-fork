@@ -238,7 +238,7 @@ public class MainPage extends BaseActivity {
         });
 
         scanLayoutTab.setOnClickListener(view -> {
-            showScanFragment();
+            showScan();
         });
 
         helpLayoutTab.setOnClickListener(view -> {
@@ -268,11 +268,8 @@ public class MainPage extends BaseActivity {
         enableHistoryLayout();
     }
 
-    private void showScanFragment() {
-        resetTab();
-        getSupportActionBar().hide();
-        Fragment fragmentScan = new FragmentScan();
-        switchContent(fragmentScan, getString(R.string.scan_menu));
+    private void showScan() {
+        startActivity(new Intent(MainPage.this, QrisActivity.class));
     }
 
     private void showHelpFragment() {

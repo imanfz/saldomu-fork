@@ -138,8 +138,8 @@ class FragGridBiller : BaseFragment() {
             getString(R.string.insurance) -> R.drawable.icon_biller_asuransi
             getString(R.string.internet) -> R.drawable.icon_biller_internet
             getString(R.string.cable_tv) -> R.drawable.icon_biller_tv
-            getString(R.string.pbb) -> R.drawable.ic_mandiri
-            getString(R.string.e_samsat) -> R.drawable.ic_mandiri
+            getString(R.string.pbb) -> R.drawable.icon_biller_pbb
+            getString(R.string.e_samsat) -> R.drawable.icon_biller_samsat
             else -> R.drawable.ic_mandiri
         }
     }

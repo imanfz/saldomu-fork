@@ -735,6 +735,10 @@ public class DefineValue {
     public static String ITEMS = "Items";
     public static String LOG_OUT = "log_out";
     public static String MERCHANT_NAME = "merchant_name";
+    public static String MERCHANT_CITY = "merchant_city";
+    public static String MERCHANT_PAN = "merchant_pan";
+    public static String TERMINAL_ID = "terminal_id";
+    public static String TRX_ID_REF = "trx_id_ref";
     public static String PARTNER = "partner";
     public static String IDENTITY_REMARK = "identityRemark";
     public static String ANCHOR_COMPANY = "anchorCompany";

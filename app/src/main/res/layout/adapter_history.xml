@@ -1,66 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_linear_layout"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical"
     android:paddingStart="@dimen/margin_10dp"
-    android:paddingEnd="@dimen/margin_10dp"
-    android:paddingTop="@dimen/margin_10dp">
+    android:paddingTop="@dimen/margin_10dp"
+    android:paddingEnd="@dimen/margin_10dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true">
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/detail_type_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Payment"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/endbalance_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="Rp. 123.000.000" />
     </LinearLayout>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/date_text"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/detail_type_text"
-            android:layout_width="wrap_content"
-            android:textSize="16sp"
-            android:layout_height="wrap_content"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/date_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tx_emo_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/margin_10dp">
+            android:layout_height="wrap_content"
+            android:layout_weight="10" />
 
         <TextView
             android:id="@+id/amount_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Rp. 123.000" />
     </LinearLayout>
 
     <View
         android:id="@+id/divider_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/margin_10dp"
         android:background="@color/grey_400" />
-</RelativeLayout>
+</LinearLayout>

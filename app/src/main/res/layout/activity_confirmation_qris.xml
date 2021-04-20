@@ -31,16 +31,17 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/transfer_destination" />
+                    android:text="@string/acquire_name" />
 
                 <TextView
-                    android:id="@+id/tv_transfer_destination_value"
+                    android:id="@+id/tv_acquire_name_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Ayam Gepuk Pak Jhon Doe"
+                    android:text="Pak Jhon Doe"
                     android:textColor="@color/grey_700"
                     android:textSize="@dimen/text_size_large_material" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -53,7 +54,38 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/jumlah_transfer" />
+                    android:text="@string/payment_destination" />
+
+                <TextView
+                    android:id="@+id/tv_payment_destination_name_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Ayam Gepuk Pak Jhon Doe"
+                    android:textColor="@color/grey_700"
+                    android:textSize="@dimen/text_size_large_material" />
+
+                <TextView
+                    android:id="@+id/tv_payment_destination_city_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Alam Sutera"
+                    android:textColor="@color/grey_700"
+                    android:textSize="@dimen/text_size_small_material" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/rounded_background_white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/payment_nominal" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -72,7 +104,43 @@
                         android:id="@+id/edit_text_amount_transfer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/jumlah_transfer_hint"
+                        android:hint="@string/payment_nominal"
+                        android:inputType="number"
+                        android:textSize="@dimen/abc_text_size_medium_material" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_layout_fee_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/rounded_background_white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tip" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/rp."
+                        android:textColor="@color/grey_700"
+                        android:textSize="@dimen/text_size_large_material" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/edit_text_fee_amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/tip"
                         android:inputType="number"
                         android:textSize="@dimen/abc_text_size_medium_material" />
                 </LinearLayout>

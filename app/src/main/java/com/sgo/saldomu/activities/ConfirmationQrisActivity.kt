@@ -66,9 +66,12 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         setActionBarIcon(R.drawable.ic_arrow_left)
 
         val qrisParsingModel = getGson().fromJson(intent.getStringExtra(DefineValue.RESPONSE), QrisParsingModel::class.java)
-        tv_transfer_destination_value.text = qrisParsingModel.merchantName
+        tv_acquire_name_value.text = qrisParsingModel.nnsMemberName
+        tv_payment_destination_name_value.text = qrisParsingModel.merchantName
+        tv_payment_destination_city_value.text = qrisParsingModel.merchantCity
         val transactionAmount = qrisParsingModel.transactionAmount
         edit_text_amount_transfer.addTextChangedListener(NumberTextWatcherForThousand(edit_text_amount_transfer))
+        edit_text_fee_amount.addTextChangedListener(NumberTextWatcherForThousand(edit_text_fee_amount))
         if (transactionAmount != "") {
             edit_text_amount_transfer.setText(transactionAmount)
             edit_text_amount_transfer.isEnabled = false
@@ -76,6 +79,9 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
             edit_text_amount_transfer.requestFocus()
             ToggleKeyboard.show_keyboard(this)
         }
+
+        if (qrisParsingModel.indicatorType != "01")
+            linear_layout_fee_amount.visibility = View.GONE
 
         cancel_btn.setOnClickListener { finish() }
         proses_btn.setOnClickListener {
@@ -89,10 +95,20 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
     private fun paymentReqQris(amount: String, qrisParsingModel: QrisParsingModel) {
         showProgressDialog()
 
+        var feeAmount = "0"
+        if (qrisParsingModel.indicatorType == "01") {
+            if (edit_text_fee_amount.text!!.isNotEmpty())
+                NumberTextWatcherForThousand.trimCommaOfString(edit_text_fee_amount.text.toString())
+        } else
+            feeAmount = qrisParsingModel.feeAmount!!
+
         val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_QRIS_PAYMENT_REQUEST, qrisParsingModel.commId + qrisParsingModel.memberId)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.AMOUNT] = amount
-        params[WebParams.ADMIN_FEE] = "0"
+        params[WebParams.ADMIN_FEE] = qrisParsingModel.adminFee
+        params[WebParams.FEE_AMOUNT] = feeAmount
+        params[WebParams.TOTAL_AMOUNT] = Integer.parseInt(amount) + Integer.parseInt(feeAmount!!) + Integer.parseInt(qrisParsingModel.adminFee!!)
+        params[WebParams.INDICATOR_TYPE] = qrisParsingModel.indicatorType
         params[WebParams.MERCHANT_NAME] = qrisParsingModel.merchantName
         params[WebParams.MERCHANT_CITY] = qrisParsingModel.merchantCity
         params[WebParams.MERCHANT_QRIS_TYPE] = qrisParsingModel.merchantQrisType
@@ -320,6 +336,10 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.buss_scheme_code)
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.buss_scheme_name)
         args.putString(DefineValue.MERCHANT_NAME, response.merchant_name)
+        args.putString(DefineValue.MERCHANT_CITY, response.merchant_city)
+        args.putString(DefineValue.MERCHANT_PAN, response.merchant_pan)
+        args.putString(DefineValue.TERMINAL_ID, response.terminal_id)
+        args.putString(DefineValue.TRX_ID_REF, response.trx_id_ref)
 
         dialog.arguments = args
         dialog.show(supportFragmentManager, ReportBillerDialog.TAG)

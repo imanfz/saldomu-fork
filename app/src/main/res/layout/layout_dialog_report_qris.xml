@@ -33,7 +33,6 @@
     <TableRow>
 
         <TextView
-            android:id="@+id/tv_name"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:padding="3dip"
@@ -41,6 +40,94 @@
 
         <TextView
             android:id="@+id/dialog_report_merchant_name"
+            android:layout_width="wrap_content"
+            android:layout_weight="2"
+            android:gravity="end"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="@string/merchant_city" />
+
+        <TextView
+            android:id="@+id/dialog_report_merchant_city"
+            android:layout_width="wrap_content"
+            android:layout_weight="2"
+            android:gravity="end"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="@string/merchant_pan" />
+
+        <TextView
+            android:id="@+id/dialog_report_merchant_pan"
+            android:layout_width="wrap_content"
+            android:layout_weight="2"
+            android:gravity="end"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="@string/terminal_id" />
+
+        <TextView
+            android:id="@+id/dialog_report_terminal_id"
+            android:layout_width="wrap_content"
+            android:layout_weight="2"
+            android:gravity="end"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300" />
+
+    <TableRow>
+
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="@string/no_reference" />
+
+        <TextView
+            android:id="@+id/dialog_report_trx_id_ref"
             android:layout_width="wrap_content"
             android:layout_weight="2"
             android:gravity="end"

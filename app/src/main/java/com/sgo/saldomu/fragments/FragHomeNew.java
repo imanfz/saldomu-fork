@@ -130,7 +130,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Switch swSettingOnline;
     private TextView tvSettingOnline;
     String shopStatus, isMemberShopDGI, isDormant, agentSchemeCode, memberSchemeCode, agentBillerCode, agentEBDCode, agentTrxCode;
-    Boolean isAgent, isShowB2b = false;
+    Boolean isAgent, isShowB2b = false, isAvailBiller = false;
     ProgressBar gridview_progbar;
     ProgressBar progBanner;
     private CarouselView carouselView;
@@ -736,7 +736,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                     menuStrings.add(getResources().getString(R.string.title_cash_out_member));
 
-                    menuStrings.add(getResources().getString(R.string.menu_item_title_biller));
+//                    menuStrings.add(getResources().getString(R.string.menu_item_title_biller));
 
                     if (mBillerTypeDataPLS != null)
                         menuStrings.add(getResources().getString(R.string.menu_item_title_pulsa_agent));
@@ -881,7 +881,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         break;
                     case "BIL":
                         checkBillerCodeAgent();
-                        menuStrings.add(getResources().getString(R.string.menu_item_title_biller));
+                        isAvailBiller = true;
+//                        menuStrings.add(getResources().getString(R.string.menu_item_title_biller));
                         break;
                     case "TOP":
                         sp.edit().putBoolean(DefineValue.IS_AGENT_TOP, true).commit();
@@ -1395,6 +1396,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         } else if (menuItemName.equals(getString(R.string.menu_item_title_biller))) {
             if (isDormant.equalsIgnoreCase("Y")) {
                 dialogDormant();
+            } else if (!isAvailBiller) {
+                dialogUnavailable();
             } else {
                 Intent i = new Intent(getActivity(), GridBillerActivity.class);
                 i.putExtra(DefineValue.BILLER_TYPE, DefineValue.BIL_TYPE_PAY);
@@ -1500,10 +1503,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 intent.putExtra(DefineValue.BILLER_NAME, getString(R.string.newhome_pam));
                 startActivity(intent);
             }
-        } else if (menuItemName.equals(getString(R.string.menu_item_history_detail))) {
-            Intent intent = new Intent(getActivity(), HistoryActivity.class);
-            intent.putExtra(DefineValue.HISTORY_TITLE, getString(R.string.menu_item_history_detail));
-            startActivity(intent);
         } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
             Intent intent = new Intent(getActivity(), B2BActivity.class);
             startActivity(intent);

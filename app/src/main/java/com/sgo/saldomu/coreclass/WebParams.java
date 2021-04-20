@@ -735,4 +735,5 @@ public class WebParams {
     public static String NMID = "nmid";
     public static String TERMINAL_ID = "terminal_id";
     public static String GR_UNPAID_NOTIF = "gr_unpaid_notif";
+    public static String INDICATOR_TYPE = "indicator_type";
 }

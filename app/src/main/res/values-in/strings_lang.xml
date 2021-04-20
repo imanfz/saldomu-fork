@@ -1754,15 +1754,20 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="all_item">Semua Barang</string>
     <string name="merchant_name">Nama Merchant</string>
     <string name="merchant_city">Kota Merchant</string>
+    <string name="merchant_pan">Merchant PAN</string>
     <string name="used_store_phone">Nomor HP Toko \nyang dapat \ndihubungi</string>
     <string name="vehicle_owner_id">Nomor KTP Pemilik Kendaraan</string>
     <string name="scan_menu">Bayar</string>
     <string name="label_scan_qr_description">Arahkan kameramu sampai memuat seluruh kode QR untuk memulai scan.</string>
     <string name="payment_nominal">Nominal Pembayaran</string>
+    <string name="payment_destination">Tujuan Pembayaran</string>
     <string name="payment_nominal_required">Masukkan Nominal Pembayaran</string>
     <string name="scan">Scan</string>
     <string name="transaction_confirmation">Konfirmasi Transaksi</string>
     <string name="insufficient_balance">Saldo kamu tidak cukup</string>
     <string name="insufficient_balance_desc">Harap lakukan top up untuk melakukan transaksi</string>
     <string name="remaining_balance">Sisa Saldo</string>
+    <string name="no_reference">No. Referensi</string>
+    <string name="tip">Tip</string>
+    <string name="acquire_name">Nama Pengakuisisi</string>
 </resources>

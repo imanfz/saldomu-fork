@@ -78,12 +78,12 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
             override fun onResponses(jsonObject: JsonObject) {
                 Log.e(TAG, "onResponses: $jsonObject")
                 val model = getGson().fromJson(jsonObject, jsonModel::class.java)
-                next = jsonObject.get("next").toString()
                 val code = model.error_code
                 val message = model.error_message
 
                 when (code) {
                     WebParams.SUCCESS_CODE -> {
+                        next = jsonObject.get("next").toString()
                         val type = object : TypeToken<List<HistoryModel>>() {
                         }.type
                         val list = gson.fromJson<List<HistoryModel>>(jsonObject.get("report_data"), type)
@@ -96,8 +96,7 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
                         isLoading = false
                     }
                     WebParams.LOGOUT_CODE -> {
-                        val test = AlertDialogLogout.getInstance()
-                        test.showDialoginActivity(activity, message)
+                        AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                     }
                     WebParams.ERROR_9333 -> {
                         Timber.d("isi response app data:%s", model.app_data)
@@ -283,8 +282,8 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tx_amount))
         val dAmount = Objects.requireNonNull(response.tx_amount)!!.toDouble()
         val dFee = Objects.requireNonNull(response.admin_fee)!!.toDouble()
-        val total_amount = dAmount + dFee
-        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount))
+        val totalAmount = dAmount + dFee
+        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(totalAmount))
         var txStat = false
         val txStatus = response.tx_status
         if (txStatus == DefineValue.SUCCESS) {
@@ -298,6 +297,10 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
         args.putString(DefineValue.BUSS_SCHEME_CODE, response.buss_scheme_code)
         args.putString(DefineValue.BUSS_SCHEME_NAME, response.buss_scheme_name)
         args.putString(DefineValue.MERCHANT_NAME, response.merchant_name)
+        args.putString(DefineValue.MERCHANT_CITY, response.merchant_city)
+        args.putString(DefineValue.MERCHANT_PAN, response.merchant_pan)
+        args.putString(DefineValue.TERMINAL_ID, response.terminal_id)
+        args.putString(DefineValue.TRX_ID_REF, response.trx_id_ref)
         dialog.arguments = args
         val ft = requireActivity().supportFragmentManager.beginTransaction()
         ft.add(dialog, ReportBillerDialog.TAG)
