@@ -174,7 +174,7 @@ class StarterKitActivityKotlin : BaseActivity(), StarterKitListFileAdapter.Start
                             WebParams.LOGOUT_CODE -> {
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity2(this@StarterKitActivityKotlin, message)
+                                test.showDialoginActivity(this@StarterKitActivityKotlin, message)
                             }
                             WebParams.ERROR_9333 -> {
                                 Timber.d("isi response app data:" + model.app_data)

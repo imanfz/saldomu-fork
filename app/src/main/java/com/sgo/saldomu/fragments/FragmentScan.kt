@@ -13,14 +13,18 @@ import androidx.core.app.ActivityCompat
 import com.google.zxing.Result
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.ConfirmationQrisActivity
+import com.sgo.saldomu.activities.PayFriendsActivity
 import com.sgo.saldomu.coreclass.DefineValue
+import com.sgo.saldomu.coreclass.ScanQRUtils
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
 import com.sgo.saldomu.dialogs.AlertDialogLogout
 import com.sgo.saldomu.dialogs.AlertDialogMaintenance
 import com.sgo.saldomu.dialogs.AlertDialogUpdateApp
+import com.sgo.saldomu.dialogs.DefinedDialog
 import com.sgo.saldomu.interfaces.ObjListeners
+import com.sgo.saldomu.models.QrModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_scan.*
@@ -33,6 +37,10 @@ class FragmentScan : BaseFragment(), ZXingScannerView.ResultHandler {
 
     private var mScannerView: ZXingScannerView? = null
 
+    private var qrType: String = ""
+    private var benef: String = ""
+    private var benefName: String = ""
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.frag_scan, container, false)
         return v
@@ -41,6 +49,11 @@ class FragmentScan : BaseFragment(), ZXingScannerView.ResultHandler {
     override fun onStart() {
         doRequestPermission()
         super.onStart()
+    }
+
+    override fun onResume() {
+        resumeScanner()
+        super.onResume()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -96,10 +109,42 @@ class FragmentScan : BaseFragment(), ZXingScannerView.ResultHandler {
     }
 
     override fun handleResult(rawResult: Result?) {
-//        val i = Intent(activity, PayFriendsActivity::class.java)
-//            startActivity(i)
-//        requireActivity().finish()
-        parsingQR(rawResult?.text.toString())
+        if (rawResult!!.text.contains("qr_type=QR_TYPE_FROM_DEFAULT_ACCOUNT")) {
+            if (sp.getBoolean(DefineValue.ALLOW_TRANSFER, false)) {
+                divideResult(rawResult.text.toString())
+                val qrModel = QrModel(benef, benefName, qrType)
+                requireActivity().finish()
+                val i = Intent(activity, PayFriendsActivity::class.java)
+                i.putExtra(DefineValue.QR_OBJ, qrModel)
+                startActivity(i)
+            } else {
+                val dialog = DefinedDialog.MessageDialog(activity, getString(R.string.alertbox_title_information),
+                        getString(R.string.cashout_dialog_message)
+                ) { v: View?, isLongClick: Boolean -> }
+                dialog.show()
+            }
+        } else
+            parsingQR(rawResult.text.toString())
+    }
+
+    private fun divideResult(rawResult: String) {
+        val array = arrayOfNulls<String>(10)
+        for ((i, value) in rawResult.split(ScanQRUtils.SCAN_QR_SEPARATOR).toTypedArray().withIndex()) {
+            array[i] = value
+            when {
+                array[i]!!.contains(DefineValue.QR_TYPE) -> {
+                    qrType = array[i]!!.substring(array[i]!!.indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1)
+                }
+                array[i]!!.contains(DefineValue.NO_HP_BENEF) -> {
+                    benef = array[i]!!.substring(array[i]!!.indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1)
+                    Timber.d("benef:$benef")
+                }
+                array[i]!!.contains(DefineValue.SOURCE_ACCT_NAME) -> {
+                    benefName = array[i]!!.substring(array[i]!!.indexOf(ScanQRUtils.EQUALS_SEPARATOR) + 1)
+                    Timber.d("benefName:$benefName")
+                }
+            }
+        }
     }
 
     private fun parsingQR(qrisString: String?) {
@@ -121,7 +166,7 @@ class FragmentScan : BaseFragment(), ZXingScannerView.ResultHandler {
                                 startActivity(intent)
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)

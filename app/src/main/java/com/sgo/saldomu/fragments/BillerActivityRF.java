@@ -240,7 +240,7 @@ public class BillerActivityRF extends BaseFragment {
                                     Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity2(getActivity(), message);
+                                    test.showDialoginActivity(getActivity(), message);
                                 } else {
                                     if (code.equals("0003"))
                                         insertUpdateData(null, _biller_type_code, withDenom);

@@ -157,11 +157,9 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
             alertbox.setTitle(getString(R.string.warning));
             alertbox.setMessage(getString(R.string.exit_message));
             alertbox.setPositiveButton(getString(R.string.ok), (arg0, arg1) -> {
-                getApplicationContext().getCacheDir().delete();
-                sp.edit().clear().commit();
-                Intent intent = new Intent(ActivityListSettings.this, Perkenalan.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                sp.edit().putBoolean(DefineValue.LOGOUT_FROM_SESSION_TIMEOUT, false).commit();
+                setResult(MainPage.RESULT_LOGOUT);
+                finish();
             });
             alertbox.setNegativeButton(getString(R.string.cancel), (arg0, arg1) -> {
             });

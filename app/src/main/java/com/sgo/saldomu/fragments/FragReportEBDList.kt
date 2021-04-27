@@ -199,7 +199,7 @@ ${dateTo?.get(Calendar.DAY_OF_MONTH)}-${dateTo?.get(Calendar.MONTH)?.plus(1)}-${
                     }
                     WebParams.LOGOUT_CODE -> {
                         val alertDialogLogout = AlertDialogLogout.getInstance()
-                        alertDialogLogout.showDialoginActivity2(activity, message)
+                        alertDialogLogout.showDialoginActivity(activity, message)
                     }
                     DefineValue.ERROR_9333 -> {
                         val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -253,7 +253,7 @@ ${dateTo?.get(Calendar.DAY_OF_MONTH)}-${dateTo?.get(Calendar.MONTH)?.plus(1)}-${
                     }
                     WebParams.LOGOUT_CODE -> {
                         val alertDialogLogout = AlertDialogLogout.getInstance()
-                        alertDialogLogout.showDialoginActivity2(activity, message)
+                        alertDialogLogout.showDialoginActivity(activity, message)
                     }
                     DefineValue.ERROR_9333 -> {
                         val model = gson.fromJson(response.toString(), jsonModel::class.java)

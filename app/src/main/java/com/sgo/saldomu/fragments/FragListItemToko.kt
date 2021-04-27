@@ -1,7 +1,6 @@
 package com.sgo.saldomu.fragments
 
 import android.app.Dialog
-import android.opengl.Visibility
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -158,7 +157,7 @@ class FragListItemToko : BaseFragment() {
                                             getCatalogList()
                                         }
                                         WebParams.LOGOUT_CODE -> {
-                                            AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
+                                            AlertDialogLogout.getInstance().showDialoginActivity(tokoPurchaseOrderActivity, message)
                                         }
                                         DefineValue.ERROR_9333 -> {
                                             val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -279,7 +278,7 @@ class FragListItemToko : BaseFragment() {
                                             getCatalogList()
                                         }
                                         WebParams.LOGOUT_CODE -> {
-                                            AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
+                                            AlertDialogLogout.getInstance().showDialoginActivity(tokoPurchaseOrderActivity, message)
                                         }
                                         DefineValue.ERROR_9333 -> {
                                             val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -455,7 +454,7 @@ class FragListItemToko : BaseFragment() {
                                         itemListFavoriteAdapter!!.notifyDataSetChanged()
                                     }
                                     WebParams.LOGOUT_CODE -> {
-                                        AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
+                                        AlertDialogLogout.getInstance().showDialoginActivity(tokoPurchaseOrderActivity, message)
                                     }
                                     DefineValue.ERROR_9333 -> {
                                         val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -565,7 +564,7 @@ class FragListItemToko : BaseFragment() {
                                 (activity as TokoPurchaseOrderActivity).addFragment(frag, getString(R.string.purchase_order_confirmation), (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)

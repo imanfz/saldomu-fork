@@ -140,7 +140,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
                                 inputPIN(-1)
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity2(this@ConfirmationQrisActivity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(this@ConfirmationQrisActivity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -235,7 +235,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
                                 getTrxStatus()
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity2(this@ConfirmationQrisActivity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(this@ConfirmationQrisActivity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -284,7 +284,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
                             if (code == WebParams.SUCCESS_CODE || code == "0003") {
                                 showReportQRSDialog(model)
                             } else if (code == WebParams.LOGOUT_CODE) {
-                                AlertDialogLogout.getInstance().showDialoginActivity2(this@ConfirmationQrisActivity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(this@ConfirmationQrisActivity, message)
                             } else if (code == DefineValue.ERROR_9333) {
                                 val appModel = model.app_data
                                 AlertDialogUpdateApp.getInstance().showDialogUpdate(this@ConfirmationQrisActivity, appModel.type, appModel.packageName, appModel.downloadUrl)

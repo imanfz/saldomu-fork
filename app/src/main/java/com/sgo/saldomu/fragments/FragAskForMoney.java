@@ -419,7 +419,7 @@ public class FragAskForMoney extends BaseFragment {
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity2(getActivity(), message);
+                                test.showDialoginActivity(getActivity(), message);
                             } else {
                                 if (code.equals("0998")) {
                                     phoneRetv.requestFocus();

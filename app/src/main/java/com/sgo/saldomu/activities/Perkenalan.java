@@ -201,14 +201,15 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 //                startActivity(i);
 //            }
             sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
-            if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty()) {
-                if (sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
+            boolean logoutBySession = sp.getBoolean(DefineValue.LOGOUT_FROM_SESSION_TIMEOUT, false);
+            if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty() && logoutBySession) {
+                if (sp.getString(DefineValue.USER_PASSWORD, "").equals("") && !logoutBySession) {
                     Intent i = new Intent(Perkenalan.this, LoginActivity.class);
                     i.putExtra(DefineValue.USER_IS_NEW, -2);
                     startActivity(i);
                 } else {
                     Intent i = new Intent(Perkenalan.this, InsertPIN.class);
-                    i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
+                    i.putExtra(DefineValue.IS_FORGOT_PASSWORD, false);
                     i.putExtra(DefineValue.NOT_YET_LOGIN, true);
                     startActivityForResult(i, MainPage.REQUEST_FINISH);
                 }
@@ -593,7 +594,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 
             @Override
             public void onError(Throwable throwable) {
-                Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast) + "( " +throwable.getMessage() + " )", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast) + "( " + throwable.getMessage() + " )", Toast.LENGTH_SHORT).show();
             }
 
             @Override

@@ -28,7 +28,6 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.B2BActivity;
 import com.sgo.saldomu.activities.FavoriteActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -379,7 +378,7 @@ public class FragTagihInput extends BaseFragment {
                                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                             String message = response.getString(WebParams.ERROR_MESSAGE);
                                             AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                            test.showDialoginActivity2(getActivity(), message);
+                                            test.showDialoginActivity(getActivity(), message);
                                         } else if (code.equals(DefineValue.ERROR_9333)) {
                                             Timber.d("isi response app data:" + model.getApp_data());
                                             final AppDataModel appModel = model.getApp_data();
