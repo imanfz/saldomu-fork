@@ -221,7 +221,7 @@ class HistoryActivity : BaseActivity(), HistoryAdapter.HistoryListener, SwipeRef
                             WebParams.LOGOUT_CODE -> {
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity2(this@HistoryActivity, message)
+                                test.showDialoginActivity(this@HistoryActivity, message)
                             }
                             WebParams.ERROR_9333 -> {
                                 Timber.d("isi response app data:" + model.app_data)

@@ -70,6 +70,7 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
             tv_version = v.findViewById(R.id.tv_version);
         }
         keyboardPin = findViewById(R.id.keyboard);
+
         Timber.d("masuk UtilsLoader");
         String userId = sp.getString(DefineValue.USERID_PHONE, "");
         if (userId.isEmpty()) {
@@ -79,52 +80,36 @@ public class InsertPIN extends BaseActivity implements KeyboardPin.KeyboardPinLi
             }
         }
 
-        if (getIntent().getBooleanExtra(DefineValue.NOT_YET_LOGIN, false)) {
-            tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" +BuildConfig.VERSION_CODE +")");
+        IsForgotPassword = getIntent().getBooleanExtra(DefineValue.IS_FORGOT_PASSWORD, false);
+        if (getIntent().getBooleanExtra(DefineValue.NOT_YET_LOGIN, false) && !IsForgotPassword && !sp.getString(DefineValue.USER_PASSWORD, "").equals("")) {
+            tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")");
             if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("") && !sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty())
                 showDialogFingerprint();
-            new UtilsLoader(this, sp).getFailedPINNo(userId, new OnLoadDataListener() {
-                @Override
-                public void onSuccess(Object deData) {
-                    String _dedata = String.valueOf(deData);
-                    setTextAttempt(_dedata);
-                }
-
-                @Override
-                public void onFail(Bundle message) {
-
-                }
-
-                @Override
-                public void onFailure(String message) {
-
-                }
-            });
         } else {
-            new UtilsLoader(this, sp).getFailedPIN(userId, new OnLoadDataListener() {
-                @Override
-                public void onSuccess(Object deData) {
-                    String _dedata = String.valueOf(deData);
-                    setTextAttempt(_dedata);
-                }
-
-                @Override
-                public void onFail(Bundle message) {
-
-                }
-
-                @Override
-                public void onFailure(String message) {
-
-                }
-            });
             keyboardPin.hideFingerprint();
         }
+
+        new UtilsLoader(this, sp).getFailedPINNo(userId, new OnLoadDataListener() {
+            @Override
+            public void onSuccess(Object deData) {
+                String _dedata = String.valueOf(deData);
+                setTextAttempt(_dedata);
+            }
+
+            @Override
+            public void onFail(Bundle message) {
+
+            }
+
+            @Override
+            public void onFailure(String message) {
+
+            }
+        });
 
         initializeToolbar();
 
         final Boolean is_md5 = getIntent().getBooleanExtra(DefineValue.IS_MD5, false);
-        IsForgotPassword = getIntent().getBooleanExtra(DefineValue.IS_FORGOT_PASSWORD, false);
         final int attempt = getIntent().getIntExtra(DefineValue.ATTEMPT, 0);
 
         if (attempt != 0) {

@@ -207,7 +207,7 @@ class FragmentHistory : BaseFragment(), HistoryAdapter.HistoryListener, SwipeRef
                             WebParams.LOGOUT_CODE -> {
                                 val message = model.error_message
                                 val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity2(activity, message)
+                                test.showDialoginActivity(activity, message)
                             }
                             WebParams.ERROR_9333 -> {
                                 Timber.d("isi response app data:" + model.app_data)

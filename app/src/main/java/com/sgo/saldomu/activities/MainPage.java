@@ -67,7 +67,6 @@ import com.sgo.saldomu.fragments.FragHelp;
 import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.FragTagihInput;
 import com.sgo.saldomu.fragments.FragmentProfileQr;
-import com.sgo.saldomu.fragments.FragmentScan;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;

@@ -256,12 +256,15 @@ public class FragPayFriends extends BaseFragment {
 
             }
 
-            if (bundle.containsKey(DefineValue.FAVORITE_CUSTOMER_ID) && bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, null) != null){
+            if (bundle.containsKey(DefineValue.FAVORITE_CUSTOMER_ID) && bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, null) != null) {
                 phoneRetv.setText(bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID));
                 phoneRetv.requestFocus();
             }
 
-
+            if (bundle.containsKey(DefineValue.QR_OBJ)) {
+                qrObj = bundle.getParcelable(DefineValue.QR_OBJ);
+                setBundleViewQR();
+            }
 
             phoneRetv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -431,7 +434,6 @@ public class FragPayFriends extends BaseFragment {
             progdialog.show();
 
 
-
             HashMap<String, Object> params;
             String url;
             if (isNotification) {
@@ -487,11 +489,11 @@ public class FragPayFriends extends BaseFragment {
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity2(getActivity(), message);
+                                    test.showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(ErrorDefinition.WRONG_PIN_P2P)) {
                                     code = model.getError_message();
                                     showDialogError(code);
-                                }else if (code.equals(DefineValue.ERROR_9333)) {
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:" + model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
                                     AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();

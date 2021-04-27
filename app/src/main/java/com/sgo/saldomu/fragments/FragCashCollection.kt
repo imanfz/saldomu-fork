@@ -218,7 +218,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                     WebParams.LOGOUT_CODE -> {
                         val message = cashCollectionModel.error_message
                         val test = AlertDialogLogout.getInstance()
-                        test.showDialoginActivity2(activity, message)
+                        test.showDialoginActivity(activity, message)
                     }
                     WebParams.ERROR_9333 -> {
                         Timber.d("isi response app data:" + cashCollectionModel.app_data)
@@ -302,7 +302,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                         WebParams.LOGOUT_CODE -> {
                             val message = model.error_message
                             val test = AlertDialogLogout.getInstance()
-                            test.showDialoginActivity2(activity, message)
+                            test.showDialoginActivity(activity, message)
                         }
                         WebParams.ERROR_9333 -> {
                             Timber.d("isi response app data:" + model.app_data)
@@ -542,7 +542,7 @@ class FragCashCollection : BaseFragment(), ReportBillerDialog.OnDialogOkCallback
                                         } else if (code == WebParams.LOGOUT_CODE) {
                                             val message = response.getString(WebParams.ERROR_MESSAGE)
                                             val test = AlertDialogLogout.getInstance()
-                                            test.showDialoginActivity2(activity, message)
+                                            test.showDialoginActivity(activity, message)
                                         } else if (code == DefineValue.ERROR_9333) {
                                             Timber.d("isi response app data:" + model.app_data)
                                             val appModel = model.app_data

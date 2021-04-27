@@ -386,7 +386,7 @@ public class AskForMoneyActivity extends BaseActivity {
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity2(AskForMoneyActivity.this, message);
+                                test.showDialoginActivity(AskForMoneyActivity.this, message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();

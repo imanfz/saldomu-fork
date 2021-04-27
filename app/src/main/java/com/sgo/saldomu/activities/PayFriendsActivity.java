@@ -64,6 +64,7 @@ public class PayFriendsActivity extends BaseActivity {
 
                 if (getIntent() != null) {
                     args.putString(DefineValue.FAVORITE_CUSTOMER_ID, getIntent().getStringExtra(DefineValue.FAVORITE_CUSTOMER_ID));
+                    args.putParcelable(DefineValue.QR_OBJ, intent.getParcelableExtra(DefineValue.QR_OBJ));
                 }
 
                 newFragment = new FragPayFriends();

@@ -172,7 +172,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                 }
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(tokoPurchaseOrderActivity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -259,7 +259,7 @@ class FragListPurchaseOrder : BaseFragment() {
                                 showDialog(getString(R.string.order_canceled))
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity2(tokoPurchaseOrderActivity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(tokoPurchaseOrderActivity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)

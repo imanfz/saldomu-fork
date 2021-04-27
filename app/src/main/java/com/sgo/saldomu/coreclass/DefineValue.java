@@ -743,5 +743,7 @@ public class DefineValue {
     public static String IDENTITY_REMARK = "identityRemark";
     public static String ANCHOR_COMPANY = "anchorCompany";
     public static String DOC_TYPE_REMARK = "docTypeRemark";
+    public static String ALLOW_TRANSFER = "allowTransfer";
+    public static String LOGOUT_FROM_SESSION_TIMEOUT = "logout_from_session_timeout";
 }
 

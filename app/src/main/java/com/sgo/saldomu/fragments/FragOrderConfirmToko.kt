@@ -29,18 +29,15 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.interfaces.OnLoadDataListener
 import com.sgo.saldomu.loader.UtilsLoader
 import com.sgo.saldomu.models.EBDConfirmModel
-import com.sgo.saldomu.models.MappingItemsItem
 import com.sgo.saldomu.models.PaymentMethods
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel
 import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.securities.RSA
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_create_gr.*
 import kotlinx.android.synthetic.main.frag_order_confirm_toko.*
 import kotlinx.android.synthetic.main.frag_order_confirm_toko.layout_bonus_item
 import kotlinx.android.synthetic.main.frag_order_confirm_toko.layout_payment_method
-import kotlinx.android.synthetic.main.fragment_input_item_list.*
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -179,7 +176,7 @@ class FragOrderConfirmToko : BaseFragment() {
                                     showDialog(message)
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -239,7 +236,7 @@ class FragOrderConfirmToko : BaseFragment() {
                                 getFailedPin()
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -330,7 +327,7 @@ class FragOrderConfirmToko : BaseFragment() {
                         if (code == WebParams.SUCCESS_CODE) {
                             getTrxStatus()
                         } else if (code == WebParams.LOGOUT_CODE) {
-                            AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
+                            AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                         } else {
                             Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
                             if (isPIN && message == "PIN tidak sesuai") {
@@ -379,7 +376,7 @@ class FragOrderConfirmToko : BaseFragment() {
                             val model = getGson().fromJson(response.toString(), GetTrxStatusReportModel::class.java)
                             showReportBillerDialog(model.tx_status!!, model)
                         } else if (code == WebParams.LOGOUT_CODE) {
-                            AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
+                            AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                         } else if (code == DefineValue.ERROR_9333) {
                             val model = gson.fromJson(response.toString(), jsonModel::class.java)
                             val appModel = model.app_data

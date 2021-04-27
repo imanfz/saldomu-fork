@@ -156,6 +156,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private static final String BILLER_TYPE_CODE_VOUCHER = "VCHR";
     private static final String BILLER_TYPE_CODE_PDAM = "AIR";
     private static final String BILLER_TYPE_CODE_DATA = "DATA";
+    private boolean allowedTransfer;
 
     public FragHomeNew() {
         // Required empty public constructor
@@ -412,6 +413,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (isAgent)
             tv_balance.setText(getString(R.string.agent_balance));
         getHelpList();
+
+        if (isAgent && agentTrxCodeArray.length() > 0)
+            for (int i = 0; i < agentTrxCodeArray.length(); i++)
+                try {
+                    if (agentTrxCodeArray.get(i).equals(DefineValue.P2P))
+                        allowedTransfer = true;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+        else allowedTransfer = !isAgent && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2;
+
+        sp.edit().putBoolean(DefineValue.ALLOW_TRANSFER, allowedTransfer).commit();
     }
 
     private void showStatusOnline() {
@@ -1341,7 +1354,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         else if (titleMenu.equalsIgnoreCase(getString(R.string.more)))
             return R.drawable.ic_more;
         else
-            return R.drawable.ic_x;
+            return R.drawable.ic_home_default;
     }
 
     private void onClickMenuItem(String menuItemName) {
@@ -1361,16 +1374,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 dialogDormant();
             } else {
                 Intent intent = new Intent(getActivity(), TransferActivity.class);
-                if (isAgent && agentTrxCodeArray.length() > 0)
-                    for (int i = 0; i < agentTrxCodeArray.length(); i++)
-                        try {
-                            if (agentTrxCodeArray.get(i).equals(DefineValue.P2P))
-                                switchActivity(intent, MainPage.ACTIVITY_RESULT);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                else if (!isAgent && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2)
+                if (allowedTransfer)
                     switchActivity(intent, MainPage.ACTIVITY_RESULT);
                 else
                     dialogUnavailable();

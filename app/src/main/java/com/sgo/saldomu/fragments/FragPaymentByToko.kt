@@ -155,7 +155,7 @@ class FragPaymentByToko : BaseFragment() {
                                 adapterDetailPOBonusItem!!.notifyDataSetChanged()
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
+                                AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                             }
                             DefineValue.ERROR_9333 -> {
                                 val model = gson.fromJson(response.toString(), jsonModel::class.java)
@@ -414,7 +414,7 @@ class FragPaymentByToko : BaseFragment() {
                             val model = getGson().fromJson(response.toString(), GetTrxStatusReportModel::class.java)
                             showReportBillerDialog(model.tx_status!!, model)
                         } else if (code == WebParams.LOGOUT_CODE) {
-                            AlertDialogLogout.getInstance().showDialoginActivity2(activity, message)
+                            AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
                         } else if (code == DefineValue.ERROR_9333) {
                             val model = gson.fromJson(response.toString(), jsonModel::class.java)
                             val appModel = model.app_data

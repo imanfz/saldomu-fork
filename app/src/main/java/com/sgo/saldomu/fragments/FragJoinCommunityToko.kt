@@ -7,13 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoEBDActivity
-import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
@@ -28,7 +26,6 @@ import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.dialog_notification.*
 import kotlinx.android.synthetic.main.frag_input_store_code.*
-import kotlinx.android.synthetic.main.fragment_input_item_list.*
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -134,7 +131,7 @@ class FragJoinCommunityToko : BaseFragment() {
                     }
                     WebParams.LOGOUT_CODE -> {
                         val alertDialogLogout = AlertDialogLogout.getInstance()
-                        alertDialogLogout.showDialoginActivity2(activity, message)
+                        alertDialogLogout.showDialoginActivity(activity, message)
                     }
                     DefineValue.ERROR_9333 -> {
                         val model = gson.fromJson(response.toString(), jsonModel::class.java)
