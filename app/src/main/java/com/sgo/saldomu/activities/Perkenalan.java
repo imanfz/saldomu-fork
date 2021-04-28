@@ -99,7 +99,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         Bundle m = getIntent().getExtras();
         if (m != null && m.containsKey(DefineValue.LOG_OUT)) {
-            if (m.getBoolean(DefineValue.LOG_OUT))
+            if (m.getBoolean(DefineValue.LOG_OUT)==true)
                 sentLogout();
         }
         if (InetHandler.isNetworkAvailable(this))
@@ -202,16 +202,17 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 //            }
             sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
             boolean logoutBySession = sp.getBoolean(DefineValue.LOGOUT_FROM_SESSION_TIMEOUT, false);
-            if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty() && logoutBySession) {
-                if (sp.getString(DefineValue.USER_PASSWORD, "").equals("") && !logoutBySession) {
-                    Intent i = new Intent(Perkenalan.this, LoginActivity.class);
-                    i.putExtra(DefineValue.USER_IS_NEW, -2);
-                    startActivity(i);
-                } else {
+            if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")!=null && logoutBySession) {
+                if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("") && logoutBySession) {
                     Intent i = new Intent(Perkenalan.this, InsertPIN.class);
                     i.putExtra(DefineValue.IS_FORGOT_PASSWORD, false);
                     i.putExtra(DefineValue.NOT_YET_LOGIN, true);
                     startActivityForResult(i, MainPage.REQUEST_FINISH);
+                } else {
+                    Intent i = new Intent(Perkenalan.this, LoginActivity.class);
+                    i.putExtra(DefineValue.USER_IS_NEW, -2);
+                    startActivity(i);
+
                 }
             } else {
 //                if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
@@ -840,7 +841,10 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
                         @Override
                         public void onResponses(JsonObject object) {
                             jsonModel model = RetrofitService.getInstance().getGson().fromJson(object, jsonModel.class);
-
+                            if (progdialog != null) {
+                                if (progdialog.isShowing())
+                                    progdialog.dismiss();
+                            }
                             if (model.getError_code().equals(WebParams.SUCCESS_CODE)) {
                                 //stopService(new Intent(MainPage.this, UpdateLocationService.class));
                                 Logout();
@@ -848,6 +852,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
                             } else {
                                 Toast.makeText(Perkenalan.this, model.getError_message(), Toast.LENGTH_LONG).show();
                             }
+
                         }
 
                         @Override
@@ -876,7 +881,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
         if (sp.getString(DefineValue.IS_POS, "N").equals(DefineValue.N)) {
-            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userId);
+            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
         } else
             mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
         mEditor.putString(DefineValue.PREVIOUS_BALANCE, balance);
