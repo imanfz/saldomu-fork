@@ -261,7 +261,7 @@ public class FragPayFriends extends BaseFragment {
                 phoneRetv.requestFocus();
             }
 
-            if (bundle.containsKey(DefineValue.QR_OBJ) && bundle.getString(DefineValue.QR_OBJ, null) != null) {
+            if (bundle.containsKey(DefineValue.QR_OBJ) && bundle.getParcelable(DefineValue.QR_OBJ) != null) {
                 qrObj = bundle.getParcelable(DefineValue.QR_OBJ);
                 setBundleViewQR();
             }

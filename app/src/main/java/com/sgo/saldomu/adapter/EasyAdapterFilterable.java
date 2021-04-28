@@ -87,7 +87,7 @@ public class EasyAdapterFilterable extends ArrayAdapter<String> implements Filte
                 String charString = charSequence.toString().toLowerCase();
 
                 ArrayList<String> temp = new ArrayList<>();
-                if (charString.length() <= 3)
+                if (charString.length() < 3)
                     temp.addAll(originalList);
                 else
                     for (String string : originalList) {
