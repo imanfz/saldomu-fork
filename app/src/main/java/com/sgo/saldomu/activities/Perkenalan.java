@@ -203,15 +203,16 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
             sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
             boolean logoutBySession = sp.getBoolean(DefineValue.LOGOUT_FROM_SESSION_TIMEOUT, false);
             if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty() && logoutBySession) {
-                if (sp.getString(DefineValue.USER_PASSWORD, "").equals("") && !logoutBySession) {
-                    Intent i = new Intent(Perkenalan.this, LoginActivity.class);
-                    i.putExtra(DefineValue.USER_IS_NEW, -2);
-                    startActivity(i);
-                } else {
+                if (sp.getString(DefineValue.USER_PASSWORD, "").equals("") && logoutBySession) {
                     Intent i = new Intent(Perkenalan.this, InsertPIN.class);
                     i.putExtra(DefineValue.IS_FORGOT_PASSWORD, false);
                     i.putExtra(DefineValue.NOT_YET_LOGIN, true);
                     startActivityForResult(i, MainPage.REQUEST_FINISH);
+                } else {
+                    Intent i = new Intent(Perkenalan.this, LoginActivity.class);
+                    i.putExtra(DefineValue.USER_IS_NEW, -2);
+                    startActivity(i);
+
                 }
             } else {
 //                if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
