@@ -2,6 +2,8 @@ package com.sgo.saldomu.fragments;
 
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
@@ -20,12 +23,14 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
+import com.sgo.saldomu.adapter.EasyAdapterFilterable;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.models.BillerItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
@@ -48,7 +53,7 @@ public class ListBillerMerchant extends ListFragment {
     private String billerTypeCode, billerIdNumber;
     private String billerMerchantName;
     private List<BillerItem> billerData;
-    private EasyAdapter adapter;
+    private EasyAdapterFilterable adapter;
     private ArrayList<String> _data;
     private RealmChangeListener realmListener;
     private Realm realm;
@@ -74,43 +79,27 @@ public class ListBillerMerchant extends ListFragment {
         billerTypeCode = args.getString(DefineValue.BILLER_TYPE, "");
         billerIdNumber = args.getString(DefineValue.BILLER_ID_NUMBER, "");
         billerMerchantName = args.getString(DefineValue.BILLER_NAME, "");
-//        realm = Realm.getInstance(RealmManager.BillerConfiguration);
-
-//        _data = new ArrayList<>();
-//        adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _data);
 
         ListView listView1 = v.findViewById(android.R.id.list);
+        AutoCompleteTextView searchBar = v.findViewById(R.id.search);
+
         listView1.setAdapter(adapter);
 
-        listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        searchBar.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onListItemClick(listView1, view, position, id);
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                adapter.getFilter().filter(editable.toString());
             }
         });
         setActionBarTitle(getString(R.string.biller_ab_title) + " - " + billerMerchantName);
-//        if(!realm.isInTransaction())
-//            initializeData();
-
-//        realmListener = new RealmChangeListener() {
-//            @Override
-//            public void onChange(Object element) {
-//                Timber.d("Masuk realm listener bilactive asdfasdfa");
-//                if(isVisible()){
-//                    initializeData();
-//                }
-//            }};
-//        realm.addChangeListener(realmListener);
-
-//        PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity().getApplicationContext(),billerIdNumber);
-//        for (int i=0; i<_data.size(); i++)
-//        {
-//            Timber.d("_data"+_data.get(i));
-//            if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase()))
-//            {
-//                onListItemClick(null, null, i, 0);
-//            }
-//        }
     }
 
     private void initializeData() {
@@ -127,15 +116,6 @@ public class ListBillerMerchant extends ListFragment {
         }
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        changeToInputBiller(billerData.get(position).getCommId(),
-                billerData.get(position).getCommName(),
-                billerData.get(position).getItemId(),
-                billerData.get(position).getCommCode(),
-                billerData.get(position).getApiKey());
-    }
-
     private void changeToInputBiller(String comm_id, String comm_name, String item_id, String comm_code, String api_key) {
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
@@ -148,13 +128,9 @@ public class ListBillerMerchant extends ListFragment {
 
         Fragment billerInput;
         String fragName;
-        if (billerTypeCode.equals("EMON")) {
-            fragName = comm_name;
-            billerInput = new BillerInputEmoney();
-        } else {
-            fragName = getString(R.string.biller_ab_title) + " - " + comm_name;
-            billerInput = new BillerInput();
-        }
+
+        fragName = getString(R.string.biller_ab_title) + " - " + comm_name;
+        billerInput = new BillerInput();
 
         billerInput.setArguments(mArgs);
         switchFragment(billerInput, BillerActivity.FRAG_BIL_LIST_MERCHANT, fragName, true, BillerInput.TAG);
@@ -181,7 +157,6 @@ public class ListBillerMerchant extends ListFragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -200,40 +175,29 @@ public class ListBillerMerchant extends ListFragment {
 //        realm = Realm.getInstance(RealmManager.BillerConfiguration);
         realm = Realm.getInstance(RealmManager.realmConfiguration);
         _data = new ArrayList<>();
-        adapter = new EasyAdapter(getActivity(), R.layout.list_view_item_with_arrow, _data);
+        adapter = new EasyAdapterFilterable(getActivity(), R.layout.list_view_item_with_arrow, _data, item -> {
+            for (int i = 0; i < _data.size(); i++) {
+                if (_data.get(i).equalsIgnoreCase(item)){
+                    BillerItem billerItem = billerData.get(i);
+                    changeToInputBiller(billerItem.getCommId(),
+                            billerItem.getCommName(),
+                            billerItem.getItemId(),
+                            billerItem.getCommCode(),
+                            billerItem.getApiKey());
+                }
+            }
+        });
 
         if (!realm.isInTransaction())
             initializeData();
 
-        realmListener = new RealmChangeListener() {
-            @Override
-            public void onChange(Object element) {
-                Timber.d("Masuk realm listener bilactive asdfasdfa");
-                if (isVisible()) {
-                    initializeData();
-                }
+        realmListener = element -> {
+            Timber.d("Masuk realm listener bilactive asdfasdfa");
+            if (isVisible()) {
+                initializeData();
             }
         };
         realm.addChangeListener(realmListener);
-
-//        if (billerIdNumber != null && !billerIdNumber.equals("")) {
-//            PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(), billerIdNumber);
-//            Log.wtf("billeridnumber", "billeridnumber");
-//            if (BillerIdNumber != null) {
-//                for (int i = 0; i < _data.size(); i++) {
-//                    Timber.d("_data" + _data.get(i));
-//                    if (_data != null) {
-//                        Timber.d("prefix name = " + BillerIdNumber.prefix_name);
-//                        if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase())) {
-//                            changeToInputBiller(mListBillerData.get(i).getComm_id(),
-//                                    mListBillerData.get(i).getComm_name(),
-//                                    mListBillerData.get(i).getItem_id());
-//                        }
-//                    }
-//
-//                }
-//            }
-//        }
 
     }
 
