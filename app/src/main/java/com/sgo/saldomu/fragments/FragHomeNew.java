@@ -1213,7 +1213,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
     private void dialogDormant() {
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getActivity().getString(R.string.title_dialog_dormant),
-                getActivity().getString(R.string.message_dialog_dormant_),
+                getActivity().getString(R.string.message_dialog_dormant),
                 new DefinedDialog.DialogButtonListener() {
                     @Override
                     public void onClickButton(View v, boolean isLongClick) {

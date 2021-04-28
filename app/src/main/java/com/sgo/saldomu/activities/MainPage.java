@@ -320,7 +320,7 @@ public class MainPage extends BaseActivity {
 
     private void dialogDormant() {
         Dialog dialognya = DefinedDialog.MessageDialog(this, getString(R.string.title_dialog_dormant),
-                getString(R.string.message_dialog_dormant_),
+                getString(R.string.message_dialog_dormant),
                 (v, isLongClick) -> {
 //                    Intent i = new Intent(MainPage.this, TopUpActivity.class);
 //                    i.putExtra(DefineValue.IS_ACTIVITY_FULL, true);

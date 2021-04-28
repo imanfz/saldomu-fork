@@ -80,6 +80,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     private LevelClass levelClass;
     private String reject_npwp;
     private String userID;
+    private String isDormant;
     private boolean is_agent = false;//saat antri untuk diverifikasi
     private boolean isUpgradeAgent = false; //saat antri untuk diverifikasi upgrade agent
     private boolean isRegisteredLevel = false;
@@ -95,7 +96,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
     Activity activity;
 
     // UI LAYOUT
-    TextView tv_name, tv_phone_no, tv_lvl_member_value, currencyLimit, limitValue, tv_email, tv_dob, tv_version;
+    TextView tv_name, tv_phone_no, tv_lvl_member_value, tv_dormant_value, currencyLimit, limitValue, tv_email, tv_dob, tv_version;
     CardView btn_upgrade;
     ImageView imageQR;
     ProgressDialog progdialog;
@@ -118,6 +119,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
         tv_name = v.findViewById(R.id.tv_name);
         tv_phone_no = v.findViewById(R.id.tv_phone_no);
         tv_lvl_member_value = v.findViewById(R.id.tv_lvl_member_value);
+        tv_dormant_value = v.findViewById(R.id.tv_dormant_value);
         tv_email = v.findViewById(R.id.tv_current_email);
         tv_dob = v.findViewById(R.id.tv_dob);
         tv_version = v.findViewById(R.id.tv_version);
@@ -198,13 +200,19 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
             }
         } else
             tv_lvl_member_value.setText(getLvl());
+
+        isDormant = sp.getString(DefineValue.IS_DORMANT, "N");
+        if (isDormant.equalsIgnoreCase("Y"))
+            tv_dormant_value.setVisibility(View.VISIBLE);
+        else
+            tv_dormant_value.setVisibility(View.GONE);
+
         currencyLimit.setText(sp.getString(DefineValue.BALANCE_CCYID, ""));
         limitValue.setText(CurrencyFormat.format(sp.getString(DefineValue.BALANCE_REMAIN_LIMIT, "")));
 //        setImageProfPic();
 
-
         viewOnProggressUpgrade();
-        if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
+        if (!isAgent) {
             llBalanceDetail.setVisibility(View.VISIBLE);
         } else {
             llBalanceDetail.setVisibility(View.GONE);
@@ -215,12 +223,11 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
             btn_upgrade.setVisibility(View.GONE);
         }
 
-
-        btn_upgrade.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btn_upgrade.setOnClickListener(v -> {
+            if (isDormant.equalsIgnoreCase("Y"))
+                dialogDormant();
+            else
                 checkIsLv1();
-            }
         });
         custImage.setOnClickListener(v -> {
             final String[] items = {"Choose from Gallery", "Take a Photo"};
@@ -242,7 +249,7 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
             a.create();
             a.show();
         });
-        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME+ " (" +BuildConfig.VERSION_CODE +")");
+        tv_version.setText(getString(R.string.appname) + " " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")");
     }
 
     private String getLvl() {
@@ -496,15 +503,24 @@ public class FragmentProfileQr extends BaseFragment implements ProgressRequestBo
             return true;
         }
 
-        if (isUpgradeAgent && !is_agent) {
-            return true;
-        }
-        return false;
+        return isUpgradeAgent && !is_agent;
     }
 
     private void hideOnProgUpgrade() {
         btn_upgrade.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         btn_upgrade.setEnabled(true);
         lytUpgrade.setVisibility(View.GONE);
+    }
+
+    private void dialogDormant() {
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getActivity().getString(R.string.title_dialog_dormant),
+                getActivity().getString(R.string.message_dialog_dormant),
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                    }
+                }
+        );
+        dialognya.show();
     }
 }

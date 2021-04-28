@@ -83,15 +83,27 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-
-                <TextView
-                    android:id="@+id/tv_lvl_member_value"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:gravity="center"
-                    android:text="SILVER"
-                    android:textSize="16sp" />
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tv_lvl_member_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SILVER"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_dormant_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" (Dormant)"
+                        android:textSize="16sp" />
+                </LinearLayout>
 
 
                 <androidx.cardview.widget.CardView
