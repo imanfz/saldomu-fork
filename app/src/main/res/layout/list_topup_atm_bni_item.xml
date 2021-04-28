@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView android:id="@+id/title_atm"
+        android:textColor="@color/colorSecondaryDark"
+        android:textSize="@dimen/text_size_medium_material"
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout android:id="@+id/list_atm"
+        android:layout_below="@id/title_atm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        >
+
+        <LinearLayout android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            android:layout_height="wrap_content">
+            <RelativeLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                >
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/red_ball_icon"
+                    />
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textColor="@color/grey_1000w"
+                    android:textSize="@dimen/text_size_small_material"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small_material"
+                android:textColor="@color/colorSecondaryDark"
+                android:text="@string/listatm_topup_ins_1"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            android:layout_height="wrap_content">
+            <RelativeLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                >
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/red_ball_icon"
+                    />
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2"
+                    android:textColor="@color/grey_1000w"
+                    android:textSize="@dimen/text_size_small_material"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/text_list_atm_item_bank"
+                android:layout_width="wrap_content"
+                android:maxWidth="200dp"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small_material"
+                android:textColor="@color/colorSecondaryDark"
+                android:text="@string/listatm_topup_bni_2"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            android:layout_height="wrap_content">
+            <RelativeLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                >
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/red_ball_icon"
+                    />
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3"
+                    android:textColor="@color/grey_1000w"
+                    android:textSize="@dimen/text_size_small_material"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small_material"
+                android:textColor="@color/colorSecondaryDark"
+                android:text="@string/listatm_topup_bni_3"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lyt_no_VA"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="28dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/pin_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small_material"
+                android:textStyle="italic"
+                android:padding="@dimen/margin_5dp"
+                android:textColor="@color/grey_1000b"
+                android:layout_gravity="center"
+                android:textIsSelectable="true"
+                android:background="@color/colorSecondaryWhite"
+                android:text="4476600111043518"/>
+
+            <ImageView
+                android:id="@+id/iv_copyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_content_copy"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="7dp"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/fee_deskripsi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:text="asd"
+            android:visibility="gone"
+            />
+
+        <LinearLayout android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                >
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/red_ball_icon"
+                    />
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4"
+                    android:textColor="@color/grey_1000w"
+                    android:textSize="@dimen/text_size_small_material"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small_material"
+                android:textColor="@color/colorSecondaryDark"
+                android:text="@string/listatm_topup_ins_3"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            android:layout_gravity="center"
+            android:background="@color/colorSecondaryWhite"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small_material"
+                android:text="@string/exempli_gratia"
+                android:textStyle="italic"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/grey_1000b"
+                android:layout_gravity="center"
+                />
+            <TextView
+                android:id="@+id/listatm_item_account_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small_material"
+                android:text="50000"
+                android:textStyle="italic"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="4dp"
+                android:textColor="@color/grey_1000b"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            android:layout_height="wrap_content">
+            <RelativeLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                >
+                <ImageView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/red_ball_icon"
+                    />
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5"
+                    android:textColor="@color/grey_1000w"
+                    android:textSize="@dimen/text_size_small_material"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small_material"
+                android:textColor="@color/colorSecondaryDark"
+                android:text="@string/listatm_topup_ins_5"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView android:id="@+id/img_atm"
+        android:src="@drawable/atm_other"
+        android:layout_toRightOf="@id/title_atm"
+        android:gravity="right"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

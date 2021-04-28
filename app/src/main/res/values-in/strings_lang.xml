@@ -1770,4 +1770,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="no_reference">No. Referensi</string>
     <string name="tip">Tip</string>
     <string name="acquire_name">Nama Pengakuisisi</string>
+
+
+    <string name="listatm_topup_bni_2">Pilih menu Virtual Account Billing</string>
+    <string name="listatm_topup_bni_3">Masukkan nomor Virtual Account</string>
 </resources>

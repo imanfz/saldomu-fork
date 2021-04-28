@@ -319,7 +319,10 @@ public class SelectBankProductAdapter extends BaseExpandableListAdapter {
             return R.layout.list_topup_maybank_item;
         else if (bankCode.equals(DefineValue.BankCIMB))
             return R.layout.list_topup_atm_cimb_item;
-
+        else if (bankCode.equals(DefineValue.BankCIMB))
+            return R.layout.list_topup_atm_cimb_item;
+        else if (bankCode.equals(DefineValue.BankBNI))
+            return R.layout.list_topup_atm_bni_item;
         return R.layout.list_topup_atm_item;
     }
 

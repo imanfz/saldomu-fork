@@ -555,6 +555,8 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="listatm_topup_cimb_1">Select Transfer Menu > CIMB Niaga Account/Other cellphone Account> Other CIMB Niaga Account</string>
     <string name="listatm_topup_cimb_2">Enter Company Code:8079</string>
 
+    <string name="listatm_topup_bni_2">Select menu Virtual Account Billing</string>
+
     <string name="listatm_topup_ins_1">Select Transfer Menu</string>
     <string name="listatm_topup_ins_2">Choose Transaction to</string>
     <string name="listatm_topup_ins_3">Enter Minimal TOP UP</string>
@@ -1780,4 +1782,5 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="no_reference">Reference Number</string>
     <string name="tip">Tip</string>
     <string name="acquire_name">Name of the acquirer</string>
+    <string name="listatm_topup_bni_3">Input Virtual Account no.</string>
 </resources>
