@@ -1413,7 +1413,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         } else if (menuItemName.equals(getString(R.string.menu_item_title_biller))) {
             if (isDormant.equalsIgnoreCase("Y")) {
                 dialogDormant();
-            } else if (!isAvailBiller) {
+            } else if (isAgent && !isAvailBiller) {
                 dialogUnavailable();
             } else {
                 Intent i = new Intent(getActivity(), GridBillerActivity.class);
