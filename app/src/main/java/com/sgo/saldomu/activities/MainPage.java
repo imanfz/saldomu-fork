@@ -1284,7 +1284,7 @@ public class MainPage extends BaseActivity {
         if (sp.getString(DefineValue.IS_POS, "N").equals(DefineValue.N)) {
             mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
         } else
-            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
+            mEditor.remove(DefineValue.PREVIOUS_LOGIN_USER_ID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE, balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, contact_first_time);
 
@@ -1549,7 +1549,11 @@ public class MainPage extends BaseActivity {
     public void onBackPressed() {
         Timber.w("get Back Stack Entry Count:" + getSupportFragmentManager().getBackStackEntryCount());
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            showLogoutDialog();
+//            showLogoutDialog();
+            Intent startMain = new Intent(Intent.ACTION_MAIN);
+            startMain.addCategory(Intent.CATEGORY_HOME);
+            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(startMain);
         } else super.onBackPressed();
 
     }

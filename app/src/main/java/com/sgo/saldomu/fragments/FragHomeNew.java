@@ -734,6 +734,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
     private void setupTitleMenu() {
         if (getActivity() != null && isAdded()) {
+            menuStringsMain.clear();
             menuStringsMain.add(getResources().getString(R.string.toolbar_title_topup));
             menuStringsMain.add(getResources().getString(R.string.menu_item_title_send));
             menuStringsMain.add(getResources().getString(R.string.menu_item_title_ask_for_money));

@@ -190,16 +190,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
     private Button.OnClickListener VerifyListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-//            if(!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").isEmpty())
-//            {
-//                Intent i = new Intent(Introduction.this,LoginActivity.class);
-//                i.putExtra(DefineValue.USER_IS_NEW,-2);
-//                i.putExtra(DefineValue.IS_POS, "N");
-//                startActivity(i);
-//            }else {
-//                Intent i = new Intent(Introduction.this, OTPVerificationActivity.class);
-//                startActivity(i);
-//            }
+
             sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
             boolean logoutBySession = sp.getBoolean(DefineValue.LOGOUT_FROM_SESSION_TIMEOUT, false);
             if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")!=null && logoutBySession) {
@@ -215,8 +206,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 
                 }
             } else {
-//                if (!sp.getString(DefineValue.FCM_ID, "").equals("")) {
-//                sendFCM();
+
                 Intent i = new Intent(Perkenalan.this, OTPVerificationActivity.class);
                 i.putExtra(DefineValue.IS_POS, "N");
                 startActivity(i);
@@ -883,7 +873,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         if (sp.getString(DefineValue.IS_POS, "N").equals(DefineValue.N)) {
             mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
         } else
-            mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, "");
+            mEditor.remove(DefineValue.PREVIOUS_LOGIN_USER_ID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE, balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, contact_first_time);
 
