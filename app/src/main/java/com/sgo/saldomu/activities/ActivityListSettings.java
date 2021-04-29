@@ -14,6 +14,7 @@ import com.sgo.saldomu.adapter.SettingsAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.dialogs.InformationDialog;
+import com.sgo.saldomu.models.EditMenuModel;
 import com.sgo.saldomu.utils.LocaleManager;
 import com.sgo.saldomu.widgets.BaseActivity;
 
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import io.realm.Realm;
 import timber.log.Timber;
 
 /**
@@ -157,6 +159,14 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
             alertbox.setTitle(getString(R.string.warning));
             alertbox.setMessage(getString(R.string.exit_message));
             alertbox.setPositiveButton(getString(R.string.ok), (arg0, arg1) -> {
+                if (Realm.getDefaultConfiguration() != null) {
+                    Realm realm = Realm.getInstance(Realm.getDefaultConfiguration());
+                    realm.beginTransaction();
+                    realm.delete(EditMenuModel.class);
+                    if (realm.isInTransaction())
+                        realm.commitTransaction();
+                    realm.close();
+                }
                 sp.edit().putBoolean(DefineValue.LOGOUT_FROM_SESSION_TIMEOUT, false).commit();
                 setResult(MainPage.RESULT_LOGOUT);
                 finish();
