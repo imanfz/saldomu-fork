@@ -791,11 +791,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         menuStrings.add(getResources().getString(R.string.newhome_pam));
 
                     menuStrings.add(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_toko));
+
+                    menuStrings.add(getResources().getString(R.string.menu_item_title_report_ebd));
                 }
 
                 menuStrings.add(getResources().getString(R.string.menu_item_title_report));
 
-                menuStrings.add(getResources().getString(R.string.menu_item_title_report_ebd));
 
 //                menuStrings.add(getResources().getString(R.string.menu_item_lending));
             } else
@@ -928,6 +929,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         break;
                     case "EBD":
                         checkEBDCodeAgent();
+                        menuStrings.add(getResources().getString(R.string.menu_item_title_report_ebd));
                         break;
                 }
             }

@@ -62,7 +62,7 @@ class AdapterCurrentMenu(var context: Context?, var itemList: List<EditMenuModel
             getString(R.string.menu_item_title_b2b_eratel)+ " "+ getString(R.string.menu_item_title_ebd_canvasser) -> return R.drawable.ic_b2b_eratel
             getString(R.string.menu_item_title_report_ebd) -> return R.drawable.ic_laporan
         }
-        return R.drawable.ic_x
+        return R.drawable.ic_home_default
     }
 
     private fun getString(id: Int): String {
