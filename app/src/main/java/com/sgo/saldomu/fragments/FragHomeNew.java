@@ -130,7 +130,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Switch swSettingOnline;
     private TextView tvSettingOnline;
     String shopStatus, isMemberShopDGI, isDormant, agentSchemeCode, memberSchemeCode, agentBillerCode, agentEBDCode, agentTrxCode;
-    Boolean isAgent, isShowB2b = false, isAvailBiller = false;
+    Boolean isAgent, isShowB2b = false, isAvailBiller = false, isB2BEratelToko = false, isB2BEratelCanvasser = false;
     ProgressBar gridview_progbar;
     ProgressBar progBanner;
     private CarouselView carouselView;
@@ -791,13 +791,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         menuStrings.add(getResources().getString(R.string.newhome_pam));
 
                     menuStrings.add(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_toko));
+                    isB2BEratelToko = true;
 
                     menuStrings.add(getResources().getString(R.string.menu_item_title_report_ebd));
                 }
 
                 menuStrings.add(getResources().getString(R.string.menu_item_title_report));
-
-
+                
 //                menuStrings.add(getResources().getString(R.string.menu_item_lending));
             } else
                 getTitleMenu();
@@ -866,9 +866,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 switch (obj) {
                     case DefineValue.TOKO:
                         code = getResources().getString(R.string.menu_item_title_ebd_toko);
+                        isB2BEratelToko = true;
                         break;
                     case DefineValue.CANVASSER:
                         code = getResources().getString(R.string.menu_item_title_ebd_canvasser);
+                        isB2BEratelCanvasser = true;
                         break;
                 }
             }
@@ -962,25 +964,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private boolean inputValidation() {
-        if (input.getText().toString().length() == 0) {
-            input.requestFocus();
-            input.setError(getString(R.string.validation_pulsa));
-            return false;
-        }
-        if (input.getText().toString().charAt(0) == ' ') {
-            input.requestFocus();
-            input.setError(getString(R.string.validation_pulsa));
-            return false;
-        }
-        if (input.getText().toString().length() < 5) {
-            input.requestFocus();
-            input.setError(getString(R.string.validation_pulsa));
-            return false;
-        }
-        return true;
     }
 
     private void switchMenu(int idx_menu, Bundle data) {
@@ -1428,10 +1411,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
             switchActivity(i, MainPage.ACTIVITY_RESULT);
         } else if (menuItemName.equals(getString(R.string.menu_item_title_report_ebd))) {
             Intent i = new Intent();
-            if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_toko))) {
+            if (isB2BEratelToko) {
                 i = new Intent(getActivity(), ReportEBDActivity.class);
                 i.putExtra(DefineValue.EBD, DefineValue.TOKO);
-            } else if (menuStrings.contains(getResources().getString(R.string.menu_item_title_b2b_eratel) + " " + getResources().getString(R.string.menu_item_title_ebd_canvasser))) {
+            } else if (isB2BEratelCanvasser) {
                 i = new Intent(getActivity(), ReportEBDListActivity.class);
                 i.putExtra(DefineValue.EBD, DefineValue.CANVASSER);
             }
