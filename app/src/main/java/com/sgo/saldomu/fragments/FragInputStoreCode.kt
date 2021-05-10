@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
@@ -43,15 +41,14 @@ class FragInputStoreCode : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        var bundle : Bundle
+        var bundle: Bundle
         bundle = arguments!!
         docType = bundle.getString(DefineValue.TYPE, "")
 
-        if (docType.equals(DefineValue.GR))
-        {
+        if (docType == DefineValue.GR) {
             val canvasserGoodReceiptActivity = activity as CanvasserGoodReceiptActivity
             canvasserGoodReceiptActivity.initializeToolbar(getString(R.string.good_receipt_title))
-        }else{
+        } else {
             val canvasserPOActivity = activity as CanvasserPOActivity
             canvasserPOActivity.initializeToolbar(getString(R.string.purchase_order))
 
@@ -148,27 +145,11 @@ class FragInputStoreCode : BaseFragment() {
                                 Timber.d("isi response inquiry doc list:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
-                                        val bundle = Bundle()
-                                        bundle.putString(DefineValue.DOC_LIST, response.optString(WebParams.DOC_LIST))
-                                        val frag : Fragment
-
-                                        if (docType.equals(DefineValue.GR)) {
-                                            frag= FragListPOfromGR()
-                                            bundle.putString(DefineValue.PARTNER, response.optString(WebParams.PARTNER))
-                                            bundle.putString(DefineValue.PARTNER_CODE_ESPAY, response.optString(WebParams.PARTNER_CODE_ESPAY))
-                                            frag.arguments = bundle
-                                            switchFragmentGR(frag, "", "", true, "")
-                                        } else{
-                                            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, response.optString(WebParams.MEMBER_CODE_ESPAY))
-                                            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, response.optString(WebParams.COMM_CODE_ESPAY))
-                                            bundle.putString(DefineValue.CUST_ID_ESPAY, response.optString(WebParams.CUST_ID_ESPAY))
-                                            bundle.putString(DefineValue.PARTNER, response.optString(WebParams.PARTNER))
-                                            bundle.putString(DefineValue.PARTNER_CODE_ESPAY, response.optString(WebParams.PARTNER_CODE_ESPAY))
-                                            bundle.putString(DefineValue.ANCHOR_COMPANY, anchorCodeEspay)
-                                            frag = FragListPOCanvasser()
-                                            frag.arguments = bundle
-                                            switchFragmentPO(frag, "", "", true, "")
-                                        }
+                                        goToPOList(response)
+                                    }
+                                    "2124" -> {
+                                        //"Document no is not found"
+                                        goToPOList(response)
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")
@@ -204,6 +185,30 @@ class FragInputStoreCode : BaseFragment() {
                     })
         } catch (e: java.lang.Exception) {
             Timber.d("httpclient:%s", e.message)
+        }
+    }
+
+    private fun goToPOList(response: JSONObject) {
+        val bundle = Bundle()
+        bundle.putString(DefineValue.DOC_LIST, response.optString(WebParams.DOC_LIST))
+        val frag: Fragment
+
+        if (docType == DefineValue.GR) {
+            frag = FragListPOfromGR()
+            bundle.putString(DefineValue.PARTNER, response.optString(WebParams.PARTNER))
+            bundle.putString(DefineValue.PARTNER_CODE_ESPAY, response.optString(WebParams.PARTNER_CODE_ESPAY))
+            frag.arguments = bundle
+            switchFragmentGR(frag, "", "", true, "")
+        } else {
+            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, response.optString(WebParams.MEMBER_CODE_ESPAY))
+            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, response.optString(WebParams.COMM_CODE_ESPAY))
+            bundle.putString(DefineValue.CUST_ID_ESPAY, response.optString(WebParams.CUST_ID_ESPAY))
+            bundle.putString(DefineValue.PARTNER, response.optString(WebParams.PARTNER))
+            bundle.putString(DefineValue.PARTNER_CODE_ESPAY, response.optString(WebParams.PARTNER_CODE_ESPAY))
+            bundle.putString(DefineValue.ANCHOR_COMPANY, anchorCodeEspay)
+            frag = FragListPOCanvasser()
+            frag.arguments = bundle
+            switchFragmentPO(frag, "", "", true, "")
         }
     }
 

@@ -58,23 +58,6 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
 
         initializeListPO()
 
-//        recyclerViewList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-//
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//
-//                // 3 lines below are not needed.
-//                Log.d("TAG","Last visible item is: ${gridLayoutManager.findLastVisibleItemPosition()}")
-//                Log.d("TAG","Item count is: ${gridLayoutManager.itemCount}")
-//                Log.d("TAG","end? : ${gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.itemCount-1}")
-//
-//                if(gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.itemCount-1){
-//                    // We have reached the end of the recycler view.
-//                }
-//
-//                super.onScrolled(recyclerView, dx, dy)
-//            }
-//        })
-
         search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
@@ -103,32 +86,34 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
         recyclerViewList.adapter = listPOAdapter
         recyclerViewList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        val bundle = arguments
+        val bundle = arguments!!
 
         docListArrayList.clear()
 
-        val mArrayDoc = JSONArray(bundle!!.getString(WebParams.DOC_LIST))
+        if (bundle.getString(WebParams.DOC_LIST) != "") {
+            val mArrayDoc = JSONArray(bundle.getString(WebParams.DOC_LIST))
 
-        for (i in 0 until mArrayDoc.length()) {
-            val docNo = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_NO)
-            val docStatus = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_STATUS)
-            val nettAmount = mArrayDoc.getJSONObject(i).getString(WebParams.NETT_AMOUNT)
-            val dueDate = mArrayDoc.getJSONObject(i).getString(WebParams.DUE_DATE)
-            val custID = mArrayDoc.getJSONObject(i).getString(WebParams.CUST_ID)
-            val memberCode = mArrayDoc.getJSONObject(i).getString(WebParams.MEMBER_CODE)
-            val commCode = mArrayDoc.getJSONObject(i).getString(WebParams.COMM_CODE)
-            val paidStatus = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS_REMARK)
-            val listPOModel = ListPOModel()
-            listPOModel.doc_no = docNo
-            listPOModel.doc_status = docStatus
-            listPOModel.nett_amount = nettAmount
-            listPOModel.due_date = dueDate
-            listPOModel.cust_id = custID
-            listPOModel.comm_code = commCode
-            listPOModel.member_code = memberCode
-            listPOModel.paid_status = paidStatus
-            listPOModel.partner = partner
-            docListArrayList.add(listPOModel)
+            for (i in 0 until mArrayDoc.length()) {
+                val docNo = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_NO)
+                val docStatus = mArrayDoc.getJSONObject(i).getString(WebParams.DOC_STATUS)
+                val nettAmount = mArrayDoc.getJSONObject(i).getString(WebParams.NETT_AMOUNT)
+                val dueDate = mArrayDoc.getJSONObject(i).getString(WebParams.DUE_DATE)
+                val custID = mArrayDoc.getJSONObject(i).getString(WebParams.CUST_ID)
+                val memberCode = mArrayDoc.getJSONObject(i).getString(WebParams.MEMBER_CODE)
+                val commCode = mArrayDoc.getJSONObject(i).getString(WebParams.COMM_CODE)
+                val paidStatus = mArrayDoc.getJSONObject(i).getString(WebParams.PAID_STATUS_REMARK)
+                val listPOModel = ListPOModel()
+                listPOModel.doc_no = docNo
+                listPOModel.doc_status = docStatus
+                listPOModel.nett_amount = nettAmount
+                listPOModel.due_date = dueDate
+                listPOModel.cust_id = custID
+                listPOModel.comm_code = commCode
+                listPOModel.member_code = memberCode
+                listPOModel.paid_status = paidStatus
+                listPOModel.partner = partner
+                docListArrayList.add(listPOModel)
+            }
         }
 
         listPOAdapter!!.updateData(docListArrayList)
