@@ -1337,7 +1337,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_title_scadm)))
             return R.drawable.ic_menu_b2b;
         else if (titleMenu.contains(getResources().getString(R.string.menu_item_title_b2b_eratel)))
-            return R.drawable.ic_b2b_eratel;
+//            return R.drawable.ic_b2b_eratel;
+            return R.drawable.ic_menu_b2b;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_in)))
             return R.drawable.ic_tarik_tunai;
         else if (titleMenu.equalsIgnoreCase(getString(R.string.menu_item_search_agent_bbs) + " " + getString(R.string.cash_out)))
