@@ -98,7 +98,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         var feeAmount = "0"
         if (qrisParsingModel.indicatorType == "01") {
             if (edit_text_fee_amount.text!!.isNotEmpty())
-                NumberTextWatcherForThousand.trimCommaOfString(edit_text_fee_amount.text.toString())
+                feeAmount = NumberTextWatcherForThousand.trimCommaOfString(edit_text_fee_amount.text.toString())
         } else
             feeAmount = qrisParsingModel.feeAmount!!
 
@@ -107,7 +107,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         params[WebParams.AMOUNT] = amount
         params[WebParams.ADMIN_FEE] = qrisParsingModel.adminFee
         params[WebParams.FEE_AMOUNT] = feeAmount
-        params[WebParams.TOTAL_AMOUNT] = Integer.parseInt(amount) + Integer.parseInt(feeAmount!!) + Integer.parseInt(qrisParsingModel.adminFee!!)
+        params[WebParams.TOTAL_AMOUNT] = Integer.parseInt(amount) + Integer.parseInt(feeAmount) + Integer.parseInt(qrisParsingModel.adminFee!!)
         params[WebParams.INDICATOR_TYPE] = qrisParsingModel.indicatorType
         params[WebParams.MERCHANT_NAME] = qrisParsingModel.merchantName
         params[WebParams.MERCHANT_CITY] = qrisParsingModel.merchantCity
