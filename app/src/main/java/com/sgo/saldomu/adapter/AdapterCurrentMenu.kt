@@ -58,8 +58,8 @@ class AdapterCurrentMenu(var context: Context?, var itemList: List<EditMenuModel
             getString(R.string.menu_item_title_report) -> return R.drawable.ic_laporan
             getString(R.string.menu_item_history_detail) -> return R.drawable.ic_history
             getString(R.string.menu_item_lending) -> return R.drawable.ic_lending
-            getString(R.string.menu_item_title_b2b_eratel)+ " "+ getString(R.string.menu_item_title_ebd_toko) -> return R.drawable.ic_b2b_eratel
-            getString(R.string.menu_item_title_b2b_eratel)+ " "+ getString(R.string.menu_item_title_ebd_canvasser) -> return R.drawable.ic_b2b_eratel
+            getString(R.string.menu_item_title_b2b_eratel)+ " "+ getString(R.string.menu_item_title_ebd_toko) -> return R.drawable.ic_menu_b2b
+            getString(R.string.menu_item_title_b2b_eratel)+ " "+ getString(R.string.menu_item_title_ebd_canvasser) -> return R.drawable.ic_menu_b2b
             getString(R.string.menu_item_title_report_ebd) -> return R.drawable.ic_laporan
         }
         return R.drawable.ic_home_default

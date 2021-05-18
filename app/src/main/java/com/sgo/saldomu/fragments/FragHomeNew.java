@@ -410,7 +410,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             getLvlClass().refreshData();
 
         refreshBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
 //                animateRefrestBtn(true);
 //                sp.edit().putString(DefineValue.IS_MANUAL, "Y").commit();

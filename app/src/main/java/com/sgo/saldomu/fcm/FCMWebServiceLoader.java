@@ -1,7 +1,9 @@
 package com.sgo.saldomu.fcm;
 
 import android.content.Context;
+import android.widget.Toast;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
@@ -30,6 +32,8 @@ public class FCMWebServiceLoader {
     private LoaderListener loaderListener;
     private SecurePreferences sp;
     private String token, tokenEncrypted;
+    final private static String AGENT_TOPIC = "agent";
+    final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
 
     public interface LoaderListener {
         void onSuccessLoader();
@@ -76,12 +80,14 @@ public class FCMWebServiceLoader {
         requestParams.put(WebParams.USER_ID, userID);
         requestParams.put(WebParams.EMAIL, email);
         sentTokenToServer(isSync, requestParams);
+        FCMManager.subscribeAll();
     }
 
     //Register fcm permulaan buka aplikasi
     public void sentTokenToServer(Boolean isSync) {
         HashMap<String, Object> requestParams = setupSignatureParams();
         sentTokenToServer(isSync, requestParams);
+        FCMManager.subscribeAll();
     }
 
     private void sentTokenToServer(Boolean isSync, HashMap<String, Object> requestParams) {
@@ -99,8 +105,12 @@ public class FCMWebServiceLoader {
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 CustomSecurePref.getInstance().insertString(DefineValue.FCM_SERVER_UUID,
                                         model.getUid());
+                                FCMManager.subscribeAll();
                                 if (loaderListener != null)
                                     loaderListener.onSuccessLoader();
+                            }
+                            else {
+                                Timber.d("FCM failed");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -113,11 +123,12 @@ public class FCMWebServiceLoader {
                     public void onError(Throwable throwable) {
                         if (loaderListener != null)
                             loaderListener.onSuccessLoader();
+                        Timber.d("FCM failed");
                     }
 
                     @Override
                     public void onComplete() {
-
+                        Timber.d("FCM completed");
                     }
                 });
     }
