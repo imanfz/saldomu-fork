@@ -99,7 +99,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         Bundle m = getIntent().getExtras();
         if (m != null && m.containsKey(DefineValue.LOG_OUT)) {
-            if (m.getBoolean(DefineValue.LOG_OUT)==true)
+            if (m.getBoolean(DefineValue.LOG_OUT) == true)
                 sentLogout();
         }
         if (InetHandler.isNetworkAvailable(this))
@@ -147,8 +147,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
             });
         }
 
-        perms = new String[]{Manifest.permission.READ_CONTACTS,
-                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE};
+        perms = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE};
 
         if (!EasyPermissions.hasPermissions(this, perms)) {
             EasyPermissions.requestPermissions(this,
@@ -193,7 +192,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 
             sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
             boolean logoutBySession = sp.getBoolean(DefineValue.LOGOUT_FROM_SESSION_TIMEOUT, false);
-            if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "")!=null && logoutBySession) {
+            if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "") != null && logoutBySession) {
                 if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("") && logoutBySession) {
                     Intent i = new Intent(Perkenalan.this, InsertPIN.class);
                     i.putExtra(DefineValue.IS_FORGOT_PASSWORD, false);

@@ -745,12 +745,11 @@ public class BillerInputPulsa extends BaseFragment implements ReportBillerDialog
     private Button.OnClickListener onShowContactListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
-                    && (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
+            if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
                 showListContact();
             } else {
                 ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS},
+                        new String[]{ Manifest.permission.READ_CONTACTS},
                         RC_READ_CONTACTS);
             }
         }

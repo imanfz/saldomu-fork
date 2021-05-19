@@ -1,11 +1,13 @@
 package com.sgo.saldomu.fragments;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -27,6 +29,9 @@ import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.ex.chips.BaseRecipientAdapter;
 import com.android.ex.chips.RecipientEditTextView;
@@ -92,6 +97,8 @@ public class FragPayFriends extends BaseFragment {
     private List<String> listName;
     private CheckBox saveCheckBox;
 
+    private static final int RC_READ_CONTACTS = 14;
+
     private int privacy;
     private int max_member_trans;
 
@@ -140,6 +147,14 @@ public class FragPayFriends extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
+
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{ Manifest.permission.READ_CONTACTS},
+                    RC_READ_CONTACTS);
+        }
 
         max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS, 5);
         authType = sp.getString(DefineValue.AUTHENTICATION_TYPE, "");
