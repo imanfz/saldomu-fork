@@ -169,7 +169,7 @@
 
     <string name="toolbar_title_purchase">Biller</string>
     <string name="toolbar_title_pay_friends">Transfer Saldo</string>
-    <string name="toolbar_title_topup" translatable="false">Tambah Saldo</string>
+    <string name="toolbar_title_topup" translatable="false">Tambah</string>
     <string name="toolbar_title_evoucherhp">Beli E-Voucher HP</string>
     <string name="toolbar_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="toolbar_title_myfriends">Teman Saya</string>
@@ -183,7 +183,7 @@
     <string name="menu_item_title_home">Beranda</string>
     <string name="menu_item_title_accounts">Akun Saya</string>
     <string name="menu_item_title_pay_friends">Transfer Saldo</string>
-    <string name="menu_item_title_ask_for_money">Minta Saldo</string>
+    <string name="menu_item_title_ask_for_money">Minta</string>
     <string name="menu_item_title_purchase_pulsa">Pembelian E-Voucher HP</string>
     <string name="menu_item_title_upgrade_member">Upgrade Member</string>
     <string name="menu_item_title_upgrade_online">Upgrade Online</string>
@@ -1277,7 +1277,6 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="bbs_you">Nasabah</string>
     <string name="duration">Tiba dalam</string>
     <string name="bbs_agent_almost_arrive">Agen hampir tiba di lokasi pertemuan.</string>
-    <string name="rational_readphonestate_readcontacts">Aplikasi membutuhkan akses ke perangkat mengecek status perangkat dan kontak</string>
     <string name="email_validation">Validasi Email</string>
     <string name="email_warning">Cek kembali email Anda, apakah alamat email tersebut sudah sesuai?</string>
     <string name="member_saldo_not_enough">Saldo Member tidak mencukupi, sehingga transaksi tidak dapat dilanjutkan.</string>

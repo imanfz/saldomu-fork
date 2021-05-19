@@ -238,152 +238,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (isAgent) {
             setupTitleMenu();
         } else {
-            if (memberSchemeCode.equals("")) {
-                HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
-                params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                params.put(WebParams.SHOP_ID, "");
-                params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
-                Timber.d("isi params shop category:" + params.toString());
-
-                showView(gridview_progbar);
-
-                RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CATEGORY_LIST, params,
-                        new ResponseListener() {
-                            @Override
-                            public void onResponses(JsonObject object) {
-                                CategoryListModel model = getGson().fromJson(object, CategoryListModel.class);
-
-                                String code = model.getError_code();
-
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    SecurePreferences.Editor mEditor = sp.edit();
-                                    for (int i = 0; i < model.getCategories().size(); i++) {
-
-                                        CategoriesModel obj = model.getCategories().get(i);
-
-                                        String arrJson = toJson(model.getCategories()).toString();
-                                        mEditor.putString(DefineValue.CATEGORY, arrJson);
-                                        memberSchemeCode = arrJson;
-
-                                        ShopCategory shopCategory = new ShopCategory();
-                                        shopCategory.setCategoryId(obj.getCategory_id());
-                                        if (obj.getCategory_name().contains("Setor"))
-                                            mEditor.putString(DefineValue.CATEGORY_ID_CTA, shopCategory.getCategoryId());
-                                        if (obj.getCategory_name().contains("Upgrade"))
-                                            mEditor.putString(DefineValue.CATEGORY_ID_UPG, shopCategory.getCategoryId());
-                                        shopCategory.setSchemeCode(obj.getScheme_code());
-                                        String tempCategory = obj.getCategory_name().toLowerCase();
-                                        String[] strArray = tempCategory.split(" ");
-                                        StringBuilder builder = new StringBuilder();
-                                        for (String s : strArray) {
-                                            String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                                            builder.append(cap + " ");
-                                        }
-
-                                        shopCategory.setCategoryName(builder.toString());
-                                        shopCategories.add(shopCategory);
-
-                                    }
-                                    mEditor.apply();
-                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = model.getError_message();
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginMain(getActivity(), message);
-                                } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
-                                    final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
-                                } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response shop category: " + model.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                                }
-
-                                setupTitleMenu();
-                            }
-
-                            @Override
-                            public void onError(Throwable throwable) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                dismissProgressDialog();
-                                hideView(gridview_progbar);
-                                Timber.d("hide view");
-                            }
-                        });
+            if (memberSchemeCode.equals("") || memberSchemeCode == null) {
+                getCategoryList();
             } else {
                 setupTitleMenu();
             }
         }
-
-//        btn_beli.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (view_pulsa.getVisibility() == View.VISIBLE) {
-//                    if (inputValidation() == true) {
-//                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-//                        intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
-//                        intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
-//                        intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
-//                        startActivity(intent);
-//                    }
-//                }
-//                if (view_bpjs.getVisibility() == View.VISIBLE) {
-//                    Intent intent = new Intent(getActivity(), BillerActivity.class);
-//                    intent.putExtra(DefineValue.BILLER_TYPE, "BPJS");
-//                    intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
-//                    intent.putExtra(DefineValue.BILLER_NAME, "BPJS");
-//                    startActivity(intent);
-//                }
-//                if (view_listrikPLN.getVisibility() == View.VISIBLE) {
-//                    Intent intent = new Intent(getActivity(), BillerActivity.class);
-//                    intent.putExtra(DefineValue.BILLER_TYPE, "TKN");
-//                    intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
-//                    intent.putExtra(DefineValue.BILLER_NAME, "Voucher Token Listrik");
-//                    startActivity(intent);
-//                }
-//            }
-//        });
-//        tv_pulsa.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                input.setText("");
-//                view_pulsa.setVisibility(View.VISIBLE);
-//                view_bpjs.setVisibility(View.INVISIBLE);
-//                view_listrikPLN.setVisibility(View.INVISIBLE);
-//                input.setHint("Masukkan No. Hp");
-//            }
-//        });
-//        tv_bpjs.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                input.setText("");
-//                input.setError(null);
-//                input.clearFocus();
-//                view_pulsa.setVisibility(View.INVISIBLE);
-//                view_bpjs.setVisibility(View.VISIBLE);
-//                view_listrikPLN.setVisibility(View.INVISIBLE);
-//                input.setHint("Masukkan No. BPJS");
-//            }
-//        });
-//        tv_listrikPLN.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                input.setText("");
-//                input.setError(null);
-//                input.clearFocus();
-//                view_pulsa.setVisibility(View.INVISIBLE);
-//                view_bpjs.setVisibility(View.INVISIBLE);
-//                view_listrikPLN.setVisibility(View.VISIBLE);
-//                input.setHint("Masukkan No. Listrik");
-//            }
-//        });
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -396,7 +256,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
 
         });
-
 
         if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
 
@@ -438,6 +297,87 @@ public class FragHomeNew extends BaseFragmentMainPage {
         else allowedTransfer = !isAgent && sp.getInt(DefineValue.LEVEL_VALUE, 1) == 2;
 
         sp.edit().putBoolean(DefineValue.ALLOW_TRANSFER, allowedTransfer).commit();
+    }
+
+    private void getCategoryList() {
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+        params.put(WebParams.SHOP_ID, "");
+        params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+        Timber.d("isi params shop category:%s", params.toString());
+
+        showView(gridview_progbar);
+
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CATEGORY_LIST, params,
+                new ResponseListener() {
+                    @Override
+                    public void onResponses(JsonObject object) {
+                        CategoryListModel model = getGson().fromJson(object, CategoryListModel.class);
+
+                        String code = model.getError_code();
+
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            for (int i = 0; i < model.getCategories().size(); i++) {
+
+                                CategoriesModel obj = model.getCategories().get(i);
+
+                                String arrJson = toJson(model.getCategories()).toString();
+                                mEditor.putString(DefineValue.CATEGORY, arrJson);
+                                memberSchemeCode = arrJson;
+
+                                ShopCategory shopCategory = new ShopCategory();
+                                shopCategory.setCategoryId(obj.getCategory_id());
+                                if (obj.getCategory_name().contains("Setor"))
+                                    mEditor.putString(DefineValue.CATEGORY_ID_CTA, shopCategory.getCategoryId());
+                                if (obj.getCategory_name().contains("Upgrade"))
+                                    mEditor.putString(DefineValue.CATEGORY_ID_UPG, shopCategory.getCategoryId());
+                                shopCategory.setSchemeCode(obj.getScheme_code());
+                                String tempCategory = obj.getCategory_name().toLowerCase();
+                                String[] strArray = tempCategory.split(" ");
+                                StringBuilder builder = new StringBuilder();
+                                for (String s : strArray) {
+                                    String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
+                                    builder.append(cap + " ");
+                                }
+
+                                shopCategory.setCategoryName(builder.toString());
+                                shopCategories.add(shopCategory);
+
+                            }
+                            mEditor.apply();
+                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            String message = model.getError_message();
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginMain(getActivity(), message);
+                        } else if (code.equals(DefineValue.ERROR_9333)) {
+                            Timber.d("isi response app data:" + model.getApp_data());
+                            final AppDataModel appModel = model.getApp_data();
+                            AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                            alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                        } else if (code.equals(DefineValue.ERROR_0066)) {
+                            Timber.d("isi response shop category: " + model.toString());
+                            AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                            alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                        }
+
+                        setupTitleMenu();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dismissProgressDialog();
+                        hideView(gridview_progbar);
+                        Timber.d("hide view");
+                    }
+                });
     }
 
     private void showStatusOnline() {
@@ -796,7 +736,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 }
 
                 menuStrings.add(getResources().getString(R.string.menu_item_title_report));
-                
+
 //                menuStrings.add(getResources().getString(R.string.menu_item_lending));
             } else
                 getTitleMenu();
@@ -1590,28 +1530,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     posIdx = BBSActivity.BBSONPROGRESSAGENT;
                     trxType = DefineValue.INDEX;
                 }
-            } else {
-                posIdx = -1;
             }
         } else {
-            if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
-                if (isDormant.equalsIgnoreCase("Y")) {
+            if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member))) {
+                if (isDormant.equalsIgnoreCase("Y"))
                     dialogDormant();
-                } else
+                else
                     posIdx = BBSActivity.CONFIRMCASHOUT;
-//            else if (menuItemName.equalsIgnoreCase(getString(R.string.title_rating_by_member)))
-//                if (isDormant.equalsIgnoreCase("Y")) {
-//                    dialogDormant();
-//                } else
-//                    posIdx = BBSActivity.BBSRATINGBYMEMBER;
-//            else if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_my_orders)))
-//                if (isDormant.equalsIgnoreCase("Y")) {
-//                    dialogDormant();
-//                } else
-//                    posIdx = BBSActivity.BBSMYORDERS;
-            else {
-                posIdx = -1;
+            } else {
                 try {
+                    if (memberSchemeCode.equals("") || memberSchemeCode == null) {
+                        getCategoryList();
+                    }
                     JSONArray jsonArray = new JSONArray(memberSchemeCode);
                     for (int index = 0; index < jsonArray.length(); index++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(index);

@@ -1,67 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <include android:id="@+id/layout_no_data"
+    <include
+        android:id="@+id/layout_no_data"
         layout="@layout/no_data"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/layout_list"
         android:layout_width="match_parent"
-        android:orientation="vertical"
         android:layout_height="match_parent"
-        android:background="@color/grey_300"
-        >
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/maxtopup_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/maxtopup_layout"
-            android:padding="10dp"
-            android:background="@color/white"
             android:layout_alignParentTop="true"
-            android:layout_alignRight="@+id/expandableListView"
-            android:layout_alignEnd="@+id/expandableListView">
+            android:background="@color/white"
+            android:padding="10dp">
+
             <TextView
+                android:id="@+id/max_topup_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/max_topup_textview"
-                android:textSize="16sp"
                 android:textColor="@color/black"
-                />
+                android:textSize="16sp" />
         </LinearLayout>
 
         <!--<ExpandableListView-->
-            <!--android:id="@+id/expandableListView"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:dividerHeight="1dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:divider="@color/grey_300"-->
-            <!--android:childDivider="@color/grey_300"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:layout_marginBottom="10dp"-->
-            <!--android:background="@color/white"-->
-            <!--android:groupIndicator="@drawable/transparent"-->
-            <!--android:layout_below="@+id/maxtopup_layout"-->
-            <!--android:textIsSelectable="true"-->
-            <!--android:visibility="gone">-->
+        <!--android:id="@+id/expandableListView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:dividerHeight="1dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:divider="@color/grey_300"-->
+        <!--android:childDivider="@color/grey_300"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:background="@color/white"-->
+        <!--android:groupIndicator="@drawable/transparent"-->
+        <!--android:layout_below="@+id/maxtopup_layout"-->
+        <!--android:textIsSelectable="true"-->
+        <!--android:visibility="gone">-->
 
         <!--</ExpandableListView>-->
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/frag_bank_list_topup_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/frag_bank_list_topup_list"
-            android:layout_marginRight="10dp"
+            android:layout_below="@+id/maxtopup_layout"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
-            android:background="@color/white"
-            android:layout_below="@+id/maxtopup_layout">
+            android:background="@color/white">
 
         </androidx.recyclerview.widget.RecyclerView>
     </RelativeLayout>

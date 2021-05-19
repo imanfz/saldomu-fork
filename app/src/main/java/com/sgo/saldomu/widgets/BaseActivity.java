@@ -48,9 +48,8 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     private ProgressBar deprogressbar;
     protected SMSclass smsClass;
     protected boolean isActive;
-    public String[] perms = {Manifest.permission.READ_CONTACTS, Manifest.permission.READ_PHONE_STATE,
+    public String[] perms = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 //    private String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS,
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private IntentFilter fcmFilter = new IntentFilter();
     FcmReceiver fcmReceiver = new FcmReceiver();
 
@@ -118,7 +117,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
 
         if (!isHasAppPermission(this, perms)) {
             EasyPermissions.requestPermissions(this,
-                    getString(R.string.rational_readphonestate_readcontacts),
+                    getString(R.string.rational_readphonestate),
                     RC_LOCATION_PERM, perms);
         }
     }
