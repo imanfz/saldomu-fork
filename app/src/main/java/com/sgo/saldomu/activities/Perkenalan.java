@@ -152,7 +152,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 
         if (!EasyPermissions.hasPermissions(this, perms)) {
             EasyPermissions.requestPermissions(this,
-                    getString(R.string.rational_readphonestate_readcontacts),
+                    getString(R.string.rational_readphonestate),
                     RC_READPHONESTATE_GETACCOUNT_PERM, perms);
         }
 

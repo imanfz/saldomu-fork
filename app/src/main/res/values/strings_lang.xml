@@ -180,7 +180,7 @@
     <string name="menu_group_title_main_menu">Main Menu</string>
     <string name="menu_item_title_home">Home</string>
     <string name="menu_item_title_accounts">My Account</string>
-    <string name="menu_item_title_pay_friends">Transfer Saldo</string>
+    <string name="menu_item_title_pay_friends">Transfer Money</string>
     <string name="menu_item_title_ask_for_money">Ask For Money</string>
     <string name="menu_item_title_purchase_pulsa">Purchase E-Voucher HP</string>
     <string name="menu_item_title_upgrade_member">Upgrade Member</string>
@@ -1290,7 +1290,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="bbs_you">Customer</string>
     <string name="duration">Arrived in</string>
     <string name="bbs_agent_almost_arrive">The agent is almost at the meeting location.</string>
-    <string name="rational_readphonestate_readcontacts">The application requires access to the device to check the device and contact status</string>
     <string name="email_validation">Email Validation</string>
     <string name="email_warning">Check your email again, is the email address correct?</string>
     <string name="member_saldo_not_enough">Member balance is not sufficient, so the transaction cannot be continued.</string>

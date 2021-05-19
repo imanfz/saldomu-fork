@@ -238,75 +238,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if (isAgent) {
             setupTitleMenu();
         } else {
-            if (memberSchemeCode.equals("")) {
+            if (memberSchemeCode.equals("") || memberSchemeCode == null) {
                 getCategoryList();
             } else {
                 setupTitleMenu();
             }
         }
-
-//        btn_beli.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (view_pulsa.getVisibility() == View.VISIBLE) {
-//                    if (inputValidation() == true) {
-//                        Intent intent = new Intent(getActivity(), BillerActivity.class);
-//                        intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
-//                        intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
-//                        intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
-//                        startActivity(intent);
-//                    }
-//                }
-//                if (view_bpjs.getVisibility() == View.VISIBLE) {
-//                    Intent intent = new Intent(getActivity(), BillerActivity.class);
-//                    intent.putExtra(DefineValue.BILLER_TYPE, "BPJS");
-//                    intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
-//                    intent.putExtra(DefineValue.BILLER_NAME, "BPJS");
-//                    startActivity(intent);
-//                }
-//                if (view_listrikPLN.getVisibility() == View.VISIBLE) {
-//                    Intent intent = new Intent(getActivity(), BillerActivity.class);
-//                    intent.putExtra(DefineValue.BILLER_TYPE, "TKN");
-//                    intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
-//                    intent.putExtra(DefineValue.BILLER_NAME, "Voucher Token Listrik");
-//                    startActivity(intent);
-//                }
-//            }
-//        });
-//        tv_pulsa.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                input.setText("");
-//                view_pulsa.setVisibility(View.VISIBLE);
-//                view_bpjs.setVisibility(View.INVISIBLE);
-//                view_listrikPLN.setVisibility(View.INVISIBLE);
-//                input.setHint("Masukkan No. Hp");
-//            }
-//        });
-//        tv_bpjs.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                input.setText("");
-//                input.setError(null);
-//                input.clearFocus();
-//                view_pulsa.setVisibility(View.INVISIBLE);
-//                view_bpjs.setVisibility(View.VISIBLE);
-//                view_listrikPLN.setVisibility(View.INVISIBLE);
-//                input.setHint("Masukkan No. BPJS");
-//            }
-//        });
-//        tv_listrikPLN.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                input.setText("");
-//                input.setError(null);
-//                input.clearFocus();
-//                view_pulsa.setVisibility(View.INVISIBLE);
-//                view_bpjs.setVisibility(View.INVISIBLE);
-//                view_listrikPLN.setVisibility(View.VISIBLE);
-//                input.setHint("Masukkan No. Listrik");
-//            }
-//        });
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -319,7 +256,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
 
         });
-
 
         if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
 
@@ -1596,24 +1532,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 }
             }
         } else {
-            if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member)))
-                if (isDormant.equalsIgnoreCase("Y")) {
+            if (menuItemName.equalsIgnoreCase(getString(R.string.title_cash_out_member))) {
+                if (isDormant.equalsIgnoreCase("Y"))
                     dialogDormant();
-                } else
+                else
                     posIdx = BBSActivity.CONFIRMCASHOUT;
-//            else if (menuItemName.equalsIgnoreCase(getString(R.string.title_rating_by_member)))
-//                if (isDormant.equalsIgnoreCase("Y")) {
-//                    dialogDormant();
-//                } else
-//                    posIdx = BBSActivity.BBSRATINGBYMEMBER;
-//            else if (menuItemName.equalsIgnoreCase(getString(R.string.title_bbs_my_orders)))
-//                if (isDormant.equalsIgnoreCase("Y")) {
-//                    dialogDormant();
-//                } else
-//                    posIdx = BBSActivity.BBSMYORDERS;
-            else {
+            } else {
                 try {
-                    if (memberSchemeCode.equals("")) {
+                    if (memberSchemeCode.equals("") || memberSchemeCode == null) {
                         getCategoryList();
                     }
                     JSONArray jsonArray = new JSONArray(memberSchemeCode);
