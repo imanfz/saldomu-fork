@@ -288,30 +288,30 @@ public class MainPage extends BaseActivity {
     }
 
     private void enableHomeLayout() {
-        homeImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_home_on));
+        homeImageViewTab.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_home_on));
         homeTextViewTab.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
     }
 
     private void enableHistoryLayout() {
-        historyImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_history_on));
+        historyImageViewTab.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_history_on));
         historyTextViewTab.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
     }
 
     private void enableHelpLayout() {
-        helpImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_help_on));
+        helpImageViewTab.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_help_on));
         helpTextViewTab.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
     }
 
     private void enableAccountLayout() {
-        accountImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_account_on));
+        accountImageViewTab.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_account_on));
         accountTextViewTab.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
     }
 
     private void resetTab() {
-        homeImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_home_off));
-        historyImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_history_off));
-        helpImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_help_off));
-        accountImageViewTab.setBackground(ContextCompat.getDrawable(this,R.drawable.ic_account_off));
+        homeImageViewTab.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_home_off));
+        historyImageViewTab.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_history_off));
+        helpImageViewTab.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_help_off));
+        accountImageViewTab.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_account_off));
         homeTextViewTab.setTextColor(oldColors);
         historyTextViewTab.setTextColor(oldColors);
         helpTextViewTab.setTextColor(oldColors);
@@ -344,7 +344,7 @@ public class MainPage extends BaseActivity {
     private void InitializeApp() {
         if (GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
             if (RootUtil.isDeviceRooted()) {
-                if (BuildConfig.FLAVOR.equals("production")) {
+                if (BuildConfig.FLAVOR.equals("development")) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
                     builder.setMessage("Apakah anda ingin melewati pengecekan device?")
@@ -1607,6 +1607,7 @@ public class MainPage extends BaseActivity {
                 serviceAppInfoReference.StartCallAppInfo();
             }
 
+            InitializeApp();
 //        if(mBH !=null)
 //            mBH.getDataBalance();
 

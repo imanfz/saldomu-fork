@@ -163,6 +163,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        memberSchemeCode = sp.getString(DefineValue.CATEGORY, "");
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
