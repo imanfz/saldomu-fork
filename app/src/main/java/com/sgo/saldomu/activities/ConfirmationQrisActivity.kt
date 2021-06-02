@@ -3,6 +3,8 @@ package com.sgo.saldomu.activities
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -40,6 +42,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
     private var commCode = ""
     private var commId = ""
     private var productCode = ""
+    private var percentage = 0.0
 
     override fun getLayoutResource(): Int {
         return R.layout.activity_confirmation_qris
@@ -65,28 +68,78 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         actionBarTitle = getString(R.string.transaction_confirmation)
         setActionBarIcon(R.drawable.ic_arrow_left)
 
-        val qrisParsingModel = getGson().fromJson(intent.getStringExtra(DefineValue.RESPONSE), QrisParsingModel::class.java)
+        val qrisParsingModel = getGson().fromJson(
+            intent.getStringExtra(DefineValue.RESPONSE),
+            QrisParsingModel::class.java
+        )
         tv_acquire_name_value.text = qrisParsingModel.nnsMemberName
         tv_payment_destination_name_value.text = qrisParsingModel.merchantName
         tv_payment_destination_city_value.text = qrisParsingModel.merchantCity
         val transactionAmount = qrisParsingModel.transactionAmount
-        edit_text_amount_transfer.addTextChangedListener(NumberTextWatcherForThousand(edit_text_amount_transfer))
-        edit_text_fee_amount.addTextChangedListener(NumberTextWatcherForThousand(edit_text_fee_amount))
         if (transactionAmount != "") {
             edit_text_amount_transfer.setText(transactionAmount)
             edit_text_amount_transfer.isEnabled = false
         } else {
+            if (qrisParsingModel.percentage!!.toInt() != 0)
+                percentage = qrisParsingModel.percentage.toDouble() / 100
+
             edit_text_amount_transfer.requestFocus()
             ToggleKeyboard.show_keyboard(this)
         }
 
+        edit_text_amount_transfer.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                edit_text_amount_transfer.removeTextChangedListener(this)
+                val value = edit_text_amount_transfer.text.toString()
+                if (value != "") {
+                    if (value.startsWith("0") && !value.startsWith("0.")) {
+                        edit_text_amount_transfer.setText("")
+                        edit_text_fee_amount.setText("")
+                    } else {
+                        val str = NumberTextWatcherForThousand.trimCommaOfString(value)
+                        edit_text_amount_transfer.setText(
+                            NumberTextWatcherForThousand.getDecimalFormattedString(
+                                str
+                            )
+                        )
+                        if (percentage > 0) {
+                            val feeAmount = str.toInt() * percentage
+                            if (feeAmount >= 1)
+                                edit_text_fee_amount.setText(feeAmount.toInt().toString())
+                        }
+                    }
+                    edit_text_amount_transfer.setSelection(edit_text_amount_transfer.text.toString().length)
+                }
+                edit_text_amount_transfer.addTextChangedListener(this)
+            }
+
+        })
+        edit_text_fee_amount.addTextChangedListener(
+            NumberTextWatcherForThousand(
+                edit_text_fee_amount
+            )
+        )
+
+        edit_text_fee_amount.setText(qrisParsingModel.feeAmount)
         if (qrisParsingModel.indicatorType != "01")
-            linear_layout_fee_amount.visibility = View.GONE
+            edit_text_fee_amount.isEnabled = false
 
         cancel_btn.setOnClickListener { finish() }
         proses_btn.setOnClickListener {
             if (edit_text_amount_transfer.text!!.isNotEmpty())
-                paymentReqQris(NumberTextWatcherForThousand.trimCommaOfString(edit_text_amount_transfer.text.toString()), qrisParsingModel)
+                paymentReqQris(
+                    NumberTextWatcherForThousand.trimCommaOfString(
+                        edit_text_amount_transfer.text.toString()
+                    ), qrisParsingModel
+                )
             else
                 edit_text_amount_transfer.error = getString(R.string.payment_nominal_required)
         }
@@ -96,18 +149,22 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         showProgressDialog()
 
         var feeAmount = "0"
-        if (qrisParsingModel.indicatorType == "01") {
-            if (edit_text_fee_amount.text!!.isNotEmpty())
-                feeAmount = NumberTextWatcherForThousand.trimCommaOfString(edit_text_fee_amount.text.toString())
-        } else
-            feeAmount = qrisParsingModel.feeAmount!!
+        if (edit_text_fee_amount.text!!.isNotEmpty())
+            feeAmount =
+                NumberTextWatcherForThousand.trimCommaOfString(edit_text_fee_amount.text.toString())
 
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_QRIS_PAYMENT_REQUEST, qrisParsingModel.commId + qrisParsingModel.memberId)
+        val params = RetrofitService.getInstance().getSignature(
+            MyApiClient.LINK_QRIS_PAYMENT_REQUEST,
+            qrisParsingModel.commId + qrisParsingModel.memberId
+        )
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.AMOUNT] = amount
         params[WebParams.ADMIN_FEE] = qrisParsingModel.adminFee
         params[WebParams.FEE_AMOUNT] = feeAmount
-        params[WebParams.TOTAL_AMOUNT] = Integer.parseInt(amount) + Integer.parseInt(feeAmount) + Integer.parseInt(qrisParsingModel.adminFee!!)
+        params[WebParams.TOTAL_AMOUNT] =
+            Integer.parseInt(amount) + Integer.parseInt(feeAmount) + Integer.parseInt(
+                qrisParsingModel.adminFee!!
+            )
         params[WebParams.INDICATOR_TYPE] = qrisParsingModel.indicatorType
         params[WebParams.MERCHANT_NAME] = qrisParsingModel.merchantName
         params[WebParams.MERCHANT_CITY] = qrisParsingModel.merchantCity
@@ -126,7 +183,8 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         params[WebParams.MERCHANT_STORE_ID] = qrisParsingModel.merchantStoreId
 
         Timber.d("isi params qris payment request:$params")
-        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_QRIS_PAYMENT_REQUEST, params,
+        RetrofitService.getInstance()
+            .PostJsonObjRequest(MyApiClient.LINK_QRIS_PAYMENT_REQUEST, params,
                 object : ObjListeners {
                     override fun onResponses(response: JSONObject) {
                         val code = response.getString(WebParams.ERROR_CODE)
@@ -140,15 +198,23 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
                                 inputPIN(-1)
                             }
                             WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity(this@ConfirmationQrisActivity, message)
+                                AlertDialogLogout.getInstance()
+                                    .showDialoginActivity(this@ConfirmationQrisActivity, message)
                             }
                             DefineValue.ERROR_9333 -> {
-                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                val model =
+                                    gson.fromJson(response.toString(), jsonModel::class.java)
                                 val appModel = model.app_data
-                                AlertDialogUpdateApp.getInstance().showDialogUpdate(this@ConfirmationQrisActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                                    this@ConfirmationQrisActivity,
+                                    appModel.type,
+                                    appModel.packageName,
+                                    appModel.downloadUrl
+                                )
                             }
                             DefineValue.ERROR_0066 -> {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(this@ConfirmationQrisActivity, message)
+                                AlertDialogMaintenance.getInstance()
+                                    .showDialogMaintenance(this@ConfirmationQrisActivity, message)
                             }
                             DefineValue.ERROR_0338 -> {
                                 showDialog(message)
@@ -157,7 +223,8 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
                                 showDialogTopup(amount)
                             }
                             else -> {
-                                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
+                                    .show()
                                 finish()
                             }
                         }
@@ -221,50 +288,59 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         params[WebParams.COMM_CODE] = commCode
         params[WebParams.COMM_ID] = commId
         params[WebParams.MEMBER_ID] = sp.getString(DefineValue.MEMBER_ID, "")
-        params[WebParams.PRODUCT_VALUE] = RSA.opensslEncryptCommID(commId, uuid, dateTime, userPhoneID, valuePin, subStringLink)
+        params[WebParams.PRODUCT_VALUE] =
+            RSA.opensslEncryptCommID(commId, uuid, dateTime, userPhoneID, valuePin, subStringLink)
         params[WebParams.USER_ID] = userPhoneID
 
         Timber.d("isi params insertTrx:$params")
         RetrofitService.getInstance().PostJsonObjRequest(link, params,
-                object : ObjListeners {
-                    override fun onResponses(response: JSONObject) {
-                        val code = response.getString(WebParams.ERROR_CODE)
-                        val message = response.getString(WebParams.ERROR_MESSAGE)
-                        when (code) {
-                            WebParams.SUCCESS_CODE -> {
-                                getTrxStatus()
-                            }
-                            WebParams.LOGOUT_CODE -> {
-                                AlertDialogLogout.getInstance().showDialoginActivity(this@ConfirmationQrisActivity, message)
-                            }
-                            DefineValue.ERROR_9333 -> {
-                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
-                                val appModel = model.app_data
-                                AlertDialogUpdateApp.getInstance().showDialogUpdate(this@ConfirmationQrisActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            }
-                            DefineValue.ERROR_0066 -> {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(this@ConfirmationQrisActivity, message)
-                            }
-                            else -> {
-                                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-                            }
+            object : ObjListeners {
+                override fun onResponses(response: JSONObject) {
+                    val code = response.getString(WebParams.ERROR_CODE)
+                    val message = response.getString(WebParams.ERROR_MESSAGE)
+                    when (code) {
+                        WebParams.SUCCESS_CODE -> {
+                            getTrxStatus()
+                        }
+                        WebParams.LOGOUT_CODE -> {
+                            AlertDialogLogout.getInstance()
+                                .showDialoginActivity(this@ConfirmationQrisActivity, message)
+                        }
+                        DefineValue.ERROR_9333 -> {
+                            val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                            val appModel = model.app_data
+                            AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                                this@ConfirmationQrisActivity,
+                                appModel.type,
+                                appModel.packageName,
+                                appModel.downloadUrl
+                            )
+                        }
+                        DefineValue.ERROR_0066 -> {
+                            AlertDialogMaintenance.getInstance()
+                                .showDialogMaintenance(this@ConfirmationQrisActivity, message)
+                        }
+                        else -> {
+                            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
                         }
                     }
+                }
 
-                    override fun onError(throwable: Throwable) {
-                        dismissProgressDialog()
-                    }
+                override fun onError(throwable: Throwable) {
+                    dismissProgressDialog()
+                }
 
-                    override fun onComplete() {
-                        dismissProgressDialog()
-                    }
-                })
+                override fun onComplete() {
+                    dismissProgressDialog()
+                }
+            })
     }
 
     private fun getTrxStatus() {
         showProgressDialog()
         extraSignature = txId + commId
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature)
+        val params = RetrofitService.getInstance()
+            .getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature)
 
         params[WebParams.TX_ID] = txId
         params[WebParams.COMM_ID] = commId
@@ -273,39 +349,49 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         params[WebParams.USER_ID] = userPhoneID
 
         RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
-                object : ResponseListener {
-                    override fun onResponses(response: JsonObject) {
-                        val model = getGson().fromJson(response, GetTrxStatusReportModel::class.java)
+            object : ResponseListener {
+                override fun onResponses(response: JsonObject) {
+                    val model = getGson().fromJson(response, GetTrxStatusReportModel::class.java)
 
-                        val code = model.error_code
-                        val message = model.error_message
+                    val code = model.error_code
+                    val message = model.error_message
 
-                        if (!model.on_error) {
-                            if (code == WebParams.SUCCESS_CODE || code == "0003") {
-                                showReportQRSDialog(model)
-                            } else if (code == WebParams.LOGOUT_CODE) {
-                                AlertDialogLogout.getInstance().showDialoginActivity(this@ConfirmationQrisActivity, message)
-                            } else if (code == DefineValue.ERROR_9333) {
-                                val appModel = model.app_data
-                                AlertDialogUpdateApp.getInstance().showDialogUpdate(this@ConfirmationQrisActivity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            } else if (code == DefineValue.ERROR_0066) {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(this@ConfirmationQrisActivity, model.error_message)
-                            } else {
-                                showDialog(message)
-                            }
+                    if (!model.on_error) {
+                        if (code == WebParams.SUCCESS_CODE || code == "0003") {
+                            showReportQRSDialog(model)
+                        } else if (code == WebParams.LOGOUT_CODE) {
+                            AlertDialogLogout.getInstance()
+                                .showDialoginActivity(this@ConfirmationQrisActivity, message)
+                        } else if (code == DefineValue.ERROR_9333) {
+                            val appModel = model.app_data
+                            AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                                this@ConfirmationQrisActivity,
+                                appModel.type,
+                                appModel.packageName,
+                                appModel.downloadUrl
+                            )
+                        } else if (code == DefineValue.ERROR_0066) {
+                            AlertDialogMaintenance.getInstance().showDialogMaintenance(
+                                this@ConfirmationQrisActivity,
+                                model.error_message
+                            )
                         } else {
-                            Toast.makeText(applicationContext, model.error_message, Toast.LENGTH_SHORT).show()
+                            showDialog(message)
                         }
+                    } else {
+                        Toast.makeText(applicationContext, model.error_message, Toast.LENGTH_SHORT)
+                            .show()
                     }
+                }
 
-                    override fun onError(throwable: Throwable) {
-                        dismissProgressDialog()
-                    }
+                override fun onError(throwable: Throwable) {
+                    dismissProgressDialog()
+                }
 
-                    override fun onComplete() {
-                        dismissProgressDialog()
-                    }
-                })
+                override fun onComplete() {
+                    dismissProgressDialog()
+                }
+            })
     }
 
     private fun showReportQRSDialog(response: GetTrxStatusReportModel) {
@@ -313,14 +399,23 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         val dialog = ReportBillerDialog.newInstance(this)
         args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response.created))
         args.putString(DefineValue.TX_ID, response.tx_id)
-        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.admin_fee))
-        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tx_amount))
+        args.putString(
+            DefineValue.FEE,
+            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.admin_fee)
+        )
+        args.putString(
+            DefineValue.AMOUNT,
+            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(response.tx_amount)
+        )
 
         val dAmount = response.tx_amount!!.toDouble()
         val dFee = response.admin_fee!!.toDouble()
         val totalAmount = dAmount + dFee
 
-        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(totalAmount))
+        args.putString(
+            DefineValue.TOTAL_AMOUNT,
+            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(totalAmount)
+        )
 
         var txStat = false
         val txStatus = response.tx_status
@@ -352,7 +447,8 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
         dialog.setCanceledOnTouchOutside(false)
         dialog.setContentView(R.layout.dialog_top_up)
 
-        dialog.tv_remaining_balance.text = CurrencyFormat.format(sp.getString(DefineValue.BALANCE_AMOUNT, "0"))
+        dialog.tv_remaining_balance.text =
+            CurrencyFormat.format(sp.getString(DefineValue.BALANCE_AMOUNT, "0"))
         dialog.tv_paid_amount.text = CurrencyFormat.format(amount)
         dialog.btn_dialog_cancel.setOnClickListener {
             dialog.dismiss()

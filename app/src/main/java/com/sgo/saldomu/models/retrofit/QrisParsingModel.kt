@@ -74,5 +74,8 @@ data class QrisParsingModel(
         val adminFee: String? = null,
 
         @field:SerializedName("nns_member_name")
-        val nnsMemberName: String? = null
+        val nnsMemberName: String? = null,
+
+        @field:SerializedName("percentage")
+        val percentage: String? = null
 )
