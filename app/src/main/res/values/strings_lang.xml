@@ -435,7 +435,7 @@ Make sure your birth date and biological mother\'s name are filled in with the c
     <string name="notif_title_photo_ktp_rejected">Your Photo is Rejected</string>
     <string name="notifications_empty">No Notification</string>
     <string name="notifications_p2p_status_paid">You have already done this transaction.</string>
-    <string name="notif_detail_claim_non_member">have joined in PIN</string>
+    <string name="notif_detail_claim_non_member">have joined in Saldomu</string>
 
     <string name="social_promo">Promo</string>
     <string name="title_add_friends">Add Friend</string>

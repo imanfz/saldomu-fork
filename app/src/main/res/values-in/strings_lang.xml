@@ -432,7 +432,7 @@
     <string name="notif_title_photo_ktp_rejected">Data Photo Anda Ditolak</string>
     <string name="notifications_empty">Tidak ada Notifikasi</string>
     <string name="notifications_p2p_status_paid">Anda sudah melakukan transaksi ini.</string>
-    <string name="notif_detail_claim_non_member">sudah bergabung di PIN</string>
+    <string name="notif_detail_claim_non_member">sudah bergabung di Saldomu</string>
 
     <string name="social_promo">Promo</string>
     <string name="title_add_friends">Tambah Teman</string>
