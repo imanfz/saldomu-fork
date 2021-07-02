@@ -234,7 +234,14 @@ class BBSCashIn : BaseFragment() {
 
     private fun showDialogBankList(btnChange: Button) {
         if (btnChange == btn_change_source)
-            Toast.makeText(context, "Source", Toast.LENGTH_SHORT).show()
+            dialogBankList = DialogBankList.newDialog(activity, aListAgent) { position ->
+                changeSource(Integer.parseInt(aListAgent!![position]["flag"]!!),
+                    listBankSource!![position].product_type,
+                    listBankSource!![position].product_code,
+                    listBankSource!![position].product_name,
+                    listBankSource!![position].product_h2h)
+                dialogBankList!!.dismiss()
+            }
         else
             dialogBankList = DialogBankList.newDialog(activity, aListMember) { position ->
                 benef_product_bank_gateaway = listBankBenef!![position].bank_gateway
@@ -334,36 +341,24 @@ class BBSCashIn : BaseFragment() {
                 hm["txt"] = SALDO_AGEN
             else
                 hm["txt"] = bankAgen[i].product_name
-            if (bankAgen[i].product_name.toLowerCase().contains("mandiri"))
-                hm["flag"] = R.drawable.logo_mandiri_bank_small.toString()
-            else if (bankAgen[i].product_name.toLowerCase().contains("bri"))
-                hm["flag"] = R.drawable.logo_bank_bri_small.toString()
-            else if (bankAgen[i].product_name.toLowerCase().contains("permata"))
-                hm["flag"] = R.drawable.logo_bank_permata_small.toString()
-            else if (bankAgen[i].product_name.toLowerCase().contains("uob"))
-                hm["flag"] = R.drawable.logo_bank_uob_small.toString()
-            else if (bankAgen[i].product_name.toLowerCase().contains("maspion"))
-                hm["flag"] = R.drawable.logo_bank_maspion_rev1_small.toString()
-            else if (bankAgen[i].product_name.toLowerCase().contains("bii"))
-                hm["flag"] = R.drawable.logo_bank_bii_small.toString()
-            else if (bankAgen[i].product_name.toLowerCase().contains("jatim"))
-                hm["flag"] = R.drawable.logo_bank_jatim_small.toString()
-            else if (bankAgen[i].product_name.toLowerCase().contains("bca"))
-                hm["flag"] = R.drawable.logo_bca_bank_small.toString()
-            else if (bankAgen[i].product_name.toLowerCase().contains("nobu"))
-                hm["flag"] = R.drawable.logo_bank_nobu.toString()
-            else if (bankAgen[i].product_name.toLowerCase().contains("saldomu"))
-                hm["flag"] = R.drawable.logo_small.toString()
-            else if (bankAgen[i].product_name.toLowerCase().contains("linkaja"))
-                hm["flag"] = R.drawable.linkaja.toString()
-            else if (bankAgen[i].product_code.toLowerCase().contains("emoedikk"))
-                hm["flag"] = R.drawable.dana_small.toString()
-            else if (bankAgen[i].product_code.toLowerCase().contains("009"))
-                hm["flag"] = R.drawable.logo_bank_bni_small.toString()
-            else if (bankAgen[i].product_name.toLowerCase().contains("akardaya"))
-                hm["flag"] = R.drawable.mad_small.toString()
-            else
-                hm["flag"] = R.drawable.ic_square_gate_one.toString()
+
+            when {
+                bankAgen[i].product_name.toLowerCase().contains("mandiri") -> hm["flag"] = R.drawable.logo_mandiri_bank_small.toString()
+                bankAgen[i].product_name.toLowerCase().contains("bri") -> hm["flag"] = R.drawable.logo_bank_bri_small.toString()
+                bankAgen[i].product_name.toLowerCase().contains("permata") -> hm["flag"] = R.drawable.logo_bank_permata_small.toString()
+                bankAgen[i].product_name.toLowerCase().contains("uob") -> hm["flag"] = R.drawable.logo_bank_uob_small.toString()
+                bankAgen[i].product_name.toLowerCase().contains("maspion") -> hm["flag"] = R.drawable.logo_bank_maspion_rev1_small.toString()
+                bankAgen[i].product_name.toLowerCase().contains("bii") -> hm["flag"] = R.drawable.logo_bank_bii_small.toString()
+                bankAgen[i].product_name.toLowerCase().contains("jatim") -> hm["flag"] = R.drawable.logo_bank_jatim_small.toString()
+                bankAgen[i].product_name.toLowerCase().contains("bca") -> hm["flag"] = R.drawable.logo_bca_bank_small.toString()
+                bankAgen[i].product_name.toLowerCase().contains("nobu") -> hm["flag"] = R.drawable.logo_bank_nobu.toString()
+                bankAgen[i].product_name.toLowerCase().contains("saldomu") -> hm["flag"] = R.drawable.logo_small.toString()
+                bankAgen[i].product_name.toLowerCase().contains("linkaja") -> hm["flag"] = R.drawable.linkaja.toString()
+                bankAgen[i].product_code.toLowerCase().contains("emoedikk") -> hm["flag"] = R.drawable.dana_small.toString()
+                bankAgen[i].product_code.toLowerCase().contains("009") -> hm["flag"] = R.drawable.logo_bank_bni_small.toString()
+                bankAgen[i].product_name.toLowerCase().contains("akardaya") -> hm["flag"] = R.drawable.mad_small.toString()
+                else -> hm["flag"] = R.drawable.ic_square_gate_one.toString()
+            }
             aListAgent!!.add(hm)
         }
         if (aListAgent!!.size == 1) {
@@ -374,6 +369,11 @@ class BBSCashIn : BaseFragment() {
                     bankAgen[position].product_code,
                     bankAgen[position].product_name,
                     bankAgen[position].product_h2h)
+        } else {
+            for (i in bankAgen.indices) {
+                if (bankAgen[i].product_name.toLowerCase(Locale.getDefault()).contains("saldomu"))
+                    changeSource(Integer.parseInt(aListAgent!![i]["flag"]!!), bankAgen[i].product_type, bankAgen[i].product_code, bankAgen[i].product_name, bankAgen[i].product_h2h)
+            }
         }
     }
 
