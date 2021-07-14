@@ -1,20 +1,25 @@
 package com.sgo.saldomu.fragments
 
+import android.annotation.TargetApi
 import android.app.Dialog
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.view.*
+import android.webkit.*
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.ListPOTokoAdapter
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
+import com.sgo.saldomu.coreclass.InetHandler
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
@@ -25,7 +30,10 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.ListPOModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
+import kotlinx.android.synthetic.main.frag_input_store_code.*
 import kotlinx.android.synthetic.main.frag_list_po.*
+import kotlinx.android.synthetic.main.frag_webview_catalog_po.*
+import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
@@ -39,6 +47,7 @@ class FragListPurchaseOrder : BaseFragment() {
     var partner: String? = ""
     var anchorCompany: String? = ""
 
+    var isDisconnected : Boolean = false
     var itemList = ArrayList<ListPOModel>()
     var itemListAdapter: ListPOTokoAdapter? = null
 
@@ -59,23 +68,26 @@ class FragListPurchaseOrder : BaseFragment() {
 
         btn_create_po.visibility = View.VISIBLE
         layout_spinner.visibility = View.VISIBLE
-        btn_create_po.setOnClickListener {
-            val fragment = FragListItemToko()
-            val bundle = Bundle()
-            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
-            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
-            bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
-            bundle.putString(DefineValue.PARTNER, partner)
-            bundle.putString(DefineValue.ANCHOR_COMPANY, anchorCompany)
-            fragment.arguments = bundle
-            tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.choose_catalog), true, (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
-        }
+
 
         if (arguments != null) {
             memberCode = arguments!!.getString(DefineValue.MEMBER_CODE_ESPAY, "")
             commCode = arguments!!.getString(DefineValue.COMMUNITY_CODE_ESPAY, "")
             shopName = arguments!!.getString(DefineValue.MEMBER_SHOP_NAME, "")
             anchorCompany = arguments!!.getString(DefineValue.ANCHOR_COMPANY, "")
+        }
+
+        btn_create_po.setOnClickListener {
+            generatingURL()
+//            val fragment = FragListItemToko()
+//            val bundle = Bundle()
+//            bundle.putString(DefineValue.MEMBER_CODE_ESPAY, memberCode)
+//            bundle.putString(DefineValue.COMMUNITY_CODE_ESPAY, commCode)
+//            bundle.putString(DefineValue.MEMBER_SHOP_NAME, shopName)
+//            bundle.putString(DefineValue.PARTNER, partner)
+//            bundle.putString(DefineValue.ANCHOR_COMPANY, anchorCompany)
+//            fragment.arguments = bundle
+//            tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.choose_catalog), true, (activity as TokoPurchaseOrderActivity).FRAG_INPUT_ITEM_TAG)
         }
 
         itemListAdapter = ListPOTokoAdapter(itemList, activity, object : ListPOTokoAdapter.listener {
@@ -122,6 +134,73 @@ class FragListPurchaseOrder : BaseFragment() {
                 itemListAdapter!!.filter.filter(editable.toString())
             }
         })
+    }
+
+    private fun generatingURL() {
+        try {
+            showProgressDialog()
+            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GENERATE_URL, commCode + memberCode)
+            params[WebParams.COMM_ID] = commIDLogin
+            params[WebParams.USER_ID] = userPhoneID
+            params[WebParams.COMM_CODE_ESPAY] = commCode
+            params[WebParams.CUST_ID_ESPAY] = userPhoneID
+            params[WebParams.CANVASSER_ID] = ""
+            params[WebParams.MEMBER_CODE_ESPAY] = memberCode
+            Timber.d("params generate url bat:$params")
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GENERATE_URL, params,
+                    object : ObjListeners {
+                        override fun onResponses(response: JSONObject) {
+                            try {
+                                val gson = Gson()
+                                val model = gson.fromJson(response.toString(), jsonModel::class.java)
+                                val code = response.getString(WebParams.ERROR_CODE)
+                                val code_msg = response.getString(WebParams.ERROR_MESSAGE)
+                                Timber.d("isi response generate url bat:$response")
+                                when (code) {
+                                    WebParams.SUCCESS_CODE -> {
+                                        val url = response.getString(WebParams.URL)
+                                        val fragment = FragWebViewCatalogPO()
+                                        val bundle = Bundle()
+                                        bundle.putString(DefineValue.URL, url)
+                                        fragment.arguments = bundle
+                                        tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.choose_catalog), true, "FragWebViewCatalogPO")
+
+                                    }
+                                    WebParams.LOGOUT_CODE -> {
+                                        Timber.d("isi response autologout:$response")
+                                        val message = response.getString(WebParams.ERROR_MESSAGE)
+                                        val test = AlertDialogLogout.getInstance()
+                                        test.showDialoginActivity(activity, message)
+                                    }
+                                    DefineValue.ERROR_9333 -> {
+                                        Timber.d("isi response app data:%s", model.app_data)
+                                        val appModel = model.app_data
+                                        val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                        alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
+                                    }
+                                    DefineValue.ERROR_0066 -> {
+                                        Timber.d("isi response maintenance:$response")
+                                        val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                        alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                    }
+                                    else -> {
+                                        Timber.d("isi error generate url bat:$response")
+                                        Toast.makeText(activity, code_msg, Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            }
+                        }
+
+                        override fun onError(throwable: Throwable) {}
+                        override fun onComplete() {
+                            dismissProgressDialog()
+                        }
+                    })
+        } catch (e: java.lang.Exception) {
+            Timber.d("httpclient:%s", e.message)
+        }
     }
 
     private fun getPOList() {

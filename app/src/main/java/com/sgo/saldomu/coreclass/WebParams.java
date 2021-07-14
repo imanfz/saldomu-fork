@@ -726,6 +726,7 @@ public class WebParams {
     public static String IDENTITY_REMARK = "identity_remark";
     public static String ANCHOR_COMPANY = "anchor_company";
     public static String CANVASSER_CUSTID = "canvasser_custid";
+    public static String CANVASSER_ID = "canvasser_id";
     public static String ISSUE_DATE_FROM = "issue_date_from";
     public static String ISSUE_DATE_TO = "issue_date_to";
     public static String PAID_OPTION = "paid_option";
@@ -736,4 +737,5 @@ public class WebParams {
     public static String TERMINAL_ID = "terminal_id";
     public static String GR_UNPAID_NOTIF = "gr_unpaid_notif";
     public static String INDICATOR_TYPE = "indicator_type";
+    public static String URL = "url";
 }

@@ -745,5 +745,6 @@ public class DefineValue {
     public static String DOC_TYPE_REMARK = "docTypeRemark";
     public static String ALLOW_TRANSFER = "allowTransfer";
     public static String LOGOUT_FROM_SESSION_TIMEOUT = "logout_from_session_timeout";
+    public static String URL = "url";
 }
 

@@ -326,6 +326,7 @@ public class MyApiClient {
     public static String LINK_CANCEL_DOC;
     public static String LINK_ADD_FAVORITE;
     public static String LINK_DELETE_FAVORITE;
+    public static String LINK_GENERATE_URL;
 
 
     public void InitializeAddress(){
@@ -601,6 +602,7 @@ public class MyApiClient {
 
         LINK_ADD_FAVORITE = headaddressfinal + "espaycatalog/ItemFavorite/New";
         LINK_DELETE_FAVORITE = headaddressfinal + "espaycatalog/ItemFavorite/Delete";
+        LINK_GENERATE_URL = headaddressfinal + "espaycatalog/GenerateURL/Invoke";
 
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
