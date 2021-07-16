@@ -26,8 +26,8 @@ class FragWebViewCatalogPO : BaseFragment() {
         return v
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         bundle = arguments!!
         url = bundle.getString(DefineValue.URL, "")
 

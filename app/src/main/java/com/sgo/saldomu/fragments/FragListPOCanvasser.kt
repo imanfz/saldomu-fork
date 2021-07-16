@@ -1,6 +1,8 @@
 package com.sgo.saldomu.fragments
 
 import android.annotation.TargetApi
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -124,10 +126,8 @@ class FragListPOCanvasser : BaseFragment(), ListPOAdapter.listener {
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
                                         val url = response.getString(WebParams.URL)
-                                        val fragment = FragWebViewCatalogPO()
-                                        bundle.putString(DefineValue.URL, url)
-                                        fragment.arguments = bundle
-                                        switchFragment(fragment, "", "", true, "")
+                                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        startActivity(browserIntent)
                                     }
                                     WebParams.LOGOUT_CODE -> {
                                         Timber.d("isi response autologout:$response")

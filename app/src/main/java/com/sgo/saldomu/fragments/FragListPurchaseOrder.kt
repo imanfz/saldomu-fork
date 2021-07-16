@@ -1,9 +1,9 @@
 package com.sgo.saldomu.fragments
 
-import android.annotation.TargetApi
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableString
@@ -19,7 +19,6 @@ import com.sgo.saldomu.activities.TokoPurchaseOrderActivity
 import com.sgo.saldomu.adapter.ListPOTokoAdapter
 import com.sgo.saldomu.coreclass.CustomSecurePref
 import com.sgo.saldomu.coreclass.DefineValue
-import com.sgo.saldomu.coreclass.InetHandler
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService
 import com.sgo.saldomu.coreclass.WebParams
@@ -158,12 +157,14 @@ class FragListPurchaseOrder : BaseFragment() {
                                 Timber.d("isi response generate url bat:$response")
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
-                                        val url = response.getString(WebParams.URL)
-                                        val fragment = FragWebViewCatalogPO()
-                                        val bundle = Bundle()
-                                        bundle.putString(DefineValue.URL, url)
-                                        fragment.arguments = bundle
-                                        tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.choose_catalog), true, "FragWebViewCatalogPO")
+                                        var url = response.getString(WebParams.URL)
+//                                        val fragment = FragWebViewCatalogPO()
+//                                        val bundle = Bundle()
+//                                        bundle.putString(DefineValue.URL, url)
+//                                        fragment.arguments = bundle
+//                                        tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.choose_catalog), true, "FragWebViewCatalogPO")
+                                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        startActivity(browserIntent)
 
                                     }
                                     WebParams.LOGOUT_CODE -> {
