@@ -29,9 +29,7 @@ import com.sgo.saldomu.interfaces.ObjListeners
 import com.sgo.saldomu.models.ListPOModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
-import kotlinx.android.synthetic.main.frag_input_store_code.*
 import kotlinx.android.synthetic.main.frag_list_po.*
-import kotlinx.android.synthetic.main.frag_webview_catalog_po.*
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -158,11 +156,6 @@ class FragListPurchaseOrder : BaseFragment() {
                                 when (code) {
                                     WebParams.SUCCESS_CODE -> {
                                         var url = response.getString(WebParams.URL)
-//                                        val fragment = FragWebViewCatalogPO()
-//                                        val bundle = Bundle()
-//                                        bundle.putString(DefineValue.URL, url)
-//                                        fragment.arguments = bundle
-//                                        tokoPurchaseOrderActivity!!.switchContent(fragment, getString(R.string.choose_catalog), true, "FragWebViewCatalogPO")
                                         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                                         startActivity(browserIntent)
 
