@@ -1037,7 +1037,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="contoh_no_hp">Contoh (0888-xxxxxxx)</string>
     <string name="contoh_name">Contoh (sutjipto)</string>
     <string name="hint_destination_city">Pilih Kota Rekening</string>
-    <string name="rp.">Rp.</string>
+    <string name="rp.">Rp. </string>
     <string name="agen">Agen</string>
     <string name="tujuan">Tujuan</string>
     <string name="member">Member</string>

@@ -80,7 +80,7 @@ class ConfirmationQrisActivity : BaseActivity(), ReportBillerDialog.OnDialogOkCa
             edit_text_amount_transfer.setText(transactionAmount)
             edit_text_amount_transfer.isEnabled = false
         } else {
-            if (qrisParsingModel.percentage!!.toInt() != 0)
+            if (qrisParsingModel.percentage!!.toDouble() != 0.00)
                 percentage = qrisParsingModel.percentage.toDouble() / 100
 
             edit_text_amount_transfer.requestFocus()
