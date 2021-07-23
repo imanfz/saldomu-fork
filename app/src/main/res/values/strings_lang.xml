@@ -1050,7 +1050,7 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="contoh_no_hp">Example (0888-xxxxxxx)</string>
     <string name="contoh_name">Example (sutjipto)</string>
     <string name="hint_destination_city">Select Account City</string>
-    <string name="rp.">Rp.</string>
+    <string name="rp.">Rp. </string>
     <string name="agen">Agent</string>
     <string name="tujuan">Destination</string>
     <string name="member">Member</string>

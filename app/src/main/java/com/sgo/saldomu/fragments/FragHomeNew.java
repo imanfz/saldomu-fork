@@ -752,12 +752,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //                menuStrings.add(getResources().getString(R.string.menu_item_title_scadm));
 //                menuDrawables.add(getResources().getDrawable(R.drawable.group));
 //            }
+            menuStrings.add(getResources().getString(R.string.more));
+            setupIconMenu();
         }
-
-        menuStrings.add(getResources().getString(R.string.more));
-        setupIconMenu();
-//        menuStrings.add(getResources().getString(R.string.menu_item_title_pay_friends));
-//        menuDrawables.add(getResources().getDrawable(R.drawable.ic_transfer_saldo));
     }
 
     void checkBillerCodeAgent() {
