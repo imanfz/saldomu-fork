@@ -170,7 +170,11 @@ class BBSCashIn : BaseFragment() {
         aListAgent = ArrayList()
         aListMember = ArrayList()
 
+        name_value.visibility = View.GONE
+        no_OTP.visibility = View.GONE
+
         initializeDataBBSCTA()
+
         if (defaultAmount != "" || noHpPengirim != "") run {
             amount_transfer_edit_text.setText(defaultAmount)
             no_benef_value.setText(noHpPengirim)
@@ -220,9 +224,6 @@ class BBSCashIn : BaseFragment() {
 
         if (isAgentLKD)
             no_benef_value.hint = getString(R.string.number_hp_destination_hint)
-
-        name_value.visibility = View.GONE
-        no_OTP.visibility = View.GONE
 
         btn_change_source.setOnClickListener { showDialogBankList(btn_change_source) }
         btn_change_destination.setOnClickListener { showDialogBankList(btn_change_destination) }
