@@ -179,6 +179,10 @@ public class MainPage extends BaseActivity {
 
     ColorStateList oldColors;
 
+    static {
+        System.loadLibrary("native-lib");
+    }
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -343,7 +347,7 @@ public class MainPage extends BaseActivity {
 
     private void InitializeApp() {
         if (GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
-            if (RootUtil.isDeviceRooted()) {
+            if (RootUtil.isDeviceRooted() || RootUtil.isEmulator()) {
                 if (BuildConfig.FLAVOR.equals("development")) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);

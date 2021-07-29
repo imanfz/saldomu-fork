@@ -1,5 +1,7 @@
 package com.sgo.saldomu.coreclass;
 
+import android.os.Build;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -39,6 +41,19 @@ public class RootUtil {
         } finally {
             if (process != null) process.destroy();
         }
+    }
+
+    public static boolean isEmulator() {
+        boolean isEmulator = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            for(String item : Build.SUPPORTED_ABIS) {
+//                Timber.d("isEmulator : " + item);
+                if (item.contains("x86")) {
+                    isEmulator = true;
+                }
+            }
+        }
+        return isEmulator;
     }
 }
 
