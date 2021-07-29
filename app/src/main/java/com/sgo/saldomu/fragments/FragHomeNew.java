@@ -307,6 +307,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private void getCategoryList() {
+        showProgressDialog();
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
