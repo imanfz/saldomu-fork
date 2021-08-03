@@ -1156,6 +1156,7 @@ public class MainPage extends BaseActivity {
 
     private void showChangePassword() {
         Intent i = new Intent(this, ChangePassword.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
         switchActivity(i, ACTIVITY_RESULT);
     }

@@ -117,7 +117,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     ProgressDialog getProgDialog() {
-        if (progressDialog == null)
+        if (progressDialog == null && getActivity() != null)
             progressDialog = DefinedDialog.CreateProgressDialog(getActivity(),getString(R.string.please_wait));
         return progressDialog;
     }
