@@ -139,7 +139,7 @@ class ForgotPin : BaseActivity() {
         }
         if (et_userid.text.toString().isEmpty() || et_userid.text.toString().isEmpty()) {
             et_userid.requestFocus()
-            et_userid.error = resources.getString(R.string.user_id_validation)
+            et_userid.error = resources.getString(R.string.customer_mobile_number_validation)
             return false
         } else if (tv_dob_forgotpin.text == getString(R.string.rsb_hint_dob)) {
             val builder = AlertDialog.Builder(this)

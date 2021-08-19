@@ -268,7 +268,7 @@ public class UtilsLoader {
 //                                    Timber.d("Isi response get App Version:"+response.toString());
 
                                     final AppDataModel appModel = model.getApp_data();
-                                    sp.edit().putString(DefineValue.SHORT_URL_APP, appModel.getShortUrl()).apply();
+
                                     if (appModel.getDisable().equals("1")) {
                                         String message = getmActivity().getResources().getString(R.string.maintenance_message);
                                         DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {

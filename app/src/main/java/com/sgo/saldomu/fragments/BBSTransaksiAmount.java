@@ -475,7 +475,7 @@ public class BBSTransaksiAmount extends Fragment {
                             if (source_product_code.equalsIgnoreCase("MANDIRILKD")) {
                                 etNoAcct.setHint(getString(R.string.nomor_rekening) + " " + listbankSource.get(position).getProduct_name());
                             } else
-                                etNoAcct.setHint(getString(R.string.user_id) + " " + getString(R.string.appname));
+                                etNoAcct.setHint(getString(R.string.customer_mobile_number) + " " + getString(R.string.appname));
 //                                else if (source_product_code.equalsIgnoreCase("MANDIRIIB"))
 //                                {
 //                                    etNoAcct.setHint(getString(R.string.user_id) + " " + listbankSource.get(position).getProduct_name());
@@ -814,7 +814,7 @@ public class BBSTransaksiAmount extends Fragment {
         } else {
             if (etNoAcct.getText().toString().length() == 0) {
                 etNoAcct.requestFocus();
-                etNoAcct.setError(getString(R.string.user_id_validation));
+                etNoAcct.setError(getString(R.string.customer_mobile_number_validation));
                 return false;
             }
         }
