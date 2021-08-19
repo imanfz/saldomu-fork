@@ -406,10 +406,10 @@ class BBSCashIn : BaseFragment() {
             no_benef_value.setText("")
         }
 
-        if (benef_product_bank_gateaway.equals(DefineValue.STRING_YES, ignoreCase = true))
-            name_value.visibility = View.GONE
-        else
+        if (benef_product_code.equals("linkaja", ignoreCase = true))
             name_value.visibility = View.VISIBLE
+        else
+            name_value.visibility = View.GONE
 
         if (benef_product_code.equals("tcash", ignoreCase = true))
             no_OTP.visibility = View.VISIBLE
