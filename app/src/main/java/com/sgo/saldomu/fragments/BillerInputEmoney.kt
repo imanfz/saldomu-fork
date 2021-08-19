@@ -466,14 +466,15 @@ class BillerInputEmoney : BaseFragment(), ReportBillerDialog.OnDialogOkCallback,
                                 Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
                             }
                         }
+                        dismissProgressDialog()
                     }
 
                     override fun onError(throwable: Throwable?) {
-
+                        dismissProgressDialog()
                     }
 
                     override fun onComplete() {
-                        dismissProgressDialog()
+
                     }
                 })
     }

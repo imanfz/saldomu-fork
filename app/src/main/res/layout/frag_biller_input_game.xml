@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/billerinput_layout_et_id"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/billerinput_et_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/billerinput_layout_et_id_extra_1"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/billerinput_et_id_extra_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/billerinput_layout_et_id_extra_2"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/billerinput_et_id_extra_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <LinearLayout
+            android:id="@+id/billerinput_layout_payment_method"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/billerinput_text_payment_options"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp" />
+
+            <Spinner
+                android:id="@+id/billerinput_spinner_payment_options"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:spinnerMode="dropdown"
+                android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                android:visibility="visible" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#e9eeef"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/billerinput_tv_select_denom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/cashout_nominal"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/billerinput_list_denom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</LinearLayout>

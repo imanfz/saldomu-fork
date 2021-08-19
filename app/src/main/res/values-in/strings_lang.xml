@@ -499,7 +499,7 @@
 
     <string name="cashout_info" translatable="false">Info</string>
     <string name="cashout_info_desc">Anda bisa mendapatkan uang tunai melalui mesin ATM atau melalui Agen (Mesin EDC)</string>
-    <string name="cashout_nominal">Pilih nominal</string>
+    <string name="cashout_nominal">Pilih Nominal</string>
 
     <string name="menuitem_title_creategroup">Buat Grup</string>
     <string name="menuitem_title_listcontacs">Daftar Kontak</string>
@@ -1084,8 +1084,8 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="agent_approve">Terima</string>
     <string name="agent_reject">Tolak</string>
     <string name="agent_shop">Agent Shop ID</string>
-    <string name="user_id">No. Handphone pelanggan</string>
-    <string name="user_id_validation">Nomor Handphone member dibutuhkan !</string>
+    <string name="customer_mobile_number">No. Handphone pelanggan</string>
+    <string name="customer_mobile_number_validation">Nomor Handphone member dibutuhkan !</string>
     <string name="city_not_found_message">Nama kota tidak ditemukan</string>
     <string name="city_empty_message">Kota harus diisi!</string>
     <string name="destination_city_empty_message">Kota tujuan harus diisi!</string>
@@ -1769,8 +1769,7 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="no_reference">No. Referensi</string>
     <string name="tip">Tip</string>
     <string name="acquire_name">Nama Pengakuisisi</string>
-
-
     <string name="listatm_topup_bni_2">Pilih menu Virtual Account Billing</string>
     <string name="listatm_topup_bni_3">Masukkan nomor Virtual Account</string>
+    <string name="user_id">User ID</string>
 </resources>

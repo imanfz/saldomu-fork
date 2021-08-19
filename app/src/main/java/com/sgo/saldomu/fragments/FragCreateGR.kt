@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.sgo.saldomu.R
 import com.sgo.saldomu.activities.CanvasserGoodReceiptActivity
-import com.sgo.saldomu.activities.CanvasserPOActivity
 import com.sgo.saldomu.adapter.AdapterListBonusItem
 import com.sgo.saldomu.adapter.AdapterListItemConfirmGR
 import com.sgo.saldomu.coreclass.CurrencyFormat
@@ -27,7 +26,6 @@ import com.sgo.saldomu.models.retrofit.ItemModel
 import com.sgo.saldomu.models.retrofit.jsonModel
 import com.sgo.saldomu.widgets.BaseFragment
 import kotlinx.android.synthetic.main.frag_create_gr.*
-import kotlinx.android.synthetic.main.frag_create_gr.frag_gr_confirm_submit_btn
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -92,6 +90,7 @@ class FragCreateGR : BaseFragment(), AdapterListItemConfirmGR.ListItemConfirmGRL
     }
 
     fun initalizeListItem() {
+        itemArrayList.clear()
         adapterListItemConfirmGR = AdapterListItemConfirmGR(activity, itemArrayList, this)
         frag_gr_confirm_item_list_field.adapter = adapterListItemConfirmGR
         frag_gr_confirm_item_list_field.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
