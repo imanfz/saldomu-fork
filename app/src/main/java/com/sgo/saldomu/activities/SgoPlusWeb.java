@@ -16,9 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.ClientCertRequest;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -174,10 +177,21 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         if (Build.VERSION.SDK_INT >= 21 && BuildConfig.DEBUG) {
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            // Clear all the Application Cache, Web SQL Database and the HTML5 Web Storage
+            WebStorage.getInstance().deleteAllData();
+
+            // Clear all the cookies
+            CookieManager.getInstance().removeAllCookies(null);
+            CookieManager.getInstance().flush();
         }
         if (android.os.Build.VERSION.SDK_INT <= 11) {
             webSettings.setAppCacheMaxSize(1024 * 1024 * 8);
         }
+
+        webview.clearCache(true);
+        webview.clearFormData();
+        webview.clearHistory();
+        webview.clearSslPreferences();
 
         final Activity activity = this;
         webview.setWebChromeClient(new WebChromeClient() {
