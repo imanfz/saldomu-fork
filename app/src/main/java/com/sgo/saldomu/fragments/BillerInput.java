@@ -83,7 +83,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
             "SPP",  // SPP   15
             "RMH",  //Perumahan  16
             "BPJS", //BPJS 17
-            "GAPP", // Game 18
+            "GAME", // Game 18
             "EMON", // Emoney 19
             "VCHR",// voucher 20
             "DATA", // data 21
@@ -296,9 +296,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
         } else if (biller_type_code.equals(billerType[18])) {
             buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
-            generateRandomString(20);
-            tv_payment_remark.setVisibility(View.GONE);
-            et_payment_remark.setVisibility(View.GONE);
+            et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
         } else if (biller_type_code.equals(billerType[20])) {
             buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
@@ -421,9 +419,7 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
                 if (inputValidation()) {
                     if (biller_type_code.equals(billerType[0]))
                         final_payment_remark = NoHPFormat.formatTo62(String.valueOf(et_payment_remark.getText()));
-                    else if (biller_type_code.equals(billerType[18])) {
-                        final_payment_remark = generateRandomString(20);
-                    } else
+                    else
                         final_payment_remark = String.valueOf(et_payment_remark.getText());
                     showDialog(final_payment_remark);
                 }
@@ -518,18 +514,6 @@ public class BillerInput extends BaseFragment implements NfcAdapter.ReaderCallba
                 return false;
             }
         return true;
-    }
-
-    public String generateRandomString(int length) {
-        String randomString = "";
-
-        final char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890".toCharArray();
-        final SecureRandom random = new SecureRandom();
-        for (int i = 0; i < length; i++) {
-            randomString = randomString + chars[random.nextInt(chars.length)];
-        }
-
-        return randomString;
     }
 
     @Override

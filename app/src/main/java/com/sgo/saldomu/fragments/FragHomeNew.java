@@ -417,7 +417,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 .findFirst();
 
         mBillerTypeDataGame = realm.where(Biller_Type_Data_Model.class)
-                .equalTo(WebParams.BILLER_TYPE_CODE, "GAPP")
+                .equalTo(WebParams.BILLER_TYPE_CODE, "GAME")
                 .findFirst();
 
         mBillerTypeDataVoucher = realm.where(Biller_Type_Data_Model.class)
