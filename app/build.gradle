@@ -70,7 +70,7 @@ android {
         //password
         buildConfigField "String", "HEADER_AUTH_2", "\"WPtK9YBa?4g,rfvm(^XD/M]{25TJF8\""
         //private key
-        buildConfigField "String", "HEADER_AUTH_3", "\"590mobil3\""
+        buildConfigField "String", "HEADER_AUTH_3", "\"CpXMVDbj1QOTcbaZwkyzaQ==\""
         //certificate
         buildConfigField "String", "CERTIFICATE_1", "\"sha256/UUsUINnnxiyFSr9zQdrGG9kfl9er17hIN56rmbF1LMg=\""
         buildConfigField "String", "CERTIFICATE_2", "\"sha256/klO23nT2ehFDXCfx3eHTDRESMz3asj1muO+4aIdjiuY=\""
