@@ -10,11 +10,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import timber.log.Timber;
@@ -24,7 +32,13 @@ import timber.log.Timber;
  */
 
 public class RSA {
-
+    private static final int pswdIterations = 10;
+    private static final int keySize = 128;
+    private static final String cypherInstance = "AES/CBC/PKCS5Padding";
+    private static final String secretKeyInstance = "PBKDF2WithHmacSHA1";
+    private static final String plainText = "sampleText";
+    private static final String AESSalt = "exampleSalt";
+    private static final String initializationVector = "8119745113154120";
     public static String opensslEncrypt(String data) {
 
         String encryptedValue = "";
@@ -81,7 +95,7 @@ public class RSA {
         return encryptedValue;
     }
 
-    private static String encrypt(String strKey, String data) {
+    public static String encrypt(String strKey, String data) {
         Timber.d("key: " + strKey);
         strKey = Md5.hashMd5(strKey);
         Timber.d("md5 key: " + strKey);
@@ -104,6 +118,36 @@ public class RSA {
             e.printStackTrace();
         }
         return encryptedValue;
+    }
+
+    public static String encrypt2(String textToEncrypt) throws Exception {
+
+        SecretKeySpec skeySpec = new SecretKeySpec(getRaw(plainText, AESSalt), "AES");
+        Cipher cipher = Cipher.getInstance(cypherInstance);
+        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new IvParameterSpec(initializationVector.getBytes()));
+        byte[] encrypted = cipher.doFinal(textToEncrypt.getBytes());
+        return Base64.encodeToString(encrypted, Base64.DEFAULT);
+    }
+
+    public static String decrypt2(String textToDecrypt) throws Exception {
+
+        byte[] encryted_bytes = Base64.decode(textToDecrypt, Base64.DEFAULT);
+        SecretKeySpec skeySpec = new SecretKeySpec(getRaw(plainText, AESSalt), "AES");
+        Cipher cipher = Cipher.getInstance(cypherInstance);
+        cipher.init(Cipher.DECRYPT_MODE, skeySpec, new IvParameterSpec(initializationVector.getBytes()));
+        byte[] decrypted = cipher.doFinal(encryted_bytes);
+        return new String(decrypted, "UTF-8");
+    }
+
+    private static byte[] getRaw(String plainText, String salt) {
+        try {
+            SecretKeyFactory factory = SecretKeyFactory.getInstance(secretKeyInstance);
+            KeySpec spec = new PBEKeySpec(plainText.toCharArray(), salt.getBytes(), pswdIterations, keySize);
+            return factory.generateSecret(spec).getEncoded();
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
     }
 
     public static String decrypt(String strKey, String data){
