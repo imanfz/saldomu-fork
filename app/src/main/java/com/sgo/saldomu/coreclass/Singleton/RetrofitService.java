@@ -27,6 +27,7 @@ import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.interfaces.RetrofitInterfaces;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.securities.SHA;
 import com.sgo.saldomu.utils.LocaleManager;
 
@@ -89,7 +90,15 @@ import timber.log.Timber;
 public class RetrofitService {
     private static String hostname = "mobile-dev.espay.id";
 
-    public static final String PRIVATE_KEY = BuildConfig.HEADER_AUTH_3;
+    public static String PRIVATE_KEY;
+
+    static {
+        try {
+            PRIVATE_KEY = RSA.decrypt2(BuildConfig.HEADER_AUTH_3);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private static RetrofitService singleton;
     Retrofit retrofit;
