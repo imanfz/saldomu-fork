@@ -179,9 +179,9 @@ public class MainPage extends BaseActivity {
 
     ColorStateList oldColors;
 
-    static {
-        System.loadLibrary("native-lib");
-    }
+//    static {
+//        System.loadLibrary("native-lib");
+//    }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
