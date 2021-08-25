@@ -738,4 +738,5 @@ public class WebParams {
     public static String GR_UNPAID_NOTIF = "gr_unpaid_notif";
     public static String INDICATOR_TYPE = "indicator_type";
     public static String URL = "url";
+    public static String otp = "OTP";
 }

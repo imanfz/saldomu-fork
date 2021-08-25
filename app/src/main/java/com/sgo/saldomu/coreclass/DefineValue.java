@@ -747,5 +747,6 @@ public class DefineValue {
     public static String LOGOUT_FROM_SESSION_TIMEOUT = "logout_from_session_timeout";
     public static String PATTERN_BILLER_ITEM = "pattern_biller_item";
     public static String BILLER_ITEM = "biller_item";
+    public static String OTP = "otp";
 }
 

@@ -89,7 +89,6 @@ public class FragTagihInput extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             is_search = bundle.getBoolean(DefineValue.IS_SEARCH_DGI, false);
-            Timber.d("is_search : ", is_search.toString());
             if (bundle.containsKey(DefineValue.ANCHOR_NAME_PG)) {
                 commCodePG = bundle.getString(DefineValue.COMM_CODE_PG, "");
                 commNamePG = bundle.getString(DefineValue.COMM_NAME_PG, "");
@@ -97,8 +96,8 @@ public class FragTagihInput extends BaseFragment {
                 memberCode = bundle.getString(DefineValue.MEMBER_CODE_PG, "");
                 txIdPG = bundle.getString(DefineValue.TXID_PG, "");
             }
-            if (bundle.containsKey(DefineValue.FAVORITE_CUSTOMER_ID)){
-                memberCode = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID,"");
+            if (bundle.containsKey(DefineValue.FAVORITE_CUSTOMER_ID)) {
+                memberCode = bundle.getString(DefineValue.FAVORITE_CUSTOMER_ID, "");
             }
         }
 
@@ -186,7 +185,10 @@ public class FragTagihInput extends BaseFragment {
         @Override
         public void onClick(View view) {
             if (inputValidation()) {
-                sendDataTagih();
+                if (anchorId.contains("INDOMOBIL")) {
+                    requestOTP();
+                } else
+                    sendDataTagih();
             }
         }
     };
@@ -230,7 +232,7 @@ public class FragTagihInput extends BaseFragment {
             tv_saldo_collector.setText(CurrencyFormat.format(balanceCollector));
         }
 
-        if (memberCode!=null) {
+        if (memberCode != null) {
             Timber.d("is_search initialize");
             et_memberCode.setText(memberCode);
         }
@@ -238,7 +240,6 @@ public class FragTagihInput extends BaseFragment {
         if (isAgentLKD) {
             btn_regShop.setVisibility(View.GONE);
         }
-
 
 
         mitraNameArrayList.clear();
@@ -271,10 +272,10 @@ public class FragTagihInput extends BaseFragment {
                 if (position != 0) {
                     ll_komunitas.setVisibility(View.VISIBLE);
                     initializeCommunity(position - 1);
-                    anchorId = anchorDataList.get(position-1).getId();
+                    anchorId = anchorDataList.get(position - 1).getId();
 
                 }
-                Timber.d("anchor_id : " +anchorId);
+                Timber.d("anchor_id : " + anchorId);
             }
 
             @Override
@@ -342,7 +343,7 @@ public class FragTagihInput extends BaseFragment {
             sp_communtiy.requestFocus();
             Toast.makeText(getActivity(), getString(R.string.error_input_community), Toast.LENGTH_SHORT).show();
             return false;
-        }else if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
+        } else if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
             notesEditText.requestFocus();
             notesEditText.setError(getString(R.string.payfriends_notes_zero));
             return false;
@@ -400,7 +401,7 @@ public class FragTagihInput extends BaseFragment {
 
                                 @Override
                                 public void onError(Throwable throwable) {
-
+                                    dismissProgressDialog();
                                 }
 
                                 @Override
@@ -446,8 +447,7 @@ public class FragTagihInput extends BaseFragment {
                                 bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
                                 bundle.putString(DefineValue.RESPONSE, responseListInvoice);
                                 bundle.putString(DefineValue.TXID_PG, txIdPG);
-                                if (favoriteSwitch.isChecked())
-                                {
+                                if (favoriteSwitch.isChecked()) {
                                     bundle.putBoolean(DefineValue.IS_FAVORITE, true);
                                     bundle.putString(DefineValue.CUST_ID, et_memberCode.getText().toString());
                                     bundle.putString(DefineValue.NOTES, notesEditText.getText().toString());
@@ -487,12 +487,87 @@ public class FragTagihInput extends BaseFragment {
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        dismissProgressDialog();
                     }
 
                     @Override
                     public void onComplete() {
+                        dismissProgressDialog();
+                    }
+                });
+    }
 
+
+    public void requestOTP() {
+        showProgressDialog();
+
+        String extraSignature = commCodeTagih + et_memberCode.getText().toString();
+        params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_FIRST_OTP, extraSignature);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+        params.put(WebParams.MEMBER_CODE, et_memberCode.getText().toString());
+        params.put(WebParams.COMM_CODE, commCodeTagih);
+        params.put(WebParams.USER_ID, userPhoneID);
+        Timber.d("params first OTP tagih DGI : " + params.toString());
+
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQ_FIRST_OTP, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            dismissProgressDialog();
+                            jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
+                            Timber.d("response first OTP tagih DGI  : " + response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            String error_message = response.getString(WebParams.ERROR_MESSAGE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                Bundle bundle = new Bundle();
+                                Fragment newFrag = new FragFirstOTPTagih();
+                                bundle.putString(DefineValue.MEMBER_CODE, et_memberCode.getText().toString());
+                                bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih);
+                                bundle.putString(DefineValue.OTP, response.getString(WebParams.otp));
+                                if (favoriteSwitch.isChecked()) {
+                                    bundle.putBoolean(DefineValue.IS_FAVORITE, true);
+                                    bundle.putString(DefineValue.CUST_ID, et_memberCode.getText().toString());
+                                    bundle.putString(DefineValue.NOTES, notesEditText.getText().toString());
+                                    bundle.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.DGI);
+                                    bundle.putString(DefineValue.PRODUCT_TYPE, DefineValue.DGI);
+                                    bundle.putString(DefineValue.ANCHOR_ID, anchorId);
+                                }
+
+//                                SecurePreferences.Editor mEditor = sp.edit();
+//                                mEditor.putString(DefineValue.COMM_CODE_DGI, response.getString(WebParams.COMM_CODE_DGI));
+//                                mEditor.apply();
+
+                                newFrag.setArguments(bundle);
+                                TagihActivity ftf = (TagihActivity) getActivity();
+                                ftf.switchContent(newFrag, "First OTP Tagih", true);
+
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
+                                Timber.d("isi response app data:" + model.getApp_data());
+                                final AppDataModel appModel = model.getApp_data();
+                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
+                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                            } else if (code.equals(DefineValue.ERROR_0066)) {
+                                Timber.d("isi response maintenance:" + response.toString());
+                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
+                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                            } else {
+                                Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        dismissProgressDialog();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dismissProgressDialog();
                     }
                 });
     }
@@ -515,7 +590,7 @@ public class FragTagihInput extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.favorite){
+        if (item.getItemId() == R.id.favorite) {
             Intent intent = new Intent(getActivity(), FavoriteActivity.class);
             intent.putExtra(DefineValue.IS_FAV_DGI, true);
             startActivity(intent);

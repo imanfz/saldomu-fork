@@ -327,6 +327,7 @@ public class MyApiClient {
     public static String LINK_ADD_FAVORITE;
     public static String LINK_DELETE_FAVORITE;
     public static String LINK_GENERATE_URL;
+    public static String LINK_REQ_FIRST_OTP;
 
 
     public void InitializeAddress(){
@@ -527,6 +528,7 @@ public class MyApiClient {
         LINK_SALDO_CASH_COLLECTOR = headaddressfinal + "Balancecashcollector/Retrieve";
         LINK_SET_MEMBER_LOC = headaddressfinal + "invoice/Setmemberlocation/Invoke";
         LINK_CANCEL_VISIT_DGI = headaddressfinal + "invoice/Canceltrxv2/Invoke";
+        LINK_REQ_FIRST_OTP = headaddressfinal + "invoice/ReqFirstOTP/Invoke";
 
         //OTP
         LINK_GET_OTP = headaddressfinal + "VerifySIMCardByOTP/Retrieve";

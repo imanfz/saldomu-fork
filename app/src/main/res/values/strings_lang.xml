@@ -1783,4 +1783,6 @@ Please upgrade your membership to be an agent and you will able to use this feat
     <string name="acquire_name">Name of the acquirer</string>
     <string name="listatm_topup_bni_3">Input Virtual Account no.</string>
     <string name="user_id">User ID</string>
+    <string name="your_verification_code">Your Verification Code : </string>
+    <string name="show_verification_code">Please show your verification code to the staff.</string>
 </resources>
