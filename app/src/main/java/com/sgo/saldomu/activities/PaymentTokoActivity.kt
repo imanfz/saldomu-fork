@@ -13,7 +13,7 @@ import timber.log.Timber
 
 class PaymentTokoActivity : BaseActivity (){
     override fun getLayoutResource(): Int {
-        return com.sgo.saldomu.R.layout.activity_b2b;
+        return R.layout.activity_b2b;
     }
 
     var fragmentManager: FragmentManager? = null
