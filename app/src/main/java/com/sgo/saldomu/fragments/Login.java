@@ -9,6 +9,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -240,24 +241,15 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 newFrag = new Regist1();
                 switchFragment(newFrag, "reg1", true);
                 break;
-            case R.id.passLogin_toogle_view:
-//                toogleViewPass.setOnTouchListener((v1, event) -> {
-//                    switch ( event.getAction() ) {
-                if (isTexted == false) {
-//                    case MotionEvent.ACTION_DOWN:
-                    passLoginValue.setInputType(InputType.TYPE_CLASS_TEXT);
-                    passLoginValue.setTypeface(Typeface.DEFAULT_BOLD);
-                    passLoginValue.setSelection(passLoginValue.getText().length());
-                    isTexted = true;
-                    break;
-                } else {
-//                        case MotionEvent.ACTION_UP:
-                    passLoginValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    passLoginValue.setTypeface(Typeface.DEFAULT_BOLD);
-                    passLoginValue.setSelection(passLoginValue.getText().length());
-                    isTexted = false;
-                    break;
-                }
+            case R.id.passLogin_toogle_view:if (!isTexted) {
+                passLoginValue.setTransformationMethod(null);
+                isTexted = true;
+            } else {
+                passLoginValue.setTransformationMethod(new PasswordTransformationMethod());
+                isTexted = false;
+            }
+                passLoginValue.setSelection(passLoginValue.getText().length());
+                break;
             case R.id.btn_warn:
                 newFrag = new FragReverification();
                 switchFragment(newFrag, "re-verification", true);
