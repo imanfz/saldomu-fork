@@ -238,6 +238,7 @@ public class FragListInvoiceTagih extends BaseFragment {
         menu.findItem(R.id.settings).setVisible(false);
         menu.findItem(R.id.search).setVisible(true);
         menu.findItem(R.id.cancel).setVisible(true);
+        menu.findItem(R.id.scan).setVisible(true);
     }
 
     @Override
@@ -259,6 +260,10 @@ public class FragListInvoiceTagih extends BaseFragment {
             newFrag.setArguments(bundle2);
             TagihActivity ftf = (TagihActivity) getActivity();
             ftf.switchContent(newFrag, getString(R.string.cancel_transaction), true);
+        } else if (item.getItemId() == R.id.scan) {
+            Fragment newFrag = new FragmentScanDGI();
+            TagihActivity ftf = (TagihActivity) getActivity();
+            ftf.switchContent(newFrag, getString(R.string.scan), true);
         }
         return super.onOptionsItemSelected(item);
     }
