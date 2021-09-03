@@ -67,7 +67,7 @@ class FragFirstOTPTagih : BaseFragment() {
                             val error_message = response.getString(WebParams.ERROR_MESSAGE)
                             if (code == WebParams.SUCCESS_CODE) {
                                 val responseListInvoice = response.toString()
-                                val newFrag: Fragment = FragListInvoiceTagih()
+                                val newFrag: Fragment = FragListInvoiceIndomobil()
                                 val bundle = Bundle()
                                 bundle.putString(DefineValue.MEMBER_CODE, memberCode)
                                 bundle.putString(DefineValue.COMMUNITY_CODE, commCodeTagih)
