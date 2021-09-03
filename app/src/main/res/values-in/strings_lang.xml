@@ -1774,4 +1774,5 @@ Silahkan upgrade keanggotaan anda menjadi Agen untuk dapat menggunakan fitur ini
     <string name="user_id">User ID</string>
     <string name="your_verification_code">Kode Verifikasi Anda : </string>
     <string name="show_verification_code">Silahkan tunjukkan kode verifikasi ini kepada petugas.</string>
+    <string name="check">Cek</string>
 </resources>
