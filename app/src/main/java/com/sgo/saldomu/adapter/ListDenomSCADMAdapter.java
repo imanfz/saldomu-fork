@@ -21,16 +21,13 @@ import java.util.ArrayList;
  */
 
 public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAdapter.ViewHolder> {
-    private final Activity mContext;
-    Fragment mFrag;
+
     private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList;
     listener listener;
 
-    public ListDenomSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext, listener _listener) {
+    public ListDenomSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, listener _listener) {
         this.scadmCommunityModelArrayList = scadmCommunityModelArrayList;
-        this.mContext = mContext;
         listener = _listener;
-//        this.frameLayout = frameLayout;
     }
 
     public interface listener{

@@ -19,6 +19,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.models.InvoiceDGI;
 import com.sgo.saldomu.utils.NumberTextWatcherForThousand;
 
@@ -91,7 +92,7 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
 //        lbl_partial.setText(obj.getInput_amount());
 
 
-//        else if(str_partial.equalsIgnoreCase("N")){
+//        else if(str_partial.equalsIgnoreCase(DefineValue.STRING_NO)){
 //            partial = "Tidak";
 //        }
 //        else{
@@ -109,7 +110,7 @@ public class InputAmountTagihBillerDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (partialPayment.equalsIgnoreCase("Y")) {
+        if (partialPayment.equalsIgnoreCase(DefineValue.STRING_YES)) {
             showInvoiceAmount();
             lbl_partial.setText("Yes");
         } else if (partialPayment.equalsIgnoreCase("O")) {

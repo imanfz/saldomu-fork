@@ -22,7 +22,6 @@ import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.PasswordValidator;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -56,13 +55,8 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     private Button btnForgetPass;
     private ProgressDialog progdialog;
     private boolean is_first_time;
-    private int lenght_auth_min, validIdx;
-    private PasswordValidator mPassValid;
 
     FrameLayout frameLayout;
-
-    private static final String PASSWORD_PATTERN =
-            "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,9 +83,6 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         btn_batal_changepass.setOnClickListener(this);
         cb_show_pass.setOnCheckedChangeListener(showPassword);
         if (is_first_time) tv_firsttime_msg.setVisibility(View.VISIBLE);
-
-        mPassValid = new PasswordValidator();
-        lenght_auth_min = 5;
     }
 
     @Override
@@ -225,7 +216,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(ChangePassword.this, model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(ChangePassword.this);
                                 }
 //                                else if(code.equals("0301")){
 //                                    AlertDialog.Builder builder = new AlertDialog.Builder(ChangePassword.this);

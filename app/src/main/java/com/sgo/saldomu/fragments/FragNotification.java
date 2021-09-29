@@ -71,14 +71,13 @@ public class FragNotification extends BaseFragment {
 
     private final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
     private NotificationListAdapter mAdapter;
-    private String _memberId, _userid, accessKey, _profpic;
+    private String _memberId, _userid, _profpic;
     private ArrayList<NotificationModelClass> mData;
     private ArrayList<JSONObject> mDataNotifDetail;
     private RecyclerView mRecyclerView;
     private PtrFrameLayout mPtr;
     private View empty_layout;
     private NotificationModelClass tempMData;
-    private ProgressDialog out;
     private SecurePreferences sp;
     private boolean flagClaim = false;
 
@@ -119,7 +118,7 @@ public class FragNotification extends BaseFragment {
         mPtr.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                sentRetrieveNotif(false);
+                sentRetrieveNotif();
             }
 
             @Override
@@ -160,12 +159,6 @@ public class FragNotification extends BaseFragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-//                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(mAdapter.getItemCount() - 1);
-
-                /*if(viewHolder != null)
-                    Log.d("on item visible idx position", "visible itemnya");
-                else
-                    Log.d("on item visible idx position", "gone itemnya");*/
 
                 for (int i = 0; i < recyclerView.getChildCount(); i++) {
                     tempMData = mData.get(i);
@@ -182,7 +175,7 @@ public class FragNotification extends BaseFragment {
                 }
             }
         });
-        sentRetrieveNotif(true);
+        sentRetrieveNotif();
         getActivity().setResult(MainPage.RESULT_NORMAL);
     }
 
@@ -191,7 +184,7 @@ public class FragNotification extends BaseFragment {
         NotificationModelClass mObj = mData.get(position);
         JSONObject mObjDetail = mDataNotifDetail.get(position);
         try {
-            Timber.d("isi notif type:" + mObj.getNotif_type());
+            Timber.d("isi notif type:%s", mObj.getNotif_type());
 
             switch (mObj.getNotif_type()) {
                 case NotificationActivity.TYPE_TRANSFER:
@@ -264,19 +257,19 @@ public class FragNotification extends BaseFragment {
                 case NotificationActivity.TYPE_NON_MEMBER:
                     sentReadNotif(mObj.getNotif_id(), position);
                     if (!flagClaim)
-                        sentClaimTransfer(true, mObj.getId_result());
+                        sentClaimTransfer(mObj.getId_result());
                     break;
 
                 case NotificationActivity.REJECTED_KTP:
                     sentReadNotif(mObj.getNotif_id(), position);
                     SecurePreferences.Editor editor = sp.edit();
-                    editor.putString(DefineValue.REJECT_KTP, mObjDetail.optString(WebParams.REJECT_KTP, "N"));
-                    editor.putString(DefineValue.REJECT_FOTO, mObjDetail.optString(WebParams.REJECT_FOTO, "N"));
-                    editor.putString(DefineValue.REJECT_TTD, mObjDetail.optString(WebParams.REJECT_TTD, "N"));
-                    editor.putString(DefineValue.REMARK_KTP, mObjDetail.optString(WebParams.REMARK_KTP, "N"));
-                    editor.putString(DefineValue.REMARK_FOTO, mObjDetail.optString(WebParams.REMARK_FOTO, "N"));
-                    editor.putString(DefineValue.REMARK_TTD, mObjDetail.optString(WebParams.REMARK_TTD, "N"));
-                    editor.putString(DefineValue.IS_REGISTERED_LEVEL, mObjDetail.optString(WebParams.IS_REGISTERED, "N"));
+                    editor.putString(DefineValue.REJECT_KTP, mObjDetail.optString(WebParams.REJECT_KTP, DefineValue.STRING_NO));
+                    editor.putString(DefineValue.REJECT_FOTO, mObjDetail.optString(WebParams.REJECT_FOTO, DefineValue.STRING_NO));
+                    editor.putString(DefineValue.REJECT_TTD, mObjDetail.optString(WebParams.REJECT_TTD, DefineValue.STRING_NO));
+                    editor.putString(DefineValue.REMARK_KTP, mObjDetail.optString(WebParams.REMARK_KTP, DefineValue.STRING_NO));
+                    editor.putString(DefineValue.REMARK_FOTO, mObjDetail.optString(WebParams.REMARK_FOTO, DefineValue.STRING_NO));
+                    editor.putString(DefineValue.REMARK_TTD, mObjDetail.optString(WebParams.REMARK_TTD, DefineValue.STRING_NO));
+                    editor.putString(DefineValue.IS_REGISTERED_LEVEL, mObjDetail.optString(WebParams.IS_REGISTERED, DefineValue.STRING_NO));
                     editor.apply();
                     Intent dataProfile = new Intent();
                     dataProfile.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.REJECTED_KTP);
@@ -286,11 +279,11 @@ public class FragNotification extends BaseFragment {
                 case NotificationActivity.REJECTED_SIUP_NPWP:
                     sentReadNotif(mObj.getNotif_id(), position);
                     SecurePreferences.Editor editor1 = sp.edit();
-                    editor1.putString(DefineValue.REJECT_SIUP, mObjDetail.optString(WebParams.REJECT_SIUP, "N"));
-                    editor1.putString(DefineValue.REJECT_NPWP, mObjDetail.optString(WebParams.REJECT_NPWP, "N"));
-                    editor1.putString(DefineValue.REMARK_SIUP, mObjDetail.optString(WebParams.REMARK_SIUP, "N"));
-                    editor1.putString(DefineValue.REMARK_NPWP, mObjDetail.optString(WebParams.REMARK_NPWP, "N"));
-                    editor1.putString(DefineValue.IS_AGENT, mObjDetail.optString(WebParams.IS_AGENT, "N"));
+                    editor1.putString(DefineValue.REJECT_SIUP, mObjDetail.optString(WebParams.REJECT_SIUP, DefineValue.STRING_NO));
+                    editor1.putString(DefineValue.REJECT_NPWP, mObjDetail.optString(WebParams.REJECT_NPWP, DefineValue.STRING_NO));
+                    editor1.putString(DefineValue.REMARK_SIUP, mObjDetail.optString(WebParams.REMARK_SIUP, DefineValue.STRING_NO));
+                    editor1.putString(DefineValue.REMARK_NPWP, mObjDetail.optString(WebParams.REMARK_NPWP, DefineValue.STRING_NO));
+                    editor1.putString(DefineValue.IS_AGENT, mObjDetail.optString(WebParams.IS_AGENT, DefineValue.STRING_NO));
                     editor1.apply();
                     Intent dataUpgradeAgent = new Intent();
                     dataUpgradeAgent.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.REJECTED_KTP);
@@ -308,7 +301,7 @@ public class FragNotification extends BaseFragment {
                     Intent s = new Intent(getActivity(), SourceOfFundActivity.class);
                     s.putExtra(DefineValue.TX_ID, mObjDetail.getString(WebParams.TX_ID));
                     s.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.SOURCE_OF_FUND);
-                    s.putExtra(DefineValue.IS_INAPP, "N");
+                    s.putExtra(DefineValue.IS_INAPP, DefineValue.STRING_NO);
                     s.putExtras(s);
                     startActivity(s);
                     break;
@@ -395,7 +388,7 @@ public class FragNotification extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 code = model.getError_code() + ":" + model.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -439,14 +432,8 @@ public class FragNotification extends BaseFragment {
         getActivity().setResult(MainPage.RESULT_NOTIF);
     }
 
-    private void sentRetrieveNotif(final Boolean isDialog) {
+    private void sentRetrieveNotif() {
         try {
-
-//            if (isDialog) {
-//                out = DefinedDialog.CreateProgressDialog(getActivity(), "");
-//                if (!out.isShowing())
-//                    out.show();
-//            }
             showProgressDialog();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_RETRIEVE);
@@ -671,7 +658,7 @@ public class FragNotification extends BaseFragment {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 } else {
 
                                     if (code.equals("0003")) {
@@ -712,14 +699,9 @@ public class FragNotification extends BaseFragment {
         }
     }
 
-    private void sentClaimTransfer(final Boolean isDialog, String _hold_id) {
+    private void sentClaimTransfer(String _hold_id) {
         try {
             flagClaim = true;
-//            if (isDialog) {
-//                out = DefinedDialog.CreateProgressDialog(getActivity(), "");
-//                if (!out.isShowing())
-//                    out.show();
-//            }
             showProgressDialog();
 
             extraSignature = _hold_id + MyApiClient.COMM_ID;
@@ -737,31 +719,20 @@ public class FragNotification extends BaseFragment {
                         public void onResponses(JsonObject object) {
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
                             String code = model.getError_code();
-
+                            String message = model.getError_message();
                             if (!model.getOn_error()) {
-
-//                        if (code.equals(WebParams.SUCCESS_CODE)) {
-//
-//                        } else
                                 if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = model.getError_message();
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 }
-
-//                                sentRetrieveNotif(true);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_SHORT).show();
-
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -773,9 +744,6 @@ public class FragNotification extends BaseFragment {
 
                         @Override
                         public void onComplete() {
-//                            if (isDialog)
-//                                if (out.isShowing())
-//                                    out.dismiss();
                             dismissProgressDialog();
                         }
                     });
@@ -797,9 +765,5 @@ public class FragNotification extends BaseFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void refreshAdapter() {
-//        sentRetrieveNotif(true);
     }
 }

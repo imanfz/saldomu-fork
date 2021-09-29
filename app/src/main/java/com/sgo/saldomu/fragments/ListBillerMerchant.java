@@ -44,12 +44,7 @@ import timber.log.Timber;
  */
 public class ListBillerMerchant extends ListFragment {
 
-    public final static String TAG = "LIST_BILLER_MERCHANT";
-
     private View v;
-    private String userID;
-    private String accessKey;
-    private String billerType;
     private String billerTypeCode, billerIdNumber;
     private String billerMerchantName;
     private List<BillerItem> billerData;
@@ -57,7 +52,6 @@ public class ListBillerMerchant extends ListFragment {
     private ArrayList<String> _data;
     private RealmChangeListener realmListener;
     private Realm realm;
-    private NfcAdapter nfcAdapter;
 
 
     @Override
@@ -72,8 +66,6 @@ public class ListBillerMerchant extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         Log.wtf("onActivityCreated ListBillerMerchant", "onActivityCreated ListBillerMerchant");
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Bundle args = getArguments();
         billerTypeCode = args.getString(DefineValue.BILLER_TYPE, "");
@@ -171,8 +163,6 @@ public class ListBillerMerchant extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        nfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
-//        realm = Realm.getInstance(RealmManager.BillerConfiguration);
         realm = Realm.getInstance(RealmManager.realmConfiguration);
         _data = new ArrayList<>();
         adapter = new EasyAdapterFilterable(getActivity(), R.layout.list_view_item_with_arrow, _data, item -> {

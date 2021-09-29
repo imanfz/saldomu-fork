@@ -32,28 +32,11 @@ public class CustomAutoCompleteTextViewWithRadioButton extends androidx.appcompa
         super(context, attrs, defStyleAttr);
     }
 
-    public void setButton(Button reqButton)
-    {
-        btn = reqButton;
-    }
-
-    public void setRadioGroup(RadioGroup radioGroup)
-    {
-        locationRadioGroup = radioGroup;
-    }
-
-    public void setRadioButton(RadioButton radioButton)
-    {
-        searchLocationRadioBtn = radioButton;
-    }
-
     @Override
     protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
         if (listener != null)
             listener.onStateChanged(this, true);
-
-
     }
 
     @Override
@@ -67,8 +50,7 @@ public class CustomAutoCompleteTextViewWithRadioButton extends androidx.appcompa
                 if (checkedRadioBtnId == searchLocationRadioBtn.getId()) {
                     //logic to enable and disable button request
                     int length = getText().toString().trim().length();
-                    if (length > 0) btn.setEnabled(true);
-                    else btn.setEnabled(false);
+                    btn.setEnabled(length > 0);
                 }
             } catch ( Exception e ) {
                 e.printStackTrace();
@@ -82,10 +64,6 @@ public class CustomAutoCompleteTextViewWithRadioButton extends androidx.appcompa
      * Keyboard Listener
      */
     KeyboardListener listener;
-
-    public void setOnKeyboardListener(KeyboardListener listener) {
-        this.listener = listener;
-    }
 
     public interface KeyboardListener {
         void onStateChanged(CustomAutoCompleteTextViewWithRadioButton CustomBbsAutoCompleteTextView, boolean showing);

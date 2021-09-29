@@ -417,6 +417,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                             try {
 
                                 String code;
+                                String message = "";
                                 JSONObject temp = new JSONObject(getGson().toJson(object));
 
                                 if (temp.optString("report_data", "").equals("")) {
@@ -426,6 +427,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                     reportListModel = getGson().fromJson(object, GetReportDataModel.class);
 
                                     code = reportListModel.getError_code();
+                                    message = reportListModel.getError_message();
 
                                     reportData.clear();
 
@@ -493,9 +495,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                         bak_date_to = (Calendar) date_to.clone();
 
                                     } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                        String message = reportListModel.getError_message();
-                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                        test.showDialoginActivity(getActivity(), message);
+                                        AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                     } else if (code.equals("0003")) {
                                         bak_date_from = (Calendar) date_from.clone();
                                         bak_date_to = (Calendar) date_to.clone();
@@ -507,12 +507,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                     } else if (code.equals(DefineValue.ERROR_9333)) {
                                         Timber.d("isi response app data:%s", reportListModel.getApp_data());
                                         final AppDataModel appModel = reportListModel.getApp_data();
-                                        AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                        alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                        AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                     } else if (code.equals(DefineValue.ERROR_0066)) {
                                         Timber.d("isi response maintenance:%s", object.toString());
-                                        AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                        alertDialogMaintenance.showDialogMaintenance(getActivity(), reportListModel.getError_message());
+                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                     } else {
                                         date_from = (Calendar) bak_date_from.clone();
                                         String dedate = getString(R.string.from) + " :\n" + date_from.get(Calendar.DAY_OF_MONTH) + "-" + (date_from.get(Calendar.MONTH) + 1) + "-" + date_from.get(Calendar.YEAR);
@@ -521,9 +519,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                         dedate = getString(R.string.to) + " :\n" + date_to.get(Calendar.DAY_OF_MONTH) + "-" + (date_to.get(Calendar.MONTH) + 1) + "-" + date_to.get(Calendar.YEAR);
                                         tv_date_to.setText(dedate);
                                         filter_btn.setChecked(false);
-                                        code = reportListModel.getError_message();
 
-                                        Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
 
                                         bak_date_from = (Calendar) date_from.clone();
                                         bak_date_to = (Calendar) date_to.clone();
@@ -664,27 +661,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                 GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
                                 String code = model.getError_code();
+                                String message = model.getError_message();
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                                    ShowDialog(_object, model);
-
+                                    showDialog(_object, model);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = model.getError_message();
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
                                     Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:%s", object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    String msg = model.getError_message();
-
-                                    Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                                 }
                             }
 
@@ -706,7 +696,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     }
 
 
-    private void ShowDialog(ReportDataModel _object, GetTrxStatusReportModel response) {
+    private void showDialog(ReportDataModel _object, GetTrxStatusReportModel response) {
         if (report_type == REPORT_SCASH) {
             String ccyId = response.getCcy_id();
             switch (_object.getBuss_scheme_code()) {
@@ -759,12 +749,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         if (vFrom.getVisibility() == View.VISIBLE) {
             anim = new CollapseExpandAnimation(vFrom, 250, CollapseExpandAnimation.COLLAPSE);
             height = anim.getHeight();
-            vFrom.startAnimation(anim);
         } else {
             anim = new CollapseExpandAnimation(vFrom, 250, CollapseExpandAnimation.EXPAND);
             anim.setHeight(height);
-            vFrom.startAnimation(anim);
         }
+        vFrom.startAnimation(anim);
     }
 
     private void showReportCashOutBankDialog(String _name, String _date, String _userId, String ccyid, GetTrxStatusReportModel model) {

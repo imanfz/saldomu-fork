@@ -32,7 +32,6 @@ public class AboutAppsActivity extends BaseActivity {
         Realm realmBiller = RealmManager.getRealmBiller();
         Realm realmBBSMember = RealmManager.getRealmBBSMemberBank();
         TextView versionDetail = (TextView) findViewById(R.id.version_detail);
-        TextView versionDetail1 = (TextView) findViewById(R.id.version_detail1);
         try
         {
             StringBuilder stringBuilder = new StringBuilder();
@@ -88,7 +87,7 @@ public class AboutAppsActivity extends BaseActivity {
         }
         catch (PackageManager.NameNotFoundException e)
         {
-            Timber.e("error app ver = " + e.getMessage());
+            Timber.e("error app ver = %s", e.getMessage());
         }
 
         RESULT = MainPage.RESULT_NORMAL;

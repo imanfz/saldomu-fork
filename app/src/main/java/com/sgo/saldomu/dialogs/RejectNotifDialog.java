@@ -45,7 +45,6 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
     private TextView btnCancel;
 
     private String _userId;
-    private String _accessKey;
     private String req_id;
     private String trx_id;
     private String from;
@@ -76,7 +75,6 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         _userId = sp.getString(DefineValue.USERID_PHONE, "");
-        _accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -161,7 +159,7 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             }else {
                                 code = model.getError_code() + " : " + model.getError_message();
 

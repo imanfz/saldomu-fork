@@ -30,7 +30,6 @@ public class OpenHourPickerFragment extends DialogFragment {
     public OpenHourPickerFragment(){
 
     }
-    OpenHourPickerListener mListener;
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
     @Override
@@ -40,7 +39,6 @@ public class OpenHourPickerFragment extends DialogFragment {
     }
 
     public static final String TAG = "OpenHourPicker";
-    private TimePicker tpStartHour, tpEndHour;
     TextView etStartHour, etEndHour;
     Button btnYes, btnNo;
     String startTime = "", endTime = "";

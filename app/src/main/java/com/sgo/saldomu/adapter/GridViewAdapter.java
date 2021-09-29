@@ -17,12 +17,10 @@ import java.util.ArrayList;
  */
 
 public class GridViewAdapter extends BaseAdapter {
-    Context context;
     ArrayList<OpenHourDays> setupOpenHours;
     LayoutInflater inflater;
 
     public GridViewAdapter(Context applicationContext, ArrayList<OpenHourDays> setupOpenHours) {
-        this.context = applicationContext;
         this.setupOpenHours = setupOpenHours;
         inflater = (LayoutInflater.from(applicationContext));
     }
@@ -31,33 +29,30 @@ public class GridViewAdapter extends BaseAdapter {
     public int getCount() {
         return this.setupOpenHours.size();
     }
+
     @Override
     public Object getItem(int i) {
         return this.setupOpenHours.get(i);
     }
+
     @Override
     public long getItemId(int i) {
         return 0;
     }
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
         View rootView = view;
         ViewHolder holder;
 
-        if(rootView == null)
-        {
-            //viewHolder = new BbsMerchantCommunityListAdapter.ViewHolder();
-
+        if (rootView == null) {
             rootView = inflater.inflate(R.layout.adapter_gridview, null);
             holder = new GridViewAdapter.ViewHolder();
-            holder.tvNamaHari       = (TextView) rootView.findViewById(R.id.namaHari);
-            holder.tvRowHour        = (TextView) rootView.findViewById(R.id.rowHour);
-            //holder.chkDay           = (CheckBox) rootView.findViewById(R.id.chkDay);
+            holder.tvNamaHari = (TextView) rootView.findViewById(R.id.namaHari);
+            holder.tvRowHour = (TextView) rootView.findViewById(R.id.rowHour);
             rootView.setTag(holder);
-        }
-        else
-        {
+        } else {
             holder = (ViewHolder) rootView.getTag();
         }
 
@@ -65,18 +60,16 @@ public class GridViewAdapter extends BaseAdapter {
         holder.tvNamaHari.setText(openHourDay.getNamaHari());
 
         String txtStartHour = openHourDay.getStartHour();
-        String txtEndHour   = openHourDay.getEndHour();
+        String txtEndHour = openHourDay.getEndHour();
 
-        if ( !txtStartHour.isEmpty()  ){
-            holder.tvRowHour.setText( txtStartHour + " to " + txtEndHour);
+        if (!txtStartHour.isEmpty()) {
+            holder.tvRowHour.setText(txtStartHour + " to " + txtEndHour);
         }
 
         return rootView;
     }
 
-    class ViewHolder
-    {
+    class ViewHolder {
         TextView tvNamaHari, tvRowHour;
-        //CheckBox chkDay;
     }
 }

@@ -65,13 +65,11 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         initializeToolbar();
 
         PinFragmentConfiguration config = new PinFragmentConfiguration(this)
-                .pinSaver(new PinSaver() {
-                    @Override
-                    public void save(String pin) {
-                        mValuePin = pin;
-                        confirmPin = pin;
-                        Timber.d("pin:" + mValuePin);
-                        PinHelper.saveDefaultPin(CreatePIN.this, pin);
+                .pinSaver(pin -> {
+                    mValuePin = pin;
+                    confirmPin = pin;
+                    Timber.d("pin:%s", mValuePin);
+                    PinHelper.saveDefaultPin(CreatePIN.this, pin);
 //                    }
 //                }).validator(new Validator() {
 //
@@ -80,12 +78,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 //                        Log.d("input", input);
 //                        return PinHelper.doesMatchDefaultPin(getApplicationContext(), input);
 
-                    }
                 });
-
-//        Fragment toShow = PinHelper.hasDefaultPinSaved(this) ?
-//                PinFragment.newInstanceForVerification(config) :
-//                PinFragment.newInstanceForCreation(config);
 
         Fragment toShow = PinFragment.newInstanceForCreation(config);
 
@@ -158,7 +151,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
             params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, userPhoneID, confirmPin, subStringLink));
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params create pin:" + params.toString());
+            Timber.d("isi params create pin:%s", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
                     new ResponseListener() {
@@ -179,19 +172,15 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
                                 Toast.makeText(CreatePIN.this, "Success Create PIN", Toast.LENGTH_LONG).show();
                                 finishChild();
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(CreatePIN.this, message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(CreatePIN.this, message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(CreatePIN.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(CreatePIN.this, appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(CreatePIN.this, model.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(CreatePIN.this);
                             } else {
-
                                 Toast.makeText(CreatePIN.this, message, Toast.LENGTH_LONG).show();
                                 recreate();
                             }
@@ -209,7 +198,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
@@ -231,7 +220,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(uuid, dateTime, userID, confirmPin, subStringLink));
         params.put(WebParams.USER_ID, userID);
 
-        Timber.d("isi param confirm otp reset pin: " + params);
+        Timber.d("isi param confirm otp reset pin: %s", params);
         RetrofitService.getInstance().PostJsonObjRequest(link, params,
                 new ObjListeners() {
                     @Override

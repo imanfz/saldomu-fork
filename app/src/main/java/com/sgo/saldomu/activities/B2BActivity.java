@@ -67,27 +67,6 @@ public class B2BActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void switchContent(Fragment mFragment,String fragName,Boolean isBackstack, String tag) {
-        ToggleKeyboard.hide_keyboard(this);
-        if(isBackstack){
-            Timber.d("backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.b2b_activity_content, mFragment, tag)
-                    .addToBackStack(tag)
-                    .commitAllowingStateLoss();
-        }
-        else {
-            Timber.d("bukan backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.b2b_activity_content, mFragment, fragName)
-                    .commitAllowingStateLoss();
-
-        }
-        setActionBarTitle(fragName);
-    }
-
     public void switchActivity(Intent mIntent, int j) {
         ToggleKeyboard.hide_keyboard(this);
         switch (j){

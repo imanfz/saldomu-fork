@@ -37,7 +37,7 @@ public class HelpAdapter extends BaseAdapter {
     private Context context;
 
 
-    public HelpAdapter(Context context, ArrayList<HelpModel> _data, Activity activity) {
+    public HelpAdapter(Context context, ArrayList<HelpModel> _data) {
         mInflater = LayoutInflater.from(context);
         this.data = _data;
         this.context = context;
@@ -125,10 +125,7 @@ public class HelpAdapter extends BaseAdapter {
 
 
     private void redirectToWhatsapp(String phoneNo){
-        PackageManager pm= context.getPackageManager();
         try {
-
-            PackageInfo info=pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
 
             String helpMsg = context.getString(R.string.lbl_need_help);
 
@@ -147,8 +144,6 @@ public class HelpAdapter extends BaseAdapter {
             context.startActivity(Intent.createChooser(i, ""));
 
 
-        } catch (PackageManager.NameNotFoundException e) {
-            Toast.makeText(context, "WhatsApp not Installed", Toast.LENGTH_SHORT).show();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             Timber.d("Failedd to encode whatsapp message....");
@@ -164,7 +159,7 @@ public class HelpAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        public TextView name, phone, mail, whatsapp, tvCopy;
+        public TextView name, phone, whatsapp, tvCopy;
         public CardView phone_card_view, whatsup_card_view;
     }
 }

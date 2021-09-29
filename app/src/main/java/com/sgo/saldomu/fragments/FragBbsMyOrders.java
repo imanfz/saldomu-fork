@@ -31,7 +31,6 @@ public class FragBbsMyOrders extends Fragment {
     public final static String TAG = "com.sgo.saldomu.fragments.Frag_Bbs_My_Orders";
 
     private BbsMyOrdersTabAdapter currentAdapternya;
-    SecurePreferences sp;
     private View currentView;
     private InformationDialog dialogI;
 
@@ -39,18 +38,8 @@ public class FragBbsMyOrders extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragBbsMyOrders.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragBbsMyOrders newInstance(String param1, String param2) {
-        FragBbsMyOrders fragment = new FragBbsMyOrders();
-        return fragment;
+    public static FragBbsMyOrders newInstance() {
+        return new FragBbsMyOrders();
     }
 
     @Override

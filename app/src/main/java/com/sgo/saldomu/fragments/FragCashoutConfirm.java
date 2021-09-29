@@ -66,7 +66,7 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
     EditText tokenValue;
     Button btnProcess;
     ProgressDialog progdialog;
-    String name, accessKey, txId, bankName, accNo, ccyId, nominal, accName, fee, total;
+    String name, txId, bankName, accNo, ccyId, nominal, accName, fee, total;
     boolean isPIN, isOTP;
     int pin_attempt=-1;
     private TransactionResult mListener;
@@ -233,7 +233,7 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 }else {
                                     Timber.d("isi error confirm cashout:"+response.toString());
                                     String code_msg = response.getString(WebParams.ERROR_MESSAGE);
@@ -408,12 +408,7 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
 
     private void showDialogError(String message){
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title),
-                message, new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        mListener.TransResult(false);
-                    }
-                }) ;
+                message, (DefinedDialog.DialogButtonListener) () -> mListener.TransResult(false)) ;
         dialognya.show();
     }
 }

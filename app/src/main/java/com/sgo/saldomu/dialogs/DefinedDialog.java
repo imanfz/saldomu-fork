@@ -22,7 +22,7 @@ import timber.log.Timber;
 public class DefinedDialog {
 
     public interface DialogButtonListener {
-        void onClickButton(View v, boolean isLongClick);
+        void onClickButton();
     }
 
     public static ProgressDialog CreateProgressDialog(Context context) {
@@ -30,12 +30,12 @@ public class DefinedDialog {
     }
 
     public static ProgressDialog CreateProgressDialog(Context context, String message) {
-        if (context!=null){
+        if (context != null) {
             ProgressDialog dialog = new ProgressDialog(context);
             try {
                 dialog.show();
             } catch (WindowManager.BadTokenException e) {
-                Timber.w("define dialog error:" + e.getMessage());
+                Timber.w("define dialog error:%s", e.getMessage());
             }
             dialog.setIndeterminate(true);
             dialog.setCancelable(false);
@@ -65,13 +65,10 @@ public class DefinedDialog {
         Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_error_ok);
         TextView Message = dialog.findViewById(R.id.message_dialog_error);
         Message.setText(message);
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mButtonListener != null)
-                    mButtonListener.onClickButton(view, false);
-                dialog.dismiss();
-            }
+        btnDialogOTP.setOnClickListener(view -> {
+            if (mButtonListener != null)
+                mButtonListener.onClickButton();
+            dialog.dismiss();
         });
 
 
@@ -93,14 +90,10 @@ public class DefinedDialog {
         Message.setVisibility(View.VISIBLE);
         Title.setText(_title);
         Message.setText(_message);
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _dialogListener.onClickButton(v, false);
-                dialog.dismiss();
-            }
+        btnDialogOTP.setOnClickListener(v -> {
+            _dialogListener.onClickButton();
+            dialog.dismiss();
         });
-//        dialog.show();
         return dialog;
     }
 
@@ -109,16 +102,11 @@ public class DefinedDialog {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_p2p_color_help);
         // Include dialog.xml file
-        dialog.findViewById(R.id.btn_dialog_ok).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        dialog.findViewById(R.id.btn_dialog_ok).setOnClickListener(v -> dialog.dismiss());
         return dialog;
     }
 
-    public static Dialog MessageSearchAgent(Context context, String _title, String _message){
+    public static Dialog MessageSearchAgent(Context context, String _title, String _message) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_search_agent);

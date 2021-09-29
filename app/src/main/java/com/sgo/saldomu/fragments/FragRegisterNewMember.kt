@@ -342,7 +342,7 @@ class FragRegisterNewMember : BaseFragment() {
                         AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                     }
                     DefineValue.ERROR_0066 -> {
-                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                     }
                     else -> {
                         Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
@@ -396,20 +396,20 @@ class FragRegisterNewMember : BaseFragment() {
             }
         }
     }
-}
 
-@SuppressLint("ClickableViewAccessibility")
-fun EditText.onRightDrawableRegisterEBDClicked(onClicked: (view: EditText) -> Unit) {
-    this.setOnTouchListener { v, event ->
-        var hasConsumed = false
-        if (v is EditText) {
-            if (event.x >= v.width - v.totalPaddingRight) {
-                if (event.action == MotionEvent.ACTION_UP) {
-                    onClicked(this)
+    @SuppressLint("ClickableViewAccessibility")
+    fun EditText.onRightDrawableRegisterEBDClicked(onClicked: (view: EditText) -> Unit) {
+        this.setOnTouchListener { v, event ->
+            var hasConsumed = false
+            if (v is EditText) {
+                if (event.x >= v.width - v.totalPaddingRight) {
+                    if (event.action == MotionEvent.ACTION_UP) {
+                        onClicked(this)
+                    }
+                    hasConsumed = true
                 }
-                hasConsumed = true
             }
+            hasConsumed
         }
-        hasConsumed
     }
 }

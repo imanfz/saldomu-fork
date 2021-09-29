@@ -129,12 +129,10 @@ public class BillerDesciption2 extends BaseFragment {
     private List<BankBillerItem> mListBankBiller;
     private List<DenomDataItem> mListDenomData;
     private Realm realm;
-    Boolean isPLN = false;
-    String fee = "0", deAmount, enabledAdditionalFee;
+    String fee = "0", enabledAdditionalFee;
     private Boolean isAgent = false;
     private LinearLayout layout_additionalFee;
     private EditText et_additionalFee;
-    LevelClass levelClass;
     SentPaymentBillerModel sentPaymentBillerModel;
 
     @Override
@@ -163,7 +161,6 @@ public class BillerDesciption2 extends BaseFragment {
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);
 
-//        realm = Realm.getInstance(RealmManager.BillerConfiguration);
         realm = Realm.getInstance(RealmManager.realmConfiguration);
 
         initializeData();
@@ -176,10 +173,9 @@ public class BillerDesciption2 extends BaseFragment {
 
     private void initializeData() {
         Bundle args = getArguments();
-        Timber.d("isi args biller description:" + args.toString());
+        Timber.d("isi args biller description:%s", args.toString());
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(getActivity(), sp);
         isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
         biller_comm_id = args.getString(DefineValue.COMMUNITY_ID);
@@ -206,13 +202,6 @@ public class BillerDesciption2 extends BaseFragment {
         if (biller_type_code.equalsIgnoreCase("GAME"))
         {
             tvbillerid.setText("No. Referensi");
-        }
-
-        if (biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS) ||
-                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_NON_TAG) ||
-                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN) ||
-                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN_TKN)) {
-            isPLN = true;
         }
 
     }
@@ -247,7 +236,7 @@ public class BillerDesciption2 extends BaseFragment {
             }
         }
 
-        if (isAgent && enabledAdditionalFee.equals("Y")) {
+        if (isAgent && enabledAdditionalFee.equals(DefineValue.STRING_YES)) {
             layout_additionalFee.setVisibility(View.VISIBLE);
         }
 
@@ -259,7 +248,6 @@ public class BillerDesciption2 extends BaseFragment {
         ((TextView) (layout_total.findViewById(R.id.billertoken_total_value))).setText(ccy_id + ". " + CurrencyFormat.format(amount));
         layout_total.setVisibility(View.VISIBLE);
         double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
-        deAmount = String.valueOf(mAmount);
         tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(mAmount));
         tv_total_value.setText(ccy_id + ". " + CurrencyFormat.format(amount));
 //            }
@@ -534,7 +522,7 @@ public class BillerDesciption2 extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             }else {
                                 code = model.getError_code() + " : " + model.getError_message();
                                 if (isVisible()) {
@@ -632,7 +620,7 @@ public class BillerDesciption2 extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), sentPaymentBillerModel.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 code = sentPaymentBillerModel.getError_code() + " : " + sentPaymentBillerModel.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -707,7 +695,7 @@ public class BillerDesciption2 extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 String code_msg = model.getError_message();
                                 switch (code) {
@@ -765,12 +753,7 @@ public class BillerDesciption2 extends BaseFragment {
     private void showDialogError(String message) {
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.error),
                 message,
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        getFragmentManager().popBackStack();
-                    }
-                }
+                (DefinedDialog.DialogButtonListener) () -> getFragmentManager().popBackStack()
         );
         dialognya.show();
     }
@@ -896,12 +879,6 @@ public class BillerDesciption2 extends BaseFragment {
             mArgs.putString(DefineValue.AMOUNT_DESIRED, desired_amount);
             mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(totalAmount));
         }
-//        if (isPLN) {
-//            double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
-//            String deAmount = String.valueOf(mAmount);
-//            mArgs.putString(DefineValue.AMOUNT, deAmount);
-//            mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(amount));
-//        }
 
         Fragment newFrag = new BillerConfirm();
         newFrag.setArguments(mArgs);

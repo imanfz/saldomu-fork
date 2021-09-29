@@ -49,9 +49,8 @@ public class FragListCommunitySCADM extends Fragment {
     private ProgressDialog progdialog;
     private RecyclerView recyclerView;
     private ListJoinSCADMAdapter listJoinSCADMAdapter;
-    private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
     private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList = new ArrayList<>();
-    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
+    protected String userPhoneID;
 
     @Nullable
     @Override
@@ -66,10 +65,7 @@ public class FragListCommunitySCADM extends Fragment {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         recyclerView = v.findViewById(R.id.recyclerView);
 
-        memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
-        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         scadmCommunityModelArrayList.clear();
 
@@ -141,7 +137,7 @@ public class FragListCommunitySCADM extends Fragment {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 }else {
                                     Timber.d("Error isi response get list community scadm:" + response.toString());
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);

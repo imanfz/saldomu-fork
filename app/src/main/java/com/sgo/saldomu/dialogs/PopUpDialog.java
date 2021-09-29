@@ -40,7 +40,6 @@ public class PopUpDialog extends DialogFragment {
     View v;
 
     DialogFragment dialogssss;
-    private boolean isAllowTrx = true;
     public interface PopUpListener {
         void onClick(DialogFragment dialog);
     }
@@ -52,18 +51,6 @@ public class PopUpDialog extends DialogFragment {
         dialog.setArguments(bundle);
 
         return dialog;
-
-    }
-
-    DialogFragment dialog;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        dialog = this;
-
-
 
     }
 

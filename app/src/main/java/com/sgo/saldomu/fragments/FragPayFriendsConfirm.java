@@ -341,7 +341,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (favoriteSwitch.isChecked() &&  notesEditText.getText().toString().length() == 0) {
+            if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
                 notesEditText.requestFocus();
                 notesEditText.setError(getString(R.string.payfriends_notes_zero));
                 return;
@@ -453,7 +453,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                 Timber.d("onActivity result", "Biller Fragment result pin value");
                 if (favoriteSwitch.isChecked()) {
                     onSaveToFavorite();
-                }else {
+                } else {
                     sentDataConfirm(txID, value_pin);
                 }
             }
@@ -494,6 +494,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                                 PayFriendConfirmModel model = getGson().fromJson(object, PayFriendConfirmModel.class);
 
                                 String code = model.getError_code();
+                                String message = model.getError_message();
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     //Toast.makeText(getActivity(), getString(R.string.transaction_success), Toast.LENGTH_LONG).show();
 
@@ -503,15 +504,9 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                                     String _txid = "", _recipient = "", _recipient_error = null, _message, _txStatusRemark = "";
                                     double _Amount = 0.0, _fee = 0.0, _total_amount = 0.0, _total_wc = 0.0;
                                     _message = message;
-                                    JsonParser jsonParser = new JsonParser();
                                     List<PayfriendDataModel> temp = getGson().fromJson(toJson(model.getData()),
                                             new TypeToken<List<PayfriendDataModel>>() {
                                             }.getType());
-
-//                        if (!model.getData().equals("")){
-//                            Type type = new TypeToken<List<PayfriendDataModel>>() {}.getType();
-//                            temp = getGson().fromJson(model.getData(), type);
-//                        }
 
                                     for (PayfriendDataModel obj : temp) {
                                         for (RecepientModel aListObjectRecipient : listObjectRecipient) {
@@ -568,25 +563,18 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                                         }
                                     } else showDialog(error_msg);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = model.getError_message();
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(ErrorDefinition.WRONG_PIN_P2P)) {
-                                    code = model.getError_message();
-                                    showDialogError(code);
-                                }else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    showDialogError(message);
+                                } else if (code.equals(DefineValue.ERROR_9333)) {
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + object.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    Timber.d("isi response maintenance:%s", object.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    code = model.getError_message();
-
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
 
                                     if (authType.equalsIgnoreCase("PIN")) {
                                         Intent i = new Intent(getActivity(), InsertPIN.class);
@@ -615,13 +603,13 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
     }
 
     private void onSaveToFavorite() {
         extraSignature = phoneNumber + DefineValue.P2P + "TRF";
-        Log.e("extraSignature params ",extraSignature);
+        Log.e("extraSignature params ", extraSignature);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_FAVORITE_SAVE_TRF, extraSignature);
         params.put(WebParams.USER_ID, userPhoneID);
         params.put(WebParams.PRODUCT_TYPE, DefineValue.P2P);
@@ -646,15 +634,13 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
+                            } else {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
@@ -680,23 +666,15 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     private void showDialogClaim(String message) {
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.transaction_success),
                 message,
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        onOkButton();
-                    }
-                });
+                () -> onOkButton());
 
         dialognya.show();
     }
 
     private void showDialogError(String message) {
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title),
-                message, new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
+                message, () -> {
 
-                    }
                 });
         dialognya.show();
     }
@@ -729,7 +707,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            }else if (code.equals(DefineValue.ERROR_9333)) {
+                            } else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
                                 AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -737,7 +715,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 if (MyApiClient.PROD_FAILURE_FLAG)
                                     Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();

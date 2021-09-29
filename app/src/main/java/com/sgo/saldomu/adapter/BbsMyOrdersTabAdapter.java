@@ -21,13 +21,11 @@ import timber.log.Timber;
 
 public class BbsMyOrdersTabAdapter extends FragmentStatePagerAdapter implements IconPagerAdapter {
     private final String[] TITLES;
-    private final Context mContext;
     private ListFragment mCurrentFragment;
     private List<ListFragment> mListFrag;
 
     public BbsMyOrdersTabAdapter(FragmentManager fm, Context _context, List<ListFragment> _mListFrag, String[] _titles) {
         super(fm);
-        mContext = _context;
         mListFrag = _mListFrag;
         TITLES = _titles;
     }
@@ -39,7 +37,7 @@ public class BbsMyOrdersTabAdapter extends FragmentStatePagerAdapter implements 
 
     @Override
     public Fragment getItem(int position) {
-        Timber.v("position: " + position);
+        Timber.v("position: %s", position);
         return mListFrag.get(position);
     }
 

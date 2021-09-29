@@ -117,7 +117,11 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     private var adapterDenomList: AdapterDenomList? = null
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewLayout = inflater.inflate(R.layout.frag_biller_input_with_description, container, false)
         return viewLayout
     }
@@ -137,15 +141,28 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         initEditTextListener()
         getBillerDenom()
         if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
-            billerinput_et_id.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
+            billerinput_et_id.setText(
+                NoHPFormat.formatTo08(
+                    arguments?.getString(
+                        DefineValue.CUST_ID,
+                        ""
+                    )
+                )
+            )
         }
 
         ib_contact_list.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    activity!!,
+                    Manifest.permission.READ_CONTACTS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
                 showListContact()
             } else {
-                ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.READ_CONTACTS),
-                        RC_READ_CONTACTS)
+                ActivityCompat.requestPermissions(
+                    activity!!, arrayOf(Manifest.permission.READ_CONTACTS),
+                    RC_READ_CONTACTS
+                )
             }
         }
     }
@@ -163,18 +180,25 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     }
 
     private val spinnerPaymentListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        override fun onItemSelected(
+            adapterView: AdapterView<*>?,
+            view: View?,
+            position: Int,
+            id: Long
+        ) {
             val item = adapterView?.getItemAtPosition(position)
             payment_name = item.toString()
             var i = 0
             while (i < mListBankBiller!!.size) {
                 if (payment_name == mListBankBiller?.get(i)?.productName) {
-                    mTempBank = listBankModel(mListBankBiller?.get(i)?.bankCode,
-                            mListBankBiller?.get(i)?.bankName,
-                            mListBankBiller?.get(i)?.productCode,
-                            mListBankBiller?.get(i)?.productName,
-                            mListBankBiller?.get(i)?.productType,
-                            mListBankBiller?.get(i)?.productH2h)
+                    mTempBank = listBankModel(
+                        mListBankBiller?.get(i)?.bankCode,
+                        mListBankBiller?.get(i)?.bankName,
+                        mListBankBiller?.get(i)?.productCode,
+                        mListBankBiller?.get(i)?.productName,
+                        mListBankBiller?.get(i)?.productType,
+                        mListBankBiller?.get(i)?.productH2h
+                    )
                 }
                 i++
             }
@@ -192,20 +216,30 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         if (billerIdNumber != null) {
 
             when {
-                billerIdNumber.prefix_name.toLowerCase(Locale.ROOT).equals("telkomsel", ignoreCase = true) -> {
-                    img_operator.background = ResourcesCompat.getDrawable(resources, R.drawable.telkomsel, null)
+                billerIdNumber.prefix_name.toLowerCase(Locale.ROOT)
+                    .equals("telkomsel", ignoreCase = true) -> {
+                    img_operator.background =
+                        ResourcesCompat.getDrawable(resources, R.drawable.telkomsel, null)
                 }
-                billerIdNumber.prefix_name.toLowerCase(Locale.ROOT).equals("xl", ignoreCase = true) -> {
-                    img_operator.background = ResourcesCompat.getDrawable(resources, R.drawable.xl, null)
+                billerIdNumber.prefix_name.toLowerCase(Locale.ROOT)
+                    .equals("xl", ignoreCase = true) -> {
+                    img_operator.background =
+                        ResourcesCompat.getDrawable(resources, R.drawable.xl, null)
                 }
-                billerIdNumber.prefix_name.toLowerCase(Locale.ROOT).equals("indosat", ignoreCase = true) -> {
-                    img_operator.background = ResourcesCompat.getDrawable(resources, R.drawable.indosat, null)
+                billerIdNumber.prefix_name.toLowerCase(Locale.ROOT)
+                    .equals("indosat", ignoreCase = true) -> {
+                    img_operator.background =
+                        ResourcesCompat.getDrawable(resources, R.drawable.indosat, null)
                 }
-                billerIdNumber.prefix_name.toLowerCase(Locale.ROOT).equals("three", ignoreCase = true) -> {
-                    img_operator.background = ResourcesCompat.getDrawable(resources, R.drawable.three, null)
+                billerIdNumber.prefix_name.toLowerCase(Locale.ROOT)
+                    .equals("three", ignoreCase = true) -> {
+                    img_operator.background =
+                        ResourcesCompat.getDrawable(resources, R.drawable.three, null)
                 }
-                billerIdNumber.prefix_name.toLowerCase(Locale.ROOT).equals("smart", ignoreCase = true) -> {
-                    img_operator.background = ResourcesCompat.getDrawable(resources, R.drawable.smartfren, null)
+                billerIdNumber.prefix_name.toLowerCase(Locale.ROOT)
+                    .equals("smart", ignoreCase = true) -> {
+                    img_operator.background =
+                        ResourcesCompat.getDrawable(resources, R.drawable.smartfren, null)
                 }
                 else -> img_operator.visibility = View.GONE
             }
@@ -213,7 +247,9 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
             for (i in _data.indices) {
                 Timber.d("_data%s", _data[i])
 
-                if (_data[i].toLowerCase(Locale.ROOT).contains(billerIdNumber.prefix_name.toLowerCase(Locale.ROOT))) {
+                if (_data[i].toLowerCase(Locale.ROOT)
+                        .contains(billerIdNumber.prefix_name.toLowerCase(Locale.ROOT))
+                ) {
                     Timber.d("_data %s", billerItemList[i].commName)
                     biller_comm_id = billerItemList[i].commId
                     biller_comm_name = billerItemList[i].commName
@@ -258,16 +294,18 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         mDenomData = BillerItem()
         mDenomData = billerItemList[indexBiller]
         mListDenomData = billerItemList[indexBiller].denomData
-        adapterDenomList = AdapterDenomList(context!!, mListDenomData, object : AdapterDenomList.OnClick {
-            override fun onClick(pos: Int) {
-                if (inputValidation()) {
-                    item_id = mListDenomData[pos].itemId
-                    sentInquryBiller()
+        adapterDenomList =
+            AdapterDenomList(context!!, mListDenomData, object : AdapterDenomList.OnClick {
+                override fun onClick(pos: Int) {
+                    if (inputValidation()) {
+                        item_id = mListDenomData[pos].itemId
+                        sentInquryBiller()
+                    }
                 }
-            }
-        })
+            })
         billerinput_list_denom.adapter = adapterDenomList
-        billerinput_list_denom.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        billerinput_list_denom.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         adapterDenomList!!.notifyDataSetChanged()
 
         mBillerData = BillerItem()
@@ -279,7 +317,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 //        callback_url = mBillerData?.callback_url
         if (billerItemList.isNotEmpty()) {
             paymentData = ArrayList()
-            adapterPaymentOptions = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentData!!)
+            adapterPaymentOptions =
+                ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, paymentData!!)
             adapterPaymentOptions?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             billerinput_spinner_payment_options.adapter = adapterPaymentOptions
             billerinput_spinner_payment_options.onItemSelectedListener = spinnerPaymentListener
@@ -342,7 +381,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private fun inputValidation(): Boolean {
         if (billerinput_et_id.text!!.length < 10 ||
-                billerinput_et_id.text!!.length > 15) {
+            billerinput_et_id.text!!.length > 15
+        ) {
             billerinput_et_id.requestFocus()
             billerinput_et_id.error = getString(R.string.regist1_validation_length_nohp)
             return false
@@ -386,7 +426,9 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private fun initRealm() {
         Timber.tag(TAG).v("initRealm()")
-        val realmResults: RealmResults<BillerItem>? = realm?.where(BillerItem::class.java)?.equalTo(DefineValue.BILLER_TYPE, billerTypeCode)?.findAll()
+        val realmResults: RealmResults<BillerItem>? =
+            realm?.where(BillerItem::class.java)?.equalTo(DefineValue.BILLER_TYPE, billerTypeCode)
+                ?.findAll()
 
         billerItemList.clear()
         _data.clear()
@@ -413,7 +455,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
             extraSignature = biller_comm_id + item_id + cust_id
 
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_BILLER, extraSignature)
+            val params = RetrofitService.getInstance()
+                .getSignature(MyApiClient.LINK_INQUIRY_BILLER, extraSignature)
             params[WebParams.DENOM_ITEM_ID] = item_id
             params[WebParams.DENOM_ITEM_REMARK] = cust_id
             params[WebParams.COMM_ID] = biller_comm_id
@@ -423,148 +466,192 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
             Timber.d("isi params sent inquiry biller:$params")
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INQUIRY_BILLER, params,
-                    object : ResponseListener {
-                        @SuppressLint("SetTextI18n")
-                        override fun onResponses(response: JsonObject?) {
-                            val model = getGson().fromJson(response, InqBillerModel::class.java)
-                            var code = model.error_code
-                            if (code == WebParams.SUCCESS_CODE) {
-                                setIsInputAmount(model.biller_input_amount == DefineValue.STRING_YES)
-                                is_display_amount = model.biller_display_amount == DefineValue.STRING_YES
+                object : ResponseListener {
+                    @SuppressLint("SetTextI18n")
+                    override fun onResponses(response: JsonObject?) {
+                        val model = getGson().fromJson(response, InqBillerModel::class.java)
+                        var code = model.error_code
+                        var message = model.error_message
+                        if (code == WebParams.SUCCESS_CODE) {
+                            setIsInputAmount(model.biller_input_amount == DefineValue.STRING_YES)
+                            is_display_amount =
+                                model.biller_display_amount == DefineValue.STRING_YES
 
-                                tx_id = model.tx_id
-                                item_id = model.item_id
-                                ccy_id = model.ccy_id
-                                amount = model.amount.toDouble() - model.admin_fee.toDouble()
-                                item_name = model.item_name
-                                description = getGson().toJson(model.description)
-                                fee = model.admin_fee.toDouble()
-                                enabledAdditionalFee = model.enabled_additional_fee
-                                countTotal()
-                                if (is_display_amount)
-                                    isShowDescription = true
+                            tx_id = model.tx_id
+                            item_id = model.item_id
+                            ccy_id = model.ccy_id
+                            amount = model.amount.toDouble() - model.admin_fee.toDouble()
+                            item_name = model.item_name
+                            description = getGson().toJson(model.description)
+                            fee = model.admin_fee.toDouble()
+                            enabledAdditionalFee = model.enabled_additional_fee
+                            countTotal()
+                            if (is_display_amount)
+                                isShowDescription = true
 
-                                val dialog = Dialog(activity!!)
-                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                                dialog.setCanceledOnTouchOutside(false)
-                                dialog.setContentView(R.layout.dialog_biller_confirm)
+                            val dialog = Dialog(activity!!)
+                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                            dialog.setCanceledOnTouchOutside(false)
+                            dialog.setContentView(R.layout.dialog_biller_confirm)
 
-                                if (isAgent!! && enabledAdditionalFee.equals(DefineValue.Y))
-                                    dialog.billerinput_layout_add_fee.visibility = View.VISIBLE
-                                else
-                                    dialog.billerinput_layout_add_fee.visibility = View.GONE
+                            if (isAgent!! && enabledAdditionalFee.equals(DefineValue.STRING_YES))
+                                dialog.billerinput_layout_add_fee.visibility = View.VISIBLE
+                            else
+                                dialog.billerinput_layout_add_fee.visibility = View.GONE
 
-                                if (additional_fee > 0)
-                                    dialog.billerinput_et_add_fee.setText(NumberTextWatcherForThousand.getDecimalFormattedString(additional_fee.toInt().toString()))
+                            if (additional_fee > 0)
+                                dialog.billerinput_et_add_fee.setText(
+                                    NumberTextWatcherForThousand.getDecimalFormattedString(
+                                        additional_fee.toInt().toString()
+                                    )
+                                )
 
-                                dialog.billerinput_et_add_fee.addTextChangedListener(object : TextWatcher {
-                                    @SuppressLint("SetTextI18n")
-                                    override fun afterTextChanged(s: Editable?) {
-                                        dialog.billerinput_et_add_fee.removeTextChangedListener(this)
-                                        val value = s.toString()
-                                        if (value != "") {
-                                            if (value.startsWith("0") && !value.startsWith("0.")) dialog.billerinput_et_add_fee.setText("") else {
-                                                val str = NumberTextWatcherForThousand.trimCommaOfString(value)
-                                                dialog.billerinput_et_add_fee.setText(NumberTextWatcherForThousand.getDecimalFormattedString(str))
-                                            }
-                                            additional_fee = NumberTextWatcherForThousand.trimCommaOfString(dialog.billerinput_et_add_fee.text.toString()).toDouble()
-                                            dialog.billerinput_et_add_fee.setSelection(dialog.billerinput_et_add_fee.text.toString().length)
-                                        } else
-                                            additional_fee = 0.0
-                                        countTotal()
-                                        dialog.total.text = getString(R.string.rp_) + " " + CurrencyFormat.format(totalAmount)
-                                        dialog.billerinput_et_add_fee.addTextChangedListener(this)
-                                    }
-
-                                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-                                    }
-
-                                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                                    }
-
-                                })
-
-                                dialog.denom.text = item_name
-                                dialog.price.text = getString(R.string.rp_) + " " + CurrencyFormat.format(amount)
-                                dialog.fee.text = getString(R.string.rp_) + " " + CurrencyFormat.format(fee)
-
-                                dialog.total.text = getString(R.string.rp_) + " " + CurrencyFormat.format(totalAmount)
-
-                                dialog.layout_notes.visibility = View.GONE
-                                dialog.checkBox.setOnCheckedChangeListener { _, isChecked ->
-                                    run {
-                                        saveToFavorite = isChecked
-                                        if (isChecked)
-                                            dialog.layout_notes.visibility = View.VISIBLE
-                                        else
-                                            dialog.layout_notes.visibility = View.GONE
-                                    }
+                            dialog.billerinput_et_add_fee.addTextChangedListener(object :
+                                TextWatcher {
+                                @SuppressLint("SetTextI18n")
+                                override fun afterTextChanged(s: Editable?) {
+                                    dialog.billerinput_et_add_fee.removeTextChangedListener(this)
+                                    val value = s.toString()
+                                    if (value != "") {
+                                        if (value.startsWith("0") && !value.startsWith("0.")) dialog.billerinput_et_add_fee.setText(
+                                            ""
+                                        ) else {
+                                            val str =
+                                                NumberTextWatcherForThousand.trimCommaOfString(value)
+                                            dialog.billerinput_et_add_fee.setText(
+                                                NumberTextWatcherForThousand.getDecimalFormattedString(
+                                                    str
+                                                )
+                                            )
+                                        }
+                                        additional_fee =
+                                            NumberTextWatcherForThousand.trimCommaOfString(dialog.billerinput_et_add_fee.text.toString())
+                                                .toDouble()
+                                        dialog.billerinput_et_add_fee.setSelection(dialog.billerinput_et_add_fee.text.toString().length)
+                                    } else
+                                        additional_fee = 0.0
+                                    countTotal()
+                                    dialog.total.text =
+                                        getString(R.string.rp_) + " " + CurrencyFormat.format(
+                                            totalAmount
+                                        )
+                                    dialog.billerinput_et_add_fee.addTextChangedListener(this)
                                 }
 
-                                dialog.notes.addTextChangedListener(object : TextWatcher {
-                                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                                override fun beforeTextChanged(
+                                    s: CharSequence?,
+                                    start: Int,
+                                    count: Int,
+                                    after: Int
+                                ) {
 
-                                    }
-
-                                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                                    }
-
-                                    override fun afterTextChanged(p0: Editable?) {
-                                        notes = p0.toString()
-                                    }
-
-                                })
-                                dialog.btnCancel.setOnClickListener {
-                                    dialog.dismiss()
                                 }
 
-                                dialog.btnSubmit.setOnClickListener {
-                                    if (saveToFavorite && notes == "") {
-                                        dialog.notes.requestFocus()
-                                        dialog.notes.error = getString(R.string.payfriends_notes_zero)
-                                    } else {
-                                        dialog.dismiss()
-                                        submitInputListener()
-                                    }
+                                override fun onTextChanged(
+                                    s: CharSequence?,
+                                    start: Int,
+                                    before: Int,
+                                    count: Int
+                                ) {
+
                                 }
-                                dialog.show()
-                                countTotal()
-                            } else if (code == WebParams.LOGOUT_CODE) {
-                                val message = model.error_message
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(activity, message)
-                            } else if (code == DefineValue.ERROR_9333) run {
-                                Timber.d("isi response app data:%s", model.app_data)
-                                val appModel = model.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            } else if (code == DefineValue.ERROR_0066) run {
-                                Timber.d("isi response maintenance:%s", response.toString())
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
-                            } else {
-                                code = model.error_code + " : " + model.error_message
-                                if (isVisible) {
-                                    Toast.makeText(activity, code, Toast.LENGTH_LONG).show()
-                                    fragManager.popBackStack()
+
+                            })
+
+                            dialog.denom.text = item_name
+                            dialog.price.text =
+                                getString(R.string.rp_) + " " + CurrencyFormat.format(amount)
+                            dialog.fee.text =
+                                getString(R.string.rp_) + " " + CurrencyFormat.format(fee)
+
+                            dialog.total.text =
+                                getString(R.string.rp_) + " " + CurrencyFormat.format(totalAmount)
+
+                            dialog.layout_notes.visibility = View.GONE
+                            dialog.checkBox.setOnCheckedChangeListener { _, isChecked ->
+                                run {
+                                    saveToFavorite = isChecked
+                                    if (isChecked)
+                                        dialog.layout_notes.visibility = View.VISIBLE
+                                    else
+                                        dialog.layout_notes.visibility = View.GONE
                                 }
                             }
-                        }
 
-                        override fun onError(throwable: Throwable?) {
-                            fragManager.popBackStack()
-                        }
+                            dialog.notes.addTextChangedListener(object : TextWatcher {
+                                override fun beforeTextChanged(
+                                    p0: CharSequence?,
+                                    p1: Int,
+                                    p2: Int,
+                                    p3: Int
+                                ) {
 
-                        override fun onComplete() {
-                            dismissProgressDialog()
+                                }
 
+                                override fun onTextChanged(
+                                    p0: CharSequence?,
+                                    p1: Int,
+                                    p2: Int,
+                                    p3: Int
+                                ) {
+
+                                }
+
+                                override fun afterTextChanged(p0: Editable?) {
+                                    notes = p0.toString()
+                                }
+
+                            })
+                            dialog.btnCancel.setOnClickListener {
+                                dialog.dismiss()
+                            }
+
+                            dialog.btnSubmit.setOnClickListener {
+                                if (saveToFavorite && notes == "") {
+                                    dialog.notes.requestFocus()
+                                    dialog.notes.error = getString(R.string.payfriends_notes_zero)
+                                } else {
+                                    dialog.dismiss()
+                                    submitInputListener()
+                                }
+                            }
+                            dialog.show()
                             countTotal()
+                        } else if (code == WebParams.LOGOUT_CODE) {
+                            AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
+                        } else if (code == DefineValue.ERROR_9333) run {
+                            Timber.d("isi response app data:%s", model.app_data)
+                            val appModel = model.app_data
+                            AlertDialogUpdateApp.getInstance().showDialogUpdate(
+                                activity,
+                                appModel.type,
+                                appModel.packageName,
+                                appModel.downloadUrl
+                            )
+                        } else if (code == DefineValue.ERROR_0066) run {
+                            Timber.d("isi response maintenance:%s", response.toString())
+                            val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                            alertDialogMaintenance.showDialogMaintenance(activity)
+                        } else {
+                            if (isVisible) {
+                                Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG)
+                                    .show()
+                                fragManager.popBackStack()
+                            }
                         }
+                    }
 
-                    })
+                    override fun onError(throwable: Throwable?) {
+                        fragManager.popBackStack()
+                    }
+
+                    override fun onComplete() {
+                        dismissProgressDialog()
+
+                        countTotal()
+                    }
+
+                })
         } catch (e: Exception) {
             Timber.d("httpclient:%s", e.message)
         }
@@ -583,7 +670,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
             extraSignature = tx_id + item_id + biller_comm_id + productCode
 
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_PAYMENT_BILLER, extraSignature)
+            val params = RetrofitService.getInstance()
+                .getSignature(MyApiClient.LINK_PAYMENT_BILLER, extraSignature)
             params[WebParams.DENOM_ITEM_ID] = item_id
             params[WebParams.DENOM_ITEM_REMARK] = cust_id
             params[WebParams.TX_ID] = tx_id
@@ -609,48 +697,58 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
             Timber.d("isi params sent payment biller:$params")
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_PAYMENT_BILLER, params,
-                    object : ResponseListener {
-                        override fun onResponses(response: JsonObject?) {
-                            sentPaymentBillerModel = getGson().fromJson(response, SentPaymentBillerModel::class.java)
-                            val code = sentPaymentBillerModel.error_code
-                            val message = sentPaymentBillerModel.error_message
-                            if (code == WebParams.SUCCESS_CODE) {
-                                if (mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_IB) {
-                                    submitBiller(-1)
-                                } else {
-                                    var attempt = sentPaymentBillerModel.failed_attempt
-                                    if (attempt != -1)
-                                        attempt = sentPaymentBillerModel.max_failed - attempt
-                                    sentDataReqToken(tx_id, productCode, biller_comm_code, sentPaymentBillerModel.merchant_type, attempt)
-                                }
-                            } else if (code == WebParams.LOGOUT_CODE) {
-                                val alertDialog = AlertDialogLogout.getInstance()
-                                alertDialog.showDialoginActivity(activity, message)
-                            } else if (code == DefineValue.ERROR_9333) run {
-                                Timber.d("isi response app data:%s", sentPaymentBillerModel.app_data)
-                                val appModel = sentPaymentBillerModel.app_data
-                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                            } else if (code == DefineValue.ERROR_0066) run {
-                                Timber.d("isi response maintenance:%s", response.toString())
-                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, sentPaymentBillerModel.error_message)
+                object : ResponseListener {
+                    override fun onResponses(response: JsonObject?) {
+                        sentPaymentBillerModel =
+                            getGson().fromJson(response, SentPaymentBillerModel::class.java)
+                        val code = sentPaymentBillerModel.error_code
+                        val message = sentPaymentBillerModel.error_message
+                        if (code == WebParams.SUCCESS_CODE) {
+                            if (mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_IB) {
+                                submitBiller(-1)
                             } else {
-                                Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
-                                fragmentManager?.popBackStack()
-                                dismissProgressDialog()
+                                var attempt = sentPaymentBillerModel.failed_attempt
+                                if (attempt != -1)
+                                    attempt = sentPaymentBillerModel.max_failed - attempt
+                                sentDataReqToken(
+                                    tx_id,
+                                    productCode,
+                                    biller_comm_code,
+                                    sentPaymentBillerModel.merchant_type,
+                                    attempt
+                                )
                             }
-                        }
-
-                        override fun onError(throwable: Throwable?) {
+                        } else if (code == WebParams.LOGOUT_CODE) {
+                            AlertDialogLogout.getInstance().showDialoginActivity(activity, message)
+                        } else if (code == DefineValue.ERROR_9333) run {
+                            Timber.d("isi response app data:%s", sentPaymentBillerModel.app_data)
+                            val appModel = sentPaymentBillerModel.app_data
+                            val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                            alertDialogUpdateApp.showDialogUpdate(
+                                activity,
+                                appModel.type,
+                                appModel.packageName,
+                                appModel.downloadUrl
+                            )
+                        } else if (code == DefineValue.ERROR_0066) run {
+                            Timber.d("isi response maintenance:%s", response.toString())
+                            AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
+                        } else {
+                            Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
+                            fragmentManager?.popBackStack()
                             dismissProgressDialog()
                         }
+                    }
 
-                        override fun onComplete() {
+                    override fun onError(throwable: Throwable?) {
+                        dismissProgressDialog()
+                    }
 
-                        }
+                    override fun onComplete() {
 
-                    })
+                    }
+
+                })
         } catch (e: Exception) {
             Timber.d("httpclient:%s", e.message)
         }
@@ -685,11 +783,18 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         startActivityForResult(i, MainPage.REQUEST_FINISH)
     }
 
-    private fun sentDataReqToken(tx_id: String?, product_code: String?, biller_comm_code: String?, merchant_type: String, attempt: Int) {
+    private fun sentDataReqToken(
+        tx_id: String?,
+        product_code: String?,
+        biller_comm_code: String?,
+        merchant_type: String,
+        attempt: Int
+    ) {
         try {
             extraSignature = tx_id + biller_comm_code + product_code
 
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature)
+            val params = RetrofitService.getInstance()
+                .getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature)
             params[WebParams.COMM_CODE] = biller_comm_code
             params[WebParams.TX_ID] = tx_id
             params[WebParams.PRODUCT_CODE] = product_code
@@ -699,73 +804,96 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
             Timber.d("isi params regtoken Sgo+:$params")
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
-                    object : ResponseListener {
-                        override fun onResponses(response: JsonObject?) {
-                            val model = getGson().fromJson(response, jsonModel::class.java)
-                            val code = model.error_code
-                            val message = model.error_message
-                            when (code) {
-                                WebParams.SUCCESS_CODE -> {
-                                    when {
-                                        mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_SMS -> showDialog()
-                                        merchant_type == DefineValue.AUTH_TYPE_OTP -> showDialog()
-                                        else -> submitBiller(attempt)
-                                    }
+                object : ResponseListener {
+                    override fun onResponses(response: JsonObject?) {
+                        val model = getGson().fromJson(response, jsonModel::class.java)
+                        val code = model.error_code
+                        val message = model.error_message
+                        when (code) {
+                            WebParams.SUCCESS_CODE -> {
+                                when {
+                                    mTempBank!!.product_type == DefineValue.BANKLIST_TYPE_SMS -> showDialog()
+                                    merchant_type == DefineValue.AUTH_TYPE_OTP -> showDialog()
+                                    else -> submitBiller(attempt)
                                 }
-                                WebParams.LOGOUT_CODE -> {
-                                    val alertDialog = AlertDialogLogout.getInstance()
-                                    alertDialog.showDialoginActivity(activity, message)
-                                }
-                                ErrorDefinition.WRONG_PIN_BILLER -> {
-                                    showDialogError(message)
-                                }
-                                DefineValue.ERROR_9333 -> run {
-                                    Timber.d("isi response app data:%s", model.app_data)
-                                    val appModel = model.app_data
-                                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                    alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                                }
-                                DefineValue.ERROR_0066 -> run {
-                                    Timber.d("isi response maintenance:%s", response.toString())
-                                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
-                                }
-                                else -> {
-                                    when (code) {
-                                        "0059" -> showDialogSMS(mTempBank?.bank_name)
-                                        ErrorDefinition.ERROR_CODE_LESS_BALANCE -> {
-                                            val messageDialog = "\"" + message + "\"\n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname))
+                            }
+                            WebParams.LOGOUT_CODE -> {
+                                val alertDialog = AlertDialogLogout.getInstance()
+                                alertDialog.showDialoginActivity(activity, message)
+                            }
+                            ErrorDefinition.WRONG_PIN_BILLER -> {
+                                showDialogError(message)
+                            }
+                            DefineValue.ERROR_9333 -> run {
+                                Timber.d("isi response app data:%s", model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(
+                                    activity,
+                                    appModel.type,
+                                    appModel.packageName,
+                                    appModel.downloadUrl
+                                )
+                            }
+                            DefineValue.ERROR_0066 -> run {
+                                Timber.d("isi response maintenance:%s", response.toString())
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(activity)
+                            }
+                            else -> {
+                                when (code) {
+                                    "0059" -> showDialogSMS(mTempBank?.bank_name)
+                                    ErrorDefinition.ERROR_CODE_LESS_BALANCE -> {
+                                        val messageDialog = "\"" + message + "\"\n" + getString(
+                                            R.string.dialog_message_less_balance,
+                                            getString(R.string.appname)
+                                        )
 
-                                            val dialogFrag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance), messageDialog, getString(R.string.ok), getString(R.string.cancel), false)
-                                            dialogFrag.okListener = DialogInterface.OnClickListener { dialog, which ->
+                                        val dialogFrag = AlertDialogFrag.newInstance(
+                                            getString(R.string.dialog_title_less_balance),
+                                            messageDialog,
+                                            getString(R.string.ok),
+                                            getString(R.string.cancel),
+                                            false
+                                        )
+                                        dialogFrag.okListener =
+                                            DialogInterface.OnClickListener { dialog, which ->
                                                 val mI = Intent(activity, TopUpActivity::class.java)
                                                 mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true)
                                                 startActivityForResult(mI, REQUEST_BillerInqReq)
                                             }
-                                            dialogFrag.cancelListener = DialogInterface.OnClickListener { dialog, which ->
+                                        dialogFrag.cancelListener =
+                                            DialogInterface.OnClickListener { dialog, which ->
                                                 sentInquryBiller()
                                             }
-                                            dialogFrag.setTargetFragment(this@BillerInputData, 0)
-                                            dialogFrag.show(activity!!.supportFragmentManager, AlertDialogFrag.TAG)
-                                        }
-                                        else -> {
-                                            Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
-                                            fragManager.popBackStack()
-                                        }
+                                        dialogFrag.setTargetFragment(this@BillerInputData, 0)
+                                        dialogFrag.show(
+                                            activity!!.supportFragmentManager,
+                                            AlertDialogFrag.TAG
+                                        )
+                                    }
+                                    else -> {
+                                        Toast.makeText(
+                                            activity,
+                                            "$code : $message",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        fragManager.popBackStack()
                                     }
                                 }
                             }
-                            dismissProgressDialog()
                         }
+                        dismissProgressDialog()
+                    }
 
-                        override fun onError(throwable: Throwable?) {
-                            dismissProgressDialog()
-                        }
+                    override fun onError(throwable: Throwable?) {
+                        dismissProgressDialog()
+                    }
 
-                        override fun onComplete() {
-                        }
+                    override fun onComplete() {
+                    }
 
-                    })
+                })
 
         } catch (e: Exception) {
             Timber.d("httpclient:%s", e.message)
@@ -804,7 +932,11 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     }
 
     private fun showDialogError(code: String?) {
-        val dialog = DefinedDialog.MessageDialog(activity, getString(R.string.error), code) { _, _ -> fragmentManager?.popBackStack() }
+        val dialog = DefinedDialog.MessageDialog(
+            activity,
+            getString(R.string.error),
+            code
+        ) { fragmentManager?.popBackStack() }
         dialog.show()
     }
 
@@ -817,7 +949,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
         dialog.title_dialog.text = resources.getString(R.string.regist1_notif_title_verification)
         dialog.message_dialog.visibility = View.VISIBLE
-        dialog.message_dialog.text = getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
+        dialog.message_dialog.text =
+            getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms)
 
         dialog.btn_dialog_notification_ok.setOnClickListener {
             submitBiller(-1)
@@ -859,53 +992,64 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
 
     private fun getBillerDenom() {
         extraSignature = billerTypeCode
-        val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature)
+        val params = RetrofitService.getInstance()
+            .getSignature(MyApiClient.LINK_GET_BILLER_DENOM, extraSignature)
         params[WebParams.USER_ID] = userPhoneID
         params[WebParams.COMM_ID] = MyApiClient.COMM_ID
         params[WebParams.BILLER_TYPE] = billerTypeCode
 
         Timber.tag(TAG).v("getBillerDenom : $params")
 
-        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_BILLER_DENOM, params, object : ResponseListener {
-            override fun onResponses(jsonObject: JsonObject) {
-                Timber.tag(TAG).v("getBillerDenom : $jsonObject")
+        RetrofitService.getInstance().PostObjectRequest(
+            MyApiClient.LINK_GET_BILLER_DENOM,
+            params,
+            object : ResponseListener {
+                override fun onResponses(jsonObject: JsonObject) {
+                    Timber.tag(TAG).v("getBillerDenom : $jsonObject")
 
-                val gson = Gson()
-                val response = gson.fromJson(jsonObject, BillerDenomResponse::class.java)
+                    val gson = Gson()
+                    val response = gson.fromJson(jsonObject, BillerDenomResponse::class.java)
 
-                if (response.errorCode == WebParams.SUCCESS_CODE) {
+                    if (response.errorCode == WebParams.SUCCESS_CODE) {
 
-                    response.biller?.forEach { result ->
-                        _data.add(result.commName)
+                        response.biller?.forEach { result ->
+                            _data.add(result.commName)
+                        }
+
+                        billerItemList.addAll(response.biller)
+
+                        realm?.beginTransaction()
+                        realm?.copyToRealmOrUpdate(response.biller)
+                        realm?.commitTransaction()
+
+                        if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
+                            billerinput_et_id.setText(
+                                NoHPFormat.formatTo08(
+                                    arguments?.getString(
+                                        DefineValue.CUST_ID,
+                                        ""
+                                    )
+                                )
+                            )
+                            checkOperator()
+                            showChoosePayment()
+                        }
+                    } else {
+                        Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
                     }
+                }
 
-                    billerItemList.addAll(response.biller)
+                override fun onError(throwable: Throwable) {
+                    Timber.e("getBillerDenom : %s", throwable.message)
+                    Toast.makeText(context, throwable.localizedMessage, Toast.LENGTH_SHORT).show()
+                }
 
-                    realm?.beginTransaction()
-                    realm?.copyToRealmOrUpdate(response.biller)
-                    realm?.commitTransaction()
-
-                    if (arguments!!.getString(DefineValue.CUST_ID, "") !== "") {
-                        billerinput_et_id.setText(NoHPFormat.formatTo08(arguments?.getString(DefineValue.CUST_ID, "")))
-                        checkOperator()
-                        showChoosePayment()
+                override fun onComplete() {
+                    if (_data.isEmpty()) {
+                        initRealm()
                     }
-                } else {
-                    Toast.makeText(context, response.errorMessage, Toast.LENGTH_SHORT).show()
                 }
-            }
-
-            override fun onError(throwable: Throwable) {
-                Timber.e("getBillerDenom : %s", throwable.message)
-                Toast.makeText(context, throwable.localizedMessage, Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onComplete() {
-                if (_data.isEmpty()) {
-                    initRealm()
-                }
-            }
-        })
+            })
     }
 
     private fun onSaveToFavorite() {
@@ -924,47 +1068,55 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         Timber.tag("params ").e(params.toString())
 
         RetrofitService.getInstance().PostJsonObjRequest(url, params,
-                object : ObjListeners {
-                    override fun onResponses(response: JSONObject) {
-                        try {
-                            val model = RetrofitService.getInstance().gson.fromJson(response.toString(), jsonModel::class.java)
-                            Timber.tag("onResponses ").e(response.toString())
-                            val code = response.getString(WebParams.ERROR_CODE)
-                            val message = response.getString(WebParams.ERROR_MESSAGE)
-                            when (code) {
-                                WebParams.SUCCESS_CODE -> {
-                                    sentInsertTransTopup(value_pin)
-                                }
-                                DefineValue.ERROR_9333 -> {
-                                    Timber.d("isi response app data:%s", model.app_data)
-                                    val appModel = model.app_data
-                                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                    alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                                }
-                                DefineValue.ERROR_0066 -> {
-                                    Timber.d("isi response maintenance:$response")
-                                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity, message)
-                                }
-                                else -> {
-                                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-                                }
+            object : ObjListeners {
+                override fun onResponses(response: JSONObject) {
+                    try {
+                        val model = RetrofitService.getInstance().gson.fromJson(
+                            response.toString(),
+                            jsonModel::class.java
+                        )
+                        Timber.tag("onResponses ").e(response.toString())
+                        val code = response.getString(WebParams.ERROR_CODE)
+                        val message = response.getString(WebParams.ERROR_MESSAGE)
+                        when (code) {
+                            WebParams.SUCCESS_CODE -> {
+                                sentInsertTransTopup(value_pin)
                             }
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
+                            DefineValue.ERROR_9333 -> {
+                                Timber.d("isi response app data:%s", model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(
+                                    activity,
+                                    appModel.type,
+                                    appModel.packageName,
+                                    appModel.downloadUrl
+                                )
+                            }
+                            DefineValue.ERROR_0066 -> {
+                                Timber.d("isi response maintenance:$response")
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(activity)
+                            }
+                            else -> {
+                                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+                            }
                         }
-
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
                     }
 
-                    override fun onError(throwable: Throwable) {
-                        Timber.tag("onResponses ").e(throwable.localizedMessage)
-                        throwable.printStackTrace()
-                    }
+                }
 
-                    override fun onComplete() {
-                        dismissProgressDialog()
-                    }
-                })
+                override fun onError(throwable: Throwable) {
+                    Timber.tag("onResponses ").e(throwable.localizedMessage)
+                    throwable.printStackTrace()
+                }
+
+                override fun onComplete() {
+                    dismissProgressDialog()
+                }
+            })
     }
 
     private fun sentInsertTransTopup(tokenValue: String?) {
@@ -982,49 +1134,56 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
             params[WebParams.COMM_CODE] = biller_comm_code
             params[WebParams.COMM_ID] = biller_comm_id
             params[WebParams.MEMBER_ID] = sp.getString(DefineValue.MEMBER_ID, "")
-            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncryptCommID(biller_comm_id, uuid, dateTime, userPhoneID, tokenValue, subStringLink)
+            params[WebParams.PRODUCT_VALUE] = RSA.opensslEncryptCommID(
+                biller_comm_id,
+                uuid,
+                dateTime,
+                userPhoneID,
+                tokenValue,
+                subStringLink
+            )
             params[WebParams.USER_ID] = userPhoneID
 
             Timber.d("isi params insertTrxTOpupSGOL:$params")
 
             RetrofitService.getInstance().PostObjectRequest(link, params,
-                    object : ResponseListener {
-                        override fun onResponses(response: JsonObject) {
-                            val model = getGson().fromJson(response, SentPaymentBillerModel::class.java)
-                            val code = model.error_code
-                            val message = model.error_message
-                            if (code == WebParams.SUCCESS_CODE) {
-                                getTrxStatus(tx_id, biller_comm_id)
-                                setResultActivity()
-                            } else if (code == WebParams.LOGOUT_CODE) {
-                                val test = AlertDialogLogout.getInstance()
-                                test.showDialoginActivity(activity, message)
+                object : ResponseListener {
+                    override fun onResponses(response: JsonObject) {
+                        val model = getGson().fromJson(response, SentPaymentBillerModel::class.java)
+                        val code = model.error_code
+                        val message = model.error_message
+                        if (code == WebParams.SUCCESS_CODE) {
+                            getTrxStatus(tx_id, biller_comm_id)
+                            setResultActivity()
+                        } else if (code == WebParams.LOGOUT_CODE) {
+                            val test = AlertDialogLogout.getInstance()
+                            test.showDialoginActivity(activity, message)
+                        } else {
+                            Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
+                            if (isPIN!! && message == "PIN tidak sesuai") {
+                                val i = Intent(activity, InsertPIN::class.java)
+
+                                attempt = model.failed_attempt
+                                failed = model.max_failed
+
+                                if (attempt != -1)
+                                    i.putExtra(DefineValue.ATTEMPT, failed - attempt)
+
+                                startActivityForResult(i, MainPage.REQUEST_FINISH)
                             } else {
-                                Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
-                                if (isPIN!! && message == "PIN tidak sesuai") {
-                                    val i = Intent(activity, InsertPIN::class.java)
-
-                                    attempt = model.failed_attempt
-                                    failed = model.max_failed
-
-                                    if (attempt != -1)
-                                        i.putExtra(DefineValue.ATTEMPT, failed - attempt)
-
-                                    startActivityForResult(i, MainPage.REQUEST_FINISH)
-                                } else {
-                                    onOkButton()
-                                }
+                                onOkButton()
                             }
                         }
+                    }
 
-                        override fun onError(throwable: Throwable) {
+                    override fun onError(throwable: Throwable) {
 
-                        }
+                    }
 
-                        override fun onComplete() {
-                            dismissProgressDialog()
-                        }
-                    })
+                    override fun onComplete() {
+                        dismissProgressDialog()
+                    }
+                })
         } catch (e: Exception) {
             Timber.d("httpclient:%s", e.message)
         }
@@ -1042,7 +1201,8 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         try {
             showProgressDialog()
             extraSignature = txId + comm_id
-            val params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature)
+            val params = RetrofitService.getInstance()
+                .getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature)
 
             params[WebParams.TX_ID] = txId
             params[WebParams.COMM_ID] = comm_id
@@ -1055,47 +1215,54 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
             params[WebParams.USER_ID] = userPhoneID
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
-                    object : ResponseListener {
-                        override fun onResponses(response: JsonObject) {
-                            val model = getGson().fromJson(response, GetTrxStatusModel::class.java)
+                object : ResponseListener {
+                    override fun onResponses(response: JsonObject) {
+                        val model = getGson().fromJson(response, GetTrxStatusModel::class.java)
 
-                            val code = model.error_code
-                            val message = model.error_message
-                            if (!model.on_error) {
-                                if (code == WebParams.SUCCESS_CODE || code == "0003") {
+                        val code = model.error_code
+                        val message = model.error_message
+                        if (!model.on_error) {
+                            if (code == WebParams.SUCCESS_CODE || code == "0003") {
 
-                                    val txstatus = model.tx_status
-                                    showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""),
-                                            sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
-                                            txstatus!!, model)
-                                } else if (code == WebParams.LOGOUT_CODE) {
-                                    val test = AlertDialogLogout.getInstance()
-                                    test.showDialoginActivity(activity, message)
-                                } else if (code == DefineValue.ERROR_9333) {
-                                    Timber.d("isi response app data:%s", model.app_data)
-                                    val appModel = model.app_data
-                                    val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
-                                    alertDialogUpdateApp.showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
-                                } else if (code == DefineValue.ERROR_0066) {
-                                    Timber.d("isi response maintenance:$response")
-                                    val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity, message)
-                                } else {
-                                    showDialog(message)
-                                }
+                                val txstatus = model.tx_status
+                                showReportBillerDialog(
+                                    sp.getString(DefineValue.USER_NAME, ""),
+                                    sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
+                                    txstatus!!, model
+                                )
+                            } else if (code == WebParams.LOGOUT_CODE) {
+                                val test = AlertDialogLogout.getInstance()
+                                test.showDialoginActivity(activity, message)
+                            } else if (code == DefineValue.ERROR_9333) {
+                                Timber.d("isi response app data:%s", model.app_data)
+                                val appModel = model.app_data
+                                val alertDialogUpdateApp = AlertDialogUpdateApp.getInstance()
+                                alertDialogUpdateApp.showDialogUpdate(
+                                    activity,
+                                    appModel.type,
+                                    appModel.packageName,
+                                    appModel.downloadUrl
+                                )
+                            } else if (code == DefineValue.ERROR_0066) {
+                                Timber.d("isi response maintenance:$response")
+                                val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
+                                alertDialogMaintenance.showDialogMaintenance(activity)
                             } else {
-                                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+                                showDialog(message)
                             }
+                        } else {
+                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
                         }
+                    }
 
-                        override fun onError(throwable: Throwable) {
+                    override fun onError(throwable: Throwable) {
 
-                        }
+                    }
 
-                        override fun onComplete() {
-                            dismissProgressDialog()
-                        }
-                    })
+                    override fun onComplete() {
+                        dismissProgressDialog()
+                    }
+                })
         } catch (e: Exception) {
             Timber.d("httpclient:%s", e.message)
         }
@@ -1124,8 +1291,10 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         dialog.show()
     }
 
-    private fun showReportBillerDialog(name: String?, userId: String?, txId: String?, itemName: String?, txStatus: String,
-                                       model: GetTrxStatusModel) {
+    private fun showReportBillerDialog(
+        name: String?, userId: String?, txId: String?, itemName: String?, txStatus: String,
+        model: GetTrxStatusModel
+    ) {
         showProgressDialog()
         val args = Bundle()
         val dialog = ReportBillerDialog.newInstance(this)
@@ -1134,13 +1303,22 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
         args.putString(DefineValue.TX_ID, txId)
         args.putString(DefineValue.USERID_PHONE, userId)
         args.putString(DefineValue.DENOM_DATA, itemName)
-        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount))
+        args.putString(
+            DefineValue.AMOUNT,
+            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount)
+        )
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER)
         args.putInt(DefineValue.BUY_TYPE, buy_type)
         args.putString(DefineValue.PAYMENT_NAME, payment_name)
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee))
-        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(totalAmount))
-        args.putString(DefineValue.ADDITIONAL_FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(additional_fee))
+        args.putString(
+            DefineValue.TOTAL_AMOUNT,
+            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(totalAmount)
+        )
+        args.putString(
+            DefineValue.ADDITIONAL_FEE,
+            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(additional_fee)
+        )
         args.putString(DefineValue.DESTINATION_REMARK, NoHPFormat.formatTo62(cust_id))
         args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription!!)
 
@@ -1186,7 +1364,10 @@ class BillerInputData : BaseFragment(), ReportBillerDialog.OnDialogOkCallback {
     override fun onOkButton() {
         dismissProgressDialog()
         fragmentManager != null
-        fragmentManager!!.popBackStackImmediate(BillerActivity.FRAG_BIL_INPUT, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        fragmentManager!!.popBackStackImmediate(
+            BillerActivity.FRAG_BIL_INPUT,
+            FragmentManager.POP_BACK_STACK_INCLUSIVE
+        )
     }
 }
 

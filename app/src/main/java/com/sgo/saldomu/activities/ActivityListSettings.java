@@ -33,7 +33,7 @@ import timber.log.Timber;
 public class ActivityListSettings extends BaseActivity implements SettingsAdapter.SettingsListener {
     private SecurePreferences sp;
     private InformationDialog dialogI;
-    private Boolean isLevel1, isAgent;
+    private Boolean isAgent;
     public static final int RESULT_CHANGE_LANGUAGE = 1200;
 
     ArrayList<String> list = new ArrayList<>();
@@ -67,11 +67,10 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
 
         if (isAgent) {
             _data = getResources().getStringArray(R.array.settings_is_agent);
-            list.addAll(Arrays.asList(_data));
         } else {
             _data = getResources().getStringArray(R.array.settings_is_member);
-            list.addAll(Arrays.asList(_data));
         }
+        list.addAll(Arrays.asList(_data));
 
         _data = getResources().getStringArray(R.array.settings_list_info);
         list.addAll(Arrays.asList(_data));
@@ -183,7 +182,7 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
     }
 
     private void updateLanguage(boolean isBahasa) {
-        String language = "";
+        String language;
         if (isBahasa) {
             language = DefineValue.LANGUAGE_CODE_IND;
         } else {
@@ -210,7 +209,7 @@ public class ActivityListSettings extends BaseActivity implements SettingsAdapte
             if (data != null) {
 
                 boolean isBahasa = data.getBooleanExtra(DefineValue.IS_BAHASA, false);
-                String language = "";
+                String language;
                 if (isBahasa) {
                     language = DefineValue.LANGUAGE_CODE_IND;
                 } else {

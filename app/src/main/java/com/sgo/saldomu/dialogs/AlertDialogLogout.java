@@ -38,15 +38,12 @@ public class AlertDialogLogout {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)
                     .setCancelable(false)
-                    .setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            setSessionTimeout();
-                            Intent intent = new Intent(mContext, Perkenalan.class);
-                            intent.putExtra(DefineValue.LOG_OUT, true);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            mContext.startActivity(intent);
-                        }
+                    .setPositiveButton(mContext.getResources().getString(R.string.ok), (dialog, which) -> {
+                        setSessionTimeout();
+                        Intent intent = new Intent(mContext, Perkenalan.class);
+                        intent.putExtra(DefineValue.LOG_OUT, true);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        mContext.startActivity(intent);
                     });
             if (getAdInstance() == null) {
                 setAdInstance(builder.create());
@@ -63,13 +60,10 @@ public class AlertDialogLogout {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)
                     .setCancelable(false)
-                    .setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            setSessionTimeout();
-                            MainPage fca = (MainPage) mContext;
-                            fca.switchLogout();
-                        }
+                    .setPositiveButton(mContext.getResources().getString(R.string.ok), (dialog, which) -> {
+                        setSessionTimeout();
+                        MainPage fca = (MainPage) mContext;
+                        fca.switchLogout();
                     });
 
             Timber.d("showDialoginMain");

@@ -141,7 +141,7 @@ class FragJoinCommunityToko : BaseFragment() {
                     }
                     DefineValue.ERROR_0066 -> {
                         val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                        alertDialogMaintenance.showDialogMaintenance(activity, message)
+                        alertDialogMaintenance.showDialogMaintenance(activity)
                     }
                     else -> {
                         Toast.makeText(activity, message, Toast.LENGTH_LONG).show()

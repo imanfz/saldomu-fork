@@ -3,28 +3,17 @@ package com.sgo.saldomu.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,26 +32,21 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.TabSearchAgentAdapter;
-import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
-import com.sgo.saldomu.coreclass.MainAgentIntentService;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.entityRealm.AgentDetail;
-import com.sgo.saldomu.entityRealm.AgentServiceDetail;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.fragments.AgentListFragment;
 import com.sgo.saldomu.fragments.FragCancelTrxRequest;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
-import com.sgo.saldomu.services.UpdateLocationService;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.json.JSONArray;
@@ -73,10 +57,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -87,16 +69,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         LocationListener,
         EasyPermissions.PermissionCallbacks,
         AgentListFragment.OnListAgentItemClick,
-        FragCancelTrxRequest.CancelTrxRequestListener
-{
+        FragCancelTrxRequest.CancelTrxRequestListener {
 
-    private int lastLocationResult   = AgentConstant.FALSE;
     private int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
-
-    private int pickupLocationResult = AgentConstant.FALSE;
-    private int agentInfoResult      = AgentConstant.FALSE;
-
-    private static final String TAG = BbsSearchAgentActivity.class.getSimpleName();
 
     private String searchLocationString;
     Intent intentData;
@@ -104,19 +79,13 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     TabSearchAgentAdapter tabPageAdapter;
     private GoogleApiClient googleApiClient;
     public MainResultReceiver agentMapResultReceiver;
-    public MainResultReceiver agentListResultReceiver;
     public MainResultReceiver agentListMapResultReceiver;
     private Location lastLocation;
-    private Dialog dialog;
-    private String errorDesc, gcmId;
-    private Address searchLocation;
+    private String gcmId;
 
-    private boolean backStatus = false, isAllowed = false, isCalled = false;
+    private boolean isAllowed = false, isCalled = false;
     private LocationRequest mLocationRequest;
 
-    Intent locationIntent;
-    private TextView errorMsg;
-    private Button backBtn;
     public ViewPager viewPager;
     private String categoryId, categoryName, bbsNote;
     private String mobility, amount;
@@ -124,23 +93,18 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private Double currentLatitude;
     private Double currentLongitude;
     SecurePreferences sp;
-    private String completeAddress, districtName, provinceName, countryName, txId,
-        bbsProductName, bbsProductCode, bbsProductType, bbsProductDisplay, bbsSchemeCode;
+    private String completeAddress, districtName, provinceName, txId,
+            bbsProductName, bbsProductCode, bbsProductType, bbsProductDisplay, bbsSchemeCode;
     private int timeDelayed = 30000;
-    EditText etJumlah;
-    Button btnProses;
     private static final int RC_LOCATION_PERM = 500;
-    private final int RC_PHONE_CALL = 503;
     private final int RC_SEND_SMS = 504;
     private static final int RC_LOCATION_PHONE_SMS = 505;
     private static final int RC_GPS_REQUEST = 1;
     private ImageView imgDelete;
 
     Boolean clicked = false;
-    ProgressDialog progdialog, progdialog2, progdialog3;
-    private Realm realm, realmBBSMemberBank;
-    Boolean isMapIconClicked = false;
-    int isMapIconPosition = 0;
+    ProgressDialog progDialog;
+    private Realm realmBBSMemberBank;
 
     // Init
     private Handler handler = new Handler();
@@ -160,30 +124,28 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        realmBBSMemberBank = Realm.getInstance(RealmManager.BBSMemberBankConfiguration);
 
-        realm               = Realm.getDefaultInstance();
-        realmBBSMemberBank            = Realm.getInstance(RealmManager.BBSMemberBankConfiguration);
+        intentData = getIntent();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        intentData          = getIntent();
-        sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
-
-        categoryId          = intentData.getStringExtra(DefineValue.CATEGORY_ID);
-        mobility            = intentData.getStringExtra(DefineValue.BBS_AGENT_MOBILITY);
-        categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
-        amount              = intentData.getStringExtra(DefineValue.AMOUNT);
-        completeAddress     = intentData.getStringExtra(DefineValue.BBS_COMPLETE_ADDRESS);
-        bbsNote             = intentData.getStringExtra(DefineValue.BBS_NOTE);
-        bbsProductName      = intentData.getStringExtra(DefineValue.BBS_PRODUCT_NAME);
-        bbsSchemeCode       = intentData.getStringExtra(DefineValue.BBS_SCHEME_CODE);
+        categoryId = intentData.getStringExtra(DefineValue.CATEGORY_ID);
+        mobility = intentData.getStringExtra(DefineValue.BBS_AGENT_MOBILITY);
+        categoryName = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
+        amount = intentData.getStringExtra(DefineValue.AMOUNT);
+        completeAddress = intentData.getStringExtra(DefineValue.BBS_COMPLETE_ADDRESS);
+        bbsNote = intentData.getStringExtra(DefineValue.BBS_NOTE);
+        bbsProductName = intentData.getStringExtra(DefineValue.BBS_PRODUCT_NAME);
+        bbsSchemeCode = intentData.getStringExtra(DefineValue.BBS_SCHEME_CODE);
 
         BBSBankModel bbsBankModel = null;
 
-        if ( bbsSchemeCode.equals(DefineValue.CTA) ) {
+        if (bbsSchemeCode.equals(DefineValue.CTA)) {
             bbsBankModel = realmBBSMemberBank.where(BBSBankModel.class).
                     equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
                     equalTo(BBSBankModel.PRODUCT_NAME, bbsProductName)
                     .findFirst();
-        } else if ( bbsSchemeCode.equals(DefineValue.CTR) ) {
+        } else if (bbsSchemeCode.equals(DefineValue.CTR)) {
             bbsBankModel = realmBBSMemberBank.where(BBSBankModel.class).
                     equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTR).
                     equalTo(BBSBankModel.PRODUCT_NAME, bbsProductName)
@@ -195,82 +157,51 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     .findFirst();
         }
 
-        if ( bbsBankModel != null ) {
-            bbsProductCode      = bbsBankModel.getProduct_code();
-            bbsProductType      = bbsBankModel.getProduct_type();
-            bbsProductDisplay   = bbsBankModel.getProduct_display();
+        if (bbsBankModel != null) {
+            bbsProductCode = bbsBankModel.getProduct_code();
+            bbsProductType = bbsBankModel.getProduct_type();
+            bbsProductDisplay = bbsBankModel.getProduct_display();
         }
-
 
         methodRequiresTwoPermission();
-        locationIntent = new Intent(this, UpdateLocationService.class);
 
-        txId                = "";
+        txId = "";
 
-        gcmId               = "";
+        gcmId = "";
 
         initializeToolbar(getString(R.string.search_agent) + " " + categoryName);
-
-    }
-
-    public void initializeApp() {
-        try {
-            if (checkPlayServices()) {
-                buildGoogleApiClient();
-                createLocationRequest();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
-            currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
-            currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
-
-        }
-
-        menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
-        tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext()
-                , menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        viewPager = findViewById(R.id.viewpager);
-        viewPager.setAdapter(tabPageAdapter);
     }
 
     public void runningApp() {
 
-        if ( isCalled ) {
+        if (isCalled) {
             return;
         } else {
             isCalled = true;
         }
 
-        if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
+        if (intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE)) {
             currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
             currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
 
         }
 
-        menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
-        tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
+        menuItems = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
+        tabPageAdapter = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(tabPageAdapter);
 
-        imgDelete   = findViewById(R.id.imgCancel);
+        imgDelete = findViewById(R.id.imgCancel);
 
-        if ( mobility.equals(DefineValue.STRING_NO) ) {
-            imgDelete.setVisibility(View.INVISIBLE);
-        } else {
+        if (!mobility.equals(DefineValue.STRING_NO)) {
             imgDelete.setOnClickListener(this);
-            imgDelete.setVisibility(View.INVISIBLE);
         }
+        imgDelete.setVisibility(View.INVISIBLE);
 
 
-
-        if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
-            if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
+        if (intentData.hasExtra(DefineValue.IS_AUTOSEARCH)) {
+            if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES)) {
                 //currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
                 //currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
 
@@ -288,7 +219,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         }
 
 
-
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -302,32 +232,28 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         //listener ketika button back di action bar diklik
-        if(id == android.R.id.home)
-        {
+        if (id == android.R.id.home) {
             //kembali ke activity sebelumnya
             onBackPressed();
         }
 
-        if ( mobility.equals(DefineValue.STRING_NO) ) {
+        if (mobility.equals(DefineValue.STRING_NO)) {
             return super.onOptionsItemSelected(item);
         } else {
             return true;
         }
     }
 
-    public void initializeToolbar(String title)
-    {
+    public void initializeToolbar(String title) {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(title);
     }
 
-    private void custominitializeToolbar()
-    {
+    private void custominitializeToolbar() {
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -339,10 +265,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     }
 
 
-
     @Override
     public void onClick(View v) {
-        if ( v.getId() == R.id.imgCancel ) {
+        if (v.getId() == R.id.imgCancel) {
             FragCancelTrxRequest fragCancelTrxRequest = new FragCancelTrxRequest();
 
             Bundle bundle = new Bundle();
@@ -354,7 +279,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 //            fragCancelTrxRequest.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CustomDialog);
             fragCancelTrxRequest.show(getSupportFragmentManager(), FragCancelTrxRequest.TAG);
         }
-     }
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -365,11 +290,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         try {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
-            if ( lastLocation == null ){
+            if (lastLocation == null) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
             } else {
                 //btnProses.setEnabled(true);
-                if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null) {
+                if (mobility.equals(DefineValue.STRING_NO) && currentLatitude != null) {
 
                 } else {
                     //currentLatitude = lastLocation.getLatitude();
@@ -387,7 +312,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         } catch (SecurityException se) {
             se.printStackTrace();
         }
-        if (bundle!=null) {
+        if (bundle != null) {
             Timber.d(bundle.toString());
         }
 
@@ -410,7 +335,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         //btnProses.setEnabled(true);
 //        googleApiClient.disconnect();
 
-        if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
+        if (mobility.equals(DefineValue.STRING_NO) && currentLatitude != null) {
 
         } else {
             //currentLatitude = lastLocation.getLatitude();
@@ -420,7 +345,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         //viewPager.getAdapter().notifyDataSetChanged();
         //getCompleteLocationAddress();
 
-        if ( mobility.equals(DefineValue.STRING_NO) ) {
+        if (mobility.equals(DefineValue.STRING_NO)) {
             //searchToko(currentLatitude, currentLongitude);
         }
 
@@ -428,15 +353,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         try {
             LocationServices.FusedLocationApi.removeLocationUpdates(
-                googleApiClient, this);
+                    googleApiClient, this);
         } catch (Exception e) {
             e.printStackTrace();
         }
         //startIntentService(location);
     }
 
-    protected synchronized void buildGoogleApiClient()
-    {
+    protected synchronized void buildGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -444,14 +368,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 .build();
     }
 
-    private void mainProcess()
-    {
+    private void mainProcess() {
         //jika google play service tersedia, maka :
-        if(checkPlayServices())
-        {
+        if (checkPlayServices()) {
             //set receiver
-            agentListResultReceiver    = new MainResultReceiver(new Handler());
-            agentMapResultReceiver     = new MainResultReceiver(new Handler());
+            agentMapResultReceiver = new MainResultReceiver(new Handler());
             agentListMapResultReceiver = new MainResultReceiver(new Handler());
 
             buildGoogleApiClient();
@@ -459,8 +380,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         }
     }
 
-    private boolean checkPlayServices()
-    {
+    private boolean checkPlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
         if (result != ConnectionResult.SUCCESS) {
@@ -475,71 +395,27 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     }
 
 
-
-    private void process()
-    {
-        //display progress dialog
-        displayDialog();
-
+    private void process() {
         mainProcess();
-
     }
 
-    private String getDistance(Double latitude1, Double longitude1, Double latitude2, Double longitude2)
-    {
-        Double latitude   = latitude2 - latitude1;
-        Double latitudeKm = convertToKm(latitude);
-
-        Double longitude   = longitude2 - longitude1;
-        Double longitudeKm = convertToKm(longitude);
-
-        Double latitudeKuadrat  = latitudeKm  * latitudeKm;
-        Double longitudeKuadrat = longitudeKm * longitudeKm;
-
-        Double result = latitudeKuadrat + longitudeKuadrat;
-        result = Math.sqrt(result);
-
-        //rounding become 1 decimal & convert to string
-        return String.format("%.1f", result);
-    }
-
-    private Double convertToKm(Double value)
-    {
+    private Double convertToKm(Double value) {
         //absolute - menghilangkan minus jika ada
         value = Math.abs(value);
 
         //get degree & convert to meter
-        Double degree   = Math.floor(value);
-        Double degreeKm = degree * 111.322;   //111.320
+        double degree = Math.floor(value);
+        double degreeKm = degree * 111.322;   //111.320
 
         //get hour & convert to meter
-        Double hour       = value % 1;
-        Double hourMinute = hour * 60;
-        Double hourKm     = hourMinute * 1.88537;  //1.855
+        double hour = value % 1;
+        double hourMinute = hour * 60;
+        double hourKm = hourMinute * 1.88537;  //1.855
 
         return degreeKm + hourKm;
     }
 
-    private void displayDialog()
-    {
-        dialog = new Dialog(this);
-        /*dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //menghilangkan frame windows
-        dialog.setContentView(R.layout.progress_dialog_agent);
-        dialog.setCancelable(false); //agar dialog tidak bisa di-cancel
-        dialog.show();*/
-    }
-
-
-
-    private void getCompleteLocationAddress()
-    {
-
-        if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
-
-        } else {
-            //currentLatitude = lastLocation.getLatitude();
-            //currentLongitude = lastLocation.getLongitude();
-        }
+    private void getCompleteLocationAddress() {
 
         completeAddress = "";
 
@@ -550,7 +426,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         options.put("latlng", currentLatitude + "," + currentLongitude);
 
         RetrofitService.getInstance().QueryRequestSSL(
-//                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE + "&latlng=" + currentLatitude + "," + currentLongitude
                 "https://maps.google.com/maps/api/geocode/json"
                 , options,
                 new ObjListeners() {
@@ -559,14 +434,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                         try {
 
                             String status = response.getString(WebParams.GMAP_API_STATUS);
-                            Timber.w("JSON Response: "+response.toString());
+                            Timber.w("JSON Response: %s", response.toString());
 
-                            if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
-                                ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
+                            if (status.equals(DefineValue.GMAP_STRING_OK)) {
+                                ArrayList<HashMap<String, String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
 
                                 for (HashMap<String, String> hashMapObject : gData) {
                                     for (String key : hashMapObject.keySet()) {
-                                        switch(key) {
+                                        switch (key) {
                                             case "formattedAddress":
                                                 completeAddress = hashMapObject.get(key);
                                                 break;
@@ -577,18 +452,16 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                                 districtName = hashMapObject.get(key);
                                                 break;
                                             case "subdistrict":
-                                                break;
                                             case "country":
-                                                countryName = hashMapObject.get(key);
                                                 break;
                                         }
                                     }
                                 }
-                                if ( completeAddress.equals("") ) {
+                                if (completeAddress.equals("")) {
                                     completeAddress += districtName + ", ";
                                     completeAddress += provinceName;
                                 }
-                                if ( isAllowed )
+                                if (isAllowed)
                                     searchToko(currentLatitude, currentLongitude);
                             }
 
@@ -607,440 +480,25 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                     }
                 });
-
-//        MyApiClient.getGoogleAPIAddressByLatLng(this, currentLatitude, currentLongitude, new JsonHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                super.onFailure(statusCode, headers, responseString, throwable);
-//                ifFailure(throwable);
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-//                super.onFailure(statusCode, headers, throwable, errorResponse);
-//                ifFailure(throwable);
-//            }
-//
-//            private void ifFailure(Throwable throwable) {
-//                if (MyApiClient.PROD_FAILURE_FLAG)
-//                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-//                else
-//                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-//
-//                Timber.w("Error Koneksi: " + throwable.toString());
-//
-//            }
-//        });
-
-        /*try
-        {
-            Geocoder geocoder = new Geocoder(this, new Locale("id"));
-
-            List<Address> multiAddress = null;
-
-            if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
-                multiAddress = geocoder.getFromLocation(currentLatitude, currentLongitude, 1);
-            } else {
-                multiAddress = geocoder.getFromLocation(lastLocation.getLatitude(), lastLocation.getLongitude(), 1);
-                currentLatitude = lastLocation.getLatitude();
-                currentLongitude = lastLocation.getLongitude();
-            }
-
-            if(multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0)
-            {
-
-
-                Address singleAddress = multiAddress.get(0);
-                ArrayList<String> addressArray = new ArrayList<String>();
-
-                completeAddress = "";
-                for (int i = 0; i < singleAddress.getMaxAddressLineIndex(); i++) {
-                    addressArray.add(singleAddress.getAddressLine(i));
-                    completeAddress += singleAddress.getAddressLine(i) + " ";
-                }
-
-
-                districtName    = singleAddress.getSubAdminArea();
-                provinceName    = singleAddress.getAdminArea();
-                countryName     = singleAddress.getCountryName();
-
-                if ( completeAddress.equals("") ) {
-                    completeAddress += districtName + ", ";
-                    completeAddress += provinceName;
-                }
-
-                searchToko(currentLatitude, currentLongitude);
-
-                //set true for allow next process
-                pickupLocationResult = AgentConstant.TRUE;
-
-                viewPager.getAdapter().notifyDataSetChanged();
-            }
-            else
-            {
-                errorDesc = "The current location is not valid";
-            }
-        }
-        catch(IOException ioException)
-        {
-            // Catch network or other I/O problems.
-            //errorMessage = "Catch : Network or other I/O problems - No geocoder available";
-            Log.d("ERROR :", ioException.getMessage());
-            errorDesc = "Catch : Network or other I/O problems - No geocoder available";
-        }
-        catch(IllegalArgumentException illegalArgumentException)
-        {
-            // Catch invalid latitude or longitude values.
-            //errorMessage = "Catch : Invalid latitude or longitude values";
-            errorDesc = "Catch : Invalid latitude or longitude values";
-        }
-        */
-
-
-        /*RequestParams params = new RequestParams();
-        params.put("latlng", lastLocation.getLatitude() + "," + lastLocation.getLongitude());
-        params.put("sensor", "true");
-        params.put("language", "ID");
-        String url = "http://maps.googleapis.com/maps/api/geocode/json";
-
-        AsyncHttpClient client = new SyncHttpClient();
-
-        client.get(url, params, new JsonHttpResponseHandler()
-        {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject responseBody)
-            {
-                try
-                {
-                    if(responseBody.getString("status").equalsIgnoreCase("OK"))
-                    {
-                        JSONArray results  = responseBody.getJSONArray("results");
-                        JSONObject result  = results.getJSONObject(0);
-                        String fullAddress = result.getString("formatted_address");
-
-                        SharedPreferences preferences = getSharedPreferences(BbsConstants.LAST_LOCATION_SHARED_PREFERENCES, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("pickupLocation", fullAddress);
-                        editor.apply();
-
-                        //set true for allow next process
-                        pickupLocationResult = BbsConstants.TRUE;
-                    }
-                }
-                catch(JSONException ex)
-                {
-                    ex.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                errorDesc = "Wrong Json Format";
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                errorDesc = "Connection Failed";
-            }
-        });*/
-
-    }
-
-    private void getCompleteLocationAddress2()
-    {
-
-        try
-        {
-            Geocoder geocoder = new Geocoder(this, new Locale("id"));
-
-            List<Address> multiAddress = geocoder.getFromLocation(this.currentLatitude,this.currentLongitude,1);
-
-            if(multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0)
-            {
-
-                Address singleAddress = multiAddress.get(0);
-                ArrayList<String> addressArray = new ArrayList<String>();
-
-                completeAddress = "";
-                for (int i = 0; i < singleAddress.getMaxAddressLineIndex(); i++) {
-                    addressArray.add(singleAddress.getAddressLine(i));
-                    completeAddress += singleAddress.getAddressLine(i) + " ";
-                }
-
-
-                districtName    = singleAddress.getSubAdminArea();
-                provinceName    = singleAddress.getAdminArea();
-                countryName     = singleAddress.getCountryName();
-
-                if ( completeAddress.equals("") ) {
-                    completeAddress += districtName + ", ";
-                    completeAddress += provinceName;
-                }
-
-
-                //set true for allow next process
-                pickupLocationResult = AgentConstant.TRUE;
-
-
-            }
-            else
-            {
-                errorDesc = "The current location is not valid";
-            }
-        }
-        catch(IOException ioException)
-        {
-            // Catch network or other I/O problems.
-            //errorMessage = "Catch : Network or other I/O problems - No geocoder available";
-            Log.d("ERROR :", ioException.getMessage());
-            errorDesc = "Catch : Network or other I/O problems - No geocoder available";
-        }
-        catch(IllegalArgumentException illegalArgumentException)
-        {
-            // Catch invalid latitude or longitude values.
-            //errorMessage = "Catch : Invalid latitude or longitude values";
-            errorDesc = "Catch : Invalid latitude or longitude values";
-        }
-
-
-    }
-
-    private void getBundle()
-    {
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null)
-        {
-            searchLocationString  = bundle.getString("searchLocationString");
-
-            //menghilangkan spasi kiri dan kanan
-            searchLocationString = searchLocationString.trim();
-        }
-    }
-
-    private void startIntentService(Location location)
-    {
-        Intent intent = new Intent(this, MainAgentIntentService.class);
-        intent.putExtra("agentMapResultReceiver", agentMapResultReceiver);
-        intent.putExtra("agentListMapResultReceiver", agentListMapResultReceiver);
-        intent.putExtra("location",location);
-
-        startService(intent);
-    }
-
-    private void stopLocationUpdate()
-    {
-        if(googleApiClient != null)
-        {
-            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-        }
-    }
-
-    private boolean checkInternetConnectivity()
-    {
-        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
-        if(networkInfo != null && networkInfo.isConnected())
-        {
-            return true;
-        }
-        else
-        {
-            errorDesc = "No Internet Connection";
-            return false;
-        }
-
-    }
-
-    private void displayErrorLayout(String errorDesc)
-    {
-        setContentView(R.layout.display_error_agent);
-        custominitializeToolbar();
-
-        errorMsg = findViewById(R.id.errorMsg);
-        errorMsg.setText(errorDesc);
-
-        backBtn = findViewById(R.id.backBtn);
-        backBtn.setOnClickListener(this);
-    }
-
-    private void setAgentInfoDummy()
-    {
-        JSONArray array = null;
-
-        try
-        {
-
-            ArrayList<JSONObject> dataAgents = new ArrayList();
-            RealmResults<AgentDetail> results = realm.where(AgentDetail.class).findAll();
-
-            for (int i = 0; i < results.size(); i++) {
-                JSONObject dataAgent        = new JSONObject();
-                AgentDetail agentDetail     = results.get(i);
-
-                dataAgent.put("businessId", agentDetail.getBusinessId());
-                dataAgent.put("latitude", agentDetail.getLatitude() );
-                dataAgent.put("longitude", agentDetail.getLongitude() );
-                dataAgent.put("name", agentDetail.getBusinessName() );
-                dataAgent.put("date", agentDetail.getLastOnline() );
-                dataAgent.put("address", agentDetail.getAddress() );
-
-                dataAgent.put("available_flag", agentDetail.getAvailableFlag() );
-                dataAgent.put("rate", agentDetail.getTotalRating() );
-
-                RealmResults<AgentServiceDetail> serviceResults = realm.where(AgentServiceDetail.class)
-                        .equalTo("businessId", agentDetail.getBusinessId()).findAll();
-
-                List<String> dataServices   = new ArrayList<String>();
-                String newServices          = "";
-                for (int j = 0; j < serviceResults.size(); j++) {
-                    dataServices.add(serviceResults.get(j).getServices());
-                }
-
-                if ( dataServices.size() > 0 )
-                {
-                    newServices             = dataServices.toString();
-                }
-
-                dataAgent.put("services", newServices);
-                dataAgent.put("image", "profile1");
-
-                dataAgents.add(dataAgent);
-            }
-
-
-            /*
-
-            for(int x = 0; x < SearchAgentActivity.business_name_arr.size(); x++)
-            {
-                List<AgentService> itemList = new Select().all().from(AgentService.class).where("agent_no = ?", x).execute();
-
-                JSONObject dataAgent = new JSONObject();
-                dataAgent.put("latitude", SearchAgentActivity.latitude_arr.get(x));
-                dataAgent.put("longitude", SearchAgentActivity.longitude_arr.get(x));
-                dataAgent.put("name", SearchAgentActivity.business_name_arr.get(x));
-                dataAgent.put("date", SearchAgentActivity.last_online_arr.get(x));
-                dataAgent.put("address", SearchAgentActivity.address_arr.get(x));
-
-                dataAgent.put("available_flag", SearchAgentActivity.available_flag_arr.get(x));
-                dataAgent.put("rate", SearchAgentActivity.total_rating_arr.get(x));
-                dataAgent.put("services", itemList.get(0).getService().replace("[", "").replace("]", ""));
-                dataAgent.put("image", "profile1");
-
-                dataAgents.add(dataAgent);
-
-            }
-            */
-
-            String string = dataAgents.toString();
-
-            Log.d("test_denny", string);
-            array = new JSONArray(string);
-
-            for (int i = 0; i < dataAgents.size(); i++)
-            {
-                double incrementLatitude  = randomLocation();
-                double incrementLongitude = randomLocation();
-
-                //convert json array to json object
-                JSONObject object      = dataAgents.get(i);
-                Double agentLatitude   = object.getDouble("latitude");
-                Double agentLongitude  = object.getDouble("longitude");
-
-
-                    String distance = getDistance(agentLatitude, agentLongitude, lastLocation.getLatitude(), lastLocation.getLongitude());
-                    //String distanceString = Double.toString(distance);
-                    object.put("distance", distance);
-
-                    /*double latitude = lastLocation.getLatitude() - incrementLatitude;
-                    double longitude = lastLocation.getLongitude() + incrementLongitude;*/
-
-                    double latitude;
-                    double longitude;
-
-                    if(i==0)
-                    {
-                        latitude  = lastLocation.getLatitude() - incrementLatitude;
-                        longitude = lastLocation.getLongitude() - incrementLongitude;
-                    }
-                    else if(i==1)
-                    {
-                        latitude  = lastLocation.getLatitude() + incrementLatitude;
-                        longitude = lastLocation.getLongitude() + incrementLongitude;
-                    }
-                    else if(i==2)
-                    {
-                        latitude  = lastLocation.getLatitude() - incrementLatitude;
-                        longitude = lastLocation.getLongitude() - incrementLongitude;
-                    }
-                    else if(i==3)
-                    {
-                        latitude  = lastLocation.getLatitude() + incrementLatitude;
-                        longitude = lastLocation.getLongitude() - incrementLongitude;
-                    }
-                    else if(i==4)
-                    {
-                        latitude  = lastLocation.getLatitude() + incrementLatitude;
-                        longitude = lastLocation.getLongitude() + incrementLongitude;
-                    }
-                    else
-                    {
-                        latitude  = lastLocation.getLatitude() - incrementLatitude;
-                        longitude = lastLocation.getLongitude() + incrementLongitude;
-                    }
-
-                    object.put("latitude",  Double.toString(latitude) );
-                    object.put("longitude", Double.toString(longitude) );
-
-            }
-        }
-        catch(JSONException ex)
-        {
-            ex.printStackTrace();
-        }
-
-        //save data to session
-        SharedPreferences preferences   = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(AgentConstant.AGENT_INFO_SHARED_PREFERENCES, array.toString());
-        editor.apply();
-
-        //set true for allow next process
-        agentInfoResult = AgentConstant.TRUE;
-    }
-
-    private Double randomLocation()
-    {
-        double random = Math.random() * 10;
-        double x = (int) random;
-        Double y =  x / 10;
-        Double z =  y * 0.01;
-        Double angkaRandom = 0.001 + z;
-
-        return angkaRandom;
     }
 
     private void searchToko(Double latitude, Double longitude) {
 
-        if (!EasyPermissions.hasPermissions(this, perms) || !GlobalSetting.isLocationEnabled(this)  ) {
+        if (!EasyPermissions.hasPermissions(this, perms) || !GlobalSetting.isLocationEnabled(this)) {
             return;
         }
 
-        sp   = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         txId = sp.getString(DefineValue.BBS_TX_ID, "");
 
-        if ( mobility.equals(DefineValue.STRING_NO) ) {
+        if (mobility.equals(DefineValue.STRING_NO)) {
             clicked = false;
         }
 
-        if ( txId.equals("") && !amount.equals("") && !clicked ) {
+        if (txId.equals("") && !amount.equals("") && !clicked) {
 
-            clicked                 = true;
-            progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
+            clicked = true;
+            progDialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
 
             String extraSignature = categoryId + bbsProductType + bbsProductCode;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_SEARCH_TOKO,
@@ -1062,7 +520,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             params.put(WebParams.BBS_MOBILITY, mobility);
             params.put(WebParams.BBS_NOTE, bbsNote);
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.SHOP_TYPE, sp.getString(DefineValue.COMPANY_TYPE,""));
+            params.put(WebParams.SHOP_TYPE, sp.getString(DefineValue.COMPANY_TYPE, ""));
 
             params.put(WebParams.PRODUCT_CODE, bbsProductCode);
             params.put(WebParams.PRODUCT_NAME, bbsProductName);
@@ -1076,21 +534,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.KEY_NAME, sp.getString(DefineValue.CUST_NAME, ""));
                 params.put(WebParams.KEY_ADDRESS, getAddress(longitude, latitude));
-                //            params.put(WebParams.KEY_DISTRICT, districtName);
-                //            params.put(WebParams.KEY_PROVINCE, provinceName);
-                //            params.put(WebParams.KEY_COUNTRY, countryName);
                 params.put(WebParams.KEY_AMOUNT, amount);
                 params.put(WebParams.KEY_EMAIL, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
                 //Start
-                handler.postDelayed(runnable,  timeDelayed);
+                handler.postDelayed(runnable, timeDelayed);
             }
 
-            //Timber.d("Current Latitude: " + currentLatitude.toString() + ", Current Longitude: " + currentLongitude.toString());
-            //Timber.d("LCurrent Latitude: " + latitude.toString() + ", Current Longitude: " + longitude.toString());
-            //currentLatitude = latitude;
-            //currentLongitude = longitude;
-            Timber.d("Params search toko :" +params);
+            Timber.d("Params search toko :%s", params);
 
             RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SEARCH_TOKO, params,
                     new ObjListeners() {
@@ -1125,12 +576,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                             JSONObject object = shops.getJSONObject(j);
                                             ShopDetail shopDetail = new ShopDetail();
 
-                                            shopDetail.setShopName(object.getString("shop_name"));
+                                            shopDetail.setShopName(object.getString(WebParams.SHOP_NAME));
                                             shopDetail.setMemberCust(object.getString("member_cust"));
-                                            shopDetail.setMemberId(object.getString("member_id"));
+                                            shopDetail.setMemberId(object.getString(WebParams.MEMBER_ID));
                                             shopDetail.setShopLatitude(object.getDouble("shop_latitude"));
                                             shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
-                                            shopDetail.setMemberName(object.getString("member_name"));
+                                            shopDetail.setMemberName(object.getString(WebParams.MEMBER_NAME));
                                             shopDetail.setShopAddress(object.getString("shop_address"));
                                             shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
                                             shopDetail.setLastActivity(object.getString("shop_lastactivity"));
@@ -1149,7 +600,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                         imgDelete.setVisibility(View.VISIBLE);
 
                                         //popup
-                                        androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                        AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
                                         alertDialog.setCanceledOnTouchOutside(false);
                                         alertDialog.setCancelable(false);
                                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
@@ -1158,17 +609,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                         alertDialog.setMessage(getString(R.string.message_notif_waiting_agent_approval));
 
 
-                                        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-
-
-                                                    }
-                                                });
+                                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                                (dialog, which) -> dialog.dismiss());
                                         alertDialog.show();
-
-                                    } else {
 
                                     }
 
@@ -1198,7 +641,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                     //Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
 
 
-
                                     if (mobility.equals(DefineValue.STRING_YES)) {
 
                                         androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
@@ -1222,7 +664,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                                         i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
                                                         i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
 
-                                                        if ( mobility.equals(DefineValue.STRING_YES) ) {
+                                                        if (mobility.equals(DefineValue.STRING_YES)) {
 
                                                             i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
                                                             i.putExtra(DefineValue.AMOUNT, amount);
@@ -1240,7 +682,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                                                     }
                                                 });
-
 
 
                                         alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
@@ -1281,14 +722,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                         @Override
                         public void onError(Throwable throwable) {
-                            if ( progdialog.isShowing() )
-                                progdialog.dismiss();
+                            if (progDialog.isShowing())
+                                progDialog.dismiss();
                         }
 
                         @Override
                         public void onComplete() {
-                            if ( progdialog.isShowing() )
-                                progdialog.dismiss();
+                            if (progDialog.isShowing())
+                                progDialog.dismiss();
                         }
                     });
         }
@@ -1333,46 +774,19 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     public ArrayList<Double> getCurrentCoordinate() {
         ArrayList<Double> tempCoordinate = new ArrayList<>();
-        if ( currentLatitude != null ) {
+        if (currentLatitude != null) {
             tempCoordinate.add(currentLatitude);
         } else {
             tempCoordinate.add(0.0);
         }
 
-        if ( currentLongitude != null ) {
+        if (currentLongitude != null) {
             tempCoordinate.add(currentLongitude);
         } else {
             tempCoordinate.add(0.0);
         }
 
         return tempCoordinate;
-    }
-
-    public void setCoordinate(Double lastLatitude, Double lastLongitude, String newAddress) {
-        this.currentLatitude = lastLatitude;
-        this.currentLongitude   = lastLongitude;
-        this.completeAddress    = newAddress;
-    }
-
-    public void onIconMapClick(int position) {
-        viewPager.setCurrentItem(0);
-        if ( shopDetails.size() > 0 ) {
-            for(int idx = 0; idx < shopDetails.size(); idx++) {
-                if ( position == idx ) {
-                    shopDetails.get(idx).setIsPolyline("1");
-                } else {
-                    shopDetails.get(idx).setIsPolyline("0");
-                }
-            }
-
-            isMapIconClicked = true;
-            isMapIconPosition = position;
-        }
-
-        viewPager.arrowScroll(View.FOCUS_LEFT);
-
-        //viewPager.getAdapter().notifyDataSetChanged();
-
     }
 
     @Override
@@ -1386,17 +800,17 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         //runningApp();
-        switch(requestCode) {
+        switch (requestCode) {
             //case RC_LOCATION_PERM:
             case RC_LOCATION_PHONE_SMS:
 
-                if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
+                if (intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE)) {
                     currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
                     currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
                 }
 
-                if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
-                    if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
+                if (intentData.hasExtra(DefineValue.IS_AUTOSEARCH)) {
+                    if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES)) {
                         currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
                         currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
 
@@ -1441,36 +855,36 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     new AppSettingsDialog.Builder(this).build().show();
                 } else {*/
 
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setCancelable(false);
-                    alertDialog.setTitle(getString(R.string.alertbox_title_warning));
-                    alertDialog.setMessage(getString(R.string.alertbox_message_warning));
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            });
-                    alertDialog.show();
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.setCancelable(false);
+                alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+                alertDialog.setMessage(getString(R.string.alertbox_message_warning));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                alertDialog.show();
                 //}
                 break;
             case RC_LOCATION_PHONE_SMS:
                 /*if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
                     new AppSettingsDialog.Builder(this).build().show();
                 } else {*/
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setCancelable(false);
-                    alertDialog.setTitle(getString(R.string.alertbox_title_warning));
-                    alertDialog.setMessage(getString(R.string.alertbox_message_phone_permission_warning));
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            });
-                    alertDialog.show();
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.setCancelable(false);
+                alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+                alertDialog.setMessage(getString(R.string.alertbox_message_phone_permission_warning));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                alertDialog.show();
                 //}
                 break;
             case RC_SEND_SMS:
@@ -1483,12 +897,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     }
 
     @Override
-    public void OnIconLocationClickListener(int position, ArrayList<ShopDetail> tempShopDetail) {
+    public void OnIconLocationClickListener(int position) {
 
 
-        if ( shopDetails.size() > 0 ) {
-            for(int idx = 0; idx < shopDetails.size(); idx++) {
-                if ( position == idx ) {
+        if (shopDetails.size() > 0) {
+            for (int idx = 0; idx < shopDetails.size(); idx++) {
+                if (position == idx) {
                     shopDetails.get(idx).setIsPolyline("1");
                 } else {
                     shopDetails.get(idx).setIsPolyline("0");
@@ -1503,7 +917,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     }
 
     @Override
-    public void onSuccessCancelTrx(String txId) {
+    public void onSuccessCancelTrx() {
 
         SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
         SecurePreferences.Editor mEditor = prefs.edit();
@@ -1517,22 +931,19 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     private class GoogleMapRouteTask extends AsyncTask<Void, Void, ArrayList<ShopDetail>> {
 
-        private ArrayList<ShopDetail> dataDetails = new ArrayList<>();
+        private ArrayList<ShopDetail> dataDetails;
         private Double dataCurrentLatitude;
         private Double dataCurrentLongitude;
 
-        public GoogleMapRouteTask(ArrayList<ShopDetail> shopDetails, Double currentLatitude, Double currentLongitude)
-        {
+        public GoogleMapRouteTask(ArrayList<ShopDetail> shopDetails, Double currentLatitude, Double currentLongitude) {
             this.dataDetails = shopDetails;
             dataCurrentLatitude = currentLatitude;
             dataCurrentLongitude = currentLongitude;
         }
 
         protected void onPostExecute(ArrayList<ShopDetail> result) {
-            //shopDetails.clear();
-            //shopDetails.addAll(result);
 
-            if ( viewPager != null )
+            if (viewPager != null)
                 viewPager.getAdapter().notifyDataSetChanged();
         }
 
@@ -1540,11 +951,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         protected ArrayList<ShopDetail> doInBackground(Void... params) {
             ArrayList<ShopDetail> newShopDetail = new ArrayList<>();
 
-            String nextParams = "origin="+dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString();
+            String nextParams = "origin=" + dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString();
             nextParams += "&sensor=false";
             nextParams += "&units=metric";
-            nextParams += "&mode="+DefineValue.GMAP_MODE;
-            nextParams += "&language="+DefineValue.DEFAULT_LANGUAGE_CODE;
+            nextParams += "&mode=" + DefineValue.GMAP_MODE;
+            nextParams += "&language=" + DefineValue.DEFAULT_LANGUAGE_CODE;
 
             HashMap<String, Object> query = new HashMap<>();
             query.put("origin", dataCurrentLatitude.toString() + "," + dataCurrentLongitude.toString());
@@ -1561,7 +972,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 //            rqParams.put("mode", DefineValue.GMAP_MODE);
 //            rqParams.put("language", DefineValue.DEFAULT_LANGUAGE_CODE);
 
-            for(int idx=0; idx <dataDetails.size(); idx++) {
+            for (int idx = 0; idx < dataDetails.size(); idx++) {
                 ShopDetail tempShopDetail = dataDetails.get(idx);
                 String tempParams = nextParams;
                 tempParams += "&destination=" + tempShopDetail.getShopLatitude().toString() + "," + tempShopDetail.getShopLongitude();
@@ -1626,7 +1037,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
-            if ( !GlobalSetting.isLocationEnabled(this) ) {
+            if (!GlobalSetting.isLocationEnabled(this)) {
                 showAlertEnabledGPS();
             } else {
 
@@ -1658,16 +1069,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     protected void onStart() {
         super.onStart();
 
-
-
-        /*if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            runningApp();
-        } else {
-            // Ask for one permission
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
-                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
-        }*/
-
         try {
             googleApiClient.connect();
 
@@ -1694,25 +1095,24 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
 
-            if ( !GlobalSetting.isLocationEnabled(this) )
-            {
+            if (!GlobalSetting.isLocationEnabled(this)) {
                 showAlertEnabledGPS();
             } else {
 
-                if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
+                if (intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE)) {
                     currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
                     currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
                 }
 
-                if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
-                    if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
+                if (intentData.hasExtra(DefineValue.IS_AUTOSEARCH)) {
+                    if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES)) {
                         if (EasyPermissions.hasPermissions(this, perms)) {
                             Timber.d("Masuk Sini onActivityResult");
                             isAllowed = true;
@@ -1736,9 +1136,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     }
 
 
-
     private void checkTransactionMember() {
-        if ( !txId.equals("") ) {
+        if (!txId.equals("")) {
 
             String extraSignature = txId;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CHECK_TRANSACTION_MEMBER,
@@ -1763,7 +1162,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                                     String txStatus = response.getString(WebParams.TX_STATUS);
 
-                                    if ( txStatus.equals(DefineValue.TX_STATUS_OP) ) {
+                                    if (txStatus.equals(DefineValue.TX_STATUS_OP)) {
                                         handler.removeCallbacks(runnable);
 
                                         SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -1778,7 +1177,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                         startActivity(i);
                                         finish();
 
-                                    } else if ( txStatus.equals(DefineValue.TX_STATUS_RJ) ) {
+                                    } else if (txStatus.equals(DefineValue.TX_STATUS_RJ)) {
 
                                         handler.removeCallbacks(runnable);
 
@@ -1827,34 +1226,21 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                                     }
                                                 });
 
-                                        alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
+                                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                                                (dialog, which) -> {
+                                                    dialog.dismiss();
 
-                                                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                                        SecurePreferences.Editor mEditor = prefs.edit();
-                                                        mEditor.remove(DefineValue.BBS_AGENT_MOBILITY);
-                                                        mEditor.remove(DefineValue.BBS_TX_ID);
-                                                        mEditor.remove(DefineValue.AMOUNT);
-                                                        mEditor.apply();
+                                                    SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                                    SecurePreferences.Editor mEditor = prefs.edit();
+                                                    mEditor.remove(DefineValue.BBS_AGENT_MOBILITY);
+                                                    mEditor.remove(DefineValue.BBS_TX_ID);
+                                                    mEditor.remove(DefineValue.AMOUNT);
+                                                    mEditor.apply();
 
-                                                        finish();
-
-                                                    }
+                                                    finish();
                                                 });
-
-
-                                        if ( !isFinishing() )
+                                        if (!isFinishing())
                                             alertDialog.show();
-
-
-//                                Intent intent = new Intent();
-//                                intent.putExtra(DefineValue.MSG_NOTIF, getString(R.string.msg_notif_batal_agen));
-//                                setResult(DefineValue.IDX_CATEGORY_SEARCH_AGENT,intent);
-//                                finish();//finishing activity
-
-                                        //startActivity(new Intent(getApplicationContext(), Bb.class));
                                     }
                                 } else {
                                     finish();
@@ -1883,47 +1269,17 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         handler.removeCallbacks(runnable);
     }
 
-    private TextWatcher jumlahChangeListener = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(s.toString().equals("0"))etJumlah.setText("");
-            if(s.length() > 0 && s.charAt(0) == '0'){
-                int i = 0;
-                for (; i < s.length(); i++){
-                    if(s.charAt(i) != '0')break;
-                }
-                etJumlah.setText(s.toString().substring(i));
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
-
     private void showAlertEnabledGPS() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.alertbox_gps_warning))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-
-                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(ilocation, RC_GPS_REQUEST);
-
-                    }
+                .setPositiveButton(R.string.yes, (dialog, id) -> {
+                    Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(ilocation, RC_GPS_REQUEST);
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                        startActivity(new Intent(getApplicationContext(), MainPage.class));
-                    }
+                .setNegativeButton(R.string.no, (dialog, id) -> {
+                    dialog.cancel();
+                    startActivity(new Intent(getApplicationContext(), MainPage.class));
                 });
         final AlertDialog alert = builder.create();
         alert.show();
@@ -1931,9 +1287,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     @Override
     public void onBackPressed() {
-
-
-        if ( mobility.equals(DefineValue.STRING_YES) ) {
+        if (mobility.equals(DefineValue.STRING_YES)) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.alertbox_waiting_agent_approval))
                     .setCancelable(false)
@@ -1946,40 +1300,15 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             final AlertDialog alert = builder.create();
             alert.show();
         }
-
-        return;
-        //super.onBackPressed();
-        /*if(fragment !=null) {
-            if ( fragment instanceof AgentMapFragment) {
-
-            } else if ( fragment instanceof AgentListFragment) {
-
-            } else {
-                setBackPressed();
-            }
-        }
-        else {
-            setBackPressed();
-        }*/
-
     }
-
-    /*public void setBackPressed() {
-        if (fragment.getBackStackEntryCount() > 1)
-            fragment.popBackStack();
-        else
-            super.onBackPressed();
-    }*/
 
     @Override
     public void onAccessFineLocationGranted() {
         super.onAccessFineLocationGranted();
 
         Timber.d("BbsSearchAgent masuk AccessFineLocation");
-        if ( !GlobalSetting.isLocationEnabled(this) ) {
+        if (!GlobalSetting.isLocationEnabled(this)) {
             showAlertEnabledGPS();
-        } else {
-            //runningApp();
         }
     }
 

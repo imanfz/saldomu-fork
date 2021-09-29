@@ -40,31 +40,11 @@ public class LocaleManager {
 
         Timber.d("Locale Manager IS BAHASA ===== "+isBahasa);
 
-        if(!isBahasa){
-//            language = DefineValue.LANGUAGE_CODE_ENG;
-            language = DefineValue.LANGUAGE_CODE_IND;
-        }else{
-            language = DefineValue.LANGUAGE_CODE_IND;
-        }
+        language = DefineValue.LANGUAGE_CODE_IND;
 
         return language;
     }
 
-    public static String getLanguageParam(){
-        String language = "";
-
-        boolean isBahasa = CustomSecurePref.getInstance().getBoolean(DefineValue.IS_BAHASA);
-
-        Timber.d("Locale Manager IS BAHASA ===== "+isBahasa);
-
-        if(isBahasa){
-            language = WebParams.LANGUAGE_ID;
-        }else{
-            language = WebParams.LANGUAGE_EN;
-        }
-
-        return language;
-    }
     //
 //    /**
 //     *  set pref key
@@ -106,15 +86,5 @@ public class LocaleManager {
             res.updateConfiguration(config, res.getDisplayMetrics());
         }
         return context;
-    }
-
-    /**
-     * get current locale
-     * @param res
-     * @return
-     */
-    public static Locale getLocale(Resources res) {
-        Configuration config = res.getConfiguration();
-        return Build.VERSION.SDK_INT >= 24 ? config.getLocales().get(0) : config.locale;
     }
 }

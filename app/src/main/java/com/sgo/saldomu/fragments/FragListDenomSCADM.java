@@ -56,9 +56,8 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
     private ProgressDialog progdialog;
     private RecyclerView recyclerView;
     private ListDenomSCADMAdapter listDenomSCADMAdapter;
-    private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
     private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList = new ArrayList<>();
-    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
+    protected String userPhoneID;
 
     @Nullable
     @Override
@@ -73,10 +72,7 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         recyclerView = v.findViewById(R.id.recyclerView);
 
-        memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
-        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         scadmCommunityModelArrayList.clear();
 
@@ -87,7 +83,7 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
     }
 
     private void initializeAdapter() {
-        listDenomSCADMAdapter = new ListDenomSCADMAdapter(scadmCommunityModelArrayList,getActivity(), this);
+        listDenomSCADMAdapter = new ListDenomSCADMAdapter(scadmCommunityModelArrayList, this);
         recyclerView.setAdapter(listDenomSCADMAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
     }
@@ -149,7 +145,7 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 }else {
                                     Timber.d("Error isi response get list community denom scadm:" + response.toString());
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);

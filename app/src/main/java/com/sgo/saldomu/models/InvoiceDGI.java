@@ -2,6 +2,7 @@ package com.sgo.saldomu.models;
 
 public class InvoiceDGI {
     String buss_scheme_code;
+    String member_code;
     String doc_no;
     String doc_id;
     String amount;
@@ -15,26 +16,7 @@ public class InvoiceDGI {
     String app_id;
     boolean selected;
 
-
-//    public InvoiceDGI(String buss_scheme_code, String doc_no, String doc_id, String amount, String remain_amount, String hold_amount,
-//                      String ccy, String doc_desc, String due_date, String date_time, String app_id, String active) {
-//        this.buss_scheme_code = buss_scheme_code;
-//        this.doc_no = doc_no;
-//        this.doc_id = doc_id;
-//        this.amount = amount;
-//        this.remain_amount = remain_amount;
-//        this.hold_amount = hold_amount;
-//        this.ccy = ccy;
-//        this.doc_desc = doc_desc;
-//        this.due_date = due_date;
-//        this.date_time = date_time;
-//        this.app_id = app_id;
-//        this.active = active;
-//    }
-
-
-    public InvoiceDGI()
-    {
+    public InvoiceDGI() {
 
     }
 
@@ -90,6 +72,14 @@ public class InvoiceDGI {
 
     public boolean getSelected() {
         return selected;
+    }
+
+    public String getMember_code() {
+        return member_code;
+    }
+
+    public void setMember_code(String member_code) {
+        this.member_code = member_code;
     }
 
     public void setBuss_scheme_code(String buss_scheme_code) {

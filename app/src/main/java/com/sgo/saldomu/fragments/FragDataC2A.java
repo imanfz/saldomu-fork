@@ -79,35 +79,30 @@ public class FragDataC2A extends BaseFragment {
     SecurePreferences sp;
     Bundle bundle;
     Button btn_submit, btn_cancel;
-    EditText et_name, et_address, et_noID, et_noHp, et_pob, et_mothersname, et_sumberdana;
+    EditText et_name, et_address, et_noID, et_noHp, et_sumberdana;
     Spinner sp_sumberdana;
     TextView tv_dob;
     String tx_id;
     private com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd;
     private DateFormat fromFormat;
-    private DateFormat toFormat;
     private DateFormat toFormat2;
     private String dateNow;
     private String dedate;
     private String date_dob;
     private String sumberdana;
     ProgressDialog progressDialog;
-    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
+    protected String memberIDLogin, userPhoneID;
     private String comm_code, tx_product_code, source_product_type,
             benef_city, source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
-            fee, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
-            no_hp_benef, remark, source_product_name, total_amount, transaksi, benef_product_code, tx_status,
-            benef_product_type, max_resend, custIDtypes, birthplace_id;
+            comm_id, benef_product_name, name_benef, no_benef,
+            no_hp_benef, remark, source_product_name, transaksi, benef_product_code,
+            benef_product_type, max_resend, custIDtypes;
     LinearLayout layout_sender, layout_pob, layout_dob;
     private Boolean TCASHValidation = false, MandiriLKDValidation = false, code_success = false, isOwner = false;
     private Activity act;
     private Realm realm;
-    private List<List_BBS_Birth_Place> list_bbs_birth_place;
     private List<String> list_name_bbs_birth_place;
-    private ArrayList<BBSCommBenef> listDataBank;
-    public Boolean isUpdate = false;
     AutoCompleteTextView city_textview_autocomplete;
-    private Integer CityAutocompletePos = -1;
     SignaturePad signaturePad;
     ImageButton ibRefresh;
     File photoFile;
@@ -128,11 +123,9 @@ public class FragDataC2A extends BaseFragment {
         realm = Realm.getInstance(RealmManager.BBSConfiguration);
 
         memberIDLogin = sp.getString(DefineValue.MEMBER_ID, "");
-        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID, "");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
-        custIDtypes = "KTP";
+        custIDtypes = DefineValue.KTP;
 
         btn_submit = v.findViewById(R.id.btn_submit_data_mandirilkd);
         btn_cancel = v.findViewById(R.id.btn_cancel_mandirilkd);
@@ -165,10 +158,6 @@ public class FragDataC2A extends BaseFragment {
             tx_product_name = bundle.getString(DefineValue.PRODUCT_NAME);
             comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
             tx_id = bundle.getString(DefineValue.TX_ID);
-            amount = bundle.getString(DefineValue.AMOUNT);
-            fee = bundle.getString(DefineValue.FEE);
-            total_amount = bundle.getString(DefineValue.TOTAL_AMOUNT);
-            share_type = bundle.getString(DefineValue.SHARE_TYPE);
             callback_url = bundle.getString(DefineValue.CALLBACK_URL);
             api_key = bundle.getString(DefineValue.API_KEY);
             comm_id = bundle.getString(DefineValue.COMMUNITY_ID);
@@ -191,24 +180,14 @@ public class FragDataC2A extends BaseFragment {
 
         Timber.d("REALM RESULTS:" + results.toString());
 
-        list_bbs_birth_place = new ArrayList<>();
         list_name_bbs_birth_place = new ArrayList<>();
-        list_bbs_birth_place = realm.copyFromRealm(results);
 
         for (int i = 0; i < results.size(); i++) {
 
-            if (results.get(i).getBirthPlace_city() == null || results.get(i).getBirthPlace_city().equalsIgnoreCase("")) {
-//                list_name_bbs_birth_place.add("Unknown");
-            } else {
+            if (results.get(i).getBirthPlace_city() != null || !results.get(i).getBirthPlace_city().equalsIgnoreCase("")) {
                 list_name_bbs_birth_place.add(results.get(i).getBirthPlace_city());
             }
         }
-
-
-//        for (List_BBS_Birth_Place bbsBirthPlace : results) {
-//            list_name_bbs_birth_place.add(bbsBirthPlace.getBirthPlace_city());
-//
-//        }
 
         Timber.d("Size of List name Birth place:" + list_name_bbs_birth_place.size());
         ArrayAdapter<String> city_adapter = new ArrayAdapter<String>
@@ -216,23 +195,10 @@ public class FragDataC2A extends BaseFragment {
         city_textview_autocomplete.setThreshold(1);
         city_textview_autocomplete.setAdapter(city_adapter);
 
-//                list_bbs_birth_place = new ArrayList<>();
-//        results.addChangeListener(new RealmChangeListener<RealmResults<List_BBS_Birth_Place>>() {
-//            @Override
-//            public void onChange(RealmResults<List_BBS_Birth_Place> list_bbs_birth_places) {
-//                if (getActivity() != null && !getActivity().isFinishing()) {
-//                    for (List_BBS_Birth_Place bbsBirthPlace : list_bbs_birth_places) {
-//                        list_bbs_birth_place.add(bbsBirthPlace);
-//                        list_name_bbs_birth_place.add(bbsBirthPlace.getBirthPlace_city());
-//                    }
-//                }
-//            }
-//        });
-
         initializeLayout();
 
         fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID", "INDONESIA"));
-        toFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID", "INDONESIA"));
+
         toFormat2 = new SimpleDateFormat("dd-M-yyyy", new Locale("ID", "INDONESIA"));
 
         Calendar c = Calendar.getInstance();
@@ -416,28 +382,23 @@ public class FragDataC2A extends BaseFragment {
                             jsonModel model = getGson().fromJson(String.valueOf(response), jsonModel.class);
                             JSONObject jsonObject = new JSONObject(response.toString());
                             String code = jsonObject.getString(WebParams.ERROR_CODE);
+                            String message = jsonObject.getString(WebParams.ERROR_MESSAGE);
                             Timber.d("response bbs send data : ", jsonObject.toString());
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 changeToBBSCashInConfirm(jsonObject.getString(WebParams.ADMIN_FEE), jsonObject.getString(WebParams.AMOUNT), jsonObject.getString(WebParams.TOTAL_AMOUNT));
-
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                Timber.d("isi response autologout:" + response.toString());
-                                String message = jsonObject.getString(WebParams.ERROR_MESSAGE);
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                Timber.d("isi response autologout:%s", response.toString());
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             } else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + response.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                Timber.d("isi response maintenance:%s", response.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                Timber.d("isi error bbs send data:" + response.toString());
-                                String code_msg = jsonObject.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                Timber.d("isi error bbs send data:%s", response.toString());
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                             }
                             btn_submit.setEnabled(true);
                             if (progressDialog.isShowing())
@@ -447,7 +408,7 @@ public class FragDataC2A extends BaseFragment {
                         }
                     });
         } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+            Timber.d("httpclient:%s", e.getMessage());
         }
 
     }

@@ -36,12 +36,9 @@ import static io.realm.Realm.getDefaultInstance;
 
 public class BbsMerchantCommunityList extends BaseActivity {
 
-    ProgressDialog progdialog;
-    private ListView lvCommunityList;
     private BbsMerchantCommunityListAdapter bbsMerchantCommunityListAdapter;
     private ArrayList<MerchantCommunityList> merchantCommunityListModel;
     private Realm myRealm;
-    private static BbsMerchantCommunityList instance;
     SecurePreferences sp;
 
     @Override
@@ -52,15 +49,12 @@ public class BbsMerchantCommunityList extends BaseActivity {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         initializeToolbar();
 
-        progdialog = DefinedDialog.CreateProgressDialog(this, "");
-        lvCommunityList = (ListView) findViewById(R.id.lvCommunityList);
+        ListView lvCommunityList = (ListView) findViewById(R.id.lvCommunityList);
 
         lvCommunityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Intent intent=new Intent(MainActivity.this,PersonDetailsActivity.class);
-                //intent.putExtra("PersonID", personDetailsModelArrayList.get(position).getId());
-                //startActivity(intent);
+
             }
         });
 
@@ -72,8 +66,8 @@ public class BbsMerchantCommunityList extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(BbsMerchantCommunityList.this, BbsMemberLocationActivity.class);
-                intent.putExtra("memberId", merchantCommunityListModel.get(position).getMemberId());
-                intent.putExtra("shopId", merchantCommunityListModel.get(position).getShopId());
+                intent.putExtra(DefineValue.MEMBER_ID, merchantCommunityListModel.get(position).getMemberId());
+                intent.putExtra(DefineValue.SHOP_ID, merchantCommunityListModel.get(position).getShopId());
                 startActivity(intent);
             }
         });
@@ -96,7 +90,7 @@ public class BbsMerchantCommunityList extends BaseActivity {
 
                     String code = response.getString(WebParams.ERROR_CODE);
                     if (code.equals(WebParams.SUCCESS_CODE)) {
-                        JSONArray members = response.getJSONArray("member");
+                        JSONArray members = response.getJSONArray(WebParams.MEMBER);
 
                         merchantCommunityListModel.clear();
 
@@ -104,21 +98,21 @@ public class BbsMerchantCommunityList extends BaseActivity {
                         for (int i = 0; i < members.length(); i++) {
                             JSONObject object = members.getJSONObject(i);
 
-                            myRealm.where(MerchantCommunityList.class).equalTo("memberId", object.getString("member_id"))
+                            myRealm.where(MerchantCommunityList.class).equalTo(DefineValue.MEMBER_ID, object.getString(WebParams.MEMBER_ID))
                                     .findAll().deleteFirstFromRealm();
 
-                            MerchantCommunityList agentDetailModel = myRealm.createObject(MerchantCommunityList.class, object.getString("member_id"));
-                            agentDetailModel.setMemberName(object.getString("member_name"));
-                            agentDetailModel.setMemberCode(object.getString("member_code"));
-                            agentDetailModel.setMemberType(object.getString("member_type"));
-                            agentDetailModel.setCommName(object.getString("comm_name"));
-                            agentDetailModel.setCommCode(object.getString("comm_code"));
-                            agentDetailModel.setShopId(object.getString("shop_id"));
-                            agentDetailModel.setShopName(object.getString("shop_name"));
-                            agentDetailModel.setAddress1(object.getString("address1"));
-                            agentDetailModel.setDistrict(object.getString("district"));
-                            agentDetailModel.setProvince(object.getString("province"));
-                            agentDetailModel.setCountry(object.getString("country"));
+                            MerchantCommunityList agentDetailModel = myRealm.createObject(MerchantCommunityList.class, object.getString(WebParams.MEMBER_ID));
+                            agentDetailModel.setMemberName(object.getString(WebParams.MEMBER_NAME));
+                            agentDetailModel.setMemberCode(object.getString(WebParams.MEMBER_CODE));
+                            agentDetailModel.setMemberType(object.getString(WebParams.MEMBER_TYPE));
+                            agentDetailModel.setCommName(object.getString(WebParams.COMM_NAME));
+                            agentDetailModel.setCommCode(object.getString(WebParams.COMM_CODE));
+                            agentDetailModel.setShopId(object.getString(WebParams.SHOP_ID));
+                            agentDetailModel.setShopName(object.getString(WebParams.SHOP_NAME));
+                            agentDetailModel.setAddress1(object.getString(WebParams.ADDRESS1));
+                            agentDetailModel.setDistrict(object.getString(WebParams.DISTRICT));
+                            agentDetailModel.setProvince(object.getString(WebParams.PROVINCE));
+                            agentDetailModel.setCountry(object.getString(WebParams.COUNTRY));
                             agentDetailModel.setMemberCust(sp.getString(DefineValue.USERID_PHONE, ""));
                             merchantCommunityListModel.add(myRealm.copyFromRealm(agentDetailModel));
 
@@ -151,7 +145,7 @@ public class BbsMerchantCommunityList extends BaseActivity {
 
             @Override
             public void onComplete() {
-                progdialog.dismiss();
+
             }
         });
     }

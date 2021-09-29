@@ -47,7 +47,6 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
 
     private GoogleMap map;
     FusedLocationProviderClient fusedLocationProviderClient;
-    Location lastLocation;
     LocationCallback locationCallback;
     LocationRequest locationRequest;
     boolean locationUpdateState;
@@ -55,16 +54,13 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
     static int LOCATION_PERMISSION_REQUEST_CODE = 1;
     static int REQUEST_CHECK_SETTINGS = 2;
 
-    ImageView currLocImage;
     TextView useCurrLoc;
     LinearLayout currLocLayout;
-    Bitmap bitmap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        currLocImage = findViewById(R.id.activity_maps_get_curr_loc);
         useCurrLoc = findViewById(R.id.activity_maps_use_curr_loc);
         currLocLayout = findViewById(R.id.activity_maps_use_curr_loc_layout);
 
@@ -75,13 +71,11 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        locationCallback = new LocationCallback(){
+        locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
 
-                lastLocation = locationResult.getLastLocation();
-//                placeMarkerOnMap(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
                 currLocLayout.setVisibility(View.VISIBLE);
                 placeMarkerOnMap(map.getCameraPosition().target);
             }
@@ -124,13 +118,13 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
 
     }
 
-    FusedLocationProviderClient getFusedProvideClient(){
+    FusedLocationProviderClient getFusedProvideClient() {
         if (fusedLocationProviderClient == null)
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         return fusedLocationProviderClient;
     }
 
-    void createLocationRequest(){
+    void createLocationRequest() {
         locationRequest = new LocationRequest();
 
         locationRequest.setInterval(10000);
@@ -182,7 +176,6 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
                     @Override
                     public void onSuccess(Location location) {
                         if (location != null) {
-                            lastLocation = location;
                             LatLng currLatlng = new LatLng(location.getLatitude(), location.getLongitude());
                             placeMarkerOnMap(currLatlng);
                             map.animateCamera(CameraUpdateFactory.newLatLngZoom(currLatlng
@@ -313,8 +306,8 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CHECK_SETTINGS){
-            if (resultCode == Activity.RESULT_OK){
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            if (resultCode == Activity.RESULT_OK) {
                 locationUpdateState = true;
                 startLocationUpdates();
             }

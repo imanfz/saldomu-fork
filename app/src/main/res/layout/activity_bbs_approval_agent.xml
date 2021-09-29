@@ -1,49 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
-    <include android:id="@+id/main_toolbar"
-        layout="@layout/toolbar_main"/>
+    <include
+        android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main" />
 
     <RelativeLayout
         android:id="@+id/rlApproval"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/main_toolbar"
         android:orientation="vertical"
         android:padding="8dp"
         android:scrollbars="vertical"
-        android:layout_below="@+id/main_toolbar"
-        android:visibility="invisible"
-        >
+        android:visibility="invisible">
 
-        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <TableLayout
+            android:id="@+id/tlInfo"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tlInfo"
-            android:layout_marginBottom="20dp"
-            >
+            android:layout_marginBottom="20dp">
 
             <TableRow android:layout_marginTop="10dip">
 
                 <TextView
                     android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="10dp"
                     android:text="@string/category"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:paddingLeft="10dp"
-                    ></TextView>
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
                     android:id="@+id/tvCategoryName"
-                    android:text=""
+                    android:layout_width="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="14sp"
-                    ></TextView>
+                    android:text=""
+                    android:textSize="14sp" />
 
             </TableRow>
 
@@ -51,52 +48,46 @@
 
                 <TextView
                     android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="10dp"
                     android:text="@string/member_name"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:paddingLeft="10dp"
-                    ></TextView>
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
                     android:id="@+id/tvMemberName"
-                    android:text=""
+                    android:layout_width="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="14sp"
-                    ></TextView>
+                    android:text=""
+                    android:textSize="14sp" />
 
             </TableRow>
 
             <TableRow android:layout_marginTop="10dip">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:text="@string/amount"
-                android:layout_weight="1"
-                android:textSize="14sp"
-                android:paddingLeft="10dp"
-                ></TextView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="10dp"
+                    android:text="@string/amount"
+                    android:textSize="14sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:text=""
-                android:layout_weight="1"
-                android:textSize="14sp"
-                android:id="@+id/tvAmount"
-                ></TextView>
+                <TextView
+                    android:id="@+id/tvAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textSize="14sp" />
 
-        </TableRow>
+            </TableRow>
 
             <TableRow android:layout_marginTop="10dip">
 
                 <TextView
                     android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="10dp"
                     android:text="@string/history_trx"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:paddingLeft="10dp"
-                    ></TextView>
-
+                    android:textSize="14sp" />
 
 
             </TableRow>
@@ -105,19 +96,17 @@
 
                 <TextView
                     android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="10dp"
                     android:text="@string/amount_count_trx"
-                    android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:paddingLeft="10dp"
-                    ></TextView>
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:text=""
-                    android:layout_weight="1"
-                    android:textSize="14sp"
                     android:id="@+id/tvCountTrx"
-                    ></TextView>
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textSize="14sp" />
 
             </TableRow>
 
@@ -125,39 +114,36 @@
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:text="@string/amount_total_trx"
                     android:layout_weight="1"
-                    android:textSize="14sp"
                     android:paddingLeft="10dp"
-                    ></TextView>
+                    android:text="@string/amount_total_trx"
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:text=""
-                    android:layout_weight="1"
-                    android:textSize="14sp"
                     android:id="@+id/tvTotalTrx"
-                    ></TextView>
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textSize="14sp" />
 
             </TableRow>
 
         </TableLayout>
 
         <LinearLayout
-            android:layout_below="@+id/tlInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tlInfo"
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btnApprove"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:id="@+id/btnApprove"
-                android:text="@string/agent_approve"
-                android:background="@color/colorPrimaryDark"
                 android:layout_weight="1"
-                />
+                android:background="@color/colorPrimaryDark"
+                android:text="@string/agent_approve" />
 
             <!-- Button
                 android:layout_width="match_parent"

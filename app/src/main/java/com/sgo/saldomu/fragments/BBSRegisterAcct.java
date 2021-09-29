@@ -68,11 +68,10 @@ public class BBSRegisterAcct extends BaseFragment {
     private View cityLayout;
     private ProgressDialog progdialog;
     private Spinner spSourceAcct, spComm;
-    private ProgressBar progBarComm;
     private ProgressBar progBarBank;
     private EditText etNoBenefAcct, etNameBenefAcct;
     private Integer CityAutocompletePos = -1;
-    private ArrayAdapter<String> adapterDataComm, adapterDataBank, adapterDataCity;
+    private ArrayAdapter<String> adapterDataComm, adapterDataBank;
     private ActionListener actionListener;
     private ArrayList<List_BBS_City> list_bbs_cities;
     public Boolean isUpdate = false;
@@ -133,16 +132,7 @@ public class BBSRegisterAcct extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         v = inflater.inflate(R.layout.frag_bbs_register_acct_input, container, false);
-//        Button emptySpin = (Button) v.findViewById(R.id.empty_spin);
-//        emptySpin.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                retrieveComm();
-//            }
-//        });
         spComm = v.findViewById(R.id.spinner_community);
-//        spComm.setEmptyView(emptySpin);
-        progBarComm = v.findViewById(R.id.loading_progres_comm);
         spSourceAcct = v.findViewById(R.id.bbsregistacct_value_bank_benef);
         progBarBank = v.findViewById(R.id.loading_progres_bank_benef);
         etNoBenefAcct = v.findViewById(R.id.bbsregistacct_value_no_acct_benef);
@@ -407,7 +397,7 @@ public class BBSRegisterAcct extends BaseFragment {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 } else {
                                     code = model.getError_message();
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
@@ -490,7 +480,7 @@ public class BBSRegisterAcct extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + response.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), response.getError_message());
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
                             } else {
                                 code = response.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();

@@ -12,12 +12,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.gson.JsonObject;
@@ -25,7 +23,6 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.InsertPIN;
-import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -40,9 +37,7 @@ import com.sgo.saldomu.dialogs.AlertDialogUpdateApp;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
-import com.sgo.saldomu.models.retrofit.ContactDataModel;
 import com.sgo.saldomu.models.retrofit.ForgorPasswordModel;
-import com.sgo.saldomu.models.retrofit.GetHelpModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -57,10 +52,8 @@ public class ForgotPassword extends BaseFragment {
 
     private View v;
     private EditText et_user_id;
-    private Spinner spin_tipe_notif;
     private String userIDfinale;
     private ProgressDialog progdialog;
-    private String is_sms, is_email;
     private int attempt, failed;
 
     @Override
@@ -74,7 +67,6 @@ public class ForgotPassword extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         et_user_id = v.findViewById(R.id.forgotpass_userid_value);
-        spin_tipe_notif = v.findViewById(R.id.forgotpass_spin_notif);
         Button btn_submit = v.findViewById(R.id.btn_submit_forgot_pass);
         TextView textMsg = v.findViewById(R.id.textForgotPassmsg);
         String msg = getString(R.string.forgotpass_text_instruction, getString(R.string.appname));
@@ -84,7 +76,7 @@ public class ForgotPassword extends BaseFragment {
         if (sp.contains(DefineValue.SENDER_ID)) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
             et_user_id.setText(userIDfinale);
-        }else if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"")!=null){
+        } else if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "") != null) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
             et_user_id.setText(userIDfinale);
         }
@@ -96,49 +88,10 @@ public class ForgotPassword extends BaseFragment {
                 R.layout.spinner_item_white,
                 getResources().getStringArray(R.array.list_tipe_notif));
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin_tipe_notif.setAdapter(adapter);
-        spin_tipe_notif.setOnItemSelectedListener(spinnerTipeNotif);
-
         btn_submit.setOnClickListener(submitForgotPassListener);
         et_user_id.requestFocus();
         ToggleKeyboard.show_keyboard(getActivity());
-
-//        et_user_id.setText(sp.getString(DefineValue.SENDER_ID,""));
     }
-
-    private Spinner.OnItemSelectedListener spinnerTipeNotif = new Spinner.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
-
-            if (i==0)
-            {
-                is_sms = DefineValue.STRING_YES;
-                is_email = DefineValue.STRING_NO;
-            }
-
-//            if (i == 1) {
-//                is_email = DefineValue.STRING_YES;
-//                is_sms = DefineValue.STRING_NO;
-//            } else if (i == 2) {
-//                is_sms = DefineValue.STRING_YES;
-//                is_email = DefineValue.STRING_NO;
-//            } else if (i == 3) {
-//                is_sms = DefineValue.STRING_YES;
-//                is_email = DefineValue.STRING_YES;
-//            } else {
-//                is_sms = "";
-//                is_email = "";
-//            }
-
-
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
-    };
 
     private Button.OnClickListener submitForgotPassListener = new Button.OnClickListener() {
         @Override
@@ -194,8 +147,8 @@ public class ForgotPassword extends BaseFragment {
             params.put(WebParams.USER_ID, userIDfinale);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PIN, RSA.opensslEncrypt(uuid, dateTime, userIDfinale, value_pin, subStringLink));
-            params.put(WebParams.IS_EMAIL, "N");
-            params.put(WebParams.IS_SMS, "Y");
+            params.put(WebParams.IS_EMAIL, DefineValue.STRING_NO);
+            params.put(WebParams.IS_SMS, DefineValue.STRING_YES);
 
             Timber.d(params.toString());
 
@@ -218,8 +171,8 @@ public class ForgotPassword extends BaseFragment {
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
                                 AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
-                            }else {
+                                alertDialogMaintenance.showDialogMaintenance(getActivity());
+                            } else {
 //                                    Timber.d("error forgot password" + response.toString());
                                 String codemessage = model.getError_message();
                                 switch (code) {
@@ -266,60 +219,6 @@ public class ForgotPassword extends BaseFragment {
         }
     }
 
-    private void getHelpPin(final ProgressBar progDialog, final TextView Message) {
-        try {
-            progDialog.setIndeterminate(true);
-            progDialog.setVisibility(View.VISIBLE);
-
-            params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_HELP_PIN, "");
-
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_HELP_PIN, params,
-                    new ResponseListener() {
-                        @Override
-                        public void onResponses(JsonObject object) {
-                            Message.setVisibility(View.VISIBLE);
-
-                            GetHelpModel model = getGson().fromJson(object, GetHelpModel.class);
-
-                            try {
-                                String message_value;
-
-                                if (ForgotPassword.this.isVisible()) {
-                                    for (int i = 0; i < model.getContact_data().size(); i++) {
-                                        ContactDataModel mObject = model.getContact_data().get(i);
-                                        if (i == 0) {
-                                            message_value = Message.getText().toString() + "\n" +
-                                                    mObject.getDescription() + " " +
-                                                    mObject.getName() + "\n" +
-                                                    mObject.getContact_phone() + " " +
-                                                    getString(R.string.or) + " " +
-                                                    mObject.getContact_email();
-                                            Message.setText(message_value);
-                                            break;
-                                        }
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            progDialog.setIndeterminate(false);
-                            progDialog.setVisibility(View.GONE);
-                        }
-                    });
-        } catch (Exception e) {
-            Timber.d("httpclient" + e.getMessage());
-        }
-    }
-
     private void showDialog(String message_error) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
@@ -330,7 +229,6 @@ public class ForgotPassword extends BaseFragment {
 
         // set values for custom dialog components - text, image and button
         Button btnDialogOK = dialog.findViewById(R.id.btn_dialog_notification_ok);
-        ProgressBar progBar = dialog.findViewById(R.id.progressBarDialogNotif);
         TextView Title = dialog.findViewById(R.id.title_dialog);
         TextView Message = dialog.findViewById(R.id.message_dialog);
         Message.setVisibility(View.VISIBLE);
@@ -351,27 +249,11 @@ public class ForgotPassword extends BaseFragment {
     }
 
 
-    private void switchFragment(Fragment i, String name, Boolean isBackstack) {
-        if (getActivity() == null)
-            return;
-
-        LoginActivity fca = (LoginActivity) getActivity();
-        fca.switchContent(i, name, isBackstack);
-    }
-
-
     private boolean inputValidation() {
         if (et_user_id.getText().toString().length() == 0) {
             DefinedDialog.showErrorDialog(getActivity(), getString(R.string.forgetpass_edittext_validation), null);
             return false;
         }
-//        if (spin_tipe_notif.getSelectedItemPosition() == 0) {
-//            TextView errorText = (TextView) spin_tipe_notif.getSelectedView();
-//            errorText.setTextColor(getResources().getColor(R.color.red));
-//            errorText.setError(errorText.getText().toString());
-//            errorText.setBackgroundColor(getResources().getColor(R.color.grey_900));
-//            return false;
-//        }
         return true;
     }
 }

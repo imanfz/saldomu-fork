@@ -30,7 +30,7 @@ public class LocalResultReceiver extends ResultReceiver {
     }
 
     public interface LocalResultInterface{
-        void onReceiveResult(int resultCode, Bundle resultData);
+        void onReceiveResult();
     }
 
     public void setReceiver(LocalResultInterface localResultInterface){
@@ -40,7 +40,7 @@ public class LocalResultReceiver extends ResultReceiver {
     @Override
     protected void onReceiveResult(int resultCode, Bundle resultData) {
         super.onReceiveResult(resultCode, resultData);
-        localResultInterface.onReceiveResult(resultCode,resultData);
+        localResultInterface.onReceiveResult();
     }
 
 }

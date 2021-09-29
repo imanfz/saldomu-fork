@@ -78,7 +78,6 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
     private String ccy_id;
     private String amount;
     private String item_name;
-    private String cust_id;
     private String payment_name;
     private String fee;
     private String total_amount;
@@ -92,11 +91,8 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
     private String callback_url;
     private String comm_code;
     private String comm_id;
-    private String product_value;
-    private String operator_id;
     private String operator_name;
     private String userID;
-    private String accessKey;
     private Boolean is_sgo_plus;
     private Boolean isPIN;
 
@@ -119,7 +115,6 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         tv_phone_number = v.findViewById(R.id.pulsatoken_pulsa_id_value);
         tv_operator_value = v.findViewById(R.id.pulsatoken_operator_value);
@@ -140,7 +135,6 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
     private void initializeLayout() {
 
         Bundle args = getArguments();
-        cust_id = args.getString(DefineValue.CUST_ID, "");
         tx_id = args.getString(DefineValue.TX_ID, "");
         ccy_id = args.getString(DefineValue.CCY_ID, "");
         amount = args.getString(DefineValue.AMOUNT, "");
@@ -157,9 +151,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         comm_code = args.getString(DefineValue.COMMUNITY_CODE);
         comm_id = args.getString(DefineValue.COMMUNITY_ID);
         shareType = args.getString(DefineValue.SHARE_TYPE);
-        product_value = args.getString(DefineValue.PRODUCT_VALUE);
         phone_number = args.getString(DefineValue.PHONE_NUMBER);
-        operator_id = args.getString(DefineValue.OPERATOR_ID);
         operator_name = args.getString(DefineValue.OPERATOR_NAME);
         Timber.d("isi args", args.toString());
 
@@ -281,28 +273,23 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
                                 getTrxStatus(tx_id, comm_id);
                                 setResultActivity();
                             } else if (message.equals("PIN tidak sesuai")) {
-                                String msg = code + ":" + message;
-                                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), code + ":" + message, Toast.LENGTH_LONG).show();
                                 if (isPIN) {
                                     Intent i = new Intent(getActivity(), InsertPIN.class);
                                     startActivityForResult(i, MainPage.REQUEST_FINISH);
                                 }
 
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             }else if (code.equals(DefineValue.ERROR_9333)) {
                                 Timber.d("isi response app data:" + model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
                                 Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                String msg = code + ":" + message;
-                                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), code + ":" + message, Toast.LENGTH_LONG).show();
 
                                 onOkButton();
                             }
@@ -345,6 +332,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
                             GetTrxStatusModel model = getGson().fromJson(object, GetTrxStatusModel.class);
 
                             String code = model.getError_code();
+                            String message = model.getError_message();
                             if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
 
                                 showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""),
@@ -352,22 +340,16 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
                                         sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
                                         model.getTx_status(), model.getTx_remark(), amount);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(), message);
+                                AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                             }else if (code.equals(DefineValue.ERROR_9333)) {
-                                Timber.d("isi response app data:" + model.getApp_data());
+                                Timber.d("isi response app data:%s", model.getApp_data());
                                 final AppDataModel appModel = model.getApp_data();
-                                AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                             } else if (code.equals(DefineValue.ERROR_0066)) {
-                                Timber.d("isi response maintenance:" + object.toString());
-                                AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                Timber.d("isi response maintenance:%s", object.toString());
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                             } else {
-                                String msg;
-                                msg = model.getError_message();
-                                showDialog(msg);
+                                showDialog(message);
                             }
                         }
 

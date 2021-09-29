@@ -20,7 +20,6 @@ public class PinFragment extends Fragment {
     private BaseViewController mViewController;
     private PinFragmentConfiguration mConfig;
     private View mRootView;
-    private String mValuePin;
 
     public enum PinDisplayType {
         VERIFY, CREATE, CONFIRM

@@ -46,16 +46,6 @@ public class FragmentSearch extends Fragment {
     ContactList selectedContact;
     private AdapterSearchContact adapter;
 
-    boolean isSearchPhone = false;
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        initData();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -76,9 +66,7 @@ public class FragmentSearch extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.equals("")) {
-
-                } else {
+                if (!charSequence.equals("")) {
                     adapter.getFilter().filter(charSequence);
                 }
             }
@@ -90,15 +78,6 @@ public class FragmentSearch extends Fragment {
         });
         return v;
     }
-
-
-//    private void disableCopyPaste(){
-//        List<EditTextObj> list = new ArrayList<>();
-//
-//        list.add(new EditTextObj (et_search,true));
-//
-//        EditTextUtil.disableCopy(list);
-//    }
 
     private List<ContactList> getContactList() {
         List<ContactList> contactLists = new ArrayList<>();
@@ -172,13 +151,5 @@ public class FragmentSearch extends Fragment {
         intent.putExtra(DefineValue.ITEM_SELECTED, selectedContact);
         Objects.requireNonNull(getActivity()).setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
-    }
-
-    private void initData() {
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            isSearchPhone = true;
-            //contactLists = bundle.getParcelableArrayList(DefineValue.BUNDLE_LIST);
-        }
     }
 }

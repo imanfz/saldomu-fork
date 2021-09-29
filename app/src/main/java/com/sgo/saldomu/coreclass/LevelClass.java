@@ -46,17 +46,10 @@ public class LevelClass {
     public void showDialogLevel() {
         refreshData();
         if (isRegisteredLevel) {
-//            Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getActivity().getString(R.string.level_dialog_finish_title),
-//                    getActivity().getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-//                            getActivity().getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
-//                    (v, isLongClick) -> {
-//
-//                    }
-//            );
 
             final Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getActivity().getString(R.string.upgrade_dialog_finish_title),
                     getActivity().getString(R.string.level_dialog_waiting),
-                    (v, isLongClick) -> {
+                    () -> {
 
                     }
             );

@@ -50,18 +50,11 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
 
     private String urlAddress = MyApiClient.URL_FAQ;
 
-
-    private Activity mContext;
-    private Boolean isDisconnected,isBBS = false;
+    private Boolean isBBS = false;
     private View v;
     private int type;
     private ProgressBar progbar;
     private boolean shown = false;
-    private Boolean isActivty = false;
-
-    public interface OnDialogOkCallback {
-        void onOkButton();
-    }
 
     public static InformationDialog newInstance( int idx) {
         InformationDialog f = new InformationDialog();
@@ -80,20 +73,6 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
         return f;
     }
 
-    public static InformationDialog newInstanceBBS(int idx) {
-        InformationDialog f = new InformationDialog();
-        Bundle d = new Bundle();
-        d.putInt(DefineValue.TYPE,idx);
-        d.putBoolean(DefineValue.IS_BBS,true);
-        f.setArguments(d);
-        return f;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = getActivity();
-    }
 
     public InformationDialog() {
         // Empty constructor required for DialogFragment
@@ -118,7 +97,6 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
 
         btn_ok.setOnClickListener(this);
 
-        isDisconnected = !InetHandler.isNetworkAvailable(getActivity());
         return v;
     }
 
@@ -186,8 +164,6 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
 
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 Toast.makeText(getActivity(), description, Toast.LENGTH_SHORT).show();
-                isDisconnected = true;
-
             }
 
             @TargetApi(Build.VERSION_CODES.M)
@@ -223,12 +199,6 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
 
 
         webview.loadUrl(url);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        isDisconnected = false;
     }
 
     @Override

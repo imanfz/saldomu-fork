@@ -23,7 +23,6 @@ public class BBSAccountACTModel extends RealmObject {
     private String account_name;
     private String account_city;
     private String last_update;
-    private String enabled_additional_fee;
 
     public String getComm_id() {
         return comm_id;

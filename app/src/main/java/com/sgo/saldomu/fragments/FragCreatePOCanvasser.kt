@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,6 +47,7 @@ class FragCreatePOCanvasser : BaseFragment() {
         return v
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val canvasserPOActivity = activity as CanvasserPOActivity
@@ -85,18 +87,18 @@ class FragCreatePOCanvasser : BaseFragment() {
 
         for (i in 0 until docDetailsJsonArray.length()) {
             val mappingItemJsonArray = docDetailsJsonArray.getJSONObject(i).getJSONArray(WebParams.MAPPING_ITEMS)
-            for (i in 0 until mappingItemJsonArray.length()) {
-                val itemName = mappingItemJsonArray.getJSONObject(i).getString(WebParams.ITEM_NAME)
-                val itemCode = mappingItemJsonArray.getJSONObject(i).getString(WebParams.ITEM_CODE)
-                val price = mappingItemJsonArray.getJSONObject(i).getString(WebParams.PRICE)
-                val unit = mappingItemJsonArray.getJSONObject(i).getString(WebParams.UNIT)
-                val subtotal = mappingItemJsonArray.getJSONObject(i).optString(WebParams.SUBTOTAL_AMOUNT)
-                val formatQtyJsonArray = mappingItemJsonArray.getJSONObject(i).getJSONArray(WebParams.FORMAT_QTY)
-                var formatQtys = ArrayList<FormatQty>()
-                for (i in 0 until formatQtyJsonArray.length()) {
-                    var mappingUnit = formatQtyJsonArray.getJSONObject(i).getString(WebParams.MAPPING_UNIT)
-                    var mappingQty = formatQtyJsonArray.getJSONObject(i).getInt(WebParams.MAPPING_QTY)
-                    var formatQty = FormatQty(mappingUnit, mappingQty)
+            for (j in 0 until mappingItemJsonArray.length()) {
+                val itemName = mappingItemJsonArray.getJSONObject(j).getString(WebParams.ITEM_NAME)
+                val itemCode = mappingItemJsonArray.getJSONObject(j).getString(WebParams.ITEM_CODE)
+                val price = mappingItemJsonArray.getJSONObject(j).getString(WebParams.PRICE)
+                val unit = mappingItemJsonArray.getJSONObject(j).getString(WebParams.UNIT)
+                val subtotal = mappingItemJsonArray.getJSONObject(j).optString(WebParams.SUBTOTAL_AMOUNT)
+                val formatQtyJsonArray = mappingItemJsonArray.getJSONObject(j).getJSONArray(WebParams.FORMAT_QTY)
+                val formatQtys = ArrayList<FormatQty>()
+                for (k in 0 until formatQtyJsonArray.length()) {
+                    val mappingUnit = formatQtyJsonArray.getJSONObject(k).getString(WebParams.MAPPING_UNIT)
+                    val mappingQty = formatQtyJsonArray.getJSONObject(k).getInt(WebParams.MAPPING_QTY)
+                    val formatQty = FormatQty(mappingUnit, mappingQty)
                     formatQtys.add(formatQty)
                 }
                 itemArrayList.add(ItemModel(itemName, itemCode, price, unit, subtotal, formatQtys))
@@ -120,7 +122,7 @@ class FragCreatePOCanvasser : BaseFragment() {
         params[WebParams.CCY_ID] = MyApiClient.CCY_VALUE
         params[WebParams.DOC_DETAIL] = docDetail
         params[WebParams.CUST_TYPE] = DefineValue.CANVASSER
-        params[WebParams.ACTION_CODE] = "N"
+        params[WebParams.ACTION_CODE] = DefineValue.STRING_NO
         params[WebParams.TOTAL_AMOUNT] = totalAmount
         params[WebParams.DISCOUNT_AMOUNT] = totalDiscount
 
@@ -133,7 +135,7 @@ class FragCreatePOCanvasser : BaseFragment() {
                         val message = response.getString(WebParams.ERROR_MESSAGE)
                         when (code) {
                             WebParams.SUCCESS_CODE -> {
-                                var bundle = arguments!!
+                                val bundle = arguments!!
                                 bundle.putString(DefineValue.TX_ID, response.getString(WebParams.TX_ID))
                                 val frag: Fragment = FragConfirmCreatePOCanvasser()
                                 frag.arguments = bundle
@@ -148,7 +150,7 @@ class FragCreatePOCanvasser : BaseFragment() {
                                 AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             }
                             DefineValue.ERROR_0066 -> {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             }
                             else -> {
                                 Toast.makeText(activity, message, Toast.LENGTH_LONG).show()

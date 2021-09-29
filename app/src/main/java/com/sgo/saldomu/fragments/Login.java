@@ -136,11 +136,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
             userIDValue.setEnabled(true);
         }
 
-        if (sp.contains(DefineValue.SENDER_ID) && !sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
+        if (sp.contains(DefineValue.SENDER_ID) && !sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equalsIgnoreCase(DefineValue.STRING_YES)) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
-        } else if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty() && sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("N")) {
+        } else if (!sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "").isEmpty() && sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equalsIgnoreCase(DefineValue.STRING_NO)) {
             userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, ""));
             userIDValue.setText(userIDfinale);
             userIDValue.setVisibility(View.GONE);
@@ -176,15 +176,15 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
         } else if (m != null) {
             if (m.containsKey(DefineValue.IS_POS)) {
-                if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y")) {
-                    is_pos = m.getString(DefineValue.IS_POS, "N");
+                if (m.getString(DefineValue.IS_POS).equalsIgnoreCase(DefineValue.STRING_YES)) {
+                    is_pos = m.getString(DefineValue.IS_POS, DefineValue.STRING_NO);
                     logo.setImageDrawable(getResources().getDrawable(R.drawable.logo_pos));
                     getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
                     userIDValue.setEnabled(true);
                     userIDValue.setHint(getString(R.string.pos_hint));
                 }
             }
-        } else if (sp.getString(DefineValue.IS_POS, "N").equalsIgnoreCase("Y")) {
+        } else if (sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equalsIgnoreCase(DefineValue.STRING_YES)) {
             getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
             userIDValue.setEnabled(true);
         }
@@ -265,7 +265,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
     }
 
     private void sentDatas() {
-        ToggleKeyboard toggleKeyboard = new ToggleKeyboard();
         ToggleKeyboard.hide_keyboard(getActivity());
         try {
             String comm_id = MyApiClient.COMM_ID;
@@ -334,20 +333,8 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         sp.edit().putString(DefineValue.EXTRA_SIGNATURE, extraSignature).commit();
                         sp.edit().putString(DefineValue.KEY_VALUE, Md5.hashMd5(key)).commit();
                         sp.edit().putString(DefineValue.USER_PASSWORD, encrypted_password).commit();
-//                        if (checkCommunity(loginModel.getCommunity())) {
-//                            if (unregist_member.equals("N")) {
                         Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
                         setLoginProfile(loginModel);
-
-//                            } else {
-//                                Bundle bundle = new Bundle();
-//                                bundle.putString(DefineValue.USER_ID, userIDValue.getText().toString());
-//                                bundle.putBoolean(DefineValue.IS_UNREGISTER_MEMBER, true);
-//                                Fragment newFrag = new Regist1();
-//                                newFrag.setArguments(bundle);
-//                                switchFragment(newFrag, "reg1", true);
-//                            }
-//                        }
                     } else if (code.equals(DefineValue.ERROR_0042)) {
 
                         String message;
@@ -389,7 +376,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                     } else if (code.equals(DefineValue.ERROR_0066)) {
                         Timber.d("isi response maintenance:" + response.toString());
                         AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                        alertDialogMaintenance.showDialogMaintenance(getActivity(), loginModel.getError_message());
+                        alertDialogMaintenance.showDialogMaintenance(getActivity());
                     }else if (code.equals("0324")) {
                         sp.edit().remove(DefineValue.PREVIOUS_LOGIN_USER_ID).apply();
                         showDialogBackToPerkenalan(loginModel.getError_message());
@@ -503,26 +490,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
     }
 
-    private boolean checkCommunity(List<LoginCommunityModel> model) {
-        if (model != null) {
-            for (int i = 0; i < model.size(); i++) {
-                if (model.get(i).getCommId().equals(MyApiClient.COMM_ID)) {
-                    Timber.w("check comm id yg bener: " + model.get(i).getCommId());
-                    return true;
-                }
-            }
-        }
-
-        Toast.makeText(getActivity(), getString(R.string.login_validation_comm), Toast.LENGTH_LONG).show();
-        return false;
-    }
-
     private void setLoginProfile(LoginModel model) {
 
         try {
             SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
             SecurePreferences.Editor mEditor = prefs.edit();
-            String arraynya;
             String userId = model.getUserId();
             String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, "");
 

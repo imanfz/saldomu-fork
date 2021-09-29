@@ -9,10 +9,6 @@ import io.realm.annotations.PrimaryKey;
 
 public class List_BBS_City extends RealmObject {
 
-    public static final String FIELD_ID = "id";
-    public static final String FIELD_CITY_ID = "city_id";
-    public static final String FIELD_CITY_NAME = "city_name";
-
     @PrimaryKey
     private String id;
     private String city_id;

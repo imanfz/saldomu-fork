@@ -53,7 +53,7 @@ public class FragJoinCommunitySCADM extends BaseFragment {
     EditText et_member_code;
     Button btn_next;
     private ProgressDialog progdialog;
-    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
+    protected String userPhoneID;
 
 
     @Nullable
@@ -68,10 +68,7 @@ public class FragJoinCommunitySCADM extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
-        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Bundle bundle = getArguments();
         comm_name = bundle.getString(DefineValue.COMMUNITY_NAME);
@@ -148,7 +145,7 @@ public class FragJoinCommunitySCADM extends BaseFragment {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 }else {
                                     Timber.d("Error isi response sent preview join community scadm:" + response.toString());
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);

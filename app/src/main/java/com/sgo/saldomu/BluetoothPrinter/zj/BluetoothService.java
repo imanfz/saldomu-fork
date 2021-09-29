@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,13 +45,11 @@ public class BluetoothService {
     public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
-    public static String ErrorMessage = "No_Error_Message";
     /**
      * Constructor. Prepares a new BTPrinter session.
-     * @param context  The UI Activity Context
      * @param handler  A Handler to send messages back to the UI Activity
      */
-    public BluetoothService(Context context, Handler handler) {
+    public BluetoothService(Handler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;

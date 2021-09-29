@@ -69,14 +69,13 @@ import timber.log.Timber;
  */
 public class Perkenalan extends BaseActivity implements EasyPermissions.PermissionCallbacks {
     private static final int RC_READPHONESTATE_GETACCOUNT_PERM = 500;
-    private static final int RC_SENTSMS_PERM = 502;
     private SMSDialog smsDialog;
-    private SMSclass smsclass;
+    private SMSclass smsClass;
     protected String extraSignature = "", userId;
     private String[] perms;
     private ProgressDialog progdialog;
 
-    private String timeDate, timeStamp, fcm_id, msg, msgFinal, imeiDevice;
+    private String timeDate, timeStamp, imeiDevice;
     private SecurePreferences sp;
     protected Gson gson;
     JsonParser jsonParser;
@@ -190,7 +189,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         @Override
         public void onClick(View view) {
 
-            sp.edit().putString(DefineValue.IS_POS, DefineValue.N).commit();
+            sp.edit().putString(DefineValue.IS_POS, DefineValue.STRING_NO).commit();
             boolean logoutBySession = sp.getBoolean(DefineValue.LOGOUT_FROM_SESSION_TIMEOUT, false);
             if (sp.getString(DefineValue.PREVIOUS_LOGIN_USER_ID, "") != null && logoutBySession) {
                 if (!sp.getString(DefineValue.USER_PASSWORD, "").equals("") && logoutBySession) {
@@ -207,7 +206,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
             } else {
 
                 Intent i = new Intent(Perkenalan.this, OTPVerificationActivity.class);
-                i.putExtra(DefineValue.IS_POS, "N");
+                i.putExtra(DefineValue.IS_POS, DefineValue.STRING_NO);
                 startActivity(i);
             }
 //            else
@@ -220,8 +219,8 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         public void onClick(View view) {
             Intent i = new Intent(Perkenalan.this, LoginActivity.class);
             i.putExtra(DefineValue.USER_IS_NEW, -2);
-            i.putExtra(DefineValue.IS_POS, "Y");
-            sp.edit().putString(DefineValue.IS_POS, DefineValue.Y).commit();
+            i.putExtra(DefineValue.IS_POS, DefineValue.STRING_YES);
+            sp.edit().putString(DefineValue.IS_POS, DefineValue.STRING_YES).commit();
             startActivity(i);
         }
     };
@@ -272,65 +271,6 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         return sp;
     }
 
-    private void sendFCM() {
-        getSMSContent();
-        fcm_id = sp.getString(DefineValue.FCM_ID, "");
-        showProgLoading("", true);
-        try {
-            HashMap<String, Object> params = RetrofitService
-                    .getInstance().getSignatureSecretKey(MyApiClient.LINK_FCM, "");
-            params.put(WebParams.FCM_ID, fcm_id);
-            params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
-            params.put(WebParams.REFERENCE_ID, sp.getString(DefineValue.SMS_CONTENT_ENCRYPTED, ""));
-            Timber.d("isi params fcm:%s", params.toString());
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_FCM, params, new ResponseListener() {
-                @Override
-                public void onResponses(JsonObject object) {
-                    Timber.d("isi response fcm:%s", object);
-//                    showSmsDialog();
-                    Intent i = new Intent(Perkenalan.this, OTPVerificationActivity.class);
-                    startActivity(i);
-                }
-
-                @Override
-                public void onError(Throwable throwable) {
-                    Timber.d("isi error fcm intro:%s", throwable);
-                }
-
-                @Override
-                public void onComplete() {
-                    showProgLoading("", false);
-                }
-            });
-        } catch (Exception e) {
-            Timber.d("httpclient:%s", e.getMessage());
-        }
-    }
-
-    private void showSmsDialog() {
-        if (smsDialog != null) {
-            smsDialog.show(getSupportFragmentManager(), "");
-        }
-    }
-
-    private void checkIsSimExist() {
-        if (smsclass != null) {
-            smsclass.isSimExists(new SMSclass.SMS_SIM_STATE() {
-                @Override
-                public void sim_state(Boolean isExist, String msg) {
-                    if (!isExist && !Perkenalan.this.isFinishing()) {
-                        DefinedDialog.showErrorDialog(Perkenalan.this, msg, new DefinedDialog.DialogButtonListener() {
-                            @Override
-                            public void onClickButton(View v, boolean isLongClick) {
-                                finish();
-                            }
-                        });
-                    }
-                }
-            });
-        }
-    }
-
     void showProgLoading(String msg, boolean show) {
         if (show) {
             progdialog = DefinedDialog.CreateProgressDialog(this, msg);
@@ -339,13 +279,6 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
             progdialog.dismiss();
         }
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (smsclass != null)
-            smsclass.Close();
-        super.onDestroy();
     }
 
     private void openLogin(int user_is_new) {
@@ -358,32 +291,10 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
     }
 
     @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-        switch (requestCode) {
-            case RC_READPHONESTATE_GETACCOUNT_PERM:
-                for (int i = 0; i < perms.size(); i++) {
-                    if (perms.get(i).equalsIgnoreCase(Manifest.permission.READ_PHONE_STATE)) {
-//                        InitializeSmsClass();
-                    }
-                }
-                break;
-//            case RC_SENTSMS_PERM:
-//                smsDialog.sentSms();
-//                break;
-        }
-    }
-
-    @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
-        switch (requestCode) {
-            case RC_READPHONESTATE_GETACCOUNT_PERM:
-                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-                finish();
-                break;
-//            case RC_SENTSMS_PERM:
-//                smsDialog.dismiss();
-//                smsDialog.reset();
-//                break;
+        if (requestCode == RC_READPHONESTATE_GETACCOUNT_PERM) {
+            Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 
@@ -394,7 +305,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 
         if (!temp_iccid.equals("") && !temp_imei.equals("")) {
 //            String diccid = smsclass.getDeviceICCID();
-            String dimei = smsclass.getDeviceAndroidId();
+            String dimei = smsClass.getDeviceAndroidId();
 //            boolean biccid = diccid.equalsIgnoreCase(temp_iccid);
             boolean bimei = dimei.equalsIgnoreCase(temp_imei);
 
@@ -459,7 +370,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
         params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
         params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
-        params.put(WebParams.IS_POS, sp.getString(DefineValue.IS_POS, "N"));
+        params.put(WebParams.IS_POS, sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO));
         params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
         Timber.d("isi param pin login:" + params);
 
@@ -520,7 +431,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
         params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
         params.put(WebParams.IMEI_ID, imeiDevice.toUpperCase());
-        params.put(WebParams.IS_POS, "N");
+        params.put(WebParams.IS_POS, DefineValue.STRING_NO);
         if (sp.getString(DefineValue.FCM_ID, "") != null)
             params.put(WebParams.FCM_ID, sp.getString(DefineValue.FCM_ID, ""));
 
@@ -533,7 +444,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
                 String code = loginModel.getError_code();
 
                 if (code.equalsIgnoreCase(WebParams.SUCCESS_CODE)) {
-                    sp.edit().putString(DefineValue.IS_POS, "N").commit();
+                    sp.edit().putString(DefineValue.IS_POS, DefineValue.STRING_NO).commit();
                     sp.edit().putString(DefineValue.EXTRA_SIGNATURE, extraSignature).commit();
                     Toast.makeText(Perkenalan.this, getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
                     setLoginProfile(loginModel);
@@ -571,7 +482,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
                 } else if (code.equals(DefineValue.ERROR_0066)) {
                     Timber.d("isi response maintenance:" + response.toString());
                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                    alertDialogMaintenance.showDialogMaintenance(Perkenalan.this, loginModel.getError_message());
+                    alertDialogMaintenance.showDialogMaintenance(Perkenalan.this);
                 } else if (code.equals("0324")) {
                     sp.edit().remove(DefineValue.PREVIOUS_LOGIN_USER_ID).apply();
                     showDialog(loginModel.getError_message());
@@ -595,12 +506,12 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
     }
 
     private void getSMSContent() {
-        String SMS_VERIFY = "REG EMO SM";
-        SMSclass smSclass = new SMSclass(getApplicationContext());
+//        String SMS_VERIFY = "REG EMO SM";
+        smsClass = new SMSclass(getApplicationContext());
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
         sp.edit().putString(DefineValue.TIMESTAMP, timeStamp).apply();
-        timeDate = String.valueOf(DateTimeFormat.getCurrentDateTimeSMS());
-        imeiDevice = smSclass.getDeviceAndroidId();
+        timeDate = DateTimeFormat.getCurrentDateTimeSMS();
+        imeiDevice = smsClass.getDeviceAndroidId();
 //        String ICCIDDevice = smSclass.getDeviceICCID();
 //        Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
 //        msg = (SMS_VERIFY + " " + imeiDevice + "_" + ICCIDDevice + "_" + timeStamp + "_" + MyApiClient.APP_ID + "_" + timeDate + "_").toUpperCase();
@@ -869,7 +780,7 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        if (sp.getString(DefineValue.IS_POS, "N").equals(DefineValue.N)) {
+        if (sp.getString(DefineValue.IS_POS, DefineValue.STRING_NO).equals(DefineValue.STRING_NO)) {
             mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
         } else
             mEditor.remove(DefineValue.PREVIOUS_LOGIN_USER_ID);
@@ -904,32 +815,6 @@ public class Perkenalan extends BaseActivity implements EasyPermissions.Permissi
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
-    }
-
-    private void openFirstScreen(int index) {
-        Intent i;
-        switch (index) {
-            case FIRST_SCREEN_LOGIN:
-                i = new Intent(this, LoginActivity.class);
-                break;
-            case FIRST_SCREEN_INTRO:
-                i = new Intent(this, Perkenalan.class);
-                break;
-            case FIRST_SCREEN_SPLASHSCREEN:
-//                if (LocaleManager.getLocale(getResources()).getLanguage().equals("in")) {
-                CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, true);
-//                } else {
-//                    CustomSecurePref.getInstance().setBoolean(DefineValue.IS_BAHASA, false);
-//                }
-                i = new Intent(this, SplashScreen.class);
-                break;
-            default:
-                i = new Intent(this, LoginActivity.class);
-                break;
-        }
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        this.finish();
     }
 
     private void deleteData() {

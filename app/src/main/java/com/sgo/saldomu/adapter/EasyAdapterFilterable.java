@@ -74,7 +74,7 @@ public class EasyAdapterFilterable extends ArrayAdapter<String> implements Filte
     }
 
     static class ListHolder {
-        TextView txtTitle, iconArrow;
+        TextView txtTitle;
         FrameLayout layout;
     }
 

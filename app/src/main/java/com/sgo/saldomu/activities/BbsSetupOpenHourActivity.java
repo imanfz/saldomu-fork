@@ -17,7 +17,6 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.google.gson.Gson;
 import com.sgo.saldomu.BuildConfig;
@@ -52,9 +51,8 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
         AdapterView.OnItemSelectedListener, ClosedTypePickerFragment.ClosedTypePickerListener {
     String memberId, shopId;
     public SetupOpenHour setupOpenHour;
-    ToggleButton tbOpen24Hours, tbTutupToko;
     Switch swOpen24Hours, swTutupToko;
-    LinearLayout llSettingTutupToko, llSetupHours, llSetupClosedType, llTutupToko, llSetupOpeningHour, tvSetupShopDate;
+    LinearLayout llSettingTutupToko, llSetupHours, llSetupClosedType, llSetupOpeningHour;
     GridView gridview;
     GridViewAdapter customAdapter;
     Spinner spClosedType;
@@ -62,18 +60,15 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
     ArrayList<String> selectedDate, selectedDays;
     int selectedPos = 0;
     Button btnProses;
-    ProgressDialog progdialog;
+    ProgressDialog progDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //memberId = "003SGO";
-        //shopId      = "003";
-
-        progdialog = new ProgressDialog(BbsSetupOpenHourActivity.this);
-        memberId = getIntent().getStringExtra("memberId");
-        shopId = getIntent().getStringExtra("shopId");
+        progDialog = new ProgressDialog(BbsSetupOpenHourActivity.this);
+        memberId = getIntent().getStringExtra(DefineValue.MEMBER_ID);
+        shopId = getIntent().getStringExtra(DefineValue.SHOP_ID);
         setupOpenHour = new SetupOpenHour();
 
         initializeToolbar();
@@ -82,8 +77,6 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
         llSettingTutupToko = (LinearLayout) findViewById(R.id.llSettingTutupToko);
         llSetupHours = (LinearLayout) findViewById(R.id.llSetupHours);
         llSetupOpeningHour = (LinearLayout) findViewById(R.id.llSetupOpeningHour);
-
-        //llTutupToko         = (LinearLayout) findViewById(R.id.llTutupToko);
 
         swOpen24Hours = (Switch) findViewById(R.id.swOpen24Hours);
         btnProses = (Button) findViewById(R.id.btnProses);
@@ -307,8 +300,8 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
 
                 if (!hasError) {
                     try {
-                        progdialog = DefinedDialog.CreateProgressDialog(BbsSetupOpenHourActivity.this, "");
-                        progdialog.show();
+                        progDialog = DefinedDialog.CreateProgressDialog(BbsSetupOpenHourActivity.this, "");
+                        progDialog.show();
 
                         HashMap<String, Object> params = new HashMap<>();
 
@@ -407,16 +400,14 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                                     public void onResponses(JSONObject response) {
                                         try {
                                             String code = response.getString(WebParams.ERROR_CODE);
+                                            String message = response.getString(WebParams.ERROR_MESSAGE);
                                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                                 Intent intent = new Intent(getApplicationContext(), BbsMerchantCommunityList.class);
                                                 startActivity(intent);
                                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                                //test.showDialoginActivity(getApplication(),message);
+                                                AlertDialogLogout.getInstance().showDialoginActivity(BbsSetupOpenHourActivity.this, message);
                                             } else {
-                                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -430,8 +421,8 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
 
                                     @Override
                                     public void onComplete() {
-                                        if (progdialog.isShowing())
-                                            progdialog.dismiss();
+                                        if (progDialog.isShowing())
+                                            progDialog.dismiss();
                                     }
                                 });
                     } catch (Exception e) {

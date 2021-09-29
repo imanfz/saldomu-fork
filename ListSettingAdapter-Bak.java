@@ -24,25 +24,23 @@ public class ListSettingAdapterBak extends BaseAdapter {
     private String shopId, memberId, agentName, category, memberType, shopName, commName, province, district, address;
 
     public ListSettingAdapterBak(Context context, ArrayList<String> menu, String shopId, String memberId, String agentName, String category,
-                                String memberType, String shopName, String commName, String province, String district, String address )
-    {
-        this.context    = context;
-        this.menu       = menu;
-        this.shopId     = shopId;
-        this.memberId   = memberId;
-        this.agentName  = agentName;
-        this.category   = category;
+                                 String memberType, String shopName, String commName, String province, String district, String address) {
+        this.context = context;
+        this.menu = menu;
+        this.shopId = shopId;
+        this.memberId = memberId;
+        this.agentName = agentName;
+        this.category = category;
         this.memberType = memberType;
-        this.shopName   = shopName;
-        this.commName   = commName;
-        this.province   = province;
-        this.district   = district;
-        this.address    = address;
-        inflater        = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.shopName = shopName;
+        this.commName = commName;
+        this.province = province;
+        this.district = district;
+        this.address = address;
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    class ViewHolder
-    {
+    class ViewHolder {
         TextView tvListName;
     }
 
@@ -66,12 +64,12 @@ public class ListSettingAdapterBak extends BaseAdapter {
         View rootView = convertView;
         ListSettingAdapter.ViewHolder holder;
 
-        if(rootView == null) {
+        if (rootView == null) {
             //viewHolder = new BbsMerchantCommunityListAdapter.ViewHolder();
-            rootView                = inflater.inflate(R.layout.list_setting_adapter, null);
+            rootView = inflater.inflate(R.layout.list_setting_adapter, null);
 
-            holder                  = new ListSettingAdapter.ViewHolder();
-            holder.tvListName       = (TextView) rootView.findViewById(R.id.tvListName);
+            holder = new ListSettingAdapter.ViewHolder();
+            holder.tvListName = (TextView) rootView.findViewById(R.id.tvListName);
 
 
             rootView.setTag(holder);
@@ -81,33 +79,23 @@ public class ListSettingAdapterBak extends BaseAdapter {
 
         holder.tvListName.setText(menu.get(position));
 
-        if ( position > 1 ) {
+        if (position > 1) {
 
         }
 
         holder.tvListName.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if ( position == 0 ) {
+                if (position == 0) {
 
-                } else if ( position == 1 ) {
+                } else if (position == 1) {
 
-                } else if ( position == 2 ) {
-
-                    /*Intent intent = new Intent(context.getApplicationContext(), BbsMerchantSetupHourActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("memberId", memberId);
-                    intent.putExtra("shopId", shopId);
-                    intent.putExtra("shopName", shopName);
-                    intent.putExtra("memberType", memberType);
-                    inflater.getContext().startActivity(intent);
-
-                } else if ( position == 3 ) {*/
+                } else if (position == 2) {
 
                     Intent intent = new Intent(context.getApplicationContext(), BbsMemberLocationActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("memberId", memberId);
-                    intent.putExtra("shopId", shopId);
-                    intent.putExtra("shopName", shopName);
+                    intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                    intent.putExtra(DefineValue.SHOP_ID, shopId);
+                    intent.putExtra(DefineValue.SHOP_NAME, shopName);
                     intent.putExtra("memberType", memberType);
                     intent.putExtra("memberName", agentName);
                     intent.putExtra("commName", commName);
@@ -116,17 +104,6 @@ public class ListSettingAdapterBak extends BaseAdapter {
                     intent.putExtra("address", address);
                     intent.putExtra("category", category);
                     inflater.getContext().startActivity(intent);
-
-                /*} else if ( position == 4 ) {
-
-                    Intent intent = new Intent(context.getApplicationContext(), BbsRegisterOpenClosedShopActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("memberId", memberId);
-                    intent.putExtra("shopId", shopId);
-                    intent.putExtra("shopName", shopName);
-                    intent.putExtra("memberType", memberType);
-                    inflater.getContext().startActivity(intent);*/
-
                 }
             }
         });

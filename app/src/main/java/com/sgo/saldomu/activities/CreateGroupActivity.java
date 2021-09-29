@@ -53,7 +53,7 @@ public class CreateGroupActivity extends BaseActivity {
     private List<String> listName;
     private ProgressDialog progdialog;
 
-    private String _ownerID,accessKey;
+    private String _ownerID;
     private String page = "0";
 
     @Override
@@ -61,7 +61,7 @@ public class CreateGroupActivity extends BaseActivity {
         return R.layout.activity_create_group;
     }
 
-    private void initializeToolbar(){
+    private void initializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_my_groups));
     }
@@ -72,8 +72,7 @@ public class CreateGroupActivity extends BaseActivity {
 
         initializeToolbar();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        _ownerID = sp.getString(DefineValue.USERID_PHONE, "");
 
         etGroupName = (EditText) findViewById(R.id.mygroup_name_create);
         etDesc = (EditText) findViewById(R.id.mygroup_desc_create);
@@ -92,11 +91,11 @@ public class CreateGroupActivity extends BaseActivity {
         RESULT = MainPage.RESULT_NORMAL;
     }
 
-    private class TempObjectData{
+    private static class TempObjectData {
 
         private String user_id;
 
-        public TempObjectData(String _user_id){
+        public TempObjectData(String _user_id) {
             this.user_id = _user_id;
         }
 
@@ -112,7 +111,7 @@ public class CreateGroupActivity extends BaseActivity {
     private Button.OnClickListener btnSaveListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(!etGroupName.getText().toString().equals("") && !etGroupName.getText().toString().equals(" ")) {
+            if (!etGroupName.getText().toString().equals("") && !etGroupName.getText().toString().equals(" ")) {
                 phoneRetv.requestFocus();
                 ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<>();
 
@@ -123,7 +122,7 @@ public class CreateGroupActivity extends BaseActivity {
                 listName = new ArrayList<>();
 
                 for (DrawableRecipientChip chip : chips) {
-                    Timber.v("DrawableChip:"+chip.getEntry().getDisplayName() + " " + chip.getEntry().getDestination());
+                    Timber.v("DrawableChip:" + chip.getEntry().getDisplayName() + " " + chip.getEntry().getDestination());
                     finalNumber = NoHPFormat.formatTo62(chip.getEntry().getDestination());
                     listName.add(chip.getEntry().getDisplayName());
                     mTempObjectDataList.add(new TempObjectData(finalNumber));
@@ -133,17 +132,15 @@ public class CreateGroupActivity extends BaseActivity {
                 gsonBuilder.setPrettyPrinting();
                 final Gson gson = gsonBuilder.create();
                 String members;
-                if(mTempObjectDataList.size() > 0) {
+                if (mTempObjectDataList.size() > 0) {
                     members = gson.toJson(mTempObjectDataList);
-                }
-                else {
+                } else {
                     members = "";
                 }
 
-                Timber.d("test json:"+members);
+                Timber.d("test json:" + members);
                 sentData(members);
-            }
-            else {
+            } else {
                 Toast.makeText(getApplicationContext(), "Input Group Name!", Toast.LENGTH_LONG).show();
             }
         }
@@ -178,19 +175,16 @@ public class CreateGroupActivity extends BaseActivity {
                                 String count = response.getString(WebParams.COUNT);
 
                                 if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                                    Timber.d("isi params sent add group:"+response.toString());
+                                    Timber.d("isi params sent add group:" + response.toString());
                                     Toast.makeText(getApplicationContext(), "Group " + groupName + " Created!", Toast.LENGTH_LONG).show();
                                     finish();
-                                }
-
-                                else if(code.equals(WebParams.LOGOUT_CODE)){
-                                    Timber.d("isi response autologout:"+response.toString());
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(CreateGroupActivity.this,message);
-                                }
-                                else {
-                                    Timber.d("isi error sent add group:"+response.toString());
+                                    test.showDialoginActivity(CreateGroupActivity.this, message);
+                                } else {
+                                    Timber.d("isi error sent add group:" + response.toString());
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
                                 }
@@ -206,12 +200,12 @@ public class CreateGroupActivity extends BaseActivity {
 
                         @Override
                         public void onComplete() {
-                            if(progdialog.isShowing())
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 

@@ -58,7 +58,7 @@ class UpgradeMemberActivity : BaseActivity() {
     private fun dialogCantUpgrade() {
         val dialognya = DefinedDialog.MessageDialog(this, this.getString(R.string.alertbox_title_information),
                 this.getString(R.string.cashout_dialog_message)
-        ) { _, _ -> }
+        ) {  }
 
         dialognya.setCanceledOnTouchOutside(false)
         dialognya.setCancelable(false)
@@ -99,7 +99,7 @@ class UpgradeMemberActivity : BaseActivity() {
                             } else if (code == DefineValue.ERROR_0066) run {
                                 Timber.d("isi response maintenance:$`object`")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(this@UpgradeMemberActivity, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(this@UpgradeMemberActivity)
                             } else {
                                 code = model.error_message
 

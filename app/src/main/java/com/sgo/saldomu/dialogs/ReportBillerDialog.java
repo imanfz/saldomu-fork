@@ -1027,9 +1027,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_merchant_name = inflated.findViewById(R.id.dialog_report_merchant_name);
                 TextView tv_merchant_city = inflated.findViewById(R.id.dialog_report_merchant_city);
                 TextView tv_merchant_pan = inflated.findViewById(R.id.dialog_report_merchant_pan);
+                TableRow tr_trx_id_ref = inflated.findViewById(R.id.tr_dialog_report_trx_id_ref);
                 TextView tv_trx_id_ref = inflated.findViewById(R.id.dialog_report_trx_id_ref);
+                View line_trx_id_ref = inflated.findViewById(R.id.line_dialog_report_trx_id_ref);
                 TextView tv_terminal_id = inflated.findViewById(R.id.dialog_report_terminal_id);
-                TextView tv_payment_option = inflated.findViewById(R.id.dialog_report_payment_options);
                 TextView tv_fee = inflated.findViewById(R.id.dialog_report_fee);
                 TextView tv_amount = inflated.findViewById(R.id.dialog_report_amount);
                 TextView tv_total_amount = inflated.findViewById(R.id.dialog_report_total_amount);
@@ -1038,7 +1039,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 String amount = args.getString(DefineValue.AMOUNT);
                 String fee = args.getString(DefineValue.FEE);
                 String total_amount = args.getString(DefineValue.TOTAL_AMOUNT);
-                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
                 tv_trans_remark.setText(args.getString(DefineValue.TRX_STATUS_REMARK));
                 if (!isSuccess) {
@@ -1053,6 +1054,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_merchant_pan.setText(args.getString(DefineValue.MERCHANT_PAN));
                 tv_terminal_id.setText(args.getString(DefineValue.TERMINAL_ID));
                 tv_trx_id_ref.setText(args.getString(DefineValue.TRX_ID_REF));
+                if (args.getString(DefineValue.TRX_ID_REF).equals("")){
+                    tr_trx_id_ref.setVisibility(View.GONE);
+                    line_trx_id_ref.setVisibility(View.GONE);
+                }
                 tv_fee.setText(fee);
                 tv_amount.setText(amount);
                 tv_total_amount.setText(total_amount);
@@ -1111,7 +1116,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     // Otherwise, setup the session
                 } else {
                     if (mService == null)
-                        mService = new BluetoothService(getContext(), mHandler);//监听
+                        mService = new BluetoothService(mHandler);//监听
 
                     printStruk.setEnabled(false);
                     printStruk.postDelayed(new Runnable() {
@@ -1502,14 +1507,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             case DevicesList.REQUEST_ENABLE_BT: {
                 // When the request to enable Bluetooth returns
                 if (resultCode == Activity.RESULT_OK) {
-                    mService = new BluetoothService(getContext(), mHandler);
+                    mService = new BluetoothService(mHandler);
                 } else {
                     // User did not enable Bluetooth or an error occured
-                    Log.d(TAG, "BT not enabled");
-                    //Toast.makeText(this, R.string.bt_not_enabled_leaving,
-                    //Toast.LENGTH_SHORT).show();
-                    //getActivity().finish();
-                }
+                    Log.d(TAG, "BT not enabled"); }
                 break;
             }
 

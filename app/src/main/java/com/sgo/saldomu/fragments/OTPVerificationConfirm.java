@@ -60,7 +60,7 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
     private String is_new;
     private String user_id;
     private String device_name;
-    private String refference_id, imeiDevice, ICCIDDevice;
+    private String refference_id, imeiDevice;
     private SecurePreferences sp;
     private CountDownTimer countDownTimer;
 
@@ -229,12 +229,12 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
                                     Intent intent = new Intent(getContext(), LoginActivity.class);
                                     sp.edit().putString(DefineValue.SENDER_ID, user_id).commit();
 
-                                    if (is_new.equalsIgnoreCase("Y")) {
+                                    if (is_new.equalsIgnoreCase(DefineValue.STRING_YES)) {
                                         intent.putExtra(DefineValue.USER_IS_NEW, 1);
                                     } else {
                                         intent.putExtra(DefineValue.USER_IS_NEW, -2);
                                     }
-                                    intent.putExtra(DefineValue.IS_POS, "N");
+                                    intent.putExtra(DefineValue.IS_POS, DefineValue.STRING_NO);
                                     startActivity(intent);
                                     getActivity().finish();
 
@@ -249,7 +249,7 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 } else {
                                     Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                                 }
@@ -319,7 +319,7 @@ public class OTPVerificationConfirm extends BaseFragment implements OnBackPresse
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + object.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 } else {
                                     Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                                 }

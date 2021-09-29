@@ -62,9 +62,6 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
     Context mContext;
     private LatLng mCenterLatLong;
 
-
-    private CustomAutoCompleteTextViewWithRadioButton searchLocationEditText;
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializeToolbar(getString(R.string.search_agent));
@@ -100,28 +97,17 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
         } else {
             Toast.makeText(mContext, "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
-
-        /*searchLocationEditText = (CustomAutoCompleteTextView) findViewById(R.id.searchLocationEditText);
-        GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(this, R.layout.google_places_auto_complete_listview);
-        searchLocationEditText.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
-        searchLocationEditText.setOnItemClickListener(this);
-        searchLocationEditText.setOnEditorActionListener(this);*/
-
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        activityAfterFinishTypeText();
 
-        String searchLocationString = searchLocationEditText.getText().toString().trim();
-        try
-        {
+        try {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 
-            List<Address> multiAddress = geocoder.getFromLocationName(searchLocationString, 1);
+            List<Address> multiAddress = geocoder.getFromLocationName("", 1);
 
-            if(multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0)
-            {
+            if (multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0) {
                 Address singleAddress = multiAddress.get(0);
                 ArrayList<String> addressArray = new ArrayList<String>();
 
@@ -129,39 +115,21 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
                     addressArray.add(singleAddress.getAddressLine(i));
                 }
 
-                String fullAddress = TextUtils.join(System.getProperty("line.separator"), addressArray);
-
                 changeMap(singleAddress.getLatitude(), singleAddress.getLongitude());
-
             }
-            else
-            {
-
-            }
-        }
-        catch(IOException ioException)
-        {
+        } catch (IOException ioException) {
             // Catch network or other I/O problems.
             //errorMessage = "Catch : Network or other I/O problems - No geocoder available";
             Log.d("onIOException ", "Catch : Network or other I/O problems - No geocoder available");
         }
-        catch(IllegalArgumentException illegalArgumentException)
-        {
-            // Catch invalid latitude or longitude values.
-            //errorMessage = "Catch : Invalid latitude or longitude values";
-            //Log.d("IllegalArgumentException ", "Catch : Invalid latitude or longitude values");
-
-        }
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         //listener ketika button back di action bar diklik
-        if(id == android.R.id.home)
-        {
+        if (id == android.R.id.home) {
             //kembali ke activity sebelumnya
             onBackPressed();
         }
@@ -169,41 +137,15 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
         return super.onOptionsItemSelected(item);
     }
 
-    public void initializeToolbar(String title)
-    {
+    public void initializeToolbar(String title) {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(title);
     }
 
 
-
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_bbs_search_by_location;
-    }
-
-
-    private void openAutocompleteActivity() {
-        try {
-            // The autocomplete activity requires Google Play Services to be available. The intent
-            // builder checks this and throws an exception if it is not the case.
-
-            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                    .build(this);
-            startActivityForResult(intent, DefineValue.REQUEST_CODE_AUTOCOMPLETE);
-        } catch (GooglePlayServicesRepairableException e) {
-            // Indicates that Google Play Services is either not installed or not up to date. Prompt
-            // the user to correct the issue.
-            GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(),
-                    0 /* requestCode */).show();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            // Indicates that Google Play Services is not available and the problem is not easily
-            // resolvable.
-            String message = "Google Play Services is not available: " +
-                    GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
-
-            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -474,16 +416,6 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
         return false;
     }
 
-    private void activityAfterFinishTypeText() {
-        //hide the keypad
-        InputMethodManager mgr = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(searchLocationEditText.getWindowToken(), 0);
-
-        //moving cursor edit text ke depan
-        searchLocationEditText.setSelection(0);
-
-    }
-
     /**
      * Called after the autocomplete activity has finished to return its result.
      */
@@ -497,11 +429,7 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
                 // Get the user's selected place from the Intent.
                 Place place = PlaceAutocomplete.getPlace(mContext, data);
 
-                // TODO call location based filter
-
-
                 LatLng latLong;
-
 
                 latLong = place.getLatLng();
 
@@ -511,13 +439,6 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
                         .target(latLong).zoom(19f).build();
 
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
                 mMap.setMyLocationEnabled(true);
@@ -526,13 +447,6 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
 
 
             }
-
-
-        } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-            Status status = PlaceAutocomplete.getStatus(mContext, data);
-        } else if (resultCode == RESULT_CANCELED) {
-            // Indicates that the activity closed before a selection was made. For example if
-            // the user pressed the back button.
         }
     }
 }

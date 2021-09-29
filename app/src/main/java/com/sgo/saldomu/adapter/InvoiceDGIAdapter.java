@@ -1,6 +1,5 @@
 package com.sgo.saldomu.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +28,7 @@ public class InvoiceDGIAdapter extends RecyclerView.Adapter<InvoiceDGIAdapter.Vi
         void onTap(InvoiceDGI model);
     }
 
-    public InvoiceDGIAdapter(ArrayList<InvoiceDGI> invoiceDGIModelArrayList, Activity mContext, OnTap listener) {
+    public InvoiceDGIAdapter(ArrayList<InvoiceDGI> invoiceDGIModelArrayList, OnTap listener) {
         this.invoiceDGIModelArrayList = invoiceDGIModelArrayList;
         originalList = invoiceDGIModelArrayList;
         this.listener = listener;

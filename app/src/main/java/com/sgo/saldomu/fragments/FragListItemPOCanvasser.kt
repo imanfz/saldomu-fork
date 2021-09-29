@@ -233,7 +233,7 @@ class FragListItemPOCanvasser : BaseFragment() {
                                                 listRemarkMappingUnit.add(remarkMappingUnit[j].toString())
                                             }
                                             var isFavorite = false
-                                            if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.Y)
+                                            if (jsonObject.getString(WebParams.IS_FAVORITE) == DefineValue.STRING_YES)
                                                 isFavorite = true
                                             itemList.add(EBDCatalogModel(itemImage, itemCode, itemName, description, price, discAmount, nettPrice, unit, minQty, maxQty, listRemarkMappingUnit, isFavorite))
                                         }
@@ -248,7 +248,7 @@ class FragListItemPOCanvasser : BaseFragment() {
                                         AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                                     }
                                     DefineValue.ERROR_0066 -> {
-                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                        AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                                     }
                                     else -> {
                                         showDialog(message)
@@ -323,7 +323,7 @@ class FragListItemPOCanvasser : BaseFragment() {
                                 AlertDialogUpdateApp.getInstance().showDialogUpdate(activity, appModel.type, appModel.packageName, appModel.downloadUrl)
                             }
                             DefineValue.ERROR_0066 -> {
-                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity, message)
+                                AlertDialogMaintenance.getInstance().showDialogMaintenance(activity)
                             }
                             else -> {
                                 showDialog(message)

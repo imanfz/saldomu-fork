@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsListSettingKelolaActivity;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.models.ShopDetail;
 
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ public class GridViewIconAdapter extends BaseAdapter {
     private ArrayList<ShopDetail> shopDetails;
     private Context context;
     private LayoutInflater inflater;
-    private String memberType;
     private FragmentManager fm;
 
 
@@ -43,10 +43,6 @@ public class GridViewIconAdapter extends BaseAdapter {
     {
         ImageView ivSetting;
         int position;
-
-        public int getPosition() {
-            return position;
-        }
 
         public void setPosition(int position) {
             this.position = position;
@@ -89,21 +85,11 @@ public class GridViewIconAdapter extends BaseAdapter {
             public void onClick(View v) {
                 ShopDetail tempDetail = (ShopDetail) getItem(position);
 
-
-                /*FragListSettingKelola fragSettingKelola = new FragListSettingKelola();
-                Bundle dataBundle = new Bundle();
-                dataBundle.putString("memberId", tempDetail.getMemberId() );
-                dataBundle.putString("shopId", tempDetail.getShopId() );
-
-                fragSettingKelola.setArguments(dataBundle);
-                switchFragment(fragSettingKelola, context.getString(R.string.setting_agent) );
-                */
-
                 Intent intent = new Intent(context.getApplicationContext(), BbsListSettingKelolaActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("memberId", tempDetail.getMemberId());
-                intent.putExtra("shopId", tempDetail.getShopId());
-                intent.putExtra("shopName", tempDetail.getShopName());
+                intent.putExtra(DefineValue.MEMBER_ID, tempDetail.getMemberId());
+                intent.putExtra(DefineValue.SHOP_ID, tempDetail.getShopId());
+                intent.putExtra(DefineValue.SHOP_NAME, tempDetail.getShopName());
                 intent.putExtra("memberType", tempDetail.getMemberType());
                 intent.putExtra("memberName", tempDetail.getMemberName());
                 intent.putExtra("category", TextUtils.join(", ", tempDetail.getCategories()));
@@ -118,16 +104,5 @@ public class GridViewIconAdapter extends BaseAdapter {
         });
 
         return rootView;
-    }
-
-    private void switchFragment(Fragment i, String name){
-        if (context == null)
-            return;
-
-        //MainPage fca = (MainPage) i.getActivity();
-        //fca.switchContent(i,name);
-
-        fm.beginTransaction().add(R.id.main_page_content, i, "com.sgo.saldomu.fragments.FragKelolaAgent").commit();
-
     }
 }

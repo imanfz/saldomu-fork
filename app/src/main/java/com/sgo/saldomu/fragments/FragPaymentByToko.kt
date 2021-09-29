@@ -183,7 +183,7 @@ class FragPaymentByToko : BaseFragment() {
                         }
                         DefineValue.ERROR_0066 -> {
                             AlertDialogMaintenance.getInstance()
-                                .showDialogMaintenance(activity, message)
+                                .showDialogMaintenance(activity)
                         }
                         else -> {
                             Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
@@ -240,8 +240,7 @@ class FragPaymentByToko : BaseFragment() {
                                 Timber.d("isi response maintenance:$response")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                                 alertDialogMaintenance.showDialogMaintenance(
-                                    activity,
-                                    model.error_message
+                                    activity
                                 )
                             } else {
                                 Toast.makeText(activity, error_message, Toast.LENGTH_LONG).show()
@@ -301,8 +300,7 @@ class FragPaymentByToko : BaseFragment() {
                                     val alertDialogMaintenance =
                                         AlertDialogMaintenance.getInstance()
                                     alertDialogMaintenance.showDialogMaintenance(
-                                        activity,
-                                        model.error_message
+                                        activity
                                     )
                                 } else {
                                     Timber.d("Error inquiryTrx payment invoice:$response")
@@ -419,8 +417,7 @@ class FragPaymentByToko : BaseFragment() {
                                 Timber.d("isi response maintenance:$response")
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
                                 alertDialogMaintenance.showDialogMaintenance(
-                                    activity,
-                                    model.error_message
+                                    activity
                                 )
                             } else {
                                 Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG)
@@ -492,7 +489,7 @@ class FragPaymentByToko : BaseFragment() {
                         )
                     } else if (code == DefineValue.ERROR_0066) {
                         AlertDialogMaintenance.getInstance()
-                            .showDialogMaintenance(activity, message)
+                            .showDialogMaintenance(activity)
                     } else {
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }

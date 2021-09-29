@@ -59,7 +59,7 @@ public class ListPOTokoAdapter extends RecyclerView.Adapter<ListPOTokoAdapter.Vi
         holder.layout.setOnClickListener(view -> listener.onClick(docListArrayList.get(position).getDoc_no()));
         holder.cancel.setOnClickListener(view -> listener.onCancel(docListArrayList.get(position).getDoc_no()));
 
-        if (docListArrayList.get(position).getPaid_status().equals(DefineValue.N))
+        if (docListArrayList.get(position).getPaid_status().equals(DefineValue.STRING_NO))
             holder.cancel.setVisibility(View.VISIBLE);
         else
             holder.cancel.setVisibility(View.GONE);

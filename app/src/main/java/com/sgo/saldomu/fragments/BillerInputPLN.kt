@@ -461,7 +461,7 @@ class BillerInputPLN : BaseFragment() {
                                 fee = model.admin_fee.toDouble()
                                 enabledAdditionalFee = model.enabled_additional_fee
 
-                                if (isAgent!! && enabledAdditionalFee.equals(DefineValue.Y)) {
+                                if (isAgent!! && enabledAdditionalFee.equals(DefineValue.STRING_YES)) {
                                     billerinput_layout_add_fee.visibility = View.VISIBLE
                                     billerinput_detail_layout_add_fee.visibility = View.VISIBLE
                                 }
@@ -485,7 +485,7 @@ class BillerInputPLN : BaseFragment() {
                             } else if (code == DefineValue.ERROR_0066) run {
                                 Timber.d("isi response maintenance:%s", response.toString())
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                alertDialogMaintenance.showDialogMaintenance(activity)
                             } else {
                                 code = model.error_code + " : " + model.error_message
                                 if (isVisible) {
@@ -595,7 +595,7 @@ class BillerInputPLN : BaseFragment() {
                             } else if (code == DefineValue.ERROR_0066) run {
                                 Timber.d("isi response maintenance:%s", response.toString())
                                 val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                alertDialogMaintenance.showDialogMaintenance(activity, message)
+                                alertDialogMaintenance.showDialogMaintenance(activity)
                             } else {
                                 Toast.makeText(activity, "$code : $message", Toast.LENGTH_LONG).show()
                                 fragmentManager?.popBackStack()
@@ -703,7 +703,7 @@ class BillerInputPLN : BaseFragment() {
                                 DefineValue.ERROR_0066 -> {
                                     Timber.d("isi response maintenance:%s", response.toString())
                                     val alertDialogMaintenance = AlertDialogMaintenance.getInstance()
-                                    alertDialogMaintenance.showDialogMaintenance(activity, model.error_message)
+                                    alertDialogMaintenance.showDialogMaintenance(activity)
                                 }
                                 else -> {
                                     when (code) {
@@ -780,7 +780,7 @@ class BillerInputPLN : BaseFragment() {
     }
 
     private fun showDialogError(code: String?) {
-        val dialog = DefinedDialog.MessageDialog(activity, getString(R.string.error), code) { v, isLongClick -> fragmentManager?.popBackStack() }
+        val dialog = DefinedDialog.MessageDialog(activity, getString(R.string.error), code) { fragmentManager?.popBackStack() }
         dialog.show()
     }
 

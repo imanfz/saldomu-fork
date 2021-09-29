@@ -59,16 +59,15 @@ public class FragTopUpSCADM extends BaseFragment {
     Button btn_next;
     ImageView iv_clear_partner_code;
     private ProgressDialog progdialog;
-    String memberIDLogin, commIDLogin, userPhoneID, accessKey, member_id_scadm, comm_id_scadm, selectedProductCode, selectedBankCode;
-    String tx_id, member_id, member_code, member_name, comm_id, comm_code, comm_name, bank_code, bank_name,
-            product_code, product_name, ccy_id, amount, admin_fee, total_amount, api_key, storeName, storeAddress, storeCode;
+    String userPhoneID, member_id_scadm, comm_id_scadm, selectedProductCode, selectedBankCode;
+    String tx_id, member_code, member_name, comm_code, comm_name, bank_code, bank_name,
+            product_code, product_name, amount, admin_fee, total_amount, api_key, storeName, storeAddress, storeCode;
     String bank_gateway, selectedBankGateway;
     private ArrayList<listBankModel> scadmListBankTopUp = new ArrayList<>();
     private ArrayList<String> spinnerContentStrings = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter;
     private Switch favoriteSwitch;
     private EditText notesEditText;
-    NumberTextWatcherForThousand numberTextWatcherForThousand;
 
     @Nullable
     @Override
@@ -82,10 +81,8 @@ public class FragTopUpSCADM extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        memberIDLogin = sp.getString(DefineValue.MEMBER_ID, "");
-        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID, "");
+
         userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         spinner_bank_product = v.findViewById(R.id.spinner_bank_produk);
         et_jumlah = v.findViewById(R.id.et_jumlah);
@@ -162,7 +159,7 @@ public class FragTopUpSCADM extends BaseFragment {
             et_jumlah.requestFocus();
             et_jumlah.setError(getString(R.string.amount_validation_scadm));
             return false;
-        }else if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
+        } else if (favoriteSwitch.isChecked() && notesEditText.getText().toString().length() == 0) {
             notesEditText.requestFocus();
             notesEditText.setError(getString(R.string.payfriends_notes_zero));
             return false;
@@ -250,7 +247,7 @@ public class FragTopUpSCADM extends BaseFragment {
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
                                     Timber.d("isi response maintenance:" + response.toString());
                                     AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    alertDialogMaintenance.showDialogMaintenance(getActivity());
                                 } else {
                                     Timber.d("Error isi response get list bank topup scadm:" + response.toString());
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
@@ -311,14 +308,10 @@ public class FragTopUpSCADM extends BaseFragment {
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("isi response confirm topup scadm:" + response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("isi response confirm topup scadm:%s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     tx_id = response.getString(WebParams.TX_ID);
-//                                    member_id = member_id_scadm;
-//                                    member_code = response.getString(WebParams.MEMBER_CODE);
-//                                    member_name = response.getString(WebParams.MEMBER_NAME);
-//                                    comm_id = response.getString(WebParams.COMM_ID);
-//                                    comm_code = response.getString(WebParams.COMM_CODE);
                                     comm_name = response.getString(WebParams.COMM_NAME);
 //                                    bank_code = response.getString(WebParams.BANK_CODE);
                                     bank_name = response.getString(WebParams.BANK_NAME);
@@ -336,25 +329,18 @@ public class FragTopUpSCADM extends BaseFragment {
                                     changeToConfirmTopup();
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    Timber.d("Error isi response confirm topup  scadm:" + response.toString());
-                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-//                            getActivity().finish();
+                                    Timber.d("Error isi response confirm topup  scadm:%s", response.toString());
+                                    Toast.makeText(getActivity(), code + ":" + message, Toast.LENGTH_LONG).show();
                                 }
 
 
@@ -407,50 +393,39 @@ public class FragTopUpSCADM extends BaseFragment {
                                 Gson gson = new Gson();
                                 jsonModel model = gson.fromJson(response.toString(), jsonModel.class);
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("isi response confirm topup scadm:" + response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                Timber.d("isi response confirm topup scadm:%s", response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     tx_id = response.getString(WebParams.TX_ID);
-                                    member_id = member_id_scadm;
                                     member_code = response.getString(WebParams.MEMBER_CODE);
                                     member_name = response.getString(WebParams.MEMBER_NAME);
-                                    comm_id = response.getString(WebParams.COMM_ID);
                                     comm_code = response.getString(WebParams.COMM_CODE);
                                     comm_name = response.getString(WebParams.COMM_NAME);
                                     bank_code = response.getString(WebParams.BANK_CODE);
                                     bank_name = response.getString(WebParams.BANK_NAME);
                                     product_code = response.getString(WebParams.PRODUCT_CODE);
                                     product_name = response.getString(WebParams.PRODUCT_NAME);
-                                    ccy_id = response.getString(WebParams.CCY_ID);
                                     amount = response.getString(WebParams.AMOUNT);
                                     admin_fee = response.getString(WebParams.ADMIN_FEE);
                                     total_amount = response.getString(WebParams.TOTAL_AMOUNT);
                                     storeName = response.getString(WebParams.STORE_NAME);
                                     storeAddress = response.getString(WebParams.STORE_ADDRESS);
                                     storeCode = response.getString(WebParams.STORE_CODE);
-//                            payment_remark = response.getString(WebParams.PAYMENT_REMARK);
-
                                     changeToConfirmTopup();
 
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    Timber.d("isi response autologout:" + response.toString());
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(), message);
+                                    Timber.d("isi response autologout:%s", response.toString());
+                                    AlertDialogLogout.getInstance().showDialoginActivity(getActivity(), message);
                                 } else if (code.equals(DefineValue.ERROR_9333)) {
-                                    Timber.d("isi response app data:" + model.getApp_data());
+                                    Timber.d("isi response app data:%s", model.getApp_data());
                                     final AppDataModel appModel = model.getApp_data();
-                                    AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
-                                    alertDialogUpdateApp.showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
+                                    AlertDialogUpdateApp.getInstance().showDialogUpdate(getActivity(), appModel.getType(), appModel.getPackageName(), appModel.getDownloadUrl());
                                 } else if (code.equals(DefineValue.ERROR_0066)) {
-                                    Timber.d("isi response maintenance:" + response.toString());
-                                    AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                    alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                    Timber.d("isi response maintenance:%s", response.toString());
+                                    AlertDialogMaintenance.getInstance().showDialogMaintenance(getActivity());
                                 } else {
-                                    Timber.d("Error isi response confirm topup  scadm:" + response.toString());
-                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-//                            getActivity().finish();
+                                    Timber.d("Error isi response confirm topup  scadm:%s", response.toString());
+                                    Toast.makeText(getActivity(), code + ":" + message, Toast.LENGTH_LONG).show();
                                 }
 
 
@@ -502,20 +477,15 @@ public class FragTopUpSCADM extends BaseFragment {
         bundle1.putString(DefineValue.STORE_NAME, storeName);
         bundle1.putString(DefineValue.STORE_ADDRESS, storeAddress);
         bundle1.putString(DefineValue.STORE_CODE, storeCode);
-        if (favoriteSwitch.isChecked())
-        {
+        if (favoriteSwitch.isChecked()) {
             bundle1.putBoolean(DefineValue.IS_FAVORITE, true);
             bundle1.putString(DefineValue.CUST_ID, member_code);
             bundle1.putString(DefineValue.NOTES, notesEditText.getText().toString());
             bundle1.putString(DefineValue.TX_FAVORITE_TYPE, DefineValue.B2B);
             bundle1.putString(DefineValue.PRODUCT_TYPE, DefineValue.TOPUP_B2B);
         }
-//        bundle1.putString(DefineValue.PRODUCT_NAME, spinnerContentStrings.get(spinner_bank_product.getSelectedItemPosition()));
         Fragment mFrag = new FragTopUpConfirmSCADM();
         mFrag.setArguments(bundle1);
         SwitchFragmentTop(mFrag, TopUpSCADMActivity.TOPUP, true);
-
-//        TopUpSCADMActivity ftf = (TopUpSCADMActivity) getActivity();
-//        ftf.switchContent(mFrag, TopUpSCADMActivity.TOPUP, true);
     }
 }

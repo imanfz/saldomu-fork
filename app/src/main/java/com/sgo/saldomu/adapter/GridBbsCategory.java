@@ -19,16 +19,7 @@ import java.util.List;
  */
 public class GridBbsCategory extends BaseAdapter {
 
-
-
-    public interface myInterface
-    {
-        void click();
-    }
-
     private Context mContext;
-    TextView textView;
-    ImageView imageView;
     List<ShopCategory> shopCategories;
 
 
@@ -37,19 +28,10 @@ public class GridBbsCategory extends BaseAdapter {
         this.shopCategories = shopCategories;
     }
 
-    class ViewHolder
-    {
+    class ViewHolder {
         TextView tvCategoryName;
         ImageView ivCategory;
         int position;
-
-        public int getPosition() {
-            return position;
-        }
-
-        public void setPosition(int position) {
-            this.position = position;
-        }
     }
 
     @Override
@@ -75,23 +57,22 @@ public class GridBbsCategory extends BaseAdapter {
 
         if (grid == null) {
 
-            LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
+            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
             grid = inflater.inflate(R.layout.grid_bbs_category, null);
 
-            holder                  = new GridBbsCategory.ViewHolder();
-            holder.tvCategoryName   = (TextView) grid.findViewById(R.id.grid_text);
-            holder.ivCategory       = (ImageView) grid.findViewById(R.id.grid_image);
+            holder = new GridBbsCategory.ViewHolder();
+            holder.tvCategoryName = (TextView) grid.findViewById(R.id.grid_text);
+            holder.ivCategory = (ImageView) grid.findViewById(R.id.grid_image);
 
             grid.setTag(holder);
 
         } else {
-            holder =  (GridBbsCategory.ViewHolder) grid.getTag();
+            holder = (GridBbsCategory.ViewHolder) grid.getTag();
         }
 
 
-
-            holder.tvCategoryName.setText(shopCategory.getCategoryName());
-            holder.ivCategory.setImageResource(shopCategory.getCategoryImage());
+        holder.tvCategoryName.setText(shopCategory.getCategoryName());
+        holder.ivCategory.setImageResource(shopCategory.getCategoryImage());
 
         return grid;
     }

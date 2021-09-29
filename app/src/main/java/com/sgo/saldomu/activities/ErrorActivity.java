@@ -44,18 +44,7 @@ public class ErrorActivity extends AppCompatActivity {
     }
 
     void showError(String message){
-//        DefinedDialog.showErrorDialog(this, message, new DefinedDialog.DialogButtonListener() {
-//            @Override
-//            public void onClickButton(View v, boolean isLongClick) {
-//                finish();
-//            }
-//        });
-        DefinedDialog.showErrorDialog(this, message, new DefinedDialog.DialogButtonListener() {
-            @Override
-            public void onClickButton(View v, boolean isLongClick) {
-                finish();
-            }
-        });
+        DefinedDialog.showErrorDialog(this, message, () -> finish());
     }
 
 }

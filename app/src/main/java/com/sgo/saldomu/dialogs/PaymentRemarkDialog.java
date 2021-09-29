@@ -39,7 +39,6 @@ public class PaymentRemarkDialog extends DialogFragment {
     EditText inputMsg;
     static String paymentCode;
     LinearLayout layoutNoId, layoutDueDate;
-    Realm realmBBS;
     onTap listener;
     private com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd;
     private String dateNow;
@@ -77,8 +76,6 @@ public class PaymentRemarkDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.payment_remark_dialog_layout, container, false);
-
-        realmBBS = Realm.getInstance(RealmManager.BBSConfiguration);
 
         ok = v.findViewById(R.id.pay_remark_dialog_ok_btn);
         cancel = v.findViewById(R.id.pay_remark_dialog_cancel_btn);

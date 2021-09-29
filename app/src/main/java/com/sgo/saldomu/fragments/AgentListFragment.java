@@ -14,7 +14,6 @@ import android.widget.ListView;
 import androidx.fragment.app.Fragment;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.adapter.AgentListArrayAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
@@ -31,19 +30,17 @@ import java.util.ArrayList;
  * Created by Lenovo Thinkpad on 12/5/2016.
  */
 public class AgentListFragment extends Fragment implements AdapterView.OnItemClickListener,
-        MainResultReceiver.Receiver
-{
+        MainResultReceiver.Receiver {
     View rootView;
     ListView listView;
     JSONArray agentLocation = null;
     private Activity activity;
-    private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
+    private final ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private AgentListArrayAdapter agentListArrayAdapter;
-    private String mobility;
     private OnListAgentItemClick mOnListAgentItemClick;
 
     public interface OnListAgentItemClick {
-        public void OnIconLocationClickListener(int position, ArrayList<ShopDetail> shopDetails);
+        void OnIconLocationClickListener(int position);
     }
 
     public AgentListFragment() {
@@ -55,41 +52,19 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
         super.onAttach(context);
         try {
             mOnListAgentItemClick = (OnListAgentItemClick) context;
-        } catch(ClassCastException e) {
+        } catch (ClassCastException e) {
 
         }
     }
 
-    /**
-     * During creation, if arguments have been supplied to the fragment
-     * then parse those out.
-     */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Bundle args = getArguments();
-        if (args != null) {
-            this.mobility = args.getString("mobility");
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        if(rootView == null)
-        {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (rootView == null) {
             rootView = inflater.inflate(R.layout.agent_list_fragment, container, false);
 
             //set activity to global variabel.
             //agar tidak perlu selalu memanggil getActivity(), karena bisa null
             activity = getActivity();
-
-            //get object activity
-            BbsSearchAgentActivity mainBbsActivity = (BbsSearchAgentActivity) getActivity();
-
-            //set realtime listener for receiver. Will call function : onReceiveResult
-            //mainBbsActivity.agentListResultReceiver.setReceiver(this);
 
             listView = (ListView) rootView.findViewById(R.id.listView);
 
@@ -102,39 +77,32 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
 
     //Implements MainBbsResultReceiver.Receiver
     @Override
-    public void onReceiveResult(int resultCode, Bundle resultData)
-    {
-        if(resultCode == 0)
-        {
-            //Toast.makeText(getActivity(), "--------- update agent list -----------", Toast.LENGTH_SHORT).show();
-
-            //String errorMsg = resultData.getString("resultValue");
+    public void onReceiveResult(int resultCode) {
+        if (resultCode == 0) {
             setAdapterToListView();
         }
     }
 
-    private void setAdapterToListView()
-    {
+    private void setAdapterToListView() {
         //get data agent from session
         getAgentLocationSharedPreferences();
 
         //if ( shopDetails.size() > 0 )
         //{
-            agentListArrayAdapter = new AgentListArrayAdapter(activity, R.layout.agent_list_listview
-                    , this.shopDetails, mOnListAgentItemClick);
-            //agentListArrayAdapter.setAgentList(agentLocation);
-            listView.setAdapter(agentListArrayAdapter);
+        agentListArrayAdapter = new AgentListArrayAdapter(activity, R.layout.agent_list_listview
+                , this.shopDetails, mOnListAgentItemClick);
+        //agentListArrayAdapter.setAgentList(agentLocation);
+        listView.setAdapter(agentListArrayAdapter);
 
-            //set listener for list view
-            listView.setOnItemClickListener(this);
+        //set listener for list view
+        listView.setOnItemClickListener(this);
         //}
 
     }
 
     //implements AdapterView.OnItemClickListener
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
 //        if (mobility.equals(DefineValue.STRING_NO)) {
@@ -150,46 +118,29 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
 
     }
 
-    private void getAgentLocationSharedPreferences()
-    {
+    private void getAgentLocationSharedPreferences() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
         String dataJson = preferences.getString(AgentConstant.AGENT_INFO_SHARED_PREFERENCES, "");
 
-        if(!dataJson.equals(""))
-        {
-            try
-            {
+        if (!dataJson.equals("")) {
+            try {
                 agentLocation = new JSONArray(dataJson);
-            }
-            catch (JSONException ex) {
+            } catch (JSONException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
-    private String[] getListArray()
-    {
-        int length = agentLocation.length();
-        String[] listArray = new String[length];
-        for(int i=0; i < length; i++)
-        {
-            listArray[i] = "value";
-        }
-
-        return listArray;
-    }
-
     public void updateView(ArrayList<ShopDetail> shopDetails) {
 
         this.shopDetails.clear();
-        if ( shopDetails.size() > 0 ) {
+        if (shopDetails.size() > 0) {
             this.shopDetails.addAll(shopDetails);
         }
 
         agentListArrayAdapter.notifyDataSetChanged();
 
     }
-
 
 
 }

@@ -60,10 +60,6 @@ public class FragPulsaAgent extends Fragment {
     private SecurePreferences sp;
     private String member_dap;
     private String userID;
-    private String accessKey;
-
-    private TextView tv_denom;
-    private TextView tv_payment_remark;
     private EditText et_payment_remark;
     private Spinner spin_denom;
     private Spinner spin_member;
@@ -80,7 +76,6 @@ public class FragPulsaAgent extends Fragment {
     private String item_id;
     private String item_name;
     private String final_payment_remark;
-    private String member_code;
     private String catalog_id = "";
     private String operator_id;
     private String operator_name;
@@ -116,7 +111,6 @@ public class FragPulsaAgent extends Fragment {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         member_dap = sp.getString(DefineValue.MEMBER_DAP, "");
         userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         layout_member = v.findViewById(R.id.pulsainput_layout_member);
         layout_denom = v.findViewById(R.id.pulsainput_layout_denom);
@@ -125,8 +119,6 @@ public class FragPulsaAgent extends Fragment {
         spin_member = v.findViewById(R.id.spinner_pulsainput_member);
         spin_denom = v.findViewById(R.id.spinner_pulsainput_denom);
         spin_nominal = v.findViewById(R.id.spinner_pulsainput_nominal);
-        tv_denom = v.findViewById(R.id.pulsainput_text_denom);
-        tv_payment_remark = v.findViewById(R.id.pulsainput_text_payment_remark);
         et_payment_remark = v.findViewById(R.id.payment_remark_pulsainput_value);
         spinWheelDenom = v.findViewById(R.id.spinning_wheel_pulsainput_denom);
         spinWheelMember = v.findViewById(R.id.spinning_wheel_pulsainput_member);
@@ -175,7 +167,6 @@ public class FragPulsaAgent extends Fragment {
                 if (finalMArray.length() == 1) {
                     layout_member.setVisibility(View.GONE);
                     member_id = finalMArray.getJSONObject(0).getString(WebParams.MEMBER_ID);
-                    member_code = finalMArray.getJSONObject(0).getString(WebParams.MEMBER_CODE);
                     getDenomDAP();
                 } else {
                     layout_member.setVisibility(View.VISIBLE);
@@ -436,7 +427,6 @@ public class FragPulsaAgent extends Fragment {
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Object item = adapterView.getItemAtPosition(i);
             member_id = mMemberData.get(item.toString());
-            member_code = _memberData[i];
             if (flagDenom) getDenomDAP();
         }
 
@@ -515,15 +505,6 @@ public class FragPulsaAgent extends Fragment {
         i.putExtra(DefineValue.OPERATOR_ID, _operator_id);
         i.putExtra(DefineValue.OPERATOR_NAME, _operator_name);
         switchActivity(i);
-    }
-
-    private void setDefault() {
-        catalog_id = "";
-        if (layout_member.getVisibility() == View.VISIBLE) {
-            spin_member.setSelection(0);
-        }
-        spin_denom.setSelection(0);
-        et_payment_remark.setText("");
     }
 
     private void switchActivity(Intent mIntent) {

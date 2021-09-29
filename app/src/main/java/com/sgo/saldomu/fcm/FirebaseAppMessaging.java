@@ -58,7 +58,6 @@ import static com.sgo.saldomu.fcm.FCMManager.VERIFY_ACC;
 
 public class FirebaseAppMessaging extends FirebaseMessagingService {
 
-    NotificationManager mNotificationManager;
     private SecurePreferences sp;
     private BundleToJSON bundleToJSON = new BundleToJSON();
     private String flagLogin;
@@ -229,12 +228,12 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
 
-                            bundle.putString("memberId", jsonOptions.getJSONObject(0).getString("member_id"));
-                            bundle.putString("shopId", jsonOptions.getJSONObject(0).getString("shop_id"));
-                            bundle.putString("shopName", jsonOptions.getJSONObject(0).getString("shop_name"));
-                            bundle.putString("memberType", jsonOptions.getJSONObject(0).getString("member_type"));
-                            bundle.putString("memberName", jsonOptions.getJSONObject(0).getString("member_name"));
-                            bundle.putString("commName", jsonOptions.getJSONObject(0).getString("comm_name"));
+                            bundle.putString(DefineValue.MEMBER_ID, jsonOptions.getJSONObject(0).getString(WebParams.MEMBER_ID));
+                            bundle.putString(DefineValue.SHOP_ID, jsonOptions.getJSONObject(0).getString(WebParams.SHOP_ID));
+                            bundle.putString(DefineValue.SHOP_NAME, jsonOptions.getJSONObject(0).getString(WebParams.SHOP_NAME));
+                            bundle.putString(DefineValue.MEMBER_TYPE, jsonOptions.getJSONObject(0).getString(WebParams.MEMBER_TYPE));
+                            bundle.putString(DefineValue.MEMBER_NAME, jsonOptions.getJSONObject(0).getString(WebParams.MEMBER_NAME));
+                            bundle.putString(DefineValue.COMM_NAME, jsonOptions.getJSONObject(0).getString(WebParams.COMM_NAME));
 
                             bundle.putString("province", jsonOptions.getJSONObject(0).getString("province"));
                             bundle.putString("district", jsonOptions.getJSONObject(0).getString("district"));
@@ -296,9 +295,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         try {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
-                            String keyCode = jsonOptions.getJSONObject(0).getString("key_code");
                             String keyAmount = jsonOptions.getJSONObject(0).getString("amount");
-                            String categoryName = jsonOptions.getJSONObject(0).getString("category_name");
+                            String categoryName = jsonOptions.getJSONObject(0).getString(WebParams.CATEGORY);
                             String categoryId = jsonOptions.getJSONObject(0).getString("category_id");
                             Double benefLatitude = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_latitude"));
                             Double benefLongitude = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_longitude"));
@@ -387,7 +385,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
 
                             bundle.putString(DefineValue.BBS_TX_ID, jsonOptions.getJSONObject(0).getString("tx_id"));
-                            bundle.putString(DefineValue.CATEGORY_NAME, jsonOptions.getJSONObject(0).getString("category_name"));
+                            bundle.putString(DefineValue.CATEGORY_NAME, jsonOptions.getJSONObject(0).getString(WebParams.CATEGORY));
                             bundle.putString(DefineValue.AMOUNT, jsonOptions.getJSONObject(0).getString("amount"));
 
                             intent.putExtras(bundle);
@@ -626,7 +624,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             JSONArray jsonOptions = new JSONArray(msg.getString("options"));
                             String txId = jsonOptions.getJSONObject(0).getString("tx_id");
                             bundle.putString(DefineValue.TX_ID, txId);
-                            bundle.putString(DefineValue.IS_INAPP, "Y");
+                            bundle.putString(DefineValue.IS_INAPP, DefineValue.STRING_YES);
                             intent = new Intent(this, SourceOfFundActivity.class);
                             intent.putExtras(bundle);
                             stackBuilder.addParentStack(SourceOfFundActivity.class);

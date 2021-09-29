@@ -57,47 +57,39 @@ import timber.log.Timber;
 public class FragMerchantCategory extends Fragment {
     View v;
     SecurePreferences sp;
-    EditText etHpNo, etAmount, etMessage;
     Button btnProses;
     ProgressDialog progdialog;
-    String userID, accessKey, memberID;
-    String memberId,shopId, flagApprove, setupOpenHour;
+    String memberId, shopId, flagApprove, setupOpenHour;
     JSONArray categories;
     ArrayList categoryIds;
-
-    Realm myRealm;
-    MerchantCommunityList memberDetail;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        myRealm     = Realm.getDefaultInstance();
-        sp          = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID      = sp.getString(DefineValue.USERID_PHONE, "");
-        memberID    = sp.getString(DefineValue.MEMBER_ID,"");
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        shopId      = getActivity().getIntent().getExtras().getString("shopId");
-        memberId    = getActivity().getIntent().getExtras().getString("memberId");
-        flagApprove = getActivity().getIntent().getExtras().getString("flagApprove");
-        setupOpenHour   = getActivity().getIntent().getExtras().getString("setupOpenHour");
-        categoryIds     = new ArrayList();
+        shopId = getActivity().getIntent().getExtras().getString(DefineValue.SHOP_ID);
+        memberId = getActivity().getIntent().getExtras().getString(DefineValue.MEMBER_ID);
+        flagApprove = getActivity().getIntent().getExtras().getString(DefineValue.FLAG_APPROVE);
+        setupOpenHour = getActivity().getIntent().getExtras().getString(DefineValue.SETUP_OPEN_HOUR);
+        categoryIds = new ArrayList();
 
         btnProses = v.findViewById(R.id.btn_proses);
         btnProses.setOnClickListener(btnProsesListener);
 
-        progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
+        progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
         progdialog.show();
 
         HashMap<String, Object> params = new HashMap<>();
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
+        UUID rcUUID = UUID.randomUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
-        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         //params.put(WebParams.SHOP_ID, shopId);
 
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
@@ -117,10 +109,10 @@ public class FragMerchantCategory extends Fragment {
 
                                 categories = response.getJSONArray("category");
 
-                                for(int i =0; i < categories.length(); i++) {
+                                for (int i = 0; i < categories.length(); i++) {
                                     CheckBox cb = new CheckBox(getActivity());
                                     JSONObject object = categories.getJSONObject(i);
-                                    cb.setText(object.getString("category_name"));
+                                    cb.setText(object.getString(WebParams.CATEGORY));
                                     cb.setId(i);
                                     ll.addView(cb);
                                 }
@@ -165,11 +157,11 @@ public class FragMerchantCategory extends Fragment {
                         CheckBox cb = (CheckBox) view2;
 
 
-                        if ( cb.isChecked() ) {
+                        if (cb.isChecked()) {
 
 
                             try {
-                                if ( cb.isChecked() ) {
+                                if (cb.isChecked()) {
                                     int idx = cb.getId();
                                     JSONObject object = categories.getJSONObject(idx);
                                     categoryIds.add(object.getString("category_id"));
@@ -184,17 +176,16 @@ public class FragMerchantCategory extends Fragment {
                     }
                 }
 
-                if ( countChecked == 0 ){
+                if (countChecked == 0) {
                     Toast.makeText(getActivity(), R.string.err_empty_categories, Toast.LENGTH_LONG).show();
                 } else {
 
 
-
                     progdialog.show();
                     HashMap<String, Object> params = new HashMap<>();
-                    UUID rcUUID             = UUID.randomUUID();
-                    String  dtime           = DateTimeFormat.getCurrentDateTime();
-                    String categoryJSON     = new Gson().toJson(categoryIds);
+                    UUID rcUUID = UUID.randomUUID();
+                    String dtime = DateTimeFormat.getCurrentDateTime();
+                    String categoryJSON = new Gson().toJson(categoryIds);
 
                     params.put(WebParams.RC_UUID, rcUUID);
                     params.put(WebParams.RC_DATETIME, dtime);
@@ -221,28 +212,21 @@ public class FragMerchantCategory extends Fragment {
                                         String code = response.getString(WebParams.ERROR_CODE);
                                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                            if ( setupOpenHour.equals(DefineValue.STRING_YES) ){
-//                                        Bundle args = new Bundle();
-//                                        args.putString(DefineValue.SHOP_ID, memberDetail.getShopId());
-//                                        args.putString(DefineValue.MEMBER_ID, memberDetail.getMemberId());
-//
-//                                        Fragment newFrag = new FragSetupOpenHour();
-//                                        newFrag.setArguments(args);
-//                                        switchFragment(newFrag, getString(R.string.toolbar_title_setup_open_hour), true);
+                                            if (setupOpenHour.equals(DefineValue.STRING_YES)) {
 
-                                                Intent intent=new Intent(getActivity(), BbsSetupOpenHourActivity.class);
-                                                intent.putExtra("memberId", memberId);
-                                                intent.putExtra("shopId", shopId);
-                                                intent.putExtra("flagApprove", flagApprove);
+                                                Intent intent = new Intent(getActivity(), BbsSetupOpenHourActivity.class);
+                                                intent.putExtra(DefineValue.MEMBER_ID, memberId);
+                                                intent.putExtra(DefineValue.SHOP_ID, shopId);
+                                                intent.putExtra(DefineValue.FLAG_APPROVE, flagApprove);
                                                 startActivity(intent);
 
                                             } else {
                                                 Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
 
-                                                Intent intent=new Intent(getActivity(),BbsMerchantCommunityList.class);
+                                                Intent intent = new Intent(getActivity(), BbsMerchantCommunityList.class);
                                                 startActivity(intent);
                                             }
-                                        }else if (code.equals(DefineValue.ERROR_9333)) {
+                                        } else if (code.equals(DefineValue.ERROR_9333)) {
                                             Timber.d("isi response app data:" + model.getApp_data());
                                             final AppDataModel appModel = model.getApp_data();
                                             AlertDialogUpdateApp alertDialogUpdateApp = AlertDialogUpdateApp.getInstance();
@@ -250,7 +234,7 @@ public class FragMerchantCategory extends Fragment {
                                         } else if (code.equals(DefineValue.ERROR_0066)) {
                                             Timber.d("isi response maintenance:" + response.toString());
                                             AlertDialogMaintenance alertDialogMaintenance = AlertDialogMaintenance.getInstance();
-                                            alertDialogMaintenance.showDialogMaintenance(getActivity(), model.getError_message());
+                                            alertDialogMaintenance.showDialogMaintenance(getActivity());
                                         } else {
                                             Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
                                         }
@@ -272,11 +256,10 @@ public class FragMerchantCategory extends Fragment {
                             });
                 }
 
-            }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
-
 
 
     @Override
@@ -300,21 +283,13 @@ public class FragMerchantCategory extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void switchFragment(Fragment i, String name, Boolean isBackstack){
-        if (getActivity() == null)
-            return;
-
-        BbsMerchantCategoryActivity fca = (BbsMerchantCategoryActivity ) getActivity();
-        fca.switchContent(i,name,isBackstack);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         setTitle(getString(R.string.setup_merchant_category));
     }
 
-    private void setTitle(String _title){
+    private void setTitle(String _title) {
         if (getActivity() == null)
             return;
 
